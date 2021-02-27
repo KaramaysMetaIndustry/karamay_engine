@@ -7,13 +7,10 @@ To clone and run this repository you'll need [Git](https://git-scm.com) and [Nod
 ```bash
 cd karamay-shell
 
-npm install #install node_modules
-
-npx @electron-forge/cli import #install electron-forge and run
+npx @electron-forge/cli@latest import #install electron-forge and run
 
 npm start
 
-npx @electron-forge/cli@latest import
 ```
 
 
