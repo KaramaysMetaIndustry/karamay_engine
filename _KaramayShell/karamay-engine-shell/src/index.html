@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
-    <title>Hello World!</title>
-    <link rel="stylesheet" href="index.css">
+    <meta charset="utf-8">
+    <title></title>
   </head>
   <body>
-    <h1>💖 Hello World!</h1>
-    <p>Welcome to your Electron application.</p>
+    <div id="test">app</div>
   </body>
+
+  <script>
+  import Vue from 'vue';
+  import Test from './test';
+
+  const app = new Vue(Test).$mount('#test');
+
+  app.text = "Electron Forge with Vue.js!";
+
+  </script>
 </html>
