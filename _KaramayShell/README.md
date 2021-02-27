@@ -20,7 +20,7 @@ npm start
 
 cd karamay-shell
 
-npx @electron-forge/cli@latest import
+electron-forge import
 
 npm start
 
