@@ -12,6 +12,8 @@ npm install #install node_modules
 npx @electron-forge/cli import #install electron-forge and run
 
 npm start
+
+npx @electron-forge/cli@latest import
 ```
 
 
