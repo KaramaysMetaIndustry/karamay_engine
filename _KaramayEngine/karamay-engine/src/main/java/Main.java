@@ -1,6 +1,9 @@
+import core.KEngine;
+
 public class Main {
     public static void main(String[] args)
     {
-        System.out.println("xxx");
+        KEngine engine = KEngine.getInstance();
+        engine.start();
     }
 }
