@@ -27,7 +27,7 @@ public class KEngine {
     private boolean bShouldExit;
 
     private void tick(float deltaTime){
-        System.out.println("k-engine-ticking");
+        System.out.println("k-engine ticking");
     }
 
     private void shutdown(){
