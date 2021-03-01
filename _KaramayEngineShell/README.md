@@ -5,22 +5,32 @@
 To clone and run this repository you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:
 
 ```bash
+#before that, you must have installed these modules:
+npm install electron-forge
+
+
+
+
 #create a new electron pj based on vue with electron-forge
 
-cd _KaramayShell
+cd _KaramayEngineShell
 
-electron-forge init karamay-engine-shell --template=vue
+electron-forge init karamay-engine-shell --template=typescript-webpack
 
 cd karamay-engine-shell
+
+npm install react react-dom
+
+npm install react-bootstrap bootstrap
 
 npm start
 
 
-#fix a new electron-vue pj from github
+#fix the pj cloned from github
 
-cd karamay-shell
+cd karamay-engine-shell
 
-electron-forge import
+npm install
 
 npm start
 
