@@ -1,4 +1,6 @@
-import core.KEngine;
+package com;
+
+import com.core.KEngine;
 
 public class Main {
     public static void main(String[] args)
