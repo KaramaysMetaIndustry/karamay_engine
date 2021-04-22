@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<xs:schema
+    xmlns:xs = "http://www.w3.org/2001/XMLSchema"
+
+>
+
+    <xs:element name="Kanas" type="xs:string" default="state"/>
+    <xs:element name="KanasButton" type="xs:string" fixed="common"/>
+    <xs:element name="KanasViewList" type="xs:string"/>
+
+
+    <xs:attribute name="lang" type="xs:string"/>
+
+</xs:schema>

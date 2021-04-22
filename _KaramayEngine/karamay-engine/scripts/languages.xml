@@ -1,0 +1,14 @@
+<!--<langs type="current">-->
+<!--    <language>Java</language>-->
+<!--    <language>Groovy</language>-->
+<!--    <language>JavaScript</language>-->
+<!--    -->
+<!--</langs>-->
+
+<Kanas>
+    <KanasButton type="primary" onClicked="Test">
+        Click Here
+    </KanasButton>
+</Kanas>
+
+

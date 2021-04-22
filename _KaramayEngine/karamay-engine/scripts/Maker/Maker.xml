@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Kanas>
+  <Button type='primary'> 按钮0 </Button>
+  <Button type='warning'>按钮1 </Button>
+  <ViewList num='5'>
+    <Row> Tony </Row>
+    <Row> Alan </Row>
+    <Row> Leona </Row>
+    <Row> Cloudy </Row>
+    <Row> terry </Row>
+  </ViewList>
+</Kanas>
