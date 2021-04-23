@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with by JCC (51WORLD) 2021 KanasFramework -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           //xmlns="http://www.blizzard.com/wow/ui/"
+           ///xmlns:ui="http://www.blizzard.com/wow/ui/"
+           //targetNamespace="http://www.blizzard.com/wow/ui/"
+           //elementFormDefault="qualified" attributeFormDefault="unqualified">
+    
+    
+    <xs:simpleType name="FRAMEPOINT">
+        <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="TOPLEFT"/>
+            <xs:enumeration value=""/>
+            <xs:enumeration value=""/>
+            <xs:enumeration value=""/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="KanasPanel">
+        <xs:choice>
+            <xs:element name="KanasView"/>
+            <xs:element name="KanasLayout"/>
+            <xs:element name="KanasGrid"/>
+        </xs:choice>
+    </xs:complexType>
+    
+</xs:schema>

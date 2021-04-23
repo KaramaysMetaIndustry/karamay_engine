@@ -5,10 +5,12 @@
 <!--    -->
 <!--</langs>-->
 
-<Kanas>
-    <KanasButton type="primary" onClicked="Test">
-        Click Here
-    </KanasButton>
-</Kanas>
+<KanasUI>
+    <Frame>
+        <EditableField/>
+        <UnEditableField/>
+         
+    </Frame>
+</KanasUI>
 
 

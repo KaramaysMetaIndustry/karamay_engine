@@ -43,8 +43,6 @@ def handleXML()
 //handleXML();
 
 
-
-
 def createPluginTemplateDir(String name)
 {
     def outerLoop = ['one', 'two', 'three', 'four']

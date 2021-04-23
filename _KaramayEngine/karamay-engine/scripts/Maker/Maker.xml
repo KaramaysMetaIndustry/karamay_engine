@@ -1,12 +1,27 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<Kanas>
-  <Button type='primary'> 按钮0 </Button>
-  <Button type='warning'>按钮1 </Button>
-  <ViewList num='5'>
-    <Row> Tony </Row>
-    <Row> Alan </Row>
-    <Row> Leona </Row>
-    <Row> Cloudy </Row>
-    <Row> terry </Row>
-  </ViewList>
-</Kanas>
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!-- xml namespace -->
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+
+  <Frame name="MyAddonFrame">  <!-- a sample widget -->
+    <!-- sample properties and children -->
+    <Scripts>
+      <OnLoad method=""/>
+      <OnClick function="treat"></OnClick>
+    </Scripts>
+    <Layers>
+      <Layer level="ARTWORK">
+        <Texture name="MyAddonFrameTexture" />
+      </Layer>
+    </Layers>
+
+  </Frame>  <!-- end of sample widget -->
+
+  <Button>
+    <ButtonText>Click</ButtonText>
+  </Button>
+
+</Ui>

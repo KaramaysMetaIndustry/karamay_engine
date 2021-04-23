@@ -1,15 +1,30 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
-<xs:schema
-    xmlns:xs = "http://www.w3.org/2001/XMLSchema"
+<schema
+        xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://www.example.org/01"
+        xmlns:tns="http://www.example.org/01"
+        elementFormDefault="qualified">
 
->
+    <element name="user">
+        <complexType>
+            <sequence>
+                <element name="kanasPanel" type="int"/>
+                <element name="username" type="string"/>
+                <element name="born" type="date"/>
+            </sequence>
+        </complexType>
+    </element>
 
-    <xs:element name="Kanas" type="xs:string" default="state"/>
-    <xs:element name="KanasButton" type="xs:string" fixed="common"/>
-    <xs:element name="KanasViewList" type="xs:string"/>
+    <element name="kanas">
+        <complexType>
+            <sequence>
+                <element name="kanasPanel" type="string"/>
+                <element name="kanasWa" type="string"/>
+            </sequence>
+        </complexType>
+    </element>
+    
+    <attribute name=""
 
-
-    <xs:attribute name="lang" type="xs:string"/>
-
-</xs:schema>
+</schema>
