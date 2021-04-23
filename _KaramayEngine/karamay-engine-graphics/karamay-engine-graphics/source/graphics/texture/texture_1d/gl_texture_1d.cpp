@@ -18,19 +18,19 @@ void gl_texture_1d::allocate(GLenum internal_format, int base_mipmap_width, int 
 	_mipmaps_num = mipmaps_num;
 }
 
-void gl_texture_1d::fill_base_mipmap(GLenum format, GLenum type, const void* pixels)
+void gl_texture_1d::fill_base_mipmap(GLenum format, gl_texture_data_type type, const void* pixels)
 {
-	glTexSubImage1D(GL_TEXTURE_1D, 0, 0, _base_mipmap_width, format, type, pixels);
+	glTexSubImage1D(GL_TEXTURE_1D, 0, 0, _base_mipmap_width, format, static_cast<GLenum>(type), pixels);
 }
 
-void gl_texture_1d::fill_base_sub_mipmap(GLenum format, GLenum type, const void* pixels, int x_offset, int sub_mipmap_width)
+void gl_texture_1d::fill_base_sub_mipmap(GLenum format, gl_texture_data_type type, const void* pixels, int x_offset, int sub_mipmap_width)
 {
-	glTexSubImage1D(GL_TEXTURE_1D, 0, x_offset, sub_mipmap_width, format, type, pixels);
+	glTexSubImage1D(GL_TEXTURE_1D, 0, x_offset, sub_mipmap_width, format, static_cast<GLenum>(type), pixels);
 }
 
-void gl_texture_1d::fill_miniature_mipmap(GLenum format, GLenum type, const void* data, int mipmap_index)
+void gl_texture_1d::fill_miniature_mipmap(GLenum format, gl_texture_data_type type, const void* data, int mipmap_index)
 {
-	glTexSubImage1D(GL_TEXTURE_1D, mipmap_index, 0, 00, format, type, data);
+	glTexSubImage1D(GL_TEXTURE_1D, mipmap_index, 0, 0, format, static_cast<GLenum>(type), data);
 }
 
 void gl_texture_1d::fill_miniature_mipmaps()

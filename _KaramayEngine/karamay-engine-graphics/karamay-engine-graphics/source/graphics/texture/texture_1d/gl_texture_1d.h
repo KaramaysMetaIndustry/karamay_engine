@@ -3,16 +3,44 @@
 
 class gl_texture_1d final : public gl_texture_base
 {
+
 public:
+	static std::shared_ptr<gl_texture_1d> construct()
+	{
+		return std::make_shared<gl_texture_1d>();
+	}
+
+	~gl_texture_1d();
+
+private:
+	/**
+	 * construct texture object in client
+	 */
+	gl_texture_1d();
+
+public:
+	/**
+	 * allocate memory for client texture object, creating mapping relationship
+	 */
 	void allocate(GLenum internal_format, int base_mipmap_width, int mipmaps_num);
 
-	void fill_base_mipmap(GLenum format, GLenum type, const void* pixels);
-	void fill_base_sub_mipmap(GLenum format, GLenum type, const void* pixels, int x_offset, int base_sub_mipmap_width);
+	/**
+	 * fill the base mipmap
+	 */
+	void fill_base_mipmap(GLenum format, gl_texture_data_type type, const void* pixels);
+	void fill_base_sub_mipmap(GLenum format, gl_texture_data_type type, const void* pixels, int x_offset, int base_sub_mipmap_width);
 
+	/**
+	 * fill the rest all mipmaps auto
+	 */
 	void fill_miniature_mipmaps();
 
-	void fill_miniature_mipmap(GLenum format, GLenum type, const void* data, int mipmap_index);
-	void fill_miniature_sub_mipmap(GLenum format, GLenum type, const void* data, int mipmap_index, int x_offset, int width) {}
+	/**
+	 * fill the rest mipmap manually
+	 */
+	void fill_miniature_mipmap(GLenum format, gl_texture_data_type type, const void* data, int mipmap_index);
+	void fill_miniature_sub_mipmap(GLenum format, gl_texture_data_type type, const void* data, int mipmap_index, int x_offset, int width)
+	{}
 
 	void clear();
 
@@ -28,22 +56,19 @@ public:
 		//glCopyImageSubData(handle)
 	}
 
-	/// bind & unbind
 	void bind(unsigned int unit);
 
 	void unbind();
 
 private:
-	unsigned int _internal_format;
+	unsigned int _internal_format; // internal_format 指定了存储结构，format && type 指定了传入输入的存储结构，当后者与前者不符合时，尝试将后者转化为前者
 
 	int _mipmaps_num;
 
 	int _base_mipmap_width;
 
-
 public:
-	gl_texture_1d();
+	unsigned int get_internal_format() const {return _internal_format;};
 
-	~gl_texture_1d();
 };
 
