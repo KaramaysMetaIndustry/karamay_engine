@@ -5,6 +5,11 @@ gl_texture_1d::gl_texture_1d()
 	glCreateTextures(GL_TEXTURE_1D, 1, &_handle);
 }
 
+std::shared_ptr<gl_texture_1d> gl_texture_1d::construct()
+{
+	return std::make_shared<gl_texture_1d>();
+}
+
 gl_texture_1d::~gl_texture_1d()
 {
 	glDeleteTextures(1, &_handle);
@@ -38,9 +43,9 @@ void gl_texture_1d::fill_miniature_mipmaps()
 	glGenerateMipmap(GL_TEXTURE_1D);
 }
 
-void gl_texture_1d::clear()
+void gl_texture_1d::clear_mipmap(int mipmap_index, int x_offset, int width, GLenum format, GLenum type, const void* data)
 {
-	//glClearTexImage()
+	glClearTexSubImage(_handle, mipmap_index, x_offset, 0, 0, width, 0, 0, format, type, data);
 }
 
 void gl_texture_1d::invalidate_mipmap(int mipmap_index)
@@ -51,6 +56,13 @@ void gl_texture_1d::invalidate_mipmap(int mipmap_index)
 void gl_texture_1d::invalidate_sub_mipmap(int mipmap_index, int x_offset, int width)
 {
 	glInvalidateTexSubImage(_handle, mipmap_index, x_offset, 0, 0, width, 0, 0);
+}
+
+void* gl_texture_1d::fetch_pixels(GLuint mipmap_index, GLenum format, GLenum type)
+{
+	void* pixels = nullptr;
+	glGetTexImage(GL_TEXTURE_1D, mipmap_index, format, type, pixels);
+	return pixels;
 }
 
 void gl_texture_1d::bind(unsigned int unit)

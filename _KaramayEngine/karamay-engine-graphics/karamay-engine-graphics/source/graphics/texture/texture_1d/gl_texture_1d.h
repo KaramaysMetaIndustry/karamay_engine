@@ -3,35 +3,33 @@
 
 class gl_texture_1d final : public gl_texture_base
 {
-
-public:
-	static std::shared_ptr<gl_texture_1d> construct()
-	{
-		return std::make_shared<gl_texture_1d>();
-	}
-
-	~gl_texture_1d();
-
 private:
 	/**
-	 * construct texture object in client
+	 * construct texture_1d
+	 * create texture 1d object at client, keep the handle of it
+	 * but now it do not have real memory at GPU
 	 */
 	gl_texture_1d();
 
 public:
+	static std::shared_ptr<gl_texture_1d> construct();
+
+	~gl_texture_1d();
+
+public:
 	/**
-	 * allocate memory for client texture object, creating mapping relationship
+	 * allocate memory at GPU, create mapping between client and GPU
 	 */
 	void allocate(GLenum internal_format, int base_mipmap_width, int mipmaps_num);
 
 	/**
-	 * fill the base mipmap
+	 * fill the base mipmap (GPU memory)
 	 */
 	void fill_base_mipmap(GLenum format, gl_texture_data_type type, const void* pixels);
 	void fill_base_sub_mipmap(GLenum format, gl_texture_data_type type, const void* pixels, int x_offset, int base_sub_mipmap_width);
 
 	/**
-	 * fill the rest all mipmaps auto
+	 * fill the rest all mipmap auto
 	 */
 	void fill_miniature_mipmaps();
 
@@ -42,20 +40,23 @@ public:
 	void fill_miniature_sub_mipmap(GLenum format, gl_texture_data_type type, const void* data, int mipmap_index, int x_offset, int width)
 	{}
 
-	void clear();
 
-	void download_mipmap(GLenum format, GLenum type, void* data, int mipmap_index) {
-		glGetTexImage(GL_TEXTURE_1D, mipmap_index, format, type, data);
-	}
+	/**
+	 * fills image with a constant value
+	 */
+	void clear_mipmap(int mipmap_index, int x_offset, int width, GLenum format, GLenum type, const void* data);
 
-	/// invalidate image
+	
 	void invalidate_mipmap(int mipmap_index);
 	void invalidate_sub_mipmap(int mipmap_index, int x_offset, int width);
 
-	void copy() {
-		//glCopyImageSubData(handle)
-	}
+	/**
+	 * read pixels from GPU to client memory
+	 */
+	void* fetch_pixels(GLuint mipmap_index, GLenum format, GLenum type);
+	void* fetch_base_mipmap_pixels(GLenum format, GLenum type) {}
 
+public:
 	void bind(unsigned int unit);
 
 	void unbind();
