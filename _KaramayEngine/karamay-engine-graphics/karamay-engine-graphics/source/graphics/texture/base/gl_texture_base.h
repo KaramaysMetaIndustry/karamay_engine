@@ -118,20 +118,26 @@ enum class gl_sized_internal_format : GLenum
 
 enum class gl_compressed_internal_format : GLenum
 {
+	// generic formats
 	compressed_red = GL_COMPRESSED_RED,
 	compressed_rg = GL_COMPRESSED_RG,
 	compressed_rgb = GL_COMPRESSED_RGB,
 	compressed_rgba = GL_COMPRESSED_RGBA,
 	compressed_srgb = GL_COMPRESSED_SRGB,
 	compressed_srgb_alpha = GL_COMPRESSED_SRGB_ALPHA,
-	compressed_red_rgtc1 = GL_COMPRESSED_RED_RGTC1,
-	compressed_signed_red_rgtc1 = GL_COMPRESSED_SIGNED_RED_RGTC1,
-	compressed_rg_rgtc2 = GL_COMPRESSED_RG_RGTC2,
-	compressed_signed_rg_rgtc2 = GL_COMPRESSED_SIGNED_RG_RGTC2,
-	compressed_rgba_bptc_unorm = GL_COMPRESSED_RGBA_BPTC_UNORM,
-	compressed_srgb_alpha_bptc_unorm = GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM,
-	compressed_rgb_bptc_signed_float = GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT,
-	compressed_rgb_bptc_unsigned_float = GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT
+
+	// specific formats
+	// RGTC 一种简单的压缩格式，存储单通道或者双通道纹理
+	// https://zhuanlan.zhihu.com/p/144389736
+	compressed_red_rgtc1 = GL_COMPRESSED_RED_RGTC1, // unsigned normalized 1-component only
+	compressed_signed_red_rgtc1 = GL_COMPRESSED_SIGNED_RED_RGTC1, // signed normalized 1-component only
+	compressed_rg_rgtc2 = GL_COMPRESSED_RG_RGTC2, // unsigned normalized 2-components
+	compressed_signed_rg_rgtc2 = GL_COMPRESSED_SIGNED_RG_RGTC2, // signed normalized 2-components
+
+	compressed_rgba_bptc_unorm = GL_COMPRESSED_RGBA_BPTC_UNORM, // unsigned normalized 4-components
+	compressed_srgb_alpha_bptc_unorm = GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM, // unsigned normalized 4-components in the sRGB color space
+	compressed_rgb_bptc_signed_float = GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT, // signed, floating-point 3-components
+	compressed_rgb_bptc_unsigned_float = GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT // unsigned, floating-point 3-components
 };
 
 class gl_texture_base : public gl_object
