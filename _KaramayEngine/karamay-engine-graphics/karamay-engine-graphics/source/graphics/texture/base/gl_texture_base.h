@@ -17,6 +17,12 @@ enum class gl_texture_type : GLenum
 };
 
 
+enum class gl_texture_internal_format : GLenum
+{
+
+};
+
+
 enum class gl_texture_data_type : GLenum
 {
 	UNSIGNED_BYTE = GL_UNSIGNED_BYTE,
@@ -53,14 +59,23 @@ enum class gl_base_internal_format : GLenum
 
 enum class gl_sized_internal_format : GLenum
 {
-	R8 = GL_R8,
-	R8_SNORM = GL_R8_SNORM,
-	R16 = GL_R16,
-	R16_SNORM = GL_R16_SNORM,
-	RG8 = GL_RG8,
-	RG8_SNORM = GL_RG8_SNORM,
+	//default unsigned normalized integer
+	//_SNORM
+	//F,I,UI
+	// 如果未指定分量大小的，opengl将会自动将数据进行截断，保证数值范围为[0,1]
+	// 1-component
+	R8 = GL_R8, //r-8bit-unsigned_normalized_integer [0, 2^8-1] maps [0.0, 1.0]
+	R8_SNORM = GL_R8_SNORM, //r-8bit signed normalized integer [-2^8, 2^8] maps [-1.0, 1.0]
+	R16 = GL_R16, //r-16bit unsigned normalized integer [0, 2^16-1] maps [0.0, 1.0]
+	R16_SNORM = GL_R16_SNORM, //r-16bit signed normalized integer [-2^16, 2^16] maps [-1.0, 1.0]
+
+	// 2-components
+	RG8 = GL_RG8, // rg-8bit
+	RG8_SNORM = GL_RG8_SNORM, // rg-8bit-
 	RG16 = GL_RG16,
 	RG16_SNORM = GL_RG16_SNORM,
+
+	// 3-components
 	R3_G3_B2 = GL_R3_G3_B2,
 	RGB4 = GL_RGB4,
 	RGB5 = GL_RGB5,
@@ -69,6 +84,8 @@ enum class gl_sized_internal_format : GLenum
 	RGB10 = GL_RGB10,
 	RGB12 = GL_RGB12,
 	RGB16_SNORM = GL_RGB16_SNORM,
+
+	// 4-components
 	RGBA2 = GL_RGBA2,
 	RGBA4 = GL_RGBA4,
 	RGB5_A1 = GL_RGB5_A1,
@@ -78,36 +95,47 @@ enum class gl_sized_internal_format : GLenum
 	RGB10_A2UI = GL_RGB10_A2UI,
 	RGBA12 = GL_RGBA12,
 	RGBA16 = GL_RGBA16,
+
+	// sRGB
 	SRGB8 = GL_SRGB8,
 	SRGB8_ALPHA8 = GL_SRGB8_ALPHA8,
+
+	//
 	R16F = GL_R16F,
 	RG16F = GL_RG16F,
 	RGB16F = GL_RGB16F,
 	RGBA16F = GL_RGBA16F,
+
 	R32F = GL_R32F,
 	RG32F = GL_RG32F,
 	RGB32F = GL_RGB32F,
 	RGBA32F = GL_RGBA32F,
+
 	R11F_G11F_B10F = GL_R11F_G11F_B10F,
+
 	RGB9_E5 = GL_RGB9_E5,
+
 	R8I = GL_R8I,
 	R8UI = GL_R8UI,
 	R16I = GL_R16I,
 	R16UI = GL_R16UI,
 	R32I = GL_R32I,
 	R32UI = GL_R32UI,
+
 	RG8I = GL_RG8I,
 	RG8UI = GL_RG8UI,
 	RG16I = GL_RG16I,
 	RG16UI = GL_RG16UI,
 	RG32I = GL_RG32I,
 	RG32UI = GL_RG32UI,
+
 	RGB8I = GL_RGB8I,
 	RGB8UI = GL_RGB8UI,
 	RGB16I = GL_RGB16I,
 	RGB16UI = GL_RGB16UI,
 	RGB32I = GL_RGB32I,
 	RGB32UI = GL_RGB32UI,
+
 	RGBA8I = GL_RGBA8I,
 	RGBA8UI = GL_RGBA8UI,
 	RGBA16I = GL_RGBA16I,
@@ -119,25 +147,26 @@ enum class gl_sized_internal_format : GLenum
 enum class gl_compressed_internal_format : GLenum
 {
 	// generic formats
-	compressed_red = GL_COMPRESSED_RED,
-	compressed_rg = GL_COMPRESSED_RG,
-	compressed_rgb = GL_COMPRESSED_RGB,
-	compressed_rgba = GL_COMPRESSED_RGBA,
-	compressed_srgb = GL_COMPRESSED_SRGB,
-	compressed_srgb_alpha = GL_COMPRESSED_SRGB_ALPHA,
+	COMPRESSED_RED = GL_COMPRESSED_RED,
+	COMPRESSED_RG = GL_COMPRESSED_RG,
+	COMPRESSED_RGB = GL_COMPRESSED_RGB,
+	COMPRESSED_RGBA = GL_COMPRESSED_RGBA,
+	COMPRESSED_SRGB = GL_COMPRESSED_SRGB,
+	COMPRESSED_SRGB_ALPHA = GL_COMPRESSED_SRGB_ALPHA,
 
 	// specific formats
 	// RGTC 一种简单的压缩格式，存储单通道或者双通道纹理
 	// https://zhuanlan.zhihu.com/p/144389736
-	compressed_red_rgtc1 = GL_COMPRESSED_RED_RGTC1, // unsigned normalized 1-component only
-	compressed_signed_red_rgtc1 = GL_COMPRESSED_SIGNED_RED_RGTC1, // signed normalized 1-component only
-	compressed_rg_rgtc2 = GL_COMPRESSED_RG_RGTC2, // unsigned normalized 2-components
-	compressed_signed_rg_rgtc2 = GL_COMPRESSED_SIGNED_RG_RGTC2, // signed normalized 2-components
+	COMPRESSED_RED_RGTC1 = GL_COMPRESSED_RED_RGTC1, // UNSIGNED NORMALIZED 1-COMPONENT ONLY
+	COMPRESSED_SIGNED_RED_RGTC1 = GL_COMPRESSED_SIGNED_RED_RGTC1, // SIGNED NORMALIZED 1-COMPONENT ONLY
+	COMPRESSED_RG_RGTC2 = GL_COMPRESSED_RG_RGTC2, // UNSIGNED NORMALIZED 2-COMPONENTS
+	COMPRESSED_SIGNED_RG_RGTC2 = GL_COMPRESSED_SIGNED_RG_RGTC2, // signed normalized 2-components
 
-	compressed_rgba_bptc_unorm = GL_COMPRESSED_RGBA_BPTC_UNORM, // unsigned normalized 4-components
-	compressed_srgb_alpha_bptc_unorm = GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM, // unsigned normalized 4-components in the sRGB color space
-	compressed_rgb_bptc_signed_float = GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT, // signed, floating-point 3-components
-	compressed_rgb_bptc_unsigned_float = GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT // unsigned, floating-point 3-components
+	// BPTC 3/4通道纹理
+	COMPRESSED_RGBA_BPTC_UNORM = GL_COMPRESSED_RGBA_BPTC_UNORM, // UNSIGNED NORMALIZED 4-COMPONENTS
+	COMPRESSED_SRGB_ALPHA_BPTC_UNORM = GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM, // UNSIGNED NORMALIZED 4-COMPONENTS IN THE SRGB COLOR SPACE
+	COMPRESSED_RGB_BPTC_SIGNED_FLOAT = GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT, // SIGNED, FLOATING-POINT 3-COMPONENTS
+	COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT = GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT // unsigned, floating-point 3-components
 };
 
 class gl_texture_base : public gl_object
