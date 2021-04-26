@@ -11,7 +11,6 @@ private:
 	 */
 	gl_texture_1d();
 
-
 private:
 	/**
 	 * specify the texture's storage format int the GPU memory
@@ -41,15 +40,22 @@ public:
 
 public:
 
+	/**
+	 * fill base mipmap
+	 */
 	void fill_base_mipmap(gl_texture_pixels_package pixels_package)
 	{
 		glTexSubImage1D(GL_TEXTURE_1D, 0, 0, _base_mipmap_width, static_cast<GLenum>(pixels_package.format), static_cast<GLenum>(pixels_package.type), pixels_package.pixels);
 	}
 
-
+	/**
+	 * fill base sub mipmap
+	 */
 	void fill_base_sub_mipmap(gl_texture_pixels_package pixels_package, int x_offset) {}
 
-
+	/**
+	 * auto generate rest miniature mipmaps
+	 */
 	void fill_miniature_mipmaps_automatically() {
 		bind(1);
 		glGenerateMipmap(GL_TEXTURE_1D);
@@ -71,8 +77,8 @@ public:
 
 public:
 
-	void fill_base_mipmap(GLenum format, gl_texture_data_type type, const void* pixels);
-	void fill_base_sub_mipmap(GLenum format, gl_texture_data_type type, const void* pixels, int x_offset, int base_sub_mipmap_width);
+	void fill_base_mipmap(gl_texture_pixels_package pixels_package);
+	void fill_base_sub_mipmap(gl_texture_pixels_package pixels_package, int x_offset);
 
 	/**
 	 * fill the rest mipmap manually

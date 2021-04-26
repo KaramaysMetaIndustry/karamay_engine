@@ -23,11 +23,6 @@ void gl_texture_1d::allocate(gl_texture_internal_format internal_format, unsigne
 	_mipmaps_num = mipmaps_num;
 }
 
-void gl_texture_1d::fill_base_mipmap(GLenum format, gl_texture_data_type type, const void* pixels)
-{
-	
-}
-
 void gl_texture_1d::fill_base_sub_mipmap(GLenum format, gl_texture_data_type type, const void* pixels, int x_offset, int sub_mipmap_width)
 {
 	glTexSubImage1D(GL_TEXTURE_1D, 0, x_offset, sub_mipmap_width, format, static_cast<GLenum>(type), pixels);
