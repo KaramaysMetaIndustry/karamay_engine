@@ -3,62 +3,85 @@
 
 enum class gl_texture_type : GLenum
 {
-	texture_1d = GL_TEXTURE_1D,
-	texture_1d_array = GL_TEXTURE_1D_ARRAY,
-	texture_2d = GL_TEXTURE_2D,
-	texture_2d_array = GL_TEXTURE_2D_ARRAY,
-	texture_2d_multisample = GL_TEXTURE_2D_MULTISAMPLE,
-	texture_2d_multisample_array = GL_TEXTURE_2D_MULTISAMPLE_ARRAY,
-	texture_rectangle = GL_TEXTURE_RECTANGLE,
-	texture_3d = GL_TEXTURE_3D,
-	texture_cube_map = GL_TEXTURE_CUBE_MAP,
-	texture_cube_map_array = GL_TEXTURE_CUBE_MAP_ARRAY,
-	texture_buffer = GL_TEXTURE_BUFFER
+	TEXTURE_1D = GL_TEXTURE_1D,
+	TEXTURE_1D_ARRAY = GL_TEXTURE_1D_ARRAY,
+
+	TEXTURE_2D = GL_TEXTURE_2D,
+	TEXTURE_2D_ARRAY = GL_TEXTURE_2D_ARRAY,
+
+	TEXTURE_2D_MULTISAMPLE = GL_TEXTURE_2D_MULTISAMPLE,
+	TEXTURE_2D_MULTISAMPLE_ARRAY = GL_TEXTURE_2D_MULTISAMPLE_ARRAY,
+
+	TEXTURE_RECTANGLE = GL_TEXTURE_RECTANGLE,
+
+	TEXTURE_3D = GL_TEXTURE_3D,
+
+	TEXTURE_CUBE_MAP = GL_TEXTURE_CUBE_MAP,
+	TEXTURE_CUBE_MAP_ARRAY = GL_TEXTURE_CUBE_MAP_ARRAY,
+
+	TEXTURE_BUFFER = GL_TEXTURE_BUFFER
 };
 
-
-enum class gl_texture_internal_format : GLenum
+enum class gl_texture_pixels_format : GLenum
 {
-
+	RED = GL_RED, 
+	RG = GL_RG, 
+	RGB = GL_RGB, 
+	BGR = GL_BGR, 
+	RGBA = GL_RGBA, 
+	BGRA = GL_BGRA, 
+	RED_INTEGER = GL_RED_INTEGER, 
+	RG_INTEGER = GL_RG_INTEGER, 
+	RGB_INTEGER = GL_RGB_INTEGER, 
+	BGR_INTEGER = GL_BGR_INTEGER, 
+	RGBA_INTEGER = GL_RGBA_INTEGER, 
+	BGRA_INTEGER = GL_BGRA_INTEGER, 
+	STENCIL_INDEX = GL_STENCIL_INDEX, 
+	DEPTH_COMPONENT = GL_DEPTH_COMPONENT, 
+	DEPTH_STENCIL = GL_DEPTH_STENCIL
 };
 
-
-enum class gl_texture_data_type : GLenum
+enum class gl_texture_pixels_type : GLenum
 {
 	UNSIGNED_BYTE = GL_UNSIGNED_BYTE,
 	BYTE = GL_BYTE, 
+	
 	UNSIGNED_SHORT = GL_UNSIGNED_SHORT, 
 	SHORT = GL_SHORT, 
+	
 	UNSIGNED_INT = GL_UNSIGNED_INT, 
 	INT = GL_INT, 
+	
 	HALF_FLOAT = GL_HALF_FLOAT, 
 	FLOAT = GL_FLOAT, 
+
 	UNSIGNED_BYTE_3_3_2 = GL_UNSIGNED_BYTE_3_3_2, 
 	UNSIGNED_BYTE_2_3_3_REV = GL_UNSIGNED_BYTE_2_3_3_REV,
+	
 	UNSIGNED_SHORT_5_6_5 = GL_UNSIGNED_SHORT_5_6_5,
 	UNSIGNED_SHORT_5_6_5_REV = GL_UNSIGNED_SHORT_5_6_5_REV,
 	UNSIGNED_SHORT_4_4_4_4 = GL_UNSIGNED_SHORT_4_4_4_4,
 	UNSIGNED_SHORT_4_4_4_4_REV = GL_UNSIGNED_SHORT_4_4_4_4_REV,
 	UNSIGNED_SHORT_5_5_5_1 = GL_UNSIGNED_SHORT_5_5_5_1,
 	UNSIGNED_SHORT_1_5_5_5_REV = GL_UNSIGNED_SHORT_1_5_5_5_REV,
+	
 	UNSIGNED_INT_8_8_8_8 = GL_UNSIGNED_INT_8_8_8_8,
 	UNSIGNED_INT_8_8_8_8_REV = GL_UNSIGNED_INT_8_8_8_8_REV,
 	UNSIGNED_INT_10_10_10_2 = GL_UNSIGNED_INT_10_10_10_2,
 	UNSIGNED_INT_2_10_10_10_REV = GL_UNSIGNED_INT_2_10_10_10_REV
 };
 
-enum class gl_base_internal_format : GLenum
+enum class gl_texture_internal_format : GLenum
 {
+	// base format
 	DEPTH_COMPONENT = GL_DEPTH_COMPONENT,
 	DEPTH_STENCI = GL_DEPTH_STENCIL,
 	RED = GL_RED,
 	RG = GL_RG,
 	RGB = GL_RGB,
-	RGBA = GL_RGBA
-};
+	RGBA = GL_RGBA,
 
-enum class gl_sized_internal_format : GLenum
-{
+	// sized format
 	//default unsigned normalized integer
 	//_SNORM
 	//F,I,UI
@@ -141,11 +164,9 @@ enum class gl_sized_internal_format : GLenum
 	RGBA16I = GL_RGBA16I,
 	RGBA16UI = GL_RGBA16UI,
 	RGBA32I = GL_RGBA32I,
-	RGBA32UI = GL_RGBA32UI
-};
+	RGBA32UI = GL_RGBA32UI,
 
-enum class gl_compressed_internal_format : GLenum
-{
+	// compressed format
 	// generic formats
 	COMPRESSED_RED = GL_COMPRESSED_RED,
 	COMPRESSED_RG = GL_COMPRESSED_RG,
@@ -168,6 +189,16 @@ enum class gl_compressed_internal_format : GLenum
 	COMPRESSED_RGB_BPTC_SIGNED_FLOAT = GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT, // SIGNED, FLOATING-POINT 3-COMPONENTS
 	COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT = GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT // unsigned, floating-point 3-components
 };
+
+struct gl_texture_pixels_package
+{
+	const void* pixels;
+	gl_texture_pixels_format format;
+	gl_texture_pixels_type type;
+	unsigned int width;
+	unsigned int max_mipmaps_num_supported;
+};
+
 
 class gl_texture_base : public gl_object
 {

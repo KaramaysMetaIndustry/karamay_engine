@@ -11,6 +11,23 @@ private:
 	 */
 	gl_texture_1d();
 
+
+private:
+	/**
+	 * specify the texture's storage format int the GPU memory
+	 */
+	gl_texture_internal_format _internal_format;
+
+	/**
+	 * specify the max num of mipmaps this texture can have
+	 */
+	unsigned int _mipmaps_num;
+
+	/**
+	 * specify the base mipmap's width
+	 */
+	unsigned int _base_mipmap_width;
+
 public:
 	static std::shared_ptr<gl_texture_1d> construct();
 
@@ -20,18 +37,42 @@ public:
 	/**
 	 * allocate memory at GPU, create mapping between client and GPU
 	 */
-	void allocate(GLenum internal_format, int base_mipmap_width, int mipmaps_num);
+	void allocate(gl_texture_internal_format internal_format, unsigned int base_mipmap_width, unsigned int mipmaps_num);
 
-	/**
-	 * fill the base mipmap (GPU memory)
-	 */
+public:
+
+	void fill_base_mipmap(gl_texture_pixels_package pixels_package)
+	{
+		glTexSubImage1D(GL_TEXTURE_1D, 0, 0, _base_mipmap_width, static_cast<GLenum>(pixels_package.format), static_cast<GLenum>(pixels_package.type), pixels_package.pixels);
+	}
+
+
+	void fill_base_sub_mipmap(gl_texture_pixels_package pixels_package, int x_offset) {}
+
+
+	void fill_miniature_mipmaps_automatically() {
+		bind(1);
+		glGenerateMipmap(GL_TEXTURE_1D);
+		unbind();
+	}
+
+public:
+
+	void fill_mipmap(const gl_texture_pixels_package& pixels_package, unsigned int mipmap_index)
+	{
+		fill_sub_mipmap(pixels_package, mipmap_index, 0);
+	}
+
+	void fill_sub_mipmap(const gl_texture_pixels_package& pixels_package, unsigned int mipmap_index, int x_offset) 
+	{
+		glTexSubImage1D(GL_TEXTURE_1D, mipmap_index, x_offset, pixels_package.width, static_cast<GLenum>(pixels_package.format), static_cast<GLenum>(pixels_package.type), pixels_package.pixels);
+	}
+
+
+public:
+
 	void fill_base_mipmap(GLenum format, gl_texture_data_type type, const void* pixels);
 	void fill_base_sub_mipmap(GLenum format, gl_texture_data_type type, const void* pixels, int x_offset, int base_sub_mipmap_width);
-
-	/**
-	 * fill the rest all mipmap auto
-	 */
-	void fill_miniature_mipmaps();
 
 	/**
 	 * fill the rest mipmap manually
@@ -61,15 +102,8 @@ public:
 
 	void unbind();
 
-private:
-	unsigned int _internal_format; // internal_format 指定了存储结构，format && type 指定了传入输入的存储结构，当后者与前者不符合时，尝试将后者转化为前者
-
-	int _mipmaps_num;
-
-	int _base_mipmap_width;
-
 public:
-	unsigned int get_internal_format() const {return _internal_format;};
+	gl_texture_internal_format get_internal_format() const {return _internal_format;};
 
 };
 
