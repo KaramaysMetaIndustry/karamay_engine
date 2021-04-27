@@ -3,37 +3,69 @@
 
 enum class gl_buffer_type : GLenum
 {
-	array_buffer = GL_ARRAY_BUFFER,
-	element_array_buffer = GL_ELEMENT_ARRAY_BUFFER,
+	ARRAY_BUFFER = GL_ARRAY_BUFFER,
+	ELEMENT_ARRAY_BUFFER = GL_ELEMENT_ARRAY_BUFFER,
 
-	atomic_counter_buffer = GL_ATOMIC_COUNTER_BUFFER,
+	ATOMIC_COUNTER_BUFFER = GL_ATOMIC_COUNTER_BUFFER,
 	
-	copy_read_buffer = GL_COPY_READ_BUFFER,
-	copy_write_buffer = GL_COPY_WRITE_BUFFER,
+	COPY_READ_BUFFER = GL_COPY_READ_BUFFER,
+	COPY_WRITE_BUFFER = GL_COPY_WRITE_BUFFER,
 	
-	dispatch_indirect_buffer = GL_DISPATCH_INDIRECT_BUFFER,
-	draw_indirect_buffer = GL_DRAW_INDIRECT_BUFFER,
+	DISPATCH_INDIRECT_BUFFER = GL_DISPATCH_INDIRECT_BUFFER,
+	DRAW_INDIRECT_BUFFER = GL_DRAW_INDIRECT_BUFFER,
 	
-	pixel_pack_buffer = GL_PIXEL_PACK_BUFFER,
-	pixel_unpack_buffer = GL_PIXEL_UNPACK_BUFFER,
+	PIXEL_PACK_BUFFER = GL_PIXEL_PACK_BUFFER,
+	PIXEL_UNPACK_BUFFER = GL_PIXEL_UNPACK_BUFFER,
 	
-	query_buffer = GL_QUERY_BUFFER,
+	QUERY_BUFFER = GL_QUERY_BUFFER,
 	
-	shader_storage_buffer = GL_SHADER_STORAGE_BUFFER,
+	SHADER_STORAGE_BUFFER = GL_SHADER_STORAGE_BUFFER,
 	
-	texture_buffer = GL_TEXTURE_BUFFER,
+	TEXTURE_BUFFER = GL_TEXTURE_BUFFER,
 	
-	transform_feedback_buffer = GL_TRANSFORM_FEEDBACK_BUFFER,
+	TRANSFORM_FEEDBACK_BUFFER = GL_TRANSFORM_FEEDBACK_BUFFER,
 	
-	uniform_buffer = GL_UNIFORM_BUFFER
+	UNIFORM_BUFFER = GL_UNIFORM_BUFFER
+};
+
+
+enum class gl_buffer_flag : GLenum
+{
+	MAP_READ_BIT = GL_MAP_READ_BIT,
+	MAP_WRITE_BIT = GL_MAP_WRITE_BIT,
+	MAP_PERSISTENT_BIT = GL_MAP_PERSISTENT_BIT,
+	MAP_COHERENT_BIT = GL_MAP_COHERENT_BIT,
+	CLIENT_STORAGE_BIT = GL_CLIENT_STORAGE_BIT
+
 };
 
 class gl_buffer final : public gl_object
 {
 public:
-	void allocate(gl_buffer_type type, GLsizeiptr size, const void* data, GLbitfield flags);
+	static std::shared_ptr<gl_buffer> construct()
+	{
+		return std::make_shared<gl_buffer>();
+	}
 
-	void fill(GLintptr offset, GLsizeiptr size, const void* data); 
+	~gl_buffer();
+
+private:
+	gl_buffer();
+
+	gl_buffer_type _buffer_type;
+
+public:
+	void allocate(gl_buffer_type buffer_type, GLsizeiptr size, const void* data, GLbitfield flags)
+	{
+		if (size > GL_MAX_UNIFORM_BLOCK_SIZE) return;
+		glNamedBufferStorage(_handle, size, data, flags);
+		_buffer_type = buffer_type;
+	}
+
+	void fill(GLintptr offset, GLsizeiptr size, const void* data)
+	{
+		glNamedBufferSubData(_handle, offset, size, data);
+	}
 
 	void clear(GLenum internal_format, GLenum format, GLenum type, const void* data);
 
@@ -55,13 +87,6 @@ public:
 
 	void unbind();
 
-private:
-	GLenum _type;
-
-public:
-	gl_buffer();
-
-	virtual ~gl_buffer();
 };
 
 
@@ -158,18 +183,4 @@ enum class GLDataType : GLenum
 	UNSIGNED_INT_8_8_8_8_REV = GL_UNSIGNED_INT_8_8_8_8_REV,
 	UNSIGNED_INT_10_10_10_2 = GL_UNSIGNED_INT_10_10_10_2,
 	UNSIGNED_INT_2_10_10_10_REV = GL_UNSIGNED_INT_2_10_10_10_REV
-};
-
-enum class GLMapAccess : GLenum
-{
-
-};
-
-enum class GLFlag : GLenum
-{
-	MAP_READ = GL_MAP_READ_BIT,
-	MAP_WRITE = GL_MAP_WRITE_BIT,
-	MAP_PERSISTENT = GL_MAP_PERSISTENT_BIT,
-	MAP_COHERENT = GL_MAP_COHERENT_BIT,
-	CLIENT_STORAGE = GL_CLIENT_STORAGE_BIT
 };

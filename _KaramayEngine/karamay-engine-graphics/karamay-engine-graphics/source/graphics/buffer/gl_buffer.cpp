@@ -1,17 +1,5 @@
 #include "gl_buffer.h"
-
-void gl_buffer::allocate(gl_buffer_type type, GLsizeiptr size, const void* data, GLbitfield flags)
-{
-	if (size > GL_MAX_UNIFORM_BLOCK_SIZE) return;
-
-	glNamedBufferStorage(_handle, size, data, flags);
-	_type = static_cast<GLenum>(type);
-}
-
-void gl_buffer::fill(GLintptr offset, GLsizeiptr size, const void* data)
-{
-	glNamedBufferSubData(_handle, offset, size, data);
-}
+	
 
 void gl_buffer::clear(GLenum internal_format, GLenum format, GLenum type, const void* data)
 {
@@ -50,12 +38,12 @@ void gl_buffer::unmap()
 
 void gl_buffer::bind()
 {
-	glBindBuffer(_type, _handle);
+	glBindBuffer(static_cast<GLenum>(_buffer_type), _handle);
 }
 
 void gl_buffer::unbind()
 {
-	glBindBuffer(_type, 0);
+	glBindBuffer(static_cast<GLenum>(_buffer_type), 0);
 }
 
 gl_buffer::gl_buffer()

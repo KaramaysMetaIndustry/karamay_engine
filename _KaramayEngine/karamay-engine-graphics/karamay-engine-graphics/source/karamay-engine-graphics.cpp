@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "graphics/texture/gl_texture.h"
+#include "graphics/buffer/gl_buffer.h"
 
 int main()
 {
@@ -44,5 +45,16 @@ int main()
 		texture_1d->clear_mipmap(0, 0, 100, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 		
 	}
+
+
+
+
+
+	auto buffer = gl_buffer::construct();
+	if (buffer) {
+		buffer->allocate(gl_buffer_type::ARRAY_BUFFER, 100, nullptr, 0);
+		
+	}
+	
 
 }
