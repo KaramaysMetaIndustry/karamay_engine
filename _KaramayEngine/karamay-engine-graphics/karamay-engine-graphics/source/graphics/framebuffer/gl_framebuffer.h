@@ -6,6 +6,18 @@
 class gl_framebuffer final : public gl_object
 {
 public:
+	static std::shared_ptr<gl_framebuffer> construct()
+	{
+		return std::make_shared<gl_framebuffer>();
+	}
+
+	~gl_framebuffer();
+
+private:
+	gl_framebuffer();
+
+
+public:
 	void bind();
 
 	void unbind();
@@ -58,8 +70,6 @@ public:
 		glDrawBuffers(3, color_attachment_indices.data());
 	}
 
-public:
-	gl_framebuffer();
-	virtual ~gl_framebuffer();
+
 };
 

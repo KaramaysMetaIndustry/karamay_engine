@@ -1,15 +1,29 @@
 #pragma once
 #include "graphics/glo/gl_object.h"
-#include "gl_program.h"
+
+class gl_program;
 
 class gl_program_pipeline final : public gl_object
 {
 public:
+	static std::shared_ptr<class gl_program> construct()
+	{
+		return std::make_shared<class gl_program>();
+	}
+
+	~gl_program_pipeline();
+
+private:
+	gl_program_pipeline();
+
+
+public:
+
 	void attach_program(GLbitfield stages, std::shared_ptr<gl_program> program);
 
 public:
 
-	// discard划定的区域外的片段 剪裁测试
+	// discard 划定的区域外的片段 剪裁测试
 	static void enable_scissor_test();
 	static void disable_scissor_test();
 	// 设置所有窗口的剪裁盒，包括多窗口模式下
@@ -33,7 +47,7 @@ public:
 	static void disable_depth_test();
 	static void set_depth()
 	{
-		glDepthFunc()
+		//glDepthFunc()
 	}
 
 	static void enable_occlusion_query()
@@ -48,10 +62,5 @@ public:
 	void bind();
 
 	void unbind();
-
-public:
-	gl_program_pipeline();
-
-	virtual ~gl_program_pipeline();
 };
 

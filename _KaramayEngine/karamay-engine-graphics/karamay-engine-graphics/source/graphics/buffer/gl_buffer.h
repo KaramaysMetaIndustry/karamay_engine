@@ -39,6 +39,40 @@ enum class gl_buffer_flag : GLenum
 
 };
 
+class gl_buffer_data_pack
+{
+public:
+	static std::shared_ptr<gl_buffer_data_pack> construct() { return std::make_shared<gl_buffer_data_pack>(); }
+
+	~gl_buffer_data_pack() 
+	{
+		delete data;
+	}
+
+private:
+	gl_buffer_data_pack() {}
+
+
+public:
+
+	const void* data;
+	unsigned int size;
+};
+
+template<typename T>
+GLbitfield caculate()
+{
+	return 
+}
+
+
+template<typename T, typename... Ts>
+GLbitfield caculate(T flag, Ts... flags)
+{
+	return caculate()
+}
+
+
 class gl_buffer final : public gl_object
 {
 public:
@@ -54,18 +88,25 @@ private:
 
 	gl_buffer_type _buffer_type;
 
+	unsigned int _buffer_size;
+
 public:
-	void allocate(gl_buffer_type buffer_type, GLsizeiptr size, const void* data, GLbitfield flags)
-	{
-		if (size > GL_MAX_UNIFORM_BLOCK_SIZE) return;
-		glNamedBufferStorage(_handle, size, data, flags);
+	void allocate(gl_buffer_type buffer_type, unsigned int buffer_size, std::vector<gl_buffer_flag> flags){
+		if (buffer_size > GL_MAX_UNIFORM_BLOCK_SIZE) return;
+
+		glNamedBufferStorage(_handle, static_cast<GLsizeiptr>(buffer_size), nullptr, static_cast<GLbitfield>(flags));
+		
+		_buffer_size = buffer_size;
 		_buffer_type = buffer_type;
 	}
 
-	void fill(GLintptr offset, GLsizeiptr size, const void* data)
-	{
-		glNamedBufferSubData(_handle, offset, size, data);
+	void fill(std::shared_ptr<gl_buffer_data_pack> data_pack, unsigned int offset = 0) {
+		if (data_pack.get() && (offset + data_pack->size > _buffer_size)) {
+			throw std::exception("do not have enough memory");
+		}
+		glNamedBufferSubData(_handle, static_cast<GLintptr>(offset), static_cast<GLsizeiptr>(data_pack->size), data_pack->data);
 	}
+
 
 	void clear(GLenum internal_format, GLenum format, GLenum type, const void* data);
 
@@ -86,6 +127,14 @@ public:
 	void bind();
 
 	void unbind();
+
+private:
+	int get_buffer_size() const
+	{
+		GLint value;
+		glGetBufferParameteriv(static_cast<GLenum>(_buffer_type), GL_BUFFER_SIZE, &value);
+		return value;
+	}
 
 };
 

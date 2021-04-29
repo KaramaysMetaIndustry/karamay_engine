@@ -1,5 +1,5 @@
 #pragma once
-#include "graphics/glo/glo.h"
+#include "graphics/glo/gl_object.h"
 
 enum class e_sampler_parameter : GLenum
 {
@@ -21,10 +21,22 @@ enum class e_sampler_parameter : GLenum
 	texture_compare_func = GL_TEXTURE_COMPARE_FUNC
 };
 
-class gl_sampler final : public glo
+class gl_sampler final : public gl_object
 {
 public:
 
+	static std::shared_ptr<gl_sampler> construct()
+	{
+		return std::make_shared<gl_sampler>();
+	}
+
+	virtual ~gl_sampler();
+
+private:
+	gl_sampler() {}
+
+
+public:
 	void bind(unsigned int unit);
 
 	void unbind();
@@ -34,9 +46,6 @@ public:
 		glSamplerParameterf(_handle, static_cast<GLenum>(e_sampler_parameter::texture_lod_bias), bias);
 
 	}
-
-public:
-	gl_sampler();
-	virtual ~gl_sampler();
+	
 };
 

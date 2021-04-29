@@ -207,8 +207,8 @@
     <ClCompile Include="source\graphics\framebuffer\gl_framebuffer_default.cpp" />
     <ClCompile Include="source\graphics\framebuffer\gl_framebuffer_read.cpp" />
     <ClCompile Include="source\graphics\glo\gl_object.cpp" />
-    <ClCompile Include="source\graphics\pipeline\gl_program.cpp" />
-    <ClCompile Include="source\graphics\pipeline\gl_program_pipeline.cpp" />
+    <ClCompile Include="source\graphics\program\gl_program.cpp" />
+    <ClCompile Include="source\graphics\program_pipeline\gl_program_pipeline.cpp" />
     <ClCompile Include="source\graphics\renderbuffer\gl_multisample_renderbuffer.cpp" />
     <ClCompile Include="source\graphics\renderbuffer\gl_renderbuffer.cpp" />
     <ClCompile Include="source\graphics\renderpass\gl_renderpass.cpp" />
@@ -227,6 +227,7 @@
     <ClCompile Include="source\graphics\texture\texture_buffer\gl_texture_buffer.cpp" />
     <ClCompile Include="source\graphics\texture\texture_cube\gl_texture_cube.cpp" />
     <ClCompile Include="source\graphics\texture\texture_cube\gl_texture_cube_array.cpp" />
+    <ClCompile Include="source\graphics\transform_feedback\gl_transform_feedback.cpp" />
     <ClCompile Include="source\karamay-engine-graphics.cpp" />
     <ClCompile Include="source\BufferPool\GLBufferPool.cpp" />
     <ClCompile Include="source\Buffer\GLBuffer.cpp" />
@@ -335,8 +336,8 @@
     <ClInclude Include="source\graphics\framebuffer\gl_framebuffer_default.h" />
     <ClInclude Include="source\graphics\framebuffer\gl_framebuffer_read.h" />
     <ClInclude Include="source\graphics\glo\gl_object.h" />
-    <ClInclude Include="source\graphics\pipeline\gl_program.h" />
-    <ClInclude Include="source\graphics\pipeline\gl_program_pipeline.h" />
+    <ClInclude Include="source\graphics\program\gl_program.h" />
+    <ClInclude Include="source\graphics\program_pipeline\gl_program_pipeline.h" />
     <ClInclude Include="source\graphics\renderbuffer\gl_multisample_renderbuffer.h" />
     <ClInclude Include="source\graphics\renderbuffer\gl_renderbuffer.h" />
     <ClInclude Include="source\graphics\renderpass\gl_renderpass.h" />
@@ -356,6 +357,7 @@
     <ClInclude Include="source\graphics\texture\texture_buffer\gl_texture_buffer.h" />
     <ClInclude Include="source\graphics\texture\texture_cube\gl_texture_cube.h" />
     <ClInclude Include="source\graphics\texture\texture_cube\gl_texture_cube_array.h" />
+    <ClInclude Include="source\graphics\transform_feedback\gl_transform_feedback.h" />
     <ClInclude Include="source\OpenGL\Camera\Camera_OpenGL.h" />
     <ClInclude Include="source\OpenGL\Implement_OpenGL.h" />
     <ClInclude Include="source\OpenGL\PipelineRuntimeData\Light\DirectionalLight_OpenGL.h" />

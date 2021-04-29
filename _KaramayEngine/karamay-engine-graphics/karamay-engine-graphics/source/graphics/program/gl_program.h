@@ -3,14 +3,39 @@
 #include "graphics/shader/gl_shader.h"
 #include "graphics/buffer/gl_uniform_buffer.h"
 
+enum class gl_buffer_mode
+{
+	INTERLEAVED = GL_INTERLEAVED_ATTRIBS,
+	SEPARATE_ATTRIBS = GL_SEPARATE_ATTRIBS
+};
+
+
 class gl_program final : public gl_object
 {
+public:
+	static std::shared_ptr<gl_program> construct()
+	{
+		return std::make_shared<gl_program>();
+	}
+
+	~gl_program();
+
+private:
+	gl_program();
+
+	std::vector<GLuint> shader_handles;
+
 public:
 	void attach_shader(const std::shared_ptr<gl_shader> shader);
 
 	void link(bool is_separable);
 
 	void detach_all_shaders();
+
+	void set_transform_feedback_varyings()
+	{
+		glTransformFeedbackVaryings(_handle, 10, nullptr, static_cast<GLenum>(gl_buffer_mode::INTERLEAVED));
+	}
 
 public:
 	void enable();
@@ -46,12 +71,6 @@ public:
 		glUniform1f(glGetAttribLocation(_handle, name), value);
 	}
 
-private:
-	std::vector<GLuint> shader_handles;
 
-public:
-	gl_program();
-	
-	virtual ~gl_program();
 };
 

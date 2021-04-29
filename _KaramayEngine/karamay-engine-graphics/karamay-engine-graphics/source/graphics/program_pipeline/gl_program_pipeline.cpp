@@ -1,4 +1,5 @@
 #include "gl_program_pipeline.h"
+#include "graphics/program/gl_program.h"
 
 void gl_program_pipeline::attach_program(GLbitfield stages, std::shared_ptr<gl_program> program)
 {

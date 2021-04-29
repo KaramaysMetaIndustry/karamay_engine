@@ -52,9 +52,19 @@ int main()
 
 	auto buffer = gl_buffer::construct();
 	if (buffer) {
-		buffer->allocate(gl_buffer_type::ARRAY_BUFFER, 100, nullptr, 0);
+		auto data_pack = gl_buffer_data_pack::construct();
+		
+		
+		buffer->allocate(gl_buffer_type::UNIFORM_BUFFER, 100, {});
+		buffer->fill(std::make_shared<gl_buffer_data_pack>());
+	
+		buffer->bind();
+		buffer->unbind();
 		
 	}
+
 	
+
+
 
 }

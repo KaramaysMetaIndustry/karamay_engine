@@ -13,11 +13,6 @@ void gl_shader::compile()
 	glCompileShader(_handle);
 }
 
-gl_shader::gl_shader()
-{
-	
-}
-
 gl_shader::~gl_shader()
 {
 	glDeleteShader(_handle);
