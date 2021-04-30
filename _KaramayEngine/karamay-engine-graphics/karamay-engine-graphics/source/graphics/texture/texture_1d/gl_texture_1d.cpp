@@ -5,11 +5,6 @@ gl_texture_1d::gl_texture_1d()
 	glCreateTextures(GL_TEXTURE_1D, 1, &_handle);
 }
 
-std::shared_ptr<gl_texture_1d> gl_texture_1d::construct()
-{
-	return std::make_shared<gl_texture_1d>();
-}
-
 gl_texture_1d::~gl_texture_1d()
 {
 	glDeleteTextures(1, &_handle);

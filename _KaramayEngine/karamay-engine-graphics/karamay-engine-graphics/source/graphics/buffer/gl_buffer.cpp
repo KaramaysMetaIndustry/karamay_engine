@@ -51,6 +51,24 @@ gl_buffer::gl_buffer()
 	glCreateBuffers(1, &_handle);
 }
 
+void gl_buffer::allocate(gl_buffer_type buffer_type, unsigned int buffer_size, GLbitfield flags)
+{
+	if (buffer_size > GL_MAX_UNIFORM_BLOCK_SIZE) return;
+
+	glNamedBufferStorage(_handle, static_cast<GLsizeiptr>(buffer_size), nullptr, flags);
+
+	_buffer_size = buffer_size;
+	_buffer_type = buffer_type;
+}
+
+void gl_buffer::fill(std::shared_ptr<gl_buffer_data_pack> data_pack, unsigned int offset)
+{
+	if (data_pack.get() && (offset + data_pack->size > _buffer_size)) {
+		throw std::exception("do not have enough memory");
+	}
+	glNamedBufferSubData(_handle, static_cast<GLintptr>(offset), static_cast<GLsizeiptr>(data_pack->size), data_pack->data);
+}
+
 gl_buffer::~gl_buffer()
 {
 	glDeleteBuffers(1, &_handle);

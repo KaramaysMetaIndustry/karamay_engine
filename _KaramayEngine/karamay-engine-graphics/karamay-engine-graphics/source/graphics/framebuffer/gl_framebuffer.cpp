@@ -1,4 +1,6 @@
 #include "gl_framebuffer.h"
+#include "graphics/texture/gl_texture.h"
+#include "graphics/renderbuffer/gl_renderbuffer.h"
 
 void gl_framebuffer::bind()
 {

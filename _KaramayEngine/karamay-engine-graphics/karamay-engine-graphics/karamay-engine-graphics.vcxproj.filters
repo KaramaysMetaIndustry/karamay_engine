@@ -333,9 +333,6 @@
     <ClCompile Include="source\graphics\renderbuffer\gl_multisample_renderbuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\graphics\framebuffer\gl_framebuffer_default.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\graphics\buffer\gl_buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -348,16 +345,7 @@
     <ClCompile Include="source\graphics\buffer\gl_uniform_buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\graphics\framebuffer\gl_framebuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\graphics\framebuffer\gl_framebuffer_base.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\graphics\framebuffer\gl_framebuffer_draw.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\graphics\framebuffer\gl_framebuffer_read.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\graphics\program\gl_program.cpp">
@@ -367,6 +355,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\graphics\transform_feedback\gl_transform_feedback.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\framebuffer\gl_read_framebuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\framebuffer\gl_draw_framebuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\framebuffer\gl_default_framebuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\framebuffer\gl_framebuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -716,9 +716,6 @@
     <ClInclude Include="source\graphics\renderbuffer\gl_multisample_renderbuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\graphics\framebuffer\gl_framebuffer_default.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\graphics\buffer\gl_buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -731,16 +728,7 @@
     <ClInclude Include="source\graphics\buffer\gl_uniform_buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\graphics\framebuffer\gl_framebuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\graphics\framebuffer\gl_framebuffer_base.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\graphics\framebuffer\gl_framebuffer_draw.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\graphics\framebuffer\gl_framebuffer_read.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\graphics\program\gl_program.h">
@@ -750,6 +738,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\graphics\transform_feedback\gl_transform_feedback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\framebuffer\gl_read_framebuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\framebuffer\gl_draw_framebuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\framebuffer\gl_default_framebuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\framebuffer\gl_framebuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

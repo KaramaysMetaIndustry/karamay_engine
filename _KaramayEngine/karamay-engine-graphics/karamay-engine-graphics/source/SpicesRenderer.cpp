@@ -1,6 +1,7 @@
 // SpicesRenderer.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
-#include "Framework/FrameworkGlobal.h"
+
+#include "public/stl.h"
 #include "OpenGL/Implement_OpenGL.h"
 
 float vertices[] = {

@@ -1,8 +1,20 @@
 #pragma once
 #include "graphics/glo/gl_object.h"
 
-class gl_framebuffer_read final : public gl_object
+class gl_read_framebuffer final : public gl_object
 {
+public:
+	static std::shared_ptr<gl_read_framebuffer> construct()
+	{
+		return std::make_shared<gl_read_framebuffer>();
+	}
+
+	~gl_read_framebuffer();
+
+private:
+	gl_read_framebuffer();
+
+
 public:
 
 	void attach_color_buffer();
@@ -19,8 +31,5 @@ public:
 	void bind();
 	void unbind();
 
-public:
-	gl_framebuffer_read();
-	virtual ~gl_framebuffer_read();
 };
 

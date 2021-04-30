@@ -1,8 +1,20 @@
 #pragma once
 #include "graphics/glo/gl_object.h"
 
-class gl_framebuffer_default final : public gl_object
+class gl_default_framebuffer final : public gl_object
 {
+private:
+	gl_default_framebuffer()
+	{}
+
+	~gl_default_framebuffer() 
+	{}
+
+public:
+	static void bind() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+
+	static void unbind() {}
+
 public:
 	static void read_color(GLenum mode, GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void* pixels)
 	{

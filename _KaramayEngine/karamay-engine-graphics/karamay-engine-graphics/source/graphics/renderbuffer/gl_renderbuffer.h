@@ -1,6 +1,16 @@
 #pragma once
 #include "graphics/glo/gl_object.h"
 
+namespace gl_renderbuffer_enum
+{
+	enum class internal_format : GLenum
+	{
+
+	};
+
+};
+
+
 class gl_renderbuffer final : public gl_object
 {
 public:
@@ -12,17 +22,21 @@ public:
 	~gl_renderbuffer();
 
 private:
-
 	gl_renderbuffer();
 
 public:
-	void allocate(GLenum internal_format, GLsizei width, GLsizei height)
+	void allocate(gl_renderbuffer_enum::internal_format internal_format, unsigned int width, unsigned int height)
 	{
-		glNamedRenderbufferStorage(_handle, internal_format, width, height);
+		if (width > GL_MAX_RENDERBUFFER_SIZE | height > GL_MAX_RENDERBUFFER_SIZE) return;
+		glNamedRenderbufferStorage(_handle, static_cast<GLenum>(internal_format), static_cast<GLsizei>(width), static_cast<GLsizei>(height));
 	}
 
 public:
-	gl_renderbuffer();
-	virtual ~gl_renderbuffer();
+	void bind();
+
+	void unbind();
+
+
+
 };
 

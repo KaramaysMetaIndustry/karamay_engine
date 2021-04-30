@@ -3,12 +3,19 @@
 
 class gl_program;
 
+
+
+namespace gl_program_pipeline_enum
+{
+
+}
+
 class gl_program_pipeline final : public gl_object
 {
 public:
-	static std::shared_ptr<class gl_program> construct()
+	static auto construct() -> std::shared_ptr<gl_program_pipeline>
 	{
-		return std::make_shared<class gl_program>();
+		return std::make_shared<gl_program_pipeline>();
 	}
 
 	~gl_program_pipeline();

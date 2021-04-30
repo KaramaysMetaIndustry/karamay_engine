@@ -1,4 +1,5 @@
 #include "gl_framebuffer_read.h"
+#include "gl_read_framebuffer.h"
 
 void gl_framebuffer_read::read_color(unsigned int attachment_index, GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void* pixels)
 {
@@ -40,5 +41,9 @@ gl_framebuffer_read::gl_framebuffer_read()
 }
 
 gl_framebuffer_read::~gl_framebuffer_read()
+{
+}
+
+gl_read_framebuffer::~gl_read_framebuffer()
 {
 }

@@ -1,7 +1,14 @@
 #pragma once
 #include "graphics/glo/gl_object.h"
-#include "graphics/texture/gl_texture.h"
-#include "graphics/renderbuffer/gl_renderbuffer.h"
+
+class gl_renderbuffer;
+class gl_texture_1d;
+class gl_texture_1d_array;
+class gl_texture_2d;
+class gl_texture_2d_array;
+class gl_texture_3d;
+
+
 
 class gl_framebuffer final : public gl_object
 {
@@ -22,7 +29,6 @@ public:
 
 	void unbind();
 
-	/// attach texture_* as buffer
 	void attach_color_buffer_1d(unsigned int attachment_index, const std::shared_ptr<gl_texture_1d> texture_1d, unsigned int mipmap_index);
 	void attach_depth_buffer_1d(const std::shared_ptr<gl_texture_1d> texture_1d, unsigned int mipmap_index);
 	void attach_stencil_buffer_1d(const std::shared_ptr<gl_texture_1d> texture_1d, unsigned int mipmap_index);
