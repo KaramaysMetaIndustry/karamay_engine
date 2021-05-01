@@ -336,12 +336,6 @@
     <ClCompile Include="source\graphics\buffer\gl_buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\graphics\renderpass\gl_renderpass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\graphics\renderpass\gl_sub_renderpass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\graphics\buffer\gl_uniform_buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -717,12 +711,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\graphics\buffer\gl_buffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\graphics\renderpass\gl_renderpass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\graphics\renderpass\gl_sub_renderpass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\graphics\buffer\gl_uniform_buffer.h">

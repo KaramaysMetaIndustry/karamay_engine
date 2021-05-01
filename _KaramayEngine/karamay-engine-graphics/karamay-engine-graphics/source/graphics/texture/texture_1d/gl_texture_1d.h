@@ -3,82 +3,64 @@
 
 class gl_texture_1d final : public gl_texture_base
 {
-private:
-	/**
-	 * construct texture_1d
-	 * create texture 1d object at client, keep the handle of it
-	 * but now it do not have real memory at GPU
-	 */
-	gl_texture_1d();
-
-private:
-	/**
-	 * specify the texture's storage format int the GPU memory
-	 */
-	gl_texture_internal_format _internal_format;
-
-	/**
-	 * specify the max num of mipmaps this texture can have
-	 */
-	unsigned int _mipmaps_num;
-
-	/**
-	 * specify the base mipmap's width
-	 */
-	unsigned int _base_mipmap_width;
-
 public:
-	static std::shared_ptr<gl_texture_1d> construct();
+
+	static std::shared_ptr<gl_texture_1d> construct()
+	{
+		return std::make_shared<gl_texture_1d>();
+	}
 
 	~gl_texture_1d();
 
+private:
+	
+	gl_texture_1d();
+
+private:
+
+	gl_texture_enum::internal_format _internal_format;
+
+	std::uint32_t _mipmaps_num;
+
+	std::uint32_t _base_mipmap_width;
+
 public:
-	/**
-	 * allocate memory at GPU, create mapping between client and GPU
-	 */
-	void allocate(gl_texture_internal_format internal_format, unsigned int base_mipmap_width, unsigned int mipmaps_num);
+	
+	void allocate(gl_texture_enum::internal_format internal_format, std::uint32_t base_mipmap_width, std::uint32_t mipmaps_num);
 
 public:
 
-	/**
-	 * fill base mipmap
-	 */
-	void fill_base_mipmap(gl_texture_pixels_package pixels_package)
+	/*
+	* if mipmap pixel packs you provided do not reach to _mipmaps_num, we will generate the rest mipmaps
+	*/
+	void fill(std::vector<gl_texture_pixels_pack> mipmap_pixels_packs)
 	{
-		glTexSubImage1D(GL_TEXTURE_1D, 0, 0, _base_mipmap_width, static_cast<GLenum>(pixels_package.format), static_cast<GLenum>(pixels_package.type), pixels_package.pixels);
+		const auto num = mipmap_pixels_packs.size();
+		if (num == 0) return;
+
+		for (int i = 0; i < _mipmaps_num; ++i)
+		{
+			
+		}
+
+		if (num < _mipmaps_num)
+		{
+			bind(1);
+			glGenerateMipmap(GL_TEXTURE_1D);
+			unbind();
+		}
 	}
 
-	/**
-	 * fill base sub mipmap
-	 */
-	void fill_base_sub_mipmap(gl_texture_pixels_package pixels_package, int x_offset) {}
-
-	/**
-	 * auto generate rest miniature mipmaps
-	 */
-	void fill_miniature_mipmaps_automatically() {
-		bind(1);
-		glGenerateMipmap(GL_TEXTURE_1D);
-		unbind();
-	}
-
-public:
-
-	void fill_mipmap(const gl_texture_pixels_package& pixels_package, unsigned int mipmap_index)
+	void fill_mipmap(std::uint32_t mipmap_index, std::uint32_t x_offset, std::uint32_t mipmap_width, gl_texture_pixels_pack pixels_pack)
 	{
-		fill_sub_mipmap(pixels_package, mipmap_index, 0);
+		glTexSubImage1D(GL_TEXTURE_1D, mipmap_index, x_offset, mipmap_width, 
+			static_cast<GLenum>(pixels_pack.format), static_cast<GLenum>(pixels_pack.type), 
+			pixels_pack.pixels);
 	}
 
-	void fill_sub_mipmap(const gl_texture_pixels_package& pixels_package, unsigned int mipmap_index, int x_offset) 
-	{
-		glTexSubImage1D(GL_TEXTURE_1D, mipmap_index, x_offset, pixels_package.width, static_cast<GLenum>(pixels_package.format), static_cast<GLenum>(pixels_package.type), pixels_package.pixels);
-	}
 
 
 public:
-
-	void fill_base_mipmap(gl_texture_pixels_package pixels_package);
-	void fill_base_sub_mipmap(gl_texture_pixels_package pixels_package, int x_offset);
 
 	/**
 	 * fill the rest mipmap manually
@@ -107,9 +89,6 @@ public:
 	void bind(unsigned int unit);
 
 	void unbind();
-
-public:
-	gl_texture_internal_format get_internal_format() const {return _internal_format;};
 
 };
 

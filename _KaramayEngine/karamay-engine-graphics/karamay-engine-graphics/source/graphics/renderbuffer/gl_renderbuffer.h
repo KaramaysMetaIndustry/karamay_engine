@@ -5,7 +5,7 @@ namespace gl_renderbuffer_enum
 {
 	enum class internal_format : GLenum
 	{
-
+		NONE
 	};
 
 };
@@ -14,29 +14,37 @@ namespace gl_renderbuffer_enum
 class gl_renderbuffer final : public gl_object
 {
 public:
-	std::shared_ptr<gl_renderbuffer> construct()
+
+	static std::shared_ptr<gl_renderbuffer> construct()
 	{
 		return std::make_shared<gl_renderbuffer>();
 	}
 
-	~gl_renderbuffer();
-
-private:
-	gl_renderbuffer();
-
-public:
-	void allocate(gl_renderbuffer_enum::internal_format internal_format, unsigned int width, unsigned int height)
+	virtual ~gl_renderbuffer()
 	{
-		if (width > GL_MAX_RENDERBUFFER_SIZE | height > GL_MAX_RENDERBUFFER_SIZE) return;
-		glNamedRenderbufferStorage(_handle, static_cast<GLenum>(internal_format), static_cast<GLsizei>(width), static_cast<GLsizei>(height));
+		glDeleteRenderbuffers(1, &_handle);
 	}
 
+private:
+	
+	gl_renderbuffer() :
+		_width(0), _height(0),
+		_internal_format(gl_renderbuffer_enum::internal_format::NONE)
+	{
+		glCreateRenderbuffers(1, &_handle);
+	}
+	
+	unsigned int _width, _height;
+
+	gl_renderbuffer_enum::internal_format _internal_format;
+
 public:
+
+	void allocate(gl_renderbuffer_enum::internal_format internal_format, unsigned int width, unsigned int height);
+
 	void bind();
 
 	void unbind();
-
-
 
 };
 

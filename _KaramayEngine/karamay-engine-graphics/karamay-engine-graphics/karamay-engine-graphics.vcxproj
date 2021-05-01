@@ -213,8 +213,6 @@
     <ClCompile Include="source\graphics\program_pipeline\gl_program_pipeline.cpp" />
     <ClCompile Include="source\graphics\renderbuffer\gl_multisample_renderbuffer.cpp" />
     <ClCompile Include="source\graphics\renderbuffer\gl_renderbuffer.cpp" />
-    <ClCompile Include="source\graphics\renderpass\gl_renderpass.cpp" />
-    <ClCompile Include="source\graphics\renderpass\gl_sub_renderpass.cpp" />
     <ClCompile Include="source\graphics\sampler\gl_sampler.cpp" />
     <ClCompile Include="source\graphics\shader\gl_shader.cpp" />
     <ClCompile Include="source\graphics\texture\texture_2d\gl_texture_2d_multisample.cpp" />
@@ -342,8 +340,6 @@
     <ClInclude Include="source\graphics\program_pipeline\gl_program_pipeline.h" />
     <ClInclude Include="source\graphics\renderbuffer\gl_multisample_renderbuffer.h" />
     <ClInclude Include="source\graphics\renderbuffer\gl_renderbuffer.h" />
-    <ClInclude Include="source\graphics\renderpass\gl_renderpass.h" />
-    <ClInclude Include="source\graphics\renderpass\gl_sub_renderpass.h" />
     <ClInclude Include="source\graphics\sampler\gl_sampler.h" />
     <ClInclude Include="source\graphics\shader\gl_shader.h" />
     <ClInclude Include="source\graphics\texture\texture_2d\gl_texture_2d_multisample.h" />
