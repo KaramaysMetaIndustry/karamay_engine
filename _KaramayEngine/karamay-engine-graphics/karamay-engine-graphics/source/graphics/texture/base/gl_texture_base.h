@@ -87,7 +87,7 @@ namespace gl_texture_enum
 		// default unsigned normalized integer
 		// _SNORM
 		// F,I,UI
-		// Èç¹ûÎ´Ö¸¶¨·ÖÁ¿´óÐ¡µÄ£¬opengl½«»á×Ô¶¯½«Êý¾Ý½øÐÐ½Ø¶Ï£¬±£Ö¤ÊýÖµ·¶Î§Îª[0,1]
+		// ï¿½ï¿½ï¿½Î´Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½Ä£ï¿½openglï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½ï¿½ï¿½Ð½Ø¶Ï£ï¿½ï¿½ï¿½Ö¤ï¿½ï¿½Öµï¿½ï¿½Î§Îª[0,1]
 		// 1-component
 		R8 = GL_R8, //r-8bit-unsigned_normalized_integer [0, 2^8-1] maps [0.0, 1.0]
 		R8_SNORM = GL_R8_SNORM, //r-8bit signed normalized integer [-2^8, 2^8] maps [-1.0, 1.0]
@@ -178,18 +178,46 @@ namespace gl_texture_enum
 		COMPRESSED_SRGB_ALPHA = GL_COMPRESSED_SRGB_ALPHA,
 
 		// specific formats
-		// RGTC Ò»ÖÖ¼òµ¥µÄÑ¹Ëõ¸ñÊ½£¬´æ´¢µ¥Í¨µÀ»òÕßË«Í¨µÀÎÆÀí
+		// RGTC Ò»ï¿½Ö¼òµ¥µï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½æ´¢ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë«Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		// https://zhuanlan.zhihu.com/p/144389736
 		COMPRESSED_RED_RGTC1 = GL_COMPRESSED_RED_RGTC1, // UNSIGNED NORMALIZED 1-COMPONENT ONLY
 		COMPRESSED_SIGNED_RED_RGTC1 = GL_COMPRESSED_SIGNED_RED_RGTC1, // SIGNED NORMALIZED 1-COMPONENT ONLY
 		COMPRESSED_RG_RGTC2 = GL_COMPRESSED_RG_RGTC2, // UNSIGNED NORMALIZED 2-COMPONENTS
 		COMPRESSED_SIGNED_RG_RGTC2 = GL_COMPRESSED_SIGNED_RG_RGTC2, // signed normalized 2-components
 
-		// BPTC 3/4Í¨µÀÎÆÀí
+		// BPTC 3/4Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		COMPRESSED_RGBA_BPTC_UNORM = GL_COMPRESSED_RGBA_BPTC_UNORM, // UNSIGNED NORMALIZED 4-COMPONENTS
 		COMPRESSED_SRGB_ALPHA_BPTC_UNORM = GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM, // UNSIGNED NORMALIZED 4-COMPONENTS IN THE SRGB COLOR SPACE
 		COMPRESSED_RGB_BPTC_SIGNED_FLOAT = GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT, // SIGNED, FLOATING-POINT 3-COMPONENTS
 		COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT = GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT // unsigned, floating-point 3-components
+	};
+
+	enum class parameter : GLenum
+	{
+		DEPTH_STENCIL_TEXTURE_MODE = GL_DEPTH_STENCIL_TEXTURE_MODE,
+		TEXTURE_BASE_LEVEL = GL_TEXTURE_BASE_LEVEL,
+		TEXTURE_MAX_LEVEL = GL_TEXTURE_MAX_LEVEL,
+		TEXTURE_SWIZZLE_R = GL_TEXTURE_SWIZZLE_R,
+		TEXTURE_SWIZZLE_G = GL_TEXTURE_SWIZZLE_G,
+		TEXTURE_SWIZZLE_B = GL_TEXTURE_SWIZZLE_B,
+		TEXTURE_SWIZZLE_A = GL_TEXTURE_SWIZZLE_A,
+		TEXTURE_SWIZZLE_RGBA =  GL_TEXTURE_SWIZZLE_RGBA
+	};
+
+	enum class texture_swizzle_component : GLenum
+	{
+		RED = GL_RED,
+		GREEN = GL_GREEN,
+		BLUE = GL_BLUE,
+		ALPHA = GL_ALPHA,
+		ZERO = GL_ZERO,
+		ONE = GL_ONE
+	};
+
+	enum class depth_stencil_texture_mode : GLenum
+	{
+		STENCIL_INDEX = GL_STENCIL_INDEX,
+		DEPTH_COMPONENT = GL_DEPTH_COMPONENT
 	};
 }
 
@@ -222,6 +250,36 @@ public:
 	{
 		_sampler = sampler;
 	}
+
+
+protected:
+	void set_depth_stencil_texture_mode(gl_texture_enum::type type, gl_texture_enum::depth_stencil_texture_mode depth_stencil_texture_mode)
+	{
+		glTexParameteri(static_cast<GLenum>(type),
+			static_cast<GLenum>(gl_texture_enum::parameter::DEPTH_STENCIL_TEXTURE_MODE),
+			static_cast<GLenum>(depth_stencil_texture_mode));
+	}
+
+	void set_texture_base_level(gl_texture_enum::type type, std::uint32_t texture_base_level)
+	{}
+
+	void set_texture_max_level(gl_texture_enum::type type, std::uint32_t texture_base_level)
+	{}
+
+	void set_texture_swizzle_r(gl_texture_enum::type type, gl_texture_enum::texture_swizzle_component texture_swizzle_r)
+	{}
+
+	void set_texture_swizzle_g()
+	{}
+
+	void set_texture_swizzle_b()
+	{}
+
+	void set_texture_swizzle_a()
+	{}
+
+	void set_texture_swizzle_rgba()
+	{}
 	
 };
 
