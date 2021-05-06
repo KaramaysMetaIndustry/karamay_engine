@@ -178,14 +178,12 @@ namespace gl_texture_enum
 		COMPRESSED_SRGB_ALPHA = GL_COMPRESSED_SRGB_ALPHA,
 
 		// specific formats
-		// RGTC һ�ּ򵥵�ѹ����ʽ���洢��ͨ������˫ͨ������
 		// https://zhuanlan.zhihu.com/p/144389736
 		COMPRESSED_RED_RGTC1 = GL_COMPRESSED_RED_RGTC1, // UNSIGNED NORMALIZED 1-COMPONENT ONLY
 		COMPRESSED_SIGNED_RED_RGTC1 = GL_COMPRESSED_SIGNED_RED_RGTC1, // SIGNED NORMALIZED 1-COMPONENT ONLY
 		COMPRESSED_RG_RGTC2 = GL_COMPRESSED_RG_RGTC2, // UNSIGNED NORMALIZED 2-COMPONENTS
 		COMPRESSED_SIGNED_RG_RGTC2 = GL_COMPRESSED_SIGNED_RG_RGTC2, // signed normalized 2-components
-
-		// BPTC 3/4ͨ������
+	
 		COMPRESSED_RGBA_BPTC_UNORM = GL_COMPRESSED_RGBA_BPTC_UNORM, // UNSIGNED NORMALIZED 4-COMPONENTS
 		COMPRESSED_SRGB_ALPHA_BPTC_UNORM = GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM, // UNSIGNED NORMALIZED 4-COMPONENTS IN THE SRGB COLOR SPACE
 		COMPRESSED_RGB_BPTC_SIGNED_FLOAT = GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT, // SIGNED, FLOATING-POINT 3-COMPONENTS
@@ -246,40 +244,27 @@ protected:
 
 public:
 
-	void add_sampler(std::shared_ptr<class gl_sampler> sampler)
-	{
-		_sampler = sampler;
-	}
+	void set_sampler(std::shared_ptr<class gl_sampler> sampler);
 
 
 protected:
-	void set_depth_stencil_texture_mode(gl_texture_enum::type type, gl_texture_enum::depth_stencil_texture_mode depth_stencil_texture_mode)
-	{
-		glTexParameteri(static_cast<GLenum>(type),
-			static_cast<GLenum>(gl_texture_enum::parameter::DEPTH_STENCIL_TEXTURE_MODE),
-			static_cast<GLenum>(depth_stencil_texture_mode));
-	}
+	void set_depth_stencil_texture_mode(gl_texture_enum::type texture_type, gl_texture_enum::depth_stencil_texture_mode depth_stencil_texture_mode);
 
-	void set_texture_base_level(gl_texture_enum::type type, std::uint32_t texture_base_level)
-	{}
+	/**
+	 * Default value is 0
+	 */
+	void set_texture_base_level(gl_texture_enum::type texture_type, std::uint32_t texture_base_level);
 
-	void set_texture_max_level(gl_texture_enum::type type, std::uint32_t texture_base_level)
-	{}
+	/**
+	 * Default value is 1000
+	 */
+	void set_texture_max_level(gl_texture_enum::type texture_type, std::uint32_t texture_max_level);
 
-	void set_texture_swizzle_r(gl_texture_enum::type type, gl_texture_enum::texture_swizzle_component texture_swizzle_r)
-	{}
-
-	void set_texture_swizzle_g()
-	{}
-
-	void set_texture_swizzle_b()
-	{}
-
-	void set_texture_swizzle_a()
-	{}
-
-	void set_texture_swizzle_rgba()
-	{}
+	/**
+	 * Default value is vec4(RED, GREEN, BLUE, ALPHA)
+	 * Try to specify component comb
+	 */
+	void set_texture_swizzle_rgba(gl_texture_enum::type texture_type, std::array<gl_texture_enum::texture_swizzle_component, 4> texture_swizzle_rgba);
 	
 };
 

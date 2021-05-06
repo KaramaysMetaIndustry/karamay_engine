@@ -92,47 +92,68 @@ private:
 
 public:
 
-	void bind(unsigned int unit);
+	void bind(std::uint32_t texture_unit);
 
 	void unbind();
 
 public:
 
+	/**
+	 * Minifying function.
+	 * Default value is NEAREST_MIPMAP_LINEAR
+	 */
 	void set_texture_min_filter(gl_sampler_enum::texture_min_filter texture_min_filter);
 
+	/**
+	 * Magnification function.	
+	 * Default value is LINEAR
+	 */
 	void set_texture_mag_filter(gl_sampler_enum::texture_mag_filter texture_mag_filter);
+	
+	/**
+	 * Default value is REPEAT
+	 */
+	void set_texture_wrap_s(gl_sampler_enum::texture_wrap_option texture_wrap_option);
+
+	/**
+	 * Default value is REPEAT
+	 */
+	void set_texture_wrap_t(gl_sampler_enum::texture_wrap_option texture_wrap_option);
+
+	/**
+	 * Default value is REPEAT
+	 */
+	void set_texture_wrap_r(gl_sampler_enum::texture_wrap_option texture_wrap_option);
 
 	
-	void set_texture_wrap_s(gl_sampler_enum::texture_wrap_option texture_wrap_s);
-
-	void set_texture_wrap_t(gl_sampler_enum::texture_wrap_option texture_wrap_t);
-
-	void set_texture_wrap_r(gl_sampler_enum::texture_wrap_option texture_wrap_r);
-
-	
+	/**
+	 * 
+	 */
 	void set_texture_compare_func(gl_sampler_enum::texture_compare_func texture_compare_func);
 
 	void set_texture_compare_mode(gl_sampler_enum::texture_compare_mode texture_compare_mode);
 
-	
-	void set_texture_border_color(glm::vec4 texture_border_color = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
+	/**
+	 * Default value is vec4(0.0f, 0.0f, 0.0f, 0.0f)
+	 */
+	void set_texture_border_color(glm::vec4 texture_border_color);
 	
 	/**
 	 * Specify a bias for texture sampling. 
 	 * The value is clamped into [-GL_MAX_TEXTURE_LOD_BIAS, GL_MAX_TEXTURE_LOD_BIAS]
 	 * Default value is 0.0f.
 	 */
-	void set_texture_lod_bias(std::float_t texture_lod_bias = 0.0f);
+	void set_texture_lod_bias(std::float_t texture_lod_bias);
 	
 	/**
 	 * Default value is -1000.0f
 	 */
-	void set_texture_min_lod(std::float_t texture_min_lod = -1000.0f);
+	void set_texture_min_lod(std::float_t texture_min_lod);
 
 	/**
 	 * Default value is 1000.0f
 	 */
-	void set_texture_max_lod(std::float_t texture_max_lod = 1000.0f);
+	void set_texture_max_lod(std::float_t texture_max_lod);
 
 };
 

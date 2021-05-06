@@ -1,10 +1,10 @@
 #include "gl_sampler.h"
 
-void gl_sampler::bind(unsigned int unit)
+void gl_sampler::bind(std::uint32_t texture_unit)
 {
-	if (!(unit >= 0 && unit < GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS)) return;
+	if (texture_unit > GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS) return;
 
-	glBindSampler(unit, _handle);
+	glBindSampler(texture_unit, _handle);
 }
 
 void gl_sampler::unbind()
@@ -52,19 +52,19 @@ void gl_sampler::set_texture_max_lod(std::float_t texture_max_lod)
 	glSamplerParameterf(_handle, GL_TEXTURE_MAX_LOD, texture_max_lod);
 }
 
-void gl_sampler::set_texture_wrap_s(gl_sampler_enum::texture_wrap_option texture_wrap_s)
+void gl_sampler::set_texture_wrap_s(gl_sampler_enum::texture_wrap_option texture_wrap_option)
 {
-	glSamplerParameteri(_handle, GL_TEXTURE_WRAP_S, static_cast<GLint>(texture_wrap_s));
+	glSamplerParameteri(_handle, GL_TEXTURE_WRAP_S, static_cast<GLint>(texture_wrap_option));
 }
 
-void gl_sampler::set_texture_wrap_t(gl_sampler_enum::texture_wrap_option texture_wrap_t)
+void gl_sampler::set_texture_wrap_t(gl_sampler_enum::texture_wrap_option texture_wrap_option)
 {
-	glSamplerParameteri(_handle, GL_TEXTURE_WRAP_T, static_cast<GLint>(texture_wrap_t));
+	glSamplerParameteri(_handle, GL_TEXTURE_WRAP_T, static_cast<GLint>(texture_wrap_option));
 }
 
-void gl_sampler::set_texture_wrap_r(gl_sampler_enum::texture_wrap_option texture_wrap_r)
+void gl_sampler::set_texture_wrap_r(gl_sampler_enum::texture_wrap_option texture_wrap_option)
 {
-	glSamplerParameteri(_handle, GL_TEXTURE_WRAP_R, static_cast<GLint>(texture_wrap_r));
+	glSamplerParameteri(_handle, GL_TEXTURE_WRAP_R, static_cast<GLint>(texture_wrap_option));
 }
 
 gl_sampler::gl_sampler()
