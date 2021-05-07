@@ -66,13 +66,3 @@ void gl_sampler::set_texture_wrap_r(gl_sampler_enum::texture_wrap_option texture
 {
 	glSamplerParameteri(_handle, GL_TEXTURE_WRAP_R, static_cast<GLint>(texture_wrap_option));
 }
-
-gl_sampler::gl_sampler()
-{
-	glCreateSamplers(1, &_handle);
-}
-
-gl_sampler::~gl_sampler()
-{
-	glDeleteSamplers(1, &_handle);
-}

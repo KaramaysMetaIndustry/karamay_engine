@@ -159,19 +159,6 @@ public:
 	unsigned int size;
 };
 
-template<typename T>
-GLbitfield caculate()
-{
-	return 
-}
-
-
-template<typename T, typename... Ts>
-GLbitfield caculate(T flag, Ts... flags)
-{
-	return caculate()
-}
-
 
 class gl_buffer final : public gl_object
 {
@@ -223,6 +210,13 @@ private:
 		GLint value;
 		glGetBufferParameteriv(static_cast<GLenum>(_buffer_type), GL_BUFFER_SIZE, &value);
 		return value;
+	}
+
+
+public:
+	bool is(gl_buffer_enum::type buffer_type)
+	{
+		return buffer_type == _buffer_type;
 	}
 
 };

@@ -67,7 +67,11 @@ namespace gl_sampler_enum
 	};
 }
 
-
+template<typename T>
+std::shared_ptr<T> construct()
+{
+	return std::make_shared<T>();
+}
 
 class gl_sampler final : public gl_object
 {
@@ -78,16 +82,14 @@ public:
 		return std::make_shared<gl_sampler>();
 	}
 
-	virtual ~gl_sampler()
-	{
-		glDeleteSamplers(1, &_handle);
-	}
-
-private:
-	
 	gl_sampler()
 	{
 		glCreateSamplers(1, &_handle);
+	}
+
+	virtual ~gl_sampler()
+	{
+		glDeleteSamplers(1, &_handle);
 	}
 
 public:
@@ -154,6 +156,87 @@ public:
 	 * Default value is 1000.0f
 	 */
 	void set_texture_max_lod(std::float_t texture_max_lod);
+
+
+public:
+	gl_sampler_enum::texture_mag_filter get_texture_mag_filter()
+	{
+		GLint value = 0;
+		glGetSamplerParameteriv(_handle, GL_TEXTURE_MAG_FILTER, &value);
+		return static_cast<gl_sampler_enum::texture_mag_filter>(value);
+	}
+
+	gl_sampler_enum::texture_min_filter get_texture_min_filter()
+	{
+		GLint value = 0;
+		glGetSamplerParameteriv(_handle, GL_TEXTURE_MIN_FILTER, &value);
+		return static_cast<gl_sampler_enum::texture_min_filter>(value);
+	}
+
+	std::float_t get_max_lod()
+	{
+		GLfloat value = 0.0f;
+		glGetSamplerParameterfv(_handle, GL_TEXTURE_MAX_LOD, &value);
+		return static_cast<std::float_t>(value);
+	}
+
+	std::float_t get_min_lod()
+	{
+		GLfloat value = 0.0f;
+		glGetSamplerParameterfv(_handle, GL_TEXTURE_MIN_LOD, &value);
+		return static_cast<std::float_t>(value);
+	}
+
+	gl_sampler_enum::texture_wrap_option get_texture_wrap_s()
+	{
+		GLint value = 0;
+		glGetSamplerParameteriv(_handle, GL_TEXTURE_WRAP_S, &value);
+		return static_cast<gl_sampler_enum::texture_wrap_option>(value);
+	}
+
+	gl_sampler_enum::texture_wrap_option get_texture_wrap_t()
+	{
+		GLint value = 0;
+		glGetSamplerParameteriv(_handle, GL_TEXTURE_WRAP_T, &value);
+		return static_cast<gl_sampler_enum::texture_wrap_option>(value);
+	}
+	
+	gl_sampler_enum::texture_wrap_option get_texture_wrap_r()
+	{
+		GLint value = 0;
+		glGetSamplerParameteriv(_handle, GL_TEXTURE_WRAP_R, &value);
+		return static_cast<gl_sampler_enum::texture_wrap_option>(value);
+	}
+
+	glm::vec4 get_texture_border_color()
+	{
+		GLfloat* values = nullptr;
+		glGetSamplerParameterfv(_handle, GL_TEXTURE_BORDER_COLOR, values);
+		return glm::vec4();
+	}
+
+
+	gl_sampler_enum::texture_compare_mode get_texture_compare_mode()
+	{
+		GLint value = 0;
+		glGetSamplerParameteriv(_handle, GL_TEXTURE_COMPARE_MODE, &value);
+		return static_cast<gl_sampler_enum::texture_compare_mode>(value);
+	}
+
+	gl_sampler_enum::texture_compare_func get_texture_compare_func()
+	{
+		GLint value = 0;
+		glGetSamplerParameteriv(_handle, GL_TEXTURE_COMPARE_FUNC, &value);
+		return static_cast<gl_sampler_enum::texture_compare_func>(value);
+	}
+
+private:
+	bool is_sampler_object() const
+	{
+		return glIsSampler(_handle) == GL_TRUE ? true : false;
+	}
+
+	
 
 };
 

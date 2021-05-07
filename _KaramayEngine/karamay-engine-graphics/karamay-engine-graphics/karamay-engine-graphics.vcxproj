@@ -228,6 +228,7 @@
     <ClCompile Include="source\graphics\texture\texture_cube\gl_texture_cube.cpp" />
     <ClCompile Include="source\graphics\texture\texture_cube\gl_texture_cube_array.cpp" />
     <ClCompile Include="source\graphics\transform_feedback\gl_transform_feedback.cpp" />
+    <ClCompile Include="source\graphics\vertex_array\gl_vertex_array.cpp" />
     <ClCompile Include="source\karamay-engine-graphics.cpp" />
     <ClCompile Include="source\BufferPool\GLBufferPool.cpp" />
     <ClCompile Include="source\Buffer\GLBuffer.cpp" />
@@ -356,6 +357,7 @@
     <ClInclude Include="source\graphics\texture\texture_cube\gl_texture_cube.h" />
     <ClInclude Include="source\graphics\texture\texture_cube\gl_texture_cube_array.h" />
     <ClInclude Include="source\graphics\transform_feedback\gl_transform_feedback.h" />
+    <ClInclude Include="source\graphics\vertex_array\gl_vertex_array.h" />
     <ClInclude Include="source\OpenGL\Camera\Camera_OpenGL.h" />
     <ClInclude Include="source\OpenGL\Implement_OpenGL.h" />
     <ClInclude Include="source\OpenGL\PipelineRuntimeData\Light\DirectionalLight_OpenGL.h" />

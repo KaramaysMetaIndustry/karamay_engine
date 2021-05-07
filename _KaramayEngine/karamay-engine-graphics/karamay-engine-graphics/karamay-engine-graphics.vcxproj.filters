@@ -363,6 +363,9 @@
     <ClCompile Include="source\graphics\framebuffer\gl_framebuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\graphics\vertex_array\gl_vertex_array.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -738,6 +741,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\graphics\framebuffer\gl_framebuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\vertex_array\gl_vertex_array.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
