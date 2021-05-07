@@ -1,26 +1,14 @@
 #pragma once
 #include "graphics/glo/gl_object.h"
+#include "graphics/buffer/gl_buffer.h"
 
 class gl_transform_feedback final : public gl_object
 {
 public:
-	
-	static std::shared_ptr<gl_transform_feedback> construct()
-	{
-		return std::make_shared<gl_transform_feedback>();
-	}
 
-	virtual ~gl_transform_feedback()
-	{
-		glDeleteTransformFeedbacks(1, &_handle);
-	}
+	gl_transform_feedback();
 
-private:
-
-	gl_transform_feedback()
-	{
-		glCreateTransformFeedbacks(1, &_handle);
-	}
+	virtual ~gl_transform_feedback();
 
 public:
 	
@@ -28,28 +16,9 @@ public:
 
 	void unbind();
 
-public:
+	void associate_buffer(std::uint32_t index, std::shared_ptr<gl_buffer> array_buffer);
 
-	static void begin()
-	{
-		glBeginTransformFeedback(GL_PATCHES);
-	}
-
-	static void end(){
-		glEndTransformFeedback();
-	}
-
-	static void pause() {
-		glPauseTransformFeedback();
-	}
-
-	static void resume() {
-		glResumeTransformFeedback();
-	}
-
-	static void draw()
-	{
-	}
+	void associate_buffer(std::uint32_t index, std::shared_ptr<gl_buffer> array_buffer, std::uint32_t offset, std::uint32_t size);
 
 };
 

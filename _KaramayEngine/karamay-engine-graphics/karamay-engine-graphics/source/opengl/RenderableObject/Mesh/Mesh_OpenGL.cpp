@@ -137,6 +137,8 @@ void Mesh_OpenGL::Render(float DeltaTime)
 				glDisableVertexAttribArray(2);
 				glDisableVertexAttribArray(3);
 
+				
+
 				// end render command
 				glBindVertexArray(0);
 			}

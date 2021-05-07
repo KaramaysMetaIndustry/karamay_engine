@@ -13,36 +13,36 @@ enum class gl_buffer_mode
 class gl_program final : public gl_object
 {
 public:
-	static std::shared_ptr<gl_program> construct()
-	{
-		return std::make_shared<gl_program>();
-	}
 
-	~gl_program();
-
-private:
 	gl_program();
 
+	virtual ~gl_program();
+
+private:
+	
 	std::vector<GLuint> shader_handles;
 
 public:
+
 	void attach_shader(const std::shared_ptr<gl_shader> shader);
 
 	void link(bool is_separable);
 
 	void detach_all_shaders();
 
-	void set_transform_feedback_varyings()
-	{
-		glTransformFeedbackVaryings(_handle, 10, nullptr, static_cast<GLenum>(gl_buffer_mode::INTERLEAVED));
-	}
-
 public:
+
 	void enable();
 
 	void disable();
 
 public:
+
+	void set_transform_feedback_varyings()
+	{
+		glTransformFeedbackVaryings(_handle, 10, nullptr, static_cast<GLenum>(gl_buffer_mode::INTERLEAVED));
+	}
+
 	void set_uniform_block(const GLchar* block_name, std::vector<const GLchar*> attrib_names)
 	{
 		// fetch the block info
@@ -66,11 +66,12 @@ public:
 		glBindBufferBase(GL_UNIFORM_BUFFER, block_index, ubo.get_handle());
 	}
 
-	void set_uniform1f(const GLchar* name, GLfloat value)
+	void set_uniform_1f(const GLchar* name, GLfloat value)
 	{
 		glUniform1f(glGetAttribLocation(_handle, name), value);
 	}
-
+	
+	void set_uniform_2f() {}
 
 };
 
