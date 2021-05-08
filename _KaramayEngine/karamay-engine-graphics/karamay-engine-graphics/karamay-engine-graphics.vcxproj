@@ -202,6 +202,7 @@
     <ClCompile Include="source\GraphicsUnit\Texture\GLTextureBuffer.cpp" />
     <ClCompile Include="source\GraphicsUnit\Texture\GLTextureCube.cpp" />
     <ClCompile Include="source\graphics\buffer\gl_buffer.cpp" />
+    <ClCompile Include="source\graphics\customized_pipeline\gl_pipeline_pbr.cpp" />
     <ClCompile Include="source\graphics\framebuffer\gl_framebuffer_base.cpp" />
     <ClCompile Include="source\graphics\framebuffer\gl_draw_framebuffer.cpp" />
     <ClCompile Include="source\graphics\framebuffer\gl_framebuffer.cpp" />
@@ -332,6 +333,7 @@
     <ClInclude Include="source\GraphicsUnit\Texture\GLTextureBuffer.h" />
     <ClInclude Include="source\GraphicsUnit\Texture\GLTextureCube.h" />
     <ClInclude Include="source\graphics\buffer\gl_buffer.h" />
+    <ClInclude Include="source\graphics\customized_pipeline\gl_pipeline_pbr.h" />
     <ClInclude Include="source\graphics\framebuffer\gl_framebuffer_base.h" />
     <ClInclude Include="source\graphics\framebuffer\gl_draw_framebuffer.h" />
     <ClInclude Include="source\graphics\framebuffer\gl_framebuffer.h" />

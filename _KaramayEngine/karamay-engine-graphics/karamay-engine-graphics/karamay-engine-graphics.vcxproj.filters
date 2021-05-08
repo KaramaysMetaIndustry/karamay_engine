@@ -372,6 +372,9 @@
     <ClCompile Include="source\Interface\material\material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\graphics\customized_pipeline\gl_pipeline_pbr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -756,6 +759,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\Interface\material\material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\customized_pipeline\gl_pipeline_pbr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

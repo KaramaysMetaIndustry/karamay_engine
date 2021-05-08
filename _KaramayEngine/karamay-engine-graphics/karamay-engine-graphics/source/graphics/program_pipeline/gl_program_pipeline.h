@@ -10,25 +10,24 @@ namespace gl_program_pipeline_enum
 
 }
 
-class gl_program_pipeline final : public gl_object
+class gl_program_pipeline : public gl_object
 {
 public:
-	static auto construct() -> std::shared_ptr<gl_program_pipeline>
-	{
-		return std::make_shared<gl_program_pipeline>();
-	}
 
-	~gl_program_pipeline();
-
-private:
 	gl_program_pipeline();
-
+	
+	virtual ~gl_program_pipeline();
 
 public:
+	virtual void construct() {}
+
+	virtual void render(std::float_t delta_time) {}
+
+
+protected:
 
 	void attach_program(GLbitfield stages, std::shared_ptr<gl_program> program);
 
-public:
 
 	// discard 划定的区域外的片段 剪裁测试
 	static void enable_scissor_test();

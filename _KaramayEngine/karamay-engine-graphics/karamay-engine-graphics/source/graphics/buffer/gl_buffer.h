@@ -5,12 +5,10 @@
 
 namespace gl_buffer_enum
 {
-	enum class type : GLenum
+	enum class target : GLenum
 	{
-		ARRAY_BUFFER = GL_ARRAY_BUFFER, //
-		ELEMENT_ARRAY_BUFFER = GL_ELEMENT_ARRAY_BUFFER, //
-
-		ATOMIC_COUNTER_BUFFER = GL_ATOMIC_COUNTER_BUFFER,
+		ARRAY_BUFFER = GL_ARRAY_BUFFER, //**
+		ELEMENT_ARRAY_BUFFER = GL_ELEMENT_ARRAY_BUFFER, // **
 
 		COPY_READ_BUFFER = GL_COPY_READ_BUFFER,
 		COPY_WRITE_BUFFER = GL_COPY_WRITE_BUFFER,
@@ -24,10 +22,11 @@ namespace gl_buffer_enum
 		QUERY_BUFFER = GL_QUERY_BUFFER,
 		TEXTURE_BUFFER = GL_TEXTURE_BUFFER, // **
 
+		ATOMIC_COUNTER_BUFFER = GL_ATOMIC_COUNTER_BUFFER,
 		TRANSFORM_FEEDBACK_BUFFER = GL_TRANSFORM_FEEDBACK_BUFFER, // **
 
 		UNIFORM_BUFFER = GL_UNIFORM_BUFFER, // **
-		SHADER_STORAGE_BUFFER = GL_SHADER_STORAGE_BUFFER
+		SHADER_STORAGE_BUFFER = GL_SHADER_STORAGE_BUFFER // **
 	};
 
 	enum class storage_flag : GLenum
@@ -167,11 +166,9 @@ public:
 
 	virtual ~gl_buffer();
 
-protected:
+private:
 
 	std::size_t _size;
-
-	gl_buffer_enum::type _type;
 
 public:
 
@@ -202,18 +199,6 @@ public:
 	void flush_mapped_buffer(GLintptr offset, GLsizeiptr size);
 
 	void unmap();
-
-public:
-	
-	void bind(gl_buffer_enum::type type)
-	{
-		glBindBuffer(static_cast<GLenum>(type), _handle);
-	}
-
-	void unbind(gl_buffer_enum::type type)
-	{
-		glBindBuffer(static_cast<GLenum>(type), 0);
-	}
 
 private:
 	

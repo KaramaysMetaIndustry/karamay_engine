@@ -17,6 +17,8 @@ public:
 	void bind();
 	void unbind();
 
+	std::uint32_t get_unit() { return 0; }
+
 private:
 	int _width, _height;
 
