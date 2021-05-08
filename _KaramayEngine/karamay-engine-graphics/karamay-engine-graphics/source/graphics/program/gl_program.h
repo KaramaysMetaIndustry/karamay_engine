@@ -38,11 +38,31 @@ public:
 
 public:
 
+	// associate uniform buffer
+	void associate_uniform_buffer(const std::string& uniform_block_name, std::shared_ptr<gl_buffer> buffer)
+	{
+		if (buffer)
+		{
+			GLuint uniform_block_index = glGetUniformBlockIndex(_handle, uniform_block_name.c_str());
+			glUniformBlockBinding(_handle, uniform_block_index, buffer->get_handle());
+		}
+	}
+
+	void associate_shader_storage_buffer(const std::string& block_name, std::shared_ptr<gl_buffer> buffer)
+	{
+		GLuint BindingPointIndex = 1;
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, BindingPointIndex, buffer->get_handle());
+		glShaderStorageBlockBinding(_handle, m_ShaderStorageBlockIndex, BindingPointIndex);
+		
+	}
+
+	// transform feedback
 	void set_transform_feedback_varyings()
 	{
 		glTransformFeedbackVaryings(_handle, 10, nullptr, static_cast<GLenum>(gl_buffer_mode::INTERLEAVED));
 	}
 
+	// 
 	void set_uniform_block(const GLchar* block_name, std::vector<const GLchar*> attrib_names)
 	{
 		// fetch the block info

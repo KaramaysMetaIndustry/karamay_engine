@@ -1,6 +1,11 @@
 #include "gl_renderbuffer.h"
 
-void gl_renderbuffer::allocate(gl_renderbuffer_enum::internal_format internal_format, unsigned int width, unsigned int height)
+gl_renderbuffer::~gl_renderbuffer()
+{
+	glDeleteRenderbuffers(1, &_handle);
+}
+
+void gl_renderbuffer::allocate(gl_renderbuffer_enum::internal_format internal_format, std::uint32_t width, std::uint32_t height)
 {
 	if (width > GL_MAX_RENDERBUFFER_SIZE || height > GL_MAX_RENDERBUFFER_SIZE) return;
 	glNamedRenderbufferStorage(_handle, static_cast<GLenum>(internal_format), static_cast<GLsizei>(width), static_cast<GLsizei>(height));

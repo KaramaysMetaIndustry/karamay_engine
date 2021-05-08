@@ -4,6 +4,13 @@
 
 #define attribute_offset(offset) (const GLvoid*)(offset * sizeof(GLfloat))
 
+
+namespace gl_vertex_array_enum
+{
+
+}
+
+
 struct gl_vertex_attribute_pointer
 {
 	std::uint32_t index;

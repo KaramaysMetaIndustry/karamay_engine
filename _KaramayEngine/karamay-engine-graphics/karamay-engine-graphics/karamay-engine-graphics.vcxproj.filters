@@ -336,9 +336,6 @@
     <ClCompile Include="source\graphics\buffer\gl_buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\graphics\buffer\gl_uniform_buffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\graphics\framebuffer\gl_framebuffer_base.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -723,9 +720,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\graphics\buffer\gl_buffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\graphics\buffer\gl_uniform_buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\graphics\framebuffer\gl_framebuffer_base.h">

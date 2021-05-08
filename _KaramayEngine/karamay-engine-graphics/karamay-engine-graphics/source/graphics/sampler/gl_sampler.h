@@ -77,20 +77,9 @@ class gl_sampler final : public gl_object
 {
 public:
 
-	static std::shared_ptr<gl_sampler> construct()
-	{
-		return std::make_shared<gl_sampler>();
-	}
+	gl_sampler();
 
-	gl_sampler()
-	{
-		glCreateSamplers(1, &_handle);
-	}
-
-	virtual ~gl_sampler()
-	{
-		glDeleteSamplers(1, &_handle);
-	}
+	virtual ~gl_sampler();
 
 public:
 

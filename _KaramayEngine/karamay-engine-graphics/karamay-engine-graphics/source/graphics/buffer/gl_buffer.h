@@ -7,8 +7,8 @@ namespace gl_buffer_enum
 {
 	enum class type : GLenum
 	{
-		ARRAY_BUFFER = GL_ARRAY_BUFFER,
-		ELEMENT_ARRAY_BUFFER = GL_ELEMENT_ARRAY_BUFFER,
+		ARRAY_BUFFER = GL_ARRAY_BUFFER, //
+		ELEMENT_ARRAY_BUFFER = GL_ELEMENT_ARRAY_BUFFER, //
 
 		ATOMIC_COUNTER_BUFFER = GL_ATOMIC_COUNTER_BUFFER,
 
@@ -22,14 +22,12 @@ namespace gl_buffer_enum
 		PIXEL_UNPACK_BUFFER = GL_PIXEL_UNPACK_BUFFER,
 
 		QUERY_BUFFER = GL_QUERY_BUFFER,
+		TEXTURE_BUFFER = GL_TEXTURE_BUFFER, // **
 
-		SHADER_STORAGE_BUFFER = GL_SHADER_STORAGE_BUFFER,
+		TRANSFORM_FEEDBACK_BUFFER = GL_TRANSFORM_FEEDBACK_BUFFER, // **
 
-		TEXTURE_BUFFER = GL_TEXTURE_BUFFER,
-
-		TRANSFORM_FEEDBACK_BUFFER = GL_TRANSFORM_FEEDBACK_BUFFER,
-
-		UNIFORM_BUFFER = GL_UNIFORM_BUFFER
+		UNIFORM_BUFFER = GL_UNIFORM_BUFFER, // **
+		SHADER_STORAGE_BUFFER = GL_SHADER_STORAGE_BUFFER
 	};
 
 	enum class storage_flag : GLenum
@@ -146,15 +144,12 @@ namespace gl_buffer_enum
 class gl_buffer_data_pack
 {
 public:
-	static std::shared_ptr<gl_buffer_data_pack> construct() { return std::make_shared<gl_buffer_data_pack>(); }
+	gl_buffer_data_pack() {}
 
 	~gl_buffer_data_pack() 
 	{
 		delete data;
 	}
-
-private:
-	gl_buffer_data_pack() {}
 
 
 public:
@@ -164,37 +159,42 @@ public:
 };
 
 
-class gl_buffer final : public gl_object
+class gl_buffer : public gl_object
 {
 public:
-	static std::shared_ptr<gl_buffer> construct()
-	{
-		return std::make_shared<gl_buffer>();
-	}
-
-	~gl_buffer();
-
-private:
+	
 	gl_buffer();
 
-	gl_buffer_enum::type _buffer_type;
+	virtual ~gl_buffer();
 
-	unsigned int _buffer_size;
+protected:
 
-public:
-	void allocate(gl_buffer_enum::type buffer_type, unsigned int buffer_size, GLbitfield flags);
+	std::size_t _size;
 
-	void fill(std::shared_ptr<gl_buffer_data_pack> data_pack, unsigned int offset = 0);
-
+	gl_buffer_enum::type _type;
 
 public:
+
+	void allocate(std::size_t size, GLbitfield flags)
+	{
+		glNamedBufferStorage(_handle, size, NULL, flags);
+		_size = size;
+	}
+
+	void fill(std::shared_ptr<gl_buffer_data_pack> data_pack, unsigned int offset = 0)
+	{
+		if (data_pack.get() && (offset + data_pack->size > _size)) {
+			throw std::exception("do not have enough memory");
+		}
+		glNamedBufferSubData(_handle, static_cast<GLintptr>(offset), static_cast<GLsizeiptr>(data_pack->size), data_pack->data);
+	}
+
 	void clear(GLenum internal_format, GLenum format, GLenum type, const void* data);
 
 	void clear(GLenum internal_format, GLenum format, GLenum type, const void* data, GLintptr offset, GLsizeiptr size);
 
 	void copy_to(GLuint write_buffer_handle, GLintptr read_offset, GLintptr write_offset, GLsizeiptr size);
 
-public:
 	void* map(GLenum access);
 
 	void* map(GLenum access, GLintptr offset, GLsizeiptr size);
@@ -204,23 +204,24 @@ public:
 	void unmap();
 
 public:
-	void bind();
+	
+	void bind(gl_buffer_enum::type type)
+	{
+		glBindBuffer(static_cast<GLenum>(type), _handle);
+	}
 
-	void unbind();
+	void unbind(gl_buffer_enum::type type)
+	{
+		glBindBuffer(static_cast<GLenum>(type), 0);
+	}
 
 private:
+	
 	int get_buffer_size() const
 	{
 		GLint value;
-		glGetBufferParameteriv(static_cast<GLenum>(_buffer_type), GL_BUFFER_SIZE, &value);
+		glGetNamedBufferParameteriv(_handle, GL_BUFFER_SIZE, &value);
 		return value;
-	}
-
-
-public:
-	bool is(gl_buffer_enum::type buffer_type)
-	{
-		return buffer_type == _buffer_type;
 	}
 
 };

@@ -1,5 +1,15 @@
 #include "gl_sampler.h"
 
+gl_sampler::gl_sampler()
+{
+	glCreateSamplers(1, &_handle);
+}
+
+gl_sampler::~gl_sampler()
+{
+	glDeleteSamplers(1, &_handle);
+}
+
 void gl_sampler::bind(std::uint32_t texture_unit)
 {
 	if (texture_unit > GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS) return;

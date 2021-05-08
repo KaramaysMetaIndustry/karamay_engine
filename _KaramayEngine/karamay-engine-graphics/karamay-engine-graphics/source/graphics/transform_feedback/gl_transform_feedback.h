@@ -16,9 +16,12 @@ public:
 
 	void unbind();
 
-	void associate_buffer(std::uint32_t index, std::shared_ptr<gl_buffer> array_buffer);
+	void associate_buffer(std::uint32_t index, std::shared_ptr<gl_buffer> buffer);
 
-	void associate_buffer(std::uint32_t index, std::shared_ptr<gl_buffer> array_buffer, std::uint32_t offset, std::uint32_t size);
+	void associate_buffer(std::uint32_t index, std::shared_ptr<gl_buffer> buffer, std::uint32_t offset, std::uint32_t size)
+	{
+		glTransformFeedbackBufferRange(_handle, index, buffer->get_handle(), offset, size);
+	}
 
 };
 
