@@ -1,6 +1,12 @@
 #pragma once
 #include "gl_renderer.h"
 
+#define ADD_FB(FB_NAME)\
+_framebuffers_map.emplace(FB_NAME, std::make_shared<gl_framebuffer>())\
+
+#define FIND_FB(FB_NAME)\
+_framebuffers_map.find(FB_NAME)->second\
+
 class gl_pbr_std_renderer : public gl_renderer
 {
 
@@ -8,20 +14,24 @@ class gl_pbr_std_renderer : public gl_renderer
 	{
 		// global resource
 		{
-			std::shared_ptr<gl_default_framebuffer> final_framebuffer;
-			std::shared_ptr<gl_framebuffer> framebuffer0;
-			std::shared_ptr<gl_framebuffer> framebuffer1;
-			std::shared_ptr<gl_framebuffer> framebuffer2;
+			_final_framebuffer = std::make_shared<gl_default_framebuffer>();
+			ADD_FB("FB0");
+			ADD_FB("FB1");
+			ADD_FB("FB2");
+
+			auto fb0 = FIND_FB("FB0");
+			if (fb0) {
+				fb0->attach_color_buffer_1d(0, )
+			}
+
+
+
+
 
 			auto program0 = std::make_shared<gl_program>();
 			auto program1 = std::make_shared<gl_program>();
 			auto program2 = std::make_shared<gl_program>();
-
-
-			_final_framebuffer = final_framebuffer;
-			_framebuffers_map.emplace("framebuffer0", framebuffer0);
-			_framebuffers_map.emplace("framebuffer1", framebuffer1);
-			_framebuffers_map.emplace("framebuffer2", framebuffer2);
+			
 
 			_programs_map.emplace("geom_handler", program0);
 			_programs_map.emplace("deferred_lighting_handler", program1);
