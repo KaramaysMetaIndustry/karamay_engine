@@ -173,29 +173,29 @@ public:
 	void set_uniform_3i(const std::string& name, std::int32_t value0, std::int32_t value1, std::int32_t value2) {}
 	void set_uniform_4i(const std::string& name, std::int32_t value0, std::int32_t value1, std::int32_t value2, std::int32_t value3) {}
 
-	void set_uniform_1ui(const std::string& name, glm::uvec1 value)
+	inline void set_uniform_1ui(const std::string& name, glm::uvec1 value)
 	{
 		glUniform1uiv(glGetAttribLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
 	}
-	void set_uniform_2ui(const std::string& name, glm::uvec2 value)
+	inline void set_uniform_2ui(const std::string& name, glm::uvec2 value)
 	{
 		glUniform2uiv(glGetAttribLocation(_handle, name.c_str()), 2, glm::value_ptr(value));
 	}
-	void set_uniform_3ui(const std::string& name, glm::uvec3 value)
+	inline void set_uniform_3ui(const std::string& name, glm::uvec3 value)
 	{
 		glUniform3uiv(glGetAttribLocation(_handle, name.c_str()), 3, glm::value_ptr(value));
 	}
-	void set_uniform_4ui(const std::string& name, glm::uvec4 value)
+	inline void set_uniform_4ui(const std::string& name, glm::uvec4 value)
 	{
 		glUniform4uiv(glGetAttribLocation(_handle, name.c_str()), 4, glm::value_ptr(value));
 	}
 
-	void set_uniform_1ui(const std::string& name, std::uint32_t value) {}
-	void set_uniform_2ui(const std::string& name, std::uint32_t value0, std::uint32_t value1) {}
-	void set_uniform_3ui(const std::string& name, std::uint32_t value0, std::uint32_t value1, std::uint32_t value2) {}
-	void set_uniform_4ui(const std::string& name, std::uint32_t value0, std::uint32_t value1, std::uint32_t value2, std::uint32_t value3) {}
+	inline void set_uniform_1ui(const std::string& name, std::uint32_t value) {}
+	inline void set_uniform_2ui(const std::string& name, std::uint32_t value0, std::uint32_t value1) {}
+	inline void set_uniform_3ui(const std::string& name, std::uint32_t value0, std::uint32_t value1, std::uint32_t value2) {}
+	inline void set_uniform_4ui(const std::string& name, std::uint32_t value0, std::uint32_t value1, std::uint32_t value2, std::uint32_t value3) {}
 
-	void set_uniform_matrix_4x4f(const std::string& name, glm::fmat4x4 value)
+	inline void set_uniform_matrix_4x4f(const std::string& name, glm::fmat4x4 value)
 	{
 		glUniformMatrix4fv(glGetAttribLocation(_handle, name.c_str()), 16, GL_TRUE, glm::value_ptr(value));
 	}
@@ -227,6 +227,14 @@ public:
 	void set_atomic_count_buffer(std::uint32_t binding, std::shared_ptr<gl_buffer> buffer)
 	{
 		glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, binding, buffer->get_handle());
+	}
+
+
+	void set_framebuffer(std::shared_ptr<gl_framebuffer> framebuffer)
+	{
+		if (framebuffer) {
+			framebuffer->bind();
+		}
 	}
 
 
@@ -272,5 +280,6 @@ private:
 	}
 
 	void link(bool is_separable);
+
 };
 

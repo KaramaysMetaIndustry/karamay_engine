@@ -372,7 +372,10 @@
     <ClCompile Include="source\Interface\material\material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\graphics\customized_pipeline\gl_pipeline_pbr.cpp">
+    <ClCompile Include="source\graphics\renderer\gl_renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\renderer\gl_pbr_std_renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -761,7 +764,10 @@
     <ClInclude Include="source\Interface\material\material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\graphics\customized_pipeline\gl_pipeline_pbr.h">
+    <ClInclude Include="source\graphics\renderer\gl_renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\renderer\gl_pbr_std_renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
