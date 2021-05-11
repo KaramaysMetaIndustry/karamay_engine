@@ -369,7 +369,16 @@
     <ClCompile Include="source\graphics\renderer\gl_pbr_std_renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\graphics\commands\gl_command.cpp">
+    <ClCompile Include="source\graphics\commands\gl_commands.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\mesh\gl_mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\mesh\material\gl_material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\framework\pipeline\pipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -755,7 +764,16 @@
     <ClInclude Include="source\graphics\renderer\gl_pbr_std_renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\graphics\commands\gl_command.h">
+    <ClInclude Include="source\graphics\commands\gl_commands.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\mesh\gl_mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\mesh\material\gl_material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\framework\pipeline\pipeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,6 +4,12 @@
 class gl_texture_2d final : public gl_texture_base
 {
 public:
+	
+	gl_texture_2d();
+	
+	virtual ~gl_texture_2d();
+
+public:
 	void allocate(GLenum internal_format, GLsizei width, GLsizei height, int mipmaps_num);
 
 	void fill_base_mipmap(GLenum format, GLenum type, const void* data);
@@ -26,7 +32,4 @@ private:
 
 	int _mipmaps_num;
 
-public:
-	gl_texture_2d();
-	~gl_texture_2d();
 };

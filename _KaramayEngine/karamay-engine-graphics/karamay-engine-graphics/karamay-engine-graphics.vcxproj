@@ -179,6 +179,7 @@
     <ClCompile Include="source\Core\Shader\ShaderBase.cpp" />
     <ClCompile Include="source\Core\SpicesRendererGlobal.cpp" />
     <ClCompile Include="source\Core\Window\WindowBase.cpp" />
+    <ClCompile Include="source\framework\pipeline\pipeline.cpp" />
     <ClCompile Include="source\Framework\Sphere\Sphere.cpp" />
     <ClCompile Include="source\GraphicsUnit\BufferPool\GLBufferPool.cpp" />
     <ClCompile Include="source\GraphicsUnit\Buffer\GLBuffer.cpp" />
@@ -202,10 +203,12 @@
     <ClCompile Include="source\GraphicsUnit\Texture\GLTextureBuffer.cpp" />
     <ClCompile Include="source\GraphicsUnit\Texture\GLTextureCube.cpp" />
     <ClCompile Include="source\graphics\buffer\gl_buffer.cpp" />
-    <ClCompile Include="source\graphics\commands\gl_command.cpp" />
+    <ClCompile Include="source\graphics\commands\gl_commands.cpp" />
     <ClCompile Include="source\graphics\framebuffer\gl_framebuffer.cpp" />
     <ClCompile Include="source\graphics\framebuffer\gl_default_framebuffer.cpp" />
     <ClCompile Include="source\graphics\glo\gl_object.cpp" />
+    <ClCompile Include="source\graphics\mesh\gl_mesh.cpp" />
+    <ClCompile Include="source\graphics\mesh\material\gl_material.cpp" />
     <ClCompile Include="source\graphics\program\gl_program.cpp" />
     <ClCompile Include="source\graphics\program_pipeline\gl_program_pipeline.cpp" />
     <ClCompile Include="source\graphics\renderbuffer\gl_multisample_renderbuffer.cpp" />
@@ -307,6 +310,7 @@
     <ClInclude Include="source\Core\Window\WindowBase.h" />
     <ClInclude Include="source\Framebuffer\GLFramebuffer.h" />
     <ClInclude Include="source\Framework\FrameworkGlobal.h" />
+    <ClInclude Include="source\framework\pipeline\pipeline.h" />
     <ClInclude Include="source\Framework\Sphere\Sphere.h" />
     <ClInclude Include="source\GLO\GLO.h" />
     <ClInclude Include="source\GraphicsUnit\BufferPool\GLBufferPool.h" />
@@ -332,10 +336,12 @@
     <ClInclude Include="source\GraphicsUnit\Texture\GLTextureBuffer.h" />
     <ClInclude Include="source\GraphicsUnit\Texture\GLTextureCube.h" />
     <ClInclude Include="source\graphics\buffer\gl_buffer.h" />
-    <ClInclude Include="source\graphics\commands\gl_command.h" />
+    <ClInclude Include="source\graphics\commands\gl_commands.h" />
     <ClInclude Include="source\graphics\framebuffer\gl_framebuffer.h" />
     <ClInclude Include="source\graphics\framebuffer\gl_default_framebuffer.h" />
     <ClInclude Include="source\graphics\glo\gl_object.h" />
+    <ClInclude Include="source\graphics\mesh\gl_mesh.h" />
+    <ClInclude Include="source\graphics\mesh\material\gl_material.h" />
     <ClInclude Include="source\graphics\program\gl_program.h" />
     <ClInclude Include="source\graphics\program_pipeline\gl_program_pipeline.h" />
     <ClInclude Include="source\graphics\renderbuffer\gl_multisample_renderbuffer.h" />

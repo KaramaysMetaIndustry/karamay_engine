@@ -25,7 +25,9 @@ public:
 	virtual ~gl_framebuffer();
 
 public:
-
+	/**
+	 * attachment_index [0, GL_MAX_COLOR_ATTACHMENTS - 1]
+	 */
 	void attach_color_texture_1d(std::uint32_t attachment_index, const std::shared_ptr<gl_texture_1d> texture_1d, std::uint32_t mipmap_index)
 	{
 		if (attachment_index < GL_MAX_COLOR_ATTACHMENTS && texture_1d)
@@ -63,6 +65,8 @@ public:
 		}
 	}
 
+	//void attach_color_texture_1d_array() {}
+
 	void attach_color_texture_2d(std::uint32_t attachment_index, const std::shared_ptr<gl_texture_2d> texture_2d, std::uint32_t mipmap_index)
 	{
 		if (attachment_index < GL_MAX_COLOR_ATTACHMENTS && texture_2d)
@@ -98,6 +102,11 @@ public:
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, texture_2d->get_handle(), mipmap_index);
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
+	}
+
+	void attach_color_texture_2d_array() 
+	{
+
 	}
 
 	void attach_color_texture_rectangle(std::uint32_t attachment_index, const std::shared_ptr<gl_texture_rectangle> texture_rectangle)
@@ -141,6 +150,7 @@ public:
 	{
 		if (attachment_index < GL_MAX_COLOR_ATTACHMENTS && texture_3d)
 		{
+
 			glFramebufferTextureLayer(_handle, GL_COLOR_ATTACHMENT0 + attachment_index, texture_3d->get_handle(), mipmap_index, depth_index);
 		}
 
@@ -200,7 +210,8 @@ public:
 	{
 		if (attachment_index < GL_MAX_COLOR_ATTACHMENTS && face_index < 6 && texture_cube)
 		{
-			glNamedFramebufferTextureLayer(_handle, GL_COLOR_ATTACHMENT0 + attachment_index, texture_cube->get_handle(), mipmap_index, face_index);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + attachment_index, GL_TEXTURE_CUBE_MAP_POSITIVE_X + face_index, texture_cube->get_handle(), mipmap_index);
+			//glNamedFramebufferTextureLayer(_handle, GL_COLOR_ATTACHMENT0 + attachment_index, texture_cube->get_handle(), mipmap_index, face_index);
 		}
 	}
 	void attach_depth_texture_cube_face(const std::shared_ptr<gl_texture_cube> texture_cube, std::uint32_t face_index, std::uint32_t mipmap_index)
@@ -289,7 +300,7 @@ public:
 
 public:
 
-	void set_draw_color_components(std::vector<std::uint32_t> color_attachment_indices)
+	void set_drawable_color_components(std::vector<std::uint32_t> color_attachment_indices)
 	{
 		for (auto& elem : color_attachment_indices)
 		{
@@ -297,9 +308,11 @@ public:
 		}
 
 		glDrawBuffers(color_attachment_indices.size(), color_attachment_indices.data());
+
+
 	}
 
-	void set_read_color_component(std::uint32_t color_attachment_index) 
+	void set_readable_color_component(std::uint32_t color_attachment_index) 
 	{
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + color_attachment_index);
 	}
@@ -316,7 +329,6 @@ public:
 	void draw_stencil(GLsizei width, GLsizei height, GLenum type, const void* pixels);
 	void draw_depth_stencil(GLsizei width, GLsizei height, GLenum type, const void* pixels);
 
-
 	void check_status()
 	{
 		glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -327,6 +339,14 @@ public:
 	void bind();
 
 	void unbind();
+
+private:
+
+	bool is_framebuffer() const
+	{
+		return glIsFramebuffer(_handle) == GL_TRUE ? true : false;
+	}
+
 
 };
 

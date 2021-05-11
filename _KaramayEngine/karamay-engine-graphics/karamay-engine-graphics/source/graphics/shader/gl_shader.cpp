@@ -1,14 +1,10 @@
 #include "gl_shader.h"
 
-void gl_shader::load_source(gl_shader_type type)
+gl_shader::gl_shader()
 {
-	_handle = glCreateShader(static_cast<GLenum>(type));
-	char* source;
-	int* lengths = {};
-	glShaderSource(_handle, 1, &source, lengths);
 }
 
-void gl_shader::compile()
+gl_shader::~gl_shader()
 {
-	glCompileShader(_handle);
+	glDeleteShader(_handle);
 }
