@@ -4,6 +4,13 @@
 class gl_multisample_texture_2d_array final : public gl_texture_base
 {
 public:
+	
+	gl_multisample_texture_2d_array();
+	
+	virtual ~gl_multisample_texture_2d_array();
+
+public:
+	
 	void allocate(GLsizei Samples, GLenum InternalFormat, GLsizei Width, GLsizei Height, GLsizei Num, GLboolean FixedSampleLocation) {
 		glTextureStorage3DMultisample(_handle, Samples, InternalFormat, Width, Height, Num, FixedSampleLocation);
 	}
@@ -18,10 +25,6 @@ public:
 	void bind(GLuint Unit);
 
 	void unbind();
-
-public:
-	gl_multisample_texture_2d_array();
-	virtual ~gl_multisample_texture_2d_array();
 
 };
 

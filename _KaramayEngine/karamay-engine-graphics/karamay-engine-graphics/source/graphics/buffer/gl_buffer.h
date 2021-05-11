@@ -170,6 +170,13 @@ private:
 
 	std::size_t _size;
 
+	gl_buffer_enum::internal_format _internal_format;
+
+public:
+	const std::size_t get_size() const { return _size; }
+
+	const gl_buffer_enum::internal_format get_internal_format() const { return _internal_format; }
+
 public:
 
 	void allocate(std::size_t size, GLbitfield flags)

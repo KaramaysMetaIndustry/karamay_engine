@@ -12,26 +12,6 @@ void gl_framebuffer::unbind()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void gl_framebuffer::attach_color_buffer_1d(unsigned int attachment_index, const std::shared_ptr<gl_texture_1d> texture_1d, unsigned int mipmap_index)
-{
-	glFramebufferTexture1D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + attachment_index, GL_TEXTURE_1D, texture_1d->get_handle(), mipmap_index);
-}
-
-void gl_framebuffer::attach_depth_buffer_1d(const std::shared_ptr<gl_texture_1d> texture_1d, unsigned int mipmap_index)
-{
-	glFramebufferTexture1D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_1D, texture_1d->get_handle(), mipmap_index);
-}
-
-void gl_framebuffer::attach_stencil_buffer_1d(const std::shared_ptr<gl_texture_1d> texture_1d, unsigned int mipmap_index)
-{
-	glFramebufferTexture1D(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_1D, texture_1d->get_handle(), mipmap_index);
-}
-
-void gl_framebuffer::attach_depth_stencil_buffer_1d(const std::shared_ptr<gl_texture_1d> texture_1d, unsigned int mipmap_index)
-{
-	glFramebufferTexture1D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_1D, texture_1d->get_handle(), mipmap_index);
-}
-
 void gl_framebuffer::draw_color(int attachment_index, GLsizei width, GLsizei height, GLenum format, GLenum type, const void* pixels)
 {
 	glReadBuffer(GL_COLOR_ATTACHMENT0 + attachment_index);
@@ -63,25 +43,6 @@ gl_framebuffer::~gl_framebuffer()
 	glDeleteFramebuffers(1, &_handle);
 }
 
-void gl_framebuffer::attach_color_buffer(unsigned int attachment_index, gl_renderbuffer renderbuffer)
-{
-	glNamedFramebufferRenderbuffer(_handle, GL_COLOR_ATTACHMENT0 + attachment_index, GL_RENDERBUFFER, renderbuffer.get_handle());
-}
-
-void gl_framebuffer::attach_depth_buffer(gl_renderbuffer renderbuffer)
-{
-	glNamedFramebufferRenderbuffer(_handle, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderbuffer.get_handle());
-}
-
-void gl_framebuffer::attach_stencil_buffer(gl_renderbuffer renderbuffer)
-{
-	glNamedFramebufferRenderbuffer(_handle, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer.get_handle());
-}
-
-void gl_framebuffer::attach_depth_stencil_buffer(gl_renderbuffer renderbuffer)
-{
-	glNamedFramebufferRenderbuffer(_handle, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer.get_handle());
-}
 
 void gl_framebuffer::read_color(int attachment_index, GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void* pixels)
 {

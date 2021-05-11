@@ -1,5 +1,6 @@
 #pragma once
 #include "gl_renderer.h"
+#include "graphics/commands/gl_command.h"
 
 #define ADD_FB(FB_NAME)\
 _framebuffers_map.emplace(FB_NAME, std::make_shared<gl_framebuffer>())\
@@ -21,7 +22,7 @@ class gl_pbr_std_renderer : public gl_renderer
 
 			auto fb0 = FIND_FB("FB0");
 			if (fb0) {
-				fb0->attach_color_buffer_1d(0, )
+				//fb0->attach_color_buffer_1d(0, );
 			}
 
 
@@ -97,6 +98,7 @@ class gl_pbr_std_renderer : public gl_renderer
 				program0->enable();
 				// call draw commands
 
+				gl_command::draw::draw_arrays();
 
 				// end draw commands
 				program0->disable();
