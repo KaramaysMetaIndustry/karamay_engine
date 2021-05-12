@@ -1,5 +1,4 @@
-﻿
-#include "graphics/public/vulkan.h"
+﻿#include "graphics/public/vulkan.h"
 #include <iostream>
 
 int main()
@@ -30,4 +29,9 @@ int main()
 		std::cout << "Could not create a Vulkan instance: " << e.what() << std::endl;
 		return 1;
 	}
+
+
+	vk::Device device = vk::Device
+
+
 }

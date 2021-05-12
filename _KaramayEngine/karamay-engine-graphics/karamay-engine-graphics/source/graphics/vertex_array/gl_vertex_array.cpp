@@ -18,6 +18,7 @@ void gl_vertex_array::associate_array_buffer(std::shared_ptr<gl_buffer> array_bu
 		array_buffer->bind();
 		for (const auto& pointer : pointers)
 		{	// set pointer
+			glEnableVertexAttribArray(static_cast<GLuint>(pointer.index));
 			glVertexAttribPointer(static_cast<GLuint>(pointer.index), static_cast<GLint>(pointer.size), static_cast<GLenum>(pointer.type), GL_FALSE, sizeof(GLfloat) * pointer.size, attribute_offset(pointer.offset));
 			indices.push_back(pointer.index);
 		}
@@ -34,6 +35,7 @@ void gl_vertex_array::associate_array_buffer_instanced(std::shared_ptr<gl_buffer
 		array_buffer->bind();
 		for (const auto& pointer : pointers)
 		{	// set pointer
+			glEnableVertexAttribArray(static_cast<GLuint>(pointer.index));
 			glVertexAttribPointer(static_cast<GLuint>(pointer.index), static_cast<GLint>(pointer.size), static_cast<GLenum>(pointer.type), GL_FALSE, sizeof(GLfloat) * pointer.size, attribute_offset(pointer.offset));
 			glVertexAttribDivisor(static_cast<GLuint>(pointer.index), static_cast<GLuint>(pointer.divisor));
 			indices.push_back(pointer.index);

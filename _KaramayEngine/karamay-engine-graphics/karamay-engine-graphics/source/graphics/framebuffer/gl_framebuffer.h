@@ -104,6 +104,12 @@ public:
 		}
 	}
 
+	auto get_color_texture_2d(std::uint32_t attachment_index)
+	{
+		return std::make_shared<gl_texture_2d>();
+	}
+
+
 	void attach_color_texture_2d_array() 
 	{
 

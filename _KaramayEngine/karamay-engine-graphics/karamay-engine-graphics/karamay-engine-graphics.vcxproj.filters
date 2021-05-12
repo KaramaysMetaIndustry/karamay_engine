@@ -381,6 +381,15 @@
     <ClCompile Include="source\framework\pipeline\pipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\graphics\pipeline\gl_compute_pipeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\pipeline\gl_graphics_pipeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\pipeline\gl_pipeline_base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -774,6 +783,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\framework\pipeline\pipeline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\pipeline\gl_compute_pipeline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\pipeline\gl_graphics_pipeline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\pipeline\gl_pipeline_base.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

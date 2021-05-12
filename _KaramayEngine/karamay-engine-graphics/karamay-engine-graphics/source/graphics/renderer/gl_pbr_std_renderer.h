@@ -3,21 +3,30 @@
 #include "graphics/commands/gl_commands.h"
 #include "graphics/mesh/gl_mesh.h"
 
-#define ADD_FB(FB_NAME)\
+#define ctt(CLASSNAME)\
+std::make_shared<CLASSNAME>()
+
+#define add_pip(PIPName)\
+_pipelines_map.emplace("pipeline0", std::make_shared<gl_pipeline_base>())\
+
+#define find_pip(PIPName)\
+_pipelines_map.find(PIPName)->second
+
+
+#define add_fb(FB_NAME)\
 _framebuffers_map.emplace(FB_NAME, std::make_shared<gl_framebuffer>())\
 
-#define FIND_FB(FB_NAME)\
+#define find_fb(FB_NAME)\
 _framebuffers_map.find(FB_NAME)->second\
+
+
+
 
 class gl_pbr_std_renderer : public gl_renderer
 {
 private:
 
 	std::shared_ptr< gl_mesh> _mesh;
-
-
-
-
 
 	std::float_t _view_field;
 	std::float_t _view_distance;
@@ -29,99 +38,68 @@ private:
 	}
 
 public:
+	
 	virtual void construct() override
 	{
-		
 		{
-			_final_framebuffer = std::make_shared<gl_default_framebuffer>();
-			ADD_FB("FB0");
-			ADD_FB("FB1");
-			ADD_FB("FB2");
+			add_fb("stage0");
+			add_fb("stage1");
+			add_fb("Gb");
+		}
 
-			auto fb0 = FIND_FB("FB0");
-			if (fb0) {
-				//fb0->attach_color_buffer_1d(0, );
+
+		// pipeline 0
+		{
+			add_pip("PIP0");
+			auto pip0 = find_pip("PIP0");
+			if (pip0)
+			{
+				pip0->construct({ "","","","" }); // load shaders, compile and link
+				pip0->set_framebuffer(find_fb("stage0"));
+				pip0->set_vertex_array(ctt(gl_vertex_array));
+				pip0->set_element_array_buffer(ctt(gl_buffer));
+				pip0->set_uniform_buffers({ ctt(gl_buffer), ctt(gl_buffer) });
 			}
-
-
-
-
-
-			
 		}
-
 		
+		// pipeline 1
 		{
-			_programs_map.emplace("program0", std::shared_ptr<gl_program>());
-			auto program0 = _programs_map.find("program0")->second;
-			program0->construct({
-				"/shaders/PBRMesh.vert",
-				"/shaders/PBRMesh.tesc",
-				"/shaders/PBRMesh.tese",
-				"/shaders/PBRMesh.geom",
-				"/shaders/PBRMesh.frag"
-				});
+			auto vertex = ctt(gl_vertex_array);
+			vertex->associate_array_buffer(find_fb("stage0").get);
+
+
+
+
+			add_pip("PIP1");
+			auto pip1 = find_pip("PIP1");
+			if (pip1)
+			{
+				pip1->construct({});
+				pip1->set_framebuffer();
+				pip1->set_vertex_array()
+			}
 		}
+		
 	}
 
 
 	virtual void initialize() override
 	{
-		{
-			auto program0 = _programs_map.find("geom_handler")->second;
-			if (program0)
-			{
 		
-
-				
-			}
-
-		}
 	}
 
 	virtual void render(std::float_t delta_time) override
 	{
-		// program 0 
+		for (auto pair : _pipelines_map)
 		{
-			auto program0 = _programs_map.find("program0")->second;
-
-			if (program0)
+			if (auto pipeline = pair.second)
 			{
-				program0->bind_framebuffer(nullptr); // bind default framebuffer
-				program0->bind_vertex_array(_mesh->vertex_array); // bind vertex array
+				pipeline->install();
+				pipeline->enable();
 
-				program0->bind_texture_2d(0, "PBRMaterial.albedo_map", std::make_shared<gl_texture_2d>());
-				program0->bind_texture_2d(1, "PBRMaterial.normal_map", std::make_shared<gl_texture_2d>());
-				program0->bind_texture_2d(2, "PBRMaterial.metalness_map", std::make_shared<gl_texture_2d>());
-				program0->bind_texture_2d(3, "PBRMaterial.roughness_map", std::make_shared<gl_texture_2d>());
-				program0->bind_texture_2d(4, "PBRMaterial.displacement_map", std::make_shared<gl_texture_2d>());
-				program0->bind_texture_2d(5, "PBRMaterial.ambient_occlusion_map", std::make_shared<gl_texture_2d>());
+				gl_commands::draw::draw_arrays(gl_commands::primitive_mode::LINE_STRIP_ADJACENCY, 0, 3);
 
-				for (const auto& pair : _mesh->material->texture_2ds_map)
-				{
-					program0->bind_texture_2d(0, pair.first, pair.second);
-				}
-
-
-				// set uniforms
-				program0->update_uniform_3f("camera_position", glm::vec3());
-				program0->update_uniform_matrix_4x4f("model_matrix", glm::mat4());
-				program0->update_uniform_matrix_4x4f("view_matrix", glm::mat4());
-				program0->update_uniform_matrix_4x4f("projection_matrix", get_projection_matrix());
-
-				program0->enable();
-				gl_commands::draw::draw_elements_instanced_base_instance();
-				program0->disable();
-			}
-		}
-
-
-		// program 1
-		{
-			auto program_ray = _programs_map.find("program_ray")->second;
-			if (program_ray)
-			{
-				program_ray->render(1.0f);
+				pipeline->disable();
 			}
 		}
 
