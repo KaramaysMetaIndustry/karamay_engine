@@ -27,7 +27,7 @@ private:
 
 public:
 
-	void construct(std::vector<std::string> shader_paths)
+	void construct(const std::vector<std::string>& shader_paths)
 	{
 		for (const auto& path : shader_paths)
 		{
@@ -50,17 +50,24 @@ public:
 		glLinkProgram(_handle);
 	}
 
-	// set transform feedback output varyings
-	void set_transform_feedback_output_varyings(const std::vector<std::string>& varyings)
+	/**
+	 * @varyings
+	 * 
+	 */
+	void set_transform_feedback_varyings(const std::vector<const GLchar*>& varyings)
 	{
-		glTransformFeedbackVaryings(_handle, varyings.size(), nullptr, static_cast<GLenum>(gl_buffer_mode::INTERLEAVED));
-		glLinkProgram(_handle);
+		if (varyings.size() > 0)
+		{
+			glTransformFeedbackVaryings(_handle, varyings.size(), varyings.data(), static_cast<GLenum>(gl_buffer_mode::INTERLEAVED));
+			glLinkProgram(_handle);
+		}	
 	}
 
 public:
 	
 	/**
 	 * set target framebuffer the pipeline will render to in new pass
+	 * @framebuffer : the target framebuffer
 	 */
 	void bind_framebuffer(std::shared_ptr<gl_framebuffer> framebuffer)
 	{
@@ -72,6 +79,7 @@ public:
 
 	/**
 	 * set vertex array for pipeline, it will be pulled by [pipeline vertex puller] when draw commands sent out
+	 * @vertex_array : vertices the pipeline will pull 
 	 */
 	void bind_vertex_array(std::shared_ptr<gl_vertex_array> vertex_array)
 	{
@@ -81,11 +89,14 @@ public:
 		}
 	}
 
-	// set element array buffer
-	void bind_element_array_buffer(std::shared_ptr<gl_buffer> element_array_buffer)
+	/**
+	 * set the index info that vertex puller will use( to index current original vertex array)
+	 * @buffer : which stores index info
+	 */
+	void bind_element_array_buffer(std::shared_ptr<gl_buffer> buffer)
 	{
-		if (element_array_buffer) {
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_array_buffer->get_handle());
+		if (buffer) {
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer->get_handle());
 		}
 	}
 
