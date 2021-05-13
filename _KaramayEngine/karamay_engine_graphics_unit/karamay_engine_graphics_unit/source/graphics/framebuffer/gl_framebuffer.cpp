@@ -2,16 +2,6 @@
 #include "graphics/texture/gl_texture.h"
 #include "graphics/renderbuffer/gl_renderbuffer.h"
 
-void gl_framebuffer::bind()
-{
-	glBindFramebuffer(GL_FRAMEBUFFER, _handle);
-}
-
-void gl_framebuffer::unbind()
-{
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
 void gl_framebuffer::draw_color(int attachment_index, GLsizei width, GLsizei height, GLenum format, GLenum type, const void* pixels)
 {
 	glReadBuffer(GL_COLOR_ATTACHMENT0 + attachment_index);

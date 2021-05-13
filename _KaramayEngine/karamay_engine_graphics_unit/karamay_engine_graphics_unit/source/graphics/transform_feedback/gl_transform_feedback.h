@@ -31,9 +31,27 @@ public:
 
 public:
 
-	void bind();
+	/**
+	 * bind transform feedback object to binding in current context
+	 */
+	void bind()
+	{
+		glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, _handle);
+	}
 
-	void unbind();
+	/**
+	 * unbind transform feedback object from target-binding in current context
+	 */
+	void unbind()
+	{
+		GLint handle;
+		glGetIntegerv(GL_TRANSFORM_FEEDBACK_BINDING, &handle);
+		if(handle == _handle)
+		{
+			glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
+		}
+		
+	}
 
 };
 

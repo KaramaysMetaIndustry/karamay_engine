@@ -67,12 +67,6 @@ namespace gl_sampler_enum
 	};
 }
 
-template<typename T>
-std::shared_ptr<T> construct()
-{
-	return std::make_shared<T>();
-}
-
 class gl_sampler final : public gl_object
 {
 public:
@@ -81,11 +75,25 @@ public:
 
 	virtual ~gl_sampler();
 
+private:
+
+	std::uint32_t _unit;
+
 public:
 
-	void bind(std::uint32_t texture_unit);
+	void bind(std::uint32_t unit)
+	{
+		if (unit < GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS)
+		{
+			glBindSampler(unit, _handle);
+			_unit = unit;
+		}
+	}
 
-	void unbind();
+	void unbind()
+	{
+		glBindSampler(_unit, 0);
+	}
 
 public:
 

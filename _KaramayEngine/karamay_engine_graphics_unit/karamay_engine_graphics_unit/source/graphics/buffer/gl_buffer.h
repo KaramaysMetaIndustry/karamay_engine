@@ -121,8 +121,6 @@ namespace gl_buffer_enum
 		INT = GL_INT,
 		UNSIGNED_INT = GL_UNSIGNED_INT,
 		
-		
-		
 		UNSIGNED_BYTE_3_3_2 = GL_UNSIGNED_BYTE_3_3_2,
 		UNSIGNED_BYTE_2_3_3_REV = GL_UNSIGNED_BYTE_2_3_3_REV,
 		UNSIGNED_SHORT_5_6_5 = GL_UNSIGNED_SHORT_5_6_5,
@@ -138,26 +136,6 @@ namespace gl_buffer_enum
 	};
 }
 
-
-
-class gl_buffer_data_pack
-{
-public:
-	gl_buffer_data_pack() {}
-
-	~gl_buffer_data_pack() 
-	{
-		delete data;
-	}
-
-
-public:
-
-	const void* data;
-	unsigned int size;
-};
-
-
 class gl_buffer : public gl_object
 {
 public:
@@ -166,23 +144,17 @@ public:
 
 	virtual ~gl_buffer();
 
-private:
-
-	std::size_t _size;
-
-	gl_buffer_enum::internal_format _internal_format;
-
-public:
-	const std::size_t get_size() const { return _size; }
-
-	const gl_buffer_enum::internal_format get_internal_format() const { return _internal_format; }
-
 public:
 
 	void allocate(std::size_t size, GLbitfield flags)
 	{
 		glNamedBufferStorage(_handle, size, NULL, flags);
 		_size = size;
+	}
+
+	void reallocate()
+	{
+
 	}
 
 	void fill(GLintptr offset, GLsizeiptr size, const void* data)
@@ -212,6 +184,19 @@ private:
 		glGetNamedBufferParameteriv(_handle, GL_BUFFER_SIZE, &value);
 		return value;
 	}
+
+private:
+
+	std::size_t _size;
+
+	gl_buffer_enum::internal_format _internal_format;
+
+
+public:
+	const std::size_t get_size() const { return _size; }
+
+	const gl_buffer_enum::internal_format get_internal_format() const { return _internal_format; }
+
 
 };
 

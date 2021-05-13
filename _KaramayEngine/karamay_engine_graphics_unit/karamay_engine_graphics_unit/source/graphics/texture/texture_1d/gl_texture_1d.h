@@ -7,46 +7,27 @@ public:
 
 	gl_texture_1d();
 
-	~gl_texture_1d();
-
-private:
+	virtual ~gl_texture_1d();
 	
+public:
 	
+	void bind(std::uint32_t unit)
+	{
+		glActiveTexture(GL_TEXTURE0 + unit);
+		glBindTexture(GL_TEXTURE_1D, _handle);
+		if (_sampler)
+		{
+			_sampler->bind(unit);
+		}
+	}
 
-private:
-
-	gl_texture_enum::internal_format _internal_format;
-
-	std::uint32_t _mipmaps_num;
-
-	std::uint32_t _base_mipmap_width;
+	void unbind()
+	{
+	}
 
 public:
 	
 	void allocate(gl_texture_enum::internal_format internal_format, std::uint32_t base_mipmap_width, std::uint32_t mipmaps_num);
-
-public:
-
-	/*
-	* if mipmap pixel packs you provided do not reach to _mipmaps_num, we will generate the rest mipmaps
-	*/
-	void fill(std::vector<gl_texture_pixels_pack> mipmap_pixels_packs)
-	{
-		const auto num = mipmap_pixels_packs.size();
-		if (num == 0) return;
-
-		for (int i = 0; i < _mipmaps_num; ++i)
-		{
-			
-		}
-
-		if (num < _mipmaps_num)
-		{
-			bind(1);
-			glGenerateMipmap(GL_TEXTURE_1D);
-			unbind();
-		}
-	}
 
 	void fill_mipmap(std::uint32_t mipmap_index, std::uint32_t x_offset, std::uint32_t mipmap_width, gl_texture_pixels_pack pixels_pack)
 	{
@@ -54,8 +35,6 @@ public:
 			static_cast<GLenum>(pixels_pack.format), static_cast<GLenum>(pixels_pack.type), 
 			pixels_pack.pixels);
 	}
-
-
 
 public:
 
@@ -85,11 +64,14 @@ public:
 	 */
 	void* fetch_pixels(GLuint mipmap_index, GLenum format, GLenum type);
 	void* fetch_base_mipmap_pixels(GLenum format, GLenum type) {}
+	
+private:
 
-public:
-	void bind(unsigned int unit);
+	gl_texture_enum::internal_format _internal_format;
 
-	void unbind();
+	std::uint32_t _mipmaps_num;
+
+	std::uint32_t _base_mipmap_width;
 
 };
 

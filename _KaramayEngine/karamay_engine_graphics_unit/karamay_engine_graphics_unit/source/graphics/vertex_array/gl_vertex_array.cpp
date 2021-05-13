@@ -45,16 +45,6 @@ void gl_vertex_array::associate_array_buffer_instanced(std::shared_ptr<gl_buffer
 	//}
 }
 
-void gl_vertex_array::bind()
-{
-	glBindVertexArray(_handle);
-}
-
-void gl_vertex_array::unbind()
-{
-	glBindVertexArray(0);
-}
-
 void gl_vertex_array::enable_vertex_attributes()
 {
 	for (const auto index : indices)

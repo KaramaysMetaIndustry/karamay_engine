@@ -52,9 +52,15 @@ public:
 
 public:
 	
-	void bind();
+	void bind_to_context()
+	{
+		glBindVertexArray(_handle);
+	}
 
-	void unbind();
+	void unbind_from_context()
+	{
+		glBindVertexArray(0);
+	}
 
 	void enable_vertex_attributes();
 

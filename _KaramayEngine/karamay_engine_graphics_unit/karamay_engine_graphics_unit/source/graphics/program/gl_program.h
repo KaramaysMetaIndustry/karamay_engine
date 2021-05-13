@@ -74,52 +74,40 @@ public:
 	}
 
 public:
-	
-	/**
-<<<<<<< HEAD
-	 * [Fixed] specify the basic vertex array for pipeline.  
-	 * @vertex_array : vertex array object
-=======
-	 * set target framebuffer the pipeline will render to in new pass
-	 * @framebuffer : the target framebuffer
->>>>>>> b05ef364785e43cf3587ddc86b284777952acc6f
-	 */
-	void bind_vertex_array(std::shared_ptr<gl_vertex_array> vertex_array)
+
+	void associate_framebuffer(std::shared_ptr<gl_framebuffer> framebuffer)
+	{
+		if (framebuffer)
+		{
+			framebuffer->bind_to_context();
+		}
+	}
+
+	void associate_vertex_array(std::shared_ptr<gl_vertex_array> vertex_array)
 	{
 		if (vertex_array) {
-			vertex_array->bind();
+			vertex_array->bind_to_context();
 			vertex_array->enable_vertex_attributes();
 		}
 	}
 
-	/**
-<<<<<<< HEAD
-	 * [Optional] specify the transform feedback object
-	 * @transform_feedback : 
-	 */
-	void bind_transform_feedback(std::shared_ptr<gl_transform_feedback> transform_feedback)
+	void associate_transform_feedback(std::shared_ptr<gl_transform_feedback> transform_feedback)
 	{
 		if (transform_feedback)
+		{
 			transform_feedback->bind();
+		}
+		
 	}
 
-	/*
-	 * set the index info that vertex puller will use( to index current original vertex array)
-	 * @buffer : which stores index info
-	 */
-	void bind_element_array_buffer(std::shared_ptr<gl_buffer> buffer)
+	void associate_element_array_buffer(std::shared_ptr<gl_buffer> buffer)
 	{
 		if (buffer) {
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer->get_handle());
 		}
-
 	}
 
-	/**
-	 * [Optional]
-	 * pipelines can share these buffers (read only) can not communicate
-	 */
-	void bind_uniform_buffer(std::uint32_t binding, const std::string& block_name, std::shared_ptr<gl_buffer> buffer)
+	void associate_uniform_buffer(std::uint32_t binding, const std::string& block_name, std::shared_ptr<gl_buffer> buffer)
 	{
 		if (buffer)
 		{
@@ -130,12 +118,7 @@ public:
 		}
 	}
 
-	/**
-	 * [Optional]
-	 * layout (binding = 0, std430) buffer [block_name]
-	 * pipelines can share these buffers (read and write) can communicate
-	 */
-	void bind_shader_storage_buffer(std::uint32_t binding, const std::string& block_name, std::shared_ptr<gl_buffer> buffer)
+	void associate_shader_storage_buffer(std::uint32_t binding, const std::string& block_name, std::shared_ptr<gl_buffer> buffer)
 	{
 		if (buffer)
 		{
@@ -144,12 +127,7 @@ public:
 		}
 	}
 
-	/**
-	 * [Optional]
-	 * layout (binding = 0, offset = 0) uniform atomic_uint [name]
-	 * pipeline can shared these buffers (read and write) (atomic count) can communicate
-	 */
-	void bind_atomic_count_buffer(std::uint32_t binding, std::shared_ptr<gl_buffer> buffer)
+	void associate_atomic_count_buffer(std::uint32_t binding, std::shared_ptr<gl_buffer> buffer)
 	{
 		if (buffer)
 		{
@@ -157,16 +135,15 @@ public:
 		}	
 	}
 
-	// set texture
-	void bind_texture_1d(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_1d> texture_1d)
+
+	void associate_texture_1d(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_1d> texture_1d)
 	{
 		if (texture_1d) {
-			glActiveTexture(GL_TEXTURE0 + unit);
-			glBindTexture(GL_TEXTURE_1D, texture_1d->get_handle());
+			texture_1d->bind(unit);
 			update_uniform_1ui(name, unit);
 		}
 	}
-	void bind_texture_1d_array(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_1d_array> texture_1d_array)
+	void associate_texture_1d_array(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_1d_array> texture_1d_array)
 	{
 		if (texture_1d_array) {
 			glActiveTexture(GL_TEXTURE0 + unit);
@@ -174,7 +151,7 @@ public:
 			update_uniform_1ui(name, unit);
 		}
 	}
-	void bind_texture_2d(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_2d> texture_2d)
+	void associate_texture_2d(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_2d> texture_2d)
 	{
 		if (texture_2d) {
 			glActiveTexture(GL_TEXTURE0 + unit);
@@ -182,7 +159,7 @@ public:
 			update_uniform_1ui(name, unit);
 		}
 	}
-	void bind_texture_2d_array(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_2d_array> texture_2d_array)
+	void associate_texture_2d_array(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_2d_array> texture_2d_array)
 	{
 		if (texture_2d_array) {
 			glActiveTexture(GL_TEXTURE0 + unit);
@@ -190,7 +167,7 @@ public:
 			update_uniform_1ui(name, unit);
 		}
 	}
-	void bind_texture_3d(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_3d> texture_3d)
+	void associate_texture_3d(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_3d> texture_3d)
 	{
 		if (texture_3d) {
 			glActiveTexture(GL_TEXTURE0 + unit);
@@ -198,7 +175,7 @@ public:
 			update_uniform_1ui(name, unit);
 		}
 	}
-	void bind_texture_cube(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_cube> texture_cube)
+	void associate_texture_cube(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_cube> texture_cube)
 	{
 		if (texture_cube) {
 			glActiveTexture(GL_TEXTURE0 + unit);
@@ -206,7 +183,7 @@ public:
 			update_uniform_1ui(name, unit);
 		}
 	}
-	void bind_texture_cube_array(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_cube_array> texture_cube_array)
+	void associate_texture_cube_array(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_cube_array> texture_cube_array)
 	{
 		if (texture_cube_array) {
 			glActiveTexture(GL_TEXTURE0 + unit);
@@ -214,7 +191,7 @@ public:
 			update_uniform_1ui(name, unit);
 		}
 	}
-	void bind_texture_buffer(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_buffer> texture_buffer)
+	void associate_texture_buffer(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_buffer> texture_buffer)
 	{
 		if (texture_buffer) {
 			glActiveTexture(GL_TEXTURE0 + unit);
@@ -353,17 +330,6 @@ public:
 		glBindBufferBase(GL_UNIFORM_BUFFER, block_index, ubo.get_handle());
 	}
 
-
-	/**
-	 * set target framebuffer the pipeline will render to in new pass
-	 */
-	void bind_framebuffer(std::shared_ptr<gl_framebuffer> framebuffer)
-	{
-		if (framebuffer) {
-			framebuffer->bind();
-		}
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	}
 
 
 public:

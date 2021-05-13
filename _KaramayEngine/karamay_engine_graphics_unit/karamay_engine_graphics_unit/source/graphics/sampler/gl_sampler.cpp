@@ -10,17 +10,6 @@ gl_sampler::~gl_sampler()
 	glDeleteSamplers(1, &_handle);
 }
 
-void gl_sampler::bind(std::uint32_t texture_unit)
-{
-	if (texture_unit > GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS) return;
-
-	glBindSampler(texture_unit, _handle);
-}
-
-void gl_sampler::unbind()
-{
-	glBindSampler(0, _handle);
-}
 
 void gl_sampler::set_texture_border_color(glm::vec4 texture_border_color)
 {
