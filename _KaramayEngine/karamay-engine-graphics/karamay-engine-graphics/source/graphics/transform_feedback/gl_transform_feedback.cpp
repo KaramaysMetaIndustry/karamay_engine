@@ -22,8 +22,16 @@ void gl_transform_feedback::unbind()
 
 void gl_transform_feedback::associate_buffer(std::uint32_t index, std::shared_ptr<gl_buffer> buffer)
 {
-	if (buffer)
+	if (index < GL_MAX_TRANSFORM_FEEDBACK_BUFFERS && buffer)
 	{
 		glTransformFeedbackBufferBase(_handle, static_cast<GLuint>(index), buffer->get_handle());
+	}
+}
+
+void gl_transform_feedback::associate_buffer(std::uint32_t index, std::shared_ptr<gl_buffer> buffer, std::int64_t offset, std::int64_t size)
+{
+	if (index < GL_MAX_TRANSFORM_FEEDBACK_BUFFERS && buffer)
+	{
+		glTransformFeedbackBufferRange(_handle, index, buffer->get_handle(), offset, size);
 	}
 }

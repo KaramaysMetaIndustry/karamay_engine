@@ -11,17 +11,29 @@ public:
 	virtual ~gl_transform_feedback();
 
 public:
-	
+
+	/**
+	 * @index : a transform feedback object has GL_MAX_TRANSFORM_FEEDBACK_BUFFERS slots, range of indices is [0, GL_MAX_TRANSFORM_FEEDBACK_BUFFERS - 1]
+	 * you must use [ layout(xfb_buffer = 1) out; ]  to specify which buffer you will write into in glsl
+	 * 
+	 * @buffer : 
+	 * the buffer associated to @index slot
+	 */
+	void associate_buffer(std::uint32_t index, std::shared_ptr<gl_buffer> buffer);
+
+	/**
+	 * @index : location of transform feedback object the buffer will associated to
+	 * @buffer : buffer
+	 * @offset : (bytes) offset of buffer
+	 * @size : (bytes) [offset, offset + size] of buffer will be associate to transform feedback
+	 */
+	void associate_buffer(std::uint32_t index, std::shared_ptr<gl_buffer> buffer, std::int64_t offset, std::int64_t size);
+
+public:
+
 	void bind();
 
 	void unbind();
-
-	void associate_buffer(std::uint32_t index, std::shared_ptr<gl_buffer> buffer);
-
-	void associate_buffer(std::uint32_t index, std::shared_ptr<gl_buffer> buffer, std::uint32_t offset, std::uint32_t size)
-	{
-		glTransformFeedbackBufferRange(_handle, index, buffer->get_handle(), offset, size);
-	}
 
 };
 
