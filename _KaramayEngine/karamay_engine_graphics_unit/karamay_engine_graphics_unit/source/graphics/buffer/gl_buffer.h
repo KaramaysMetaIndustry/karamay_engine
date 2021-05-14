@@ -10,29 +10,30 @@ namespace gl_buffer_enum
 		ARRAY_BUFFER = GL_ARRAY_BUFFER, //**
 		ELEMENT_ARRAY_BUFFER = GL_ELEMENT_ARRAY_BUFFER, // **
 
+		UNIFORM_BUFFER = GL_UNIFORM_BUFFER, // **
+		SHADER_STORAGE_BUFFER = GL_SHADER_STORAGE_BUFFER, // **
+		ATOMIC_COUNTER_BUFFER = GL_ATOMIC_COUNTER_BUFFER,
+
+		DRAW_INDIRECT_BUFFER = GL_DRAW_INDIRECT_BUFFER,
+
+		QUERY_BUFFER = GL_QUERY_BUFFER,
+		PIXEL_PACK_BUFFER = GL_PIXEL_PACK_BUFFER,
+		PIXEL_UNPACK_BUFFER = GL_PIXEL_UNPACK_BUFFER,
+
 		COPY_READ_BUFFER = GL_COPY_READ_BUFFER,
 		COPY_WRITE_BUFFER = GL_COPY_WRITE_BUFFER,
 
 		DISPATCH_INDIRECT_BUFFER = GL_DISPATCH_INDIRECT_BUFFER,
-		DRAW_INDIRECT_BUFFER = GL_DRAW_INDIRECT_BUFFER,
-
-		PIXEL_PACK_BUFFER = GL_PIXEL_PACK_BUFFER,
-		PIXEL_UNPACK_BUFFER = GL_PIXEL_UNPACK_BUFFER,
-
-		QUERY_BUFFER = GL_QUERY_BUFFER,
-		TEXTURE_BUFFER = GL_TEXTURE_BUFFER, // **
-
-		ATOMIC_COUNTER_BUFFER = GL_ATOMIC_COUNTER_BUFFER,
-		TRANSFORM_FEEDBACK_BUFFER = GL_TRANSFORM_FEEDBACK_BUFFER, // **
-
-		UNIFORM_BUFFER = GL_UNIFORM_BUFFER, // **
-		SHADER_STORAGE_BUFFER = GL_SHADER_STORAGE_BUFFER // **
+		
+		TEXTURE_BUFFER = GL_TEXTURE_BUFFER,
+		TRANSFORM_FEEDBACK_BUFFER = GL_TRANSFORM_FEEDBACK_BUFFER
 	};
 
 	enum class storage_flag : GLenum
 	{
 		MAP_READ_BIT = GL_MAP_READ_BIT,
 		MAP_WRITE_BIT = GL_MAP_WRITE_BIT,
+		DYNAMIC_STORAGE_BIT = GL_DYNAMIC_STORAGE_BIT,
 		MAP_PERSISTENT_BIT = GL_MAP_PERSISTENT_BIT,
 		MAP_COHERENT_BIT = GL_MAP_COHERENT_BIT,
 		CLIENT_STORAGE_BIT = GL_CLIENT_STORAGE_BIT
@@ -145,21 +146,41 @@ public:
 	virtual ~gl_buffer();
 
 public:
-
-	void allocate(std::size_t size, GLbitfield flags)
+	
+	/**
+	 * @size : bytes of size
+	 * @is_dynamic_storage : if true,  
+	 * @is_map_read : if true, you can read the map via mapping the buffer glMapBuffer/glMapNamedBuffer
+	 * @is_map_persistent : if true, you can write the map via mapping the buffer
+	 * @is_map_coherent :
+	 * @is_client_storage :
+	 */
+	void allocate(std::size_t size, bool is_map_read = false, bool is_map_write = false, bool is_map_persistent = false, bool is_map_coherent= false, bool is_dynamic_storage = true, bool is_client_storage = true)
 	{
+		std::uint32_t flags = 0;
+		if (is_dynamic_storage)
+			flags = GL_DYNAMIC_STORAGE_BIT;
+		if (is_map_read)
+			flags = flags | GL_MAP_READ_BIT;
+		if (is_map_write)
+			flags = flags | GL_MAP_WRITE_BIT;
+		if (is_map_persistent)
+			flags = flags | GL_MAP_PERSISTENT_BIT;
+		if (is_map_coherent)
+			flags = flags | GL_MAP_COHERENT_BIT;
+		if (is_client_storage)
+			flags = flags | GL_CLIENT_STORAGE_BIT;
+
 		glNamedBufferStorage(_handle, size, NULL, flags);
 		_size = size;
 	}
 
-	void reallocate()
+	void fill(std::size_t offset, std::size_t size, const void* data)
 	{
-
-	}
-
-	void fill(GLintptr offset, GLsizeiptr size, const void* data)
-	{
-		glNamedBufferSubData(_handle, offset, size, data);
+		if (data && offset + size <= _size)
+		{
+			glNamedBufferSubData(_handle, offset, size, data);
+		}
 	}
 
 	void clear(GLenum internal_format, GLenum format, GLenum type, const void* data);
@@ -167,6 +188,8 @@ public:
 	void clear(GLenum internal_format, GLenum format, GLenum type, const void* data, GLintptr offset, GLsizeiptr size);
 
 	void copy_to(GLuint write_buffer_handle, GLintptr read_offset, GLintptr write_offset, GLsizeiptr size);
+
+public:
 
 	void* map(GLenum access);
 

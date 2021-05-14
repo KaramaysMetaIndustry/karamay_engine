@@ -35,6 +35,10 @@ private:
 	
 	std::vector<std::shared_ptr<gl_shader>> shaders;
 
+	std::stack<std::uint32_t> _atomic_count_buffer_bindings_stack;
+	std::stack<std::uint32_t> _shader_storage_buffer_bindings_stack;
+	std::stack<std::uint32_t> _uniform_buffer_bindings_stack;
+
 public:
 
 	void construct(const std::vector<std::string>& shader_paths)
@@ -75,7 +79,7 @@ public:
 
 public:
 
-	void associate_framebuffer(std::shared_ptr<gl_framebuffer> framebuffer)
+	void bind_framebuffer(std::shared_ptr<gl_framebuffer> framebuffer)
 	{
 		if (framebuffer)
 		{
@@ -83,7 +87,7 @@ public:
 		}
 	}
 
-	void associate_vertex_array(std::shared_ptr<gl_vertex_array> vertex_array)
+	void bind_vertex_array(std::shared_ptr<gl_vertex_array> vertex_array)
 	{
 		if (vertex_array) {
 			vertex_array->bind_to_context();
@@ -91,23 +95,24 @@ public:
 		}
 	}
 
-	void associate_transform_feedback(std::shared_ptr<gl_transform_feedback> transform_feedback)
-	{
-		if (transform_feedback)
-		{
-			transform_feedback->bind();
-		}
-		
-	}
-
-	void associate_element_array_buffer(std::shared_ptr<gl_buffer> buffer)
+	void bind_element_array_buffer(std::shared_ptr<gl_buffer> buffer)
 	{
 		if (buffer) {
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer->get_handle());
 		}
 	}
 
-	void associate_uniform_buffer(std::uint32_t binding, const std::string& block_name, std::shared_ptr<gl_buffer> buffer)
+	// indexed buffer GL_MAX_TRANSFORM_FEEDBACK_BUFFERS
+	void bind_transform_feedback(std::shared_ptr<gl_transform_feedback> transform_feedback)
+	{
+		if (transform_feedback)
+		{
+			transform_feedback->bind();
+		}
+
+	}
+	// indexed buffer GL_MAX_UNIFORM_BUFFER_BINDINGS
+	void bind_uniform_buffer(std::uint32_t binding, const std::string& block_name, std::shared_ptr<gl_buffer> buffer)
 	{
 		if (buffer)
 		{
@@ -117,8 +122,9 @@ public:
 			glUniformBlockBinding(_handle, glGetUniformBlockIndex(_handle, block_name.c_str()), binding);
 		}
 	}
-
-	void associate_shader_storage_buffer(std::uint32_t binding, const std::string& block_name, std::shared_ptr<gl_buffer> buffer)
+	void bind_uniform_buffer(std::uint32_t binding, const std::string& block_name, std::shared_ptr<gl_buffer> buffer) {}
+	// indexed buffer GL_MAX_SHADER_STORAGE_BUFFER_BINDINGS
+	void bind_shader_storage_buffer(std::uint32_t binding, const std::string& block_name, std::shared_ptr<gl_buffer> buffer)
 	{
 		if (buffer)
 		{
@@ -126,24 +132,35 @@ public:
 			glShaderStorageBlockBinding(_handle, glGetProgramResourceIndex(_handle, GL_SHADER_STORAGE_BLOCK, block_name.c_str()), binding);
 		}
 	}
-
-	void associate_atomic_count_buffer(std::uint32_t binding, std::shared_ptr<gl_buffer> buffer)
+	void bind_shader_storage_buffer(std::uint32_t binding, const std::string& block_name, std::shared_ptr<gl_buffer> buffer);
+	// indexed buffer GL_MAX_ATOMIC_COUNTER_BUFFER_BINDINGS
+	void bind_atomic_count_buffer(std::shared_ptr<gl_buffer> buffer, std::size_t offset, std::size_t size)
 	{
 		if (buffer)
 		{
-			glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, binding, buffer->get_handle());
+			glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, _atomic_count_buffer_bindings_stack.top(), buffer->get_handle());
+			_atomic_count_buffer_bindings_stack.pop();
 		}	
 	}
 
+	void bind_atomic_count_buffer(std::shared_ptr<gl_buffer> buffer, std::size_t offset, std::size_t size)
+	{
+		if (buffer)
+		{
+			glBindBufferRange(GL_ATOMIC_COUNTER_BUFFER, _atomic_count_buffer_bindings_stack.top(), buffer->get_handle(), offset, size);
+			_atomic_count_buffer_bindings_stack.pop();
+		}
+		
+	}
 
-	void associate_texture_1d(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_1d> texture_1d)
+	void bind_texture_1d(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_1d> texture_1d)
 	{
 		if (texture_1d) {
 			texture_1d->bind(unit);
 			update_uniform_1ui(name, unit);
 		}
 	}
-	void associate_texture_1d_array(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_1d_array> texture_1d_array)
+	void bind_texture_1d_array(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_1d_array> texture_1d_array)
 	{
 		if (texture_1d_array) {
 			glActiveTexture(GL_TEXTURE0 + unit);
@@ -151,7 +168,7 @@ public:
 			update_uniform_1ui(name, unit);
 		}
 	}
-	void associate_texture_2d(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_2d> texture_2d)
+	void bind_texture_2d(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_2d> texture_2d)
 	{
 		if (texture_2d) {
 			glActiveTexture(GL_TEXTURE0 + unit);
@@ -159,7 +176,7 @@ public:
 			update_uniform_1ui(name, unit);
 		}
 	}
-	void associate_texture_2d_array(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_2d_array> texture_2d_array)
+	void bind_texture_2d_array(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_2d_array> texture_2d_array)
 	{
 		if (texture_2d_array) {
 			glActiveTexture(GL_TEXTURE0 + unit);
@@ -167,7 +184,7 @@ public:
 			update_uniform_1ui(name, unit);
 		}
 	}
-	void associate_texture_3d(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_3d> texture_3d)
+	void bind_texture_3d(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_3d> texture_3d)
 	{
 		if (texture_3d) {
 			glActiveTexture(GL_TEXTURE0 + unit);
@@ -175,7 +192,7 @@ public:
 			update_uniform_1ui(name, unit);
 		}
 	}
-	void associate_texture_cube(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_cube> texture_cube)
+	void bind_texture_cube(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_cube> texture_cube)
 	{
 		if (texture_cube) {
 			glActiveTexture(GL_TEXTURE0 + unit);
@@ -183,7 +200,7 @@ public:
 			update_uniform_1ui(name, unit);
 		}
 	}
-	void associate_texture_cube_array(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_cube_array> texture_cube_array)
+	void bind_texture_cube_array(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_cube_array> texture_cube_array)
 	{
 		if (texture_cube_array) {
 			glActiveTexture(GL_TEXTURE0 + unit);
@@ -191,7 +208,7 @@ public:
 			update_uniform_1ui(name, unit);
 		}
 	}
-	void associate_texture_buffer(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_buffer> texture_buffer)
+	void bind_texture_buffer(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_buffer> texture_buffer)
 	{
 		if (texture_buffer) {
 			glActiveTexture(GL_TEXTURE0 + unit);
