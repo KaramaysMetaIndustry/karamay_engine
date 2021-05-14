@@ -28,6 +28,16 @@ std::pair<const void*, size_t> cal(T value)
 	return std::make_pair((const void*)(value.get()), sizeof T::element_type);
 }
 
+struct gl_uniform_buffer_binding_info
+{
+	std::string block_name;
+
+	std::shared_ptr<gl_buffer> buffer;
+
+	std::size_t offset;
+
+	std::size_t size;
+};
 
 class gl_uniform_buffer
 {
@@ -46,6 +56,13 @@ public:
 	size_t _size;
 	
 	const void* _data;
+
+public:
+
+	auto get_binding_info()
+	{
+		return gl_uniform_buffer_binding_info();
+	}
 
 public:
 

@@ -6,6 +6,9 @@
 #include "graphics/texture/gl_texture.h"
 #include "graphics/framebuffer/gl_framebuffer.h"
 #include "graphics/transform_feedback/gl_transform_feedback.h"
+#include "graphics/buffer/customization/gl_uniform_buffer.h"
+#include "graphics/buffer/customization/gl_shader_storage_buffer.h"
+#include "graphics/buffer/customization/gl_atomic_count_buffer.h"
 
 enum class gl_buffer_mode
 {
@@ -38,6 +41,8 @@ private:
 	std::stack<std::uint32_t> _atomic_count_buffer_bindings_stack;
 	std::stack<std::uint32_t> _shader_storage_buffer_bindings_stack;
 	std::stack<std::uint32_t> _uniform_buffer_bindings_stack;
+
+	std::stack<std::uint32_t> _texture_units_stack;
 
 public:
 
@@ -78,63 +83,139 @@ public:
 	}
 
 public:
-
-	void bind_framebuffer(std::shared_ptr<gl_framebuffer> framebuffer)
+	
+	void set_framebuffer(std::shared_ptr<gl_framebuffer> fbo = nullptr)
 	{
-		if (framebuffer)
+
+	}
+
+	void set_vertex_array(std::shared_ptr<gl_vertex_array> vao) {}
+
+	void set_element_array_buffer(std::shared_ptr<gl_buffer> ebo) {}
+
+	void set_transform_feedback() {}
+
+	void add_uniform_buffer() {}
+
+	void add_shader_storage_buffer() {}
+
+	void add_atomic_count_buffer() {}
+
+public:
+
+	void install()
+	{
+		_bind_framebuffer();
+		_bind_vertex_array();
+		_bind_element_array_buffer();
+		_bind_transform_feedback();
+		_bind_uniform_buffers();
+		_bind_shader_storage_buffers();
+		_bind_atomic_count_buffers();
+
+		
+	}
+
+	void uninstall()
+	{
+		_unbind_framebuffer();
+		_unbind_vertex_array();
+		_unbind_element_array_buffer();
+		_unbind_transform_feedback();
+		_unbind_uniform_buffers();
+		_unbind_shader_storage_buffers();
+		_unbind_atomic_count_buffers();
+	}
+
+private:
+
+	std::shared_ptr<gl_framebuffer> _framebuffer;
+
+	std::shared_ptr<gl_vertex_array> _vertex_array;
+
+	std::shared_ptr<gl_buffer> _element_array_buffer;
+
+	std::shared_ptr<gl_transform_feedback> _transform_feedback;
+
+	std::vector<std::shared_ptr<gl_uniform_buffer>> _uniform_buffers;
+
+	std::vector<std::shared_ptr<gl_shader_storage_buffer>> _shader_storage_buffers;
+
+	std::vector<std::shared_ptr<gl_atomic_count_buffer>> _atomic_count_buffers;
+
+private:
+
+	void _bind_framebuffer()
+	{
+		if (_framebuffer)
 		{
-			framebuffer->bind_to_context();
+			_framebuffer->bind_to_context();
+		}
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	} 
+	void _bind_vertex_array()
+	{
+		if (_vertex_array) {
+			_vertex_array->bind_to_context();
+			_vertex_array->enable_vertex_attributes();
 		}
 	}
-
-	void bind_vertex_array(std::shared_ptr<gl_vertex_array> vertex_array)
+	void _bind_element_array_buffer()
 	{
-		if (vertex_array) {
-			vertex_array->bind_to_context();
-			vertex_array->enable_vertex_attributes();
+		if (_element_array_buffer) {
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _element_array_buffer->get_handle());
 		}
 	}
-
-	void bind_element_array_buffer(std::shared_ptr<gl_buffer> buffer)
+	void _bind_transform_feedback()
 	{
-		if (buffer) {
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer->get_handle());
-		}
-	}
-
-	// indexed buffer GL_MAX_TRANSFORM_FEEDBACK_BUFFERS
-	void bind_transform_feedback(std::shared_ptr<gl_transform_feedback> transform_feedback)
-	{
-		if (transform_feedback)
+		if (_transform_feedback)
 		{
-			transform_feedback->bind();
+			_transform_feedback->bind();
 		}
 
 	}
+	void _bind_uniform_buffers()
+	{
+		for (size_t i = 0; i < _uniform_buffers.size(); ++i)
+		{
+			if (auto uniform_buffer = _uniform_buffers[i])
+			{
+				auto binding_info = uniform_buffer->get_binding_info();
+				const auto& block_name = binding_info.block_name;
+				auto buffer = binding_info.buffer;
+				if (buffer)
+				{
+					glBindBufferBase(GL_UNIFORM_BUFFER, i, buffer->get_handle());
+					glUniformBlockBinding(_handle, glGetUniformBlockIndex(_handle, block_name.c_str()), i);
+				}
+			}
+		}
+		
+	}
+	void _bind_shader_storage_buffers()
+	{
+		for (size_t i = 0; i < _shader_storage_buffers.size(); ++i)
+		{
+			if (auto shader_storage_buffer = _shader_storage_buffers[i])
+			{
+				auto binding_info = shader_storage_buffer->get_binding_info();
+				const auto& block_name = binding_info.block_name;
+				auto buffer = binding_info.buffer;
+				if (buffer)
+				{
+					glBindBufferBase(GL_UNIFORM_BUFFER, i, buffer->get_handle());
+					glUniformBlockBinding(_handle, glGetUniformBlockIndex(_handle, block_name.c_str()), i);
+				}
+			}
+		}
+	}
+	void _bind_atomic_count_buffers() {}
+
+
 	// indexed buffer GL_MAX_UNIFORM_BUFFER_BINDINGS
-	void bind_uniform_buffer(std::uint32_t binding, const std::string& block_name, std::shared_ptr<gl_buffer> buffer)
-	{
-		if (buffer)
-		{
-			// bind buffer to binding
-			glBindBufferBase(GL_UNIFORM_BUFFER, binding, buffer->get_handle());
-			// specify block point to binding
-			glUniformBlockBinding(_handle, glGetUniformBlockIndex(_handle, block_name.c_str()), binding);
-		}
-	}
-	void bind_uniform_buffer(std::uint32_t binding, const std::string& block_name, std::shared_ptr<gl_buffer> buffer) {}
 	// indexed buffer GL_MAX_SHADER_STORAGE_BUFFER_BINDINGS
-	void bind_shader_storage_buffer(std::uint32_t binding, const std::string& block_name, std::shared_ptr<gl_buffer> buffer)
-	{
-		if (buffer)
-		{
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, binding, buffer->get_handle());
-			glShaderStorageBlockBinding(_handle, glGetProgramResourceIndex(_handle, GL_SHADER_STORAGE_BLOCK, block_name.c_str()), binding);
-		}
-	}
-	void bind_shader_storage_buffer(std::uint32_t binding, const std::string& block_name, std::shared_ptr<gl_buffer> buffer);
 	// indexed buffer GL_MAX_ATOMIC_COUNTER_BUFFER_BINDINGS
-	void bind_atomic_count_buffer(std::shared_ptr<gl_buffer> buffer, std::size_t offset, std::size_t size)
+	void bind_atomic_count_buffer(std::shared_ptr<gl_buffer> buffer)
 	{
 		if (buffer)
 		{
@@ -142,7 +223,6 @@ public:
 			_atomic_count_buffer_bindings_stack.pop();
 		}	
 	}
-
 	void bind_atomic_count_buffer(std::shared_ptr<gl_buffer> buffer, std::size_t offset, std::size_t size)
 	{
 		if (buffer)
@@ -347,12 +427,44 @@ public:
 		glBindBufferBase(GL_UNIFORM_BUFFER, block_index, ubo.get_handle());
 	}
 
-
-
-public:
-	void reset_all_bindings()
+private:
+	
+	void _unbind_framebuffer()
 	{
-
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+	void _unbind_vertex_array()
+	{
+		glBindVertexArray(0);
+	}
+	void _unbind_element_array_buffer()
+	{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	}
+	void _unbind_transform_feedback()
+	{
+		glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
+	}
+	void _unbind_uniform_buffers()
+	{
+		for (size_t i = 0; i < _uniform_buffers.size(); ++i)
+		{
+			glBindBufferBase(GL_UNIFORM_BUFFER, i, 0);
+		}	
+	}
+	void _unbind_shader_storage_buffers() 
+	{
+		for (size_t i = 0; i < _shader_storage_buffers.size(); ++i)
+		{
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, i, 0);
+		}
+	}
+	void _unbind_atomic_count_buffers()
+	{
+		for (size_t i = 0; i < _atomic_count_buffers.size(); ++i)
+		{
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, i, 0);
+		}
 	}
 
 public:
