@@ -4,6 +4,194 @@
 #include "graphics/mesh/gl_mesh.h"
 #include "graphics/pipeline/gl_pipeline_base.h"
 
+float vertices[] = {
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f, //0
+		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
+
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
+
+		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+
+		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+
+		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
+
+		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  1.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f //35
+};
+
+std::vector<float> Normals{
+		0.0f, 0.0f, -1.0f,
+		0.0f, 0.0f, -1.0f,
+		0.0f, 0.0f, -1.0f,
+		0.0f, 0.0f, -1.0f,
+		0.0f, 0.0f, -1.0f,
+		0.0f, 0.0f, -1.0f,
+
+		0.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 1.0f,
+
+		-1.0f, 0.0f, 0.0f,
+		-1.0f, 0.0f, 0.0f,
+		-1.0f, 0.0f, 0.0f,
+		-1.0f, 0.0f, 0.0f,
+		-1.0f, 0.0f, 0.0f,
+		-1.0f, 0.0f, 0.0f,
+
+		1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+
+		0.0f, -1.0f, 0.0f,
+		0.0f, -1.0f, 0.0f,
+		0.0f, -1.0f, 0.0f,
+		0.0f, -1.0f, 0.0f,
+		0.0f, -1.0f, 0.0f,
+		0.0f, -1.0f, 0.0f,
+
+		0.0f,  1.0f,  0.0f,
+		0.0f,  1.0f,  0.0f,
+		0.0f,  1.0f,  0.0f,
+		0.0f,  1.0f,  0.0f,
+		0.0f,  1.0f,  0.0f,
+		0.0f,  1.0f,  0.0f,
+};
+std::vector<float> OffsetPositions{
+	0.0f,  0.0f,  0.0f,
+	2.0f,  5.0f, -15.0f,
+	-1.5f, -2.2f, -2.5f,
+	-3.8f, -2.0f, -12.3f,
+	2.4f, -0.4f, -3.5f,
+	-1.7f,  3.0f, -7.5f,
+	1.3f, -2.0f, -2.5f,
+	1.5f,  2.0f, -2.5f,
+	1.5f,  0.2f, -1.5f,
+	-1.3f,  1.0f, -1.5f,
+};
+
+std::vector<float> UVs{
+		0.0f,  0.0f,
+		1.0f,  0.0f,
+		1.0f,  1.0f,
+		1.0f,  1.0f,
+		0.0f,  1.0f,
+		0.0f,  0.0f,
+
+		0.0f,  0.0f,
+		1.0f,  0.0f,
+		1.0f,  1.0f,
+		1.0f,  1.0f,
+		0.0f,  1.0f,
+		0.0f,  0.0f,
+
+		1.0f,  0.0f,
+		1.0f,  1.0f,
+		0.0f,  1.0f,
+		0.0f,  1.0f,
+		0.0f,  0.0f,
+		1.0f,  0.0f,
+
+		1.0f,  0.0f,
+		1.0f,  1.0f,
+		0.0f,  1.0f,
+		0.0f,  1.0f,
+		0.0f,  0.0f,
+		1.0f,  0.0f,
+
+		0.0f,  1.0f,
+		1.0f,  1.0f,
+		1.0f,  0.0f,
+		1.0f,  0.0f,
+		0.0f,  0.0f,
+		0.0f,  1.0f,
+
+		0.0f,  1.0f,
+		1.0f,  1.0f,
+		1.0f,  0.0f,
+		1.0f,  0.0f,
+		0.0f,  0.0f,
+		0.0f,  1.0f
+};
+
+std::vector<float> Positions{
+		-0.5f, -0.5f, -0.5f,
+		 0.5f, -0.5f, -0.5f,
+		 0.5f,  0.5f, -0.5f,
+		 0.5f,  0.5f, -0.5f,
+		-0.5f,  0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
+
+		-0.5f, -0.5f,  0.5f,
+		 0.5f, -0.5f,  0.5f,
+		 0.5f,  0.5f,  0.5f,
+		 0.5f,  0.5f,  0.5f,
+		-0.5f,  0.5f,  0.5f,
+		-0.5f, -0.5f,  0.5f,
+
+		-0.5f,  0.5f,  0.5f,
+		-0.5f,  0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
+		-0.5f, -0.5f,  0.5f,
+		-0.5f,  0.5f,  0.5f,
+
+		 0.5f,  0.5f,  0.5f,
+		 0.5f,  0.5f, -0.5f,
+		 0.5f, -0.5f, -0.5f,
+		 0.5f, -0.5f, -0.5f,
+		 0.5f, -0.5f,  0.5f,
+		 0.5f,  0.5f,  0.5f,
+
+		-0.5f, -0.5f, -0.5f,
+		 0.5f, -0.5f, -0.5f,
+		 0.5f, -0.5f,  0.5f,
+		 0.5f, -0.5f,  0.5f,
+		-0.5f, -0.5f,  0.5f,
+		-0.5f, -0.5f, -0.5f,
+
+		-0.5f,  0.5f, -0.5f,
+		 0.5f,  0.5f, -0.5f,
+		 0.5f,  0.5f,  0.5f,
+		 0.5f,  0.5f,  0.5f,
+		-0.5f,  0.5f,  0.5f,
+		-0.5f,  0.5f, -0.5f
+};
+
 #define ctt(CLASSNAME)\
 std::make_shared<CLASSNAME>()
 
@@ -20,9 +208,8 @@ _framebuffers_map.emplace(FB_NAME, std::make_shared<gl_framebuffer>())\
 #define find_fb(FB_NAME)\
 _framebuffers_map.find(FB_NAME)->second\
 
-
-
-
+#define graphics_pipeline(NAME)\
+find_pipeline(NAME)\
 
 
 class gl_pbr_std_renderer : public gl_renderer
@@ -47,13 +234,15 @@ public:
 		return *_pipelines_map.find(name)->second;
 	}
 
-#define graphics_pipeline(NAME)\
-find_pipeline(NAME)\
 
 	virtual void construct() override
 	{
 		
 		auto vao = std::make_shared<gl_vertex_array>();
+		vao->associate_array_buffer(std::make_shared<gl_buffer>(), );
+
+
+
 		auto ebo = std::make_shared<gl_element_array_buffer>();
 		auto ubo0 = std::make_shared<gl_uniform_buffer>();
 		auto ubo1 = std::make_shared<gl_uniform_buffer>();
@@ -63,61 +252,41 @@ find_pipeline(NAME)\
 		auto aco = std::make_shared<gl_atomic_count_buffer>();
 		auto transfo = std::make_shared<gl_transform_feedback>();
 
-		// single pipeline render pass
+		int first = 10;
+		int count = 100;
+		
 
 		graphics_pipeline("pbr_mesh_pip")
-		.construct({ "pbr_mesh.vert", "pbr_mesh.tesc", "pbr_mesh.tese", "pbr_mesh.geom", "pbr_mesh.frag" })
-		.add_vertex_kit(vao)
-		.add_transform_feedback(transfo, { "tf_position, tf_color, tf_vu" })
+		.construct(
+			{ 
+				"shaders/pbr_mesh.vert", 
+				"shaders/pbr_mesh.tesc", "shaders/pbr_mesh.tese", "shaders/pbr_mesh.geom", 
+				"shaders/pbr_mesh.frag" 
+			})
+		.set_vertex_kit(vao)
+		.set_transform_feedback(transfo, { "tf_position, tf_color, tf_vu" })
+		//.add_immediate_uniforms({gl_uniform("", glm::vec4(0.0f))})
+		//.add_immediate_uniform_textures({})
 		.add_uniform_buffers({ ubo0, ubo1, ubo2 })
 		.add_shader_storage_buffers({ sso0, sso1 })
 		.add_atomic_count_buffers({ aco })
-		.add_texture_2ds({})
-		.add_framebuffer();
-
-		
-		// multi pipeline render pass
-		graphics_pipeline("deferred_pbr_mesh_vert_pip")
-		.construct({ "pbr_mesh.vert", "pbr_mesh.tesc", "pbr_mesh.tese", "pbr_mesh.geom", "pbr_mesh.frag" })
-		.add_vertex_kit(vao, ebo)
-		.add_transform_feedback(transfo, { "tf_position, tf_color, tf_vu" })
-		.add_uniform_buffers({ ubo0, ubo1, ubo2 })
-		.add_shader_storage_buffers({ sso0, sso1 })
-		.add_atomic_count_buffers({ aco })
-		.add_texture_2ds({})
-		.add_framebuffer();
-
-		graphics_pipeline("deferred_pbr_mesh_lighting_pip")
-		.construct({ "pbr_mesh.vert", "pbr_mesh.frag" })
-		.add_vertex_kit()
-		.add_transform_feedback(transfo, { "tf_position, tf_color, tf_vu" })
-		.add_uniform_buffers({ ubo0, ubo1, ubo2 })
-		.add_shader_storage_buffers({ sso0, sso1 })
-		.add_atomic_count_buffers({ aco })
-		.add_texture_2ds({})
-		.add_framebuffer();
+		.set_framebuffer()
+		.set_commands([&first, &count]()
+		{
+			glDrawArrays(GL_TRIANGLES, first, count);
+		});
 	}
 
-	virtual void render(std::float_t delta_time) override
+	virtual void render(std::float_t delta_time) final override
 	{
 		for (auto pair : _pipelines_map)
 		{
 			if (auto pipeline = pair.second)
 			{
-				pipeline->enable();
-				gl_commands::draw::draw_arrays(gl_commands::primitive_mode::LINE_STRIP_ADJACENCY, 0, 3);
-				pipeline->disable();
+				pipeline->render(delta_time);
 			}
 		}
-
 	}
-
-
-
-
-
-
-
 
 };
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "graphics/buffer/gl_buffer.h"
 
-struct gl_shader_storage_binding_info
+struct gl_shader_storage_buffer_binding_info
 {
 	std::string block_name;
 
@@ -20,7 +20,7 @@ public:
 
 	auto get_binding_info()
 	{
-		return gl_shader_storage_binding_info();
+		return gl_shader_storage_buffer_binding_info();
 	}
 
 };

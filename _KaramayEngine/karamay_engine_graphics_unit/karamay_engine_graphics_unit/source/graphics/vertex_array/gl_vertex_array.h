@@ -40,11 +40,21 @@ public:
 
 private:
 
-	std::vector<std::shared_ptr<gl_buffer>> buffers;
+	std::shared_ptr<gl_buffer> _ref_buffer;
+
+	std::uint32_t _offset, _size;
+
 
 	std::vector<std::uint32_t> indices;
 
 public:
+	
+	void fill(const void* data, const std::vector<gl_vertex_attribute_pointer>& pointers)
+	{
+		_ref_buffer->fill(_offset, _size, data);
+
+	}
+
 
 	void associate_array_buffer(std::shared_ptr<gl_buffer> array_buffer, const std::vector<gl_vertex_attribute_pointer>& pointers);
 
@@ -52,12 +62,12 @@ public:
 
 public:
 	
-	void bind_to_context()
+	void bind()
 	{
 		glBindVertexArray(_handle);
 	}
 
-	void unbind_from_context()
+	void unbind()
 	{
 		glBindVertexArray(0);
 	}

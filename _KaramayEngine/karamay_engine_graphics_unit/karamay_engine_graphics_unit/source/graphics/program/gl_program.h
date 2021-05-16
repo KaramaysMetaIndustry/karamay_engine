@@ -1,14 +1,16 @@
 #pragma once
 #include "graphics/glo/gl_object.h"
 #include "graphics/shader/gl_shader.h"
-#include "graphics/buffer/gl_buffer.h"
 #include "graphics/vertex_array/gl_vertex_array.h"
-#include "graphics/texture/gl_texture.h"
-#include "graphics/framebuffer/gl_framebuffer.h"
 #include "graphics/transform_feedback/gl_transform_feedback.h"
+#include "graphics/uniform/gl_uniform.h"
+#include "graphics/buffer/gl_buffer.h"
+#include "graphics/buffer/customization/gl_element_array_buffer.h"
 #include "graphics/buffer/customization/gl_uniform_buffer.h"
 #include "graphics/buffer/customization/gl_shader_storage_buffer.h"
 #include "graphics/buffer/customization/gl_atomic_count_buffer.h"
+#include "graphics/texture/gl_texture.h"
+#include "graphics/framebuffer/gl_framebuffer.h"
 
 enum class gl_buffer_mode
 {
@@ -34,16 +36,6 @@ public:
 
 	virtual ~gl_program();
 
-private:
-	
-	std::vector<std::shared_ptr<gl_shader>> shaders;
-
-	std::stack<std::uint32_t> _atomic_count_buffer_bindings_stack;
-	std::stack<std::uint32_t> _shader_storage_buffer_bindings_stack;
-	std::stack<std::uint32_t> _uniform_buffer_bindings_stack;
-
-	std::stack<std::uint32_t> _texture_units_stack;
-
 public:
 
 	void construct(const std::vector<std::string>& shader_paths)
@@ -56,7 +48,7 @@ public:
 				shader->load(path);
 				shader->compile();
 				glAttachShader(_handle, shader->get_handle());
-				shaders.push_back(shader);
+				_shaders.push_back(shader);
 			}
 		}
 
@@ -69,41 +61,75 @@ public:
 		glLinkProgram(_handle);
 	}
 
-	/**
-	 * @varyings
-	 * 
-	 */
-	void set_transform_feedback_varyings(const std::vector<const GLchar*>& varyings)
+private:
+
+	std::vector<std::shared_ptr<gl_shader>> _shaders;
+
+public:
+
+	void set_vertex_kit(std::shared_ptr<gl_vertex_array> vertex_array, std::shared_ptr<gl_element_array_buffer> element_array_buffer = nullptr)
 	{
-		if (varyings.size() > 0)
+		_vertex_array = vertex_array;
+		_element_array_buffer = element_array_buffer;
+	}
+
+	void set_transform_feedback(std::shared_ptr<gl_transform_feedback> transform_feedback, const std::vector<const GLchar*>& varyings)
+	{
+		if (_transform_feedback)
 		{
-			glTransformFeedbackVaryings(_handle, varyings.size(), varyings.data(), static_cast<GLenum>(gl_buffer_mode::INTERLEAVED));
-			glLinkProgram(_handle);
-		}	
+			_transform_feedback = transform_feedback;
+
+			if (varyings.size() > 0)
+			{
+				glTransformFeedbackVaryings(_handle, varyings.size(), varyings.data(), static_cast<GLenum>(gl_buffer_mode::INTERLEAVED));
+				glLinkProgram(_handle);
+			}
+		}
 	}
 
-public:
-	
-	void set_framebuffer(std::shared_ptr<gl_framebuffer> fbo = nullptr)
+	template<typename T>
+	void add_immediate_uniforms(const std::vector<std::shared_ptr<gl_uniform<T>>>& uniforms)
+	{
+		
+	}
+
+	template<typename T>
+	void add_immediate_uniform_textures(const std::vector<std::shared_ptr<T>>& uniform_textures)
 	{
 
 	}
 
-	void set_vertex_array(std::shared_ptr<gl_vertex_array> vao) {}
+	void add_uniform_buffers(const std::vector<std::shared_ptr<gl_uniform_buffer>>& uniform_buffers) 
+	{}
 
-	void set_element_array_buffer(std::shared_ptr<gl_buffer> ebo) {}
+	void add_shader_storage_buffers(const std::vector<std::shared_ptr<gl_shader_storage_buffer>>& shader_storage_buffers) {}
 
-	void set_transform_feedback() {}
+	void add_atomic_count_buffers(const std::vector<std::shared_ptr<gl_atomic_count_buffer>>& atomic_count_buffers) {}
 
-	void add_uniform_buffer() {}
+	void set_framebuffer(std::shared_ptr<gl_framebuffer> framebuffer = nullptr)
+	{
+		_framebuffer = framebuffer;
+	}
 
-	void add_shader_storage_buffer() {}
-
-	void add_atomic_count_buffer() {}
+	void push_commands(std::function<void(void)> commands_lambda)
+	{
+		_commands_lambda = commands_lambda;
+	}
 
 public:
 
-	void install()
+	void render(std::float_t delta_time)
+	{
+		_install();
+		_enable();
+		_call_commands();
+		_disable();
+		_uninstall();
+	}
+
+private:
+
+	void _install()
 	{
 		_bind_framebuffer();
 		_bind_vertex_array();
@@ -112,11 +138,24 @@ public:
 		_bind_uniform_buffers();
 		_bind_shader_storage_buffers();
 		_bind_atomic_count_buffers();
-
-		
 	}
 
-	void uninstall()
+	void _enable()
+	{
+		glUseProgram(_handle);
+	}
+
+	void _call_commands()
+	{
+		_commands_lambda();
+	}
+
+	void _disable()
+	{
+		glUseProgram(0);
+	}
+
+	void _uninstall()
 	{
 		_unbind_framebuffer();
 		_unbind_vertex_array();
@@ -128,12 +167,10 @@ public:
 	}
 
 private:
-
-	std::shared_ptr<gl_framebuffer> _framebuffer;
-
+	
 	std::shared_ptr<gl_vertex_array> _vertex_array;
 
-	std::shared_ptr<gl_buffer> _element_array_buffer;
+	std::shared_ptr<gl_element_array_buffer> _element_array_buffer;
 
 	std::shared_ptr<gl_transform_feedback> _transform_feedback;
 
@@ -142,6 +179,10 @@ private:
 	std::vector<std::shared_ptr<gl_shader_storage_buffer>> _shader_storage_buffers;
 
 	std::vector<std::shared_ptr<gl_atomic_count_buffer>> _atomic_count_buffers;
+
+	std::shared_ptr<gl_framebuffer> _framebuffer;
+
+	std::function<void(void)> _commands_lambda;
 
 private:
 
@@ -176,6 +217,8 @@ private:
 	}
 	void _bind_uniform_buffers()
 	{
+		//GL_MAX_UNIFORM_BUFFER_BINDINGS;
+		
 		for (size_t i = 0; i < _uniform_buffers.size(); ++i)
 		{
 			if (auto uniform_buffer = _uniform_buffers[i])
@@ -194,6 +237,8 @@ private:
 	}
 	void _bind_shader_storage_buffers()
 	{
+		//GL_MAX_SHADER_STORAGE_BUFFER_BINDINGS;
+		
 		for (size_t i = 0; i < _shader_storage_buffers.size(); ++i)
 		{
 			if (auto shader_storage_buffer = _shader_storage_buffers[i])
@@ -203,41 +248,75 @@ private:
 				auto buffer = binding_info.buffer;
 				if (buffer)
 				{
-					glBindBufferBase(GL_UNIFORM_BUFFER, i, buffer->get_handle());
+					glBindBufferBase(GL_SHADER_STORAGE_BUFFER, i, buffer->get_handle());
 					glUniformBlockBinding(_handle, glGetUniformBlockIndex(_handle, block_name.c_str()), i);
 				}
 			}
 		}
 	}
-	void _bind_atomic_count_buffers() {}
+	void _bind_atomic_count_buffers()
+	{
+		for (size_t i = 0; i < _atomic_count_buffers.size(); ++i)
+		{
+			if (auto atomic_count_buffer = _atomic_count_buffers[i])
+			{
+				auto binding_info = atomic_count_buffer->get_binding_info();
+				auto buffer = binding_info.buffer;
+				if (buffer)
+				{
+					glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, i, buffer->get_handle());
+				}
+			}
+		}
+	}
 
+	void _unbind_framebuffer()
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+	void _unbind_vertex_array()
+	{
+		glBindVertexArray(0);
+	}
+	void _unbind_element_array_buffer()
+	{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	}
+	void _unbind_transform_feedback()
+	{
+		glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
+	}
+	void _unbind_uniform_buffers()
+	{
+		for (size_t i = 0; i < _uniform_buffers.size(); ++i)
+		{
+			glBindBufferBase(GL_UNIFORM_BUFFER, i, 0);
+		}
+	}
+	void _unbind_shader_storage_buffers()
+	{
+		for (size_t i = 0; i < _shader_storage_buffers.size(); ++i)
+		{
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, i, 0);
+		}
+	}
+	void _unbind_atomic_count_buffers()
+	{
+		for (size_t i = 0; i < _atomic_count_buffers.size(); ++i)
+		{
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, i, 0);
+		}
+	}
 
 	// indexed buffer GL_MAX_UNIFORM_BUFFER_BINDINGS
 	// indexed buffer GL_MAX_SHADER_STORAGE_BUFFER_BINDINGS
 	// indexed buffer GL_MAX_ATOMIC_COUNTER_BUFFER_BINDINGS
-	void bind_atomic_count_buffer(std::shared_ptr<gl_buffer> buffer)
-	{
-		if (buffer)
-		{
-			glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, _atomic_count_buffer_bindings_stack.top(), buffer->get_handle());
-			_atomic_count_buffer_bindings_stack.pop();
-		}	
-	}
-	void bind_atomic_count_buffer(std::shared_ptr<gl_buffer> buffer, std::size_t offset, std::size_t size)
-	{
-		if (buffer)
-		{
-			glBindBufferRange(GL_ATOMIC_COUNTER_BUFFER, _atomic_count_buffer_bindings_stack.top(), buffer->get_handle(), offset, size);
-			_atomic_count_buffer_bindings_stack.pop();
-		}
-		
-	}
-
+	
 	void bind_texture_1d(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_1d> texture_1d)
 	{
 		if (texture_1d) {
 			texture_1d->bind(unit);
-			update_uniform_1ui(name, unit);
+			//update_uniform_1ui(name, unit);
 		}
 	}
 	void bind_texture_1d_array(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_1d_array> texture_1d_array)
@@ -298,112 +377,91 @@ private:
 	}
 
 	// set uniform vec and matrix
-	void update_uniform_1f(const std::string& name, glm::vec1 value)
+	// float vectors
+	
+
+private:
+
+	void _update_uniform(const std::string& name, glm::vec1 value)
 	{
-		glUniform1fv(glGetAttribLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
+		glUniform1fv(glGetUniformLocation(_handle, name.c_str()), glm::value_ptr(value));
 	}
-	void update_uniform_2f(const std::string& name, glm::vec2 value)
+	void _update_uniform(const std::string& name, glm::vec2 value)
 	{
-		glUniform2fv(glGetAttribLocation(_handle, name.c_str()), 2, glm::value_ptr(value));
+		glUniform2fv(glGetUniformLocation(_handle, name.c_str()), glm::value_ptr(value));
 	}
-	void update_uniform_3f(const std::string& name, glm::vec3 value)
+	void _update_uniform(const std::string& name, glm::vec3 value)
 	{
-		glUniform3fv(glGetAttribLocation(_handle, name.c_str()), 3, glm::value_ptr(value));
+		glUniform3fv(glGetUniformLocation(_handle, name.c_str()), glm::value_ptr(value));
 	}
-	void update_uniform_4f(const std::string& name, glm::vec4 value)
+	void _update_uniform(const std::string& name, glm::vec4 value)
 	{
-		glUniform4fv(glGetAttribLocation(_handle, name.c_str()), 4, glm::value_ptr(value));
+		glUniform4fv(glGetUniformLocation(_handle, name.c_str()), glm::value_ptr(value));
 	}
-		 
-	void update_uniform_1f(const std::string& name, std::float_t value) {}
-	void update_uniform_2f(const std::string& name, std::float_t value0, std::float_t value1) {}
-	void update_uniform_3f(const std::string& name, std::float_t value0, std::float_t value1, std::float_t value2) {}
-	void update_uniform_4f(const std::string& name, std::float_t value0, std::float_t value1, std::float_t value2, std::float_t value3) {}
-		 
-	void update_uniform_1d(const std::string& name, glm::dvec1 value)
+	// double vectors
+	
+	void _update_uniform(const std::string& name, glm::dvec1 value)
 	{
-		glUniform1dv(glGetAttribLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
+		glUniform1dv(glGetUniformLocation(_handle, name.c_str()), glm::value_ptr(value));
 	}
-	void update_uniform_2d(const std::string& name, glm::dvec2 value)
+	void _update_uniform(const std::string& name, glm::dvec2 value)
 	{
-		glUniform2dv(glGetAttribLocation(_handle, name.c_str()), 2, glm::value_ptr(value));
+		glUniform2dv(glGetUniformLocation(_handle, name.c_str()), glm::value_ptr(value));
 	}
-	void update_uniform_3d(const std::string& name, glm::dvec3 value)
+	void _update_uniform(const std::string& name, glm::dvec3 value)
 	{
-		glUniform3dv(glGetAttribLocation(_handle, name.c_str()), 3, glm::value_ptr(value));
+		glUniform3dv(glGetUniformLocation(_handle, name.c_str()), glm::value_ptr(value));
 	}
-	void update_uniform_4d(const std::string& name, glm::dvec4 value)
+	void _update_uniform(const std::string& name, glm::dvec4 value)
 	{
-		glUniform4dv(glGetAttribLocation(_handle, name.c_str()), 4, glm::value_ptr(value));
+		glUniform4dv(glGetUniformLocation(_handle, name.c_str()), glm::value_ptr(value));
+	}
+	// int vectors
+	
+	void _update_uniform(const std::string& name, glm::ivec1 value)
+	{
+		glUniform1iv(glGetUniformLocation(_handle, name.c_str()), glm::value_ptr(value));
+	}
+	void _update_uniform(const std::string& name, glm::ivec2 value)
+	{
+		glUniform2iv(glGetUniformLocation(_handle, name.c_str()), glm::value_ptr(value));
+	}
+	void _update_uniform(const std::string& name, glm::ivec3 value)
+	{
+		glUniform3iv(glGetUniformLocation(_handle, name.c_str()), glm::value_ptr(value));
+	}
+	void _update_uniform(const std::string& name, glm::ivec4 value)
+	{
+		glUniform4iv(glGetUniformLocation(_handle, name.c_str()), glm::value_ptr(value));
+	}
+	// uint vectors
+	
+	void _update_uniform(const std::string& name, glm::uvec1 value)
+	{
+		glUniform1uiv(glGetUniformLocation(_handle, name.c_str()), glm::value_ptr(value));
+	}
+	void _update_uniform(const std::string& name, glm::uvec2 value)
+	{
+		glUniform2uiv(glGetUniformLocation(_handle, name.c_str()), glm::value_ptr(value));
+	}
+	void _update_uniform(const std::string& name, glm::uvec3 value)
+	{
+		glUniform3uiv(glGetUniformLocation(_handle, name.c_str()), glm::value_ptr(value));
+	}
+	void _update_uniform(const std::string& name, glm::uvec4 value)
+	{
+		glUniform4uiv(glGetUniformLocation(_handle, name.c_str()), glm::value_ptr(value));
 	}
 	
-	void update_uniform_1d(const std::string& name, std::double_t value)
+	void _update_uniform(const std::string& name, glm::mat3 value)
+	{}
+	void _update_uniform(const std::string& name, glm::mat4 value)
 	{
-		glUniform1d(glGetAttribLocation(_handle, name.c_str()), value);
+		glUniformMatrix4fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 	}
-	void update_uniform_2d(const std::string& name, std::double_t value0, std::double_t value1)
-	{
-		glUniform2d(glGetAttribLocation(_handle, name.c_str()), value0, value1);
-	}
-	void update_uniform_3d(const std::string& name, std::double_t value0, std::double_t value1, std::double_t value2)
-	{
-		glUniform3d(glGetAttribLocation(_handle, name.c_str()), value0, value1, value2);
-	}
-	void update_uniform_4d(const std::string& name, std::double_t value0, std::double_t value1, std::double_t value2, std::double_t value3)
-	{
-		glUniform4d(glGetAttribLocation(_handle, name.c_str()), value0, value1, value2, value3);
-	}
+	
 
-	void update_uniform_1i(const std::string& name, glm::ivec1 value)
-	{
-		glUniform1iv(glGetAttribLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
-	}
-	void update_uniform_2i(const std::string& name, glm::ivec2 value)
-	{
-		glUniform2iv(glGetAttribLocation(_handle, name.c_str()), 2, glm::value_ptr(value));
-	}
-	void update_uniform_3i(const std::string& name, glm::ivec3 value)
-	{
-		glUniform3iv(glGetAttribLocation(_handle, name.c_str()), 3, glm::value_ptr(value));
-	}
-	void update_uniform_4i(const std::string& name, glm::ivec4 value)
-	{
-		glUniform4iv(glGetAttribLocation(_handle, name.c_str()), 4, glm::value_ptr(value));
-	}
-		 
-	void update_uniform_1i(const std::string& name, std::int32_t value) {}
-	void update_uniform_2i(const std::string& name, std::int32_t value0, std::int32_t value1) {}
-	void update_uniform_3i(const std::string& name, std::int32_t value0, std::int32_t value1, std::int32_t value2) {}
-	void update_uniform_4i(const std::string& name, std::int32_t value0, std::int32_t value1, std::int32_t value2, std::int32_t value3) {}
 
-	void update_uniform_1ui(const std::string& name, glm::uvec1 value)
-	{
-		glUniform1uiv(glGetAttribLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
-	}
-	void update_uniform_2ui(const std::string& name, glm::uvec2 value)
-	{
-		glUniform2uiv(glGetAttribLocation(_handle, name.c_str()), 2, glm::value_ptr(value));
-	}
-	void update_uniform_3ui(const std::string& name, glm::uvec3 value)
-	{
-		glUniform3uiv(glGetAttribLocation(_handle, name.c_str()), 3, glm::value_ptr(value));
-	}
-	void update_uniform_4ui(const std::string& name, glm::uvec4 value)
-	{
-		glUniform4uiv(glGetAttribLocation(_handle, name.c_str()), 4, glm::value_ptr(value));
-	}
-
-	void update_uniform_1ui(const std::string& name, std::uint32_t value) {}
-	void update_uniform_2ui(const std::string& name, std::uint32_t value0, std::uint32_t value1) {}
-	void update_uniform_3ui(const std::string& name, std::uint32_t value0, std::uint32_t value1, std::uint32_t value2) {}
-	void update_uniform_4ui(const std::string& name, std::uint32_t value0, std::uint32_t value1, std::uint32_t value2, std::uint32_t value3) {}
-
-	void update_uniform_matrix_4x4f(const std::string& name, glm::fmat4x4 value)
-	{
-		glUniformMatrix4fv(glGetAttribLocation(_handle, name.c_str()), 16, GL_TRUE, glm::value_ptr(value));
-	}
-	void update_uniform_matrix_3x3f() {}
-	void update_uniform_matrix_2x2f() {}
 
 	void set_uniform_block(const GLchar* block_name, std::vector<const GLchar*> attrib_names)
 	{
@@ -427,57 +485,6 @@ private:
 		glBindBufferBase(GL_UNIFORM_BUFFER, block_index, ubo.get_handle());
 	}
 
-private:
-	
-	void _unbind_framebuffer()
-	{
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	}
-	void _unbind_vertex_array()
-	{
-		glBindVertexArray(0);
-	}
-	void _unbind_element_array_buffer()
-	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	}
-	void _unbind_transform_feedback()
-	{
-		glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
-	}
-	void _unbind_uniform_buffers()
-	{
-		for (size_t i = 0; i < _uniform_buffers.size(); ++i)
-		{
-			glBindBufferBase(GL_UNIFORM_BUFFER, i, 0);
-		}	
-	}
-	void _unbind_shader_storage_buffers() 
-	{
-		for (size_t i = 0; i < _shader_storage_buffers.size(); ++i)
-		{
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, i, 0);
-		}
-	}
-	void _unbind_atomic_count_buffers()
-	{
-		for (size_t i = 0; i < _atomic_count_buffers.size(); ++i)
-		{
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, i, 0);
-		}
-	}
 
-public:
-
-	void enable();
-
-	void disable();
-
-public:
-	
-	void render(std::float_t delta_time)
-	{
-
-	}
 };
 
