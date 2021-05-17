@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\graphics\buffer\customization\gl_atomic_count_buffer.cpp" />
+    <ClCompile Include="source\graphics\buffer\customization\gl_atomic_counter_buffer.cpp" />
     <ClCompile Include="source\graphics\buffer\customization\gl_element_array_buffer.cpp" />
     <ClCompile Include="source\graphics\buffer\customization\gl_shader_storage_buffer.cpp" />
     <ClCompile Include="source\graphics\buffer\customization\gl_uniform_buffer.cpp" />
@@ -61,7 +61,7 @@
     <ClCompile Include="source\window\window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\graphics\buffer\customization\gl_atomic_count_buffer.h" />
+    <ClInclude Include="source\graphics\buffer\customization\gl_atomic_counter_buffer.h" />
     <ClInclude Include="source\graphics\buffer\customization\gl_element_array_buffer.h" />
     <ClInclude Include="source\graphics\buffer\customization\gl_shader_storage_buffer.h" />
     <ClInclude Include="source\graphics\buffer\customization\gl_uniform_buffer.h" />

@@ -248,18 +248,23 @@ public:
 
 
 		auto ebo = std::make_shared<gl_element_array_buffer>();
+		ebo->fill(nullptr, 100);
+
+
 		auto ubo0 = std::make_shared<gl_uniform_buffer>();
 		
 
 
 		auto ubo1 = std::make_shared<gl_uniform_buffer>();
 		auto ubo2 = std::make_shared<gl_uniform_buffer>();
+
 		auto sso0 = std::make_shared<gl_shader_storage_buffer>();
 		auto sso1 = std::make_shared<gl_shader_storage_buffer>();
-		auto aco = std::make_shared<gl_atomic_count_buffer>();
+
+		auto aco = std::make_shared<gl_atomic_counter_buffer>();
+		aco->fill({ "ato_red", "ato_green", "ato_blue" });
 
 		auto transfo = std::make_shared<gl_transform_feedback>();
-		
 
 		int first = 10;
 		int count = 100;

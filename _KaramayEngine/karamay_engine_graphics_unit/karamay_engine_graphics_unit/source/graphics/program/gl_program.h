@@ -8,7 +8,7 @@
 #include "graphics/buffer/customization/gl_element_array_buffer.h"
 #include "graphics/buffer/customization/gl_uniform_buffer.h"
 #include "graphics/buffer/customization/gl_shader_storage_buffer.h"
-#include "graphics/buffer/customization/gl_atomic_count_buffer.h"
+#include "graphics/buffer/customization/gl_atomic_counter_buffer.h"
 #include "graphics/texture/gl_texture.h"
 #include "graphics/framebuffer/gl_framebuffer.h"
 
@@ -73,17 +73,13 @@ public:
 		_element_array_buffer = element_array_buffer;
 	}
 
-	void set_transform_feedback(std::shared_ptr<gl_transform_feedback> transform_feedback, const std::vector<const GLchar*>& varyings)
+	void set_transform_feedback(std::shared_ptr<gl_transform_feedback> transform_feedback)
 	{
 		if (_transform_feedback)
 		{
 			_transform_feedback = transform_feedback;
 
-			if (varyings.size() > 0)
-			{
-				glTransformFeedbackVaryings(_handle, varyings.size(), varyings.data(), static_cast<GLenum>(gl_buffer_mode::INTERLEAVED));
-				glLinkProgram(_handle);
-			}
+			
 		}
 	}
 
@@ -104,7 +100,7 @@ public:
 
 	void add_shader_storage_buffers(const std::vector<std::shared_ptr<gl_shader_storage_buffer>>& shader_storage_buffers) {}
 
-	void add_atomic_count_buffers(const std::vector<std::shared_ptr<gl_atomic_count_buffer>>& atomic_count_buffers) {}
+	void add_atomic_count_buffers(const std::vector<std::shared_ptr<gl_atomic_counter_buffer>>& atomic_count_buffers) {}
 
 	void set_framebuffer(std::shared_ptr<gl_framebuffer> framebuffer = nullptr)
 	{
@@ -186,6 +182,7 @@ private:
 
 private:
 
+	
 	void _bind_framebuffer()
 	{
 		if (_framebuffer)
@@ -197,14 +194,26 @@ private:
 	void _bind_vertex_array()
 	{
 		if (_vertex_array) {
-			_vertex_array->bind_to_context();
+			_vertex_array->bind();
 			_vertex_array->enable_vertex_attributes();
 		}
 	}
 	void _bind_element_array_buffer()
 	{
 		if (_element_array_buffer) {
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _element_array_buffer->get_handle());
+			_element_array_buffer->bind();
+		}
+	}
+	void _set_transform_feedback_varyings()
+	{
+		if (_transform_feedback)
+		{
+			const auto& varyings = _transform_feedback->get_varyings();
+			if (varyings.size() > 0)
+			{
+				glTransformFeedbackVaryings(_handle, varyings.size(), varyings.data(), static_cast<GLenum>(gl_buffer_mode::INTERLEAVED));
+				glLinkProgram(_handle);
+			}
 		}
 	}
 	void _bind_transform_feedback()

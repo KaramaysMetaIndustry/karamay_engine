@@ -4,7 +4,7 @@
 #include "graphics/buffer/customization/gl_uniform_buffer.h"
 #include "graphics/uniform/gl_uniform.h"
 #include "graphics/buffer/customization/gl_shader_storage_buffer.h"
-#include "graphics/buffer/customization/gl_atomic_count_buffer.h"
+#include "graphics/buffer/customization/gl_atomic_counter_buffer.h"
 #include "graphics/buffer/customization/gl_element_array_buffer.h"
 #include "graphics/context/gl_context.h"
 

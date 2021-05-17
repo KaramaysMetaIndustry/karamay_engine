@@ -10,6 +10,10 @@ public:
 
 	virtual ~gl_transform_feedback();
 
+private:
+	
+	std::vector<const char*> _varyings;
+
 public:
 
 	/**
@@ -28,6 +32,15 @@ public:
 	 * @size : (bytes) [offset, offset + size] of buffer will be associate to transform feedback
 	 */
 	void associate_buffer(std::uint32_t index, std::shared_ptr<gl_buffer> buffer, std::int64_t offset, std::int64_t size);
+
+	
+	void set_varyings(const std::vector<const char*>& varyings)
+	{
+		_varyings = varyings;
+	}
+
+	const std::vector<const char*>& get_varyings() { return _varyings; }
+
 
 public:
 

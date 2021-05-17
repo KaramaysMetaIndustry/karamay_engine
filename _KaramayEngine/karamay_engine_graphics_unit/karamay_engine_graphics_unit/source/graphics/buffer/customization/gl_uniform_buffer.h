@@ -16,28 +16,12 @@ struct _shader_point_light_std140
 	GLint isOn; // Flag telling, if the light is on
 };
 
-struct _shader_spot_light_std140 {};
-
-struct _shader_directional_light_std140 {};
 
 
-
-template<typename T>
-std::pair<const void*, size_t> cal(T value)
+gl_buffer_referenece get_buffer_ref()
 {
-	return std::make_pair((const void*)(value.get()), sizeof T::element_type);
+	auto buffer = std::make_shared<gl_buffer>();
 }
-
-struct gl_uniform_buffer_binding_info
-{
-	std::string block_name;
-
-	std::shared_ptr<gl_buffer> buffer;
-
-	std::size_t offset;
-
-	std::size_t size;
-};
 
 class gl_uniform_buffer
 {
@@ -48,29 +32,30 @@ public:
 	
 	virtual ~gl_uniform_buffer();
 
+private:
 
-public:
-	
-	std::string _name;
-	
-	size_t _size;
-	
-	const void* _data;
+	gl_buffer_referenece _buffer_ref;
 
 public:
 
-	auto get_binding_info()
+	void fill_std140(const void* data, const std::vector<std::string>& names)
 	{
-		return gl_uniform_buffer_binding_info();
+		_buffer_ref.fill(data);
+
+		fill_std140(data, { "mat4 projection;", "mat4 view;" });
+
 	}
 
-public:
-
-	void construct(const std::string name, std::pair<const void*, size_t> data)
+	void bind(std::int32_t binding)
 	{
-		_name = name;
-		_data = data.first;
-		_size = data.second;
+		glBindBufferRange(GL_UNIFORM_BUFFER, binding, _buffer_ref._buffer->get_handle(), _buffer_ref._offset, _buffer_ref._size);
+	}
+
+private:
+
+	void _generate_template_code()
+	{
+		std::regex pattern("layout(binding = 0, std430) uniform Matrices {}");
 	}
 
 };

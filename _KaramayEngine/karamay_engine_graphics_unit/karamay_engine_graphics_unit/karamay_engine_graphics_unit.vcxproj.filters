@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\graphics\buffer\customization\gl_atomic_count_buffer.cpp">
+    <ClCompile Include="source\graphics\buffer\customization\gl_atomic_counter_buffer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="source\graphics\buffer\customization\gl_element_array_buffer.cpp">
@@ -137,7 +137,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\graphics\buffer\customization\gl_atomic_count_buffer.h">
+    <ClInclude Include="source\graphics\buffer\customization\gl_atomic_counter_buffer.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="source\graphics\buffer\customization\gl_element_array_buffer.h">
