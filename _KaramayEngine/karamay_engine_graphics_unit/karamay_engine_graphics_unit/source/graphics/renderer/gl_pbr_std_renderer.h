@@ -239,18 +239,27 @@ public:
 	{
 		
 		auto vao = std::make_shared<gl_vertex_array>();
-		vao->associate_array_buffer(std::make_shared<gl_buffer>(), );
+		vao->fill(nullptr, 1024, 
+			{ 
+				{0, 100, GL_UNSIGNALED, 0}, 
+				{1, 100, GL_UNSIGNALED, 100} 
+			});
 
 
 
 		auto ebo = std::make_shared<gl_element_array_buffer>();
 		auto ubo0 = std::make_shared<gl_uniform_buffer>();
+		
+
+
 		auto ubo1 = std::make_shared<gl_uniform_buffer>();
 		auto ubo2 = std::make_shared<gl_uniform_buffer>();
 		auto sso0 = std::make_shared<gl_shader_storage_buffer>();
 		auto sso1 = std::make_shared<gl_shader_storage_buffer>();
 		auto aco = std::make_shared<gl_atomic_count_buffer>();
+
 		auto transfo = std::make_shared<gl_transform_feedback>();
+		
 
 		int first = 10;
 		int count = 100;

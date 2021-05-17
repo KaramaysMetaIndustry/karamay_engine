@@ -201,6 +201,10 @@ public:
 
 	void unmap();
 
+	void bind() {}
+
+	void unbind() {}
+
 private:
 	
 	int get_buffer_size() const

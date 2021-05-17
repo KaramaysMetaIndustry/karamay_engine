@@ -402,7 +402,7 @@ private:
 	
 	void _update_uniform(const std::string& name, glm::dvec1 value)
 	{
-		glUniform1dv(glGetUniformLocation(_handle, name.c_str()), glm::value_ptr(value));
+		glUniform1dv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
 	}
 	void _update_uniform(const std::string& name, glm::dvec2 value)
 	{

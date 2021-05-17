@@ -11,14 +11,14 @@ namespace gl_vertex_array_enum
 }
 
 
-struct gl_vertex_attribute_pointer
+struct gl_vertex_attribute_layout
 {
 	std::uint32_t index;
 	std::uint32_t size; 
 	GLenum type; 
 	std::uint32_t offset;
 
-	gl_vertex_attribute_pointer(std::uint32_t index, std::uint32_t size, GLenum type, std::uint32_t offset) {}
+	gl_vertex_attribute_layout(std::uint32_t index, std::uint32_t size, GLenum type, std::uint32_t offset) {}
 };
 
 struct gl_vertex_attribute_pointer_instanced
@@ -42,23 +42,27 @@ private:
 
 	std::shared_ptr<gl_buffer> _ref_buffer;
 
-	std::uint32_t _offset, _size;
-
-
-	std::vector<std::uint32_t> indices;
+	std::vector<std::uint32_t> _indices;
 
 public:
 	
-	void fill(const void* data, const std::vector<gl_vertex_attribute_pointer>& pointers)
+	void fill(const void* data, std::size_t size, const std::vector<gl_vertex_attribute_layout>& layouts)
 	{
-		_ref_buffer->fill(_offset, _size, data);
+		_ref_buffer = std::make_shared<gl_buffer>();
+		_ref_buffer->allocate(size);
+		_ref_buffer->fill(0, size, data);
 
+		bind();
+		_ref_buffer->bind();
+		for (const auto& layout : layouts)
+		{
+			glEnableVertexAttribArray(static_cast<GLuint>(layout.index));
+			glVertexAttribPointer(static_cast<GLuint>(layout.index), static_cast<GLintptr>(layout.size), static_cast<GLenum>(layout.type), GL_FALSE, sizeof(GLfloat) * layout.size, attribute_offset(layout.offset));
+			_indices.push_back(layout.index);
+		}
+		_ref_buffer->unbind();
+		unbind();
 	}
-
-
-	void associate_array_buffer(std::shared_ptr<gl_buffer> array_buffer, const std::vector<gl_vertex_attribute_pointer>& pointers);
-
-	void associate_array_buffer_instanced(std::shared_ptr<gl_buffer> array_buffer, const std::vector<gl_vertex_attribute_pointer_instanced>& pointers);
 
 public:
 	
