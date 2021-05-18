@@ -16,7 +16,8 @@ import java.util.HashMap;
 public class Main {
     public static void main(String[] args) throws IOException, ScriptException, ResourceException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
 
-        GroovyScriptEngine engine = new GroovyScriptEngine("src/main/java/com/groovy/script/");
+        GroovyScriptEngine engine =
+                new GroovyScriptEngine("src/main/java/com/groovy/script/");
 
         Binding binding = new Binding();
         //binding.setVariable("name", "xxx");\

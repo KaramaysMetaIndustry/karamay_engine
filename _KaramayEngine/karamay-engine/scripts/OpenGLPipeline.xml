@@ -1,0 +1,136 @@
+
+<Pipeline>
+
+    <Stages>
+
+        <VertexStage>
+            <VertexPuller/>
+            <Shader file="PBRMesh.vert"/>
+
+        </VertexStage>
+
+        <TessellationStage>
+            <Control>
+                <Shader file="PBRMesh.tesc"/>
+            </Control>
+            <PrimitiveGenerator>
+
+            </PrimitiveGenerator>
+            <Evaluation>
+                <Shader file="PBRMesh.tese"/>
+            </Evaluation>
+        </TessellationStage>
+
+        <GeometryStage>
+            <Shader ref="PBRMesh.geo"/>
+        </GeometryStage>
+
+        <VertexPostProcessing>
+            <TransformFeedback>
+                <Varyings>
+                    <Varying type="vec3" name="position"/>
+                    <Varying type="vec3" name="color"/>
+                    <Varying type="vec2" name="uv"/>
+                </Varyings>
+            </TransformFeedback>
+
+            <PrimitiveQueries>
+
+            </PrimitiveQueries>
+
+            <Flatshading>
+
+            </Flatshading>
+
+            <PrimitiveClipping>
+
+            </PrimitiveClipping>
+
+            <ShaderOutputClipping>
+
+            </ShaderOutputClipping>
+
+            <PerspectiveDivision>
+
+            </PerspectiveDivision>
+
+            <ViewportMapping>
+
+            </ViewportMapping>
+
+            <FrontFaceDetermination>
+
+            </FrontFaceDetermination>
+
+            <GenericAttributeClipping>
+
+            </GenericAttributeClipping>
+
+
+        </VertexPostProcessing>
+
+        <Rasterization>
+
+        </Rasterization>
+
+        <FragmentShading>
+            <PreTests>
+                <PixelOwnerShipTest/>
+                <ScissorTest/>
+                <MultiSampleFragmentOperations/>
+                <StencilTest/>
+                <DepthTest/>
+                <OcclusionQuerySampleCounting/>
+            </PreTests>
+            <Shader file="PBRMesh.frag"/>
+            <PostTest>
+
+            </PostTest>
+        </FragmentShading>
+
+        <Blending>
+
+        </Blending>
+
+    </Stages>
+
+    <VertexKit>
+        <VertexArray></VertexArray>
+        <IndexArray></IndexArray>
+    </VertexKit>
+
+    <UniformBuffers>
+        <UniformBuffer blockName="globals">
+            <Row type="mat4" name="projection_matrix" initial="(0.0f)"/>
+            <Row type="mat4" name="view_matrix" initial="(0.0f)"/>
+            <Row type="vec3" name="directional_light_color" initial="1.0f, 1.0f, 1.0f"/>
+        </UniformBuffer>
+
+        <UniformBuffer blockName="">
+
+        </UniformBuffer>
+    </UniformBuffers>
+
+    <ShaderStorageBuffers>
+        <ShaderStorageBuffer>
+            <Row type=""></Row>
+            <Row type=""></Row>
+        </ShaderStorageBuffer>
+
+        <ShaderStorageBuffer>
+            <Row type=""></Row>
+            <Row type=""></Row>
+        </ShaderStorageBuffer>
+    </ShaderStorageBuffers>
+
+    <AtomicCounterBuffers>
+        <AtomicCounterBuffer>
+
+        </AtomicCounterBuffer>
+    </AtomicCounterBuffers>
+
+
+    <Framebuffer>
+    </Framebuffer>
+
+</Pipeline>
