@@ -1,4 +1,4 @@
 package com.core.graphics;
 
-public class KShader {
+public class Framebuffer {
 }

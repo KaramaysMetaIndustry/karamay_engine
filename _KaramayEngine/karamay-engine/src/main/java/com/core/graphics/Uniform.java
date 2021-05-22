@@ -1,4 +1,4 @@
 package com.core.graphics;
 
-public class KGeometryInfo {
+public class Uniform {
 }

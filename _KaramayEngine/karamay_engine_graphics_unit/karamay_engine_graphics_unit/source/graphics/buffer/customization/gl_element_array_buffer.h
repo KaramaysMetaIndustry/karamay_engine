@@ -32,9 +32,19 @@ public:
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ref_buffer->get_handle());
 	}
 
-	void bind()
+	void unbind()
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
+
+
+	GLuint get_handle()
+	{
+		if (_ref_buffer)
+			return _ref_buffer->get_handle();
+
+		return 0;
+	}
+
 };
 

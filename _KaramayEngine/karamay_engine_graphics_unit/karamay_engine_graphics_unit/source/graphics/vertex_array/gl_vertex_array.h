@@ -46,23 +46,7 @@ private:
 
 public:
 	
-	void fill(const void* data, std::size_t size, const std::vector<gl_vertex_attribute_layout>& layouts)
-	{
-		_ref_buffer = std::make_shared<gl_buffer>();
-		_ref_buffer->allocate(size);
-		_ref_buffer->fill(0, size, data);
-
-		bind();
-		_ref_buffer->bind();
-		for (const auto& layout : layouts)
-		{
-			glEnableVertexAttribArray(static_cast<GLuint>(layout.index));
-			glVertexAttribPointer(static_cast<GLuint>(layout.index), static_cast<GLintptr>(layout.size), static_cast<GLenum>(layout.type), GL_FALSE, sizeof(GLfloat) * layout.size, attribute_offset(layout.offset));
-			_indices.push_back(layout.index);
-		}
-		_ref_buffer->unbind();
-		unbind();
-	}
+	void fill(const void* data, std::size_t size, const std::vector<gl_vertex_attribute_layout>& layouts);
 
 public:
 	

@@ -6,12 +6,18 @@
 template<typename T>
 class gl_uniform
 {
-private:
+
+public:
 	std::string name;
 
 	T value;
 
 public:
+
+	gl_uniform()
+	{
+
+	}
 
 	gl_uniform(const std::string& name, T value)
 	{

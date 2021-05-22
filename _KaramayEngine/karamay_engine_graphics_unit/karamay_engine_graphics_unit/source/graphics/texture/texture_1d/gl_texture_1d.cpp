@@ -41,3 +41,17 @@ void* gl_texture_1d::fetch_pixels(GLuint mipmap_index, GLenum format, GLenum typ
 	return pixels;
 }
 
+void gl_texture_1d::bind(std::uint32_t unit)
+{
+	glActiveTexture(GL_TEXTURE0 + unit);
+	glBindTexture(GL_TEXTURE_1D, _handle);
+	if (_sampler)
+	{
+		_sampler->bind(unit);
+	}
+}
+
+void gl_texture_1d::unbind()
+{
+}
+

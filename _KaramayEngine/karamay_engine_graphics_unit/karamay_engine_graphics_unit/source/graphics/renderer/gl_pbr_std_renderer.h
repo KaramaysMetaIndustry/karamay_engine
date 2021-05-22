@@ -1,8 +1,14 @@
 #pragma once
 #include "gl_renderer.h"
+#include "graphics/pipeline/gl_pipeline_base.h"
 #include "graphics/commands/gl_commands.h"
 #include "graphics/mesh/gl_mesh.h"
-#include "graphics/pipeline/gl_pipeline_base.h"
+#include "graphics/buffer/customization/gl_element_array_buffer.h"
+#include "graphics/transform_feedback/gl_transform_feedback.h"
+#include "graphics/buffer/customization/gl_uniform_buffer.h"
+#include "graphics/buffer/customization/gl_shader_storage_buffer.h"
+#include "graphics/buffer/customization/gl_atomic_counter_buffer.h"
+
 
 float vertices[] = {
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f, //0
@@ -253,6 +259,7 @@ public:
 
 		auto ubo0 = std::make_shared<gl_uniform_buffer>();
 		
+		auto uniform_color = std::make_shared<gl_uniform<glm::vec4>>();
 
 
 		auto ubo1 = std::make_shared<gl_uniform_buffer>();
@@ -277,18 +284,19 @@ public:
 				"shaders/pbr_mesh.tesc", "shaders/pbr_mesh.tese", "shaders/pbr_mesh.geom", 
 				"shaders/pbr_mesh.frag" 
 			})
-		.set_vertex_kit(vao)
-		.set_transform_feedback(transfo, { "tf_position, tf_color, tf_vu" })
-		//.add_immediate_uniforms({gl_uniform("", glm::vec4(0.0f))})
-		//.add_immediate_uniform_textures({})
+		.set_vertex_array(vao)
+		.set_element_array(ebo)
+		.set_transform_feedback(transfo)
+		.add_uniforms({uniform_color})
 		.add_uniform_buffers({ ubo0, ubo1, ubo2 })
 		.add_shader_storage_buffers({ sso0, sso1 })
-		.add_atomic_count_buffers({ aco })
+		.add_atomic_counter_buffers({ aco })
 		.set_framebuffer()
 		.set_commands([&first, &count]()
 		{
 			glDrawArrays(GL_TRIANGLES, first, count);
 		});
+
 	}
 
 	virtual void render(std::float_t delta_time) final override

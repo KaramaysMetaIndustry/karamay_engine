@@ -156,6 +156,7 @@ public:
 
 
 public:
+
 	gl_sampler_enum::texture_mag_filter get_texture_mag_filter()
 	{
 		GLint value = 0;
@@ -228,6 +229,7 @@ public:
 	}
 
 private:
+	
 	bool is_sampler_object() const
 	{
 		return glIsSampler(_handle) == GL_TRUE ? true : false;

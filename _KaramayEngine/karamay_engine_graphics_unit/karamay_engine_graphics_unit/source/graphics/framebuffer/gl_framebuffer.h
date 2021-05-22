@@ -343,12 +343,12 @@ public:
 
 public:
 
-	void bind_to_context()
+	void bind()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, _handle);
 	}
 
-	void unbind_from_context()
+	void unbind()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}

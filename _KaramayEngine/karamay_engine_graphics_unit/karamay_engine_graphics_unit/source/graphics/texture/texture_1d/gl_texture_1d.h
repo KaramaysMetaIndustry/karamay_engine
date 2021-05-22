@@ -11,22 +11,6 @@ public:
 	
 public:
 	
-	void bind(std::uint32_t unit)
-	{
-		glActiveTexture(GL_TEXTURE0 + unit);
-		glBindTexture(GL_TEXTURE_1D, _handle);
-		if (_sampler)
-		{
-			_sampler->bind(unit);
-		}
-	}
-
-	void unbind()
-	{
-	}
-
-public:
-	
 	void allocate(gl_texture_enum::internal_format internal_format, std::uint32_t base_mipmap_width, std::uint32_t mipmaps_num);
 
 	void fill_mipmap(std::uint32_t mipmap_index, std::uint32_t x_offset, std::uint32_t mipmap_width, gl_texture_pixels_pack pixels_pack)
@@ -65,6 +49,12 @@ public:
 	void* fetch_pixels(GLuint mipmap_index, GLenum format, GLenum type);
 	void* fetch_base_mipmap_pixels(GLenum format, GLenum type) {}
 	
+public:
+
+	void bind(std::uint32_t unit);
+
+	void unbind();
+
 private:
 
 	gl_texture_enum::internal_format _internal_format;

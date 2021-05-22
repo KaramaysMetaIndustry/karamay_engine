@@ -22,6 +22,11 @@ public:
 
 	virtual ~gl_shader_storage_buffer();
 
+
+private:
+
+	std::string _block_name;
+
 public:
 
 	void fill()
@@ -30,10 +35,19 @@ public:
 	}
 
 
-
-	auto get_binding_info()
+	const std::string& get_block_name()
 	{
-		return gl_shader_storage_buffer_binding_info();
+		return _block_name;
+	}
+
+	void bind(std::uint32_t binding)
+	{
+
+	}
+
+	void unbind()
+	{
+
 	}
 
 private:

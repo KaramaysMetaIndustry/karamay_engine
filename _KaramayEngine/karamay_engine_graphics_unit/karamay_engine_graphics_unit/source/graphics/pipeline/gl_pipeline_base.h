@@ -1,12 +1,27 @@
 #pragma once
 #include "graphics/glo/gl_object.h"
-#include "graphics/program/gl_program.h"
-#include "graphics/buffer/customization/gl_uniform_buffer.h"
 #include "graphics/uniform/gl_uniform.h"
-#include "graphics/buffer/customization/gl_shader_storage_buffer.h"
-#include "graphics/buffer/customization/gl_atomic_counter_buffer.h"
-#include "graphics/buffer/customization/gl_element_array_buffer.h"
-#include "graphics/context/gl_context.h"
+
+
+class gl_texture_1d;
+class gl_texture_2d;
+class gl_texture_2d_multisample;
+class gl_texture_3d;
+class gl_texture_1d_array;
+class gl_texture_2d_array;
+class gl_texture_2d_array_multisample;
+
+class gl_program;
+class gl_vertex_array;
+class gl_element_array_buffer;
+class gl_uniform_buffer;
+class gl_shader_storage_buffer;
+class gl_atomic_counter_buffer;
+class gl_transform_feedback;
+class gl_framebuffer;
+class gl_default_framebuffer;
+
+
 
 class gl_pipeline_base : public gl_object
 {
@@ -22,56 +37,40 @@ public:
 
 public:
 
-	gl_pipeline_base& set_vertex_kit(std::shared_ptr<gl_vertex_array> vertex_array, std::shared_ptr<gl_element_array_buffer> element_array_buffer = nullptr);
+	gl_pipeline_base& set_vertex_array(std::shared_ptr<gl_vertex_array> vertex_array);
 	
-	gl_pipeline_base& set_transform_feedback(std::shared_ptr<gl_transform_feedback> transform_feedback, const std::vector<std::string>& varyings);
+	gl_pipeline_base& set_element_array(std::shared_ptr<gl_element_array_buffer> element_array_buffer);
+
+	gl_pipeline_base& set_transform_feedback(std::shared_ptr<gl_transform_feedback> transform_feedback);
 	
-	template<typename T>
-	gl_pipeline_base& add_immediate_uniforms(const std::vector<gl_uniform<T>>& uniforms);
-	
-	template<typename T>
-	gl_pipeline_base& add_immediate_uniform_textures(const std::vector<std::shared_ptr<T>>& uniform_textures)
+	gl_pipeline_base& add_uniforms(const std::vector<std::shared_ptr<gl_uniform<glm::vec3>>>& vec3_uniforms)
 	{
-		if (_program)
-		{
-			_program->add_immediate_uniform_textures(uniform_textures);
-		}
-		return *this;
+
 	}
-	
+
+	gl_pipeline_base& add_uniforms(const std::vector<std::shared_ptr<gl_uniform<glm::vec4>>>& vec4_uniforms)
+	{
+
+	}
+
+	gl_pipeline_base& add_textures(const std::vector<std::shared_ptr<gl_texture_1d>>& texture_1ds)
+	{}
+
+	gl_pipeline_base& add_textures(const std::vector<std::shared_ptr<gl_texture_2d>>& texture_2ds)
+	{}
+
+	gl_pipeline_base& add_textures(const std::vector<std::shared_ptr<gl_texture_3d>>& texture_3ds)
+	{}
+
 	gl_pipeline_base& add_uniform_buffers(const std::vector<std::shared_ptr<gl_uniform_buffer>>& uniform_buffers);
 	
-	gl_pipeline_base& add_shader_storage_buffers(const std::vector<std::shared_ptr<gl_shader_storage_buffer>>& shader_storage_buffers)
-	{
-		if (_program)
-		{
-			_program->add_shader_storage_buffers(shader_storage_buffers);
-		}
-		return *this;
-	}
+	gl_pipeline_base& add_shader_storage_buffers(const std::vector<std::shared_ptr<gl_shader_storage_buffer>>& shader_storage_buffers);
 	
-	gl_pipeline_base& add_atomic_count_buffers(const std::vector<std::shared_ptr<gl_atomic_count_buffer>>& atomic_count_buffers)
-	{
-		if (_program)
-		{
-			_program->add_atomic_count_buffers(atomic_count_buffers);
-		}
-		return *this;
-	}	
+	gl_pipeline_base& add_atomic_counter_buffers(const std::vector<std::shared_ptr<gl_atomic_counter_buffer>>& atomic_counter_buffers);
 	
-	gl_pipeline_base& set_framebuffer(std::shared_ptr<gl_framebuffer> framebuffer = nullptr)
-	{
-		return *this;
-	}
+	gl_pipeline_base& set_framebuffer(std::shared_ptr<gl_framebuffer> framebuffer = nullptr);
 	
-	gl_pipeline_base& set_commands(std::function<void(void)> commands)
-	{
-		if (_program)
-		{
-			
-		}
-		return *this;
-	}
+	gl_pipeline_base& set_commands(std::function<void(void)> commands_lambda);
 
 public:
 
@@ -82,13 +81,3 @@ private:
 	std::shared_ptr<gl_program> _program;
 
 };
-
-template<typename T>
-inline gl_pipeline_base& gl_pipeline_base::add_immediate_uniforms(const std::vector<gl_uniform<T>>& uniforms)
-{
-	if (_program)
-	{
-		_program->add_immediate_uniforms(uniforms);
-	}
-	return *this;
-}
