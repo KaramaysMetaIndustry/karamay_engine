@@ -11,8 +11,16 @@ public:
 
 public:
 	
-	void allocate(GLsizei Samples, GLenum InternalFormat, GLsizei Width, GLsizei Height, GLsizei Num, GLboolean FixedSampleLocation) {
-		glTextureStorage3DMultisample(_handle, Samples, InternalFormat, Width, Height, Num, FixedSampleLocation);
+	/**
+	 * @samples_num: num of samples
+	 * @internal_format: internal storage format
+	 * @width: 
+	 * @height:
+	 * @fixed_sample_location:
+	 * @num:
+	 */
+	void allocate(std::int32_t samples_num, GLenum internal_format, std::int32_t width, std::int32_t height, std::uint8_t fixed_sample_location, std::int32_t num) {
+		glTextureStorage3DMultisample(_handle, samples_num, internal_format, width, height, num, fixed_sample_location);
 	}
 
 	void fill(GLsizei Level,  GLsizei Width, GLsizei Height, GLsizei Num,GLenum Format, GLenum Type, std::vector<const void*> Datas) {

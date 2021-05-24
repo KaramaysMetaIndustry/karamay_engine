@@ -8,11 +8,6 @@ gl_texture_2d::~gl_texture_2d()
 {
 }
 
-void gl_texture_2d::allocate(GLenum internal_format, GLsizei width, GLsizei height, int mipmaps_num)
-{
-	glTextureStorage2D(_handle, mipmaps_num, internal_format, width, height);
-}
-
 void gl_texture_2d::fill_base_mipmap(GLenum format, GLenum type, const void* data)
 {
 	fill_miniature_mipmap(format, type, data, 0);

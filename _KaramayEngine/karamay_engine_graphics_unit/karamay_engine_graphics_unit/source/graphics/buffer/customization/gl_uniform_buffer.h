@@ -18,19 +18,18 @@ struct _shader_point_light_std140
 
 namespace gl_uniform_buffer_enum
 {
-	enum class memory_layout
+	enum class layout
 	{
 		shared,
 		packed,
-		std140,
-		std430
+		std140
 	};
 }
 
 
 struct gl_uniform_buffer_layout
 {
-	gl_uniform_buffer_enum::memory_layout m_layout;
+	//gl_uniform_buffer_enum::layout m_layout;
 
 
 };

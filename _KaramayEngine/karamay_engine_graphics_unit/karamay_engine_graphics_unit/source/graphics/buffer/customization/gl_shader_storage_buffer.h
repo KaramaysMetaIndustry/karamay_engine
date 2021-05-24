@@ -12,6 +12,23 @@ struct gl_shader_storage_buffer_binding_info
 	std::size_t size;
 };
 
+namespace gl_shader_storage_buffer_enum
+{
+	enum class layout
+	{
+
+	};
+}
+
+
+/**
+ *
+ * packed
+ * shared
+ * std140
+ * std430
+ *
+ */
 
 class gl_shader_storage_buffer
 {
@@ -27,9 +44,26 @@ private:
 
 	std::string _block_name;
 
+	std::shared_ptr<gl_buffer> _referred_buffer;
+
+	std::uint32_t _offset, _size;
+
+	std::uint32_t _index;
+
 public:
 
 	void fill()
+	{
+
+	}
+
+	void bind(std::uint32_t index)
+	{
+		glBindBufferRange(GL_SHADER_STORAGE_BUFFER, index, _referred_buffer->get_handle(), _offset, _size);
+		_index = index;
+	}
+
+	void unbind()
 	{
 
 	}
@@ -38,16 +72,6 @@ public:
 	const std::string& get_block_name()
 	{
 		return _block_name;
-	}
-
-	void bind(std::uint32_t binding)
-	{
-
-	}
-
-	void unbind()
-	{
-
 	}
 
 private:

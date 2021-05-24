@@ -38,7 +38,7 @@ public:
 		_size = sizeof(GLuint) * variable_names.size();
 		_ref_buffer->fill(_offset, _size, nullptr);
 		
-		_generate_template_code(variable_names);
+		//_generate_template_code(variable_names);
 	}
 
 	void bind(std::uint32_t binding)
@@ -53,20 +53,20 @@ public:
 
 private:
 
-	void _generate_template_code(const std::vector<std::string>& variable_names)
-	{
-		// generate template code
-		const std::regex pattern("layout (binding = @, offset = $) uniform atomic_uint *;");
-		std::vector<std::string> code_lines;
-		std::uint32_t binding = 0;
-		for (size_t i = 0; i < variable_names.size(); ++i)
-		{
-			std::uint32_t offset = 4 * i;
-			variable_names[i];
+	//void _generate_template_code(const std::vector<std::string>& variable_names)
+	//{
+	//	// generate template code
+	//	const std::regex pattern("layout (binding = @, offset = $) uniform atomic_uint *;");
+	//	std::vector<std::string> code_lines;
+	//	std::uint32_t binding = 0;
+	//	for (size_t i = 0; i < variable_names.size(); ++i)
+	//	{
+	//		std::uint32_t offset = 4 * i;
+	//		variable_names[i];
 
-			code_lines.push_back("");
-		}
-	}
+	//		code_lines.push_back("");
+	//	}
+	//}
 
 
 };
