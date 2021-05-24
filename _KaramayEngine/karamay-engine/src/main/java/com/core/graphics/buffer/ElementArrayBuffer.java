@@ -1,4 +1,4 @@
-package com.core.graphics;
+package com.core.graphics.buffer;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;

@@ -523,3 +523,9 @@ private:
 	//// indexed buffer GL_MAX_ATOMIC_COUNTER_BUFFER_BINDINGS
 };
 
+
+class ProgramProxy
+{
+	gl_uniform_buffer _uniform_buffer;
+
+};

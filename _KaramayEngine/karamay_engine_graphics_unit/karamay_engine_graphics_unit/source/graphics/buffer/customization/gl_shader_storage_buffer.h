@@ -16,19 +16,18 @@ namespace gl_shader_storage_buffer_enum
 {
 	enum class layout
 	{
-
+		packed,
+		shared,
+		std140,
+		std430
 	};
 }
 
+struct gl_shader_storage_buffer_layout
+{
 
-/**
- *
- * packed
- * shared
- * std140
- * std430
- *
- */
+};
+
 
 class gl_shader_storage_buffer
 {

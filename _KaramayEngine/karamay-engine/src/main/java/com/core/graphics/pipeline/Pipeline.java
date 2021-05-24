@@ -1,4 +1,13 @@
-package com.core.graphics;
+package com.core.graphics.pipeline;
+
+import com.core.graphics.transformfeedback.TransformFeedback;
+import com.core.graphics.uniform.Uniform;
+import com.core.graphics.vertex.VertexArray;
+import com.core.graphics.buffer.AtomicCounterBuffer;
+import com.core.graphics.buffer.ElementArrayBuffer;
+import com.core.graphics.buffer.ShaderStorageBuffer;
+import com.core.graphics.buffer.UniformBuffer;
+import com.core.graphics.framebuffer.Framebuffer;
 
 import java.util.ArrayList;
 

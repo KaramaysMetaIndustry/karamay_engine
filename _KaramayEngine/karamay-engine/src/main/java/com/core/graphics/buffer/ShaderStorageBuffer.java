@@ -1,4 +1,4 @@
-package com.core.graphics;
+package com.core.graphics.buffer;
 
 public class ShaderStorageBuffer {
 }
