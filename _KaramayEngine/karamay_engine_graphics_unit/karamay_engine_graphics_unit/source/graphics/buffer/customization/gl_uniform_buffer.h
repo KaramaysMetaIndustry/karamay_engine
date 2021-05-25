@@ -20,9 +20,9 @@ namespace gl_uniform_buffer_enum
 {
 	enum class layout
 	{
-		shared,
-		packed,
-		std140
+		shared, // must query
+		packed, // must query
+		std140 // no neccessary
 	};
 }
 
@@ -58,6 +58,30 @@ private:
 	std::uint32_t _binding;
 
 public:
+
+	void fill(const std::string& block_name, const std::vector<std::string>& attrib_names)
+	{
+		const std::string block_name = "matrices";
+		GLuint _program;
+
+		GLuint block_index = glGetUniformBlockIndex(_program, block_name.c_str());
+		GLint block_size;
+		glGetActiveUniformBlockiv(_program, block_index, GL_UNIFORM_BLOCK_DATA_SIZE, &block_size);
+		GLbyte* block_buffer;
+
+		//const GLchar* names[] = { "inner_color", "outer_color","radius_innes","raduis_outer" };
+		GLuint attrib_num = attrib_names.size();
+		std::vector<GLuint> indices(attrib_num);
+		std::vector<GLint> offsets(attrib_num);
+		glGetUniformIndices(_program, attrib_num, attrib_names.data(), indices.data());
+		glGetActiveUniformsiv(_program, 4, indices.data(), GL_UNIFORM_OFFSET, offsets.data());
+
+		// create ubo an fill it with data
+		gl_buffer ubo;
+
+		// bind the buffer to the block
+		glBindBufferBase(GL_UNIFORM_BUFFER, block_index, ubo.get_handle());
+	}
 
 	void fill(const void* data, size_t size, const gl_uniform_buffer_layout& uniform_buffer_layout)
 	{

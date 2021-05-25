@@ -242,14 +242,6 @@ private:
 		}
 
 	}
-	inline void _update_uniforms()
-	{
-		for (auto uniform : _vec1_uniforms)
-		{
-			_update_uniform(uniform->name, uniform->value);
-		}
-	}
-	inline void _bind_textures() {}
 	inline void _bind_uniform_buffers()
 	{
 		const size_t max_i
@@ -306,6 +298,29 @@ private:
 			}
 		}
 	}
+	inline void _bind_textures() {}
+	inline void _update_uniforms()
+	{
+		for (auto uniform : _vec1_uniforms)
+		{
+			_update_uniform(uniform->name, uniform->value);
+		}
+
+		for (auto uniform : _vec2_uniforms)
+		{
+			_update_uniform(uniform->name, uniform->value);
+		}
+
+		for (auto uniform : _vec3_uniforms)
+		{
+			_update_uniform(uniform->name, uniform->value);
+		}
+
+		for (auto uniform : _mat4_uniforms)
+		{
+			_update_uniform(uniform->name, uniform->value);
+		}
+	}
 	inline void _bind_framebuffer()
 	{
 		if (_framebuffer)
@@ -316,6 +331,7 @@ private:
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 	
+
 	inline void _unbind_vertex_array()
 	{
 		if (_vertex_array)
@@ -331,7 +347,6 @@ private:
 		if (_transform_feedback)
 			_transform_feedback->unbind();
 	}
-	inline void _unbind_textures() {}
 	inline void _unbind_uniform_buffers()
 	{
 		for (size_t i = 0; i < _uniform_buffers.size(); ++i)
@@ -353,6 +368,7 @@ private:
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, i, 0);
 		}
 	}
+	inline void _unbind_textures() {}
 	inline void _unbind_framebuffer()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -499,27 +515,27 @@ private:
 	 * 
 	 */
 
-	//void set_uniform_block(const GLchar* block_name, std::vector<const GLchar*> attrib_names)
-	//{
-	//	// fetch the block info
-	//	GLuint block_index = glGetUniformBlockIndex(_handle, block_name);
-	//	GLint block_size;
-	//	glGetActiveUniformBlockiv(_handle, block_index, GL_UNIFORM_BLOCK_DATA_SIZE, &block_size);
-	//	GLbyte* block_buffer;
+	void set_uniform_block(const GLchar* block_name, std::vector<const GLchar*> attrib_names)
+	{
+		// fetch the block info
+		GLuint block_index = glGetUniformBlockIndex(_handle, block_name);
+		GLint block_size;
+		glGetActiveUniformBlockiv(_handle, block_index, GL_UNIFORM_BLOCK_DATA_SIZE, &block_size);
+		GLbyte* block_buffer;
 
-	//	//const GLchar* names[] = { "inner_color", "outer_color","radius_innes","raduis_outer" };
-	//	GLuint attrib_num = attrib_names.size();
-	//	std::vector<GLuint> indices(attrib_num);
-	//	std::vector<GLint> offsets(attrib_num);
-	//	glGetUniformIndices(_handle, attrib_num, attrib_names.data(), indices.data());
-	//	glGetActiveUniformsiv(_handle, 4, indices.data(), GL_UNIFORM_OFFSET, offsets.data());
+		//const GLchar* names[] = { "inner_color", "outer_color","radius_innes","raduis_outer" };
+		GLuint attrib_num = attrib_names.size();
+		std::vector<GLuint> indices(attrib_num);
+		std::vector<GLint> offsets(attrib_num);
+		glGetUniformIndices(_handle, attrib_num, attrib_names.data(), indices.data());
+		glGetActiveUniformsiv(_handle, 4, indices.data(), GL_UNIFORM_OFFSET, offsets.data());
 
-	//	// create ubo an fill it with data
-	//	gl_buffer ubo;
+		// create ubo an fill it with data
+		gl_buffer ubo;
 
-	//	// bind the buffer to the block
-	//	glBindBufferBase(GL_UNIFORM_BUFFER, block_index, ubo.get_handle());
-	//}
+		// bind the buffer to the block
+		glBindBufferBase(GL_UNIFORM_BUFFER, block_index, ubo.get_handle());
+	}
 	//// indexed buffer GL_MAX_UNIFORM_BUFFER_BINDINGS
 	//// indexed buffer GL_MAX_SHADER_STORAGE_BUFFER_BINDINGS
 	//// indexed buffer GL_MAX_ATOMIC_COUNTER_BUFFER_BINDINGS
