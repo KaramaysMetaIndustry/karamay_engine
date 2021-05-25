@@ -91,6 +91,8 @@ public:
 	void add_uniforms(std::vector<std::shared_ptr<gl_uniform<glm::vec3>>> vec3_uniforms) {}
 	
 	void add_uniforms(std::vector<std::shared_ptr<gl_uniform<glm::vec4>>> vec4_uniforms) {}
+
+	void add_uniforms(std::vector<std::shared_ptr<gl_uniform<glm::mat4>>> mat4_uniforms) {}
 	
 	void add_textures(const std::vector<std::shared_ptr<gl_texture_2d>>& texture_2ds) {}
 

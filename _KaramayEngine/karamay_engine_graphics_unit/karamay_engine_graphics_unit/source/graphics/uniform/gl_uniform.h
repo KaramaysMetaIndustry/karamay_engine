@@ -19,9 +19,10 @@ public:
 
 	}
 
-	gl_uniform(const std::string& name, T value)
+	gl_uniform(const std::string& name, const T& value)
 	{
-
+		this->name = name;
+		this->value = value;
 	}
 };
 

@@ -17,17 +17,9 @@ struct gl_vertex_attribute_layout
 	std::uint32_t size; 
 	GLenum type; 
 	std::uint32_t offset;
+	std::uint32_t divisor;
 
 	gl_vertex_attribute_layout(std::uint32_t index, std::uint32_t size, GLenum type, std::uint32_t offset) {}
-};
-
-struct gl_vertex_attribute_pointer_instanced
-{
-	std::uint32_t index;
-	std::uint32_t size;
-	GLenum type;
-	std::uint32_t offset;
-	std::uint32_t divisor;
 };
 
 class gl_vertex_array : public gl_object
