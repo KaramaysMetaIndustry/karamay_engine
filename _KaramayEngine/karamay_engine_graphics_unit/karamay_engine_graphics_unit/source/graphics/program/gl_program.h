@@ -39,178 +39,62 @@ public:
 
 public:
 
-	void construct(const std::vector<std::string>& shader_paths)
-	{
-		for (const auto& path : shader_paths)
-		{
-			auto shader = std::make_shared<gl_shader>();
-			if (shader)
-			{
-				shader->load(path);
-				shader->compile();
-				glAttachShader(_handle, shader->get_handle());
-				_shaders.push_back(shader);
-			}
-		}
+	/**
+	 * once you install these component, you have no chance to remove or add them until the program destroyed
+	 * 
+	 */
+	void construct(const std::vector<std::string>& shader_paths);
 
-		/*if (is_separable)
-			glProgramParameteri(_handle, GL_PROGRAM_SEPARABLE, GL_TRUE);*/
+	void set_vertex_array(std::shared_ptr<gl_vertex_array> vertex_array);
 
-		/*glBindAttribLocation(_handle, 0, "Position");
-		glBindFragDataLocation(_handle, 0, "FragColor");*/
+	void set_element_array_buffer(std::shared_ptr<gl_element_array_buffer> element_array_buffer);
 
-		glLinkProgram(_handle);
-	}
+	void set_transform_feedback(std::shared_ptr<gl_transform_feedback> transform_feedback);
 
-public:
+	void add_uniform_buffers(const std::vector<std::shared_ptr<gl_uniform_buffer>>& uniform_buffers);
 
-	void set_vertex_array(std::shared_ptr<gl_vertex_array> vertex_array)
-	{
-		_vertex_array = vertex_array;
-	}
+	void add_shader_storage_buffers(const std::vector<std::shared_ptr<gl_shader_storage_buffer>>& shader_storage_buffers);
 
-	void set_element_array_buffer(std::shared_ptr<gl_element_array_buffer> element_array_buffer)
-	{
-		_element_array_buffer = element_array_buffer;
-	}
+	void add_atomic_counter_buffers(const std::vector<std::shared_ptr<gl_atomic_counter_buffer>>& atomic_counter_buffers);
 
-	void set_transform_feedback(std::shared_ptr<gl_transform_feedback> transform_feedback)
-	{
-		if (_transform_feedback)
-		{
-			_transform_feedback = transform_feedback;
-
-			
-		}
-	}
-
-	void add_uniforms(std::vector<std::shared_ptr<gl_uniform<glm::vec1>>> vec4_uniforms) {}
-
-	void add_uniforms(std::vector<std::shared_ptr<gl_uniform<glm::vec2>>> vec4_uniforms) {}
-
-	void add_uniforms(std::vector<std::shared_ptr<gl_uniform<glm::vec3>>> vec3_uniforms) {}
-	
-	void add_uniforms(std::vector<std::shared_ptr<gl_uniform<glm::vec4>>> vec4_uniforms) {}
-
-	void add_uniforms(std::vector<std::shared_ptr<gl_uniform<glm::mat4>>> mat4_uniforms) {}
-	
-	void add_textures(const std::vector<std::shared_ptr<gl_texture_2d>>& texture_2ds) {}
-
-	void add_textures(const std::vector<std::shared_ptr<gl_texture_2d_array>>& texture_2d_arrays) {}
-
-	void add_textures(const std::vector<std::shared_ptr<gl_texture_3d>>& texture_3ds) {}
-
-	void add_uniform_buffers(const std::vector<std::shared_ptr<gl_uniform_buffer>>& uniform_buffers) 
-	{}
-
-	void add_shader_storage_buffers(const std::vector<std::shared_ptr<gl_shader_storage_buffer>>& shader_storage_buffers) {}
-
-	void add_atomic_counter_buffers(const std::vector<std::shared_ptr<gl_atomic_counter_buffer>>& atomic_counter_buffers) {}
-
-	void set_framebuffer(std::shared_ptr<gl_framebuffer> framebuffer = nullptr)
-	{
-		_framebuffer = framebuffer;
-	}
+	void set_framebuffer(std::shared_ptr<gl_framebuffer> framebuffer = nullptr);
 
 	void set_commands(std::function<void(void)> commands_lambda)
 	{
 		_commands_lambda = commands_lambda;
 	}
 
+	void add_uniforms(std::vector<std::shared_ptr<gl_uniform<glm::vec1>>> vec1_uniforms) {}
+
+	void add_uniforms(std::vector<std::shared_ptr<gl_uniform<glm::vec2>>> vec2_uniforms) {}
+
+	void add_uniforms(std::vector<std::shared_ptr<gl_uniform<glm::vec3>>> vec3_uniforms) {}
+
+	void add_uniforms(std::vector<std::shared_ptr<gl_uniform<glm::vec4>>> vec4_uniforms) {}
+
+	void add_uniforms(std::vector<std::shared_ptr<gl_uniform<glm::mat4>>> mat4_uniforms) {}
+
+	void add_textures(const std::vector<std::shared_ptr<gl_texture_2d>>& texture_2ds) {}
+
+	void add_textures(const std::vector<std::shared_ptr<gl_texture_2d_array>>& texture_2d_arrays) {}
+
+	void add_textures(const std::vector<std::shared_ptr<gl_texture_3d>>& texture_3ds) {}
+
 public:
 
-	void render(std::float_t delta_time)
-	{
-		_install();
-		_enable();
-		_call_commands();
-		_disable();
-		_uninstall();
-	}
+	/**
+	 * tick every frame
+	 */
+	void render(std::float_t delta_time);
 
 private:
 
-	void _install()
-	{
-		_bind_vertex_array();
-		_bind_element_array_buffer();
-		_bind_transform_feedback();
-		_update_uniforms();
-		_bind_textures();
-		_bind_uniform_buffers();
-		_bind_shader_storage_buffers();
-		_bind_atomic_counter_buffers();
-		_bind_framebuffer();
-	}
+	void _install();
+	void _enable();
+	void _call_commands();
+	void _disable();
+	void _uninstall();
 
-	void _enable()
-	{
-		glUseProgram(_handle);
-	}
-
-	void _call_commands()
-	{
-		_commands_lambda();
-	}
-
-	void _disable()
-	{
-		glUseProgram(0);
-	}
-
-	void _uninstall()
-	{
-		_unbind_framebuffer();
-		_unbind_vertex_array();
-		_unbind_element_array_buffer();
-		_unbind_transform_feedback();
-		_unbind_uniform_buffers();
-		_unbind_shader_storage_buffers();
-		_unbind_atomic_counter_buffers();
-	}
-
-private:
-
-	std::vector<std::shared_ptr<gl_shader>> _shaders;
-	
-	std::shared_ptr<gl_vertex_array> _vertex_array;
-	
-	std::shared_ptr<gl_element_array_buffer> _element_array_buffer;
-	
-	std::shared_ptr<gl_transform_feedback> _transform_feedback;
-
-	std::vector<std::shared_ptr<gl_uniform<glm::vec1>>> _vec1_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::vec2>>> _vec2_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::vec3>>> _vec3_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::vec4>>> _vec4_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::dvec1>>> _dvec1_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::dvec2>>> _dvec2_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::dvec3>>> _dvec3_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::dvec4>>> _dvec4_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::ivec1>>> _ivec1_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::ivec2>>> _ivec2_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::ivec3>>> _ivec3_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::ivec4>>> _ivec4_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::uvec1>>> _uvec1_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::uvec2>>> _uvec2_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::uvec3>>> _uvec3_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::uvec4>>> _uvec4_uniforms;
-
-	std::vector<std::shared_ptr<gl_uniform<glm::mat2>>> _mat2_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::mat3>>> _mat3_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::mat4>>> _mat4_uniforms;
-
-	std::vector<std::shared_ptr<gl_uniform_buffer>> _uniform_buffers;
-	
-	std::vector<std::shared_ptr<gl_shader_storage_buffer>> _shader_storage_buffers;
-	
-	std::vector<std::shared_ptr<gl_atomic_counter_buffer>> _atomic_counter_buffers;
-	
-	std::shared_ptr<gl_framebuffer> _framebuffer;
-
-	static std::shared_ptr<gl_default_framebuffer> _default_framebuffer;
-
-	std::function<void(void)> _commands_lambda;
 
 private:
 
@@ -316,6 +200,11 @@ private:
 			_update_uniform(uniform->name, uniform->value);
 		}
 
+		for (auto uniform : _vec4_uniforms)
+		{
+			_update_uniform(uniform->name, uniform->value);
+		}
+
 		for (auto uniform : _mat4_uniforms)
 		{
 			_update_uniform(uniform->name, uniform->value);
@@ -330,7 +219,7 @@ private:
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
-	
+
 
 	inline void _unbind_vertex_array()
 	{
@@ -391,6 +280,7 @@ private:
 	{
 		glUniform4fv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
 	}
+
 	inline void _update_uniform(const std::string& name, glm::dvec1 value)
 	{
 		glUniform1dv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
@@ -407,6 +297,7 @@ private:
 	{
 		glUniform4dv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
 	}
+
 	inline void _update_uniform(const std::string& name, glm::ivec1 value)
 	{
 		glUniform1iv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
@@ -423,6 +314,7 @@ private:
 	{
 		glUniform4iv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
 	}
+
 	inline void _update_uniform(const std::string& name, glm::uvec1 value)
 	{
 		glUniform1uiv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
@@ -439,13 +331,14 @@ private:
 	{
 		glUniform4uiv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
 	}
+
 	inline void _update_uniform(const std::string& name, glm::mat3 value)
 	{}
 	inline void _update_uniform(const std::string& name, glm::mat4 value)
 	{
 		glUniformMatrix4fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 	}
-	
+
 	//~
 	inline void _bind_texture_1d(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_1d> texture_1d)
 	{
@@ -511,10 +404,6 @@ private:
 		}
 	}
 
-	/**
-	 * 
-	 */
-
 	void set_uniform_block(const GLchar* block_name, std::vector<const GLchar*> attrib_names)
 	{
 		// fetch the block info
@@ -536,14 +425,43 @@ private:
 		// bind the buffer to the block
 		glBindBufferBase(GL_UNIFORM_BUFFER, block_index, ubo.get_handle());
 	}
-	//// indexed buffer GL_MAX_UNIFORM_BUFFER_BINDINGS
-	//// indexed buffer GL_MAX_SHADER_STORAGE_BUFFER_BINDINGS
-	//// indexed buffer GL_MAX_ATOMIC_COUNTER_BUFFER_BINDINGS
-};
 
+private:
+	
+	std::vector<std::shared_ptr<gl_shader>> _shaders;
+	std::shared_ptr<gl_vertex_array> _vertex_array;
+	std::shared_ptr<gl_element_array_buffer> _element_array_buffer;
+	std::shared_ptr<gl_transform_feedback> _transform_feedback;
+	std::vector<std::shared_ptr<gl_uniform_buffer>> _uniform_buffers;
+	std::vector<std::shared_ptr<gl_shader_storage_buffer>> _shader_storage_buffers;
+	std::vector<std::shared_ptr<gl_atomic_counter_buffer>> _atomic_counter_buffers;
+	std::shared_ptr<gl_framebuffer> _framebuffer;
+	static std::shared_ptr<gl_default_framebuffer> _default_framebuffer;
+	std::function<void(void)> _commands_lambda;
 
-class ProgramProxy
-{
-	gl_uniform_buffer _uniform_buffer;
+	std::vector<std::shared_ptr<gl_uniform<glm::vec1>>> _vec1_uniforms;
+	std::vector<std::shared_ptr<gl_uniform<glm::vec2>>> _vec2_uniforms;
+	std::vector<std::shared_ptr<gl_uniform<glm::vec3>>> _vec3_uniforms;
+	std::vector<std::shared_ptr<gl_uniform<glm::vec4>>> _vec4_uniforms;
+
+	std::vector<std::shared_ptr<gl_uniform<glm::dvec1>>> _dvec1_uniforms;
+	std::vector<std::shared_ptr<gl_uniform<glm::dvec2>>> _dvec2_uniforms;
+	std::vector<std::shared_ptr<gl_uniform<glm::dvec3>>> _dvec3_uniforms;
+	std::vector<std::shared_ptr<gl_uniform<glm::dvec4>>> _dvec4_uniforms;
+	
+	std::vector<std::shared_ptr<gl_uniform<glm::ivec1>>> _ivec1_uniforms;
+	std::vector<std::shared_ptr<gl_uniform<glm::ivec2>>> _ivec2_uniforms;
+	std::vector<std::shared_ptr<gl_uniform<glm::ivec3>>> _ivec3_uniforms;
+	std::vector<std::shared_ptr<gl_uniform<glm::ivec4>>> _ivec4_uniforms;
+	
+	std::vector<std::shared_ptr<gl_uniform<glm::uvec1>>> _uvec1_uniforms;
+	std::vector<std::shared_ptr<gl_uniform<glm::uvec2>>> _uvec2_uniforms;
+	std::vector<std::shared_ptr<gl_uniform<glm::uvec3>>> _uvec3_uniforms;
+	std::vector<std::shared_ptr<gl_uniform<glm::uvec4>>> _uvec4_uniforms;
+
+	std::vector<std::shared_ptr<gl_uniform<glm::mat2>>> _mat2_uniforms;
+	std::vector<std::shared_ptr<gl_uniform<glm::mat3>>> _mat3_uniforms;
+	std::vector<std::shared_ptr<gl_uniform<glm::mat4>>> _mat4_uniforms;
+
 
 };
