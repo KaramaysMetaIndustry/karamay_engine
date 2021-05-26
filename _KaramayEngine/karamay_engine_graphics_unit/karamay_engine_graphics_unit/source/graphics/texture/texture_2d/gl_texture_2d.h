@@ -42,7 +42,7 @@ public:
 	
 	void fill_miniature_mipmaps();
 
-	void bind();
+	void bind(std::uint32_t unit);
 	
 	void unbind();
 

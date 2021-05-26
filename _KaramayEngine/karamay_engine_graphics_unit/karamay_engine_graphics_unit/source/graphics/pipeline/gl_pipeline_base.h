@@ -1,6 +1,7 @@
 #pragma once
 #include "graphics/glo/gl_object.h"
 #include "graphics/uniform/gl_uniform.h"
+#include "graphics/program/gl_program.h"
 
 
 class gl_texture_1d;
@@ -43,25 +44,6 @@ public:
 
 	gl_pipeline_base& set_transform_feedback(std::shared_ptr<gl_transform_feedback> transform_feedback);
 	
-	gl_pipeline_base& add_uniforms(const std::vector<std::shared_ptr<gl_uniform<glm::vec3>>>& vec3_uniforms)
-	{
-
-	}
-
-	gl_pipeline_base& add_uniforms(const std::vector<std::shared_ptr<gl_uniform<glm::vec4>>>& vec4_uniforms)
-	{
-
-	}
-
-	gl_pipeline_base& add_textures(const std::vector<std::shared_ptr<gl_texture_1d>>& texture_1ds)
-	{}
-
-	gl_pipeline_base& add_textures(const std::vector<std::shared_ptr<gl_texture_2d>>& texture_2ds)
-	{}
-
-	gl_pipeline_base& add_textures(const std::vector<std::shared_ptr<gl_texture_3d>>& texture_3ds)
-	{}
-
 	gl_pipeline_base& add_uniform_buffers(const std::vector<std::shared_ptr<gl_uniform_buffer>>& uniform_buffers);
 	
 	gl_pipeline_base& add_shader_storage_buffers(const std::vector<std::shared_ptr<gl_shader_storage_buffer>>& shader_storage_buffers);
@@ -71,6 +53,22 @@ public:
 	gl_pipeline_base& set_framebuffer(std::shared_ptr<gl_framebuffer> framebuffer = nullptr);
 	
 	gl_pipeline_base& set_commands(std::function<void(void)> commands_lambda);
+
+	template<typename T>
+	gl_pipeline_base& add_uniforms(const std::vector<std::shared_ptr<gl_uniform<T>>>& uniforms)
+	{
+		if (_program)
+		{
+			_program->add_uniforms(uniforms);
+		}
+		return *this;
+	}
+
+	template<typename T>
+	gl_pipeline_base& add_textures(const std::vector<std::shared_ptr<T>>& textures)
+	{
+
+	}
 
 public:
 

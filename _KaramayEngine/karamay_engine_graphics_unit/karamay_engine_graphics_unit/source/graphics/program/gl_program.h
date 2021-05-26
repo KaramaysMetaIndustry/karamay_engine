@@ -45,6 +45,8 @@ public:
 	 */
 	void construct(const std::vector<std::string>& shader_paths);
 
+public:
+
 	void set_vertex_array(std::shared_ptr<gl_vertex_array> vertex_array);
 
 	void set_element_array_buffer(std::shared_ptr<gl_element_array_buffer> element_array_buffer);
@@ -64,15 +66,15 @@ public:
 		_commands_lambda = commands_lambda;
 	}
 
-	void add_uniforms(std::vector<std::shared_ptr<gl_uniform<glm::vec1>>> vec1_uniforms) {}
+	void add_uniforms(const std::vector<std::shared_ptr<gl_uniform<glm::vec1>>>& vec1_uniforms){}
 
-	void add_uniforms(std::vector<std::shared_ptr<gl_uniform<glm::vec2>>> vec2_uniforms) {}
+	void add_uniforms(const std::vector<std::shared_ptr<gl_uniform<glm::vec2>>>& vec2_uniforms) {}
 
-	void add_uniforms(std::vector<std::shared_ptr<gl_uniform<glm::vec3>>> vec3_uniforms) {}
+	void add_uniforms(const std::vector<std::shared_ptr<gl_uniform<glm::vec3>>>& vec3_uniforms) {}
 
-	void add_uniforms(std::vector<std::shared_ptr<gl_uniform<glm::vec4>>> vec4_uniforms) {}
+	void add_uniforms(const std::vector<std::shared_ptr<gl_uniform<glm::vec4>>>& vec4_uniforms) {}
 
-	void add_uniforms(std::vector<std::shared_ptr<gl_uniform<glm::mat4>>> mat4_uniforms) {}
+	void add_uniforms(const std::vector<std::shared_ptr<gl_uniform<glm::mat4>>>& mat4_uniforms) {}
 
 	void add_textures(const std::vector<std::shared_ptr<gl_texture_2d>>& texture_2ds) {}
 
@@ -80,10 +82,29 @@ public:
 
 	void add_textures(const std::vector<std::shared_ptr<gl_texture_3d>>& texture_3ds) {}
 
+	std::shared_ptr<gl_vertex_array> get_vertex_array();
+
+	std::shared_ptr<gl_element_array_buffer> get_element_array_buffer();
+
+	std::shared_ptr<gl_transform_feedback> get_transform_feedback();
+
+	std::shared_ptr<gl_uniform_buffer> get_uniform_buffer(std::uint32_t index);
+
+	std::shared_ptr<gl_shader_storage_buffer> get_shader_storage_buffer(std::uint32_t index);
+	
+	std::shared_ptr<gl_atomic_counter_buffer> get_atomic_counter_buffer(std::uint32_t index);
+
+	std::shared_ptr<gl_framebuffer> get_framebuffer();
+
 public:
 
 	/**
-	 * tick every frame
+	 * update program state
+	 */
+	virtual void update(std::float_t delta_time) override;
+
+	/**
+	 * start render processing
 	 */
 	void render(std::float_t delta_time);
 
@@ -95,19 +116,22 @@ private:
 	void _disable();
 	void _uninstall();
 
-
 private:
 
+	// bind these persistent data to context (context is public)
 	inline void _bind_vertex_array()
 	{
 		if (_vertex_array) {
+			// bind it into context
 			_vertex_array->bind();
+			// enable all vertex attribute pointers
 			_vertex_array->enable_vertex_attributes();
 		}
 	}
 	inline void _bind_element_array_buffer()
 	{
 		if (_element_array_buffer) {
+			// bind it into context
 			_element_array_buffer->bind();
 		}
 	}
@@ -115,6 +139,7 @@ private:
 	{
 		if (_transform_feedback)
 		{
+			// set program's transform feedback output vars, then relink program
 			const auto& varyings = _transform_feedback->get_varyings();
 			if (varyings.size() > 0)
 			{
@@ -122,6 +147,7 @@ private:
 				glLinkProgram(_handle);
 			}
 
+			// bind it into context
 			glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, _transform_feedback->get_handle());
 		}
 
@@ -140,7 +166,8 @@ private:
 					// bind buffer to context binding
 					uniform_buffer->bind(i);
 					// bind program location to context binding
-					glUniformBlockBinding(_handle, glGetUniformBlockIndex(_handle, uniform_buffer->get_block_name().c_str()), i);
+					const std::string& block_name = uniform_buffer->get_descriptor()->block_name;
+					glUniformBlockBinding(_handle, glGetUniformBlockIndex(_handle, block_name.c_str()), i);
 				}
 			}
 		}
@@ -160,6 +187,7 @@ private:
 					// bind buffer to context binding
 					shader_storage_buffer->bind(i);
 					// bind program location to context binding
+					//const std::string& name = shader_storage_buffer->
 					glShaderStorageBlockBinding(_handle, glGetProgramResourceLocation(_handle, GL_SHADER_STORAGE_BLOCK, shader_storage_buffer->get_block_name().c_str()), i);
 				}
 			}
@@ -182,8 +210,40 @@ private:
 			}
 		}
 	}
-	inline void _bind_textures() {}
-	inline void _update_uniforms()
+	inline void _bind_framebuffer()
+	{
+		if (_framebuffer)
+		{
+			_framebuffer->bind();
+		}
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+	inline void _bind_textures()
+	{
+		std::size_t _size = _texture_1ds.size();
+
+		for (std::size_t i = 0; i < _size; ++i)
+		{
+			_texture_1ds[i]->bind(i);
+		}
+
+		_size = _texture_1d_arrays.size();
+		for (std::size_t i = 0; i < _size; ++i)
+		{
+			_texture_1d_arrays[i]->bind(i);
+		}
+
+		_size = _texture_2ds.size();
+		for (std::size_t i = 0; i < _size; ++i)
+		{
+			_texture_2ds[i]->bind(i);
+		}
+
+	}
+
+	// launch unifroms
+	inline void _launch_uniforms()
 	{
 		for (auto uniform : _vec1_uniforms)
 		{
@@ -210,34 +270,24 @@ private:
 			_update_uniform(uniform->name, uniform->value);
 		}
 	}
-	inline void _bind_framebuffer()
-	{
-		if (_framebuffer)
-		{
-			_framebuffer->bind();
-		}
 
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	}
-
-
+	// unbind these persistent data from context (you can not ensure that slots your have used will be overriden by next program)
 	inline void _unbind_vertex_array()
 	{
-		if (_vertex_array)
-			_vertex_array->unbind();
+		glBindVertexArray(0);
 	}
 	inline void _unbind_element_array_buffer()
 	{
-		if (_element_array_buffer)
-			_element_array_buffer->unbind();
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 	inline void _unbind_transform_feedback()
 	{
-		if (_transform_feedback)
-			_transform_feedback->unbind();
+		glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
 	}
 	inline void _unbind_uniform_buffers()
 	{
+		// clear all unifrom buffer binding is too expensive
+		// use the stored ids
 		for (size_t i = 0; i < _uniform_buffers.size(); ++i)
 		{
 			glBindBufferBase(GL_UNIFORM_BUFFER, i, 0);
@@ -257,13 +307,14 @@ private:
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, i, 0);
 		}
 	}
-	inline void _unbind_textures() {}
 	inline void _unbind_framebuffer()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
+	inline void _unbind_textures() {}
 
-	//~
+private:
+	//~ helper function
 	inline void _update_uniform(const std::string& name, glm::vec1 value)
 	{
 		//glUniform1fv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
@@ -439,6 +490,18 @@ private:
 	static std::shared_ptr<gl_default_framebuffer> _default_framebuffer;
 	std::function<void(void)> _commands_lambda;
 
+	std::vector<std::shared_ptr<gl_texture_1d>> _texture_1ds;
+	std::vector<std::shared_ptr<gl_texture_1d_array>> _texture_1d_arrays;
+	std::vector<std::shared_ptr<gl_texture_2d>> _texture_2ds;
+	std::vector<std::shared_ptr<gl_texture_2d_multisample>> _texture_2d_multisamples;
+	std::vector<std::shared_ptr<gl_texture_2d_array>> _texture_2d_arrays;
+	std::vector<std::shared_ptr<gl_texture_2d_array_multisample>> _texture_2d_array_multisamples;
+	std::vector<std::shared_ptr<gl_texture_rectangle>> _texture_rectangles;
+	std::vector<std::shared_ptr<gl_texture_3d>> _texture_3ds;
+	std::vector<std::shared_ptr<gl_texture_cube>> _texture_cubes;
+	std::vector<std::shared_ptr<gl_texture_cube_array>> _texture_cube_arrays;
+	std::vector<std::shared_ptr<gl_texture_buffer>> _texture_buffers;
+
 	std::vector<std::shared_ptr<gl_uniform<glm::vec1>>> _vec1_uniforms;
 	std::vector<std::shared_ptr<gl_uniform<glm::vec2>>> _vec2_uniforms;
 	std::vector<std::shared_ptr<gl_uniform<glm::vec3>>> _vec3_uniforms;
@@ -462,6 +525,5 @@ private:
 	std::vector<std::shared_ptr<gl_uniform<glm::mat2>>> _mat2_uniforms;
 	std::vector<std::shared_ptr<gl_uniform<glm::mat3>>> _mat3_uniforms;
 	std::vector<std::shared_ptr<gl_uniform<glm::mat4>>> _mat4_uniforms;
-
 
 };

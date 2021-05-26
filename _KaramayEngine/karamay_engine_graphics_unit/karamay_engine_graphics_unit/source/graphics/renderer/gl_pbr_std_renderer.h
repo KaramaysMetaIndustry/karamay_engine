@@ -59,11 +59,7 @@ public:
 	{
 		
 		auto vao = std::make_shared<gl_vertex_array>();
-		vao->fill(nullptr, 1024, 
-			{ 
-				{0, 100, GL_UNSIGNALED, 0}, 
-				{1, 100, GL_UNSIGNALED, 100} 
-			});
+	
 
 
 
@@ -89,7 +85,8 @@ public:
 
 		int first = 10;
 		int count = 100;
-		
+
+		gl_uniform<glm::mat4> a;
 
 		graphics_pipeline("pbr_mesh_pip")
 		.construct(
@@ -101,7 +98,7 @@ public:
 		.set_vertex_array(vao)
 		.set_element_array(ebo)
 		.set_transform_feedback(transfo)
-		.add_uniforms({uniform_color})
+		.add_uniforms<glm::vec4>({uniform_color})
 		.add_uniform_buffers({ ubo0, ubo1, ubo2 })
 		.add_shader_storage_buffers({ sso0, sso1 })
 		.add_atomic_counter_buffers({ aco })

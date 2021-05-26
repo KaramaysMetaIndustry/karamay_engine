@@ -209,12 +209,12 @@ struct _std140_matrices
 
 struct _std140_base_colors
 {
-	glm::vec3 directional_light_color;
+	/*glm::vec3 directional_light_color;
 	float _alignment0;
 	glm::vec3 directional_light_color;
 	float _alignment1;
 	glm::vec3 directional_light_color;
-	float _alignment2;
+	float _alignment2;*/
 };
 
 int main()

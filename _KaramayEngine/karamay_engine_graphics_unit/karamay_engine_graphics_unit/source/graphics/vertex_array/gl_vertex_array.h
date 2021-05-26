@@ -22,6 +22,14 @@ struct gl_vertex_attribute_layout
 	gl_vertex_attribute_layout(std::uint32_t index, std::uint32_t size, GLenum type, std::uint32_t offset) {}
 };
 
+struct gl_vertex_array_descriptor
+{
+	const void* data;
+	std::size_t size;
+	const std::vector<gl_vertex_attribute_layout> layouts;
+};
+
+
 class gl_vertex_array : public gl_object
 {
 public:
@@ -30,15 +38,27 @@ public:
 
 	virtual ~gl_vertex_array();
 
+public:
+	
+	void set(const gl_vertex_array_descriptor& descriptor)
+	{
+
+	}
+
+	void update(std::float_t delta_time) override
+	{
+		_fill();
+	}
+
 private:
 
 	std::shared_ptr<gl_buffer> _ref_buffer;
 
 	std::vector<std::uint32_t> _indices;
 
-public:
-	
-	void fill(const void* data, std::size_t size, const std::vector<gl_vertex_attribute_layout>& layouts);
+	std::shared_ptr<struct gl_vertex_array_descriptor> _descriptor;
+
+	void _fill();
 
 public:
 	

@@ -16,6 +16,11 @@ private:
 
 public:
 
+	void update(std::float_t delta_time) override
+	{
+
+	}
+
 	/**
 	 * @index : a transform feedback object has GL_MAX_TRANSFORM_FEEDBACK_BUFFERS slots, range of indices is [0, GL_MAX_TRANSFORM_FEEDBACK_BUFFERS - 1]
 	 * you must use [ layout(xfb_buffer = 1) out; ]  to specify which buffer you will write into in glsl

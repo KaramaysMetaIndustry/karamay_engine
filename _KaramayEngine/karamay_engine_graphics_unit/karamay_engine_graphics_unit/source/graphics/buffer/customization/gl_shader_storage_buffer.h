@@ -1,17 +1,6 @@
 #pragma once
 #include "graphics/buffer/gl_buffer.h"
 
-struct gl_shader_storage_buffer_binding_info
-{
-	std::string block_name;
-
-	std::shared_ptr<gl_buffer> buffer;
-
-	std::size_t offset;
-
-	std::size_t size;
-};
-
 namespace gl_shader_storage_buffer_enum
 {
 	enum class layout
@@ -23,43 +12,40 @@ namespace gl_shader_storage_buffer_enum
 	};
 }
 
-struct gl_shader_storage_buffer_layout
+struct gl_shader_storage_buffer_descriptor
 {
+	std::string block_name;
 
+	const void* data;
+
+	std::size_t size;
 };
 
 
 class gl_shader_storage_buffer
 {
-
 public:
 
 	gl_shader_storage_buffer();
 
 	virtual ~gl_shader_storage_buffer();
 
-
 private:
 
-	std::string _block_name;
+	std::shared_ptr<gl_shader_storage_buffer_descriptor> _descriptor;
 
-	std::shared_ptr<gl_buffer> _referred_buffer;
+	std::shared_ptr<gl_buffer> _buffer;
 
-	std::uint32_t _offset, _size;
-
-	std::uint32_t _index;
+	std::uint32_t _binding;
 
 public:
 
-	void fill()
-	{
+	void update(std::float_t delta_time);
 
-	}
-
-	void bind(std::uint32_t index)
+	void bind(std::uint32_t binding)
 	{
-		glBindBufferRange(GL_SHADER_STORAGE_BUFFER, index, _referred_buffer->get_handle(), _offset, _size);
-		_index = index;
+		glBindBufferRange(GL_SHADER_STORAGE_BUFFER, binding, _buffer->get_handle(), 0, _descriptor->size);
+		_binding = binding;
 	}
 
 	void unbind()
@@ -67,13 +53,9 @@ public:
 
 	}
 
-
-	const std::string& get_block_name()
-	{
-		return _block_name;
-	}
-
 private:
+
+	void _fill() {}
 
 	void _generate_template_code()
 	{

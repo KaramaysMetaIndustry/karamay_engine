@@ -44,5 +44,7 @@ public:
 	
 	const std::uint32_t get_handle() const { return _handle; }
 
+	virtual void update(std::float_t delta_time) = 0;
+
 };
 

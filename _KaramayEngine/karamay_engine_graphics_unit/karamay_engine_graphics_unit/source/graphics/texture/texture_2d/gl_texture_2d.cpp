@@ -33,9 +33,9 @@ void gl_texture_2d::fill_miniature_mipmaps()
 	glGenerateMipmap(GL_TEXTURE_2D);
 }
 
-void gl_texture_2d::bind()
+void gl_texture_2d::bind(std::uint32_t unit)
 {
-	glActiveTexture(0);
+	glActiveTexture(unit);
 	glBindTexture(GL_TEXTURE_2D, _handle);
 }
 

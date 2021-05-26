@@ -10,8 +10,12 @@ gl_vertex_array::~gl_vertex_array()
 	glDeleteVertexArrays(1, &_handle);
 }
 
-void gl_vertex_array::fill(const void* data, std::size_t size, const std::vector<gl_vertex_attribute_layout>& layouts)
+void gl_vertex_array::_fill()
 {
+	const size_t size = _descriptor->size;
+	const void* data = _descriptor->data;
+	const auto& layouts = _descriptor->layouts;
+
 	_ref_buffer = std::make_shared<gl_buffer>();
 	_ref_buffer->allocate(size);
 	_ref_buffer->fill(0, size, data);

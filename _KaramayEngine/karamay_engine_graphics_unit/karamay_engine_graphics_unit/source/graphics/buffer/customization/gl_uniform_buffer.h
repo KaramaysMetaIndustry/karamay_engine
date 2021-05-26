@@ -20,20 +20,41 @@ namespace gl_uniform_buffer_enum
 {
 	enum class layout
 	{
-		shared, // must query
+		shared, // must query ?
 		packed, // must query
-		std140 // no neccessary
+		std140, // no query
+	};
+
+	enum class matrix_layout
+	{
+		row_major,
+		column_major
 	};
 }
 
-
-struct gl_uniform_buffer_layout
+struct gl_uniform_buffer_descriptor
 {
-	//gl_uniform_buffer_enum::layout m_layout;
+	gl_uniform_buffer_enum::layout memory_layout;
 
+	gl_uniform_buffer_enum::matrix_layout memory_matrix_layout;
 
+	std::string block_name;
+
+	const void* data;
+	
+	size_t size;
+	
+	bool is_dirty;
+
+	
+	gl_uniform_buffer_descriptor() :
+		memory_layout(gl_uniform_buffer_enum::layout::std140),
+		memory_matrix_layout(gl_uniform_buffer_enum::matrix_layout::row_major),
+		is_dirty(true)
+	{
+
+	}
 };
-
 
 
 class gl_uniform_buffer
@@ -45,68 +66,20 @@ public:
 	
 	virtual ~gl_uniform_buffer();
 
-private:
-
-	std::string _block_name;
-
-	size_t _size;
-
-	size_t _offset;
-
-	std::shared_ptr<gl_buffer> _referred_buffer;
-
-	std::uint32_t _binding;
-
 public:
 
-	void fill(const std::string& block_name, const std::vector<std::string>& attrib_names)
+	void set_descriptor(std::shared_ptr<gl_uniform_buffer_descriptor> descriptor)
 	{
-		const std::string block_name = "matrices";
-		GLuint _program;
-
-		GLuint block_index = glGetUniformBlockIndex(_program, block_name.c_str());
-		GLint block_size;
-		glGetActiveUniformBlockiv(_program, block_index, GL_UNIFORM_BLOCK_DATA_SIZE, &block_size);
-		GLbyte* block_buffer;
-
-		//const GLchar* names[] = { "inner_color", "outer_color","radius_innes","raduis_outer" };
-		GLuint attrib_num = attrib_names.size();
-		std::vector<GLuint> indices(attrib_num);
-		std::vector<GLint> offsets(attrib_num);
-		glGetUniformIndices(_program, attrib_num, attrib_names.data(), indices.data());
-		glGetActiveUniformsiv(_program, 4, indices.data(), GL_UNIFORM_OFFSET, offsets.data());
-
-		// create ubo an fill it with data
-		gl_buffer ubo;
-
-		// bind the buffer to the block
-		glBindBufferBase(GL_UNIFORM_BUFFER, block_index, ubo.get_handle());
+		_descriptor = descriptor;
 	}
 
-	void fill(const void* data, size_t size, const gl_uniform_buffer_layout& uniform_buffer_layout)
-	{
-		// try to get an available buffer and current offset
-		_referred_buffer = std::make_shared<gl_buffer>();
-		_offset = 0;
-
-		// fill
-		if (_referred_buffer)
-		{
-			_referred_buffer->fill(_offset, size, data);
-		}
-	}
-
-	void release()
-	{
-		if (_referred_buffer)
-		{
-		}
-	}
+	std::shared_ptr<gl_uniform_buffer_descriptor> get_descriptor() { return _descriptor; }
+	
+	void update(std::float_t delta_time);
 
 	void bind(std::int32_t binding)
 	{
-		glBindBufferRange(GL_UNIFORM_BUFFER, binding, _referred_buffer->get_handle(), _offset,  _size);
-		_binding = binding;
+		glBindBufferRange(GL_UNIFORM_BUFFER, binding, _buffer->get_handle(), 0, _descriptor->size);
 	}
 
 	void unbind()
@@ -115,26 +88,54 @@ public:
 		_binding = 0;
 	}
 
-	const std::string& get_block_name() const
-	{
-		return _block_name;
-	}
+private:
+
+	std::shared_ptr<gl_uniform_buffer_descriptor> _descriptor;
+
+	std::shared_ptr<gl_buffer> _buffer;
+
+	std::uint32_t _binding;
 
 private:
 
-	void _generate_template_code()
+	void _fill_std140()
 	{
-		std::regex pattern("layout(binding = 0, std430) uniform Matrices {}");
+		if (_descriptor)
+		{
+			_buffer = std::make_shared<gl_buffer>();
+			_buffer->allocate(_descriptor->size);
+			_buffer->fill(0, _descriptor->size, _descriptor->data);
+		}
 	}
 
-	void _fill_std140(const void* data, size_t size)
+	void _fill_shared_packed()
 	{
+		if (_descriptor)
+		{
+			//const std::string& block_name = _descriptor->block_name;
+			//
+			//GLuint _program; 
+			//GLint block_size;
+			//GLbyte* block_buffer;
+			//const GLchar* names[] = { "inner_color", "outer_color","radius_innes","raduis_outer" };
+			////GLuint attrib_num = attrib_names.size();
+			//std::vector<GLuint> indices(attrib_num);
+			//std::vector<GLint> offsets(attrib_num);
 
-	}
+			//// get block size
+			//glGetActiveUniformBlockiv(_program, 
+			//	glGetUniformBlockIndex(_program, block_name.c_str()), GL_UNIFORM_BLOCK_DATA_SIZE, &block_size);
+			//// get block 
+			//glGetUniformIndices(_program, attrib_num, attrib_names.data(), indices.data());
+			//glGetActiveUniformsiv(_program, 4, indices.data(), GL_UNIFORM_OFFSET, offsets.data());
 
-	void _fill_std430(const void* data)
-	{
+			////create ubo an fill it with data
+			//	gl_buffer ubo;
 
+			////bind the buffer to the block
+			//	glBindBufferBase(GL_UNIFORM_BUFFER, block_index, ubo.get_handle());
+		}
+		
 	}
 
 };

@@ -148,6 +148,9 @@ public:
 	virtual ~gl_buffer();
 
 public:
+
+	virtual void update(std::float_t delta_time) override
+	{}
 	
 	/**
 	 * @size : bytes of size

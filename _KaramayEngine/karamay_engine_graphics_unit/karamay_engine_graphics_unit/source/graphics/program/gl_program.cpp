@@ -74,6 +74,51 @@ void gl_program::set_framebuffer(std::shared_ptr<gl_framebuffer> framebuffer)
 	_framebuffer = framebuffer;
 }
 
+std::shared_ptr<gl_vertex_array> gl_program::get_vertex_array()
+{
+	return _vertex_array;
+}
+
+std::shared_ptr<gl_element_array_buffer> gl_program::get_element_array_buffer()
+{
+	return _element_array_buffer;
+}
+
+std::shared_ptr<gl_transform_feedback> gl_program::get_transform_feedback()
+{
+	return _transform_feedback;
+}
+
+std::shared_ptr<gl_uniform_buffer> gl_program::get_uniform_buffer(std::uint32_t index)
+{
+	return index < _uniform_buffers.size() ? _uniform_buffers.at(index) : nullptr;
+}
+
+std::shared_ptr<gl_shader_storage_buffer> gl_program::get_shader_storage_buffer(std::uint32_t index)
+{
+	return index < _shader_storage_buffers.size() ? _shader_storage_buffers.at(index) : nullptr;
+}
+
+std::shared_ptr<gl_atomic_counter_buffer> gl_program::get_atomic_counter_buffer(std::uint32_t index)
+{
+	return index < _atomic_counter_buffers.size() ? _atomic_counter_buffers.at(index) : nullptr;
+}
+
+std::shared_ptr<gl_framebuffer> gl_program::get_framebuffer()
+{
+	return _framebuffer;
+}
+
+void gl_program::update(std::float_t delta_time)
+{
+	if (_vertex_array)
+		_vertex_array->update(0.0f);
+
+	if (_element_array_buffer)
+	{
+	}
+}
+
 void gl_program::render(std::float_t delta_time)
 {
 	_install();
@@ -88,12 +133,12 @@ void gl_program::_install()
 	_bind_vertex_array();
 	_bind_element_array_buffer();
 	_bind_transform_feedback();
-	_update_uniforms();
-	_bind_textures();
 	_bind_uniform_buffers();
 	_bind_shader_storage_buffers();
 	_bind_atomic_counter_buffers();
 	_bind_framebuffer();
+	_bind_textures();
+	_launch_uniforms();
 }
 
 void gl_program::_enable()
