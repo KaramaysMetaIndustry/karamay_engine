@@ -226,7 +226,10 @@ int main()
 	glewInit();
 
 	auto vertex_array = std::make_shared<gl_vertex_array>();
-	vertex_array->fill(nullptr, 1024, {});
+	
+	auto uniform_buffer = std::make_shared<gl_uniform_buffer>();
+	auto uniform_buffer_descriptor = std::make_shared<gl_uniform_buffer_descriptor>();
+	uniform_buffer_descriptor->add_uniform(glm::mat4(0.0f));
 	
 	auto element_array_buffer = std::make_shared<gl_element_array_buffer>();
 	element_array_buffer->fill(indices, sizeof indices);

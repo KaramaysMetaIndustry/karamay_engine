@@ -99,17 +99,16 @@ public:
 public:
 
 	/**
-	 * update program state
-	 */
-	virtual void update(std::float_t delta_time) override;
-
-	/**
 	 * start render processing
 	 */
 	void render(std::float_t delta_time);
 
 private:
+	
+	// set only once time
+	inline void _set_transform_feedback_varyings();
 
+	void _update();
 	void _install();
 	void _enable();
 	void _call_commands();
@@ -119,130 +118,16 @@ private:
 private:
 
 	// bind these persistent data to context (context is public)
-	inline void _bind_vertex_array()
-	{
-		if (_vertex_array) {
-			// bind it into context
-			_vertex_array->bind();
-			// enable all vertex attribute pointers
-			_vertex_array->enable_vertex_attributes();
-		}
-	}
-	inline void _bind_element_array_buffer()
-	{
-		if (_element_array_buffer) {
-			// bind it into context
-			_element_array_buffer->bind();
-		}
-	}
-	inline void _bind_transform_feedback()
-	{
-		if (_transform_feedback)
-		{
-			// set program's transform feedback output vars, then relink program
-			const auto& varyings = _transform_feedback->get_varyings();
-			if (varyings.size() > 0)
-			{
-				glTransformFeedbackVaryings(_handle, varyings.size(), varyings.data(), static_cast<GLenum>(gl_buffer_mode::INTERLEAVED));
-				glLinkProgram(_handle);
-			}
+	inline void _bind_vertex_array();
+	inline void _bind_element_array_buffer();
+	inline void _bind_transform_feedback();
+	inline void _bind_uniform_buffers();
+	inline void _bind_shader_storage_buffers();
+	inline void _bind_atomic_counter_buffers();
+	inline void _bind_framebuffer();
+	inline void _bind_textures();
 
-			// bind it into context
-			glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, _transform_feedback->get_handle());
-		}
-
-	}
-	inline void _bind_uniform_buffers()
-	{
-		const size_t max_i
-			= _uniform_buffers.size() > GL_MAX_UNIFORM_BUFFER_BINDINGS ? GL_MAX_UNIFORM_BUFFER_BINDINGS : _uniform_buffers.size();
-
-		for (size_t i = 0; i < max_i; ++i)
-		{
-			if (auto uniform_buffer = _uniform_buffers[i])
-			{
-				if (uniform_buffer)
-				{
-					// bind buffer to context binding
-					uniform_buffer->bind(i);
-					// bind program location to context binding
-					const std::string& block_name = uniform_buffer->get_descriptor()->block_name;
-					glUniformBlockBinding(_handle, glGetUniformBlockIndex(_handle, block_name.c_str()), i);
-				}
-			}
-		}
-
-	}
-	inline void _bind_shader_storage_buffers()
-	{
-		const size_t max_i
-			= _shader_storage_buffers.size() > GL_MAX_SHADER_STORAGE_BUFFER_BINDINGS ? GL_MAX_SHADER_STORAGE_BUFFER_BINDINGS : _shader_storage_buffers.size();
-
-		for (size_t i = 0; i < max_i; ++i)
-		{
-			if (auto shader_storage_buffer = _shader_storage_buffers[i])
-			{
-				if (shader_storage_buffer)
-				{
-					// bind buffer to context binding
-					shader_storage_buffer->bind(i);
-					// bind program location to context binding
-					//const std::string& name = shader_storage_buffer->
-					glShaderStorageBlockBinding(_handle, glGetProgramResourceLocation(_handle, GL_SHADER_STORAGE_BLOCK, shader_storage_buffer->get_block_name().c_str()), i);
-				}
-			}
-		}
-	}
-	inline void _bind_atomic_counter_buffers()
-	{
-		const size_t max_i
-			= _atomic_counter_buffers.size() > GL_MAX_ATOMIC_COUNTER_BUFFER_BINDINGS ? GL_MAX_ATOMIC_COUNTER_BUFFER_BINDINGS : _atomic_counter_buffers.size();
-
-		for (size_t i = 0; i < max_i; ++i)
-		{
-			if (auto atomic_counter_buffer = _atomic_counter_buffers[i])
-			{
-				if (atomic_counter_buffer)
-				{
-					// bind buffer to context binding
-					atomic_counter_buffer->bind(i);
-				}
-			}
-		}
-	}
-	inline void _bind_framebuffer()
-	{
-		if (_framebuffer)
-		{
-			_framebuffer->bind();
-		}
-
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	}
-	inline void _bind_textures()
-	{
-		std::size_t _size = _texture_1ds.size();
-
-		for (std::size_t i = 0; i < _size; ++i)
-		{
-			_texture_1ds[i]->bind(i);
-		}
-
-		_size = _texture_1d_arrays.size();
-		for (std::size_t i = 0; i < _size; ++i)
-		{
-			_texture_1d_arrays[i]->bind(i);
-		}
-
-		_size = _texture_2ds.size();
-		for (std::size_t i = 0; i < _size; ++i)
-		{
-			_texture_2ds[i]->bind(i);
-		}
-
-	}
-
-	// launch unifroms
+	// launch uniforms
 	inline void _launch_uniforms()
 	{
 		for (auto uniform : _vec1_uniforms)

@@ -40,11 +40,24 @@ struct gl_uniform_buffer_descriptor
 
 	std::string block_name;
 
-	const void* data;
+	void* _data;
+
+	size_t _size;
 	
 	size_t size;
 	
 	bool is_dirty;
+
+public:
+
+	template<typename T>
+	void add_uniform(T uniform)
+	{
+		const void* data = (void*)glm::value_ptr(uniform);
+		const size_t size = sizeof(T);
+		memcpy(_data, data, size);
+		_size += size;
+	}
 
 	
 	gl_uniform_buffer_descriptor() :
