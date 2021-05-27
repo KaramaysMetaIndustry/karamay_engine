@@ -30,8 +30,6 @@ protected:
 		_type(gl_object_enum::type::NONE)
 	{}
 
-public:
-
 	virtual ~gl_object() {}
 
 protected:

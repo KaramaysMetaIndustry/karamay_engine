@@ -251,6 +251,7 @@ int main()
 	ubod->add_uniform(glm::vec3(1.2f, 1.6f, 0.7f));
 	ubod->add_uniform(glm::mat4(0.0f));
 
+
 	//std::uint8_t* data = (std::uint8_t*)ubod->get_data();
 	//
 	//glm::vec3* d = (glm::vec3*)(data + 16);

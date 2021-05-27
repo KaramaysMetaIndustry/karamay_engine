@@ -53,27 +53,47 @@ void gl_program::set_transform_feedback(std::shared_ptr<gl_transform_feedback> t
 void gl_program::add_uniform_buffers(const std::vector<std::shared_ptr<gl_uniform_buffer>>& uniform_buffers)
 {
 	if (uniform_buffers.size() < 1) return;
-
 	_uniform_buffers.insert(_uniform_buffers.cend(), uniform_buffers.cbegin(), uniform_buffers.cend());
+}
+
+void gl_program::add_uniform_buffer(std::shared_ptr<gl_uniform_buffer> uniform_buffer)
+{
+	if (uniform_buffer)
+		_uniform_buffers.push_back(uniform_buffer);
 }
 
 void gl_program::add_shader_storage_buffers(const std::vector<std::shared_ptr<gl_shader_storage_buffer>>& shader_storage_buffers)
 {
 	if (shader_storage_buffers.size() < 1) return;
-
 	_shader_storage_buffers.insert(_shader_storage_buffers.cend(), shader_storage_buffers.cbegin(), shader_storage_buffers.cend());
+}
+
+void gl_program::add_shader_storage_buffer(std::shared_ptr<gl_shader_storage_buffer> shader_storage_buffer)
+{
+	if (shader_storage_buffer)
+		_shader_storage_buffers.push_back(shader_storage_buffer);
 }
 
 void gl_program::add_atomic_counter_buffers(const std::vector<std::shared_ptr<gl_atomic_counter_buffer>>& atomic_counter_buffers)
 {
 	if (atomic_counter_buffers.size() < 1) return;
-
 	_atomic_counter_buffers.insert(_atomic_counter_buffers.cend(), atomic_counter_buffers.cbegin(), atomic_counter_buffers.cend());
+}
+
+void gl_program::add_atomic_counter_buffer(std::shared_ptr<gl_atomic_counter_buffer> atomic_counter_buffer)
+{
+	if (atomic_counter_buffer)
+		_atomic_counter_buffers.push_back(atomic_counter_buffer);
 }
 
 void gl_program::set_framebuffer(std::shared_ptr<gl_framebuffer> framebuffer)
 {
 	_framebuffer = framebuffer;
+}
+
+void gl_program::set_commands(std::function<void(void)> commands_lambda)
+{
+	_commands_lambda = commands_lambda;
 }
 
 std::shared_ptr<gl_vertex_array> gl_program::get_vertex_array()
@@ -120,12 +140,8 @@ void gl_program::render(std::float_t delta_time)
 	_uninstall();
 }
 
-void gl_program::_update()
+void gl_program::_tick_objects()
 {
-	if (_vertex_array)
-		_vertex_array->update(0.0f);
-	if(_element_array_buffer)
-	{ }
 }
 
 void gl_program::_install()
@@ -204,15 +220,15 @@ inline void gl_program::_bind_transform_feedback()
 {
 	if (_transform_feedback)
 	{
-		// bind it into context
-		glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, _transform_feedback->get_handle());
+		// bind transform feedback to context
+		_transform_feedback->bind();
 	}
 }
 
 inline void gl_program::_bind_uniform_buffers()
 {
-	const std::size_t max_i
-		= _uniform_buffers.size() > GL_MAX_UNIFORM_BUFFER_BINDINGS ? GL_MAX_UNIFORM_BUFFER_BINDINGS : _uniform_buffers.size();
+	const std::size_t max_i = _uniform_buffers.size() > GL_MAX_UNIFORM_BUFFER_BINDINGS 
+		? GL_MAX_UNIFORM_BUFFER_BINDINGS : _uniform_buffers.size();
 
 	for (std::int32_t i = 0; i < max_i; ++i)
 	{
@@ -220,9 +236,9 @@ inline void gl_program::_bind_uniform_buffers()
 		{
 			if (uniform_buffer)
 			{
-				// bind buffer to context binding
+				// bind buffer to context
 				uniform_buffer->bind(i);
-				// bind program location to context binding
+				// bind program to context
 				const std::string& block_name = uniform_buffer->get_descriptor()->get_block_name();
 				glUniformBlockBinding(_handle, glGetUniformBlockIndex(_handle, block_name.c_str()), i);
 			}
@@ -232,8 +248,8 @@ inline void gl_program::_bind_uniform_buffers()
 
 inline void gl_program::_bind_shader_storage_buffers()
 {
-	const std::size_t max_i
-		= _shader_storage_buffers.size() > GL_MAX_SHADER_STORAGE_BUFFER_BINDINGS ? GL_MAX_SHADER_STORAGE_BUFFER_BINDINGS : _shader_storage_buffers.size();
+	const std::size_t max_i = _shader_storage_buffers.size() > GL_MAX_SHADER_STORAGE_BUFFER_BINDINGS 
+		? GL_MAX_SHADER_STORAGE_BUFFER_BINDINGS : _shader_storage_buffers.size();
 
 	for (std::int32_t i = 0; i < max_i; ++i)
 	{
@@ -241,10 +257,9 @@ inline void gl_program::_bind_shader_storage_buffers()
 		{
 			if (shader_storage_buffer)
 			{
-				// bind buffer to context binding
+				// bind buffer to context
 				shader_storage_buffer->bind(i);
-				// bind program location to context binding
-				//const std::string& name = shader_storage_buffer->
+				// bind program to context
 				glShaderStorageBlockBinding(_handle, glGetProgramResourceLocation(_handle, GL_SHADER_STORAGE_BLOCK, shader_storage_buffer->get_descriptor()->get_block_name().c_str()), i);
 			}
 		}
@@ -262,7 +277,7 @@ inline void gl_program::_bind_atomic_counter_buffers()
 		{
 			if (atomic_counter_buffer)
 			{
-				// bind buffer to context binding
+				// bind buffer to context
 				atomic_counter_buffer->bind(i);
 			}
 		}
@@ -271,12 +286,10 @@ inline void gl_program::_bind_atomic_counter_buffers()
 
 inline void gl_program::_bind_framebuffer()
 {
-	if (_framebuffer)
-	{
+	if (_framebuffer) // bind customized framebuffer
 		_framebuffer->bind();
-	}
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	else // bind default framebuffer
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 inline void gl_program::_bind_textures()
@@ -288,6 +301,8 @@ for (std::uint32_t i = 0; i < _##TYPE##s.size(); ++i)\
 	add_uniforms({ std::make_shared<gl_variable<glm::uint32>>(_##TYPE##s[i]->get_name(), i) });\
 }\
 
+	// bind textures to context
+	// and prepare to launch it's unit index as a uniform 
 	BIND_TEXTURES(texture_1d)
 	BIND_TEXTURES(texture_2d)
 	BIND_TEXTURES(texture_2d_multisample)
@@ -302,36 +317,42 @@ for (std::uint32_t i = 0; i < _##TYPE##s.size(); ++i)\
 void gl_program::_launch_uniforms()
 {
 
-#define update_uniforms(TYPE)\
+#define UPDATE_UNIFORMS(TYPE)\
 for (auto uniform : _##TYPE##_uniforms)\
 {\
 	if (uniform)\
 		_update_uniform(uniform->name, uniform->value);\
 }\
 
-	update_uniforms(float32)
-	update_uniforms(vec2)
-	update_uniforms(vec3)
-	update_uniforms(vec4)
-	update_uniforms(float64)
-	update_uniforms(dvec2)
-	update_uniforms(dvec3)
-	update_uniforms(dvec4)
-	update_uniforms(int32)
-	update_uniforms(ivec2)
-	update_uniforms(ivec3)
-	update_uniforms(ivec4)
-	update_uniforms(uint32)
-	update_uniforms(uvec2)
-	update_uniforms(uvec3)
-	update_uniforms(uvec4)
-	update_uniforms(mat2)
-	update_uniforms(mat3)
-	update_uniforms(mat4)
-	update_uniforms(mat2x3)
-	update_uniforms(mat2x4)
-	update_uniforms(mat3x2)
-	update_uniforms(mat3x4)
-	update_uniforms(mat4x2)
-	update_uniforms(mat4x3)
+	// launch all uniforms (include common uniforms and texture units)
+	UPDATE_UNIFORMS(float32)
+	UPDATE_UNIFORMS(vec2)
+	UPDATE_UNIFORMS(vec3)
+	UPDATE_UNIFORMS(vec4)
+
+	UPDATE_UNIFORMS(float64)
+	UPDATE_UNIFORMS(dvec2)
+	UPDATE_UNIFORMS(dvec3)
+	UPDATE_UNIFORMS(dvec4)
+
+	UPDATE_UNIFORMS(int32)
+	UPDATE_UNIFORMS(ivec2)
+	UPDATE_UNIFORMS(ivec3)
+	UPDATE_UNIFORMS(ivec4)
+
+	UPDATE_UNIFORMS(uint32)
+	UPDATE_UNIFORMS(uvec2)
+	UPDATE_UNIFORMS(uvec3)
+	UPDATE_UNIFORMS(uvec4)
+
+	UPDATE_UNIFORMS(mat2)
+	UPDATE_UNIFORMS(mat3)
+	UPDATE_UNIFORMS(mat4)
+
+	UPDATE_UNIFORMS(mat2x3)
+	UPDATE_UNIFORMS(mat2x4)
+	UPDATE_UNIFORMS(mat3x2)
+	UPDATE_UNIFORMS(mat3x4)
+	UPDATE_UNIFORMS(mat4x2)
+	UPDATE_UNIFORMS(mat4x3)
 }

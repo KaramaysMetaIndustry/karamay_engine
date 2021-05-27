@@ -54,16 +54,21 @@ public:
 
 	void add_uniform_buffers(const std::vector<std::shared_ptr<gl_uniform_buffer>>& uniform_buffers);
 
+	void add_uniform_buffer(std::shared_ptr<gl_uniform_buffer> uniform_buffer);
+
 	void add_shader_storage_buffers(const std::vector<std::shared_ptr<gl_shader_storage_buffer>>& shader_storage_buffers);
+
+	void add_shader_storage_buffer(std::shared_ptr<gl_shader_storage_buffer> shader_storage_buffer);
 
 	void add_atomic_counter_buffers(const std::vector<std::shared_ptr<gl_atomic_counter_buffer>>& atomic_counter_buffers);
 
+	void add_atomic_counter_buffer(std::shared_ptr<gl_atomic_counter_buffer> atomic_counter_buffer);
+
 	void set_framebuffer(std::shared_ptr<gl_framebuffer> framebuffer = nullptr);
 
-	void set_commands(std::function<void(void)> commands_lambda)
-	{
-		_commands_lambda = commands_lambda;
-	}
+	void set_commands(std::function<void(void)> commands_lambda);
+
+public:
 
 	std::shared_ptr<gl_vertex_array> get_vertex_array();
 
@@ -78,6 +83,13 @@ public:
 	std::shared_ptr<gl_atomic_counter_buffer> get_atomic_counter_buffer(std::uint32_t index);
 
 	std::shared_ptr<gl_framebuffer> get_framebuffer();
+
+public:
+
+	/**
+	 * start render processing
+	 */
+	void render(std::float_t delta_time);
 
 private:
 
@@ -101,83 +113,18 @@ private:
 	
 	std::function<void(void)> _commands_lambda;
 
-
-
-#define DEF_ADD_UNIFORMS(TYPE)\
-private:\
-std::vector<std::shared_ptr<gl_variable<glm::##TYPE##>>> _##TYPE##_uniforms;\
-public:\
-inline void add_uniforms(const std::vector<std::shared_ptr<gl_variable<glm::##TYPE##>>>& TYPE##_uniforms)\
-{\
-	_##TYPE##_uniforms.insert(_##TYPE##_uniforms.cend(), TYPE##_uniforms.cbegin(), TYPE##_uniforms.cend());\
-}\
-
-	DEF_ADD_UNIFORMS(float32)
-	DEF_ADD_UNIFORMS(vec2)
-	DEF_ADD_UNIFORMS(vec3)
-	DEF_ADD_UNIFORMS(vec4)
-	DEF_ADD_UNIFORMS(float64)
-	DEF_ADD_UNIFORMS(dvec2)
-	DEF_ADD_UNIFORMS(dvec3)
-	DEF_ADD_UNIFORMS(dvec4)
-	DEF_ADD_UNIFORMS(int32)
-	DEF_ADD_UNIFORMS(ivec2)
-	DEF_ADD_UNIFORMS(ivec3)
-	DEF_ADD_UNIFORMS(ivec4)
-	DEF_ADD_UNIFORMS(uint32)
-	DEF_ADD_UNIFORMS(uvec2)
-	DEF_ADD_UNIFORMS(uvec3)
-	DEF_ADD_UNIFORMS(uvec4)
-	DEF_ADD_UNIFORMS(mat2)
-	DEF_ADD_UNIFORMS(mat3)
-	DEF_ADD_UNIFORMS(mat4)
-	DEF_ADD_UNIFORMS(mat2x3)
-	DEF_ADD_UNIFORMS(mat2x4)
-	DEF_ADD_UNIFORMS(mat3x2)
-	DEF_ADD_UNIFORMS(mat3x4)
-	DEF_ADD_UNIFORMS(mat4x2)
-	DEF_ADD_UNIFORMS(mat4x3)
-
-#define DEF_ADD_TEXTURES(TYPE)\
-private:\
-	std::vector<std::shared_ptr<gl_##TYPE##>> _##TYPE##s;\
-public:\
-	inline void add_textures(const std::vector<std::shared_ptr<gl_##TYPE##>>& TYPE##s)\
-	{\
-		_##TYPE##s.insert(_##TYPE##s.cend(), TYPE##s.cbegin(), TYPE##s.cend());\
-	}\
-	
-	DEF_ADD_TEXTURES(texture_1d)
-	DEF_ADD_TEXTURES(texture_1d_array)
-	DEF_ADD_TEXTURES(texture_2d)
-	DEF_ADD_TEXTURES(texture_2d_array)
-	DEF_ADD_TEXTURES(texture_2d_multisample)
-	DEF_ADD_TEXTURES(texture_2d_array_multisample)
-	DEF_ADD_TEXTURES(texture_rectangle)
-	DEF_ADD_TEXTURES(texture_3d)
-	DEF_ADD_TEXTURES(texture_cube)
-	DEF_ADD_TEXTURES(texture_cube_array)
-	DEF_ADD_TEXTURES(texture_buffer)
-
-public:
-
-	/**
-	 * start render processing
-	 */
-	void render(std::float_t delta_time);
-
 private:
-
-	void _update();
+	//~ render begin
+	void _tick_objects();
 	void _install();
 	void _enable();
 	void _call_commands();
 	void _disable();
 	void _uninstall();
-
+	//~ render end
 private:
 
-	// set only once time
+	// set only once time (when you first time setting the transform feedback)
 	void _set_transform_feedback_varyings();
 
 	// bind these persistent data to context (context is public)
@@ -234,6 +181,63 @@ private:
 	}
 	void _unbind_textures() {}
 
+
+#define DEF_ADD_UNIFORMS(TYPE)\
+private:\
+std::vector<std::shared_ptr<gl_variable<glm::##TYPE##>>> _##TYPE##_uniforms;\
+public:\
+inline void add_uniforms(const std::vector<std::shared_ptr<gl_variable<glm::##TYPE##>>>& TYPE##_uniforms)\
+{\
+	_##TYPE##_uniforms.insert(_##TYPE##_uniforms.cend(), TYPE##_uniforms.cbegin(), TYPE##_uniforms.cend());\
+}\
+
+	DEF_ADD_UNIFORMS(float32)
+	DEF_ADD_UNIFORMS(vec2)
+	DEF_ADD_UNIFORMS(vec3)
+	DEF_ADD_UNIFORMS(vec4)
+	DEF_ADD_UNIFORMS(float64)
+	DEF_ADD_UNIFORMS(dvec2)
+	DEF_ADD_UNIFORMS(dvec3)
+	DEF_ADD_UNIFORMS(dvec4)
+	DEF_ADD_UNIFORMS(int32)
+	DEF_ADD_UNIFORMS(ivec2)
+	DEF_ADD_UNIFORMS(ivec3)
+	DEF_ADD_UNIFORMS(ivec4)
+	DEF_ADD_UNIFORMS(uint32)
+	DEF_ADD_UNIFORMS(uvec2)
+	DEF_ADD_UNIFORMS(uvec3)
+	DEF_ADD_UNIFORMS(uvec4)
+	DEF_ADD_UNIFORMS(mat2)
+	DEF_ADD_UNIFORMS(mat3)
+	DEF_ADD_UNIFORMS(mat4)
+	DEF_ADD_UNIFORMS(mat2x3)
+	DEF_ADD_UNIFORMS(mat2x4)
+	DEF_ADD_UNIFORMS(mat3x2)
+	DEF_ADD_UNIFORMS(mat3x4)
+	DEF_ADD_UNIFORMS(mat4x2)
+	DEF_ADD_UNIFORMS(mat4x3)
+
+#define DEF_ADD_TEXTURES(TYPE)\
+private:\
+	std::vector<std::shared_ptr<gl_##TYPE##>> _##TYPE##s;\
+public:\
+	inline void add_textures(const std::vector<std::shared_ptr<gl_##TYPE##>>& TYPE##s)\
+	{\
+		_##TYPE##s.insert(_##TYPE##s.cend(), TYPE##s.cbegin(), TYPE##s.cend());\
+	}\
+
+	DEF_ADD_TEXTURES(texture_1d)
+	DEF_ADD_TEXTURES(texture_1d_array)
+	DEF_ADD_TEXTURES(texture_2d)
+	DEF_ADD_TEXTURES(texture_2d_array)
+	DEF_ADD_TEXTURES(texture_2d_multisample)
+	DEF_ADD_TEXTURES(texture_2d_array_multisample)
+	DEF_ADD_TEXTURES(texture_rectangle)
+	DEF_ADD_TEXTURES(texture_3d)
+	DEF_ADD_TEXTURES(texture_cube)
+	DEF_ADD_TEXTURES(texture_cube_array)
+	DEF_ADD_TEXTURES(texture_buffer)
+
 private:
 	//~ helper function
 	inline void _update_uniform(const std::string& name, glm::float32 value)
@@ -252,7 +256,6 @@ private:
 	{
 		glUniform4fv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
 	}
-
 	inline void _update_uniform(const std::string& name, glm::float64 value)
 	{
 		glUniform1d(glGetUniformLocation(_handle, name.c_str()), value);
@@ -269,7 +272,6 @@ private:
 	{
 		glUniform4dv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
 	}
-
 	inline void _update_uniform(const std::string& name, glm::int32 value)
 	{
 		glUniform1i(glGetUniformLocation(_handle, name.c_str()), value);
@@ -286,7 +288,6 @@ private:
 	{
 		glUniform4iv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
 	}
-
 	inline void _update_uniform(const std::string& name, glm::uint32 value)
 	{
 		glUniform1ui(glGetUniformLocation(_handle, name.c_str()), value);
@@ -303,7 +304,6 @@ private:
 	{
 		glUniform4uiv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
 	}
-
 	inline void _update_uniform(const std::string& name, glm::mat2 value)
 	{
 		glUniformMatrix2fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
@@ -316,7 +316,6 @@ private:
 	{
 		glUniformMatrix4fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 	}
-
 	inline void _update_uniform(const std::string& name, glm::mat2x3 value)
 	{
 		glUniformMatrix2x3fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
@@ -340,28 +339,6 @@ private:
 	inline void _update_uniform(const std::string& name, glm::mat4x3 value)
 	{
 		glUniformMatrix4x3fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
-	}
-
-	void set_uniform_block(const GLchar* block_name, std::vector<const GLchar*> attrib_names)
-	{
-		//// fetch the block info
-		//GLuint block_index = glGetUniformBlockIndex(_handle, block_name);
-		//GLint block_size;
-		//glGetActiveUniformBlockiv(_handle, block_index, GL_UNIFORM_BLOCK_DATA_SIZE, &block_size);
-		//GLbyte* block_buffer;
-
-		////const GLchar* names[] = { "inner_color", "outer_color","radius_innes","raduis_outer" };
-		//GLuint attrib_num = attrib_names.size();
-		//std::vector<GLuint> indices(attrib_num);
-		//std::vector<GLint> offsets(attrib_num);
-		//glGetUniformIndices(_handle, attrib_num, attrib_names.data(), indices.data());
-		//glGetActiveUniformsiv(_handle, 4, indices.data(), GL_UNIFORM_OFFSET, offsets.data());
-
-		//// create ubo an fill it with data
-		//gl_buffer ubo;
-
-		//// bind the buffer to the block
-		//glBindBufferBase(GL_UNIFORM_BUFFER, block_index, ubo.get_handle());
 	}
 
 };
