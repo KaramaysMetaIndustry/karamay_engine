@@ -112,7 +112,6 @@ void gl_pipeline_base::render(std::float_t delta_time)
 {
 	if (_program)
 	{
-		_program->update(delta_time);
 		_program->render(delta_time);
 	}
 }

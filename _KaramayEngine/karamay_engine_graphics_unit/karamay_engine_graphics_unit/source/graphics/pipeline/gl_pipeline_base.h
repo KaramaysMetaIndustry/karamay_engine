@@ -1,6 +1,6 @@
 #pragma once
 #include "graphics/glo/gl_object.h"
-#include "graphics/uniform/gl_uniform.h"
+#include "graphics/variable/gl_variable.h"
 #include "graphics/program/gl_program.h"
 
 
@@ -55,7 +55,7 @@ public:
 	gl_pipeline_base& set_commands(std::function<void(void)> commands_lambda);
 
 	template<typename T>
-	gl_pipeline_base& add_uniforms(const std::vector<std::shared_ptr<gl_uniform<T>>>& uniforms)
+	gl_pipeline_base& add_uniforms(const std::vector<std::shared_ptr<gl_variable<T>>>& uniforms)
 	{
 		if (_program)
 		{
@@ -64,11 +64,6 @@ public:
 		return *this;
 	}
 
-	template<typename T>
-	gl_pipeline_base& add_textures(const std::vector<std::shared_ptr<T>>& textures)
-	{
-
-	}
 
 public:
 

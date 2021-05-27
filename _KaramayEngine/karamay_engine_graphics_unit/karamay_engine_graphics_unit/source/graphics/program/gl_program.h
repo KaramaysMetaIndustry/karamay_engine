@@ -3,7 +3,7 @@
 #include "graphics/shader/gl_shader.h"
 #include "graphics/vertex_array/gl_vertex_array.h"
 #include "graphics/transform_feedback/gl_transform_feedback.h"
-#include "graphics/uniform/gl_uniform.h"
+#include "graphics/variable/gl_variable.h"
 #include "graphics/buffer/gl_buffer.h"
 #include "graphics/buffer/customization/gl_element_array_buffer.h"
 #include "graphics/buffer/customization/gl_uniform_buffer.h"
@@ -18,7 +18,6 @@ enum class gl_buffer_mode
 	INTERLEAVED = GL_INTERLEAVED_ATTRIBS,
 	SEPARATE_ATTRIBS = GL_SEPARATE_ATTRIBS
 };
-
 
 /**
  * [Fixed] you must call this func at some time
@@ -66,22 +65,6 @@ public:
 		_commands_lambda = commands_lambda;
 	}
 
-	void add_uniforms(const std::vector<std::shared_ptr<gl_uniform<glm::vec1>>>& vec1_uniforms){}
-
-	void add_uniforms(const std::vector<std::shared_ptr<gl_uniform<glm::vec2>>>& vec2_uniforms) {}
-
-	void add_uniforms(const std::vector<std::shared_ptr<gl_uniform<glm::vec3>>>& vec3_uniforms) {}
-
-	void add_uniforms(const std::vector<std::shared_ptr<gl_uniform<glm::vec4>>>& vec4_uniforms) {}
-
-	void add_uniforms(const std::vector<std::shared_ptr<gl_uniform<glm::mat4>>>& mat4_uniforms) {}
-
-	void add_textures(const std::vector<std::shared_ptr<gl_texture_2d>>& texture_2ds) {}
-
-	void add_textures(const std::vector<std::shared_ptr<gl_texture_2d_array>>& texture_2d_arrays) {}
-
-	void add_textures(const std::vector<std::shared_ptr<gl_texture_3d>>& texture_3ds) {}
-
 	std::shared_ptr<gl_vertex_array> get_vertex_array();
 
 	std::shared_ptr<gl_element_array_buffer> get_element_array_buffer();
@@ -91,10 +74,90 @@ public:
 	std::shared_ptr<gl_uniform_buffer> get_uniform_buffer(std::uint32_t index);
 
 	std::shared_ptr<gl_shader_storage_buffer> get_shader_storage_buffer(std::uint32_t index);
-	
+
 	std::shared_ptr<gl_atomic_counter_buffer> get_atomic_counter_buffer(std::uint32_t index);
 
 	std::shared_ptr<gl_framebuffer> get_framebuffer();
+
+private:
+
+	std::vector<std::shared_ptr<gl_shader>> _shaders;
+
+	std::shared_ptr<gl_vertex_array> _vertex_array;
+	
+	std::shared_ptr<gl_element_array_buffer> _element_array_buffer;
+	
+	std::shared_ptr<gl_transform_feedback> _transform_feedback;
+	
+	std::vector<std::shared_ptr<gl_uniform_buffer>> _uniform_buffers;
+	
+	std::vector<std::shared_ptr<gl_shader_storage_buffer>> _shader_storage_buffers;
+	
+	std::vector<std::shared_ptr<gl_atomic_counter_buffer>> _atomic_counter_buffers;
+	
+	std::shared_ptr<gl_framebuffer> _framebuffer;
+	
+	static std::shared_ptr<gl_default_framebuffer> _default_framebuffer;
+	
+	std::function<void(void)> _commands_lambda;
+
+
+
+#define DEF_ADD_UNIFORMS(TYPE)\
+private:\
+std::vector<std::shared_ptr<gl_variable<glm::##TYPE##>>> _##TYPE##_uniforms;\
+public:\
+inline void add_uniforms(const std::vector<std::shared_ptr<gl_variable<glm::##TYPE##>>>& TYPE##_uniforms)\
+{\
+	_##TYPE##_uniforms.insert(_##TYPE##_uniforms.cend(), TYPE##_uniforms.cbegin(), TYPE##_uniforms.cend());\
+}\
+
+	DEF_ADD_UNIFORMS(float32)
+	DEF_ADD_UNIFORMS(vec2)
+	DEF_ADD_UNIFORMS(vec3)
+	DEF_ADD_UNIFORMS(vec4)
+	DEF_ADD_UNIFORMS(float64)
+	DEF_ADD_UNIFORMS(dvec2)
+	DEF_ADD_UNIFORMS(dvec3)
+	DEF_ADD_UNIFORMS(dvec4)
+	DEF_ADD_UNIFORMS(int32)
+	DEF_ADD_UNIFORMS(ivec2)
+	DEF_ADD_UNIFORMS(ivec3)
+	DEF_ADD_UNIFORMS(ivec4)
+	DEF_ADD_UNIFORMS(uint32)
+	DEF_ADD_UNIFORMS(uvec2)
+	DEF_ADD_UNIFORMS(uvec3)
+	DEF_ADD_UNIFORMS(uvec4)
+	DEF_ADD_UNIFORMS(mat2)
+	DEF_ADD_UNIFORMS(mat3)
+	DEF_ADD_UNIFORMS(mat4)
+	DEF_ADD_UNIFORMS(mat2x3)
+	DEF_ADD_UNIFORMS(mat2x4)
+	DEF_ADD_UNIFORMS(mat3x2)
+	DEF_ADD_UNIFORMS(mat3x4)
+	DEF_ADD_UNIFORMS(mat4x2)
+	DEF_ADD_UNIFORMS(mat4x3)
+
+#define DEF_ADD_TEXTURES(TYPE)\
+private:\
+	std::vector<std::shared_ptr<gl_##TYPE##>> _##TYPE##s;\
+public:\
+	inline void add_textures(const std::vector<std::shared_ptr<gl_##TYPE##>>& TYPE##s)\
+	{\
+		_##TYPE##s.insert(_##TYPE##s.cend(), TYPE##s.cbegin(), TYPE##s.cend());\
+	}\
+	
+	DEF_ADD_TEXTURES(texture_1d)
+	DEF_ADD_TEXTURES(texture_1d_array)
+	DEF_ADD_TEXTURES(texture_2d)
+	DEF_ADD_TEXTURES(texture_2d_array)
+	DEF_ADD_TEXTURES(texture_2d_multisample)
+	DEF_ADD_TEXTURES(texture_2d_array_multisample)
+	DEF_ADD_TEXTURES(texture_rectangle)
+	DEF_ADD_TEXTURES(texture_3d)
+	DEF_ADD_TEXTURES(texture_cube)
+	DEF_ADD_TEXTURES(texture_cube_array)
+	DEF_ADD_TEXTURES(texture_buffer)
 
 public:
 
@@ -104,9 +167,6 @@ public:
 	void render(std::float_t delta_time);
 
 private:
-	
-	// set only once time
-	inline void _set_transform_feedback_varyings();
 
 	void _update();
 	void _install();
@@ -117,92 +177,68 @@ private:
 
 private:
 
+	// set only once time
+	void _set_transform_feedback_varyings();
+
 	// bind these persistent data to context (context is public)
-	inline void _bind_vertex_array();
-	inline void _bind_element_array_buffer();
-	inline void _bind_transform_feedback();
-	inline void _bind_uniform_buffers();
-	inline void _bind_shader_storage_buffers();
-	inline void _bind_atomic_counter_buffers();
-	inline void _bind_framebuffer();
-	inline void _bind_textures();
+	void _bind_vertex_array();
+	void _bind_element_array_buffer();
+	void _bind_transform_feedback();
+	void _bind_uniform_buffers();
+	void _bind_shader_storage_buffers();
+	void _bind_atomic_counter_buffers();
+	void _bind_framebuffer();
+	void _bind_textures();
 
-	// launch uniforms
-	inline void _launch_uniforms()
-	{
-		for (auto uniform : _vec1_uniforms)
-		{
-			_update_uniform(uniform->name, uniform->value);
-		}
-
-		for (auto uniform : _vec2_uniforms)
-		{
-			_update_uniform(uniform->name, uniform->value);
-		}
-
-		for (auto uniform : _vec3_uniforms)
-		{
-			_update_uniform(uniform->name, uniform->value);
-		}
-
-		for (auto uniform : _vec4_uniforms)
-		{
-			_update_uniform(uniform->name, uniform->value);
-		}
-
-		for (auto uniform : _mat4_uniforms)
-		{
-			_update_uniform(uniform->name, uniform->value);
-		}
-	}
+	void _launch_uniforms();
 
 	// unbind these persistent data from context (you can not ensure that slots your have used will be overriden by next program)
-	inline void _unbind_vertex_array()
+	void _unbind_vertex_array()
 	{
 		glBindVertexArray(0);
 	}
-	inline void _unbind_element_array_buffer()
+	void _unbind_element_array_buffer()
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
-	inline void _unbind_transform_feedback()
+	void _unbind_transform_feedback()
 	{
 		glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
 	}
-	inline void _unbind_uniform_buffers()
+	void _unbind_uniform_buffers()
 	{
 		// clear all unifrom buffer binding is too expensive
 		// use the stored ids
-		for (size_t i = 0; i < _uniform_buffers.size(); ++i)
+		for (std::int32_t i = 0; i < _uniform_buffers.size(); ++i)
 		{
 			glBindBufferBase(GL_UNIFORM_BUFFER, i, 0);
 		}
 	}
-	inline void _unbind_shader_storage_buffers()
+	void _unbind_shader_storage_buffers()
 	{
-		for (size_t i = 0; i < _shader_storage_buffers.size(); ++i)
+		for (std::int32_t i = 0; i < _shader_storage_buffers.size(); ++i)
 		{
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, i, 0);
 		}
 	}
-	inline void _unbind_atomic_counter_buffers()
+	void _unbind_atomic_counter_buffers()
 	{
 		for (std::uint32_t i = 0; i < _atomic_counter_buffers.size(); ++i)
 		{
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, i, 0);
 		}
 	}
-	inline void _unbind_framebuffer()
+	void _unbind_framebuffer()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
-	inline void _unbind_textures() {}
+	void _unbind_textures() {}
 
 private:
 	//~ helper function
-	inline void _update_uniform(const std::string& name, glm::vec1 value)
+	inline void _update_uniform(const std::string& name, glm::float32 value)
 	{
-		//glUniform1fv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
+		glUniform1f(glGetUniformLocation(_handle, name.c_str()), value);
 	}
 	inline void _update_uniform(const std::string& name, glm::vec2 value)
 	{
@@ -217,9 +253,9 @@ private:
 		glUniform4fv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
 	}
 
-	inline void _update_uniform(const std::string& name, glm::dvec1 value)
+	inline void _update_uniform(const std::string& name, glm::float64 value)
 	{
-		glUniform1dv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
+		glUniform1d(glGetUniformLocation(_handle, name.c_str()), value);
 	}
 	inline void _update_uniform(const std::string& name, glm::dvec2 value)
 	{
@@ -234,9 +270,9 @@ private:
 		glUniform4dv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
 	}
 
-	inline void _update_uniform(const std::string& name, glm::ivec1 value)
+	inline void _update_uniform(const std::string& name, glm::int32 value)
 	{
-		glUniform1iv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
+		glUniform1i(glGetUniformLocation(_handle, name.c_str()), value);
 	}
 	inline void _update_uniform(const std::string& name, glm::ivec2 value)
 	{
@@ -251,9 +287,9 @@ private:
 		glUniform4iv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
 	}
 
-	inline void _update_uniform(const std::string& name, glm::uvec1 value)
+	inline void _update_uniform(const std::string& name, glm::uint32 value)
 	{
-		glUniform1uiv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
+		glUniform1ui(glGetUniformLocation(_handle, name.c_str()), value);
 	}
 	inline void _update_uniform(const std::string& name, glm::uvec2 value)
 	{
@@ -268,147 +304,64 @@ private:
 		glUniform4uiv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
 	}
 
+	inline void _update_uniform(const std::string& name, glm::mat2 value)
+	{
+		glUniformMatrix2fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+	}
 	inline void _update_uniform(const std::string& name, glm::mat3 value)
-	{}
+	{
+		glUniformMatrix3fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+	}
 	inline void _update_uniform(const std::string& name, glm::mat4 value)
 	{
 		glUniformMatrix4fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 	}
 
-	//~
-	inline void _bind_texture_1d(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_1d> texture_1d)
+	inline void _update_uniform(const std::string& name, glm::mat2x3 value)
 	{
-		if (texture_1d) {
-			texture_1d->bind(unit);
-			_update_uniform(name, glm::uvec1(unit));
-		}
+		glUniformMatrix2x3fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 	}
-	inline void _bind_texture_1d_array(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_1d_array> texture_1d_array)
+	inline void _update_uniform(const std::string& name, glm::mat2x4 value)
 	{
-		if (texture_1d_array) {
-			glActiveTexture(GL_TEXTURE0 + unit);
-			glBindTexture(GL_TEXTURE_1D_ARRAY, texture_1d_array->get_handle());
-			_update_uniform(name, glm::uvec1(unit));
-		}
+		glUniformMatrix2x4fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 	}
-	inline void _bind_texture_2d(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_2d> texture_2d)
+	inline void _update_uniform(const std::string& name, glm::mat3x2 value)
 	{
-		if (texture_2d) {
-			glActiveTexture(GL_TEXTURE0 + unit);
-			glBindTexture(GL_TEXTURE_2D, texture_2d->get_handle());
-			_update_uniform(name, glm::uvec1(unit));
-		}
+		glUniformMatrix3x2fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 	}
-	inline void _bind_texture_2d_array(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_2d_array> texture_2d_array)
+	inline void _update_uniform(const std::string& name, glm::mat3x4 value)
 	{
-		if (texture_2d_array) {
-			glActiveTexture(GL_TEXTURE0 + unit);
-			glBindTexture(GL_TEXTURE_2D_ARRAY, texture_2d_array->get_handle());
-			_update_uniform(name, glm::uvec1(unit));
-		}
+		glUniformMatrix3x4fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 	}
-	inline void _bind_texture_3d(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_3d> texture_3d)
+	inline void _update_uniform(const std::string& name, glm::mat4x2 value)
 	{
-		if (texture_3d) {
-			glActiveTexture(GL_TEXTURE0 + unit);
-			glBindTexture(GL_TEXTURE_3D, texture_3d->get_handle());
-			_update_uniform(name, glm::uvec1(unit));
-		}
+		glUniformMatrix4x2fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 	}
-	inline void _bind_texture_cube(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_cube> texture_cube)
+	inline void _update_uniform(const std::string& name, glm::mat4x3 value)
 	{
-		if (texture_cube) {
-			glActiveTexture(GL_TEXTURE0 + unit);
-			glBindTexture(GL_TEXTURE_CUBE_MAP, texture_cube->get_handle());
-			_update_uniform(name, glm::uvec1(unit));
-		}
-	}
-	inline void _bind_texture_cube_array(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_cube_array> texture_cube_array)
-	{
-		if (texture_cube_array) {
-			glActiveTexture(GL_TEXTURE0 + unit);
-			glBindTexture(GL_TEXTURE_CUBE_MAP_ARRAY, texture_cube_array->get_handle());
-			_update_uniform(name, glm::uvec1(unit));
-		}
-	}
-	inline void _bind_texture_buffer(std::uint32_t unit, const std::string& name, std::shared_ptr<gl_texture_buffer> texture_buffer)
-	{
-		if (texture_buffer) {
-			glActiveTexture(GL_TEXTURE0 + unit);
-			glBindTexture(GL_TEXTURE_BUFFER, texture_buffer->get_handle());
-			_update_uniform(name.c_str(), glm::uvec1(unit));
-		}
+		glUniformMatrix4x3fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 	}
 
 	void set_uniform_block(const GLchar* block_name, std::vector<const GLchar*> attrib_names)
 	{
-		// fetch the block info
-		GLuint block_index = glGetUniformBlockIndex(_handle, block_name);
-		GLint block_size;
-		glGetActiveUniformBlockiv(_handle, block_index, GL_UNIFORM_BLOCK_DATA_SIZE, &block_size);
-		GLbyte* block_buffer;
+		//// fetch the block info
+		//GLuint block_index = glGetUniformBlockIndex(_handle, block_name);
+		//GLint block_size;
+		//glGetActiveUniformBlockiv(_handle, block_index, GL_UNIFORM_BLOCK_DATA_SIZE, &block_size);
+		//GLbyte* block_buffer;
 
-		//const GLchar* names[] = { "inner_color", "outer_color","radius_innes","raduis_outer" };
-		GLuint attrib_num = attrib_names.size();
-		std::vector<GLuint> indices(attrib_num);
-		std::vector<GLint> offsets(attrib_num);
-		glGetUniformIndices(_handle, attrib_num, attrib_names.data(), indices.data());
-		glGetActiveUniformsiv(_handle, 4, indices.data(), GL_UNIFORM_OFFSET, offsets.data());
+		////const GLchar* names[] = { "inner_color", "outer_color","radius_innes","raduis_outer" };
+		//GLuint attrib_num = attrib_names.size();
+		//std::vector<GLuint> indices(attrib_num);
+		//std::vector<GLint> offsets(attrib_num);
+		//glGetUniformIndices(_handle, attrib_num, attrib_names.data(), indices.data());
+		//glGetActiveUniformsiv(_handle, 4, indices.data(), GL_UNIFORM_OFFSET, offsets.data());
 
-		// create ubo an fill it with data
-		gl_buffer ubo;
+		//// create ubo an fill it with data
+		//gl_buffer ubo;
 
-		// bind the buffer to the block
-		glBindBufferBase(GL_UNIFORM_BUFFER, block_index, ubo.get_handle());
+		//// bind the buffer to the block
+		//glBindBufferBase(GL_UNIFORM_BUFFER, block_index, ubo.get_handle());
 	}
-
-private:
-	
-	std::vector<std::shared_ptr<gl_shader>> _shaders;
-	std::shared_ptr<gl_vertex_array> _vertex_array;
-	std::shared_ptr<gl_element_array_buffer> _element_array_buffer;
-	std::shared_ptr<gl_transform_feedback> _transform_feedback;
-	std::vector<std::shared_ptr<gl_uniform_buffer>> _uniform_buffers;
-	std::vector<std::shared_ptr<gl_shader_storage_buffer>> _shader_storage_buffers;
-	std::vector<std::shared_ptr<gl_atomic_counter_buffer>> _atomic_counter_buffers;
-	std::shared_ptr<gl_framebuffer> _framebuffer;
-	static std::shared_ptr<gl_default_framebuffer> _default_framebuffer;
-	std::function<void(void)> _commands_lambda;
-
-	std::vector<std::shared_ptr<gl_texture_1d>> _texture_1ds;
-	std::vector<std::shared_ptr<gl_texture_1d_array>> _texture_1d_arrays;
-	std::vector<std::shared_ptr<gl_texture_2d>> _texture_2ds;
-	std::vector<std::shared_ptr<gl_texture_2d_multisample>> _texture_2d_multisamples;
-	std::vector<std::shared_ptr<gl_texture_2d_array>> _texture_2d_arrays;
-	std::vector<std::shared_ptr<gl_texture_2d_array_multisample>> _texture_2d_array_multisamples;
-	std::vector<std::shared_ptr<gl_texture_rectangle>> _texture_rectangles;
-	std::vector<std::shared_ptr<gl_texture_3d>> _texture_3ds;
-	std::vector<std::shared_ptr<gl_texture_cube>> _texture_cubes;
-	std::vector<std::shared_ptr<gl_texture_cube_array>> _texture_cube_arrays;
-	std::vector<std::shared_ptr<gl_texture_buffer>> _texture_buffers;
-
-	std::vector<std::shared_ptr<gl_uniform<glm::vec1>>> _vec1_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::vec2>>> _vec2_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::vec3>>> _vec3_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::vec4>>> _vec4_uniforms;
-
-	std::vector<std::shared_ptr<gl_uniform<glm::dvec1>>> _dvec1_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::dvec2>>> _dvec2_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::dvec3>>> _dvec3_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::dvec4>>> _dvec4_uniforms;
-	
-	std::vector<std::shared_ptr<gl_uniform<glm::ivec1>>> _ivec1_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::ivec2>>> _ivec2_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::ivec3>>> _ivec3_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::ivec4>>> _ivec4_uniforms;
-	
-	std::vector<std::shared_ptr<gl_uniform<glm::uvec1>>> _uvec1_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::uvec2>>> _uvec2_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::uvec3>>> _uvec3_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::uvec4>>> _uvec4_uniforms;
-
-	std::vector<std::shared_ptr<gl_uniform<glm::mat2>>> _mat2_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::mat3>>> _mat3_uniforms;
-	std::vector<std::shared_ptr<gl_uniform<glm::mat4>>> _mat4_uniforms;
 
 };

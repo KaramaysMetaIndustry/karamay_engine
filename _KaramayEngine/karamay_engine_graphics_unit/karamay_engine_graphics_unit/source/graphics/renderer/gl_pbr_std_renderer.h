@@ -69,7 +69,7 @@ public:
 
 		auto ubo0 = std::make_shared<gl_uniform_buffer>();
 		
-		auto uniform_color = std::make_shared<gl_uniform<glm::vec4>>();
+		auto uniform_color = std::make_shared<gl_variable<glm::vec4>>();
 
 
 		auto ubo1 = std::make_shared<gl_uniform_buffer>();
@@ -86,8 +86,6 @@ public:
 		int first = 10;
 		int count = 100;
 
-		gl_uniform<glm::mat4> a;
-
 		graphics_pipeline("pbr_mesh_pip")
 		.construct(
 			{ 
@@ -98,8 +96,6 @@ public:
 		.set_vertex_array(vao)
 		.set_element_array(ebo)
 		.set_transform_feedback(transfo)
-		.add_uniforms<glm::vec4>({uniform_color})
-		.add_uniform_buffers({ ubo0, ubo1, ubo2 })
 		.add_shader_storage_buffers({ sso0, sso1 })
 		.add_atomic_counter_buffers({ aco })
 		.set_framebuffer()

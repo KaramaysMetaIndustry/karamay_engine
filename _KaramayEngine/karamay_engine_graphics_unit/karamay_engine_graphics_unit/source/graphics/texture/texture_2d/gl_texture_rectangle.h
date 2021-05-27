@@ -19,6 +19,10 @@ public:
 	}
 
 
+	void bind(std::uint32_t unit);
+
+	void unbind();
+
 private:
 	int _width, _height;
 

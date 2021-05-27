@@ -14,6 +14,10 @@ public:
 		glTexSubImage3D(static_cast<GLenum>(cube_face), mipmap_index, x_offset, y_offset, 0, width, height, (index + 1) * 6 - 1, format, type, pixels);
 	}
 
+	void bind(std::uint32_t unit) {}
+
+	void unbind() {}
+
 public:
 	gl_texture_cube_array();
 	virtual ~gl_texture_cube_array();

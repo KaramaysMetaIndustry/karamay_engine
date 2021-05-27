@@ -1,4 +1,5 @@
 #include "gl_program.h"
+#include "graphics/texture/gl_texture.h"
 
 gl_program::gl_program()
 {
@@ -136,7 +137,8 @@ void gl_program::_install()
 	_bind_shader_storage_buffers();
 	_bind_atomic_counter_buffers();
 	_bind_framebuffer();
-	_bind_textures();
+	_bind_textures(); 
+	// must launch uniforms after textures bound
 	_launch_uniforms();
 }
 
@@ -174,7 +176,7 @@ inline void gl_program::_set_transform_feedback_varyings()
 		const auto& varyings = _transform_feedback->get_varyings();
 		if (varyings.size() > 0)
 		{
-			glTransformFeedbackVaryings(_handle, varyings.size(), varyings.data(), static_cast<GLenum>(gl_buffer_mode::INTERLEAVED));
+			glTransformFeedbackVaryings(_handle, static_cast<GLsizei>(varyings.size()), varyings.data(), static_cast<GLenum>(gl_buffer_mode::INTERLEAVED));
 			glLinkProgram(_handle);
 		}
 	}
@@ -209,10 +211,10 @@ inline void gl_program::_bind_transform_feedback()
 
 inline void gl_program::_bind_uniform_buffers()
 {
-	const size_t max_i
+	const std::size_t max_i
 		= _uniform_buffers.size() > GL_MAX_UNIFORM_BUFFER_BINDINGS ? GL_MAX_UNIFORM_BUFFER_BINDINGS : _uniform_buffers.size();
 
-	for (size_t i = 0; i < max_i; ++i)
+	for (std::int32_t i = 0; i < max_i; ++i)
 	{
 		if (auto uniform_buffer = _uniform_buffers[i])
 		{
@@ -221,7 +223,7 @@ inline void gl_program::_bind_uniform_buffers()
 				// bind buffer to context binding
 				uniform_buffer->bind(i);
 				// bind program location to context binding
-				const std::string& block_name = uniform_buffer->get_descriptor()->block_name;
+				const std::string& block_name = uniform_buffer->get_descriptor()->get_block_name();
 				glUniformBlockBinding(_handle, glGetUniformBlockIndex(_handle, block_name.c_str()), i);
 			}
 		}
@@ -230,10 +232,10 @@ inline void gl_program::_bind_uniform_buffers()
 
 inline void gl_program::_bind_shader_storage_buffers()
 {
-	const size_t max_i
+	const std::size_t max_i
 		= _shader_storage_buffers.size() > GL_MAX_SHADER_STORAGE_BUFFER_BINDINGS ? GL_MAX_SHADER_STORAGE_BUFFER_BINDINGS : _shader_storage_buffers.size();
 
-	for (size_t i = 0; i < max_i; ++i)
+	for (std::int32_t i = 0; i < max_i; ++i)
 	{
 		if (auto shader_storage_buffer = _shader_storage_buffers[i])
 		{
@@ -243,7 +245,7 @@ inline void gl_program::_bind_shader_storage_buffers()
 				shader_storage_buffer->bind(i);
 				// bind program location to context binding
 				//const std::string& name = shader_storage_buffer->
-				glShaderStorageBlockBinding(_handle, glGetProgramResourceLocation(_handle, GL_SHADER_STORAGE_BLOCK, shader_storage_buffer->get_block_name().c_str()), i);
+				glShaderStorageBlockBinding(_handle, glGetProgramResourceLocation(_handle, GL_SHADER_STORAGE_BLOCK, shader_storage_buffer->get_descriptor()->get_block_name().c_str()), i);
 			}
 		}
 	}
@@ -251,10 +253,10 @@ inline void gl_program::_bind_shader_storage_buffers()
 
 inline void gl_program::_bind_atomic_counter_buffers()
 {
-	const size_t max_i
+	const std::size_t max_i
 		= _atomic_counter_buffers.size() > GL_MAX_ATOMIC_COUNTER_BUFFER_BINDINGS ? GL_MAX_ATOMIC_COUNTER_BUFFER_BINDINGS : _atomic_counter_buffers.size();
 
-	for (size_t i = 0; i < max_i; ++i)
+	for (std::int32_t i = 0; i < max_i; ++i)
 	{
 		if (auto atomic_counter_buffer = _atomic_counter_buffers[i])
 		{
@@ -279,22 +281,57 @@ inline void gl_program::_bind_framebuffer()
 
 inline void gl_program::_bind_textures()
 {
-	std::size_t _size = _texture_1ds.size();
+#define BIND_TEXTURES(TYPE)\
+for (std::uint32_t i = 0; i < _##TYPE##s.size(); ++i)\
+{\
+	_##TYPE##s[i]->bind(i);\
+	add_uniforms({ std::make_shared<gl_variable<glm::uint32>>(_##TYPE##s[i]->get_name(), i) });\
+}\
 
-	for (std::size_t i = 0; i < _size; ++i)
-	{
-		_texture_1ds[i]->bind(i);
-	}
+	BIND_TEXTURES(texture_1d)
+	BIND_TEXTURES(texture_2d)
+	BIND_TEXTURES(texture_2d_multisample)
+	BIND_TEXTURES(texture_2d_array)
+	BIND_TEXTURES(texture_2d_array_multisample)
+	BIND_TEXTURES(texture_3d)
+	BIND_TEXTURES(texture_cube)
+	BIND_TEXTURES(texture_cube_array)
+	BIND_TEXTURES(texture_buffer)
+}
 
-	_size = _texture_1d_arrays.size();
-	for (std::size_t i = 0; i < _size; ++i)
-	{
-		_texture_1d_arrays[i]->bind(i);
-	}
+void gl_program::_launch_uniforms()
+{
 
-	_size = _texture_2ds.size();
-	for (std::size_t i = 0; i < _size; ++i)
-	{
-		_texture_2ds[i]->bind(i);
-	}
+#define update_uniforms(TYPE)\
+for (auto uniform : _##TYPE##_uniforms)\
+{\
+	if (uniform)\
+		_update_uniform(uniform->name, uniform->value);\
+}\
+
+	update_uniforms(float32)
+	update_uniforms(vec2)
+	update_uniforms(vec3)
+	update_uniforms(vec4)
+	update_uniforms(float64)
+	update_uniforms(dvec2)
+	update_uniforms(dvec3)
+	update_uniforms(dvec4)
+	update_uniforms(int32)
+	update_uniforms(ivec2)
+	update_uniforms(ivec3)
+	update_uniforms(ivec4)
+	update_uniforms(uint32)
+	update_uniforms(uvec2)
+	update_uniforms(uvec3)
+	update_uniforms(uvec4)
+	update_uniforms(mat2)
+	update_uniforms(mat3)
+	update_uniforms(mat4)
+	update_uniforms(mat2x3)
+	update_uniforms(mat2x4)
+	update_uniforms(mat3x2)
+	update_uniforms(mat3x4)
+	update_uniforms(mat4x2)
+	update_uniforms(mat4x3)
 }

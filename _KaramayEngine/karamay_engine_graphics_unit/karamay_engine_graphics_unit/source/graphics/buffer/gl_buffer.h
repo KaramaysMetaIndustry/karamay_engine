@@ -1,8 +1,6 @@
 #pragma once
 #include "graphics/glo/gl_object.h"
 
-
-
 namespace gl_buffer_enum
 {
 	enum class target : GLenum
@@ -148,10 +146,6 @@ public:
 	virtual ~gl_buffer();
 
 public:
-
-	virtual void update(std::float_t delta_time) override
-	{}
-	
 	/**
 	 * @size : bytes of size
 	 * @is_dynamic_storage : if true,  

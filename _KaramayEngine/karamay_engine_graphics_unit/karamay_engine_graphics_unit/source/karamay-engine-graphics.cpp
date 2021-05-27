@@ -1,6 +1,6 @@
 
 #include "graphics/program/gl_program.h"
-#include "graphics/uniform/gl_uniform.h"
+#include "graphics/variable/gl_variable.h"
 #include "graphics/buffer/customization/gl_element_array_buffer.h"
 #include "graphics/vertex_array/gl_vertex_array.h"
 #include "window/window.h"
@@ -217,6 +217,24 @@ struct _std140_base_colors
 	float _alignment2;*/
 };
 
+
+#define sptr(T)\
+std::make_shared<##T##>()\
+
+#define uptr(T)\
+std::make_unique<##T##>()\
+
+template<typename T>
+std::weak_ptr<T> make_weak(std::shared_ptr<T> sptr)
+{
+	return std::weak_ptr<T>(sptr);
+}
+
+#define wptr(sptr)\
+make_weak(sptr)\
+
+
+
 int main()
 {
   
@@ -225,42 +243,24 @@ int main()
 
 	glewInit();
 
-	auto vertex_array = std::make_shared<gl_vertex_array>();
+
+
+	auto ubod = std::make_shared<gl_uniform_buffer_descriptor>();
 	
-	auto uniform_buffer = std::make_shared<gl_uniform_buffer>();
-	auto uniform_buffer_descriptor = std::make_shared<gl_uniform_buffer_descriptor>();
-	uniform_buffer_descriptor->add_uniform(glm::mat4(0.0f));
-	
-	auto element_array_buffer = std::make_shared<gl_element_array_buffer>();
-	element_array_buffer->fill(indices, sizeof indices);
-	
+	ubod->add_uniform(glm::vec4(0.0f, 1.0f, 0.5f, 0.0f));
+	ubod->add_uniform(glm::vec3(1.2f, 1.6f, 0.7f));
+	ubod->add_uniform(glm::mat4(0.0f));
 
-	auto projection_matrix = std::make_shared<gl_uniform<glm::mat4>>("projection_matrix", glm::mat4(0.0f));
-	auto view_matrix = std::make_shared<gl_uniform<glm::mat4>>("view_matrix", glm::mat4(0.0f));
-	auto model_matrix = std::make_shared<gl_uniform<glm::mat4>>("model_matrix", glm::mat4(0.0f));
-	auto camera_position = std::make_shared<gl_uniform<glm::vec3>>("camera_position", glm::vec3(1.0f));
+	//std::uint8_t* data = (std::uint8_t*)ubod->get_data();
+	//
+	//glm::vec3* d = (glm::vec3*)(data + 16);
 
-	auto program = std::make_shared<gl_program>();
+	//glm::vec3 v = d[0];
 
-	if (program)
-	{
-		program->construct({"", "", "", ""});
-		program->set_vertex_array(vertex_array);
-		program->set_element_array_buffer(element_array_buffer);
-		program->add_uniforms({ model_matrix, view_matrix, projection_matrix });
-		program->add_uniforms({ camera_position });
+	//
 
-		program->set_framebuffer();
-		program->set_commands([] {
-			//glDrawElementsInstancedBaseVertexBaseInstance(GL_PATCHES, Indices.size(), GL_UNSIGNED_INT, &Indices.at(0), instanceNum, 0, 0);
-			});
-	}
-
-
-	while (true)
-	{
-		window->tick(1.0f);
-		program->render(1.0f);
-	}
+	//std::cout << v.r << std::endl;
+	//std::cout << v.g << std::endl;
+	//std::cout << v.b << std::endl;
 
 }

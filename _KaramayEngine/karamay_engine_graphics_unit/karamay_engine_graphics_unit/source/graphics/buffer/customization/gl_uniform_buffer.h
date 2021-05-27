@@ -1,5 +1,6 @@
 #pragma once
 #include "graphics/buffer/gl_buffer.h"
+#include "graphics/variable/gl_variable.h"
 
 struct _shader_point_light_std140
 {
@@ -32,40 +33,96 @@ namespace gl_uniform_buffer_enum
 	};
 }
 
-struct gl_uniform_buffer_descriptor
+class gl_uniform_buffer_descriptor
 {
-	gl_uniform_buffer_enum::layout memory_layout;
-
-	gl_uniform_buffer_enum::matrix_layout memory_matrix_layout;
-
-	std::string block_name;
-
-	void* _data;
-
-	size_t _size;
-	
-	size_t size;
-	
-	bool is_dirty;
 
 public:
+
+	gl_uniform_buffer_descriptor() :
+		_memory_layout(gl_uniform_buffer_enum::layout::std140),
+		_memory_matrix_layout(gl_uniform_buffer_enum::matrix_layout::row_major),
+		_block_name(),
+		_data(),
+		_size(0),
+		_is_dirty(true)
+	{
+
+	}
 
 	template<typename T>
 	void add_uniform(T uniform)
 	{
-		const void* data = (void*)glm::value_ptr(uniform);
-		const size_t size = sizeof(T);
-		memcpy(_data, data, size);
-		_size += size;
+		const size_t _uniform_size = sizeof(T);
+		const std::uint8_t* _ref = (std::uint8_t*)glm::value_ptr(uniform);
+		
+		// fill data
+		for (std::size_t i = 0; i < _uniform_size; ++i)
+			_data.push_back(_ref[i]);
+		
+		// fill padding
+		/*if (_tail < _tmp_size)
+		{
+			_data.insert(_data.cbegin(), _tail, 0);
+		}*/
+
+		std::cout << "container size£º" << _data.size() << std::endl;
 	}
 
 	
-	gl_uniform_buffer_descriptor() :
-		memory_layout(gl_uniform_buffer_enum::layout::std140),
-		memory_matrix_layout(gl_uniform_buffer_enum::matrix_layout::row_major),
-		is_dirty(true)
+	void modify_uniform(const gl_variable<glm::vec3>& uniform)
 	{
+		auto _it = _uniforms_map.find(uniform.name);
+		if (_it != _uniforms_map.cend())
+		{
+			auto _tmp_data = _it->second;
+			if (_tmp_data)
+			{
+				memcpy(_tmp_data.get(), glm::value_ptr(uniform.value), sizeof glm::vec3);
+			}
+		}
+	}
 
+private:
+
+	gl_uniform_buffer_enum::layout _memory_layout;
+
+	gl_uniform_buffer_enum::matrix_layout _memory_matrix_layout;
+
+	std::unordered_map<std::string, std::shared_ptr<void>> _uniforms_map;
+
+	std::string _block_name;
+
+	std::vector<std::uint8_t> _data;
+
+	std::size_t _size;
+	
+	std::uint8_t _is_dirty;
+
+public:
+
+	const gl_uniform_buffer_enum::layout get_memory_layout() const
+	{
+		return _memory_layout;
+	}
+
+	const std::string& get_block_name() const
+	{
+		return _block_name;
+	}
+
+	void* get_data()
+	{
+		return _data.data();
+	}
+
+	const std::size_t get_data_size() const
+	{
+		return _data.size();
+	}
+	
+	const std::uint8_t is_dirty() const
+	{
+		return _is_dirty;
 	}
 };
 
@@ -87,12 +144,15 @@ public:
 	}
 
 	std::shared_ptr<gl_uniform_buffer_descriptor> get_descriptor() { return _descriptor; }
-	
+
 	void update(std::float_t delta_time);
 
 	void bind(std::int32_t binding)
 	{
-		glBindBufferRange(GL_UNIFORM_BUFFER, binding, _buffer->get_handle(), 0, _descriptor->size);
+		if (_descriptor && _buffer)
+		{
+			glBindBufferRange(GL_UNIFORM_BUFFER, binding, _buffer->get_handle(), 0, _descriptor->get_data_size());
+		}
 	}
 
 	void unbind()
@@ -111,45 +171,8 @@ private:
 
 private:
 
-	void _fill_std140()
-	{
-		if (_descriptor)
-		{
-			_buffer = std::make_shared<gl_buffer>();
-			_buffer->allocate(_descriptor->size);
-			_buffer->fill(0, _descriptor->size, _descriptor->data);
-		}
-	}
-
-	void _fill_shared_packed()
-	{
-		if (_descriptor)
-		{
-			//const std::string& block_name = _descriptor->block_name;
-			//
-			//GLuint _program; 
-			//GLint block_size;
-			//GLbyte* block_buffer;
-			//const GLchar* names[] = { "inner_color", "outer_color","radius_innes","raduis_outer" };
-			////GLuint attrib_num = attrib_names.size();
-			//std::vector<GLuint> indices(attrib_num);
-			//std::vector<GLint> offsets(attrib_num);
-
-			//// get block size
-			//glGetActiveUniformBlockiv(_program, 
-			//	glGetUniformBlockIndex(_program, block_name.c_str()), GL_UNIFORM_BLOCK_DATA_SIZE, &block_size);
-			//// get block 
-			//glGetUniformIndices(_program, attrib_num, attrib_names.data(), indices.data());
-			//glGetActiveUniformsiv(_program, 4, indices.data(), GL_UNIFORM_OFFSET, offsets.data());
-
-			////create ubo an fill it with data
-			//	gl_buffer ubo;
-
-			////bind the buffer to the block
-			//	glBindBufferBase(GL_UNIFORM_BUFFER, block_index, ubo.get_handle());
-		}
-		
-	}
+	void _fill_std140();
+	void _fill_shared_packed();
 
 };
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "graphics/texture/base/gl_texture_base.h"
 
-class gl_multisample_texture_2d : public gl_texture_base
+class gl_texture_2d_multisample : public gl_texture_base
 {
 public:
 	void allocate(GLsizei Samples, GLenum InternalFormat, GLsizei Width, GLsizei Height, GLboolean fixedsamplelocation) {
@@ -13,7 +13,7 @@ public:
 	}
 
 
-	void bind(unsigned int unit);
+	void bind(std::uint32_t unit);
 
 	void unbind();
 
@@ -25,7 +25,7 @@ private:
 	
 
 public:
-	gl_multisample_texture_2d();
-	virtual ~gl_multisample_texture_2d();
+	gl_texture_2d_multisample();
+	virtual ~gl_texture_2d_multisample();
 };
 

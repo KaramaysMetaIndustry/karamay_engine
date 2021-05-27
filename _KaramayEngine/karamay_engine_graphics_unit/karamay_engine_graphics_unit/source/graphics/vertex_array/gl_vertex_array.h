@@ -45,7 +45,7 @@ public:
 
 	}
 
-	void update(std::float_t delta_time) override
+	void update(std::float_t delta_time)
 	{
 		_fill();
 	}

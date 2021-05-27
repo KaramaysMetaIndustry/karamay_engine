@@ -55,5 +55,10 @@ public:
 	
 	void unbind() {}
 
+
+	const std::string& get_name() const
+	{
+		return "";
+	}
 };
 

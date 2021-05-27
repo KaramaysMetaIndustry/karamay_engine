@@ -4,7 +4,7 @@
 #include "public/stl.h"
 
 template<typename T>
-class gl_uniform
+class gl_variable
 {
 
 public:
@@ -14,12 +14,12 @@ public:
 
 public:
 
-	gl_uniform()
+	gl_variable()
 	{
 
 	}
 
-	gl_uniform(const std::string& name, const T& value)
+	gl_variable(const std::string& name, const T& value)
 	{
 		this->name = name;
 		this->value = value;

@@ -314,9 +314,7 @@ public:
 			elem += GL_COLOR_ATTACHMENT0;
 		}
 
-		glDrawBuffers(color_attachment_indices.size(), color_attachment_indices.data());
-
-
+		glDrawBuffers(static_cast<GLsizei>(color_attachment_indices.size()), color_attachment_indices.data());
 	}
 
 	void set_readable_color_component(std::uint32_t color_attachment_index) 

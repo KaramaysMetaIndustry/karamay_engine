@@ -257,6 +257,15 @@ public:
 
 	void set_sampler(std::shared_ptr<class gl_sampler> sampler);
 
+protected:
+
+	std::string _name;
+
+public:
+	const std::string get_name() const
+	{
+		return _name;
+	}
 
 protected:
 	void set_depth_stencil_texture_mode(gl_texture_enum::type texture_type, gl_texture_enum::depth_stencil_texture_mode depth_stencil_texture_mode);

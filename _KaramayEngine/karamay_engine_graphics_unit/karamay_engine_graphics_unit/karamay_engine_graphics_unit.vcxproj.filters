@@ -129,7 +129,7 @@
     <ClCompile Include="source\karamay-engine-graphics.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="source\graphics\uniform\gl_uniform.cpp">
+    <ClCompile Include="source\graphics\variable\gl_variable.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="source\window\window.cpp">
@@ -263,7 +263,7 @@
     <ClInclude Include="source\public\winsocket.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="source\graphics\uniform\gl_uniform.h">
+    <ClInclude Include="source\graphics\variable\gl_variable.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="source\window\window.h">
