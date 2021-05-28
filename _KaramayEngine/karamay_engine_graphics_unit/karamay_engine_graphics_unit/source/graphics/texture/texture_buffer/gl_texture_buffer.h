@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "graphics/glo/gl_object.h"
+#include "graphics/texture/base/gl_texture_base.h"
 #include "graphics/buffer/gl_buffer.h"
 
 
@@ -15,7 +15,7 @@
  * Buffer textures cannot be attached to Framebuffer Objects.
  */
 
-class gl_texture_buffer : public gl_object
+class gl_texture_buffer : public gl_texture_base
 {
 public:
 	
@@ -55,10 +55,5 @@ public:
 	
 	void unbind() {}
 
-
-	const std::string& get_name() const
-	{
-		return "";
-	}
 };
 
