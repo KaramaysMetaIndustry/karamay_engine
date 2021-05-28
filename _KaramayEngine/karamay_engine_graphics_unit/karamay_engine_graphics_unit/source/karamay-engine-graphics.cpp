@@ -245,11 +245,11 @@ int main()
 
 
 
-	auto ubod = std::make_shared<gl_uniform_buffer_descriptor>();
+	/*auto ubod = std::make_shared<gl_uniform_buffer_descriptor>();
 	
 	ubod->add_uniform(glm::vec4(0.0f, 1.0f, 0.5f, 0.0f));
 	ubod->add_uniform(glm::vec3(1.2f, 1.6f, 0.7f));
-	ubod->add_uniform(glm::mat4(0.0f));
+	ubod->add_uniform(glm::mat4(0.0f));*/
 
 
 	//std::uint8_t* data = (std::uint8_t*)ubod->get_data();
@@ -263,5 +263,57 @@ int main()
 	//std::cout << v.r << std::endl;
 	//std::cout << v.g << std::endl;
 	//std::cout << v.b << std::endl;
+
+
+	auto vao = sptr(gl_vertex_array);
+	auto vaod = sptr(gl_vertex_array_descriptor);
+
+	// colors
+	vaod->add_attributes<glsl_vec4>({ 
+		glsl_vec4(0.0f, 0.7f, 0.9f, 0.0f),
+		glsl_vec4(0.2f, 0.8f, 0.3f, 0.0f),
+		glsl_vec4(0.5f, 0.5f, 0.2f, 0.0f),
+		glsl_vec4(0.1f, 0.8f, 0.2f, 0.0f),
+		glsl_vec4(0.2f, 0.1f, 0.9f, 0.0f),
+		});
+
+	// uvs
+	vaod->add_attributes<glsl_vec2>({
+		glsl_vec2(1.0f, 0.5f),
+		glsl_vec2(1.0f, 0.5f),
+		glsl_vec2(0.5f, 1.0f),
+		glsl_vec2(0.5f, 1.0f),
+		glsl_vec2(0.5f, 1.0f),
+		});
+
+	vaod->add_attributes<glsl_dvec3>({
+		glsl_dvec3(0.8290L, 0.02323L, 0.02323L),
+		glsl_dvec3(0.8290L, 0.02323L, 0.02323L),
+		glsl_dvec3(0.8290L, 0.02323L, 0.02323L),
+		glsl_dvec3(0.8290L, 0.02323L, 0.02323L),
+		glsl_dvec3(0.8290L, 0.02323L, 0.02323L)
+		});
+
+	vaod->add_attributes<glsl_float>({
+		0.0f,
+		0.2f,
+		1.3f
+		});
+
+	vaod->add_attributes<glsl_mat2x3>({
+		glsl_mat2x3(0.0f),
+		glsl_mat2x3(1.0f)
+		});
+
+	vao->fill(vaod);
+
+	//std::cout << "size :" << vaod->get_data_size() << std::endl;
+
+	std::cout << "size :" << vao->get_attribute_components_num(0) << std::endl;
+	std::cout << "size :" << vao->get_attribute_components_num(1) << std::endl;
+	std::cout << "size :" << vao->get_attribute_components_num(2) << std::endl;
+	std::cout << "size :" << vao->get_attribute_components_num(3) << std::endl;
+	std::cout << "size :" << vao->get_attribute_components_num(4) << std::endl;
+	std::cout << "size :" << vao->get_attribute_components_num(5) << std::endl;	
 
 }

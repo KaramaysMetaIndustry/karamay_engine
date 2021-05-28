@@ -204,7 +204,7 @@ inline void gl_program::_bind_vertex_array()
 		// bind it into context
 		_vertex_array->bind();
 		// enable all vertex attribute pointers
-		_vertex_array->enable_vertex_attributes();
+		_vertex_array->enable_pointers();
 	}
 }
 

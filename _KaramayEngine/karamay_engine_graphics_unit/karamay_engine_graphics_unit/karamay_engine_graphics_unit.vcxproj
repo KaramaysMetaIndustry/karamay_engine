@@ -98,6 +98,7 @@
     <ClInclude Include="source\graphics\texture\texture_cube\gl_texture_cube.h" />
     <ClInclude Include="source\graphics\texture\texture_cube\gl_texture_cube_array.h" />
     <ClInclude Include="source\graphics\transform_feedback\gl_transform_feedback.h" />
+    <ClInclude Include="source\graphics\variable\glsl_types.h" />
     <ClInclude Include="source\graphics\variable\gl_variable.h" />
     <ClInclude Include="source\graphics\vertex_array\gl_vertex_array.h" />
     <ClInclude Include="source\public\glfw.h" />

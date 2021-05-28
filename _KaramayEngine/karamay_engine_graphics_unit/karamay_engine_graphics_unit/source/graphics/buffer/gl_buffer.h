@@ -135,6 +135,13 @@ namespace gl_buffer_enum
 		UNSIGNED_INT_10_10_10_2 = GL_UNSIGNED_INT_10_10_10_2,
 		UNSIGNED_INT_2_10_10_10_REV = GL_UNSIGNED_INT_2_10_10_10_REV
 	};
+
+	enum class access : GLenum
+	{
+		READ_WRITE = GL_READ_WRITE,
+		READ_ONLY = GL_READ_ONLY,
+		WRITE_ONLY = GL_WRITE_ONLY
+	};
 }
 
 class gl_buffer : public gl_object
@@ -146,41 +153,19 @@ public:
 	virtual ~gl_buffer();
 
 public:
-	/**
-	 * @size : bytes of size
-	 * @is_dynamic_storage : if true,  
-	 * @is_map_read : if true, you can read the map via mapping the buffer glMapBuffer/glMapNamedBuffer
-	 * @is_map_persistent : if true, you can write the map via mapping the buffer
-	 * @is_map_coherent :
-	 * @is_client_storage :
-	 */
-	void allocate(std::size_t size, bool is_map_read = false, bool is_map_write = false, bool is_map_persistent = false, bool is_map_coherent= false, bool is_dynamic_storage = true, bool is_client_storage = true)
-	{
-		std::uint32_t flags = 0;
-		if (is_dynamic_storage)
-			flags = GL_DYNAMIC_STORAGE_BIT;
-		if (is_map_read)
-			flags = flags | GL_MAP_READ_BIT;
-		if (is_map_write)
-			flags = flags | GL_MAP_WRITE_BIT;
-		if (is_map_persistent)
-			flags = flags | GL_MAP_PERSISTENT_BIT;
-		if (is_map_coherent)
-			flags = flags | GL_MAP_COHERENT_BIT;
-		if (is_client_storage)
-			flags = flags | GL_CLIENT_STORAGE_BIT;
+	
+	/*
+	* @ size : allocate bytes num
+	* @ :
+	* @ :
+	* @ : default you can map && read
+	* @ : default you can map && write
+	* @ : default you can update buffer context dynamically
+	* @ : default data filled into buffer come from client memory
+	*/
+	void allocate(std::size_t size, bool is_map_persistent = false, bool is_map_coherent = false, bool is_map_read = true, bool is_map_write = true, bool is_dynamic_storage = true, bool is_client_storage = true);
 
-		glNamedBufferStorage(_handle, size, NULL, flags);
-		_size = size;
-	}
-
-	void fill(std::size_t offset, std::size_t size, const void* data)
-	{
-		if (data && offset + size <= _size)
-		{
-			glNamedBufferSubData(_handle, offset, size, data);
-		}
-	}
+	void fill(std::size_t offset, std::size_t size, const void* data);
 
 	void clear(GLenum internal_format, GLenum format, GLenum type, const void* data);
 
@@ -190,39 +175,28 @@ public:
 
 public:
 
-	void* map(GLenum access);
+	void* map(gl_buffer_enum::access access);
 
-	void* map(GLenum access, GLintptr offset, GLsizeiptr size);
-
-	void flush_mapped_buffer(GLintptr offset, GLsizeiptr size);
+	void* map(gl_buffer_enum::access access, std::size_t offset, std::size_t size);
 
 	void unmap();
 
-	void bind() {}
-
-	void unbind() {}
+	void flush_mapped_buffer(std::size_t offset, std::size_t size);
 
 private:
-	
-	int get_buffer_size() const
-	{
-		GLint value;
-		glGetNamedBufferParameteriv(_handle, GL_BUFFER_SIZE, &value);
-		return value;
-	}
-
-private:
-
-	std::size_t _size;
 
 	gl_buffer_enum::internal_format _internal_format;
 
-
 public:
-	const std::size_t get_size() const { return _size; }
+
+	std::int32_t get_size() const
+	{
+		GLint _size = 0;
+		glGetNamedBufferParameteriv(_handle, GL_BUFFER_SIZE, &_size);
+		return _size;
+	}
 
 	const gl_buffer_enum::internal_format get_internal_format() const { return _internal_format; }
-
 
 };
 

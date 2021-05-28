@@ -269,5 +269,8 @@
     <ClInclude Include="source\window\window.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="source\graphics\variable\glsl_types.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
