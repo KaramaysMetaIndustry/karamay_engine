@@ -4,6 +4,10 @@
 #include "graphics/buffer/customization/gl_element_array_buffer.h"
 #include "graphics/vertex_array/gl_vertex_array.h"
 #include "graphics/variable/gl_variable.h"
+#include "graphics/camera/gl_camera.h"
+
+
+
 #include "window/window.h"
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -262,7 +266,6 @@ int main()
 	glewInit();
 
 
-
 	/*auto ubod = std::make_shared<gl_uniform_buffer_descriptor>();
 	
 	ubod->add_uniform(glm::vec4(0.0f, 1.0f, 0.5f, 0.0f));
@@ -273,18 +276,6 @@ int main()
 	//std::uint8_t* data = (std::uint8_t*)ubod->get_data();
 	//
 	//glm::vec3* d = (glm::vec3*)(data + 16);
-
-	
-	
-
-
-	
-	auto vaod = sptr(gl_vertex_array_descriptor);
-  	vaod->add_attributes<glv_vec3>(positions);
-	vaod->add_attributes<glv_vec2>(uvs);
-	vaod->add_attributes<glv_vec3>(normals);
-	auto vao = sptr(gl_vertex_array);
-	vao->fill(vaod);
 
 	/*const void* _data = vao->get_mapped_data();
 	const glv_vec3* _dv = (glv_vec3*)_data;
@@ -297,33 +288,57 @@ int main()
 	//std::cout << "size :" << vao->get_attribute_components_num(0) << std::endl;
 	//std::cout << "size :" << vao->get_attribute_components_num(1) << std::endl;
 	//std::cout << "size :" << vao->get_attribute_components_num(2) << std::endl;
-	auto camera_position = std::make_shared<gl_variable<glv_vec3>>();
-	auto projection_matrix = std::make_shared<gl_variable<glv_mat4>>();
-	auto model_matrix = std::make_shared<gl_variable<glv_mat4>>();
-	auto view_matrix = std::make_shared<gl_variable<glv_mat4>>();
-	camera_position->name = "camera_position";
-	camera_position->value = glv_vec3(0.0f, 0.0f, 0.0f);
-	projection_matrix->name = "projection_matrix";
-	projection_matrix->value = glv_mat4(0.0f);
-	model_matrix->name = "model_matrix";
-	model_matrix->value = glv_mat4(0.0f);
-	view_matrix->name = "view_matirx";
-	view_matrix->value = glv_mat4(0.0f);
-
-	auto ambient_light = std::make_shared<gl_variable<glv_vec3>>();
-	ambient_light->name = "en_lights.ambient_light";
-
-	auto directional_light = std::make_shared< gl_variable<glv_vec3>>();
-	directional_light->name = "en_lights.directional_light[0]";
 	
-	auto directional_lights_num = std::make_shared< gl_variable<glv_int>>();
+	auto camera = std::make_shared<gl_camera>();
+
+	glm::vec3 Position = glm::vec3(0.0f, 0.0f, 0.0f);
+	float Pitch, Yaw, Roll;
+	Pitch = Yaw = Roll = 0.0f;
+	glm::mat4 model_mat(1.0f);
+	model_mat = glm::translate(model_mat, Position);
+	model_mat = glm::rotate(model_mat, glm::radians(Pitch), glm::vec3(1.0f, 0.0f, 0.0f));
+	model_mat = glm::rotate(model_mat, glm::radians(Yaw), glm::vec3(0.0f, 1.0f, 0.0f));
+	model_mat = glm::rotate(model_mat, glm::radians(Roll), glm::vec3(0.0f, 0.0f, 1.0f));
+
+
+	// vertex array
+	auto vaod = sptr(gl_vertex_array_descriptor);
+  	vaod->add_attributes<glv_vec3>(positions);
+	vaod->add_attributes<glv_vec2>(uvs);
+	vaod->add_attributes<glv_vec3>(normals);
+	auto vao = sptr(gl_vertex_array);
+	vao->fill(vaod);
+
+	glm::mat4 proj_matrix
+		= glm::perspective(glm::radians(45.0f),
+			(float)window->get_framebuffer_width() / (float)window->get_framebuffer_height(),
+			0.1f, 40.0f);
+
+	// uniforms
+	auto camera_position 
+		= std::make_shared<gl_variable<glv_vec3>>("camera_position", camera->get_position());
+	auto projection_matrix 
+		= std::make_shared<gl_variable<glv_mat4>>("projection_matrix", proj_matrix);
+	auto model_matrix 
+		= std::make_shared<gl_variable<glv_mat4>>("model_matrix", model_mat);
+	auto view_matrix 
+		= std::make_shared<gl_variable<glv_mat4>>("view_matirx", camera->get_view_matrix());
+
+	auto ambient_light 
+		= std::make_shared<gl_variable<glv_vec3>>("en_lights.ambient_light", glv_vec3());
+
+	auto directional_light 
+		= std::make_shared<gl_variable<glv_vec3>>("en_lights.directional_light[0]", glv_vec3());
+	
+	/*auto directional_lights_num = std::make_shared< gl_variable<glv_int>>();
 
 	auto point_light = std::make_shared< gl_variable<glv_vec3>>();
 	auto point_lights_num = std::make_shared< gl_variable<glv_int>>();
 
 	auto spot_light = std::make_shared< gl_variable<glv_vec3>>();
-	auto spot_lights_num = std::make_shared< gl_variable<glv_int>>();
+	auto spot_lights_num = std::make_shared< gl_variable<glv_int>>();*/
 
+	// textures
 	auto albedo_map = std::make_shared<gl_texture_2d>();
 	auto normal_map = std::make_shared<gl_texture_2d>();
 	//auto metalness_map = std::make_shared<gl_texture_2d>();
@@ -355,6 +370,10 @@ int main()
 	ambient_occlusion_map->fill(ambient_occlusion_pixels.width, ambient_occlusion_pixels.height, ambient_occlusion_pixels.format, (const void*)ambient_occlusion_pixels.pixels);
 	ambient_occlusion_map->set_name("mat.ambient_occlusion_map");
 
+
+	glViewport(0, 0, window->get_framebuffer_width(), window->get_framebuffer_height());
+
+	// program
 	auto program = std::make_shared<gl_program>();
 	program->construct({ 
 		"shaders/Mesh/PBRMesh/PBRMesh.vert", 
@@ -379,8 +398,41 @@ int main()
 	program->set_framebuffer();
 	// ...
 	program->set_commands([] {
-		
+		glPatchParameteri(GL_PATCH_VERTICES, 3);
+		glDrawArraysInstancedBaseInstance(GL_PATCHES, 0, positions.size(), 1, 0);
 		});
 
-	program->render(0.0f);
+	int i = 5;
+	while (true)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //GL_FILL GL_POINT
+		glFrontFace(GL_CCW);//default ƒÊ ±’Î GL_CW À≥ ±’Î
+
+		glEnable(GL_COLOR_BUFFER_BIT);
+		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+		glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
+
+		//glEnable(GL_ACCUM_BUFFER_BIT);
+		//glClearAccum(1.0f, 0.2f, 1.0f, 1.0f);
+
+		// when current frag-z < 1.0, keep it
+		// fragShader write its z value before working
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+		glDepthMask(GL_TRUE);
+		glClearDepth(1.0f);
+
+		//glEnable(GL_STENCIL_TEST);
+		//glStencilFunc(GL_ALWAYS, 1, 0xFF);
+		//glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+		//glStencilMask(GL_TRUE);
+		//glClearStencil(0);
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
+		window->tick(0.0f);
+		program->render(0.0f);
+		
+	}
+	
 }

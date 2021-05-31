@@ -7,22 +7,30 @@ template<typename T>
 class gl_variable
 {
 
+private:
+
+	std::string _name;
+
+	T _value;
+
 public:
-	std::string name;
-
-	T value;
-
-public:
-
-	gl_variable()
-	{
-
-	}
 
 	gl_variable(const std::string& name, const T& value)
 	{
-		this->name = name;
-		this->value = value;
+		_name = name;
+		_value = value;
+	}
+
+public:
+
+	const std::string& get_name() const
+	{
+		return _name;
+	}
+
+	const T& get_value() const
+	{
+		return _value;
 	}
 };
 

@@ -43,7 +43,7 @@ void gl_program::construct(const std::vector<std::string>& shader_paths)
 		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
 	}
 	else {
-		std::cout << "[Program is linked.]" << std::endl;
+		std::cout << "[program is linked.]" << std::endl;
 	}
 
 	glGetProgramiv(_handle, GL_INFO_LOG_LENGTH, &logLength);
@@ -182,16 +182,21 @@ void gl_program::_install()
 void gl_program::_enable()
 {
 	glUseProgram(_handle);
+
+	std::cout << "[program is enabled.]" << std::endl;
 }
 
 void gl_program::_call_commands()
 {
 	_commands_lambda();
+	std::cout << "[commands are launched.]" << std::endl;
 }
 
 void gl_program::_disable()
 {
 	glUseProgram(0);
+
+	std::cout << "[program is disabled.]" << std::endl;
 }
 
 void gl_program::_uninstall()
@@ -268,10 +273,9 @@ inline void gl_program::_bind_uniform_buffers()
 				// bind program to context
 				const std::string& block_name = uniform_buffer->get_descriptor()->get_block_name();
 				glUniformBlockBinding(_handle, glGetUniformBlockIndex(_handle, block_name.c_str()), i);
+				std::cout << "[ " << i << " uniform buffer is bound.]" << std::endl;
 			}
 		}
-
-		std::cout << "[ "<< i << " uniform buffer is bound.]" << std::endl;
 	}
 }
 
@@ -290,10 +294,9 @@ inline void gl_program::_bind_shader_storage_buffers()
 				shader_storage_buffer->bind(i);
 				// bind program to context
 				glShaderStorageBlockBinding(_handle, glGetProgramResourceLocation(_handle, GL_SHADER_STORAGE_BLOCK, shader_storage_buffer->get_descriptor()->get_block_name().c_str()), i);
+				std::cout << "[ " << i << " shader storage buffer is bound.]" << std::endl;
 			}
 		}
-
-		std::cout << "[ " << i << " shader storage buffer is bound.]" << std::endl;
 	}
 }
 
@@ -310,10 +313,9 @@ inline void gl_program::_bind_atomic_counter_buffers()
 			{
 				// bind buffer to context
 				atomic_counter_buffer->bind(i);
+				std::cout << "[ " << i << " atomic counter buffer is bound.]" << std::endl;
 			}
 		}
-
-		std::cout << "[ " << i << " atomic counter buffer is bound.]" << std::endl;
 	}
 }
 
@@ -363,8 +365,8 @@ for (auto uniform : _##TYPE##_uniforms)\
 {\
 	if (uniform)\
 	{\
-		_update_uniform(uniform->name, uniform->value);\
-		std::cout<<"[uniform " << uniform->name<< " is launched.]"<<std::endl;\
+		_update_uniform(uniform->get_name(), uniform->get_value());\
+		std::cout<<"[uniform " << uniform->get_name()<< " is launched.]"<<std::endl;\
 	}\
 }\
 

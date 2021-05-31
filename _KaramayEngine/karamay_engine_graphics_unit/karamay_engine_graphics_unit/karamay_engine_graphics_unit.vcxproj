@@ -24,6 +24,7 @@
     <ClCompile Include="source\graphics\buffer\customization\gl_shader_storage_buffer.cpp" />
     <ClCompile Include="source\graphics\buffer\customization\gl_uniform_buffer.cpp" />
     <ClCompile Include="source\graphics\buffer\gl_buffer.cpp" />
+    <ClCompile Include="source\graphics\camera\gl_camera.cpp" />
     <ClCompile Include="source\graphics\commands\gl_commands.cpp" />
     <ClCompile Include="source\graphics\context\gl_context.cpp" />
     <ClCompile Include="source\graphics\framebuffer\gl_default_framebuffer.cpp" />
@@ -66,6 +67,7 @@
     <ClInclude Include="source\graphics\buffer\customization\gl_shader_storage_buffer.h" />
     <ClInclude Include="source\graphics\buffer\customization\gl_uniform_buffer.h" />
     <ClInclude Include="source\graphics\buffer\gl_buffer.h" />
+    <ClInclude Include="source\graphics\camera\gl_camera.h" />
     <ClInclude Include="source\graphics\commands\gl_commands.h" />
     <ClInclude Include="source\graphics\context\gl_context.h" />
     <ClInclude Include="source\graphics\framebuffer\gl_default_framebuffer.h" />

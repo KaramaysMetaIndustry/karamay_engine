@@ -71,13 +71,13 @@ public:
 	
 	void modify_uniform(const gl_variable<glm::vec3>& uniform)
 	{
-		auto _it = _uniforms_map.find(uniform.name);
+		auto _it = _uniforms_map.find(uniform.get_name());
 		if (_it != _uniforms_map.cend())
 		{
 			auto _tmp_data = _it->second;
 			if (_tmp_data)
 			{
-				memcpy(_tmp_data.get(), glm::value_ptr(uniform.value), sizeof glm::vec3);
+				memcpy(_tmp_data.get(), glm::value_ptr(uniform.get_value()), sizeof glm::vec3);
 			}
 		}
 	}

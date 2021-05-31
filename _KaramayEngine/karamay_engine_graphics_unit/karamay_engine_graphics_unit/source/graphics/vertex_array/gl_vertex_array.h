@@ -86,7 +86,7 @@ public:
 		_layout.components_num = T::length();
 		_layout.components_type_enum = _get_component_type_enum<T::value_type>();
 		_layout.attrib_size = sizeof(T);
-		_layout.attribs_num = attributes.size();
+		_layout.attribs_num = static_cast<std::uint32_t>(attributes.size());
 		_layouts.push_back(_layout);
 
 		_is_dirty = true;
@@ -104,7 +104,7 @@ public:
 		_layout.components_num = 1;
 		_layout.components_type_enum = _get_component_type_enum<glv_int>();
 		_layout.attrib_size = sizeof(glv_int);
-		_layout.attribs_num = attributes.size();
+		_layout.attribs_num = static_cast<std::uint32_t>(attributes.size());
 		_layouts.push_back(_layout);
 
 		_is_dirty = true;
@@ -122,7 +122,7 @@ public:
 		_layout.components_num = 1;
 		_layout.components_type_enum = _get_component_type_enum<glv_uint>();
 		_layout.attrib_size = sizeof(glv_uint);
-		_layout.attribs_num = attributes.size();
+		_layout.attribs_num = static_cast<std::uint32_t>(attributes.size());
 		_layouts.push_back(_layout);
 
 		_is_dirty = true;
@@ -140,7 +140,7 @@ public:
 		_layout.components_num = 1;
 		_layout.components_type_enum = _get_component_type_enum<glv_float>();
 		_layout.attrib_size = sizeof(glv_float);
-		_layout.attribs_num = attributes.size();
+		_layout.attribs_num = static_cast<std::uint32_t>(attributes.size());
 		_layouts.push_back(_layout);
 
 		_is_dirty = true;
@@ -158,7 +158,7 @@ public:
 		_layout.components_num = 1;
 		_layout.components_type_enum = _get_component_type_enum<glv_double>();
 		_layout.attrib_size = sizeof(glv_double);
-		_layout.attribs_num = attributes.size();
+		_layout.attribs_num = static_cast<std::uint32_t>(attributes.size());
 		_layouts.push_back(_layout);
 
 		_is_dirty = true;

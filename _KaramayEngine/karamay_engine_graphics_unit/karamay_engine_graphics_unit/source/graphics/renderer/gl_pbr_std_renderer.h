@@ -69,7 +69,7 @@ public:
 
 		auto ubo0 = std::make_shared<gl_uniform_buffer>();
 		
-		auto uniform_color = std::make_shared<gl_variable<glm::vec4>>();
+		//auto uniform_color = std::make_shared<gl_variable<glm::vec4>>();
 
 
 		auto ubo1 = std::make_shared<gl_uniform_buffer>();

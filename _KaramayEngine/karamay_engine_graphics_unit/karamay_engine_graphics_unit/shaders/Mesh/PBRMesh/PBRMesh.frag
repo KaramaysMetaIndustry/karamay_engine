@@ -133,7 +133,8 @@ void main()
 	frag_color = pow(frag_color, vec3(1.0f/ 2.2f)); 
 	
 	
-	final_frag_color = vec4(frag_color, 1.0f);
+	//final_frag_color = vec4(frag_color, 1.0f);
+	final_frag_color = vec4(0.8f, 0.9f, 1.0f, 1.0f);
 
 	//float t = texture(mat.roughness_map, frag_texture_coords).r;
 	//final_frag_color = vec4(texture(mat.displacement_map, frag_uv).r, 0.0f, 0.0f, 1.0f);
