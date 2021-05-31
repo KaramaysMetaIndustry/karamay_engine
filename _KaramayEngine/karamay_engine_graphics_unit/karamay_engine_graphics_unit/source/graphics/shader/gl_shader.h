@@ -21,35 +21,32 @@ public:
 
 	void load(const std::string& path)
 	{
-		auto suffix = path.substr(path.find_last_of('.'));
-		GLenum type;
-		if (suffix == ".vert")
+		auto _suffix = path.substr(path.find_last_of('.'));
+		std::uint32_t _shader_type = 0;
+		if (_suffix == ".vert")
 		{
-			type = GL_VERTEX_SHADER;
+			_shader_type = GL_VERTEX_SHADER;
 		}
-		if (suffix == ".tesc")
+		if (_suffix == ".tesc")
 		{
-			type = GL_TESS_CONTROL_SHADER;
+			_shader_type = GL_TESS_CONTROL_SHADER;
 		}
-		if (suffix == ".tese")
+		if (_suffix == ".tese")
 		{
-			
-			type = GL_TESS_EVALUATION_SHADER;
+			_shader_type = GL_TESS_EVALUATION_SHADER;
 		}
-		if (suffix == ".geom")
+		if (_suffix == ".geom")
 		{
-			type = GL_GEOMETRY_SHADER;
+			_shader_type = GL_GEOMETRY_SHADER;
 		}
-		if (suffix == ".frag")
+		if (_suffix == ".frag")
 		{
-			type = GL_FRAGMENT_SHADER;
+			_shader_type = GL_FRAGMENT_SHADER;
 		}
-		if (suffix == ".comp")
+		if (_suffix == ".comp")
 		{
-			type = GL_COMPUTE_SHADER;
+			_shader_type = GL_COMPUTE_SHADER;
 		}
-
-
 
 		// load bytes - FilePath
 		std::ifstream file;
@@ -65,12 +62,10 @@ public:
 		catch (const std::exception& e) {
 			std::cout << "Exception: [ " << e.what() << " ]" << std::endl;
 		}
-		auto source = content.c_str();
 
-		
-		_handle = glCreateShader(type);
+		auto source = content.c_str();
+		_handle = glCreateShader(_shader_type);
 		glShaderSource(_handle, 1, &source, NULL);
-		
 	}
 
 	void compile()
@@ -84,6 +79,47 @@ public:
 			glGetShaderInfoLog(_handle, 512, NULL, info);
 			std::cout << "shader compile fail : " << info << std::endl;
 		}
+	}
+
+	gl_shader_enum::type get_type()
+	{
+		GLint _shader_type = 0;
+		_get_shader_params(GL_SHADER_TYPE, &_shader_type);
+		return static_cast<gl_shader_enum::type>(_shader_type);
+	}
+
+	bool get_delete_status()
+	{
+		GLint _status = 0;
+		_get_shader_params(GL_DELETE_STATUS, &_status);
+		return _status == GL_TRUE;
+	}
+
+	bool get_compile_status()
+	{
+		GLint _status = 0;
+		_get_shader_params(GL_COMPILE_STATUS, &_status);
+		return _status == GL_TRUE;
+	}
+
+	std::uint32_t get_info_log_length()
+	{
+		GLint _length = 0;
+		_get_shader_params(GL_INFO_LOG_LENGTH, &_length);
+		return static_cast<std::uint32_t>(_length);
+	}
+
+	std::uint32_t get_source_length()
+	{
+		GLint _length = 0;
+		_get_shader_params(GL_SHADER_SOURCE_LENGTH, &_length);
+		return static_cast<std::uint32_t>(_length);
+	}
+
+
+	inline void _get_shader_params(GLenum param, GLint* value)
+	{
+		glGetShaderiv(_handle, param, value);
 	}
 };
 

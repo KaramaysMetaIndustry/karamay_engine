@@ -57,7 +57,6 @@ struct gl_vertex_attribute_layout
 
 class gl_vertex_array_descriptor final
 {
-
 public:
 
 	gl_vertex_array_descriptor()
@@ -94,17 +93,17 @@ public:
 	}
 
 	template<>
-	void add_attributes(const std::vector<glsl_int>& attributes)
+	void add_attributes(const std::vector<glv_int>& attributes)
 	{
 		// add this kind of attribs into _data
 		const std::uint8_t* _tmp_data = (std::uint8_t*)attributes.data();
-		const std::size_t _tmp_size = attributes.size() * sizeof(glsl_int);
+		const std::size_t _tmp_size = attributes.size() * sizeof(glv_int);
 		for (std::size_t i = 0; i < _tmp_size; ++i) { _data.push_back(_tmp_data[i]); }
 
 		gl_vertex_attribute_layout _layout;
 		_layout.components_num = 1;
-		_layout.components_type_enum = _get_component_type_enum<glsl_int>();
-		_layout.attrib_size = sizeof(glsl_int);
+		_layout.components_type_enum = _get_component_type_enum<glv_int>();
+		_layout.attrib_size = sizeof(glv_int);
 		_layout.attribs_num = attributes.size();
 		_layouts.push_back(_layout);
 
@@ -112,17 +111,17 @@ public:
 	}
 
 	template<>
-	void add_attributes(const std::vector<glsl_uint>& attributes)
+	void add_attributes(const std::vector<glv_uint>& attributes)
 	{
 		// add this kind of attribs into _data
 		const std::uint8_t* _tmp_data = (std::uint8_t*)attributes.data();
-		const std::size_t _tmp_size = attributes.size() * sizeof(glsl_uint);
+		const std::size_t _tmp_size = attributes.size() * sizeof(glv_uint);
 		for (std::size_t i = 0; i < _tmp_size; ++i) { _data.push_back(_tmp_data[i]); }
 
 		gl_vertex_attribute_layout _layout;
 		_layout.components_num = 1;
-		_layout.components_type_enum = _get_component_type_enum<glsl_uint>();
-		_layout.attrib_size = sizeof(glsl_uint);
+		_layout.components_type_enum = _get_component_type_enum<glv_uint>();
+		_layout.attrib_size = sizeof(glv_uint);
 		_layout.attribs_num = attributes.size();
 		_layouts.push_back(_layout);
 
@@ -130,17 +129,17 @@ public:
 	}
 
 	template<>
-	void add_attributes(const std::vector<glsl_float>& attributes)
+	void add_attributes(const std::vector<glv_float>& attributes)
 	{
 		// add this kind of attribs into _data
 		const std::uint8_t* _tmp_data = (std::uint8_t*)attributes.data();
-		const std::size_t _tmp_size = attributes.size() * sizeof(glsl_float);
+		const std::size_t _tmp_size = attributes.size() * sizeof(glv_float);
 		for (std::size_t i = 0; i < _tmp_size; ++i) { _data.push_back(_tmp_data[i]); }
 
 		gl_vertex_attribute_layout _layout;
 		_layout.components_num = 1;
-		_layout.components_type_enum = _get_component_type_enum<glsl_float>();
-		_layout.attrib_size = sizeof(glsl_float);
+		_layout.components_type_enum = _get_component_type_enum<glv_float>();
+		_layout.attrib_size = sizeof(glv_float);
 		_layout.attribs_num = attributes.size();
 		_layouts.push_back(_layout);
 
@@ -148,17 +147,17 @@ public:
 	}
 
 	template<>
-	void add_attributes(const std::vector<glsl_double>& attributes)
+	void add_attributes(const std::vector<glv_double>& attributes)
 	{
 		// add this kind of attribs into _data
 		const std::uint8_t* _tmp_data = (std::uint8_t*)attributes.data();
-		const std::size_t _tmp_size = attributes.size() * sizeof(glsl_double);
+		const std::size_t _tmp_size = attributes.size() * sizeof(glv_double);
 		for (std::size_t i = 0; i < _tmp_size; ++i) { _data.push_back(_tmp_data[i]); }
 
 		gl_vertex_attribute_layout _layout;
 		_layout.components_num = 1;
-		_layout.components_type_enum = _get_component_type_enum<glsl_double>();
-		_layout.attrib_size = sizeof(glsl_double);
+		_layout.components_type_enum = _get_component_type_enum<glv_double>();
+		_layout.attrib_size = sizeof(glv_double);
 		_layout.attribs_num = attributes.size();
 		_layouts.push_back(_layout);
 
@@ -171,13 +170,13 @@ private:
 	template<typename T>
 	inline std::uint32_t _get_component_type_enum() { return 0; }
 	template<>
-	inline std::uint32_t _get_component_type_enum<glsl_int>() { return GL_INT; }
+	inline std::uint32_t _get_component_type_enum<glv_int>() { return GL_INT; }
 	template<>
-	inline std::uint32_t _get_component_type_enum<glsl_uint>() { return GL_UNSIGNED_INT; }
+	inline std::uint32_t _get_component_type_enum<glv_uint>() { return GL_UNSIGNED_INT; }
 	template<>
-	inline std::uint32_t _get_component_type_enum<glsl_float>() { return GL_FLOAT; }
+	inline std::uint32_t _get_component_type_enum<glv_float>() { return GL_FLOAT; }
 	template<>
-	inline std::uint32_t _get_component_type_enum<glsl_double>() { return GL_DOUBLE; }
+	inline std::uint32_t _get_component_type_enum<glv_double>() { return GL_DOUBLE; }
 	
 public:
 
@@ -253,7 +252,6 @@ private:
 		{
 			const size_t _packed_data_size = _descriptor->get_data_size();
 			const std::vector<gl_vertex_attribute_layout>& _layouts = _descriptor->get_layouts();
-			
 			{
 				_buffer = std::make_shared<gl_buffer>();
 				_buffer->allocate(_packed_data_size);
@@ -310,6 +308,11 @@ private:
 		}
 	}
 
+	bool _check() 
+	{
+
+	}
+
 public:
 	// default false
 	bool is_pointer_enabled(std::uint32_t index)
@@ -333,6 +336,18 @@ public:
 	std::uint32_t get_attribute_component_type(std::uint32_t index)
 	{
 		return 0;
+	}
+
+	void* get_mapped_data()
+	{
+		if (_buffer)
+			return _buffer->map(gl_buffer_enum::access::READ_WRITE);
+		return nullptr;
+	}
+
+	std::int32_t get_size()
+	{
+		return _buffer->get_size();
 	}
 
 private:

@@ -190,6 +190,10 @@ inline void add_uniforms(const std::vector<std::shared_ptr<gl_variable<glm::##TY
 {\
 	_##TYPE##_uniforms.insert(_##TYPE##_uniforms.cend(), TYPE##_uniforms.cbegin(), TYPE##_uniforms.cend());\
 }\
+inline void add_uniform(std::shared_ptr<gl_variable<glm::##TYPE##>> TYPE##_uniform)\
+{\
+	_##TYPE##_uniforms.push_back(TYPE##_uniform);\
+}\
 
 	DEF_ADD_UNIFORMS(float32)
 	DEF_ADD_UNIFORMS(vec2)
@@ -224,6 +228,10 @@ public:\
 	inline void add_textures(const std::vector<std::shared_ptr<gl_##TYPE##>>& TYPE##s)\
 	{\
 		_##TYPE##s.insert(_##TYPE##s.cend(), TYPE##s.cbegin(), TYPE##s.cend());\
+	}\
+	inline void add_texture(std::shared_ptr<gl_##TYPE##> TYPE)\
+	{\
+		_##TYPE##s.push_back(TYPE);\
 	}\
 
 	DEF_ADD_TEXTURES(texture_1d)

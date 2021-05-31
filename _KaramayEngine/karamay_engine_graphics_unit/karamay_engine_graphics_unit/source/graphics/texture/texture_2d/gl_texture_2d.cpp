@@ -2,10 +2,12 @@
 
 gl_texture_2d::gl_texture_2d()
 {
+	glCreateTextures(GL_TEXTURE_2D, 1, &_handle);
 }
 
 gl_texture_2d::~gl_texture_2d()
 {
+	glDeleteTextures(1, &_handle);
 }
 
 void gl_texture_2d::fill_base_mipmap(GLenum format, GLenum type, const void* data)

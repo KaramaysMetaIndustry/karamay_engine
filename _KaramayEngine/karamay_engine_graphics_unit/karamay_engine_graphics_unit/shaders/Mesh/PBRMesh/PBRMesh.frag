@@ -129,10 +129,12 @@ void main()
 	vec3 frag_color = ambient + Lo;
 	
 	frag_color = frag_color / (frag_color + vec3(1.0f)); // HDR Tone Mapping
+	// Gamma Correct
+	frag_color = pow(frag_color, vec3(1.0f/ 2.2f)); 
 	
-	frag_color = pow(frag_color, vec3(1.0f/ 2.2f)); // Gamma Correct
 	
 	final_frag_color = vec4(frag_color, 1.0f);
+
 	//float t = texture(mat.roughness_map, frag_texture_coords).r;
 	//final_frag_color = vec4(texture(mat.displacement_map, frag_uv).r, 0.0f, 0.0f, 1.0f);
 	//final_frag_color = vec4(frag_disp, 0.0f, 0.0f, 1.0f);

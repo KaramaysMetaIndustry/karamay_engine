@@ -24,9 +24,13 @@ public:
 		glTextureStorage2D(_handle, mipmaps_num, static_cast<GLenum>(internal_format), width, height);
 	}
 
-	void fill(GLenum format, GLenum type, const void* data, std::int32_t mipmap_index)
+	void fill(int width, int height, std::uint32_t format, const void* pixels)
 	{
-		glTexSubImage2D(GL_TEXTURE_2D, mipmap_index, 0, 0, _width, _height, format, type, data);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, _handle);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, pixels);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 
@@ -45,6 +49,8 @@ public:
 	void bind(std::uint32_t unit);
 	
 	void unbind();
+
+public:
 
 	std::uint32_t get_unit() { return 0; }
 

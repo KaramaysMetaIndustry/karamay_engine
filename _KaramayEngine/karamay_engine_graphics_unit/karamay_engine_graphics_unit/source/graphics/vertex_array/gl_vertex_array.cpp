@@ -16,7 +16,6 @@ void gl_vertex_array::fill(std::shared_ptr<gl_vertex_array_descriptor> descripto
 
 	if (_descriptor && _descriptor->is_dirty())
 	{
-		std::cout << "aa" << std::endl;
 		_fill();
 	}
 }

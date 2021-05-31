@@ -27,5 +27,5 @@ void main(void)
 	vec3 offset_postion = position + mesh_position_offset;
 	tesc_position = (model_matrix * vec4(offset_postion, 1.0f)).xyz;
 	tesc_uv = uv;
-	tesc_normal = mat3(transpose(inverse(model_matrix))) * normal;	
+	tesc_normal = mat3(transpose(inverse(model_matrix))) * normal;
 }

@@ -262,6 +262,12 @@ protected:
 	std::string _name;
 
 public:
+
+	void set_name(const std::string& name)
+	{
+		_name = name;
+	}
+
 	const std::string get_name() const
 	{
 		return _name;
