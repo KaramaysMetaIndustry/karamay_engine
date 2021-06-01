@@ -1,25 +1,5 @@
 #include "gl_vertex_array.h"
 
-gl_vertex_array::gl_vertex_array()
-{
-	glCreateVertexArrays(1, &_handle);
-}
-
-gl_vertex_array::~gl_vertex_array()
-{
-	glDeleteVertexArrays(1, &_handle);
-}
-
-void gl_vertex_array::fill(std::shared_ptr<gl_vertex_array_descriptor> descriptor) 
-{
-	_descriptor = descriptor;
-
-	if (_descriptor && _descriptor->is_dirty())
-	{
-		_fill();
-	}
-}
-
 void gl_vertex_array::tick(std::float_t delta_time)
 {
 	if (_descriptor && _descriptor->is_dirty())

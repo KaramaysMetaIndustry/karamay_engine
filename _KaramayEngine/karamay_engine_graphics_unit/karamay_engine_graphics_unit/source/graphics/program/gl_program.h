@@ -354,4 +354,24 @@ private:
 		glUniformMatrix4x3fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 	}
 
+
+
+public:
+
+	//void generate_uniform_buffer_layout(const std::string& block_name)
+	//{
+	//	
+	//	std::vector<GLchar*> _names = {};
+	//	std::vector<GLuint> _indices(_names.size());
+	//	std::vector<GLint> _offsets(_names.size());
+	//	// get block size
+
+	//	std::int32_t _block_size = 0;
+	//	const auto _block_index = glGetUniformBlockIndex(_handle, block_name.c_str());
+	//	glGetActiveUniformBlockiv(_handle, _block_index, GL_UNIFORM_BLOCK_DATA_SIZE, &_block_size);
+	//	glGetUniformIndices(_handle, _names.size(), _names.data(), _indices.data());
+	//	glGetActiveUniformsiv(_handle, 4, _indices.data(), GL_UNIFORM_OFFSET, _offsets.data());
+
+	//}
+
 };

@@ -4,8 +4,21 @@
 #include "public/stl.h"
 
 template<typename T>
-class gl_variable
+class gl_variable final
 {
+public:
+
+	gl_variable() :
+		_name(),
+		_value()
+	{}
+
+	gl_variable(const std::string& name, const T& value) :
+		_name(name),
+		_value(value)
+	{}
+
+	~gl_variable() {}
 
 private:
 
@@ -15,24 +28,20 @@ private:
 
 public:
 
-	gl_variable(const std::string& name, const T& value)
-	{
-		_name = name;
-		_value = value;
-	}
+	inline const std::string& get_name() const { return _name; }
 
-public:
+	inline const T& get_value() const { return _value; }
 
-	const std::string& get_name() const
-	{
-		return _name;
-	}
+	inline const char* get_name_c_str() const { return _name.c_str(); }
 
-	const T& get_value() const
-	{
-		return _value;
-	}
+	inline void set_name(const std::string& name) { _name = name; }
+
+	inline void set_value(const T& value) { _value = value; }
+
 };
+
+
+
 
 
 

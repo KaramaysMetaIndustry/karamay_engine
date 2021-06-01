@@ -15,12 +15,12 @@ layout(location = 1) in vec2 uv;
 layout(location = 2) in vec3 normal;
 layout(location = 3) in vec3 mesh_position_offset;
 
+uniform mat4 model_matrix;
+uniform PBRMaterial mat;
+
 out vec3 tesc_position;
 out vec2 tesc_uv;
 out vec3 tesc_normal;
-
-uniform mat4 model_matrix;
-uniform PBRMaterial mat;
 
 void main(void)
 {

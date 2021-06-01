@@ -21,17 +21,27 @@ namespace gl_uniform_buffer_enum
 {
 	enum class layout
 	{
-		shared, // must query ?
-		packed, // must query
-		std140, // no query
+		std140, // 标准布局
+		shared, // 可共享 default
+		packed, // 最小化存储，禁止共享
+		
 	};
 
 	enum class matrix_layout
 	{
-		row_major,
-		column_major
+		row_major, // uniform buffe 中的matrix 按照 行 存储
+		column_major // 按照 列 存储 default
 	};
 }
+
+
+class gl_uniform_buffer_element_layout
+{
+	std::size_t _offset;
+	std::vector<std::uint8_t> _data;
+
+};
+
 
 class gl_uniform_buffer_descriptor
 {
@@ -68,19 +78,6 @@ public:
 		std::cout << "container size：" << _data.size() << std::endl;
 	}
 
-	
-	void modify_uniform(const gl_variable<glm::vec3>& uniform)
-	{
-		auto _it = _uniforms_map.find(uniform.get_name());
-		if (_it != _uniforms_map.cend())
-		{
-			auto _tmp_data = _it->second;
-			if (_tmp_data)
-			{
-				memcpy(_tmp_data.get(), glm::value_ptr(uniform.get_value()), sizeof glm::vec3);
-			}
-		}
-	}
 
 private:
 
@@ -127,21 +124,19 @@ public:
 };
 
 
-class gl_uniform_buffer
+class gl_uniform_buffer final
 {
 
 public:
 	
-	gl_uniform_buffer();
+	gl_uniform_buffer(std::shared_ptr<gl_uniform_buffer_descriptor> descriptor) :
+		_descriptor(descriptor)
+	{}
 	
-	virtual ~gl_uniform_buffer();
+	~gl_uniform_buffer()
+	{}
 
 public:
-
-	void set_descriptor(std::shared_ptr<gl_uniform_buffer_descriptor> descriptor)
-	{
-		_descriptor = descriptor;
-	}
 
 	std::shared_ptr<gl_uniform_buffer_descriptor> get_descriptor() { return _descriptor; }
 
@@ -172,7 +167,22 @@ private:
 private:
 
 	void _fill_std140();
-	void _fill_shared_packed();
+	void _fill_shared_packed()
+	{
+
+		std::vector<std::string> names;
+
+		gl_variable<glm::vec3>() a;
+
+
+		std::size_t _block_size = 0;
+		std::size_t _offset = 0;
+		std::size_t _size = 0;
+		std::vector<std::uint32_t> _data;
+
+		_buffer->allocate(_block_size);
+		_buffer->fill(_offset, _data.size(), _data.data());
+	}
 
 };
 

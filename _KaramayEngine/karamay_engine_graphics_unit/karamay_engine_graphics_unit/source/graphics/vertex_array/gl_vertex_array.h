@@ -3,9 +3,6 @@
 #include "graphics/buffer/gl_buffer.h"
 #include "graphics/variable/glsl_types.h"
 
-#define attribute_offset(offset) (const GLvoid*)(offset * sizeof(GLfloat))
-
-
 namespace gl_vertex_array_enum
 {
 	enum class attribute_component_type
@@ -40,7 +37,7 @@ struct gl_vertex_attribute_layout
 	std::uint32_t attrib_size;
 	std::uint32_t components_num;
 	std::uint32_t components_type_enum;
-	std::uint8_t do_normalization;
+	std::uint8_t normalized;
 	std::uint32_t divisor;
 
 	gl_vertex_attribute_layout() :
@@ -48,10 +45,9 @@ struct gl_vertex_attribute_layout
 		attrib_size(0),
 		components_num(0),
 		components_type_enum(0),
-		do_normalization(false),
+		normalized(false),
 		divisor(0)
 	{
-
 	}
 };
 
@@ -60,14 +56,10 @@ class gl_vertex_array_descriptor final
 public:
 
 	gl_vertex_array_descriptor()
-	{
-
-	}
+	{}
 
 	~gl_vertex_array_descriptor()
-	{
-
-	}
+	{}
 
 public:
 
@@ -207,17 +199,26 @@ private:
 };
 
 
-class gl_vertex_array : public gl_object
+class gl_vertex_array final : public gl_object
 {
 public:
 
-	gl_vertex_array();
+	gl_vertex_array(std::shared_ptr<gl_vertex_array_descriptor> descriptor)
+	{
+		glCreateVertexArrays(1, &_handle);
 
-	virtual ~gl_vertex_array();
+		_descriptor = descriptor;
 
-public:
+		if (_descriptor && _descriptor->is_dirty())
+		{
+			_fill();
+		}
+	}
 
-	void fill(std::shared_ptr<gl_vertex_array_descriptor> descriptor);
+	virtual ~gl_vertex_array()
+	{
+		glDeleteVertexArrays(1, &_handle);
+	}
 
 public:
 
@@ -233,42 +234,42 @@ public:
 
 private:
 
-	inline void _bind_array_buffer()
+	inline void _bind_buffer()
 	{
 		if (_buffer)
 			glBindBuffer(GL_ARRAY_BUFFER, _buffer->get_handle());
 	}
 
-	inline void _unbind_array_buffer()
+	inline void _unbind_buffer()
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
 	void _fill()
 	{
-#define ATTRIBUTE_OFFSET(offset) (const void*)(offset)
+#define ATTRIBUTE_OFFSET(OFFSET) (const void*)(OFFSET)
 
 		if (_descriptor)
 		{
-			const size_t _packed_data_size = _descriptor->get_data_size();
-			const std::vector<gl_vertex_attribute_layout>& _layouts = _descriptor->get_layouts();
+			const auto _data_size = _descriptor->get_data_size();
+			const auto& _layouts = _descriptor->get_layouts();
 			{
 				_buffer = std::make_shared<gl_buffer>();
-				_buffer->allocate(_packed_data_size);
-				_buffer->fill(0, _packed_data_size, _descriptor->get_data());
+				_buffer->allocate(_data_size);
+				_buffer->fill(0, _data_size, _descriptor->get_data());
 			}
 
-			bind(); _bind_array_buffer();
-			
-			std::uint32_t _offset = 0;
+			bind(); _bind_buffer(); // bind vertex array && bind buffer
 
-			for (std::uint32_t i = 0; i < _layouts.size(); ++i)
+			const std::uint32_t _max_pointer_index_num = static_cast<std::uint32_t>(_layouts.size());
+			std::size_t _offset = 0;
+
+			for (std::uint32_t i = 0; i < _max_pointer_index_num; ++i)
 			{
 				const auto& _layout = _layouts[i];
-				const std::uint32_t _type = _layout.components_type_enum;
+				const auto _type = _layout.components_type_enum;
 				
-				// enable index
-				glEnableVertexAttribArray(i);
+				glEnableVertexAttribArray(i); // enable
 				// set pointer
 				if (_type == GL_BYTE || _type == GL_UNSIGNED_BYTE ||
 					_type == GL_SHORT || _type == GL_UNSIGNED_SHORT ||
@@ -283,9 +284,9 @@ private:
 				else if (_type == GL_HALF_FLOAT || _type == GL_FLOAT || _type == GL_FIXED)
 				{
 					glVertexAttribPointer(i, // vertex index  
-						_layouts[i].components_num, // num of attrib components
-						_layouts[i].components_type_enum, GL_FALSE, // type of attrib components
-						_layouts[i].attrib_size, // attrib bytes size
+						_layout.components_num, // num of attrib components
+						_layout.components_type_enum, GL_FALSE, // type of attrib components
+						_layout.attrib_size, // attrib bytes size
 						ATTRIBUTE_OFFSET(_offset)); // collection offset
 				}
 				else if (_type == GL_DOUBLE)
@@ -296,26 +297,24 @@ private:
 						_layout.attrib_size,
 						ATTRIBUTE_OFFSET(_offset));
 				}
-				//glVertexAttribDivisor(i, 3);
+				glVertexAttribDivisor(i, _layout.divisor);
 
-				_offset += _layouts[i].attribs_num * _layouts[i].attrib_size;
+				_offset += (_layout.attribs_num) * (_layout.attrib_size);
 
 				glDisableVertexAttribArray(i);
 			}
 
-			this->unbind(); // unbind vertex array
-			_unbind_array_buffer(); // unbind buffer
+			_unbind_buffer(); unbind();
 		}
-
 
 #ifdef _DEBUG
 
 		const std::size_t _size = _descriptor->get_layouts().size();
 		for (std::size_t i = 0; i < _size; ++i)
 		{
-			std::cout <<"pointer [" <<i<<"] " << is_pointer_enabled(i) << std::endl;
-			std::cout << "attribute components num: " << get_attribute_components_num(i) << std::endl;
-			std::cout << "attribute components type: " << get_attribute_component_type(i) << std::endl;
+			std::cout <<"pointer [" <<i<<"] " << is_pointer_enabled(static_cast<std::uint32_t>(i)) << std::endl;
+			std::cout << "attribute components num: " << get_attribute_components_num(static_cast<std::uint32_t>(i)) << std::endl;
+			std::cout << "attribute components type: " << get_attribute_component_type(static_cast<std::uint32_t>(i)) << std::endl;
 		}
 #endif
 	}
@@ -374,4 +373,3 @@ private:
 	std::shared_ptr<gl_buffer> _buffer;
 
 };
-
