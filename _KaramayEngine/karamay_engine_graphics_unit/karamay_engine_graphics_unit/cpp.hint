@@ -1,0 +1,4 @@
+// Hint files help the Visual Studio IDE interpret Visual C++ identifiers
+// such as names of functions and macros.
+// For more information see https://go.microsoft.com/fwlink/?linkid=865984
+#define DEF_ADD_UNIFORMS(TYPE) private:std::vector<std::shared_ptr<gl_variable<glm::##TYPE##>>> _##TYPE##_uniforms;public:inline void add_uniforms(const std::vector<std::shared_ptr<gl_variable<glm::##TYPE##>>>& TYPE##_uniforms){ _##TYPE##_uniforms.insert(_##TYPE##_uniforms.cend(), TYPE##_uniforms.cbegin(), TYPE##_uniforms.cend());}inline void add_uniform(std::shared_ptr<gl_variable<glm::##TYPE##>> TYPE##_uniform){ _##TYPE##_uniforms.push_back(TYPE##_uniform);}

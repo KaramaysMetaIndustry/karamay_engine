@@ -240,7 +240,7 @@ struct gl_texture_pixels
 		std::int32_t _channels = 0;
 		pixels = stbi_load(path.c_str(), &width, &height, &_channels, 0);
 
-		std::cout << "channels: " << _channels << std::endl;
+		//std::cout << "channels: " << _channels << std::endl;
 
 		if (pixels == nullptr) {
 			std::cout << "load fail" << std::endl;
@@ -289,8 +289,11 @@ int main()
 	//std::cout << "size :" << vao->get_attribute_components_num(1) << std::endl;
 	//std::cout << "size :" << vao->get_attribute_components_num(2) << std::endl;
 	
+
+	// camera / view_matrix/ camera_position
 	auto camera = std::make_shared<gl_camera>();
 
+	// model_matrix
 	glm::vec3 Position = glm::vec3(0.0f, 0.0f, 0.0f);
 	float Pitch, Yaw, Roll;
 	Pitch = Yaw = Roll = 0.0f;
@@ -299,20 +302,12 @@ int main()
 	model_mat = glm::rotate(model_mat, glm::radians(Pitch), glm::vec3(1.0f, 0.0f, 0.0f));
 	model_mat = glm::rotate(model_mat, glm::radians(Yaw), glm::vec3(0.0f, 1.0f, 0.0f));
 	model_mat = glm::rotate(model_mat, glm::radians(Roll), glm::vec3(0.0f, 0.0f, 1.0f));
-
-
-	// vertex array
-	auto vaod = sptr(gl_vertex_array_descriptor);
-  	vaod->add_attributes<glv_vec3>(positions);
-	vaod->add_attributes<glv_vec2>(uvs);
-	vaod->add_attributes<glv_vec3>(normals);
-	auto vao = sptr(gl_vertex_array);
-	vao->fill(vaod);
-
+	// projection_matrix
 	glm::mat4 proj_matrix
 		= glm::perspective(glm::radians(45.0f),
-			(float)window->get_framebuffer_width() / (float)window->get_framebuffer_height(),
+		(float)window->get_framebuffer_width() / (float)window->get_framebuffer_height(),
 			0.1f, 40.0f);
+
 
 	// uniforms
 	auto camera_position 
@@ -373,66 +368,113 @@ int main()
 
 	glViewport(0, 0, window->get_framebuffer_width(), window->get_framebuffer_height());
 
+	std::vector<glv_vec3> poss{
+		glv_vec3(0.5f, 0.5f, 0.0f),
+		glv_vec3(0.5f, -0.5f, 0.0f),
+		glv_vec3(-0.5f, -0.5f, 0.0f),
+		glv_vec3(-0.5f, 0.5f, 0.0f)
+	};
+
+	std::vector<glv_vec2> uvss{
+		glv_vec2(1.0f, 1.0f),
+		glv_vec2(1.0f, 0.0f),
+		glv_vec2(0.0f, 0.0f),
+		glv_vec2(0.0f, 1.0f)
+	};
+
+	std::vector<glm::uint32> indices{
+		0, 1, 3,
+		1, 2, 3
+	};
+
+
+	// vertex array
+	auto vaod = sptr(gl_vertex_array_descriptor);
+	vaod->add_attributes<glv_vec3>(poss);
+	vaod->add_attributes<glv_vec2>(uvss);
+	//vaod->add_attributes<glv_vec3>(positions);
+	//vaod->add_attributes<glv_vec2>(uvs);
+	//vaod->add_attributes<glv_vec3>(normals);
+	auto vao = sptr(gl_vertex_array);
+	vao->fill(vaod);
+
+	// element array
+	auto ebod = std::make_shared<gl_element_array_buffer_descriptor>();
+	ebod->set_indices(indices);
+	auto ebo = std::make_shared<gl_element_array_buffer>();
+	ebo->fill(ebod);
+
 	// program
 	auto program = std::make_shared<gl_program>();
 	program->construct({ 
-		"shaders/Mesh/PBRMesh/PBRMesh.vert", 
-		"shaders/Mesh/PBRMesh/PBRMesh.tesc", 
-		"shaders/Mesh/PBRMesh/PBRMesh.tese", 
+		"shaders/test.vert",
+		"shaders/test.frag" });
+	/*program->construct({
+		"shaders/Mesh/PBRMesh/PBRMesh.vert",
+		"shaders/Mesh/PBRMesh/PBRMesh.tesc",
+		"shaders/Mesh/PBRMesh/PBRMesh.tese",
 		"shaders/Mesh/PBRMesh/PBRMesh.geom",
-		"shaders/Mesh/PBRMesh/PBRMesh.frag" });
+		"shaders/Mesh/PBRMesh/PBRMesh.frag" });*/
 	// ...
 	program->set_vertex_array(vao);	
+	program->set_element_array_buffer(ebo);
 	// ...
-	program->add_texture(albedo_map);
-	program->add_texture(normal_map);
-	program->add_texture(roughness_map);
-	program->add_texture(displacement_map);
-	program->add_texture(ambient_occlusion_map);
+	//program->add_texture(albedo_map);
+	//program->add_texture(normal_map);
+	//program->add_texture(roughness_map);
+	//program->add_texture(displacement_map);
+	//program->add_texture(ambient_occlusion_map);
 	// ...
 	program->add_uniform(camera_position);
-	program->add_uniform(projection_matrix);
-	program->add_uniform(view_matrix);
-	program->add_uniform(model_matrix);
+	//program->add_uniform(projection_matrix);
+	//program->add_uniform(view_matrix);
+	//program->add_uniform(model_matrix);
 	// ...
 	program->set_framebuffer();
 	// ...
+	
 	program->set_commands([] {
-		glPatchParameteri(GL_PATCH_VERTICES, 3);
-		glDrawArraysInstancedBaseInstance(GL_PATCHES, 0, positions.size(), 1, 0);
+		//glDrawArrays(GL_TRIANGLES, 0, 5);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+		//glPatchParameteri(GL_PATCH_VERTICES, 3);
+		//glDrawArraysInstancedBaseInstance(GL_PATCHES, 0, size, 1, 0);
 		});
 
-	int i = 5;
-	while (true)
-	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //GL_FILL GL_POINT
-		glFrontFace(GL_CCW);//default ÄæÊ±Õë GL_CW Ë³Ê±Õë
 
-		glEnable(GL_COLOR_BUFFER_BIT);
-		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-		glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //GL_FILL GL_POINT
+	//glFrontFace(GL_CW);//default ÄæÊ±Õë GL_CW Ë³Ê±Õë
 
-		//glEnable(GL_ACCUM_BUFFER_BIT);
-		//glClearAccum(1.0f, 0.2f, 1.0f, 1.0f);
+	//glEnable(GL_COLOR_BUFFER_BIT);
+	//glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-		// when current frag-z < 1.0, keep it
-		// fragShader write its z value before working
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LESS);
-		glDepthMask(GL_TRUE);
-		glClearDepth(1.0f);
+	//glEnable(GL_ACCUM_BUFFER_BIT);
+	//glClearAccum(1.0f, 0.2f, 1.0f, 1.0f);
 
-		//glEnable(GL_STENCIL_TEST);
-		//glStencilFunc(GL_ALWAYS, 1, 0xFF);
-		//glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-		//glStencilMask(GL_TRUE);
-		//glClearStencil(0);
+	// when current frag-z < 1.0, keep it
+	// fragShader write its z value before working
+	//glEnable(GL_DEPTH_TEST);
+	//glDepthFunc(GL_LESS);
+	//glDepthMask(GL_TRUE);
+	//glClearDepth(1.0f);
 
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
-		window->tick(0.0f);
+	//glEnable(GL_STENCIL_TEST);
+	//glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	//glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+	//glStencilMask(GL_TRUE);
+	//glClearStencil(0);
+
+	
+
+	int i = 100;
+	while (i--)
+	{	
+
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT);
 		program->render(0.0f);
-		
+		window->tick(0.0f);		
 	}
 	
 }

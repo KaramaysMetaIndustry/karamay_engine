@@ -225,13 +225,10 @@ inline void add_uniform(std::shared_ptr<gl_variable<glm::##TYPE##>> TYPE##_unifo
 private:\
 	std::vector<std::shared_ptr<gl_##TYPE##>> _##TYPE##s;\
 public:\
-	inline void add_textures(const std::vector<std::shared_ptr<gl_##TYPE##>>& TYPE##s)\
-	{\
-		_##TYPE##s.insert(_##TYPE##s.cend(), TYPE##s.cbegin(), TYPE##s.cend());\
-	}\
 	inline void add_texture(std::shared_ptr<gl_##TYPE##> TYPE)\
 	{\
 		_##TYPE##s.push_back(TYPE);\
+		add_uniform(std::make_shared<gl_variable<glm::uint32>>(TYPE->get_name(), _##TYPE##s.size() - 1));\
 	}\
 
 	DEF_ADD_TEXTURES(texture_1d)
@@ -246,6 +243,13 @@ public:\
 	DEF_ADD_TEXTURES(texture_cube_array)
 	DEF_ADD_TEXTURES(texture_buffer)
 
+
+	//inline void add_texture(std::shared_ptr<gl_texture_2d> texture_2d)
+	//{
+	//	_texture_2ds.push_back(texture_2d);
+	//	add_uniform(std::make_shared<gl_variable<glm::uint32>>(texture_2d->get_name(), _texture_2ds.size() - 1));
+	//}
+
 private:
 	//~ helper function
 	inline void _update_uniform(const std::string& name, glm::float32 value)
@@ -258,7 +262,8 @@ private:
 	}
 	inline void _update_uniform(const std::string& name, glm::vec3 value)
 	{
-		glUniform3fv(glGetUniformLocation(_handle, name.c_str()), 3, glm::value_ptr(value));
+		//glUniform3fv(glGetUniformLocation(_handle, name.c_str()), 3, glm::value_ptr(value));
+		glUniform3f(glGetUniformLocation(_handle, name.c_str()), value.r, value.g, value.b);
 	}
 	inline void _update_uniform(const std::string& name, glm::vec4 value)
 	{

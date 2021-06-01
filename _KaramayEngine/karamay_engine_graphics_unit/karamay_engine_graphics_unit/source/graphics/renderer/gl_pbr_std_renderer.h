@@ -64,7 +64,6 @@ public:
 
 
 		auto ebo = std::make_shared<gl_element_array_buffer>();
-		ebo->fill(nullptr, 100);
 
 
 		auto ubo0 = std::make_shared<gl_uniform_buffer>();

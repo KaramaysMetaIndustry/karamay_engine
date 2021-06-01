@@ -306,11 +306,18 @@ private:
 			this->unbind(); // unbind vertex array
 			_unbind_array_buffer(); // unbind buffer
 		}
-	}
 
-	bool _check() 
-	{
 
+#ifdef _DEBUG
+
+		const std::size_t _size = _descriptor->get_layouts().size();
+		for (std::size_t i = 0; i < _size; ++i)
+		{
+			std::cout <<"pointer [" <<i<<"] " << is_pointer_enabled(i) << std::endl;
+			std::cout << "attribute components num: " << get_attribute_components_num(i) << std::endl;
+			std::cout << "attribute components type: " << get_attribute_component_type(i) << std::endl;
+		}
+#endif
 	}
 
 public:
@@ -324,7 +331,7 @@ public:
 		return _is_enabled;
 	}
 	// default is 4
-	std::int32_t get_attribute_components_num(std::uint32_t index)
+	std::uint32_t get_attribute_components_num(std::uint32_t index)
 	{
 		bind();
 		GLint _num = 0;
@@ -333,9 +340,19 @@ public:
 		return _num;
 	}
 	// default is GL_FLOAT
-	std::uint32_t get_attribute_component_type(std::uint32_t index)
+	std::string get_attribute_component_type(std::uint32_t index)
 	{
-		return 0;
+		bind();
+		GLint _num = 0;
+		glGetVertexAttribiv(index, GL_VERTEX_ATTRIB_ARRAY_TYPE, &_num);
+		unbind();
+
+		switch (_num)
+		{
+		case GL_FLOAT: return "float";
+		default: return "";
+			break;
+		}
 	}
 
 	void* get_mapped_data()

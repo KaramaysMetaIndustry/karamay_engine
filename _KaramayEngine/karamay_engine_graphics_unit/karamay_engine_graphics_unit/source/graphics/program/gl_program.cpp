@@ -156,6 +156,8 @@ void gl_program::render(std::float_t delta_time)
 {
 	_install();
 	_enable();
+	// must launch uniforms after program enabled
+	_launch_uniforms();
 	_call_commands();
 	_disable();
 	_uninstall();
@@ -175,8 +177,6 @@ void gl_program::_install()
 	_bind_atomic_counter_buffers();
 	_bind_framebuffer();
 	_bind_textures(); 
-	// must launch uniforms after textures bound
-	_launch_uniforms();
 }
 
 void gl_program::_enable()
@@ -229,10 +229,17 @@ inline void gl_program::_bind_vertex_array()
 	if (_vertex_array) {
 		// bind it into context
 		_vertex_array->bind();
+
+#ifdef _DEBUG
+		std::cout << "[vertex array is bound.]" << std::endl;
+#endif
 		// enable all vertex attribute pointers
 		_vertex_array->enable_pointers();
 		
-		std::cout << "[vertex array is bound.]" << std::endl;
+#ifdef _DEBUG
+		std::cout << "[vertex array pointers are enabled.]" << std::endl;
+#endif
+		
 	}
 }
 
@@ -242,7 +249,9 @@ inline void gl_program::_bind_element_array_buffer()
 		// bind it into context
 		_element_array_buffer->bind();
 
+#ifdef _DEBUG
 		std::cout << "[element array buffer is bound.]" << std::endl;
+#endif
 	}
 }
 
@@ -253,7 +262,10 @@ inline void gl_program::_bind_transform_feedback()
 		// bind transform feedback to context
 		_transform_feedback->bind();
 
+#ifdef _DEBUG
 		std::cout << "[transform feedback is bound.]" << std::endl;
+#endif
+		
 	}
 }
 
@@ -273,7 +285,11 @@ inline void gl_program::_bind_uniform_buffers()
 				// bind program to context
 				const std::string& block_name = uniform_buffer->get_descriptor()->get_block_name();
 				glUniformBlockBinding(_handle, glGetUniformBlockIndex(_handle, block_name.c_str()), i);
+				
+#ifdef _DEBUG
 				std::cout << "[ " << i << " uniform buffer is bound.]" << std::endl;
+#endif // DEBUG
+
 			}
 		}
 	}
@@ -294,7 +310,10 @@ inline void gl_program::_bind_shader_storage_buffers()
 				shader_storage_buffer->bind(i);
 				// bind program to context
 				glShaderStorageBlockBinding(_handle, glGetProgramResourceLocation(_handle, GL_SHADER_STORAGE_BLOCK, shader_storage_buffer->get_descriptor()->get_block_name().c_str()), i);
+				
+#ifdef _DEBUG
 				std::cout << "[ " << i << " shader storage buffer is bound.]" << std::endl;
+#endif // DEBUG	
 			}
 		}
 	}
@@ -313,7 +332,11 @@ inline void gl_program::_bind_atomic_counter_buffers()
 			{
 				// bind buffer to context
 				atomic_counter_buffer->bind(i);
+
+#ifdef _DEBUG
 				std::cout << "[ " << i << " atomic counter buffer is bound.]" << std::endl;
+#endif // DEBUG
+				
 			}
 		}
 	}
@@ -324,12 +347,20 @@ inline void gl_program::_bind_framebuffer()
 	if (_framebuffer) // bind customized framebuffer
 	{
 		_framebuffer->bind();
+
+#ifdef _DEBUG
 		std::cout << "[custom framebuffer is bound.]" << std::endl;
+#endif // DEBUG
+
 	}
 	else // bind default framebuffer
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+#ifdef _DEBUG
 		std::cout << "[default framebuffer is bound.]" << std::endl;
+#endif // DEBUG
+
 	}
 		
 }
@@ -340,7 +371,6 @@ inline void gl_program::_bind_textures()
 for (std::uint32_t i = 0; i < _##TYPE##s.size(); ++i)\
 {\
 	_##TYPE##s[i]->bind(i);\
-	add_uniform(std::make_shared<gl_variable<glm::uint32>>(_##TYPE##s[i]->get_name(), i));\
 	std::cout<<"[texture is bound.]"<<std::endl;\
 }\
 

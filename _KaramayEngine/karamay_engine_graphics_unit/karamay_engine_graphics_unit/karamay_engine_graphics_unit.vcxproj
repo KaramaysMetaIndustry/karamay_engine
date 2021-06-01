@@ -109,6 +109,11 @@
     <ClInclude Include="source\public\winsocket.h" />
     <ClInclude Include="source\window\window.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+    <None Include="shaders\test.frag" />
+    <None Include="shaders\test.vert" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
