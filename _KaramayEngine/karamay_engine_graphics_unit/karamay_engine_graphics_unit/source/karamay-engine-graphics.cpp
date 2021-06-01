@@ -334,13 +334,18 @@ int main()
 	auto spot_lights_num = std::make_shared< gl_variable<glv_int>>();*/
 
 	// textures
+	auto container2 = std::make_shared<gl_texture_2d>();
 	auto albedo_map = std::make_shared<gl_texture_2d>();
 	auto normal_map = std::make_shared<gl_texture_2d>();
 	//auto metalness_map = std::make_shared<gl_texture_2d>();
 	auto roughness_map = std::make_shared<gl_texture_2d>();
 	auto displacement_map = std::make_shared<gl_texture_2d>();
 	auto ambient_occlusion_map = std::make_shared<gl_texture_2d>();
-	
+
+	gl_texture_pixels container2_pixels("assets/Textures/container2.png");
+	container2->fill(container2_pixels.width, container2_pixels.height, container2_pixels.format, (const void*)container2_pixels.pixels);
+	container2->set_name("container2");
+
 	gl_texture_pixels albedo_pixels("assets/Materials/Rock030_2k-JPG/Rock030_2K_Color.jpg");
 	albedo_map->fill(albedo_pixels.width, albedo_pixels.height, albedo_pixels.format, (const void*)albedo_pixels.pixels);
 	albedo_map->set_name("mat.albedo_map");
@@ -419,7 +424,7 @@ int main()
 	program->set_vertex_array(vao);	
 	program->set_element_array_buffer(ebo);
 	// ...
-	//program->add_texture(albedo_map);
+	program->add_texture(container2);
 	//program->add_texture(normal_map);
 	//program->add_texture(roughness_map);
 	//program->add_texture(displacement_map);

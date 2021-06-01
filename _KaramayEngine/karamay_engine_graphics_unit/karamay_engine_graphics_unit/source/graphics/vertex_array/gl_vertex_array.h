@@ -246,7 +246,7 @@ private:
 
 	void _fill()
 	{
-#define ATTRIBUTE_OFFSET(offset) (const GLvoid*)(offset * sizeof(GLfloat))
+#define ATTRIBUTE_OFFSET(offset) (const void*)(offset)
 
 		if (_descriptor)
 		{
