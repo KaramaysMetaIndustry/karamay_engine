@@ -297,12 +297,7 @@ void test0()
 	//	glv_vec1(0.5f)
 	//};
 
-	std::vector<glv_uvec2> cvs{
-		glv_uvec2(1, 2),
-		glv_uvec2(2, 3),
-		glv_uvec2(10, 10),
-		glv_uvec2(1, 1)
-	};
+	
 
 	std::vector<glm::uint32> indices{
 		0, 1, 3,
@@ -343,7 +338,15 @@ void test0()
 	auto vaod = sptr(gl_vertex_array_descriptor);
 	vaod->add_attributes<glv_vec3>(positions);
 	vaod->add_attributes<glv_vec2>(uvs);
-	vaod->add_attributes<glv_uvec2>(cvs);
+
+	std::vector<glv_dvec4> tests{
+		glv_dvec4(0.9f, 0.5, 0.1, 1.0f),
+		glv_dvec4(0.1f, 0.5, 0.1, 1.0f),
+		glv_dvec4(0.5f, 0.5, 0.1, 1.0f),
+		glv_dvec4(0.01f, 0.5, 0.1, 1.0f)
+	};
+
+	vaod->add_attributes(tests);
 
 	auto vao = std::make_shared<gl_vertex_array>(vaod);
 
@@ -398,7 +401,7 @@ void test0()
 	//glClearStencil(0);
 
 	int i = 100;
-	while (true)
+	while (i--)
 	{
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClear(GL_COLOR_BUFFER_BIT);
