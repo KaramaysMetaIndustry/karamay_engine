@@ -172,8 +172,7 @@ private:
 
 		std::vector<std::string> names;
 
-		gl_variable<glm::vec3>() a;
-
+		//gl_variable<glm::vec3>() a;
 
 		std::size_t _block_size = 0;
 		std::size_t _offset = 0;

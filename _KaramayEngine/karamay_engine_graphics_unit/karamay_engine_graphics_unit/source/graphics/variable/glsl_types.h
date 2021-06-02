@@ -55,19 +55,20 @@ using glsl_dmat4x2 = glm::dmat4x2;
 using glsl_dmat4x3 = glm::dmat4x3;
 
 
-using glv_float = glm::float32;
-using glv_double = glm::float64;
-using glv_int = glm::int32;
-using glv_uint = glm::uint32;
+
+using glv_vec1 = glm::vec1;
 using glv_vec2 = glm::vec2;
 using glv_vec3 = glm::vec3;
 using glv_vec4 = glm::vec4;
+using glv_dvec1 = glm::dvec1;
 using glv_dvec2 = glm::dvec2;
 using glv_dvec3 = glm::dvec3;
 using glv_dvec4 = glm::dvec4;
+using glv_ivec1 = glm::ivec1;
 using glv_ivec2 = glm::ivec2;
 using glv_ivec3 = glm::ivec3;
 using glv_ivec4 = glm::ivec4;
+using glv_uvec1 = glm::uvec1;
 using glv_uvec2 = glm::uvec2;
 using glv_uvec3 = glm::uvec3;
 using glv_uvec4 = glm::uvec4;

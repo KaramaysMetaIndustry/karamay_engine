@@ -290,6 +290,20 @@ void test0()
 		glv_vec2(0.0f, 1.0f)
 	};
 
+	//std::vector<glv_vec1> cvs{
+	//	glv_vec1(0.8f),
+	//	glv_vec1(0.7f),
+	//	glv_vec1(0.6f),
+	//	glv_vec1(0.5f)
+	//};
+
+	std::vector<glv_uvec2> cvs{
+		glv_uvec2(1, 2),
+		glv_uvec2(2, 3),
+		glv_uvec2(10, 10),
+		glv_uvec2(1, 1)
+	};
+
 	std::vector<glm::uint32> indices{
 		0, 1, 3,
 		1, 2, 3
@@ -308,7 +322,7 @@ void test0()
 	auto uniform0 = sp_variable("uniform0", glv_vec3(0.1f, 1.0f, 0.5f));
 	auto uniform1 = sp_variable("uniform1", glv_vec4(1.0f, 1.0f, 0.5f, 1.0f));
 
-	auto uniform_buffer0 = std::make_shared<gl_uniform_buffer>();
+	//auto uniform_buffer0 = std::make_shared<gl_uniform_buffer>();
 	//uniform_buffer0->
 
 
@@ -329,6 +343,8 @@ void test0()
 	auto vaod = sptr(gl_vertex_array_descriptor);
 	vaod->add_attributes<glv_vec3>(positions);
 	vaod->add_attributes<glv_vec2>(uvs);
+	vaod->add_attributes<glv_uvec2>(cvs);
+
 	auto vao = std::make_shared<gl_vertex_array>(vaod);
 
 	// element array
@@ -351,6 +367,7 @@ void test0()
 	program->add_uniform(uniform0);
 	program->add_uniform(uniform1);
 	// ...
+	
 	program->set_framebuffer();
 	program->set_commands([] {
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -381,7 +398,7 @@ void test0()
 	//glClearStencil(0);
 
 	int i = 100;
-	while (i--)
+	while (true)
 	{
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClear(GL_COLOR_BUFFER_BIT);

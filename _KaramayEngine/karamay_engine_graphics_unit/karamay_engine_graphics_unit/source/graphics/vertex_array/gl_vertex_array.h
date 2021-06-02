@@ -66,12 +66,49 @@ public:
 	template<typename T>
 	void add_attributes(const std::vector<T>& attributes)
 	{
-		// add this kind of attribs into _data
-		const std::uint8_t* _tmp_data = (std::uint8_t*)attributes.data();
-		const std::size_t _tmp_size = attributes.size() * sizeof(T);
-		for (std::size_t i = 0; i < _tmp_size; ++i)
+		static_assert(
+			std::is_same<glv_ivec1, T>::value ||
+			std::is_same<glv_ivec2, T>::value ||
+			std::is_same<glv_ivec3, T>::value ||
+			std::is_same<glv_ivec4, T>::value ||
+			std::is_same<glv_uvec1, T>::value ||
+			std::is_same<glv_uvec2, T>::value ||
+			std::is_same<glv_uvec3, T>::value ||
+			std::is_same<glv_uvec4, T>::value ||
+			std::is_same<glv_vec1, T>::value ||
+			std::is_same<glv_vec2, T>::value ||
+			std::is_same<glv_vec3, T>::value ||
+			std::is_same<glv_vec4, T>::value ||
+			std::is_same<glv_dvec1, T>::value ||
+			std::is_same<glv_dvec2, T>::value ||
+			std::is_same<glv_dvec3, T>::value ||
+			std::is_same<glv_dvec4, T>::value ||
+			std::is_same<glv_mat2, T>::value ||
+			std::is_same<glv_mat2x3, T>::value ||
+			std::is_same<glv_mat2x4, T>::value ||
+			std::is_same<glv_mat3, T>::value ||
+			std::is_same<glv_mat3x2, T>::value ||
+			std::is_same<glv_mat3x4, T>::value ||
+			std::is_same<glv_mat4, T>::value ||
+			std::is_same<glv_mat4x2, T>::value ||
+			std::is_same<glv_mat4x3, T>::value ||
+			std::is_same<glv_dmat2, T>::value ||
+			std::is_same<glv_dmat2x3, T>::value ||
+			std::is_same<glv_dmat2x4, T>::value ||
+			std::is_same<glv_dmat3, T>::value ||
+			std::is_same<glv_dmat3x2, T>::value ||
+			std::is_same<glv_dmat3x4, T>::value ||
+			std::is_same<glv_dmat4, T>::value ||
+			std::is_same<glv_dmat4x2, T>::value ||
+			std::is_same<glv_dmat4x3, T>::value
+			, "T must be glv_* types.");
+		
+		
+		const std::uint8_t* _bytes = (std::uint8_t*)attributes.data();
+		const std::size_t _size = attributes.size() * sizeof(T);
+		for (std::size_t i = 0; i < _size; ++i)
 		{
-			_data.push_back(_tmp_data[i]);
+			_data.push_back(_bytes[i]);
 		}
 
 		gl_vertex_attribute_layout _layout;
@@ -84,91 +121,18 @@ public:
 		_is_dirty = true;
 	}
 
-	template<>
-	void add_attributes(const std::vector<glv_int>& attributes)
-	{
-		// add this kind of attribs into _data
-		const std::uint8_t* _tmp_data = (std::uint8_t*)attributes.data();
-		const std::size_t _tmp_size = attributes.size() * sizeof(glv_int);
-		for (std::size_t i = 0; i < _tmp_size; ++i) { _data.push_back(_tmp_data[i]); }
-
-		gl_vertex_attribute_layout _layout;
-		_layout.components_num = 1;
-		_layout.components_type_enum = _get_component_type_enum<glv_int>();
-		_layout.attrib_size = sizeof(glv_int);
-		_layout.attribs_num = static_cast<std::uint32_t>(attributes.size());
-		_layouts.push_back(_layout);
-
-		_is_dirty = true;
-	}
-
-	template<>
-	void add_attributes(const std::vector<glv_uint>& attributes)
-	{
-		// add this kind of attribs into _data
-		const std::uint8_t* _tmp_data = (std::uint8_t*)attributes.data();
-		const std::size_t _tmp_size = attributes.size() * sizeof(glv_uint);
-		for (std::size_t i = 0; i < _tmp_size; ++i) { _data.push_back(_tmp_data[i]); }
-
-		gl_vertex_attribute_layout _layout;
-		_layout.components_num = 1;
-		_layout.components_type_enum = _get_component_type_enum<glv_uint>();
-		_layout.attrib_size = sizeof(glv_uint);
-		_layout.attribs_num = static_cast<std::uint32_t>(attributes.size());
-		_layouts.push_back(_layout);
-
-		_is_dirty = true;
-	}
-
-	template<>
-	void add_attributes(const std::vector<glv_float>& attributes)
-	{
-		// add this kind of attribs into _data
-		const std::uint8_t* _tmp_data = (std::uint8_t*)attributes.data();
-		const std::size_t _tmp_size = attributes.size() * sizeof(glv_float);
-		for (std::size_t i = 0; i < _tmp_size; ++i) { _data.push_back(_tmp_data[i]); }
-
-		gl_vertex_attribute_layout _layout;
-		_layout.components_num = 1;
-		_layout.components_type_enum = _get_component_type_enum<glv_float>();
-		_layout.attrib_size = sizeof(glv_float);
-		_layout.attribs_num = static_cast<std::uint32_t>(attributes.size());
-		_layouts.push_back(_layout);
-
-		_is_dirty = true;
-	}
-
-	template<>
-	void add_attributes(const std::vector<glv_double>& attributes)
-	{
-		// add this kind of attribs into _data
-		const std::uint8_t* _tmp_data = (std::uint8_t*)attributes.data();
-		const std::size_t _tmp_size = attributes.size() * sizeof(glv_double);
-		for (std::size_t i = 0; i < _tmp_size; ++i) { _data.push_back(_tmp_data[i]); }
-
-		gl_vertex_attribute_layout _layout;
-		_layout.components_num = 1;
-		_layout.components_type_enum = _get_component_type_enum<glv_double>();
-		_layout.attrib_size = sizeof(glv_double);
-		_layout.attribs_num = static_cast<std::uint32_t>(attributes.size());
-		_layouts.push_back(_layout);
-
-		_is_dirty = true;
-	}
-
-
 private:
 
 	template<typename T>
 	inline std::uint32_t _get_component_type_enum() { return 0; }
 	template<>
-	inline std::uint32_t _get_component_type_enum<glv_int>() { return GL_INT; }
+	inline std::uint32_t _get_component_type_enum<glv_ivec1::value_type>() { return GL_INT; }
 	template<>
-	inline std::uint32_t _get_component_type_enum<glv_uint>() { return GL_UNSIGNED_INT; }
+	inline std::uint32_t _get_component_type_enum<glv_uvec1::value_type>() { return GL_UNSIGNED_INT; }
 	template<>
-	inline std::uint32_t _get_component_type_enum<glv_float>() { return GL_FLOAT; }
+	inline std::uint32_t _get_component_type_enum<glv_vec1::value_type>() { return GL_FLOAT; }
 	template<>
-	inline std::uint32_t _get_component_type_enum<glv_double>() { return GL_DOUBLE; }
+	inline std::uint32_t _get_component_type_enum<glv_dvec1::value_type>() { return GL_DOUBLE; }
 	
 public:
 
