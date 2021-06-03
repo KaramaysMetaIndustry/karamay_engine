@@ -267,8 +267,16 @@ void test1();
 
 int main()
 {
+
+
+	std::cout << "shared ptr size: " << sizeof(std::shared_ptr<std::string>) << std::endl;
+	std::cout << "weak ptr size: " << sizeof(std::weak_ptr<std::string>) << std::endl;
+	std::cout << "unique ptr size: " << sizeof(std::unique_ptr<std::string>) << std::endl;
   
-	test0();
+	std::cout << "ori ptr size: " << sizeof(std::string*) << std::endl;
+
+
+	//test0();
 	
 }
 
