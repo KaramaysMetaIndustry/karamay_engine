@@ -642,5 +642,5 @@ public:
 		glGetActiveUniformBlockiv(_handle, glGetUniformBlockIndex(_handle, block_name.c_str()), GL_UNIFORM_BLOCK_REFERENCED_BY_COMPUTE_SHADER, &_value);
 		return _value == GL_TRUE;
 	}
-
+ 
 };
