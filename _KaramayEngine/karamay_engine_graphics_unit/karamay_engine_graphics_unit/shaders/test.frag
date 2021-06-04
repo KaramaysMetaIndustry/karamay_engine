@@ -4,7 +4,8 @@ out vec4 FragColor;
 in vec2 TexCoord;
 
 
-flat in dvec4 test;
+flat in ivec4 test;
+
 
 uniform sampler2D container2;
 uniform vec3 uniform0;

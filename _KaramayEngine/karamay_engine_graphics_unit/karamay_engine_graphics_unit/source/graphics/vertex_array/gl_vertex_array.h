@@ -1,7 +1,7 @@
 #pragma once
 #include "graphics/glo/gl_object.h"
 #include "graphics/buffer/gl_buffer.h"
-#include "graphics/variable/glsl_types.h"
+#include "graphics/variable/glv_types.h"
 
 namespace gl_vertex_array_enum
 {
@@ -66,42 +66,43 @@ public:
 	template<typename T>
 	void add_attributes(const std::vector<T>& attributes)
 	{
-		static_assert(
-			std::is_same<glv_ivec1, T>::value ||
-			std::is_same<glv_ivec2, T>::value ||
-			std::is_same<glv_ivec3, T>::value ||
-			std::is_same<glv_ivec4, T>::value || // int
-			std::is_same<glv_uvec1, T>::value ||
-			std::is_same<glv_uvec2, T>::value ||
-			std::is_same<glv_uvec3, T>::value ||
-			std::is_same<glv_uvec4, T>::value || // uint
-			std::is_same<glv_vec1, T>::value ||
-			std::is_same<glv_vec2, T>::value ||
-			std::is_same<glv_vec3, T>::value ||
-			std::is_same<glv_vec4, T>::value || // float
-			std::is_same<glv_dvec1, T>::value ||
-			std::is_same<glv_dvec2, T>::value ||
-			std::is_same<glv_dvec3, T>::value ||
-			std::is_same<glv_dvec4, T>::value || // double
-			std::is_same<glv_mat2, T>::value ||
-			std::is_same<glv_mat2x3, T>::value ||
-			std::is_same<glv_mat2x4, T>::value ||
-			std::is_same<glv_mat3, T>::value ||
-			std::is_same<glv_mat3x2, T>::value ||
-			std::is_same<glv_mat3x4, T>::value ||
-			std::is_same<glv_mat4, T>::value ||
-			std::is_same<glv_mat4x2, T>::value ||
-			std::is_same<glv_mat4x3, T>::value || // float
-			std::is_same<glv_dmat2, T>::value ||
-			std::is_same<glv_dmat2x3, T>::value ||
-			std::is_same<glv_dmat2x4, T>::value ||
-			std::is_same<glv_dmat3, T>::value ||
-			std::is_same<glv_dmat3x2, T>::value ||
-			std::is_same<glv_dmat3x4, T>::value ||
-			std::is_same<glv_dmat4, T>::value ||
-			std::is_same<glv_dmat4x2, T>::value ||
-			std::is_same<glv_dmat4x3, T>::value    // double
-			, "T must be glv_* types.");
+		//static_assert(
+		//	std::is_same<glv_i16vec4, T>::value ||
+		//	std::is_same<glv_ivec1, T>::value ||
+		//	std::is_same<glv_ivec2, T>::value ||
+		//	std::is_same<glv_ivec3, T>::value ||
+		//	std::is_same<glv_ivec4, T>::value || // int
+		//	std::is_same<glv_uvec1, T>::value ||
+		//	std::is_same<glv_uvec2, T>::value ||
+		//	std::is_same<glv_uvec3, T>::value ||
+		//	std::is_same<glv_uvec4, T>::value || // uint
+		//	std::is_same<glv_vec1, T>::value ||
+		//	std::is_same<glv_vec2, T>::value ||
+		//	std::is_same<glv_vec3, T>::value ||
+		//	std::is_same<glv_vec4, T>::value || // float
+		//	std::is_same<glv_dvec1, T>::value ||
+		//	std::is_same<glv_dvec2, T>::value ||
+		//	std::is_same<glv_dvec3, T>::value ||
+		//	std::is_same<glv_dvec4, T>::value || // double
+		//	std::is_same<glv_mat2, T>::value ||
+		//	std::is_same<glv_mat2x3, T>::value ||
+		//	std::is_same<glv_mat2x4, T>::value ||
+		//	std::is_same<glv_mat3, T>::value ||
+		//	std::is_same<glv_mat3x2, T>::value ||
+		//	std::is_same<glv_mat3x4, T>::value ||
+		//	std::is_same<glv_mat4, T>::value ||
+		//	std::is_same<glv_mat4x2, T>::value ||
+		//	std::is_same<glv_mat4x3, T>::value || // float
+		//	std::is_same<glv_dmat2, T>::value ||
+		//	std::is_same<glv_dmat2x3, T>::value ||
+		//	std::is_same<glv_dmat2x4, T>::value ||
+		//	std::is_same<glv_dmat3, T>::value ||
+		//	std::is_same<glv_dmat3x2, T>::value ||
+		//	std::is_same<glv_dmat3x4, T>::value ||
+		//	std::is_same<glv_dmat4, T>::value ||
+		//	std::is_same<glv_dmat4x2, T>::value ||
+		//	std::is_same<glv_dmat4x3, T>::value    // double
+		//	, "T must be glv_* types.");
 		
 		
 		const std::uint8_t* _bytes = (std::uint8_t*)attributes.data();
@@ -121,28 +122,26 @@ public:
 		_is_dirty = true;
 	}
 
-	template<typename T>
-	void add_attributes_instanced(const std::vector<T>& attributes, std::uint32_t divisor)
-	{
-		glVertexAttribFormat()
-	}
-
-
-	
-	
-
 private:
 
 	template<typename T>
 	inline std::uint32_t _get_component_type_enum() { return 0; }
 	template<>
-	inline std::uint32_t _get_component_type_enum<glv_ivec1::value_type>() { return GL_INT; }
+	inline std::uint32_t _get_component_type_enum<glv_i8vec1::value_type>() { return GL_BYTE; }
 	template<>
-	inline std::uint32_t _get_component_type_enum<glv_uvec1::value_type>() { return GL_UNSIGNED_INT; }
+	inline std::uint32_t _get_component_type_enum<glv_ui8vec1::value_type>() { return GL_UNSIGNED_BYTE; }
 	template<>
-	inline std::uint32_t _get_component_type_enum<glv_vec1::value_type>() { return GL_FLOAT; }
+	inline std::uint32_t _get_component_type_enum<glv_i16vec1::value_type>() { return GL_SHORT; }
 	template<>
-	inline std::uint32_t _get_component_type_enum<glv_dvec1::value_type>() { return GL_DOUBLE; }
+	inline std::uint32_t _get_component_type_enum<glv_ui16vec1::value_type>() { return GL_UNSIGNED_SHORT; }
+	template<>
+	inline std::uint32_t _get_component_type_enum<glv_i32vec1::value_type>() { return GL_INT; }
+	template<>
+	inline std::uint32_t _get_component_type_enum<glv_ui32vec1::value_type>() { return GL_UNSIGNED_INT; }
+	template<>
+	inline std::uint32_t _get_component_type_enum<glv_f32vec1::value_type>() { return GL_FLOAT; }
+	template<>
+	inline std::uint32_t _get_component_type_enum<glv_f64vec1::value_type>() { return GL_DOUBLE; }
 	
 public:
 
@@ -295,10 +294,10 @@ private:
 
 
 
-	void _fill()
+	void _fill_t()
 	{
 
-		GLuint _binding = 0;
+		/*GLuint _binding = 0;
 		glBindVertexBuffer(_binding, _buffer->get_handle(), 0, sizeof(Vertex));
 
 		glEnableVertexAttribArray(0);
@@ -314,11 +313,11 @@ private:
 		glVertexAttribBinding(2, _binding);
 
 
-		glVertexBindingDivisor()
+		glVertexBindingDivisor()*/
 	}
 
 
-	void _fill()
+	void _fill_test()
 	{
 #define ATTRIBUTE_OFFSET(OFFSET) (const void*)(OFFSET)
 
@@ -334,7 +333,7 @@ private:
 
 			bind(); //_bind_buffer(); // bind vertex array && bind buffer
 
-			glBindVertexBuffer(0, _buffer->get_handle(), 0, )
+			//glBindVertexBuffer(0, _buffer->get_handle(), 0, );
 
 			const std::uint32_t _max_pointer_index_num = static_cast<std::uint32_t>(_layouts.size());
 			std::size_t _offset = 0;
@@ -423,7 +422,14 @@ public:
 
 		switch (_num)
 		{
-		case GL_FLOAT: return "float";
+		case GL_BYTE: return "BYTE";
+		case GL_UNSIGNED_BYTE: return "UNSIGNED BYTE";
+		case GL_SHORT: return "SHORT";
+		case GL_UNSIGNED_SHORT: return "UNSIGNED SHORT";
+		case GL_INT: return "INT";
+		case GL_UNSIGNED_INT: return "UNSIGNED INT";
+		case GL_FLOAT: return "FLOAT";
+		case GL_DOUBLE: return "DOUBLE";
 		default: return "";
 			break;
 		}

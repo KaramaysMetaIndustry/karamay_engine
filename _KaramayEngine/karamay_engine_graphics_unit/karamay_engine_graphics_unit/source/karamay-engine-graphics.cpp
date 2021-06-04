@@ -3,7 +3,6 @@
 #include "graphics/variable/gl_variable.h"
 #include "graphics/buffer/customization/gl_element_array_buffer.h"
 #include "graphics/vertex_array/gl_vertex_array.h"
-#include "graphics/variable/gl_variable.h"
 #include "graphics/camera/gl_camera.h"
 
 
@@ -62,149 +61,149 @@ std::uint32_t indices[] =
 	1, 2, 2, 3, 4, 5, 6
 };
 
-std::vector<glv_vec3> offset_positions{
-	glv_vec3(0.0f,  0.0f,  0.0f),
-	glv_vec3(2.0f,  5.0f, -15.0f),
-	glv_vec3(-1.5f, -2.2f, -2.5f),
-	glv_vec3(-3.8f, -2.0f, -12.3f),
-	glv_vec3(2.4f, -0.4f, -3.5f),
-	glv_vec3(-1.7f,  3.0f, -7.5f),
-	glv_vec3(1.3f, -2.0f, -2.5f),
-	glv_vec3(1.5f,  2.0f, -2.5f),
-	glv_vec3(1.5f,  0.2f, -1.5f),
-	glv_vec3(-1.3f,  1.0f, -1.5f)
+std::vector<glv_f32vec3> offset_positions{
+	glv_f32vec3(0.0f,  0.0f,  0.0f),
+	glv_f32vec3(2.0f,  5.0f, -15.0f),
+	glv_f32vec3(-1.5f, -2.2f, -2.5f),
+	glv_f32vec3(-3.8f, -2.0f, -12.3f),
+	glv_f32vec3(2.4f, -0.4f, -3.5f),
+	glv_f32vec3(-1.7f,  3.0f, -7.5f),
+	glv_f32vec3(1.3f, -2.0f, -2.5f),
+	glv_f32vec3(1.5f,  2.0f, -2.5f),
+	glv_f32vec3(1.5f,  0.2f, -1.5f),
+	glv_f32vec3(-1.3f,  1.0f, -1.5f)
 };
 
-std::vector<glv_vec3> normals{
-		glv_vec3(0.0f, 0.0f, -1.0f),
-		glv_vec3(0.0f, 0.0f, -1.0f),
-		glv_vec3(0.0f, 0.0f, -1.0f),
-		glv_vec3(0.0f, 0.0f, -1.0f),
-		glv_vec3(0.0f, 0.0f, -1.0f),
-		glv_vec3(0.0f, 0.0f, -1.0f),
+std::vector<glv_f32vec3> normals{
+		glv_f32vec3(0.0f, 0.0f, -1.0f),
+		glv_f32vec3(0.0f, 0.0f, -1.0f),
+		glv_f32vec3(0.0f, 0.0f, -1.0f),
+		glv_f32vec3(0.0f, 0.0f, -1.0f),
+		glv_f32vec3(0.0f, 0.0f, -1.0f),
+		glv_f32vec3(0.0f, 0.0f, -1.0f),
 
-		glv_vec3(0.0f, 0.0f, 1.0f),
-		glv_vec3(0.0f, 0.0f, 1.0f),
-		glv_vec3(0.0f, 0.0f, 1.0f),
-		glv_vec3(0.0f, 0.0f, 1.0f),
-		glv_vec3(0.0f, 0.0f, 1.0f),
-		glv_vec3(0.0f, 0.0f, 1.0f),
+		glv_f32vec3(0.0f, 0.0f, 1.0f),
+		glv_f32vec3(0.0f, 0.0f, 1.0f),
+		glv_f32vec3(0.0f, 0.0f, 1.0f),
+		glv_f32vec3(0.0f, 0.0f, 1.0f),
+		glv_f32vec3(0.0f, 0.0f, 1.0f),
+		glv_f32vec3(0.0f, 0.0f, 1.0f),
 
-		glv_vec3(-1.0f, 0.0f, 0.0f),
-		glv_vec3(-1.0f, 0.0f, 0.0f),
-		glv_vec3(-1.0f, 0.0f, 0.0f),
-		glv_vec3(-1.0f, 0.0f, 0.0f),
-		glv_vec3(-1.0f, 0.0f, 0.0f),
-		glv_vec3(-1.0f, 0.0f, 0.0f),
+		glv_f32vec3(-1.0f, 0.0f, 0.0f),
+		glv_f32vec3(-1.0f, 0.0f, 0.0f),
+		glv_f32vec3(-1.0f, 0.0f, 0.0f),
+		glv_f32vec3(-1.0f, 0.0f, 0.0f),
+		glv_f32vec3(-1.0f, 0.0f, 0.0f),
+		glv_f32vec3(-1.0f, 0.0f, 0.0f),
 
-		glv_vec3(1.0f, 0.0f, 0.0f),
-		glv_vec3(1.0f, 0.0f, 0.0f),
-		glv_vec3(1.0f, 0.0f, 0.0f),
-		glv_vec3(1.0f, 0.0f, 0.0f),
-		glv_vec3(1.0f, 0.0f, 0.0f),
-		glv_vec3(1.0f, 0.0f, 0.0f),
+		glv_f32vec3(1.0f, 0.0f, 0.0f),
+		glv_f32vec3(1.0f, 0.0f, 0.0f),
+		glv_f32vec3(1.0f, 0.0f, 0.0f),
+		glv_f32vec3(1.0f, 0.0f, 0.0f),
+		glv_f32vec3(1.0f, 0.0f, 0.0f),
+		glv_f32vec3(1.0f, 0.0f, 0.0f),
 
-		glv_vec3(0.0f, -1.0f, 0.0f),
-		glv_vec3(0.0f, -1.0f, 0.0f),
-		glv_vec3(0.0f, -1.0f, 0.0f),
-		glv_vec3(0.0f, -1.0f, 0.0f),
-		glv_vec3(0.0f, -1.0f, 0.0f),
-		glv_vec3(0.0f, -1.0f, 0.0f),
+		glv_f32vec3(0.0f, -1.0f, 0.0f),
+		glv_f32vec3(0.0f, -1.0f, 0.0f),
+		glv_f32vec3(0.0f, -1.0f, 0.0f),
+		glv_f32vec3(0.0f, -1.0f, 0.0f),
+		glv_f32vec3(0.0f, -1.0f, 0.0f),
+		glv_f32vec3(0.0f, -1.0f, 0.0f),
 
-		glv_vec3(0.0f, 1.0f, 0.0f),
-		glv_vec3(0.0f, 1.0f, 0.0f),
-		glv_vec3(0.0f, 1.0f, 0.0f),
-		glv_vec3(0.0f, 1.0f, 0.0f),
-		glv_vec3(0.0f, 1.0f, 0.0f),
-		glv_vec3(0.0f, 1.0f, 0.0f),
+		glv_f32vec3(0.0f, 1.0f, 0.0f),
+		glv_f32vec3(0.0f, 1.0f, 0.0f),
+		glv_f32vec3(0.0f, 1.0f, 0.0f),
+		glv_f32vec3(0.0f, 1.0f, 0.0f),
+		glv_f32vec3(0.0f, 1.0f, 0.0f),
+		glv_f32vec3(0.0f, 1.0f, 0.0f),
 };
 
-std::vector<glv_vec2> uvs{
-		glv_vec2(0.0f, 0.0f),
-		glv_vec2(1.0f,  0.0f),
-		glv_vec2(1.0f,  1.0f),
-		glv_vec2(1.0f,  1.0f),
-		glv_vec2(0.0f,  1.0f),
-		glv_vec2(0.0f,  0.0f),
+std::vector<glv_f32vec2> uvs{
+		glv_f32vec2(0.0f, 0.0f),
+		glv_f32vec2(1.0f,  0.0f),
+		glv_f32vec2(1.0f,  1.0f),
+		glv_f32vec2(1.0f,  1.0f),
+		glv_f32vec2(0.0f,  1.0f),
+		glv_f32vec2(0.0f,  0.0f),
 
-		glv_vec2(0.0f,  0.0f),
-		glv_vec2(1.0f,  0.0f),
-		glv_vec2(1.0f,  1.0f),
-		glv_vec2(1.0f,  1.0f),
-		glv_vec2(0.0f,  1.0f),
-		glv_vec2(0.0f,  0.0f),
+		glv_f32vec2(0.0f,  0.0f),
+		glv_f32vec2(1.0f,  0.0f),
+		glv_f32vec2(1.0f,  1.0f),
+		glv_f32vec2(1.0f,  1.0f),
+		glv_f32vec2(0.0f,  1.0f),
+		glv_f32vec2(0.0f,  0.0f),
 
-		glv_vec2(1.0f,  0.0f),
-		glv_vec2(1.0f,  1.0f),
-		glv_vec2(0.0f,  1.0f),
-		glv_vec2(0.0f,  1.0f),
-		glv_vec2(0.0f,  0.0f),
-		glv_vec2(1.0f,  0.0f),
+		glv_f32vec2(1.0f,  0.0f),
+		glv_f32vec2(1.0f,  1.0f),
+		glv_f32vec2(0.0f,  1.0f),
+		glv_f32vec2(0.0f,  1.0f),
+		glv_f32vec2(0.0f,  0.0f),
+		glv_f32vec2(1.0f,  0.0f),
 
-		glv_vec2(1.0f,  0.0f),
-		glv_vec2(1.0f,  1.0f),
-		glv_vec2(0.0f,  1.0f),
-		glv_vec2(0.0f,  1.0f),
-		glv_vec2(0.0f,  0.0f),
-		glv_vec2(1.0f,  0.0f),
+		glv_f32vec2(1.0f,  0.0f),
+		glv_f32vec2(1.0f,  1.0f),
+		glv_f32vec2(0.0f,  1.0f),
+		glv_f32vec2(0.0f,  1.0f),
+		glv_f32vec2(0.0f,  0.0f),
+		glv_f32vec2(1.0f,  0.0f),
 
-		glv_vec2(0.0f,  1.0f),
-		glv_vec2(1.0f,  1.0f),
-		glv_vec2(1.0f,  0.0f),
-		glv_vec2(1.0f,  0.0f),
-		glv_vec2(0.0f,  0.0f),
-		glv_vec2(0.0f,  1.0f),
+		glv_f32vec2(0.0f,  1.0f),
+		glv_f32vec2(1.0f,  1.0f),
+		glv_f32vec2(1.0f,  0.0f),
+		glv_f32vec2(1.0f,  0.0f),
+		glv_f32vec2(0.0f,  0.0f),
+		glv_f32vec2(0.0f,  1.0f),
 
-		glv_vec2(0.0f,  1.0f),
-		glv_vec2(1.0f,  1.0f),
-		glv_vec2(1.0f,  0.0f),
-		glv_vec2(1.0f,  0.0f),
-		glv_vec2(0.0f,  0.0f),
-		glv_vec2(0.0f,  1.0f)
+		glv_f32vec2(0.0f,  1.0f),
+		glv_f32vec2(1.0f,  1.0f),
+		glv_f32vec2(1.0f,  0.0f),
+		glv_f32vec2(1.0f,  0.0f),
+		glv_f32vec2(0.0f,  0.0f),
+		glv_f32vec2(0.0f,  1.0f)
 };
 
-std::vector<glv_vec3> positions{
-		glv_vec3(-0.5f, -0.5f, -0.5f),
-		glv_vec3( 0.5f, -0.5f, -0.5f),
-		glv_vec3( 0.5f,  0.5f, -0.5f),
-		glv_vec3( 0.5f,  0.5f, -0.5f),
-		glv_vec3(-0.5f,  0.5f, -0.5f),
-		glv_vec3(-0.5f, -0.5f, -0.5f),
+std::vector<glv_f32vec3> positions{
+		glv_f32vec3(-0.5f, -0.5f, -0.5f),
+		glv_f32vec3( 0.5f, -0.5f, -0.5f),
+		glv_f32vec3( 0.5f,  0.5f, -0.5f),
+		glv_f32vec3( 0.5f,  0.5f, -0.5f),
+		glv_f32vec3(-0.5f,  0.5f, -0.5f),
+		glv_f32vec3(-0.5f, -0.5f, -0.5f),
 
-		glv_vec3(-0.5f, -0.5f,  0.5f),
-		glv_vec3( 0.5f, -0.5f,  0.5f),
-		glv_vec3( 0.5f,  0.5f,  0.5f),
-		glv_vec3( 0.5f,  0.5f,  0.5f),
-		glv_vec3(-0.5f,  0.5f,  0.5f),
-		glv_vec3(-0.5f, -0.5f,  0.5f),
+		glv_f32vec3(-0.5f, -0.5f,  0.5f),
+		glv_f32vec3( 0.5f, -0.5f,  0.5f),
+		glv_f32vec3( 0.5f,  0.5f,  0.5f),
+		glv_f32vec3( 0.5f,  0.5f,  0.5f),
+		glv_f32vec3(-0.5f,  0.5f,  0.5f),
+		glv_f32vec3(-0.5f, -0.5f,  0.5f),
 
-		glv_vec3(-0.5f,  0.5f,  0.5f),
-		glv_vec3(-0.5f,  0.5f, -0.5f),
-		glv_vec3(-0.5f, -0.5f, -0.5f),
-		glv_vec3(-0.5f, -0.5f, -0.5f),
-		glv_vec3(-0.5f, -0.5f,  0.5f),
-		glv_vec3(-0.5f,  0.5f,  0.5f),
+		glv_f32vec3(-0.5f,  0.5f,  0.5f),
+		glv_f32vec3(-0.5f,  0.5f, -0.5f),
+		glv_f32vec3(-0.5f, -0.5f, -0.5f),
+		glv_f32vec3(-0.5f, -0.5f, -0.5f),
+		glv_f32vec3(-0.5f, -0.5f,  0.5f),
+		glv_f32vec3(-0.5f,  0.5f,  0.5f),
 
-		glv_vec3( 0.5f,  0.5f,  0.5f),
-		glv_vec3( 0.5f,  0.5f, -0.5f),
-		glv_vec3( 0.5f, -0.5f, -0.5f),
-		glv_vec3( 0.5f, -0.5f, -0.5f),
-		glv_vec3( 0.5f, -0.5f,  0.5f),
-		glv_vec3( 0.5f,  0.5f,  0.5f),
+		glv_f32vec3( 0.5f,  0.5f,  0.5f),
+		glv_f32vec3( 0.5f,  0.5f, -0.5f),
+		glv_f32vec3( 0.5f, -0.5f, -0.5f),
+		glv_f32vec3( 0.5f, -0.5f, -0.5f),
+		glv_f32vec3( 0.5f, -0.5f,  0.5f),
+		glv_f32vec3( 0.5f,  0.5f,  0.5f),
 
-		glv_vec3(-0.5f, -0.5f, -0.5f),
-		glv_vec3( 0.5f, -0.5f, -0.5f),
-		glv_vec3( 0.5f, -0.5f,  0.5f),
-		glv_vec3( 0.5f, -0.5f,  0.5f),
-		glv_vec3(-0.5f, -0.5f,  0.5f),
-		glv_vec3(-0.5f, -0.5f, -0.5f),
+		glv_f32vec3(-0.5f, -0.5f, -0.5f),
+		glv_f32vec3( 0.5f, -0.5f, -0.5f),
+		glv_f32vec3( 0.5f, -0.5f,  0.5f),
+		glv_f32vec3( 0.5f, -0.5f,  0.5f),
+		glv_f32vec3(-0.5f, -0.5f,  0.5f),
+		glv_f32vec3(-0.5f, -0.5f, -0.5f),
 
-		glv_vec3(-0.5f,  0.5f, -0.5f),
-		glv_vec3( 0.5f,  0.5f, -0.5f),
-		glv_vec3( 0.5f,  0.5f,  0.5f),
-		glv_vec3( 0.5f,  0.5f,  0.5f),
-		glv_vec3(-0.5f,  0.5f,  0.5f),
-		glv_vec3(-0.5f,  0.5f, -0.5f)
+		glv_f32vec3(-0.5f,  0.5f, -0.5f),
+		glv_f32vec3( 0.5f,  0.5f, -0.5f),
+		glv_f32vec3( 0.5f,  0.5f,  0.5f),
+		glv_f32vec3( 0.5f,  0.5f,  0.5f),
+		glv_f32vec3(-0.5f,  0.5f,  0.5f),
+		glv_f32vec3(-0.5f,  0.5f, -0.5f)
 };
 
 #define sptr(T)\
@@ -269,14 +268,14 @@ int main()
 {
 
 
-	std::cout << "shared ptr size: " << sizeof(std::shared_ptr<std::string>) << std::endl;
+	/*std::cout << "shared ptr size: " << sizeof(std::shared_ptr<std::string>) << std::endl;
 	std::cout << "weak ptr size: " << sizeof(std::weak_ptr<std::string>) << std::endl;
 	std::cout << "unique ptr size: " << sizeof(std::unique_ptr<std::string>) << std::endl;
   
-	std::cout << "ori ptr size: " << sizeof(std::string*) << std::endl;
+	std::cout << "ori ptr size: " << sizeof(std::string*) << std::endl;*/
 
 
-	//test0();
+	test0();
 	
 }
 
@@ -284,18 +283,18 @@ int main()
 
 void test0()
 {
-	std::vector<glv_vec3> positions{
-		glv_vec3(0.5f, 0.5f, 0.0f),
-		glv_vec3(0.5f, -0.5f, 0.0f),
-		glv_vec3(-0.5f, -0.5f, 0.0f),
-		glv_vec3(-0.5f, 0.5f, 0.0f)
+	std::vector<glv_f32vec3> positions{
+		glv_f32vec3(0.5f, 0.5f, 0.0f),
+		glv_f32vec3(0.5f, -0.5f, 0.0f),
+		glv_f32vec3(-0.5f, -0.5f, 0.0f),
+		glv_f32vec3(-0.5f, 0.5f, 0.0f)
 	};
 
-	std::vector<glv_vec2> uvs{
-		glv_vec2(1.0f, 1.0f),
-		glv_vec2(1.0f, 0.0f),
-		glv_vec2(0.0f, 0.0f),
-		glv_vec2(0.0f, 1.0f)
+	std::vector<glv_f32vec2> uvs{
+		glv_f32vec2(1.0f, 1.0f),
+		glv_f32vec2(1.0f, 0.0f),
+		glv_f32vec2(0.0f, 0.0f),
+		glv_f32vec2(0.0f, 1.0f)
 	};
 
 	//std::vector<glv_vec1> cvs{
@@ -321,9 +320,9 @@ void test0()
 	glViewport(0, 0, window->get_framebuffer_width(), window->get_framebuffer_height());
 
 	// uniforms
-	auto camera_position = sp_variable("camera_position", glv_vec3(0.0f, 0.0f, 0.0f));
-	auto uniform0 = sp_variable("uniform0", glv_vec3(0.1f, 1.0f, 0.5f));
-	auto uniform1 = sp_variable("uniform1", glv_vec4(1.0f, 1.0f, 0.5f, 1.0f));
+	auto camera_position = sp_variable("camera_position", glv_f32vec3(0.0f, 0.0f, 0.0f));
+	auto uniform0 = sp_variable("uniform0", glv_f32vec3(0.1f, 1.0f, 0.5f));
+	auto uniform1 = sp_variable("uniform1", glv_f32vec4(1.0f, 1.0f, 0.5f, 1.0f));
 
 	//auto uniform_buffer0 = std::make_shared<gl_uniform_buffer>();
 	//uniform_buffer0->
@@ -344,14 +343,40 @@ void test0()
 
 	// vertex array
 	auto vaod = sptr(gl_vertex_array_descriptor);
-	vaod->add_attributes<glv_vec3>(positions);
-	vaod->add_attributes<glv_vec2>(uvs);
+	vaod->add_attributes<glv_f32vec3>(positions);
+	vaod->add_attributes<glv_f32vec2>(uvs);
 
-	std::vector<glv_dvec4> tests{
-		glv_dvec4(0.9f, 0.5, 0.1, 1.0f),
-		glv_dvec4(0.1f, 0.5, 0.1, 1.0f),
-		glv_dvec4(0.5f, 0.5, 0.1, 1.0f),
-		glv_dvec4(0.01f, 0.5, 0.1, 1.0f)
+	// 默认按column存
+	// 除了单精度浮点数，其他类型顶点数据在frag中声明时，必须使用flat标识，
+	// 并且所有片段拿到的改顶点值等于最后一个顶点的值
+	//std::vector<glv_dmat4> tests{
+	//	glv_dmat4(
+	//	0, 1, 1, 0, // column
+	//	1, 0, 0, 0,// column
+	//	0, 1, 1, 0,// column
+	//	0, 0, 0, 1),// column
+	//	glv_dmat4(
+	//	0, 1, 1, 0,
+	//	1, 0, 0, 0,
+	//	0, 1, 1, 0,
+	//	0, 0, 0, 1),
+	//	glv_dmat4(
+	//	0, 1, 1, 0,
+	//	1, 0, 0, 0,
+	//	0, 1, 1, 0,
+	//	0, 0, 0, 1),
+	//	glv_dmat4(
+	//	0, 1, 0, 0,
+	//	1, 0, 1, 0,
+	//	1, 0, 1, 0,
+	//	0, 0, 0, 1)
+	//};
+
+	std::vector<glm::i16vec4> tests{
+		glm::i16vec4(1, 0, 0, 1),
+		glm::i16vec4(0, 1, 0, 1),
+		glm::i16vec4(0, 0, 1, 1),
+		glm::i16vec4(0, 1, 0, 1),
 	};
 
 	vaod->add_attributes(tests);

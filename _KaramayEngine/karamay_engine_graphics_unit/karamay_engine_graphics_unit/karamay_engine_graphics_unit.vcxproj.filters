@@ -266,6 +266,9 @@
     <ClInclude Include="source\graphics\camera\gl_camera.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="source\graphics\variable\glv_types.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\test.vert" />
