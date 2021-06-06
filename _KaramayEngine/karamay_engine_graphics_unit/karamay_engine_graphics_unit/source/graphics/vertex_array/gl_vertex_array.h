@@ -7,26 +7,21 @@ namespace gl_vertex_array_enum
 {
 	enum class attribute_component_type
 	{
-		BYTE = GL_BYTE, //=>
-		UNSIGNED_BYTE = GL_UNSIGNED_BYTE, //=> glsl_bool
-		SHORT = GL_SHORT, 
-		UNSIGNED_SHORT = GL_UNSIGNED_SHORT,
-		INT = GL_INT, //=> glsl_int
-		UNSIGNED_INT = GL_UNSIGNED_INT, //=> glsl_uint
-		// glVertexAttribPointer
-		// glVertexAttribIPointer
+		BYTE = GL_BYTE, // GLbyte
+		UNSIGNED_BYTE = GL_UNSIGNED_BYTE, // GLubyte
+		SHORT = GL_SHORT, // GLshort
+		UNSIGNED_SHORT = GL_UNSIGNED_SHORT, // GLushort
+		INT = GL_INT, // GLint
+		UNSIGNED_INT = GL_UNSIGNED_INT, // GLuint
 
-		HALF_FLOAT = GL_HALF_FLOAT, 
-		FLOAT = GL_FLOAT, //=> glsl_float
-		FIXED = GL_FIXED, 
+		HALF_FLOAT = GL_HALF_FLOAT, // GLhalf
+		FLOAT = GL_FLOAT, // GLfloat
+		FIXED = GL_FIXED, // GLfixed
 		INT_2_10_10_10_REV = GL_INT_2_10_10_10_REV,
 		UNSIGNED_INT_2_10_10_10_REV = GL_UNSIGNED_INT_2_10_10_10_REV,
 		UNSIGNED_INT_10F_11F_11F_REV = GL_UNSIGNED_INT_10F_11F_11F_REV,
-		//glVertexAttribPointer
 
-		DOUBLE = GL_DOUBLE, //=> glsl_double
-		//glVertexAttribPointer
-		//glVertexAttribLPointer
+		DOUBLE = GL_DOUBLE, // GLdouble
 	};
 }
 
@@ -51,6 +46,7 @@ struct gl_vertex_attribute_layout
 	}
 };
 
+
 class gl_vertex_array_descriptor final
 {
 public:
@@ -64,90 +60,144 @@ public:
 public:
 
 	template<typename T>
-	void add_attributes(const std::vector<T>& attributes)
+	void add_attributes(const std::vector<T>& attributes, std::uint32_t divisor = 0)
 	{
-		//static_assert(
-		//	std::is_same<glv_i16vec4, T>::value ||
-		//	std::is_same<glv_ivec1, T>::value ||
-		//	std::is_same<glv_ivec2, T>::value ||
-		//	std::is_same<glv_ivec3, T>::value ||
-		//	std::is_same<glv_ivec4, T>::value || // int
-		//	std::is_same<glv_uvec1, T>::value ||
-		//	std::is_same<glv_uvec2, T>::value ||
-		//	std::is_same<glv_uvec3, T>::value ||
-		//	std::is_same<glv_uvec4, T>::value || // uint
-		//	std::is_same<glv_vec1, T>::value ||
-		//	std::is_same<glv_vec2, T>::value ||
-		//	std::is_same<glv_vec3, T>::value ||
-		//	std::is_same<glv_vec4, T>::value || // float
-		//	std::is_same<glv_dvec1, T>::value ||
-		//	std::is_same<glv_dvec2, T>::value ||
-		//	std::is_same<glv_dvec3, T>::value ||
-		//	std::is_same<glv_dvec4, T>::value || // double
-		//	std::is_same<glv_mat2, T>::value ||
-		//	std::is_same<glv_mat2x3, T>::value ||
-		//	std::is_same<glv_mat2x4, T>::value ||
-		//	std::is_same<glv_mat3, T>::value ||
-		//	std::is_same<glv_mat3x2, T>::value ||
-		//	std::is_same<glv_mat3x4, T>::value ||
-		//	std::is_same<glv_mat4, T>::value ||
-		//	std::is_same<glv_mat4x2, T>::value ||
-		//	std::is_same<glv_mat4x3, T>::value || // float
-		//	std::is_same<glv_dmat2, T>::value ||
-		//	std::is_same<glv_dmat2x3, T>::value ||
-		//	std::is_same<glv_dmat2x4, T>::value ||
-		//	std::is_same<glv_dmat3, T>::value ||
-		//	std::is_same<glv_dmat3x2, T>::value ||
-		//	std::is_same<glv_dmat3x4, T>::value ||
-		//	std::is_same<glv_dmat4, T>::value ||
-		//	std::is_same<glv_dmat4x2, T>::value ||
-		//	std::is_same<glv_dmat4x3, T>::value    // double
-		//	, "T must be glv_* types.");
-		
-		
-		const std::uint8_t* _bytes = (std::uint8_t*)attributes.data();
-		const std::size_t _size = attributes.size() * sizeof(T);
-		for (std::size_t i = 0; i < _size; ++i)
 		{
-			_data.push_back(_bytes[i]);
+			static_assert(
+				std::is_same<glv_i8vec1, T>::value ||
+				std::is_same<glv_i8vec2, T>::value ||
+				std::is_same<glv_i8vec3, T>::value ||
+				std::is_same<glv_i8vec4, T>::value || // int8
+				std::is_same<glv_i16vec4, T>::value ||
+				std::is_same<glv_i16vec1, T>::value ||
+				std::is_same<glv_i16vec2, T>::value ||
+				std::is_same<glv_i16vec3, T>::value ||
+				std::is_same<glv_i16vec4, T>::value || // int16
+				std::is_same<glv_i32vec4, T>::value ||
+				std::is_same<glv_i32vec1, T>::value ||
+				std::is_same<glv_i32vec2, T>::value ||
+				std::is_same<glv_i32vec3, T>::value ||
+				std::is_same<glv_i32vec4, T>::value || // int32
+				std::is_same<glv_ui8vec1, T>::value ||
+				std::is_same<glv_ui8vec2, T>::value ||
+				std::is_same<glv_ui8vec3, T>::value ||
+				std::is_same<glv_ui8vec4, T>::value || // uint8
+				std::is_same<glv_ui8vec1, T>::value ||
+				std::is_same<glv_ui8vec2, T>::value ||
+				std::is_same<glv_ui8vec3, T>::value ||
+				std::is_same<glv_ui8vec4, T>::value || // uint16
+				std::is_same<glv_ui8vec1, T>::value ||
+				std::is_same<glv_ui8vec2, T>::value ||
+				std::is_same<glv_ui8vec3, T>::value ||
+				std::is_same<glv_ui8vec4, T>::value || // uint32
+				std::is_same<glv_f32vec1, T>::value ||
+				std::is_same<glv_f32vec2, T>::value ||
+				std::is_same<glv_f32vec3, T>::value ||
+				std::is_same<glv_f32vec4, T>::value || // float
+				std::is_same<glv_f64vec1, T>::value ||
+				std::is_same<glv_f64vec2, T>::value ||
+				std::is_same<glv_f64vec3, T>::value ||
+				std::is_same<glv_f64vec4, T>::value || // double
+				std::is_same<glv_f32mat2, T>::value ||
+				std::is_same<glv_f32mat2x3, T>::value ||
+				std::is_same<glv_f32mat2x4, T>::value ||
+				std::is_same<glv_f32mat3, T>::value ||
+				std::is_same<glv_f32mat3x2, T>::value ||
+				std::is_same<glv_f32mat3x4, T>::value ||
+				std::is_same<glv_f32mat4, T>::value ||
+				std::is_same<glv_f32mat4x2, T>::value ||
+				std::is_same<glv_f32mat4x3, T>::value || // float mat
+				std::is_same<glv_f64mat2, T>::value ||
+				std::is_same<glv_f64mat2x3, T>::value ||
+				std::is_same<glv_f64mat2x4, T>::value ||
+				std::is_same<glv_f64mat3, T>::value ||
+				std::is_same<glv_f64mat3x2, T>::value ||
+				std::is_same<glv_f64mat3x4, T>::value ||
+				std::is_same<glv_f64mat4, T>::value ||
+				std::is_same<glv_f64mat4x2, T>::value ||
+				std::is_same<glv_f64mat4x3, T>::value    // double mat
+				, "T must be glv_* types.");
 		}
+		
+		const std::uint8_t* _bytes = (const std::uint8_t*)(attributes.data());
+		const std::size_t _bytes_num = attributes.size() * sizeof(T);
 
+		// prevent calling reallocating many times
+		_stream.reserve(_bytes_num);
+		for (std::size_t _index = 0; _index < _bytes_num; _stream.push_back(_bytes[_index]), ++_index) {}
+		
+		// describe attribues layout
 		gl_vertex_attribute_layout _layout;
 		_layout.components_num = T::length();
 		_layout.components_type_enum = _get_component_type_enum<T::value_type>();
 		_layout.attrib_size = sizeof(T);
 		_layout.attribs_num = static_cast<std::uint32_t>(attributes.size());
+		_layout.normalized = false;
+		_layout.divisor = divisor;
 		_layouts.push_back(_layout);
 
 		_is_dirty = true;
 	}
 
-private:
-
 	template<typename T>
-	inline std::uint32_t _get_component_type_enum() { return 0; }
-	template<>
-	inline std::uint32_t _get_component_type_enum<glv_i8vec1::value_type>() { return GL_BYTE; }
-	template<>
-	inline std::uint32_t _get_component_type_enum<glv_ui8vec1::value_type>() { return GL_UNSIGNED_BYTE; }
-	template<>
-	inline std::uint32_t _get_component_type_enum<glv_i16vec1::value_type>() { return GL_SHORT; }
-	template<>
-	inline std::uint32_t _get_component_type_enum<glv_ui16vec1::value_type>() { return GL_UNSIGNED_SHORT; }
-	template<>
-	inline std::uint32_t _get_component_type_enum<glv_i32vec1::value_type>() { return GL_INT; }
-	template<>
-	inline std::uint32_t _get_component_type_enum<glv_ui32vec1::value_type>() { return GL_UNSIGNED_INT; }
-	template<>
-	inline std::uint32_t _get_component_type_enum<glv_f32vec1::value_type>() { return GL_FLOAT; }
-	template<>
-	inline std::uint32_t _get_component_type_enum<glv_f64vec1::value_type>() { return GL_DOUBLE; }
-	
+	void add_normalized_attributes(const std::vector<T>& attributes, std::uint32_t divisor = 0)
+	{
+		{
+			static_assert(
+				std::is_same<glv_i8vec1, T>::value ||
+				std::is_same<glv_i8vec2, T>::value ||
+				std::is_same<glv_i8vec3, T>::value ||
+				std::is_same<glv_i8vec4, T>::value || // int8
+				std::is_same<glv_i16vec4, T>::value ||
+				std::is_same<glv_i16vec1, T>::value ||
+				std::is_same<glv_i16vec2, T>::value ||
+				std::is_same<glv_i16vec3, T>::value ||
+				std::is_same<glv_i16vec4, T>::value || // int16
+				std::is_same<glv_i32vec4, T>::value ||
+				std::is_same<glv_i32vec1, T>::value ||
+				std::is_same<glv_i32vec2, T>::value ||
+				std::is_same<glv_i32vec3, T>::value ||
+				std::is_same<glv_i32vec4, T>::value || // int32
+				std::is_same<glv_ui8vec1, T>::value ||
+				std::is_same<glv_ui8vec2, T>::value ||
+				std::is_same<glv_ui8vec3, T>::value ||
+				std::is_same<glv_ui8vec4, T>::value || // uint8
+				std::is_same<glv_ui8vec1, T>::value ||
+				std::is_same<glv_ui8vec2, T>::value ||
+				std::is_same<glv_ui8vec3, T>::value ||
+				std::is_same<glv_ui8vec4, T>::value || // uint16
+				std::is_same<glv_ui8vec1, T>::value ||
+				std::is_same<glv_ui8vec2, T>::value ||
+				std::is_same<glv_ui8vec3, T>::value ||
+				std::is_same<glv_ui8vec4, T>::value  // uint32
+				, "T must be glv_i* or glv_ui* types.");
+		}
+		
+		const std::uint8_t* _bytes = (const std::uint8_t*)(attributes.data());
+		const std::size_t _bytes_num = attributes.size() * sizeof(T);
+
+		// prevent calling reallocating many times
+		_stream.reserve(_bytes_num);
+		for (std::size_t _index = 0; _index < _bytes_num; _stream.push_back(_bytes[_index]), ++_index) {}
+
+		// describe attribues layout
+		gl_vertex_attribute_layout _layout;
+		_layout.components_num = T::length();
+		_layout.components_type_enum = _get_component_type_enum<T::value_type>();
+		_layout.attrib_size = sizeof(T);
+		_layout.attribs_num = static_cast<std::uint32_t>(attributes.size());
+		_layout.normalized = true;
+		_layout.divisor = divisor;
+		_layouts.push_back(_layout);
+
+		_is_dirty = true;
+	}
+
 public:
 
-	const void* get_data() const;
+	const void* get_stream() const;
 
-	const std::size_t get_data_size() const;
+	const std::size_t get_stream_size() const;
 
 	const std::vector<gl_vertex_attribute_layout> get_layouts() const;
 
@@ -163,12 +213,40 @@ public:
 
 private:
 
-	std::vector<std::uint8_t> _data;
+	std::vector<std::uint8_t> _stream;
 
 	std::vector<gl_vertex_attribute_layout> _layouts;
 
 	std::uint8_t _is_dirty : 1;
 
+private:
+
+	template<typename T>
+	inline std::uint32_t _get_component_type_enum() { return 0; }
+	
+	template<>
+	inline std::uint32_t _get_component_type_enum<glv_i8vec1::value_type>() { return GL_BYTE; }
+	
+	template<>
+	inline std::uint32_t _get_component_type_enum<glv_ui8vec1::value_type>() { return GL_UNSIGNED_BYTE; }
+	
+	template<>
+	inline std::uint32_t _get_component_type_enum<glv_i16vec1::value_type>() { return GL_SHORT; }
+	
+	template<>
+	inline std::uint32_t _get_component_type_enum<glv_ui16vec1::value_type>() { return GL_UNSIGNED_SHORT; }
+	
+	template<>
+	inline std::uint32_t _get_component_type_enum<glv_i32vec1::value_type>() { return GL_INT; }
+	
+	template<>
+	inline std::uint32_t _get_component_type_enum<glv_ui32vec1::value_type>() { return GL_UNSIGNED_INT; }
+	
+	template<>
+	inline std::uint32_t _get_component_type_enum<glv_f32vec1::value_type>() { return GL_FLOAT; }
+	
+	template<>
+	inline std::uint32_t _get_component_type_enum<glv_f64vec1::value_type>() { return GL_DOUBLE; }
 };
 
 
@@ -188,10 +266,7 @@ public:
 		}
 	}
 
-	virtual ~gl_vertex_array()
-	{
-		glDeleteVertexArrays(1, &_handle);
-	}
+	~gl_vertex_array();
 
 public:
 
@@ -220,173 +295,87 @@ private:
 
 	void _fill()
 	{
-#define ATTRIBUTE_OFFSET(OFFSET) (const void*)(OFFSET)
-
 		if (_descriptor)
 		{
-			const auto _data_size = _descriptor->get_data_size();
+			const auto _stream_size = _descriptor->get_stream_size();
+			_buffer = std::make_shared<gl_buffer>();
+			_buffer->allocate(_stream_size);
+			_buffer->fill(0, _stream_size, _descriptor->get_stream());
+
+			bind(); _bind_buffer();
+
 			const auto& _layouts = _descriptor->get_layouts();
-			{
-				_buffer = std::make_shared<gl_buffer>();
-				_buffer->allocate(_data_size);
-				_buffer->fill(0, _data_size, _descriptor->get_data());
-			}
-
-			bind(); _bind_buffer(); // bind vertex array && bind buffer
-
-			const std::uint32_t _max_pointer_index_num = static_cast<std::uint32_t>(_layouts.size());
+			const std::uint32_t _max_index_num = static_cast<std::uint32_t>(_layouts.size());
 			std::size_t _offset = 0;
 
-			for (std::uint32_t i = 0; i < _max_pointer_index_num; ++i)
+			for (std::uint32_t _index = 0; _index < _max_index_num; ++_index)
 			{
-				const auto& _layout = _layouts[i];
-				const auto _type = _layout.components_type_enum;
+				const auto& _layout = _layouts[_index];
+				const auto _normalized = _layout.normalized;
 				
-				glEnableVertexAttribArray(i); // enable
-				// set pointer
-				if (_type == GL_BYTE || _type == GL_UNSIGNED_BYTE ||
-					_type == GL_SHORT || _type == GL_UNSIGNED_SHORT ||
-					_type == GL_INT || _type == GL_UNSIGNED_INT)
-				{
-					glVertexAttribIPointer(i,
-						_layout.components_num,
-						_type,
-						_layout.attrib_size,
-						ATTRIBUTE_OFFSET(_offset));
-				}
-				else if (_type == GL_HALF_FLOAT || _type == GL_FLOAT || _type == GL_FIXED)
-				{
-					glVertexAttribPointer(i, // vertex index  
-						_layout.components_num, // num of attrib components
-						_layout.components_type_enum, GL_FALSE, // type of attrib components
-						_layout.attrib_size, // attrib bytes size
-						ATTRIBUTE_OFFSET(_offset)); // collection offset
-				}
-				else if (_type == GL_DOUBLE)
-				{
-					glVertexAttribLPointer(i,
-						_layout.components_num,
-						_type,
-						_layout.attrib_size,
-						ATTRIBUTE_OFFSET(_offset));
-				}
-				glVertexAttribDivisor(i, _layout.divisor);
+				const auto _component_type_enum = _layout.components_type_enum;
+				const auto _components_num = _layout.components_num;
+				const auto _attribute_size = _layout.attrib_size;
+				const auto _attributes_num = _layout.attribs_num;
 
-				_offset += (_layout.attribs_num) * (_layout.attrib_size);
+				const auto _divisor = _layout.divisor;
+				
+				if (_normalized) // integers -> normalized floats
+				{
+					if (_component_type_enum == GL_BYTE || _component_type_enum == GL_UNSIGNED_BYTE ||
+						_component_type_enum == GL_SHORT || _component_type_enum == GL_UNSIGNED_SHORT ||
+						_component_type_enum == GL_INT || _component_type_enum == GL_UNSIGNED_INT)
+					{
+						glVertexAttribPointer(_index,
+							_components_num,
+							_component_type_enum, GL_TRUE,
+							_attribute_size,
+							reinterpret_cast<const void*>(_offset));
+					}
+				}
+				else { // original integers
+					if (_component_type_enum == GL_BYTE || _component_type_enum == GL_UNSIGNED_BYTE ||
+						_component_type_enum == GL_SHORT || _component_type_enum == GL_UNSIGNED_SHORT ||
+						_component_type_enum == GL_INT || _component_type_enum == GL_UNSIGNED_INT)
+					{
+						glVertexAttribIPointer(_index,
+							_components_num,
+							_component_type_enum,
+							_attribute_size,
+							reinterpret_cast<const void*>(_offset));
+					} 
+					else if (_component_type_enum == GL_HALF_FLOAT || _component_type_enum == GL_FLOAT ||
+						_component_type_enum == GL_FIXED) // original floats
+					{
+						glVertexAttribPointer(_index, 
+							_components_num, 
+							_component_type_enum, GL_FALSE,
+							_attribute_size,
+							reinterpret_cast<const void*>(_offset));
+					}
+					else if (_component_type_enum == GL_DOUBLE) // original doubles
+					{
+						glVertexAttribLPointer(_index,
+							_components_num,
+							_component_type_enum,
+							_attribute_size,
+							reinterpret_cast<const void*>(_offset));
+					}
+				}
 
-				glDisableVertexAttribArray(i);
+				glVertexAttribDivisor(_index, _divisor);
+
+				_offset += static_cast<std::size_t>(_attributes_num) * _attribute_size;
 			}
 
 			_unbind_buffer(); unbind();
 		}
 
 #ifdef _DEBUG
-
 		const std::size_t _size = _descriptor->get_layouts().size();
 		for (std::size_t i = 0; i < _size; ++i)
 		{
 			std::cout <<"pointer [" <<i<<"] " << is_pointer_enabled(static_cast<std::uint32_t>(i)) << std::endl;
-			std::cout << "attribute components num: " << get_attribute_components_num(static_cast<std::uint32_t>(i)) << std::endl;
-			std::cout << "attribute components type: " << get_attribute_component_type(static_cast<std::uint32_t>(i)) << std::endl;
-		}
-#endif
-	}
-
-
-
-	void _fill_t()
-	{
-
-		/*GLuint _binding = 0;
-		glBindVertexBuffer(_binding, _buffer->get_handle(), 0, sizeof(Vertex));
-
-		glEnableVertexAttribArray(0);
-		glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, position));
-		glVertexAttribBinding(0, _binding);
-
-		glEnableVertexAttribArray(1);
-		glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normal));
-		glVertexAttribBinding(1, _binding);
-		
-		glEnableVertexAttribArray(2);
-		glVertexAttribFormat(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, offsetof(Vertex, color));
-		glVertexAttribBinding(2, _binding);
-
-
-		glVertexBindingDivisor()*/
-	}
-
-
-	void _fill_test()
-	{
-#define ATTRIBUTE_OFFSET(OFFSET) (const void*)(OFFSET)
-
-		if (_descriptor)
-		{
-			const auto _data_size = _descriptor->get_data_size();
-			const auto& _layouts = _descriptor->get_layouts();
-			{
-				_buffer = std::make_shared<gl_buffer>();
-				_buffer->allocate(_data_size);
-				_buffer->fill(0, _data_size, _descriptor->get_data());
-			}
-
-			bind(); //_bind_buffer(); // bind vertex array && bind buffer
-
-			//glBindVertexBuffer(0, _buffer->get_handle(), 0, );
-
-			const std::uint32_t _max_pointer_index_num = static_cast<std::uint32_t>(_layouts.size());
-			std::size_t _offset = 0;
-
-			for (std::uint32_t i = 0; i < _max_pointer_index_num; ++i)
-			{
-				const auto& _layout = _layouts[i];
-				const auto _type = _layout.components_type_enum;
-
-				glEnableVertexAttribArray(i); // enable
-				// set pointer
-				if (_type == GL_BYTE || _type == GL_UNSIGNED_BYTE ||
-					_type == GL_SHORT || _type == GL_UNSIGNED_SHORT ||
-					_type == GL_INT || _type == GL_UNSIGNED_INT)
-				{
-					glVertexAttribIPointer(i,
-						_layout.components_num,
-						_type,
-						_layout.attrib_size,
-						ATTRIBUTE_OFFSET(_offset));
-				}
-				else if (_type == GL_HALF_FLOAT || _type == GL_FLOAT || _type == GL_FIXED)
-				{
-					glVertexAttribPointer(i, // vertex index  
-						_layout.components_num, // num of attrib components
-						_layout.components_type_enum, GL_FALSE, // type of attrib components
-						_layout.attrib_size, // attrib bytes size
-						ATTRIBUTE_OFFSET(_offset)); // collection offset
-				}
-				else if (_type == GL_DOUBLE)
-				{
-					glVertexAttribLPointer(i,
-						_layout.components_num,
-						_type,
-						_layout.attrib_size,
-						ATTRIBUTE_OFFSET(_offset));
-				}
-				glVertexAttribDivisor(i, _layout.divisor);
-
-				_offset += (_layout.attribs_num) * (_layout.attrib_size);
-
-				glDisableVertexAttribArray(i);
-			}
-
-			_unbind_buffer(); unbind();
-		}
-
-#ifdef _DEBUG
-
-		const std::size_t _size = _descriptor->get_layouts().size();
-		for (std::size_t i = 0; i < _size; ++i)
-		{
-			std::cout << "pointer [" << i << "] " << is_pointer_enabled(static_cast<std::uint32_t>(i)) << std::endl;
 			std::cout << "attribute components num: " << get_attribute_components_num(static_cast<std::uint32_t>(i)) << std::endl;
 			std::cout << "attribute components type: " << get_attribute_component_type(static_cast<std::uint32_t>(i)) << std::endl;
 		}

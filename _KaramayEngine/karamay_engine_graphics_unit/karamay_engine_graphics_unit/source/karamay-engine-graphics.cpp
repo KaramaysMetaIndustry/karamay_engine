@@ -56,8 +56,7 @@ float vertices[] = {
 		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f //35
 };
 
-std::uint32_t indices[] = 
-{
+std::uint32_t indices[] = {
 	1, 2, 2, 3, 4, 5, 6
 };
 
@@ -261,28 +260,33 @@ struct gl_texture_pixels
 };
 
 void test0();
-void test1();
-
 
 int main()
 {
 
 
-	/*std::cout << "shared ptr size: " << sizeof(std::shared_ptr<std::string>) << std::endl;
-	std::cout << "weak ptr size: " << sizeof(std::weak_ptr<std::string>) << std::endl;
+	//std::cout << "size: " << sizeof(bool) << std::endl;
+	/*std::cout << "weak ptr size: " << sizeof(std::weak_ptr<std::string>) << std::endl;
 	std::cout << "unique ptr size: " << sizeof(std::unique_ptr<std::string>) << std::endl;
   
 	std::cout << "ori ptr size: " << sizeof(std::string*) << std::endl;*/
 
 
 	test0();
-	
 }
 
 
 
 void test0()
 {
+	glfw_window* window = new glfw_window();
+	window->load_context();
+	
+	glewInit();
+
+	glViewport(0, 0, window->get_framebuffer_width(), window->get_framebuffer_height());
+
+
 	std::vector<glv_f32vec3> positions{
 		glv_f32vec3(0.5f, 0.5f, 0.0f),
 		glv_f32vec3(0.5f, -0.5f, 0.0f),
@@ -297,37 +301,15 @@ void test0()
 		glv_f32vec2(0.0f, 1.0f)
 	};
 
-	//std::vector<glv_vec1> cvs{
-	//	glv_vec1(0.8f),
-	//	glv_vec1(0.7f),
-	//	glv_vec1(0.6f),
-	//	glv_vec1(0.5f)
-	//};
-
-	
-
 	std::vector<glm::uint32> indices{
 		0, 1, 3,
 		1, 2, 3
 	};
 
-
-	glfw_window* window = new glfw_window();
-	window->load_context();
-	
-	glewInit();
-
-	glViewport(0, 0, window->get_framebuffer_width(), window->get_framebuffer_height());
-
 	// uniforms
 	auto camera_position = sp_variable("camera_position", glv_f32vec3(0.0f, 0.0f, 0.0f));
 	auto uniform0 = sp_variable("uniform0", glv_f32vec3(0.1f, 1.0f, 0.5f));
 	auto uniform1 = sp_variable("uniform1", glv_f32vec4(1.0f, 1.0f, 0.5f, 1.0f));
-
-	//auto uniform_buffer0 = std::make_shared<gl_uniform_buffer>();
-	//uniform_buffer0->
-
-
 
 	// textures
 	auto container2 = std::make_shared<gl_texture_2d>();
@@ -340,12 +322,19 @@ void test0()
 	albedo_map->fill(albedo_pixels.width, albedo_pixels.height, albedo_pixels.format, (const void*)albedo_pixels.pixels);
 	albedo_map->set_name("mat.albedo_map");
 
+	std::vector<glm::i16vec4> tests{
+		glm::i16vec4(1, 0, 0, 1),
+		glm::i16vec4(0, 1, 0, 1),
+		glm::i16vec4(0, 0, 1, 1),
+		glm::i16vec4(0, 1, 0, 1)
+	};
 
 	// vertex array
 	auto vaod = sptr(gl_vertex_array_descriptor);
-	vaod->add_attributes<glv_f32vec3>(positions);
-	vaod->add_attributes<glv_f32vec2>(uvs);
-
+	vaod->add_attributes(positions);
+	vaod->add_attributes(uvs);
+	vaod->add_attributes(tests);
+	
 	// 默认按column存
 	// 除了单精度浮点数，其他类型顶点数据在frag中声明时，必须使用flat标识，
 	// 并且所有片段拿到的改顶点值等于最后一个顶点的值
@@ -372,21 +361,12 @@ void test0()
 	//	0, 0, 0, 1)
 	//};
 
-	std::vector<glm::i16vec4> tests{
-		glm::i16vec4(1, 0, 0, 1),
-		glm::i16vec4(0, 1, 0, 1),
-		glm::i16vec4(0, 0, 1, 1),
-		glm::i16vec4(0, 1, 0, 1),
-	};
-
-	vaod->add_attributes(tests);
-
 	auto vao = std::make_shared<gl_vertex_array>(vaod);
 
 	// element array
 	auto ebod = std::make_shared<gl_element_array_buffer_descriptor>();
-	ebod->set_indices(indices);
 	auto ebo = std::make_shared<gl_element_array_buffer>();
+	ebod->set_indices(indices);
 	ebo->fill(ebod);
 
 	// program
@@ -394,21 +374,17 @@ void test0()
 	program->construct({
 		"shaders/test.vert",
 		"shaders/test.frag" });
-	// ...
 	program->set_vertex_array(vao);
 	program->set_element_array_buffer(ebo);
+	
 	program->add_texture(container2);
-	// ...
+	
 	program->add_uniform(camera_position);
-	program->add_uniform(uniform0);
-	program->add_uniform(uniform1);
-	// ...
 	
 	program->set_framebuffer();
 	program->set_commands([] {
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		});
-
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //GL_FILL GL_POINT
 	//glFrontFace(GL_CW);//default 逆时针 GL_CW 顺时针

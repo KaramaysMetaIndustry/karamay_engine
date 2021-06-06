@@ -1,21 +1,21 @@
 #version 450 core
-out vec4 FragColor;
 
+in vec3 position;
 in vec2 TexCoord;
-
-
 flat in ivec4 test;
 
+out vec4 FragColor;
 
-uniform sampler2D container2;
 uniform vec3 uniform0;
 uniform vec4 uniform1;
+uniform sampler2D container2;
+
+uniform mat4 model_matrix;
+uniform mat4 view_matrix;
+uniform mat4 projection_matrix;
+
 
 void main()
 {
-   FragColor = vec4(test);
-   //FragColor = vec4(uniform1.rgba);
-   //FragColor = mix(texture(container2, TexCoord), texture(albedo_map, TexCoord), 0.2);
-   //FragColor = vec4(TexCoord.x, TexCoord.y, 0.0f, 1.0f);
-   //FragColor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord));
+   FragColor = vec4(texture(container2, TexCoord).rgb, 1.0f);
 }

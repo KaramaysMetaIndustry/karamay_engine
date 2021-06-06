@@ -132,6 +132,9 @@
     <ClCompile Include="source\graphics\camera\gl_camera.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="source\graphics\vertex_array\gl_vertex_stream.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\graphics\buffer\customization\gl_atomic_counter_buffer.h">
@@ -260,13 +263,16 @@
     <ClInclude Include="source\window\window.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="source\graphics\variable\glsl_types.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="source\graphics\camera\gl_camera.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="source\graphics\variable\glv_types.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\vertex_array\gl_vertex_stream.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\variable\glu_types.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

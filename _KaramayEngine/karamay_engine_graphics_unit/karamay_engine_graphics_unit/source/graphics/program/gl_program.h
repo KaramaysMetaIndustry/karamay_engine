@@ -114,7 +114,7 @@ enum class gl_uniform_type : GLenum
 	INT_IMAGE_1D_ARRAY = GL_INT_IMAGE_1D_ARRAY,	//iimage1DArray
 	INT_IMAGE_2D_ARRAY = GL_INT_IMAGE_2D_ARRAY,	//iimage2DArray
 	INT_IMAGE_2D_MULTISAMPLE = GL_INT_IMAGE_2D_MULTISAMPLE,	//iimage2DMS
-	NT_IMAGE_2D_MULTISAMPLE_ARRAY = GL_INT_IMAGE_2D_MULTISAMPLE_ARRAY,	//iimage2DMSArray
+	INT_IMAGE_2D_MULTISAMPLE_ARRAY = GL_INT_IMAGE_2D_MULTISAMPLE_ARRAY,	//iimage2DMSArray
 	UNSIGNED_INT_IMAGE_1D = GL_UNSIGNED_INT_IMAGE_1D,	//uimage1D
 	UNSIGNED_INT_IMAGE_2D = GL_UNSIGNED_INT_IMAGE_2D,	//uimage2D
 	UNSIGNED_INT_IMAGE_3D = GL_UNSIGNED_INT_IMAGE_3D,	//uimage3D
@@ -127,7 +127,6 @@ enum class gl_uniform_type : GLenum
 	UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY = GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY,	//uimage2DMSArray
 	UNSIGNED_INT_ATOMIC_COUNTER	= GL_UNSIGNED_INT_ATOMIC_COUNTER	//atomic_uint
 };
-
 
 
 /**
@@ -350,22 +349,18 @@ inline void add_uniform(std::shared_ptr<gl_variable<glm::##TYPE##>> TYPE##_unifo
 	_##TYPE##_uniforms.push_back(TYPE##_uniform);\
 }\
 
-	//DEF_ADD_UNIFORMS(float32)
 	DEF_ADD_UNIFORMS(vec1)
 	DEF_ADD_UNIFORMS(vec2)
 	DEF_ADD_UNIFORMS(vec3)
 	DEF_ADD_UNIFORMS(vec4)
-	//DEF_ADD_UNIFORMS(float64)
 	DEF_ADD_UNIFORMS(dvec1)
 	DEF_ADD_UNIFORMS(dvec2)
 	DEF_ADD_UNIFORMS(dvec3)
 	DEF_ADD_UNIFORMS(dvec4)
-	//DEF_ADD_UNIFORMS(int32)
 	DEF_ADD_UNIFORMS(ivec1)
 	DEF_ADD_UNIFORMS(ivec2)
 	DEF_ADD_UNIFORMS(ivec3)
 	DEF_ADD_UNIFORMS(ivec4)
-	//DEF_ADD_UNIFORMS(uint32)
 	DEF_ADD_UNIFORMS(uvec1)
 	DEF_ADD_UNIFORMS(uvec2)
 	DEF_ADD_UNIFORMS(uvec3)
@@ -547,8 +542,6 @@ private:
 		glUniformMatrix4x3fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 	}
 
-
-
 public:
 
 	void generate_uniform_buffer_layout(const std::string& block_name)
@@ -566,8 +559,6 @@ public:
 		glGetActiveUniformsiv(_handle, 4, _indices.data(), GL_UNIFORM_OFFSET, _offsets.data());
 
 	}
-
-
 
 	std::vector<std::int32_t> get_uniform_buffer_uniform_indices(const std::string& block_name)
 	{
@@ -604,7 +595,6 @@ public:
 		glGetActiveUniformBlockiv(_handle, glGetUniformBlockIndex(_handle, block_name.c_str()), GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &_value);
 		return _value;
 	}
-
 
 	bool is_uniform_buffer_referred_by_vert_shader(const std::string& block_name)
 	{
