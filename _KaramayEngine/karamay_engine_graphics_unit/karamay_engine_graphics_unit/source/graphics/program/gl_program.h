@@ -361,7 +361,7 @@ inline void add_uniform(std::shared_ptr<gl_variable<glm::##TYPE##>> TYPE##_unifo
 	DEF_ADD_UNIFORMS(ivec2)
 	DEF_ADD_UNIFORMS(ivec3)
 	DEF_ADD_UNIFORMS(ivec4)
-	DEF_ADD_UNIFORMS(uvec1)
+	//DEF_ADD_UNIFORMS(uvec1)
 	DEF_ADD_UNIFORMS(uvec2)
 	DEF_ADD_UNIFORMS(uvec3)
 	DEF_ADD_UNIFORMS(uvec4)
@@ -375,6 +375,21 @@ inline void add_uniform(std::shared_ptr<gl_variable<glm::##TYPE##>> TYPE##_unifo
 	DEF_ADD_UNIFORMS(mat4x2)
 	DEF_ADD_UNIFORMS(mat4x3)
 
+
+private:
+	std::vector<std::shared_ptr<gl_variable<glm::uvec1>>> _uvec1_uniforms;
+public:
+	inline void add_uniforms(const std::vector<std::shared_ptr<gl_variable<glm::uvec1>>>& uvec1_uniforms)
+	{
+		_uvec1_uniforms.insert(_uvec1_uniforms.cend(), uvec1_uniforms.cbegin(), uvec1_uniforms.cend());
+	}
+	inline void add_uniform(std::shared_ptr<gl_variable<glm::uvec1>> uvec1_uniform)
+	{
+		_uvec1_uniforms.push_back(uvec1_uniform);
+	}
+
+
+
 #define DEF_ADD_TEXTURES(TYPE)\
 private:\
 	std::vector<std::shared_ptr<gl_##TYPE##>> _##TYPE##s;\
@@ -387,7 +402,7 @@ public:\
 
 	DEF_ADD_TEXTURES(texture_1d)
 	DEF_ADD_TEXTURES(texture_1d_array)
-	DEF_ADD_TEXTURES(texture_2d)
+	//DEF_ADD_TEXTURES(texture_2d)
 	DEF_ADD_TEXTURES(texture_2d_array)
 	DEF_ADD_TEXTURES(texture_2d_multisample)
 	DEF_ADD_TEXTURES(texture_2d_array_multisample)
@@ -398,11 +413,14 @@ public:\
 	DEF_ADD_TEXTURES(texture_buffer)
 
 
-	//inline void add_texture(std::shared_ptr<gl_texture_2d> texture_2d)
-	//{
-	//	_texture_2ds.push_back(texture_2d);
-	//	add_uniform(std::make_shared<gl_variable<glm::uint32>>(texture_2d->get_name(), _texture_2ds.size() - 1));
-	//}
+private:
+		std::vector<std::shared_ptr<gl_texture_2d>> _texture_2ds; 
+public:
+	inline void add_texture(std::shared_ptr<gl_texture_2d> texture_2d)
+	{
+		_texture_2ds.push_back(texture_2d);
+		add_uniform(std::make_shared<gl_variable<glm::ivec1>>(texture_2d->get_name(), glm::ivec1(static_cast<glm::int32>(_texture_2ds.size() - 1))));
+	}
 
 private:
 	//~ helper function
