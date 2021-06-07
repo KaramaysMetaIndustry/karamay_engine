@@ -2,6 +2,7 @@
 
 #include "public/opengl.h"
 #include "public/stl.h"
+#include "graphics/variable/glu_types.h"
 
 template<typename T>
 class gl_variable final
@@ -37,6 +38,8 @@ public:
 	inline void set_name(const std::string& name) { _name = name; }
 
 	inline void set_value(const T& value) { _value = value; }
+
+	inline std::size_t get_size() const { return sizeof(T); }
 
 };
 

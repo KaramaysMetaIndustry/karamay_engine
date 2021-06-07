@@ -251,7 +251,7 @@ struct gl_texture_pixels
 		switch (_channels)
 		{
 		case 1: format = GL_RED; break;
-		case 3:	format = GL_RGB;  break;
+		case 3:	format = GL_RGB; break;
 		case 4: format = GL_RGBA; break;
 		default:
 			break;
@@ -301,15 +301,61 @@ void test0()
 		glv_f32vec2(0.0f, 1.0f)
 	};
 
+	std::vector<glm::i16vec4> tests{
+		glm::i16vec4(1, 0, 0, 1),
+		glm::i16vec4(0, 1, 0, 1),
+		glm::i16vec4(0, 0, 1, 1),
+		glm::i16vec4(0, 1, 0, 1)
+	};
+
 	std::vector<glm::uint32> indices{
 		0, 1, 3,
 		1, 2, 3
 	};
 
+	// 默认按column存
+// 除了单精度浮点数，其他类型顶点数据在frag中声明时，必须使用flat标识，
+// 并且所有片段拿到的改顶点值等于最后一个顶点的值
+//std::vector<glv_dmat4> tests{
+//	glv_dmat4(
+//	0, 1, 1, 0, // column
+//	1, 0, 0, 0,// column
+//	0, 1, 1, 0,// column
+//	0, 0, 0, 1),// column
+//	glv_dmat4(
+//	0, 1, 1, 0,
+//	1, 0, 0, 0,
+//	0, 1, 1, 0,
+//	0, 0, 0, 1),
+//	glv_dmat4(
+//	0, 1, 1, 0,
+//	1, 0, 0, 0,
+//	0, 1, 1, 0,
+//	0, 0, 0, 1),
+//	glv_dmat4(
+//	0, 1, 0, 0,
+//	1, 0, 1, 0,
+//	1, 0, 1, 0,
+//	0, 0, 0, 1)
+//};
+
+
+	auto u0 = std::make_shared<gl_variable<glu_f32vec4>>("color", glu_f32vec4(1.0f, 0.0f, 0.0f, 1.0f));
+	auto u1 = std::make_shared<gl_variable<glu_f32vec3>>("pos", glu_f32vec3(0.0f, 1.0f, 0.0f));
+	auto u2 = std::make_shared<gl_variable<glu_f32vec4>>("text", glu_f32vec4(0.0f, 0.0f, 1.0f, 1.0f));
+
+	auto ubod = std::make_shared<gl_uniform_buffer_descriptor>();
+	ubod->set_block_name("attack");
+	ubod->add_uniform(u0);
+	ubod->add_uniform(u1);
+	ubod->add_uniform(u2);
+	auto ubo = std::make_shared<gl_uniform_buffer>(ubod);
+	
+
+
 	// uniforms
-	auto camera_position = sp_variable("camera_position", glv_f32vec3(0.0f, 0.0f, 0.0f));
-	auto uniform0 = sp_variable("uniform0", glv_f32vec3(0.1f, 1.0f, 0.5f));
-	auto uniform1 = sp_variable("uniform1", glv_f32vec4(1.0f, 1.0f, 0.5f, 1.0f));
+	auto camera_position = sp_variable("camera_position", glv_f32vec3(1.0f, 0.0f, 0.0f));
+	auto spe_color = sp_variable("spe_color", glv_f32vec4(1.0f, 1.0f, 0.5f, 1.0f));
 
 	// textures
 	auto container2 = std::make_shared<gl_texture_2d>();
@@ -320,46 +366,15 @@ void test0()
 	auto albedo_map = std::make_shared<gl_texture_2d>();
 	gl_texture_pixels albedo_pixels("assets/Materials/Rock030_2k-JPG/Rock030_2K_Color.jpg");
 	albedo_map->fill(albedo_pixels.width, albedo_pixels.height, albedo_pixels.format, (const void*)albedo_pixels.pixels);
-	albedo_map->set_name("mat.albedo_map");
+	albedo_map->set_name("container3");
 
-	std::vector<glm::i16vec4> tests{
-		glm::i16vec4(1, 0, 0, 1),
-		glm::i16vec4(0, 1, 0, 1),
-		glm::i16vec4(0, 0, 1, 1),
-		glm::i16vec4(0, 1, 0, 1)
-	};
+
 
 	// vertex array
 	auto vaod = sptr(gl_vertex_array_descriptor);
 	vaod->add_attributes(positions);
 	vaod->add_attributes(uvs);
 	vaod->add_attributes(tests);
-	
-	// 默认按column存
-	// 除了单精度浮点数，其他类型顶点数据在frag中声明时，必须使用flat标识，
-	// 并且所有片段拿到的改顶点值等于最后一个顶点的值
-	//std::vector<glv_dmat4> tests{
-	//	glv_dmat4(
-	//	0, 1, 1, 0, // column
-	//	1, 0, 0, 0,// column
-	//	0, 1, 1, 0,// column
-	//	0, 0, 0, 1),// column
-	//	glv_dmat4(
-	//	0, 1, 1, 0,
-	//	1, 0, 0, 0,
-	//	0, 1, 1, 0,
-	//	0, 0, 0, 1),
-	//	glv_dmat4(
-	//	0, 1, 1, 0,
-	//	1, 0, 0, 0,
-	//	0, 1, 1, 0,
-	//	0, 0, 0, 1),
-	//	glv_dmat4(
-	//	0, 1, 0, 0,
-	//	1, 0, 1, 0,
-	//	1, 0, 1, 0,
-	//	0, 0, 0, 1)
-	//};
 
 	auto vao = std::make_shared<gl_vertex_array>(vaod);
 
@@ -378,8 +393,14 @@ void test0()
 	program->set_element_array_buffer(ebo);
 	
 	program->add_texture(container2);
+	program->add_texture(albedo_map);
 	
 	program->add_uniform(camera_position);
+	program->add_uniform(spe_color);
+
+	program->add_uniform_buffer(ubo);
+
+	
 	
 	program->set_framebuffer();
 	program->set_commands([] {
@@ -416,6 +437,7 @@ void test0()
 		glClear(GL_COLOR_BUFFER_BIT);
 		program->render(0.0f);
 		window->tick(0.0f);
+		
 	}
 }
 //

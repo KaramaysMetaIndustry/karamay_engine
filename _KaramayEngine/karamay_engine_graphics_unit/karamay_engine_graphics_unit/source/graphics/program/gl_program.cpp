@@ -281,7 +281,7 @@ inline void gl_program::_bind_uniform_buffers()
 			if (uniform_buffer)
 			{
 				// bind buffer to context
-				uniform_buffer->bind(i);
+				uniform_buffer->bind(i, *this);
 				// bind program to context
 				const std::string& block_name = uniform_buffer->get_descriptor()->get_block_name();
 				glUniformBlockBinding(_handle, glGetUniformBlockIndex(_handle, block_name.c_str()), i);
@@ -350,7 +350,7 @@ inline void gl_program::_bind_framebuffer()
 
 #ifdef _DEBUG
 		std::cout << "[custom framebuffer is bound.]" << std::endl;
-#endif // DEBUG
+#endif
 
 	}
 	else // bind default framebuffer
@@ -359,7 +359,7 @@ inline void gl_program::_bind_framebuffer()
 
 #ifdef _DEBUG
 		std::cout << "[default framebuffer is bound.]" << std::endl;
-#endif // DEBUG
+#endif
 
 	}
 		
@@ -377,10 +377,12 @@ for (std::uint32_t i = 0; i < _##TYPE##s.size(); ++i)\
 	// bind textures to context
 	// and prepare to launch it's unit index as a uniform 
 	BIND_TEXTURES(texture_1d)
+	BIND_TEXTURES(texture_1d_array)
 	BIND_TEXTURES(texture_2d)
 	BIND_TEXTURES(texture_2d_multisample)
 	BIND_TEXTURES(texture_2d_array)
 	BIND_TEXTURES(texture_2d_array_multisample)
+	BIND_TEXTURES(texture_rectangle)
 	BIND_TEXTURES(texture_3d)
 	BIND_TEXTURES(texture_cube)
 	BIND_TEXTURES(texture_cube_array)
@@ -400,39 +402,44 @@ for (auto uniform : _##TYPE##_uniforms)\
 	}\
 }\
 
-	// launch all uniforms (include common uniforms and texture units)
-	//UPDATE_UNIFORMS(float32)
-	UPDATE_UNIFORMS(vec1)
-	UPDATE_UNIFORMS(vec2)
-	UPDATE_UNIFORMS(vec3)
-	UPDATE_UNIFORMS(vec4)
-
-	//UPDATE_UNIFORMS(float64)
-	UPDATE_UNIFORMS(dvec1)
-	UPDATE_UNIFORMS(dvec2)
-	UPDATE_UNIFORMS(dvec3)
-	UPDATE_UNIFORMS(dvec4)
-
-	//UPDATE_UNIFORMS(int32)
-	UPDATE_UNIFORMS(ivec1)
-	UPDATE_UNIFORMS(ivec2)
-	UPDATE_UNIFORMS(ivec3)
-	UPDATE_UNIFORMS(ivec4)
-
-	//UPDATE_UNIFORMS(uint32)
-	UPDATE_UNIFORMS(uvec1)
-	UPDATE_UNIFORMS(uvec2)
-	UPDATE_UNIFORMS(uvec3)
-	UPDATE_UNIFORMS(uvec4)
-
-	UPDATE_UNIFORMS(mat2)
-	UPDATE_UNIFORMS(mat3)
-	UPDATE_UNIFORMS(mat4)
-
-	UPDATE_UNIFORMS(mat2x3)
-	UPDATE_UNIFORMS(mat2x4)
-	UPDATE_UNIFORMS(mat3x2)
-	UPDATE_UNIFORMS(mat3x4)
-	UPDATE_UNIFORMS(mat4x2)
-	UPDATE_UNIFORMS(mat4x3)
+	//float
+	UPDATE_UNIFORMS(glu_f32vec1)
+	UPDATE_UNIFORMS(glu_f32vec2)
+	UPDATE_UNIFORMS(glu_f32vec3)
+	UPDATE_UNIFORMS(glu_f32vec4)
+	//double
+	UPDATE_UNIFORMS(glu_f64vec1)
+	UPDATE_UNIFORMS(glu_f64vec2)
+	UPDATE_UNIFORMS(glu_f64vec3)
+	UPDATE_UNIFORMS(glu_f64vec4)
+	//int
+	UPDATE_UNIFORMS(glu_i32vec1)
+	UPDATE_UNIFORMS(glu_i32vec2)
+	UPDATE_UNIFORMS(glu_i32vec3)
+	UPDATE_UNIFORMS(glu_i32vec4)
+	//uint
+	UPDATE_UNIFORMS(glu_ui32vec1)
+	UPDATE_UNIFORMS(glu_ui32vec2)
+	UPDATE_UNIFORMS(glu_ui32vec3)
+	UPDATE_UNIFORMS(glu_ui32vec4)
+	//float matrix
+	UPDATE_UNIFORMS(glu_f32mat2)
+	UPDATE_UNIFORMS(glu_f32mat3)
+	UPDATE_UNIFORMS(glu_f32mat4)
+	UPDATE_UNIFORMS(glu_f32mat2x3)
+	UPDATE_UNIFORMS(glu_f32mat2x4)
+	UPDATE_UNIFORMS(glu_f32mat3x2)
+	UPDATE_UNIFORMS(glu_f32mat3x4)
+	UPDATE_UNIFORMS(glu_f32mat4x2)
+	UPDATE_UNIFORMS(glu_f32mat4x3)
+	//double matrix
+	UPDATE_UNIFORMS(glu_f64mat2)
+	UPDATE_UNIFORMS(glu_f64mat3)
+	UPDATE_UNIFORMS(glu_f64mat4)
+	UPDATE_UNIFORMS(glu_f64mat2x3)
+	UPDATE_UNIFORMS(glu_f64mat2x4)
+	UPDATE_UNIFORMS(glu_f64mat3x2)
+	UPDATE_UNIFORMS(glu_f64mat3x4)
+	UPDATE_UNIFORMS(glu_f64mat4x2)
+	UPDATE_UNIFORMS(glu_f64mat4x3)
 }

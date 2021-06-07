@@ -19,9 +19,16 @@ public:
 	}
 
 
-	void bind(std::uint32_t unit);
+	void bind(std::uint32_t unit)
+	{
+		glActiveTexture(GL_TEXTURE0 + unit);
+		glBindTexture(GL_TEXTURE_2D, _handle);
+	}
 
-	void unbind();
+	void unbind()
+	{
+
+	}
 
 private:
 	int _width, _height;

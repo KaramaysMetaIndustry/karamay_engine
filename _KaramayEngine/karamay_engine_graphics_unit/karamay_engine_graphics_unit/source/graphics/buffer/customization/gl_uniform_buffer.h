@@ -2,6 +2,8 @@
 #include "graphics/buffer/gl_buffer.h"
 #include "graphics/variable/gl_variable.h"
 
+class gl_program;
+
 struct _shader_point_light_std140
 {
 	// ...
@@ -35,13 +37,12 @@ namespace gl_uniform_buffer_enum
 }
 
 
-class gl_uniform_buffer_element_layout
+struct gl_uniform_buffer_item_layout
 {
-	std::size_t _offset;
-	std::vector<std::uint8_t> _data;
-
+	std::string name;
+	std::vector<std::uint8_t> stream;
+	
 };
-
 
 class gl_uniform_buffer_descriptor
 {
@@ -49,35 +50,54 @@ class gl_uniform_buffer_descriptor
 public:
 
 	gl_uniform_buffer_descriptor() :
-		_memory_layout(gl_uniform_buffer_enum::layout::std140),
+		_memory_layout(gl_uniform_buffer_enum::layout::packed),
 		_memory_matrix_layout(gl_uniform_buffer_enum::matrix_layout::row_major),
 		_block_name(),
-		_data(),
-		_size(0),
 		_is_dirty(true)
 	{
 
 	}
 
 	template<typename T>
-	void add_uniform(T uniform)
+	void add_uniform(std::shared_ptr<gl_variable<T>> uniform)
 	{
-		const size_t _uniform_size = sizeof(T);
-		const std::uint8_t* _ref = (std::uint8_t*)glm::value_ptr(uniform);
-		
-		// fill data
-		for (std::size_t i = 0; i < _uniform_size; ++i)
-			_data.push_back(_ref[i]);
-		
-		// fill padding
-		/*if (_tail < _tmp_size)
+		if (uniform)
 		{
-			_data.insert(_data.cbegin(), _tail, 0);
-		}*/
+			const std::uint8_t* _uniform_bytes = (std::uint8_t*)glm::value_ptr(uniform->get_value());
+			const size_t _uniform_size = uniform->get_size();
 
-		std::cout << "container size£º" << _data.size() << std::endl;
+			gl_uniform_buffer_item_layout _item_layout;
+			_item_layout.name = uniform->get_name();
+			auto& _stream = _item_layout.stream;
+
+			for (std::size_t _index = 0; _index < _uniform_size; _stream.push_back(_uniform_bytes[_index]), ++_index) {}
+			_item_layouts.push_back(_item_layout);
+		}
+		
 	}
 
+	//template<typename T>
+	void modify_uniform(const std::string& name, std::shared_ptr<gl_variable<glu_f32vec4>> uniform)
+	{
+		auto _it = 
+		_item_layouts_map.find(name);
+		if (_it == _item_layouts_map.cend()) return;
+
+		if (uniform)
+		{
+			const std::uint8_t* _uniform_bytes = (std::uint8_t*)glm::value_ptr(uniform->get_value());
+			const size_t _uniform_size = uniform->get_size();
+
+			gl_uniform_buffer_item_layout _item_layout;
+			_item_layout.name = uniform->get_name();
+			auto& _stream = _item_layout.stream;
+
+			for (std::size_t _index = 0; _index < _uniform_size; 
+				_stream.push_back(_uniform_bytes[_index]), ++_index) {}
+		}
+
+
+	}
 
 private:
 
@@ -85,75 +105,57 @@ private:
 
 	gl_uniform_buffer_enum::matrix_layout _memory_matrix_layout;
 
-	std::unordered_map<std::string, std::shared_ptr<void>> _uniforms_map;
+	std::vector<gl_uniform_buffer_item_layout> _item_layouts;
+
+	std::unordered_map<std::string, gl_uniform_buffer_item_layout> _item_layouts_map;
 
 	std::string _block_name;
 
-	std::vector<std::uint8_t> _data;
-
-	std::size_t _size;
-	
 	std::uint8_t _is_dirty;
 
 public:
+	
+	inline const std::string& get_block_name() const
+	{
+		return _block_name;
+	}
+	
+	inline const std::vector<gl_uniform_buffer_item_layout>& get_item_layouts() const
+	{
+		return _item_layouts;
+	}
 
-	const gl_uniform_buffer_enum::layout get_memory_layout() const
+	inline const gl_uniform_buffer_enum::layout get_memory_layout() const
 	{
 		return _memory_layout;
 	}
 
-	const std::string& get_block_name() const
-	{
-		return _block_name;
-	}
-
-	void* get_data()
-	{
-		return _data.data();
-	}
-
-	const std::size_t get_data_size() const
-	{
-		return _data.size();
-	}
-	
-	const std::uint8_t is_dirty() const
+	inline const std::uint8_t is_dirty() const
 	{
 		return _is_dirty;
 	}
+
+	inline void set_dirty(bool dirty) { _is_dirty = dirty; }
+
+	inline void set_block_name(const std::string& block_name) { _block_name = block_name; }
 };
 
 
 class gl_uniform_buffer final
 {
-
 public:
 	
-	gl_uniform_buffer(std::shared_ptr<gl_uniform_buffer_descriptor> descriptor) :
-		_descriptor(descriptor)
-	{}
-	
-	~gl_uniform_buffer()
-	{}
+	gl_uniform_buffer(std::shared_ptr<gl_uniform_buffer_descriptor> descriptor);
 
 public:
 
-	std::shared_ptr<gl_uniform_buffer_descriptor> get_descriptor() { return _descriptor; }
+	void bind(std::int32_t binding, gl_program& program);
 
-	void update(std::float_t delta_time);
+	void unbind();
 
-	void bind(std::int32_t binding)
+	std::shared_ptr<gl_uniform_buffer_descriptor> get_descriptor()
 	{
-		if (_descriptor && _buffer)
-		{
-			glBindBufferRange(GL_UNIFORM_BUFFER, binding, _buffer->get_handle(), 0, _descriptor->get_data_size());
-		}
-	}
-
-	void unbind()
-	{
-		glBindBufferRange(GL_UNIFORM_BUFFER, _binding, 0, 0, 0);
-		_binding = 0;
+		return _descriptor;
 	}
 
 private:
@@ -166,21 +168,13 @@ private:
 
 private:
 
+	void _fill_shared_packed(const gl_program& program);
+
 	void _fill_std140();
 
-	void _fill_shared_packed()
-	{
+public:
 
-		std::vector<std::string> names;
-
-		std::size_t _block_size = 0;
-		std::size_t _offset = 0;
-		std::size_t _size = 0;
-		std::vector<std::uint32_t> _data;
-
-		_buffer->allocate(_block_size);
-		_buffer->fill(_offset, _data.size(), _data.data());
-	}
+	~gl_uniform_buffer();
 
 };
 

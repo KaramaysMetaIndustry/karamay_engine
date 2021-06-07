@@ -240,6 +240,58 @@ public:
 
 public:
 
+	void set_stencil_test()
+	{
+		glStencilFunc(GL_ALWAYS, 1, 0xFF);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+		glStencilMask(GL_TRUE);
+	}
+
+	void enable_stencil_test()
+	{
+		glEnable(GL_STENCIL_TEST);
+	}
+
+	void disable_stencil_test()
+	{
+		glDisable(GL_STENCIL_TEST);
+	}
+
+	void set_depth_test()
+	{
+		glDepthFunc(GL_LESS);
+		glDepthMask(GL_TRUE);
+		glClearDepth(1.0f);
+	}
+
+	void enable_depth_test()
+	{
+		glEnable(GL_DEPTH_TEST);
+	}
+
+	void disable_depth_test()
+	{
+		glDisable(GL_DEPTH_TEST);
+	}
+
+	void set_alpha_test()
+	{
+		//glAlphaFunc();
+	}
+
+	void enable_alpha_test()
+	{
+		glEnable(GL_ALPHA_TEST);
+		
+	}
+
+	void disable_alpha_test()
+	{
+		glDisable(GL_ALPHA_TEST);
+	}
+	 
+public:
+
 	/**
 	 * start render processing
 	 */
@@ -338,55 +390,57 @@ private:
 
 #define DEF_ADD_UNIFORMS(TYPE)\
 private:\
-std::vector<std::shared_ptr<gl_variable<glm::##TYPE##>>> _##TYPE##_uniforms;\
+std::vector<std::shared_ptr<gl_variable<##TYPE##>>> _##TYPE##_uniforms;\
 public:\
-inline void add_uniforms(const std::vector<std::shared_ptr<gl_variable<glm::##TYPE##>>>& TYPE##_uniforms)\
+inline void add_uniforms(const std::vector<std::shared_ptr<gl_variable<##TYPE##>>>& TYPE##_uniforms)\
 {\
 	_##TYPE##_uniforms.insert(_##TYPE##_uniforms.cend(), TYPE##_uniforms.cbegin(), TYPE##_uniforms.cend());\
 }\
-inline void add_uniform(std::shared_ptr<gl_variable<glm::##TYPE##>> TYPE##_uniform)\
+inline void add_uniform(std::shared_ptr<gl_variable<##TYPE##>> TYPE##_uniform)\
 {\
 	_##TYPE##_uniforms.push_back(TYPE##_uniform);\
 }\
 
-	DEF_ADD_UNIFORMS(vec1)
-	DEF_ADD_UNIFORMS(vec2)
-	DEF_ADD_UNIFORMS(vec3)
-	DEF_ADD_UNIFORMS(vec4)
-	DEF_ADD_UNIFORMS(dvec1)
-	DEF_ADD_UNIFORMS(dvec2)
-	DEF_ADD_UNIFORMS(dvec3)
-	DEF_ADD_UNIFORMS(dvec4)
-	DEF_ADD_UNIFORMS(ivec1)
-	DEF_ADD_UNIFORMS(ivec2)
-	DEF_ADD_UNIFORMS(ivec3)
-	DEF_ADD_UNIFORMS(ivec4)
-	//DEF_ADD_UNIFORMS(uvec1)
-	DEF_ADD_UNIFORMS(uvec2)
-	DEF_ADD_UNIFORMS(uvec3)
-	DEF_ADD_UNIFORMS(uvec4)
-	DEF_ADD_UNIFORMS(mat2)
-	DEF_ADD_UNIFORMS(mat3)
-	DEF_ADD_UNIFORMS(mat4)
-	DEF_ADD_UNIFORMS(mat2x3)
-	DEF_ADD_UNIFORMS(mat2x4)
-	DEF_ADD_UNIFORMS(mat3x2)
-	DEF_ADD_UNIFORMS(mat3x4)
-	DEF_ADD_UNIFORMS(mat4x2)
-	DEF_ADD_UNIFORMS(mat4x3)
-
-
-private:
-	std::vector<std::shared_ptr<gl_variable<glm::uvec1>>> _uvec1_uniforms;
-public:
-	inline void add_uniforms(const std::vector<std::shared_ptr<gl_variable<glm::uvec1>>>& uvec1_uniforms)
-	{
-		_uvec1_uniforms.insert(_uvec1_uniforms.cend(), uvec1_uniforms.cbegin(), uvec1_uniforms.cend());
-	}
-	inline void add_uniform(std::shared_ptr<gl_variable<glm::uvec1>> uvec1_uniform)
-	{
-		_uvec1_uniforms.push_back(uvec1_uniform);
-	}
+	// float
+	DEF_ADD_UNIFORMS(glu_f32vec1)
+	DEF_ADD_UNIFORMS(glu_f32vec2)
+	DEF_ADD_UNIFORMS(glu_f32vec3)
+	DEF_ADD_UNIFORMS(glu_f32vec4)
+	// double
+	DEF_ADD_UNIFORMS(glu_f64vec1)
+	DEF_ADD_UNIFORMS(glu_f64vec2)
+	DEF_ADD_UNIFORMS(glu_f64vec3)
+	DEF_ADD_UNIFORMS(glu_f64vec4)
+	// int
+	DEF_ADD_UNIFORMS(glu_i32vec1)
+	DEF_ADD_UNIFORMS(glu_i32vec2)
+	DEF_ADD_UNIFORMS(glu_i32vec3)
+	DEF_ADD_UNIFORMS(glu_i32vec4)
+	// uint
+	DEF_ADD_UNIFORMS(glu_ui32vec1)
+	DEF_ADD_UNIFORMS(glu_ui32vec2)
+	DEF_ADD_UNIFORMS(glu_ui32vec3)
+	DEF_ADD_UNIFORMS(glu_ui32vec4)
+	// float mat
+	DEF_ADD_UNIFORMS(glu_f32mat2)
+	DEF_ADD_UNIFORMS(glu_f32mat3)
+	DEF_ADD_UNIFORMS(glu_f32mat4)
+	DEF_ADD_UNIFORMS(glu_f32mat2x3)
+	DEF_ADD_UNIFORMS(glu_f32mat2x4)
+	DEF_ADD_UNIFORMS(glu_f32mat3x2)
+	DEF_ADD_UNIFORMS(glu_f32mat3x4)
+	DEF_ADD_UNIFORMS(glu_f32mat4x2)
+	DEF_ADD_UNIFORMS(glu_f32mat4x3)
+	// double mat
+	DEF_ADD_UNIFORMS(glu_f64mat2)
+	DEF_ADD_UNIFORMS(glu_f64mat3)
+	DEF_ADD_UNIFORMS(glu_f64mat4)
+	DEF_ADD_UNIFORMS(glu_f64mat2x3)
+	DEF_ADD_UNIFORMS(glu_f64mat2x4)
+	DEF_ADD_UNIFORMS(glu_f64mat3x2)
+	DEF_ADD_UNIFORMS(glu_f64mat3x4)
+	DEF_ADD_UNIFORMS(glu_f64mat4x2)
+	DEF_ADD_UNIFORMS(glu_f64mat4x3)
 
 
 
@@ -397,12 +451,12 @@ public:\
 	inline void add_texture(std::shared_ptr<gl_##TYPE##> TYPE)\
 	{\
 		_##TYPE##s.push_back(TYPE);\
-		add_uniform(std::make_shared<gl_variable<glm::uvec1>>(TYPE->get_name(), glm::uvec1(static_cast<glm::uint32>(_##TYPE##s.size()) - 1)));\
+		add_uniform(std::make_shared<gl_variable<glu_i32vec1>>(TYPE->get_name(), glu_i32vec1(static_cast<glm::int32>(_##TYPE##s.size() - 1))));\
 	}\
 
 	DEF_ADD_TEXTURES(texture_1d)
 	DEF_ADD_TEXTURES(texture_1d_array)
-	//DEF_ADD_TEXTURES(texture_2d)
+	DEF_ADD_TEXTURES(texture_2d)
 	DEF_ADD_TEXTURES(texture_2d_array)
 	DEF_ADD_TEXTURES(texture_2d_multisample)
 	DEF_ADD_TEXTURES(texture_2d_array_multisample)
@@ -412,36 +466,26 @@ public:\
 	DEF_ADD_TEXTURES(texture_cube_array)
 	DEF_ADD_TEXTURES(texture_buffer)
 
-
-private:
-		std::vector<std::shared_ptr<gl_texture_2d>> _texture_2ds; 
-public:
-	inline void add_texture(std::shared_ptr<gl_texture_2d> texture_2d)
-	{
-		_texture_2ds.push_back(texture_2d);
-		add_uniform(std::make_shared<gl_variable<glm::ivec1>>(texture_2d->get_name(), glm::ivec1(static_cast<glm::int32>(_texture_2ds.size() - 1))));
-	}
-
 private:
 	//~ helper function
 	/*inline void _update_uniform(const std::string& name, glm::float32 value)
 	{
 		glUniform1f(glGetUniformLocation(_handle, name.c_str()), value);
 	}*/
-	inline void _update_uniform(const std::string& name, glm::vec1 value)
+	inline void _update_uniform(const std::string& name, glu_f32vec1 value)
 	{
 		glUniform1f(glGetUniformLocation(_handle, name.c_str()), value.r);
 	}
-	inline void _update_uniform(const std::string& name, glm::vec2 value)
+	inline void _update_uniform(const std::string& name, glu_f32vec2 value)
 	{
 		glUniform2fv(glGetUniformLocation(_handle, name.c_str()), 2, glm::value_ptr(value));
 	}
-	inline void _update_uniform(const std::string& name, glm::vec3 value)
+	inline void _update_uniform(const std::string& name, glu_f32vec3 value)
 	{
 		//glUniform3fv(glGetUniformLocation(_handle, name.c_str()), 3, glm::value_ptr(value));
 		glUniform3f(glGetUniformLocation(_handle, name.c_str()), value.r, value.g, value.b);
 	}
-	inline void _update_uniform(const std::string& name, glm::vec4 value)
+	inline void _update_uniform(const std::string& name, glu_f32vec4 value)
 	{
 		glUniform4fv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
 	}
@@ -449,19 +493,19 @@ private:
 	{
 		glUniform1d(glGetUniformLocation(_handle, name.c_str()), value);
 	}*/
-	inline void _update_uniform(const std::string& name, glm::dvec1 value)
+	inline void _update_uniform(const std::string& name, glu_f64vec1 value)
 	{
 		glUniform1d(glGetUniformLocation(_handle, name.c_str()), value.r);
 	}
-	inline void _update_uniform(const std::string& name, glm::dvec2 value)
+	inline void _update_uniform(const std::string& name, glu_f64vec2 value)
 	{
 		glUniform2dv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
 	}
-	inline void _update_uniform(const std::string& name, glm::dvec3 value)
+	inline void _update_uniform(const std::string& name, glu_f64vec3 value)
 	{
 		glUniform3dv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
 	}
-	inline void _update_uniform(const std::string& name, glm::dvec4 value)
+	inline void _update_uniform(const std::string& name, glu_f64vec4 value)
 	{
 		glUniform4dv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
 	}
@@ -469,19 +513,19 @@ private:
 	{
 		glUniform1i(glGetUniformLocation(_handle, name.c_str()), value);
 	}*/
-	inline void _update_uniform(const std::string& name, glm::ivec1 value)
+	inline void _update_uniform(const std::string& name, glu_i32vec1 value)
 	{
 		glUniform1i(glGetUniformLocation(_handle, name.c_str()), value.r);
 	}
-	inline void _update_uniform(const std::string& name, glm::ivec2 value)
+	inline void _update_uniform(const std::string& name, glu_i32vec2 value)
 	{
 		glUniform2iv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
 	}
-	inline void _update_uniform(const std::string& name, glm::ivec3 value)
+	inline void _update_uniform(const std::string& name, glu_i32vec3 value)
 	{
 		glUniform3iv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
 	}
-	inline void _update_uniform(const std::string& name, glm::ivec4 value)
+	inline void _update_uniform(const std::string& name, glu_i32vec4 value)
 	{
 		glUniform4iv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
 	}
@@ -489,75 +533,112 @@ private:
 	{
 		glUniform1ui(glGetUniformLocation(_handle, name.c_str()), value);
 	}*/
-	inline void _update_uniform(const std::string& name, glm::uvec1 value)
+	inline void _update_uniform(const std::string& name, glu_ui32vec1 value)
 	{
 		glUniform1ui(glGetUniformLocation(_handle, name.c_str()), value.r);
 	}
-	inline void _update_uniform(const std::string& name, glm::uvec2 value)
+	inline void _update_uniform(const std::string& name, glu_ui32vec2 value)
 	{
 		glUniform2uiv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
 	}
-	inline void _update_uniform(const std::string& name, glm::uvec3 value)
+	inline void _update_uniform(const std::string& name, glu_ui32vec3 value)
 	{
 		glUniform3uiv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
 	}
-	inline void _update_uniform(const std::string& name, glm::uvec4 value)
+	inline void _update_uniform(const std::string& name, glu_ui32vec4 value)
 	{
 		glUniform4uiv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
 	}
 	
-	inline void _update_uniform(const std::string& name, glm::bvec1 value)
+	inline void _update_uniform(const std::string& name, glu_bvec1 value)
 	{
 		
 	}
-	inline void _update_uniform(const std::string& name, glm::bvec2 value)
+	inline void _update_uniform(const std::string& name, glu_bvec2 value)
 	{
 
 	}
-	inline void _update_uniform(const std::string& name, glm::bvec3 value)
+	inline void _update_uniform(const std::string& name, glu_bvec3 value)
 	{
 
 	}
-	inline void _update_uniform(const std::string& name, glm::bvec4 value)
+	inline void _update_uniform(const std::string& name, glu_bvec4 value)
 	{
 
 	}
 	
-	inline void _update_uniform(const std::string& name, glm::mat2 value)
+	inline void _update_uniform(const std::string& name, glu_f32mat2 value)
 	{
 		glUniformMatrix2fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 	}
-	inline void _update_uniform(const std::string& name, glm::mat3 value)
+	inline void _update_uniform(const std::string& name, glu_f32mat3 value)
 	{
 		glUniformMatrix3fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 	}
-	inline void _update_uniform(const std::string& name, glm::mat4 value)
+	inline void _update_uniform(const std::string& name, glu_f32mat4 value)
 	{
 		glUniformMatrix4fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 	}
-	inline void _update_uniform(const std::string& name, glm::mat2x3 value)
+	inline void _update_uniform(const std::string& name, glu_f32mat2x3 value)
 	{
 		glUniformMatrix2x3fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 	}
-	inline void _update_uniform(const std::string& name, glm::mat2x4 value)
+	inline void _update_uniform(const std::string& name, glu_f32mat2x4 value)
 	{
 		glUniformMatrix2x4fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 	}
-	inline void _update_uniform(const std::string& name, glm::mat3x2 value)
+	inline void _update_uniform(const std::string& name, glu_f32mat3x2 value)
 	{
 		glUniformMatrix3x2fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 	}
-	inline void _update_uniform(const std::string& name, glm::mat3x4 value)
+	inline void _update_uniform(const std::string& name, glu_f32mat3x4 value)
 	{
 		glUniformMatrix3x4fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 	}
-	inline void _update_uniform(const std::string& name, glm::mat4x2 value)
+	inline void _update_uniform(const std::string& name, glu_f32mat4x2 value)
 	{
 		glUniformMatrix4x2fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 	}
-	inline void _update_uniform(const std::string& name, glm::mat4x3 value)
+	inline void _update_uniform(const std::string& name, glu_f32mat4x3 value)
 	{
 		glUniformMatrix4x3fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+	}
+
+	inline void _update_uniform(const std::string& name, glu_f64mat2 value)
+	{
+		glUniformMatrix2dv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+	}
+	inline void _update_uniform(const std::string& name, glu_f64mat3 value)
+	{
+		glUniformMatrix3dv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+	}
+	inline void _update_uniform(const std::string& name, glu_f64mat4 value)
+	{
+		glUniformMatrix4dv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+	}
+	inline void _update_uniform(const std::string& name, glu_f64mat2x3 value)
+	{
+		glUniformMatrix2x3dv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+	}
+	inline void _update_uniform(const std::string& name, glu_f64mat2x4 value)
+	{
+		glUniformMatrix2x4dv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+	}
+	inline void _update_uniform(const std::string& name, glu_f64mat3x2 value)
+	{
+		glUniformMatrix3x2dv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+	}
+	inline void _update_uniform(const std::string& name, glu_f64mat3x4 value)
+	{
+		glUniformMatrix3x4dv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+	}
+	inline void _update_uniform(const std::string& name, glu_f64mat4x2 value)
+	{
+		glUniformMatrix4x2dv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+	}
+	inline void _update_uniform(const std::string& name, glu_f64mat4x3 value)
+	{
+		glUniformMatrix4x3dv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 	}
 
 public:
@@ -573,10 +654,31 @@ public:
 		std::int32_t _block_size = 0;
 		const auto _block_index = glGetUniformBlockIndex(_handle, block_name.c_str());
 		glGetActiveUniformBlockiv(_handle, _block_index, GL_UNIFORM_BLOCK_DATA_SIZE, &_block_size);
-		glGetUniformIndices(_handle, _names.size(), _names.data(), _indices.data());
+		//glGetUniformIndices(_handle, _names.size(), _names.data(), _indices.data());
 		glGetActiveUniformsiv(_handle, 4, _indices.data(), GL_UNIFORM_OFFSET, _offsets.data());
-
+		
 	}
+
+
+	const std::int32_t get_uniform_buffer_block_size(const std::string block_name) const
+	{
+		GLint _value = 0;
+		glGetActiveUniformBlockiv(_handle,
+			glGetUniformBlockIndex(_handle, block_name.c_str()),
+			GL_UNIFORM_BLOCK_DATA_SIZE, &_value);
+		return _value;
+	}
+
+	const std::int32_t get_uniform_buffer_item_offset(const std::string& name) const
+	{
+		const char* str = name.data();
+		GLuint _index = 0;
+		GLint _offset = 0;
+		glGetUniformIndices(_handle, 1, &str, &_index);
+		glGetActiveUniformsiv(_handle, 1, &_index, GL_UNIFORM_OFFSET, &_offset);
+		return _offset;
+	}
+
 
 	std::vector<std::int32_t> get_uniform_buffer_uniform_indices(const std::string& block_name)
 	{

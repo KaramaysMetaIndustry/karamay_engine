@@ -43,6 +43,6 @@ void gl_texture_2d::bind(std::uint32_t unit)
 
 void gl_texture_2d::unbind()
 {
-	glActiveTexture(0);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	//glActiveTexture(0);
+	//glBindTexture(GL_TEXTURE_2D, 0);
 }
