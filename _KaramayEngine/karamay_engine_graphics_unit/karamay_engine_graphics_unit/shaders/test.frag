@@ -1,5 +1,16 @@
 #version 450 core
 
+
+struct Material
+{
+	vec4 BaseColor;
+	float scale;
+	sampler2DArray textures;
+};
+
+
+uniform Material Mat;
+
 in vec3 position;
 in vec2 TexCoord;
 flat in ivec4 test;
@@ -36,4 +47,8 @@ void main()
    //FragColor = vec4(mix(texture(container2, TexCoord), texture(container3, TexCoord), 0.6f).rgb, 1.0f);
    //FragColor = vec4((color.r + text.r), (color.g + text.g), (color.b + text.b), 1.0f);
    FragColor = vec4((color + text).rgb + pos, 1.0f);
+
+   uint index;
+   FragColor = texture(Mat.textures, vec3(TexCoord, 0));
+
 }

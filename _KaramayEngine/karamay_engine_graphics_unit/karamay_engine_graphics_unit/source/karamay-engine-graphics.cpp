@@ -309,8 +309,8 @@ void test0()
 	};
 
 	std::vector<glm::uint32> indices{
-		0, 1, 3,
-		1, 2, 3
+		0, 1, 3, // polygon0
+		1, 2, 3 // polygon1
 	};
 
 	// Ä¬ÈÏ°´column´æ

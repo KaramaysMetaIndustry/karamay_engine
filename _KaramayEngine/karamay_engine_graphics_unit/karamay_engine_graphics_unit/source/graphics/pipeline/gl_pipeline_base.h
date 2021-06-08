@@ -28,15 +28,46 @@ class gl_pipeline_base : public gl_object
 {
 public:
 
-	gl_pipeline_base() {}
+	gl_pipeline_base(const std::string& xml_path) :
+		_program(std::make_shared<gl_program>())
+	{
+		// parse xml
+	}
+
+	gl_pipeline_base(const std::vector<std::string>& shaders, 
+		const std::shared_ptr<gl_vertex_array_descriptor>& va_desc,
+		const std::shared_ptr<gl_element_array_buffer>& eab_desc,
+		const std::shared_ptr<gl_transform_feedback_descriptor>& tf_desc,
+		const std::vector<std::shared_ptr<gl_uniform_buffer_descriptor>>& ub_descs,
+		const std::vector<std::shared_ptr<gl_shader_storage_buffer_descriptor>>& ssb_descs,
+		const std::vector<std::shared_ptr<gl_atomic_counter_buffer_descriptor>>& acb_descs,
+		const std::shared_ptr<gl_framebuffer>& framebuffer,
+		const std::function<void(void)>& commands_lambda) :
+		_program(std::make_shared<gl_program>())
+	{
+
+	}
 
 	virtual ~gl_pipeline_base() {}
 
-private:
+protected:
 
 	std::shared_ptr<gl_program> _program;
 
-public:
+
+protected:
+
+	auto& set_shaders(const std::vector<std::string>& shaders)
+	{
+		if (_program && !_is_assembled)
+		{
+			_program->assembly(shaders);
+
+			_is_assembled = true;
+		}
+
+		return *this;
+	}
 
 	auto& set_vertex_specification(const std::shared_ptr<gl_vertex_array_descriptor>& va_desc, const std::shared_ptr<gl_element_array_buffer_descriptor>& eab_desc = nullptr)
 	{
@@ -52,9 +83,12 @@ public:
 		return *this;
 	}
 
-	auto& set_transform_feedback()
+	auto& set_transform_feedback(const std::shared_ptr<gl_transform_feedback_descriptor>& tf_desc)
 	{
-
+		if (_program)
+		{
+			_program->set_transform_feedback(std::make_shared<gl_transform_feedback>(tf_desc));
+		}
 		return *this;
 	}
 
@@ -99,6 +133,15 @@ public:
 		return *this;
 	}
 	
+	template<typename T>
+	auto& add_texture(const std::shared_ptr<T>& texture)
+	{
+		if (texture && _program)
+		{
+			_program->add_texture(texture);
+		}
+	}
+
 	auto& set_framebuffer(const std::shared_ptr<gl_framebuffer>& framebuffer = nullptr)
 	{
 		if (_program)
@@ -110,4 +153,38 @@ public:
 
 		return *this;
 	}
+
+	void set_commands(const std::function<void(void)>& commands_lambda)
+	{
+		if (_program)
+		{
+			_program->set_commands(commands_lambda);
+		}
+	}
+
+public:
+
+	template<typename T>
+	bool update_uniform_buffer_item(const std::string& block_name, const std::string item_name, const T& value)
+	{}
+
+	template<typename T>
+	bool update_shader_storage_buffer_item(const std::string& block_name, const std::string& item_name, const T& value)
+	{}
+
+	template<typename T>
+	bool update_atomic_counter_buffer_item(const std::string& block_name, const std::string& item_name, const T& value)
+	{}
+
+	template<typename T>
+	bool update_uniform(const std::string& name, const T& value)
+	{}
+
+	template<typename T>
+	bool update_texture(const std::string& name, const std::shared_ptr<T>& texture)
+	{}
+
+
+
+
 };

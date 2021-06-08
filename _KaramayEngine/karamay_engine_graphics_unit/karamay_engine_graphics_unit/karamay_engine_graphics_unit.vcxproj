@@ -39,6 +39,7 @@
     <ClCompile Include="source\graphics\program_pipeline\gl_program_pipeline.cpp" />
     <ClCompile Include="source\graphics\renderbuffer\gl_multisample_renderbuffer.cpp" />
     <ClCompile Include="source\graphics\renderbuffer\gl_renderbuffer.cpp" />
+    <ClCompile Include="source\graphics\renderer\gl_renderer.cpp" />
     <ClCompile Include="source\graphics\sampler\gl_sampler.cpp" />
     <ClCompile Include="source\graphics\shader\gl_shader.cpp" />
     <ClCompile Include="source\graphics\texture\base\gl_texture_base.cpp" />
@@ -81,6 +82,7 @@
     <ClInclude Include="source\graphics\program_pipeline\gl_program_pipeline.h" />
     <ClInclude Include="source\graphics\renderbuffer\gl_multisample_renderbuffer.h" />
     <ClInclude Include="source\graphics\renderbuffer\gl_renderbuffer.h" />
+    <ClInclude Include="source\graphics\renderer\gl_renderer.h" />
     <ClInclude Include="source\graphics\sampler\gl_sampler.h" />
     <ClInclude Include="source\graphics\shader\gl_shader.h" />
     <ClInclude Include="source\graphics\texture\base\gl_texture_base.h" />

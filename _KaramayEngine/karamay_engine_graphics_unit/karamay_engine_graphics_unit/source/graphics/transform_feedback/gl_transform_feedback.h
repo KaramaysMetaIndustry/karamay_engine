@@ -2,13 +2,25 @@
 #include "graphics/glo/gl_object.h"
 #include "graphics/buffer/gl_buffer.h"
 
+class gl_transform_feedback_descriptor
+{
+
+};
+
+
 class gl_transform_feedback final : public gl_object
 {
 public:
 
 	gl_transform_feedback();
 
-	virtual ~gl_transform_feedback();
+
+	gl_transform_feedback(const std::shared_ptr<gl_transform_feedback_descriptor>& tf_desc)
+	{
+
+	}
+
+	~gl_transform_feedback();
 
 private:
 	
