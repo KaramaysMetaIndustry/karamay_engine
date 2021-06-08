@@ -12,15 +12,26 @@ struct gl_atomic_counter_buffer_binding_info
 	std::size_t size;
 };
 
-class gl_atomic_counter_buffer
+class gl_atomic_counter_buffer_descriptor
+{
+
+};
+
+
+class gl_atomic_counter_buffer final
 {
 public:
 
-	gl_atomic_counter_buffer();
+	gl_atomic_counter_buffer(const std::shared_ptr<gl_atomic_counter_buffer_descriptor>& acbo_desc)
+	{
+		_desc = acbo_desc;
+	}
 	
-	virtual ~gl_atomic_counter_buffer();
+	~gl_atomic_counter_buffer() {}
 
 private:
+
+	std::shared_ptr<gl_atomic_counter_buffer_descriptor> _desc;
 
 	std::shared_ptr<gl_buffer> _ref_buffer;
 

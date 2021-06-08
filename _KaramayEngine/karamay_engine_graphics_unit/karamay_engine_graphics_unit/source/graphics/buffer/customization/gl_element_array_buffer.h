@@ -42,10 +42,13 @@ public:
 class gl_element_array_buffer
 {
 public:
+	gl_element_array_buffer() {
 
-	gl_element_array_buffer();
+	}
 
-	virtual ~gl_element_array_buffer();
+	gl_element_array_buffer(const std::shared_ptr<gl_element_array_buffer_descriptor>& eab_desc) {}
+
+	~gl_element_array_buffer() {}
 
 private:
 

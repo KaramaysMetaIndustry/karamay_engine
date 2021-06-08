@@ -350,6 +350,8 @@ void test0()
 	ubod->add_uniform(u1);
 	ubod->add_uniform(u2);
 	auto ubo = std::make_shared<gl_uniform_buffer>(ubod);
+
+	
 	
 
 
@@ -400,6 +402,7 @@ void test0()
 
 	program->add_uniform_buffer(ubo);
 
+	//program->add_shader_storage_buffer();
 	
 	
 	program->set_framebuffer();

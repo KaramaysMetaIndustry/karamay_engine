@@ -15,11 +15,18 @@ uniform mat4 model_matrix;
 uniform mat4 view_matrix;
 uniform mat4 projection_matrix;
 
-layout(packed) uniform attack
+layout(shared) uniform attack
 {
 	vec4 color;
 	vec3 pos;
 	vec4 text;
+};
+
+layout(shared) buffer genda
+{
+	vec4 c;
+	vec3 p;
+	vec4 t;
 };
 
 
@@ -28,5 +35,5 @@ void main()
 {
    //FragColor = vec4(mix(texture(container2, TexCoord), texture(container3, TexCoord), 0.6f).rgb, 1.0f);
    //FragColor = vec4((color.r + text.r), (color.g + text.g), (color.b + text.b), 1.0f);
-   FragColor = vec4(pos, 1.0f);
+   FragColor = vec4((color + text).rgb + pos, 1.0f);
 }

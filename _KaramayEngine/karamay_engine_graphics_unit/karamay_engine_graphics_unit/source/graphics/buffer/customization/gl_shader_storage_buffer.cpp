@@ -1,8 +1,5 @@
 #include "gl_shader_storage_buffer.h"
-
-gl_shader_storage_buffer::gl_shader_storage_buffer()
-{
-}
+#include "graphics/program/gl_program.h"
 
 gl_shader_storage_buffer::~gl_shader_storage_buffer()
 {
@@ -18,7 +15,8 @@ std::shared_ptr<gl_shader_storage_buffer_descriptor> gl_shader_storage_buffer::g
 	return _descriptor;
 }
 
-void gl_shader_storage_buffer::update(std::float_t delta_time)
+void gl_shader_storage_buffer::bind(std::uint32_t binding)
 {
-	
+	glBindBufferRange(GL_SHADER_STORAGE_BUFFER, binding, _buffer->get_handle(), 0, _buffer->get_size());
+	_binding = binding;
 }

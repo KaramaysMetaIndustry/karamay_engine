@@ -680,6 +680,21 @@ public:
 	}
 
 
+	const std::int32_t get_shader_storage_buffer_block_size() const
+	{
+		GLint _value = 0;
+		glGetProgramResourceIndex(_handle, GL_SHADER_STORAGE_BLOCK, "");
+		return _value;
+	}
+
+	const std::int32_t get_shader_storage_buffer_item_offset() const
+	{
+		return 0;
+	}
+
+
+
+
 	std::vector<std::int32_t> get_uniform_buffer_uniform_indices(const std::string& block_name)
 	{
 		GLint* _value = nullptr;

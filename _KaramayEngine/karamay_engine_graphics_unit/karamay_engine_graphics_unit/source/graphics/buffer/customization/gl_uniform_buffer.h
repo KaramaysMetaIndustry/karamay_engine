@@ -63,14 +63,17 @@ public:
 	{
 		if (uniform)
 		{
-			const std::uint8_t* _uniform_bytes = (std::uint8_t*)glm::value_ptr(uniform->get_value());
+			const std::uint8_t* _uniform_bytes 
+				= reinterpret_cast<const std::uint8_t*>(glm::value_ptr(uniform->get_value()));
 			const size_t _uniform_size = uniform->get_size();
 
 			gl_uniform_buffer_item_layout _item_layout;
 			_item_layout.name = uniform->get_name();
-			auto& _stream = _item_layout.stream;
 
-			for (std::size_t _index = 0; _index < _uniform_size; _stream.push_back(_uniform_bytes[_index]), ++_index) {}
+			for (std::size_t _index = 0; _index < _uniform_size; 
+				_item_layout.stream.push_back(_uniform_bytes[_index]), ++_index) 
+			{}
+
 			_item_layouts.push_back(_item_layout);
 		}
 		
@@ -96,6 +99,7 @@ public:
 				_stream.push_back(_uniform_bytes[_index]), ++_index) {}
 		}
 
+		_is_dirty = true;
 
 	}
 
