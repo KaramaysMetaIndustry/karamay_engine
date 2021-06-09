@@ -3,8 +3,7 @@
 
 struct Material
 {
-	vec4 BaseColor;
-	float scale;
+	vec4 albedoMap;
 	sampler2DArray textures;
 };
 
@@ -33,6 +32,12 @@ layout(shared) uniform attack
 	vec4 text;
 };
 
+uniform ax
+{
+	vec4 css[5];
+
+};
+
 layout(shared) buffer genda
 {
 	vec4 c;
@@ -47,8 +52,8 @@ void main()
    //FragColor = vec4(mix(texture(container2, TexCoord), texture(container3, TexCoord), 0.6f).rgb, 1.0f);
    //FragColor = vec4((color.r + text.r), (color.g + text.g), (color.b + text.b), 1.0f);
    FragColor = vec4((color + text).rgb + pos, 1.0f);
-
-   uint index;
-   FragColor = texture(Mat.textures, vec3(TexCoord, 0));
+   //css.length();
+   //uint index;
+   //FragColor = texture(Mat.textures, vec3(TexCoord, 0));
 
 }

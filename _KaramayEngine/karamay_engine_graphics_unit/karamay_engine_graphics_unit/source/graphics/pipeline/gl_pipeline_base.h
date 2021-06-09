@@ -59,11 +59,11 @@ protected:
 
 	auto& set_shaders(const std::vector<std::string>& shaders)
 	{
-		if (_program && !_is_assembled)
+		if (_program)
 		{
 			_program->assembly(shaders);
 
-			_is_assembled = true;
+			//_is_assembled = true;
 		}
 
 		return *this;

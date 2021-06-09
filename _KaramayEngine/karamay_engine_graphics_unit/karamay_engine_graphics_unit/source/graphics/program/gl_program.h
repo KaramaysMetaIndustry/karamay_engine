@@ -222,6 +222,13 @@ public:
 
 	void set_commands(std::function<void(void)> commands_lambda);
 
+	void add_uniform_bytes(const std::string& type, const std::string& name, std::vector<std::uint8_t> stream)
+	{
+		if (type == "vec3")
+		{
+		}
+	}
+
 public:
 
 	std::shared_ptr<gl_vertex_array> get_vertex_array();
