@@ -3,8 +3,7 @@
 
 struct Material
 {
-	vec4 BaseColor;
-	float scale;
+	vec4 albedoMap;
 	sampler2DArray textures;
 };
 
