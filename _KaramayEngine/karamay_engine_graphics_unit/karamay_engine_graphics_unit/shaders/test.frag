@@ -33,11 +33,11 @@ layout(shared) uniform attack
 	vec4 text;
 };
 
-layout(shared) buffer genda
+layout(std430) buffer genda
 {
-	vec4 c;
-	vec3 p;
-	vec4 t;
+	vec4 st;
+	vec3 ps;
+	vec4 txt;
 };
 
 
@@ -46,9 +46,6 @@ void main()
 {
    //FragColor = vec4(mix(texture(container2, TexCoord), texture(container3, TexCoord), 0.6f).rgb, 1.0f);
    //FragColor = vec4((color.r + text.r), (color.g + text.g), (color.b + text.b), 1.0f);
-   FragColor = vec4((color + text).rgb + pos, 1.0f);
-
-   uint index;
-   FragColor = texture(Mat.textures, vec3(TexCoord, 0));
+   FragColor = vec4((st + txt).rgb + ps, 1.0f);
 
 }

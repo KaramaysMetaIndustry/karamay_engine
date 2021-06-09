@@ -4,43 +4,41 @@
 #include "public/stl.h"
 #include "graphics/variable/glu_types.h"
 
-template<typename T>
 class gl_variable final
 {
 public:
 
-	gl_variable() :
-		_name(),
-		_value()
-	{}
-
-	gl_variable(const std::string& name, const T& value) :
+	gl_variable(const std::string& type, const std::string& name, const std::vector<std::uint8_t>& stream) :
+		_type(type),
 		_name(name),
-		_value(value)
-	{}
+		_stream(stream)
+	{
 
-	~gl_variable() {}
-
+	}
+	
 private:
+
+	std::string _type;
 
 	std::string _name;
 
-	T _value;
+	std::vector<std::uint8_t> _stream;
 
 public:
 
+	inline const std::string& get_type() const { return _type; }
+
 	inline const std::string& get_name() const { return _name; }
 
-	inline const T& get_value() const { return _value; }
-
-	inline const char* get_name_c_str() const { return _name.c_str(); }
+	inline const std::vector<std::uint8_t>& get_value() const { return _stream; }
 
 	inline void set_name(const std::string& name) { _name = name; }
 
-	inline void set_value(const T& value) { _value = value; }
+	inline void set_value(const std::vector<std::uint8_t>& stream) { _stream = stream; }
 
-	inline std::size_t get_size() const { return sizeof(T); }
+public:
 
+	~gl_variable() {}
 };
 
 

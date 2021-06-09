@@ -4,6 +4,44 @@
 gl_program::gl_program()
 {
 	_handle = glCreateProgram();
+
+	_update_uniform_funcs_map.emplace("float", &gl_program::_update_uniform_float);
+	_update_uniform_funcs_map.emplace("vec2", &gl_program::_update_uniform_vec2);
+	_update_uniform_funcs_map.emplace("vec3", &gl_program::_update_uniform_vec3);
+	_update_uniform_funcs_map.emplace("vec4", &gl_program::_update_uniform_vec4);
+	_update_uniform_funcs_map.emplace("double", &gl_program::_update_uniform_double);
+	_update_uniform_funcs_map.emplace("dvec2", &gl_program::_update_uniform_dvec2);
+	_update_uniform_funcs_map.emplace("dvec3", &gl_program::_update_uniform_dvec3);
+	_update_uniform_funcs_map.emplace("dvec4", &gl_program::_update_uniform_dvec4);
+	_update_uniform_funcs_map.emplace("int", &gl_program::_update_uniform_int);
+	_update_uniform_funcs_map.emplace("ivec2", &gl_program::_update_uniform_ivec2);
+	_update_uniform_funcs_map.emplace("ivec3", &gl_program::_update_uniform_ivec3);
+	_update_uniform_funcs_map.emplace("ivec4", &gl_program::_update_uniform_ivec4);
+	_update_uniform_funcs_map.emplace("uint", &gl_program::_update_uniform_uint);
+	_update_uniform_funcs_map.emplace("uvec2", &gl_program::_update_uniform_uvec2);
+	_update_uniform_funcs_map.emplace("uvec3", &gl_program::_update_uniform_uvec3);
+	_update_uniform_funcs_map.emplace("uvec4", &gl_program::_update_uniform_uvec4);
+												
+	_update_uniform_funcs_map.emplace("mat2", &gl_program::_update_uniform_mat2);
+	_update_uniform_funcs_map.emplace("mat3", &gl_program::_update_uniform_mat3);
+	_update_uniform_funcs_map.emplace("mat4", &gl_program::_update_uniform_mat4);
+	_update_uniform_funcs_map.emplace("mat2x3", &gl_program::_update_uniform_mat2x3);
+	_update_uniform_funcs_map.emplace("mat2x4", &gl_program::_update_uniform_mat2x4);
+	_update_uniform_funcs_map.emplace("mat3x2", &gl_program::_update_uniform_mat3x2);
+	_update_uniform_funcs_map.emplace("mat3x4", &gl_program::_update_uniform_mat3x4);
+	_update_uniform_funcs_map.emplace("mat4x2", &gl_program::_update_uniform_mat4x2);
+	_update_uniform_funcs_map.emplace("mat4x3", &gl_program::_update_uniform_mat4x3);
+
+	_update_uniform_funcs_map.emplace("dmat2", &gl_program::_update_uniform_dmat2);
+	_update_uniform_funcs_map.emplace("dmat3", &gl_program::_update_uniform_dmat3);
+	_update_uniform_funcs_map.emplace("dmat4", &gl_program::_update_uniform_dmat4);
+	_update_uniform_funcs_map.emplace("dmat2x3", &gl_program::_update_uniform_dmat2x3);
+	_update_uniform_funcs_map.emplace("dmat2x4", &gl_program::_update_uniform_dmat2x4);
+	_update_uniform_funcs_map.emplace("dmat3x2", &gl_program::_update_uniform_dmat3x2);
+	_update_uniform_funcs_map.emplace("dmat3x4", &gl_program::_update_uniform_dmat3x4);
+	_update_uniform_funcs_map.emplace("dmat4x2", &gl_program::_update_uniform_dmat4x2);
+	_update_uniform_funcs_map.emplace("dmat4x3", &gl_program::_update_uniform_dmat4x3);
+												  
 }
 
 gl_program::~gl_program()
@@ -391,55 +429,17 @@ for (std::uint32_t i = 0; i < _##TYPE##s.size(); ++i)\
 
 void gl_program::_launch_uniforms()
 {
+	for (const auto& uniform : _uniforms)
+	{
+		if (uniform)
+		{
+			auto _iterator =
+				_update_uniform_funcs_map.find(uniform->get_type());
 
-#define UPDATE_UNIFORMS(TYPE)\
-for (auto uniform : _##TYPE##_uniforms)\
-{\
-	if (uniform)\
-	{\
-		_update_uniform(uniform->get_name(), uniform->get_value());\
-		std::cout<<"[uniform " << uniform->get_name()<< " is launched.]"<<std::endl;\
-	}\
-}\
-
-	//float
-	UPDATE_UNIFORMS(glu_f32vec1)
-	UPDATE_UNIFORMS(glu_f32vec2)
-	UPDATE_UNIFORMS(glu_f32vec3)
-	UPDATE_UNIFORMS(glu_f32vec4)
-	//double
-	UPDATE_UNIFORMS(glu_f64vec1)
-	UPDATE_UNIFORMS(glu_f64vec2)
-	UPDATE_UNIFORMS(glu_f64vec3)
-	UPDATE_UNIFORMS(glu_f64vec4)
-	//int
-	UPDATE_UNIFORMS(glu_i32vec1)
-	UPDATE_UNIFORMS(glu_i32vec2)
-	UPDATE_UNIFORMS(glu_i32vec3)
-	UPDATE_UNIFORMS(glu_i32vec4)
-	//uint
-	UPDATE_UNIFORMS(glu_ui32vec1)
-	UPDATE_UNIFORMS(glu_ui32vec2)
-	UPDATE_UNIFORMS(glu_ui32vec3)
-	UPDATE_UNIFORMS(glu_ui32vec4)
-	//float matrix
-	UPDATE_UNIFORMS(glu_f32mat2)
-	UPDATE_UNIFORMS(glu_f32mat3)
-	UPDATE_UNIFORMS(glu_f32mat4)
-	UPDATE_UNIFORMS(glu_f32mat2x3)
-	UPDATE_UNIFORMS(glu_f32mat2x4)
-	UPDATE_UNIFORMS(glu_f32mat3x2)
-	UPDATE_UNIFORMS(glu_f32mat3x4)
-	UPDATE_UNIFORMS(glu_f32mat4x2)
-	UPDATE_UNIFORMS(glu_f32mat4x3)
-	//double matrix
-	UPDATE_UNIFORMS(glu_f64mat2)
-	UPDATE_UNIFORMS(glu_f64mat3)
-	UPDATE_UNIFORMS(glu_f64mat4)
-	UPDATE_UNIFORMS(glu_f64mat2x3)
-	UPDATE_UNIFORMS(glu_f64mat2x4)
-	UPDATE_UNIFORMS(glu_f64mat3x2)
-	UPDATE_UNIFORMS(glu_f64mat3x4)
-	UPDATE_UNIFORMS(glu_f64mat4x2)
-	UPDATE_UNIFORMS(glu_f64mat4x3)
+			if (_iterator != _update_uniform_funcs_map.cend())
+			{
+				_iterator->second(this, uniform);
+			}
+		}
+	}
 }

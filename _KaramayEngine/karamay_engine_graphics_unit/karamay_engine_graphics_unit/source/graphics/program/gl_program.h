@@ -154,50 +154,6 @@ public:
 	 */
 	void construct(const std::vector<std::string>& shader_paths);
 
-	void assembly(const std::vector<std::string>& shader_paths)
-	{
-		for (const auto& path : shader_paths)
-		{
-			auto shader = std::make_shared<gl_shader>();
-			if (shader)
-			{
-				shader->load(path);
-				shader->compile();
-				glAttachShader(_handle, shader->get_handle());
-				_shaders.push_back(shader);
-			}
-		}
-
-		/*if (is_separable)
-			glProgramParameteri(_handle, GL_PROGRAM_SEPARABLE, GL_TRUE);*/
-
-			/*glBindAttribLocation(_handle, 0, "Position");
-			glBindFragDataLocation(_handle, 0, "FragColor");*/
-
-		glLinkProgram(_handle);
-
-		GLint logLength = 0;
-		GLint success;
-		char infoLog[512];
-		glGetProgramiv(_handle, GL_LINK_STATUS, &success);
-		if (!success)
-		{
-			glGetProgramInfoLog(_handle, 512, NULL, infoLog);
-			std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-		}
-		else {
-			std::cout << "[program is linked.]" << std::endl;
-		}
-
-		glGetProgramiv(_handle, GL_INFO_LOG_LENGTH, &logLength);
-		if (logLength > 0) {
-			char* log = (char*)malloc(logLength);
-			glGetProgramInfoLog(_handle, NULL, &logLength, log);
-			printf("============log: %s\n", log);
-			free(log);
-		}
-	}
-
 public:
 
 	void set_vertex_array(std::shared_ptr<gl_vertex_array> vertex_array);
@@ -289,8 +245,10 @@ public:
 	{
 		glDisable(GL_ALPHA_TEST);
 	}
-	 
+	
 public:
+	
+	void assembly() {}
 
 	/**
 	 * start render processing
@@ -388,60 +346,19 @@ private:
 	void _unbind_textures() {}
 
 
-#define DEF_ADD_UNIFORMS(TYPE)\
-private:\
-std::vector<std::shared_ptr<gl_variable<##TYPE##>>> _##TYPE##_uniforms;\
-public:\
-inline void add_uniforms(const std::vector<std::shared_ptr<gl_variable<##TYPE##>>>& TYPE##_uniforms)\
-{\
-	_##TYPE##_uniforms.insert(_##TYPE##_uniforms.cend(), TYPE##_uniforms.cbegin(), TYPE##_uniforms.cend());\
-}\
-inline void add_uniform(std::shared_ptr<gl_variable<##TYPE##>> TYPE##_uniform)\
-{\
-	_##TYPE##_uniforms.push_back(TYPE##_uniform);\
-}\
+private:
 
-	// float
-	DEF_ADD_UNIFORMS(glu_f32vec1)
-	DEF_ADD_UNIFORMS(glu_f32vec2)
-	DEF_ADD_UNIFORMS(glu_f32vec3)
-	DEF_ADD_UNIFORMS(glu_f32vec4)
-	// double
-	DEF_ADD_UNIFORMS(glu_f64vec1)
-	DEF_ADD_UNIFORMS(glu_f64vec2)
-	DEF_ADD_UNIFORMS(glu_f64vec3)
-	DEF_ADD_UNIFORMS(glu_f64vec4)
-	// int
-	DEF_ADD_UNIFORMS(glu_i32vec1)
-	DEF_ADD_UNIFORMS(glu_i32vec2)
-	DEF_ADD_UNIFORMS(glu_i32vec3)
-	DEF_ADD_UNIFORMS(glu_i32vec4)
-	// uint
-	DEF_ADD_UNIFORMS(glu_ui32vec1)
-	DEF_ADD_UNIFORMS(glu_ui32vec2)
-	DEF_ADD_UNIFORMS(glu_ui32vec3)
-	DEF_ADD_UNIFORMS(glu_ui32vec4)
-	// float mat
-	DEF_ADD_UNIFORMS(glu_f32mat2)
-	DEF_ADD_UNIFORMS(glu_f32mat3)
-	DEF_ADD_UNIFORMS(glu_f32mat4)
-	DEF_ADD_UNIFORMS(glu_f32mat2x3)
-	DEF_ADD_UNIFORMS(glu_f32mat2x4)
-	DEF_ADD_UNIFORMS(glu_f32mat3x2)
-	DEF_ADD_UNIFORMS(glu_f32mat3x4)
-	DEF_ADD_UNIFORMS(glu_f32mat4x2)
-	DEF_ADD_UNIFORMS(glu_f32mat4x3)
-	// double mat
-	DEF_ADD_UNIFORMS(glu_f64mat2)
-	DEF_ADD_UNIFORMS(glu_f64mat3)
-	DEF_ADD_UNIFORMS(glu_f64mat4)
-	DEF_ADD_UNIFORMS(glu_f64mat2x3)
-	DEF_ADD_UNIFORMS(glu_f64mat2x4)
-	DEF_ADD_UNIFORMS(glu_f64mat3x2)
-	DEF_ADD_UNIFORMS(glu_f64mat3x4)
-	DEF_ADD_UNIFORMS(glu_f64mat4x2)
-	DEF_ADD_UNIFORMS(glu_f64mat4x3)
+	std::vector<std::shared_ptr<gl_variable>> _uniforms;
 
+public:
+
+	void add_uniform(const std::shared_ptr<gl_variable>& uniform)
+	{
+		if (uniform)
+		{
+			_uniforms.push_back(uniform);
+		}
+	}
 
 
 #define DEF_ADD_TEXTURES(TYPE)\
@@ -451,7 +368,10 @@ public:\
 	inline void add_texture(std::shared_ptr<gl_##TYPE##> TYPE)\
 	{\
 		_##TYPE##s.push_back(TYPE);\
-		add_uniform(std::make_shared<gl_variable<glu_i32vec1>>(TYPE->get_name(), glu_i32vec1(static_cast<glm::int32>(_##TYPE##s.size() - 1))));\
+		GLint _index = static_cast<GLint>(_##TYPE##s.size() - 1);\
+		const std::uint8_t* _index_ptr = reinterpret_cast<const std::uint8_t*>(&_index);\
+		std::vector<std::uint8_t> _stream(_index_ptr, _index_ptr + sizeof(GLint));\
+		add_uniform(std::make_shared<gl_variable>("int", TYPE->get_name(), _stream)); \
 	}\
 
 	DEF_ADD_TEXTURES(texture_1d)
@@ -466,179 +386,264 @@ public:\
 	DEF_ADD_TEXTURES(texture_cube_array)
 	DEF_ADD_TEXTURES(texture_buffer)
 
+
+	//inline void add_texture(std::shared_ptr<gl_texture_2d> TYPE)
+	//{
+	//	_TYPEs.push_back(TYPE);
+
+	//	GLint _index = 2;
+	//	const std::uint8_t* _index_ptr = reinterpret_cast<const std::uint8_t*>(&_index);
+	//	std::vector<std::uint8_t> _stream(_index_ptr, _index_ptr + sizeof(GLint));
+
+	//	add_uniform(std::make_shared<gl_variable>("int", TYPE->get_name(), _stream));\
+	//}
+
 private:
-	//~ helper function
-	/*inline void _update_uniform(const std::string& name, glm::float32 value)
+
+	std::unordered_map<std::string, std::function<void(gl_program*, const std::shared_ptr<gl_variable>&)>> _update_uniform_funcs_map;
+
+	void _update_uniform_float(const std::shared_ptr<gl_variable>& uniform)
 	{
-		glUniform1f(glGetUniformLocation(_handle, name.c_str()), value);
-	}*/
-	inline void _update_uniform(const std::string& name, glu_f32vec1 value)
-	{
-		glUniform1f(glGetUniformLocation(_handle, name.c_str()), value.r);
+		if (uniform)
+		{
+			glUniform1f(glGetUniformLocation(_handle, uniform->get_name().c_str()), *reinterpret_cast<const GLfloat*>(uniform->get_value().data()));
+		}
 	}
-	inline void _update_uniform(const std::string& name, glu_f32vec2 value)
+	void _update_uniform_vec2(const std::shared_ptr<gl_variable>& uniform) 
 	{
-		glUniform2fv(glGetUniformLocation(_handle, name.c_str()), 2, glm::value_ptr(value));
+		if (uniform)
+		{
+			glUniform2fv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 2, reinterpret_cast<const GLfloat*>(uniform->get_value().data()));
+		}
 	}
-	inline void _update_uniform(const std::string& name, glu_f32vec3 value)
+	void _update_uniform_vec3(const std::shared_ptr<gl_variable>& uniform) 
 	{
-		//glUniform3fv(glGetUniformLocation(_handle, name.c_str()), 3, glm::value_ptr(value));
-		glUniform3f(glGetUniformLocation(_handle, name.c_str()), value.r, value.g, value.b);
+		if (uniform)
+		{
+			glUniform3fv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 3, reinterpret_cast<const GLfloat*>(uniform->get_value().data()));
+		}
 	}
-	inline void _update_uniform(const std::string& name, glu_f32vec4 value)
+	void _update_uniform_vec4(const std::shared_ptr<gl_variable>& uniform) 
 	{
-		glUniform4fv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
-	}
-	/*inline void _update_uniform(const std::string& name, glm::float64 value)
-	{
-		glUniform1d(glGetUniformLocation(_handle, name.c_str()), value);
-	}*/
-	inline void _update_uniform(const std::string& name, glu_f64vec1 value)
-	{
-		glUniform1d(glGetUniformLocation(_handle, name.c_str()), value.r);
-	}
-	inline void _update_uniform(const std::string& name, glu_f64vec2 value)
-	{
-		glUniform2dv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
-	}
-	inline void _update_uniform(const std::string& name, glu_f64vec3 value)
-	{
-		glUniform3dv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
-	}
-	inline void _update_uniform(const std::string& name, glu_f64vec4 value)
-	{
-		glUniform4dv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
-	}
-	/*inline void _update_uniform(const std::string& name, glm::int32 value)
-	{
-		glUniform1i(glGetUniformLocation(_handle, name.c_str()), value);
-	}*/
-	inline void _update_uniform(const std::string& name, glu_i32vec1 value)
-	{
-		glUniform1i(glGetUniformLocation(_handle, name.c_str()), value.r);
-	}
-	inline void _update_uniform(const std::string& name, glu_i32vec2 value)
-	{
-		glUniform2iv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
-	}
-	inline void _update_uniform(const std::string& name, glu_i32vec3 value)
-	{
-		glUniform3iv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
-	}
-	inline void _update_uniform(const std::string& name, glu_i32vec4 value)
-	{
-		glUniform4iv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
-	}
-	/*inline void _update_uniform(const std::string& name, glm::uint32 value)
-	{
-		glUniform1ui(glGetUniformLocation(_handle, name.c_str()), value);
-	}*/
-	inline void _update_uniform(const std::string& name, glu_ui32vec1 value)
-	{
-		glUniform1ui(glGetUniformLocation(_handle, name.c_str()), value.r);
-	}
-	inline void _update_uniform(const std::string& name, glu_ui32vec2 value)
-	{
-		glUniform2uiv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
-	}
-	inline void _update_uniform(const std::string& name, glu_ui32vec3 value)
-	{
-		glUniform3uiv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
-	}
-	inline void _update_uniform(const std::string& name, glu_ui32vec4 value)
-	{
-		glUniform4uiv(glGetUniformLocation(_handle, name.c_str()), 1, glm::value_ptr(value));
+		if (uniform)
+		{
+			glUniform2fv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 4, reinterpret_cast<const GLfloat*>(uniform->get_value().data()));
+		}
 	}
 	
-	inline void _update_uniform(const std::string& name, glu_bvec1 value)
+	void _update_uniform_double(const std::shared_ptr<gl_variable>& uniform) 
 	{
-		
+		if (uniform)
+		{
+			glUniform1d(glGetUniformLocation(_handle, uniform->get_name().c_str()), *reinterpret_cast<const GLdouble*>(uniform->get_value().data()));
+		}
 	}
-	inline void _update_uniform(const std::string& name, glu_bvec2 value)
+	void _update_uniform_dvec2(const std::shared_ptr<gl_variable>& uniform) 
 	{
-
+		if (uniform)
+		{
+			glUniform2dv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 2, reinterpret_cast<const GLdouble*>(uniform->get_value().data()));
+		}
 	}
-	inline void _update_uniform(const std::string& name, glu_bvec3 value)
+	void _update_uniform_dvec3(const std::shared_ptr<gl_variable>& uniform) 
 	{
-
+		if (uniform)
+		{
+			glUniform3dv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 3, reinterpret_cast<const GLdouble*>(uniform->get_value().data()));
+		}
 	}
-	inline void _update_uniform(const std::string& name, glu_bvec4 value)
+	void _update_uniform_dvec4(const std::shared_ptr<gl_variable>& uniform) 
 	{
-
-	}
-	
-	inline void _update_uniform(const std::string& name, glu_f32mat2 value)
-	{
-		glUniformMatrix2fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
-	}
-	inline void _update_uniform(const std::string& name, glu_f32mat3 value)
-	{
-		glUniformMatrix3fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
-	}
-	inline void _update_uniform(const std::string& name, glu_f32mat4 value)
-	{
-		glUniformMatrix4fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
-	}
-	inline void _update_uniform(const std::string& name, glu_f32mat2x3 value)
-	{
-		glUniformMatrix2x3fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
-	}
-	inline void _update_uniform(const std::string& name, glu_f32mat2x4 value)
-	{
-		glUniformMatrix2x4fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
-	}
-	inline void _update_uniform(const std::string& name, glu_f32mat3x2 value)
-	{
-		glUniformMatrix3x2fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
-	}
-	inline void _update_uniform(const std::string& name, glu_f32mat3x4 value)
-	{
-		glUniformMatrix3x4fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
-	}
-	inline void _update_uniform(const std::string& name, glu_f32mat4x2 value)
-	{
-		glUniformMatrix4x2fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
-	}
-	inline void _update_uniform(const std::string& name, glu_f32mat4x3 value)
-	{
-		glUniformMatrix4x3fv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+		if (uniform)
+		{
+			glUniform4dv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 4, reinterpret_cast<const GLdouble*>(uniform->get_value().data()));
+		}
 	}
 
-	inline void _update_uniform(const std::string& name, glu_f64mat2 value)
+	void _update_uniform_int(const std::shared_ptr<gl_variable>& uniform)
 	{
-		glUniformMatrix2dv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+		if (uniform)
+		{
+			glUniform1i(glGetUniformLocation(_handle, uniform->get_name().c_str()), *reinterpret_cast<const GLint*>(uniform->get_value().data()));
+		}
 	}
-	inline void _update_uniform(const std::string& name, glu_f64mat3 value)
+	void _update_uniform_ivec2(const std::shared_ptr<gl_variable>& uniform)
 	{
-		glUniformMatrix3dv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+		if (uniform)
+		{
+			glUniform2iv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 2, reinterpret_cast<const GLint*>(uniform->get_value().data()));
+		}
 	}
-	inline void _update_uniform(const std::string& name, glu_f64mat4 value)
+	void _update_uniform_ivec3(const std::shared_ptr<gl_variable>& uniform)
 	{
-		glUniformMatrix4dv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+		if (uniform)
+		{
+			glUniform3iv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 3, reinterpret_cast<const GLint*>(uniform->get_value().data()));
+		}
 	}
-	inline void _update_uniform(const std::string& name, glu_f64mat2x3 value)
+	void _update_uniform_ivec4(const std::shared_ptr<gl_variable>& uniform)
 	{
-		glUniformMatrix2x3dv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+		if (uniform)
+		{
+			glUniform4iv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 4, reinterpret_cast<const GLint*>(uniform->get_value().data()));
+		}
 	}
-	inline void _update_uniform(const std::string& name, glu_f64mat2x4 value)
+
+	void _update_uniform_uint(const std::shared_ptr<gl_variable>& uniform)
 	{
-		glUniformMatrix2x4dv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+		if (uniform)
+		{
+			glUniform1ui(glGetUniformLocation(_handle, uniform->get_name().c_str()), *reinterpret_cast<const GLuint*>(uniform->get_value().data()));
+		}
 	}
-	inline void _update_uniform(const std::string& name, glu_f64mat3x2 value)
+	void _update_uniform_uvec2(const std::shared_ptr<gl_variable>& uniform)
 	{
-		glUniformMatrix3x2dv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+		if (uniform)
+		{
+			glUniform2uiv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 2, reinterpret_cast<const GLuint*>(uniform->get_value().data()));
+		}
 	}
-	inline void _update_uniform(const std::string& name, glu_f64mat3x4 value)
+	void _update_uniform_uvec3(const std::shared_ptr<gl_variable>& uniform)
 	{
-		glUniformMatrix3x4dv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+		if (uniform)
+		{
+			glUniform3uiv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 3, reinterpret_cast<const GLuint*>(uniform->get_value().data()));
+		}
 	}
-	inline void _update_uniform(const std::string& name, glu_f64mat4x2 value)
+	void _update_uniform_uvec4(const std::shared_ptr<gl_variable>& uniform)
 	{
-		glUniformMatrix4x2dv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+		if (uniform)
+		{
+			glUniform4uiv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 4, reinterpret_cast<const GLuint*>(uniform->get_value().data()));
+		}
 	}
-	inline void _update_uniform(const std::string& name, glu_f64mat4x3 value)
+
+	void _update_uniform_mat2(const std::shared_ptr<gl_variable>& uniform)
 	{
-		glUniformMatrix4x3dv(glGetUniformLocation(_handle, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+		if (uniform)
+		{
+			glUniformMatrix2fv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 1, GL_FALSE, reinterpret_cast<const GLfloat*>(uniform->get_value().data()));
+		}
+	}
+	void _update_uniform_mat3(const std::shared_ptr<gl_variable>& uniform)
+	{
+		if (uniform)
+		{
+			glUniformMatrix3fv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 1, GL_FALSE, reinterpret_cast<const GLfloat*>(uniform->get_value().data()));
+		}
+	}
+	void _update_uniform_mat4(const std::shared_ptr<gl_variable>& uniform)
+	{
+		if (uniform)
+		{
+			glUniformMatrix4fv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 1, GL_FALSE, reinterpret_cast<const GLfloat*>(uniform->get_value().data()));
+		}
+	}
+	void _update_uniform_mat2x3(const std::shared_ptr<gl_variable>& uniform)
+	{
+		if (uniform)
+		{
+			glUniformMatrix2x3fv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 1, GL_FALSE, reinterpret_cast<const GLfloat*>(uniform->get_value().data()));
+		}
+	}
+	void _update_uniform_mat2x4(const std::shared_ptr<gl_variable>& uniform)
+	{
+		if (uniform)
+		{
+			glUniformMatrix2x4fv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 1, GL_FALSE, reinterpret_cast<const GLfloat*>(uniform->get_value().data()));
+		}
+	}
+	void _update_uniform_mat3x2(const std::shared_ptr<gl_variable>& uniform)
+	{
+		if (uniform)
+		{
+			glUniformMatrix3x2fv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 1, GL_FALSE, reinterpret_cast<const GLfloat*>(uniform->get_value().data()));
+		}
+	}
+	void _update_uniform_mat3x4(const std::shared_ptr<gl_variable>& uniform)
+	{
+		if (uniform)
+		{
+			glUniformMatrix3x4fv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 1, GL_FALSE, reinterpret_cast<const GLfloat*>(uniform->get_value().data()));
+		}
+	}
+	void _update_uniform_mat4x2(const std::shared_ptr<gl_variable>& uniform)
+	{
+		if (uniform)
+		{
+			glUniformMatrix4x2fv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 1, GL_FALSE, reinterpret_cast<const GLfloat*>(uniform->get_value().data()));
+		}
+	}
+	void _update_uniform_mat4x3(const std::shared_ptr<gl_variable>& uniform)
+	{
+		if (uniform)
+		{
+			glUniformMatrix4x3fv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 1, GL_FALSE, reinterpret_cast<const GLfloat*>(uniform->get_value().data()));
+		}
+	}
+
+	void _update_uniform_dmat2(const std::shared_ptr<gl_variable>& uniform)
+	{
+		if (uniform)
+		{
+			glUniformMatrix2dv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 1, GL_FALSE, reinterpret_cast<const GLdouble*>(uniform->get_value().data()));
+		}
+	}
+	void _update_uniform_dmat3(const std::shared_ptr<gl_variable>& uniform)
+	{
+		if (uniform)
+		{
+			glUniformMatrix3dv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 1, GL_FALSE, reinterpret_cast<const GLdouble*>(uniform->get_value().data()));
+		}
+	}
+	void _update_uniform_dmat4(const std::shared_ptr<gl_variable>& uniform)
+	{
+		if (uniform)
+		{
+			glUniformMatrix4dv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 1, GL_FALSE, reinterpret_cast<const GLdouble*>(uniform->get_value().data()));
+		}
+	}
+	void _update_uniform_dmat2x3(const std::shared_ptr<gl_variable>& uniform)
+	{
+		if (uniform)
+		{
+			glUniformMatrix2x3dv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 1, GL_FALSE, reinterpret_cast<const GLdouble*>(uniform->get_value().data()));
+		}
+	}
+	void _update_uniform_dmat2x4(const std::shared_ptr<gl_variable>& uniform)
+	{
+		if (uniform)
+		{
+			glUniformMatrix2x4dv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 1, GL_FALSE, reinterpret_cast<const GLdouble*>(uniform->get_value().data()));
+		}
+	}
+	void _update_uniform_dmat3x2(const std::shared_ptr<gl_variable>& uniform)
+	{
+		if (uniform)
+		{
+			glUniformMatrix3x2dv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 1, GL_FALSE, reinterpret_cast<const GLdouble*>(uniform->get_value().data()));
+		}
+	}
+	void _update_uniform_dmat3x4(const std::shared_ptr<gl_variable>& uniform)
+	{
+		if (uniform)
+		{
+			glUniformMatrix3x4dv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 1, GL_FALSE, reinterpret_cast<const GLdouble*>(uniform->get_value().data()));
+		}
+	}
+	void _update_uniform_dmat4x2(const std::shared_ptr<gl_variable>& uniform)
+	{
+		if (uniform)
+		{
+			glUniformMatrix4x2dv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 1, GL_FALSE, reinterpret_cast<const GLdouble*>(uniform->get_value().data()));
+		}
+	}
+	void _update_uniform_dmat4x3(const std::shared_ptr<gl_variable>& uniform)
+	{
+		if (uniform)
+		{
+			glUniformMatrix4x3dv(glGetUniformLocation(_handle, uniform->get_name().c_str()), 1, GL_FALSE, reinterpret_cast<const GLdouble*>(uniform->get_value().data()));
+		}
 	}
 
 public:

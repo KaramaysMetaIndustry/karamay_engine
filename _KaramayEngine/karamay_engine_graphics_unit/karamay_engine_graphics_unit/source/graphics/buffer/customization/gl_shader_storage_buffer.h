@@ -19,73 +19,67 @@ namespace gl_shader_storage_buffer_enum
 	};
 }
 
-
-struct gl_shader_storage_buffer_item_layout
-{
-	std::string name;
-	std::vector<std::uint8_t> stream;
-};
-
 class gl_shader_storage_buffer_descriptor final
 {
 public:
 
-	gl_shader_storage_buffer_descriptor() :
-		_memory_layout(gl_shader_storage_buffer_enum::layout::std140),
-		_matrix_memory_layout(gl_shader_storage_buffer_enum::matrix_layout::row_major),
-		_block_name(),
-		_is_dirty(false)
-	{
+	gl_shader_storage_buffer_descriptor();
 
+public:
+
+	void add_variable(const std::shared_ptr<gl_variable>& variable);
+
+	void add_variables(const std::vector<std::shared_ptr<gl_variable>>& items)
+	{
+		_items.insert(_items.cend(), items.cbegin(), items.cend());
 	}
 
-	template<typename T>
-	void add_variable(std::shared_ptr<gl_variable<T>> variable)
+	void clear_variables()
 	{
-		if (variable)
-		{
-			const std::uint8_t* _variable_bytes
-				= reinterpret_cast<const std::uint8_t*>(glm::value_ptr(variable->get_value()));
-			const std::size_t _variable_size = variable->get_size();
-
-			gl_shader_storage_buffer_item_layout _item_layout;
-			_item_layout.name = variable->get_name();
-
-			for (std::size_t _index = 0; _index < _variable_size;
-				_item_layout.stream.push_back(_variable_bytes[_index]), ++_index)
-			{}
-
-			_item_layouts.push_back(_item_layout);
-		}
+		_items.clear();
 	}
 
 private:
-
+	
 	gl_shader_storage_buffer_enum::layout _memory_layout;
 	
 	gl_shader_storage_buffer_enum::matrix_layout _matrix_memory_layout;
 
-	std::vector<gl_shader_storage_buffer_item_layout> _item_layouts;
-
 	std::string _block_name;
+
+	std::vector<std::shared_ptr<gl_variable>> _items;
 
 	std::uint8_t _is_dirty;
 
 public:
 
-	const std::vector<gl_shader_storage_buffer_item_layout> get_descriptor() const
-	{
-		return _item_layouts;
-	}
+	auto get_memory_layout() const { return _memory_layout; }
+
+	auto get_matrix_memory_layout() const { return _matrix_memory_layout; }
 
 	const std::string& get_block_name() const
 	{
 		return _block_name;
 	}
 
+	void set_block_name(const std::string& block_name)
+	{
+		_block_name = block_name;
+	}
+
+	const auto& get_items() const
+	{
+		return _items;
+	}
+
 	const std::uint8_t is_dirty() const
 	{
 		return _is_dirty;
+	}
+
+	void set_dirty(std::uint8_t is_dirty)
+	{
+		_is_dirty = is_dirty;
 	}
 };
 
@@ -109,8 +103,6 @@ private:
 
 public:
 
-	void set_descriptor(std::shared_ptr<gl_shader_storage_buffer_descriptor> descriptor);
-
 	std::shared_ptr<gl_shader_storage_buffer_descriptor> get_descriptor();
 
 	void bind(std::uint32_t binding);
@@ -124,23 +116,29 @@ private:
 
 	void _fill_std140() 
 	{
+		
+	}
+
+	void _fill_std430()
+	{
 		if (_descriptor)
 		{
 			const std::size_t _block_size = 0;
-			const auto& _item_layouts = _descriptor->get_descriptor();
 
 			_buffer = std::make_shared<gl_buffer>();
 			_buffer->allocate(_block_size);
 
 			std::size_t _offset = 0;
-			for (const auto& _item_layout : _item_layouts)
+			for (const auto& _item : _descriptor->get_items())
 			{
-				_offset;
-				_buffer->fill(_offset, _item_layout.stream.size(), _item_layout.stream.data());
+				if (_item)
+				{
+					_buffer->fill(_offset, _item->get_value().size(), _item->get_value().data());
+					_offset += _item->get_value().size();
+				}
 			}
 		}
 	}
-	void _fill_std430() {}
 
 public:
 

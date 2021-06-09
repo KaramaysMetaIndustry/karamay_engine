@@ -221,12 +221,6 @@ std::weak_ptr<T> make_weak(std::shared_ptr<T> sptr)
 make_weak(sptr)\
 
 
-template<typename T>
-std::shared_ptr<gl_variable<T>> sp_variable(const std::string& name, const T& value)
-{
-	return std::make_shared<gl_variable<T>>(name, value);
-}
-
 struct gl_texture_pixels
 {
 	stbi_uc* pixels;
@@ -273,6 +267,23 @@ int main()
 
 
 	test0();
+}
+
+
+template<typename T>
+auto create_uniform(const std::string& name, const T& value)
+{
+	const std::uint8_t* _value_ptr = reinterpret_cast<const std::uint8_t*>(&value);
+	std::vector<std::uint8_t> _stream(_value_ptr, _value_ptr + sizeof(T));
+	return std::make_shared<gl_variable>("float", name, _stream);
+}
+
+
+auto string_to_stream(const std::string& type, const std::string& name, const std::string value)
+{
+
+	std::vector<std::uint8_t> stream;
+	return std::make_shared<gl_variable>(type, name, stream);
 }
 
 
@@ -340,9 +351,9 @@ void test0()
 //};
 
 
-	auto u0 = std::make_shared<gl_variable<glu_f32vec4>>("color", glu_f32vec4(1.0f, 0.0f, 0.0f, 1.0f));
-	auto u1 = std::make_shared<gl_variable<glu_f32vec3>>("pos", glu_f32vec3(0.0f, 1.0f, 0.0f));
-	auto u2 = std::make_shared<gl_variable<glu_f32vec4>>("text", glu_f32vec4(0.0f, 0.0f, 1.0f, 1.0f));
+	auto u0 = create_uniform("color", glu_f32vec4(1.0f, 0.0f, 0.0f, 1.0f));
+	auto u1 = create_uniform("pos", glu_f32vec3(0.0f, 1.0f, 0.0f));
+	auto u2 = create_uniform("text", glu_f32vec4(0.0f, 0.0f, 1.0f, 1.0f));
 
 	auto ubod = std::make_shared<gl_uniform_buffer_descriptor>();
 	ubod->set_block_name("attack");
@@ -351,13 +362,9 @@ void test0()
 	ubod->add_uniform(u2);
 	auto ubo = std::make_shared<gl_uniform_buffer>(ubod);
 
-	
-	
-
-
 	// uniforms
-	auto camera_position = sp_variable("camera_position", glv_f32vec3(1.0f, 0.0f, 0.0f));
-	auto spe_color = sp_variable("spe_color", glv_f32vec4(1.0f, 1.0f, 0.5f, 1.0f));
+	auto camera_position = create_uniform("camera_position", glv_f32vec3(1.0f, 0.0f, 0.0f));
+	auto spe_color = create_uniform("spe_color", glv_f32vec4(1.0f, 1.0f, 0.5f, 1.0f));
 
 	// textures
 	auto container2 = std::make_shared<gl_texture_2d>();
@@ -386,6 +393,18 @@ void test0()
 	ebod->set_indices(indices);
 	ebo->fill(ebod);
 
+
+	auto ssbod = std::make_shared<gl_shader_storage_buffer_descriptor>();
+	ssbod->set_block_name("genda");
+	ssbod->add_variables({
+			create_uniform("st", glu_f32vec4(0.5f, 0.0f, 0.0f, 1.0f)),
+			create_uniform("ps", glu_f32vec3(0.0f, 0.8f, 0.0f)),
+			create_uniform("txt", glu_f32vec4(0.0f, 0.0f, 0.9f, 1.0f))
+		});
+
+	auto ssbo = std::make_shared<gl_shader_storage_buffer>(ssbod);
+
+
 	// program
 	auto program = std::make_shared<gl_program>();
 	program->construct({
@@ -401,8 +420,7 @@ void test0()
 	program->add_uniform(spe_color);
 
 	program->add_uniform_buffer(ubo);
-
-	//program->add_shader_storage_buffer();
+	program->add_shader_storage_buffer(ssbo);
 	
 	
 	program->set_framebuffer();
@@ -434,13 +452,22 @@ void test0()
 	//glClearStencil(0);
 
 	int i = 100;
+	float w = 0.0f;
 	while (i--)
 	{
+		
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClear(GL_COLOR_BUFFER_BIT);
 		program->render(0.0f);
 		window->tick(0.0f);
 		
+		ubod->clear_uniforms();
+		ubod->add_uniforms({
+			create_uniform("color", glu_f32vec4(w, 0.0f, 0.0f, 1.0f)),
+			create_uniform("pos", glu_f32vec3(0.0f, 0.0f, 0.0f)),
+			create_uniform("text", glu_f32vec4(0.0f, 0.0f, 0.0f, 1.0f))
+			});
+		w += 0.001f;
 	}
 }
 //
