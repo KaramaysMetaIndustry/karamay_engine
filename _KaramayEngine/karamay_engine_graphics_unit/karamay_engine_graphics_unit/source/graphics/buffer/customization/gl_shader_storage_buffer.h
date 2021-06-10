@@ -62,6 +62,16 @@ public:
 		return _block_name;
 	}
 
+	const std::size_t get_block_size() const
+	{
+		std::size_t _block_size = 0;
+		for (const auto& _item : _items)
+		{
+			_block_size += _item->get_value().size();
+		}
+		return _block_size;
+	}
+
 	void set_block_name(const std::string& block_name)
 	{
 		_block_name = block_name;
@@ -109,7 +119,7 @@ public:
 
 	void unbind()
 	{
-
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	}
 
 private:
@@ -123,7 +133,7 @@ private:
 	{
 		if (_descriptor)
 		{
-			const std::size_t _block_size = 0;
+			const std::size_t _block_size = _descriptor->get_block_size();
 
 			_buffer = std::make_shared<gl_buffer>();
 			_buffer->allocate(_block_size);

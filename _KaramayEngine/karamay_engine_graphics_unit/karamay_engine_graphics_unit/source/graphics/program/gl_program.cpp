@@ -322,7 +322,8 @@ inline void gl_program::_bind_uniform_buffers()
 				uniform_buffer->bind(i, *this);
 				// bind program to context
 				const std::string& block_name = uniform_buffer->get_descriptor()->get_block_name();
-				glUniformBlockBinding(_handle, glGetUniformBlockIndex(_handle, block_name.c_str()), i);
+				const auto _index = glGetUniformBlockIndex(_handle, block_name.c_str());
+				glUniformBlockBinding(_handle, _index, i);
 				
 #ifdef _DEBUG
 				std::cout << "[ " << i << " uniform buffer is bound.]" << std::endl;
@@ -347,7 +348,8 @@ inline void gl_program::_bind_shader_storage_buffers()
 				// bind buffer to context
 				shader_storage_buffer->bind(i);
 				// bind program to context
-				glShaderStorageBlockBinding(_handle, glGetProgramResourceLocation(_handle, GL_SHADER_STORAGE_BLOCK, shader_storage_buffer->get_descriptor()->get_block_name().c_str()), i);
+				const GLuint _index = glGetProgramResourceIndex(_handle, GL_SHADER_STORAGE_BLOCK, shader_storage_buffer->get_descriptor()->get_block_name().c_str());
+				glShaderStorageBlockBinding(_handle, _index, i);
 				
 #ifdef _DEBUG
 				std::cout << "[ " << i << " shader storage buffer is bound.]" << std::endl;

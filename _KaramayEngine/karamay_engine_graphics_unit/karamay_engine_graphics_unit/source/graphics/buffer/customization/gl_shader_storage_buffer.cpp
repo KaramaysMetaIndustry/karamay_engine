@@ -36,8 +36,7 @@ void gl_shader_storage_buffer::bind(std::uint32_t binding)
 	}
 
 	glBindBufferRange(GL_SHADER_STORAGE_BUFFER, binding, _buffer->get_handle(), 0, _buffer->get_size());
-	_binding = binding;
-	
+	//_binding = binding;
 }
 
 void gl_shader_storage_buffer_descriptor::add_variable(const std::shared_ptr<gl_variable>& variable)

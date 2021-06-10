@@ -293,6 +293,7 @@ void test0()
 	glfw_window* window = new glfw_window();
 	window->load_context();
 	
+	std::cout << "GL_VERSION: " << glGetString(GL_VERSION) << std::endl;
 	glewInit();
 
 	glViewport(0, 0, window->get_framebuffer_width(), window->get_framebuffer_height());
@@ -397,9 +398,9 @@ void test0()
 	auto ssbod = std::make_shared<gl_shader_storage_buffer_descriptor>();
 	ssbod->set_block_name("genda");
 	ssbod->add_variables({
-			create_uniform("st", glu_f32vec4(0.5f, 0.0f, 0.0f, 1.0f)),
-			create_uniform("ps", glu_f32vec3(0.0f, 0.8f, 0.0f)),
-			create_uniform("txt", glu_f32vec4(0.0f, 0.0f, 0.9f, 1.0f))
+			create_uniform("st", glu_f32vec4(1.0f, 0.0f, 0.0f, 1.0f)),
+			create_uniform("ps", glu_f32vec4(0.0f, 1.0f, 0.0f, 1.0f)),
+			create_uniform("txt", glu_f32vec4(0.0f, 0.0f, 1.0f, 1.0f))
 		});
 
 	auto ssbo = std::make_shared<gl_shader_storage_buffer>(ssbod);
@@ -451,7 +452,7 @@ void test0()
 	//glStencilMask(GL_TRUE);
 	//glClearStencil(0);
 
-	int i = 100;
+	int i = 300;
 	float w = 0.0f;
 	while (i--)
 	{

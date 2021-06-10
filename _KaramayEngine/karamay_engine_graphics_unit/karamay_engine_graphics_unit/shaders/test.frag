@@ -1,4 +1,4 @@
-#version 450 core
+#version 460 core
 
 
 struct Material
@@ -35,7 +35,7 @@ layout(shared) uniform attack
 layout(std430) buffer genda
 {
 	vec4 st;
-	vec3 ps;
+	vec4 ps;
 	vec4 txt;
 };
 
@@ -45,6 +45,7 @@ void main()
 {
    //FragColor = vec4(mix(texture(container2, TexCoord), texture(container3, TexCoord), 0.6f).rgb, 1.0f);
    //FragColor = vec4((color.r + text.r), (color.g + text.g), (color.b + text.b), 1.0f);
-   FragColor = vec4((st + txt).rgb + ps, 1.0f);
+   st.r -= 0.00005f;
+   FragColor = vec4((st + txt).rgb + ps.rgb, 1.0f);
 
 }
