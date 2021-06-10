@@ -29,6 +29,7 @@
     <ClCompile Include="source\graphics\context\gl_context.cpp" />
     <ClCompile Include="source\graphics\framebuffer\gl_default_framebuffer.cpp" />
     <ClCompile Include="source\graphics\framebuffer\gl_framebuffer.cpp" />
+    <ClCompile Include="source\graphics\genda\gl_genda.cpp" />
     <ClCompile Include="source\graphics\glo\gl_object.cpp" />
     <ClCompile Include="source\graphics\mesh\gl_mesh.cpp" />
     <ClCompile Include="source\graphics\mesh\material\gl_material.cpp" />
@@ -58,6 +59,7 @@
     <ClCompile Include="source\graphics\variable\gl_variable.cpp" />
     <ClCompile Include="source\graphics\vertex_array\gl_vertex_array.cpp" />
     <ClCompile Include="source\graphics\vertex_array\gl_vertex_stream.cpp" />
+    <ClCompile Include="source\graphics\vertex_specification\gl_vertex_specifiaction.cpp" />
     <ClCompile Include="source\karamay-engine-graphics.cpp" />
     <ClCompile Include="source\window\window.cpp" />
   </ItemGroup>
@@ -72,6 +74,7 @@
     <ClInclude Include="source\graphics\context\gl_context.h" />
     <ClInclude Include="source\graphics\framebuffer\gl_default_framebuffer.h" />
     <ClInclude Include="source\graphics\framebuffer\gl_framebuffer.h" />
+    <ClInclude Include="source\graphics\genda\gl_genda.h" />
     <ClInclude Include="source\graphics\glo\gl_object.h" />
     <ClInclude Include="source\graphics\mesh\gl_mesh.h" />
     <ClInclude Include="source\graphics\mesh\material\gl_material.h" />
@@ -104,6 +107,7 @@
     <ClInclude Include="source\graphics\variable\gl_variable.h" />
     <ClInclude Include="source\graphics\vertex_array\gl_vertex_array.h" />
     <ClInclude Include="source\graphics\vertex_array\gl_vertex_stream.h" />
+    <ClInclude Include="source\graphics\vertex_specification\gl_vertex_specifiaction.h" />
     <ClInclude Include="source\public\glfw.h" />
     <ClInclude Include="source\public\opengl.h" />
     <ClInclude Include="source\public\stl.h" />

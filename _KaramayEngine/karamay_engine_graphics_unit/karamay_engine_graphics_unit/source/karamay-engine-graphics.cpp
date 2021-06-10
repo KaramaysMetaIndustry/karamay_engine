@@ -271,11 +271,42 @@ int main()
 
 
 template<typename T>
+std::string get_uniform_type_str()
+{
+	return "";
+}
+
+template<>
+std::string get_uniform_type_str<glu_f32vec1::value_type>()
+{
+	return "float";
+}
+
+template<>
+std::string get_uniform_type_str<glu_f64vec1::value_type>()
+{
+	return "double";
+}
+
+template<>
+std::string get_uniform_type_str<glu_i32vec1::value_type>()
+{
+	return "int";
+}
+
+template<>
+std::string get_uniform_type_str<glu_ui32vec1::value_type>()
+{
+	return "uint";
+}
+
+template<typename T>
 auto create_uniform(const std::string& name, const T& value)
 {
 	const std::uint8_t* _value_ptr = reinterpret_cast<const std::uint8_t*>(&value);
 	std::vector<std::uint8_t> _stream(_value_ptr, _value_ptr + sizeof(T));
-	return std::make_shared<gl_variable>("float", name, _stream);
+	const std::string type = get_uniform_type_str<T::value_type>();
+	return std::make_shared<gl_variable>(type, name, _stream);
 }
 
 
@@ -285,8 +316,6 @@ auto string_to_stream(const std::string& type, const std::string& name, const st
 	std::vector<std::uint8_t> stream;
 	return std::make_shared<gl_variable>(type, name, stream);
 }
-
-
 
 void test0()
 {
@@ -352,16 +381,7 @@ void test0()
 //};
 
 
-	auto u0 = create_uniform("color", glu_f32vec4(1.0f, 0.0f, 0.0f, 1.0f));
-	auto u1 = create_uniform("pos", glu_f32vec3(0.0f, 1.0f, 0.0f));
-	auto u2 = create_uniform("text", glu_f32vec4(0.0f, 0.0f, 1.0f, 1.0f));
-
-	auto ubod = std::make_shared<gl_uniform_buffer_descriptor>();
-	ubod->set_block_name("attack");
-	ubod->add_uniform(u0);
-	ubod->add_uniform(u1);
-	ubod->add_uniform(u2);
-	auto ubo = std::make_shared<gl_uniform_buffer>(ubod);
+	
 
 	// uniforms
 	auto camera_position = create_uniform("camera_position", glv_f32vec3(1.0f, 0.0f, 0.0f));
@@ -394,7 +414,29 @@ void test0()
 	ebod->set_indices(indices);
 	ebo->fill(ebod);
 
+	// ubo
+	auto u0 = create_uniform("color", glu_f32vec4(1.0f, 0.0f, 0.0f, 1.0f));
+	auto u1 = create_uniform("pos", glu_f32vec3(0.0f, 1.0f, 0.0f));
+	auto u2 = create_uniform("text", glu_f32vec4(0.0f, 0.0f, 1.0f, 1.0f));
+	auto ubod = std::make_shared<gl_uniform_buffer_descriptor>();
+	ubod->set_block_name("attack");
+	ubod->add_uniform(u0);
+	ubod->add_uniform(u1);
+	ubod->add_uniform(u2);
+	auto ubo = std::make_shared<gl_uniform_buffer>(ubod);
 
+	// ubo1
+	auto u01 = create_uniform("color1", glu_f32vec4(1.0f, 0.0f, 0.0f, 1.0f));
+	auto u11 = create_uniform("pos1", glu_f32vec3(0.0f, 1.0f, 0.0f));
+	auto u21 = create_uniform("text1", glu_f32vec4(0.0f, 0.0f, 1.0f, 1.0f));
+	auto ubod1 = std::make_shared<gl_uniform_buffer_descriptor>();
+	ubod1->set_block_name("attack1");
+	ubod1->add_uniform(u01);
+	ubod1->add_uniform(u11);
+	ubod1->add_uniform(u21);
+	auto ubo1 = std::make_shared<gl_uniform_buffer>(ubod1);
+
+	// ssbo
 	auto ssbod = std::make_shared<gl_shader_storage_buffer_descriptor>();
 	ssbod->set_block_name("genda");
 	ssbod->add_variables({
@@ -402,9 +444,7 @@ void test0()
 			create_uniform("ps", glu_f32vec4(0.0f, 1.0f, 0.0f, 1.0f)),
 			create_uniform("txt", glu_f32vec4(0.0f, 0.0f, 1.0f, 1.0f))
 		});
-
 	auto ssbo = std::make_shared<gl_shader_storage_buffer>(ssbod);
-
 
 	// program
 	auto program = std::make_shared<gl_program>();
@@ -421,6 +461,7 @@ void test0()
 	program->add_uniform(spe_color);
 
 	program->add_uniform_buffer(ubo);
+	program->add_uniform_buffer(ubo1);
 	program->add_shader_storage_buffer(ssbo);
 	
 	
@@ -459,16 +500,17 @@ void test0()
 		
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClear(GL_COLOR_BUFFER_BIT);
+		
 		program->render(0.0f);
 		window->tick(0.0f);
 		
-		ubod->clear_uniforms();
+		/*ubod->clear_uniforms();
 		ubod->add_uniforms({
 			create_uniform("color", glu_f32vec4(w, 0.0f, 0.0f, 1.0f)),
 			create_uniform("pos", glu_f32vec3(0.0f, 0.0f, 0.0f)),
 			create_uniform("text", glu_f32vec4(0.0f, 0.0f, 0.0f, 1.0f))
 			});
-		w += 0.001f;
+		w += 0.001f;*/
 	}
 }
 //

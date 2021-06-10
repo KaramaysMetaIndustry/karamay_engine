@@ -372,7 +372,6 @@ inline void gl_program::_bind_atomic_counter_buffers()
 			{
 				// bind buffer to context
 				atomic_counter_buffer->bind(i);
-
 #ifdef _DEBUG
 				std::cout << "[ " << i << " atomic counter buffer is bound.]" << std::endl;
 #endif // DEBUG

@@ -1,14 +1,18 @@
 #version 460 core
 
-
-struct Material
+uniform struct DirectionalLight
 {
-	vec4 albedoMap;
-	sampler2DArray textures;
+	float attenution;
+	sampler2D s;
+} dir;
+
+struct LightGroup
+{
+	DirectionalLight directionalLights[10];
+	sampler2D a;
 };
 
-
-uniform Material Mat;
+uniform LightGroup light;
 
 in vec3 position;
 in vec2 TexCoord;
@@ -32,6 +36,18 @@ layout(shared) uniform attack
 	vec4 text;
 };
 
+layout(shared) uniform ax
+{
+	vec4 color[];
+} ad[];
+
+layout(shared) uniform attack1
+{
+	vec4 color1;
+	vec3 pos1;
+	vec4 text1;
+};
+
 layout(std430) buffer genda
 {
 	vec4 st;
@@ -44,8 +60,9 @@ layout(std430) buffer genda
 void main()
 {
    //FragColor = vec4(mix(texture(container2, TexCoord), texture(container3, TexCoord), 0.6f).rgb, 1.0f);
-   //FragColor = vec4((color.r + text.r), (color.g + text.g), (color.b + text.b), 1.0f);
+   //FragColor = vec4(text + text1);
    st.r -= 0.00005f;
    FragColor = vec4((st + txt).rgb + ps.rgb, 1.0f);
 
 }
+
