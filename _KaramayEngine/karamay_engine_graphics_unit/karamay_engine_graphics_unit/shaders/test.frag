@@ -34,12 +34,7 @@ layout(shared) uniform attack
 	vec4 color;
 	vec3 pos;
 	vec4 text;
-};
-
-layout(shared) uniform ax
-{
-	vec4 color[];
-} ad[];
+} at[2];
 
 layout(shared) uniform attack1
 {
@@ -61,8 +56,9 @@ void main()
 {
    //FragColor = vec4(mix(texture(container2, TexCoord), texture(container3, TexCoord), 0.6f).rgb, 1.0f);
    //FragColor = vec4(text + text1);
-   st.r -= 0.00005f;
-   FragColor = vec4((st + txt).rgb + ps.rgb, 1.0f);
+   //st.r -= 0.00005f;
+   //FragColor = vec4((st + txt).rgb + ps.rgb, 1.0f);
 
+   FragColor = vec4(position, 1.0f);
 }
 
