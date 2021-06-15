@@ -29,6 +29,13 @@ uniform mat4 model_matrix;
 uniform mat4 view_matrix;
 uniform mat4 projection_matrix;
 
+
+uniform Matrices
+{
+	vec4 aa;
+};
+
+
 layout(shared) uniform attack
 {
 	vec4 color12;
@@ -36,7 +43,7 @@ layout(shared) uniform attack
 	vec4 text;
 };
 
-layout(shared) uniform Matrices
+layout(shared) uniform Matricesa
 {
 	vec4 color[5];
 };
@@ -64,7 +71,6 @@ void main()
    //FragColor = vec4(text + text1);
    //st.r -= 0.00005f;
    //FragColor = vec4((st + txt).rgb + ps.rgb, 1.0f);
-
-   color12.rgb;
+   aa;
 }
 
