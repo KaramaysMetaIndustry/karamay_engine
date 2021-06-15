@@ -1,37 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<schema
-        xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-        targetNamespace="http://www.example.org/01"
-        xmlns:tns="http://www.example.org/01"
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://www.karamay.com.cn"
+        xmlns="http://www.karamay.com.cn"
         elementFormDefault="qualified">
 
-    <element name="user">
-        <complexType>
-            <sequence>
-                <element name="kanasPanel" type="int"/>
-                <element name="username" type="string"/>
-                <element name="born" type="date"/>
-            </sequence>
-        </complexType>
-    </element>
+    <xs:element name="Item" >
 
-    <element name="kanas">
-        <complexType>
-            <sequence>
-                <element name="kanasPanel" type="string"/>
-                <element name="kanasWa" type="string"/>
-            </sequence>
-        </complexType>
-    </element>
-    
-<!--    <attribute name=""-->
+    </xs:element>
 
-    <xs:complexType name="FrameType">
-        <xs:complexContent>
-            <xs:sequence>
-                <xs:element name="TitleRegion" type="ui:LayoutFrameType"></xs:element>
-            </xs:sequence>
-        </xs:complexContent>
+    <xs:element name="StaticArray" >
+
+    </xs:element>
+
+    <xs:element name="DynamicArray" >
+
+    </xs:element>
+
+    <xs:complexType name="UniformBlock">
+        <xs:sequence>
+            <xs:element name="Item"/>
+            <xs:element name="StaticArray"/>
+            <xs:element name="DynamicArray"/>
+        </xs:sequence>
     </xs:complexType>
-</schema>
+
+    <xs:complexType name="UniformBufferBlock">
+        <xs:sequence>
+            <xs:element name="Item"/>
+            <xs:element name="StaticArray"/>
+            <xs:element name="DynamicArray"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ShaderStorageBufferBlock">
+        <xs:sequence>
+            <xs:element name="Item"/>
+            <xs:element name="StaticArray"/>
+            <xs:element name="DynamicArray"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="AtomicCounterBuffer">
+        <xs:sequence>
+            <xs:element name="Item"/>
+            <xs:element name="StaticArray"/>
+            <xs:element name="DynamicArray"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="GPUMemory" >
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="UniformBlock"/>
+                <xs:element name="UniformBufferBlock"/>
+                <xs:element name="ShaderStorageBufferBlock"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="Pipeline" >
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="GPUMemory"/>
+                <xs:element name="Program"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+</xs:schema>

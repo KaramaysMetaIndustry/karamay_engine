@@ -6,15 +6,13 @@ public class AtomicCounterBuffer {
 
     public AtomicCounterBuffer()
     {
-        handle = construct();
+        _handle = _construct();
     }
 
-    private int handle;
+    private Long _handle;
 
-    private native int construct();
+    private native Long _construct();
 
-
-
-    public native void fill(ByteBuffer byteBuffer);
+    private native Long _destroy();
 
 }

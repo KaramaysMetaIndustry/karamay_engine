@@ -144,6 +144,9 @@
     <ClCompile Include="source\graphics\genda\gl_genda.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="source\graphics\buffer\customization\gl_interface_block.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\graphics\buffer\customization\gl_atomic_counter_buffer.h">
@@ -291,6 +294,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="source\graphics\genda\gl_genda.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\buffer\customization\gl_interface_block.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

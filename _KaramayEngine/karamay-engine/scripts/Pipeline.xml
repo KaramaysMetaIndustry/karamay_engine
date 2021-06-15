@@ -1,5 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Pipeline xmlns="http://www.karamay.com.cn"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.karamay.com.cn Maker/Kanas.xsd">
 
-<Pipeline>
+    <GPUMemory>
+        <UniformBlock>
+<!--            <Item type="mat4" name="viewMatrix"/>-->
+<!--            <Item type="mat4" name="projectionMatrix"/>-->
+<!--            <StaticArray type="" name="" size="3"/>-->
+<!--            <DynamicArray type="" name=""/>-->
+        </UniformBlock>
+
+<!--        <UniformBufferBlock layout="std140" blockName="Matrices">-->
+<!--            <Item type="mat4" name="viewMatrix"/>-->
+<!--            <Item type="mat4" name="projectionMatrix"/>-->
+<!--            <StaticArray type="" name="" size="3"/>-->
+<!--            <DynamicArray type="" name=""/>-->
+<!--        </UniformBufferBlock>-->
+
+<!--        <ShaderStorageBuffer layout="std430" blockName="colorMap">-->
+<!--&lt;!&ndash;            <Item type="vec4" name="color"/>&ndash;&gt;-->
+<!--&lt;!&ndash;            <Item type="vec4" name="position"/>&ndash;&gt;-->
+<!--&lt;!&ndash;            <StaticArray type="mat4" name="matrices" size="3"/>&ndash;&gt;-->
+<!--&lt;!&ndash;            <DynamicArray type="mat3x2" name="kuma"/>&ndash;&gt;-->
+<!--        </ShaderStorageBuffer>-->
+
+<!--        <AtomicCounterBuffer>-->
+
+<!--        </AtomicCounterBuffer>-->
+    </GPUMemory>
+
+
+
+
+    <Program>
+        <VertexShader>
+            <Input>
+                <Attribute type="" name=""/>
+                <Attribute type="" name=""/>
+                <Attribute type="" name=""/>
+            </Input>
+            <Output>
+                <Attribute type="" name=""/>
+                <Attribute type="" name=""/>
+                <Attribute type="" name=""/>
+            </Output>
+
+            <UniformBufferRef blockName="Matrices" refType="block"/>
+            <UniformBufferRef blockName="Matrices" refType="instance" instanceName=""/>
+            <UniformBufferRef blockName="Matrices" refType="instanceArray" instanceArrayName=""/>
+
+            <StorageBufferRef blockName="" refType=""/>
+
+            <AtomicCounterBufferRef/>
+
+
+        </VertexShader>
+
+    </Program>
+
 
     <Stages>
 
