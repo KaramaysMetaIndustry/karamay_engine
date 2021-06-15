@@ -4,51 +4,6 @@
 
 class gl_program;
 
-std::size_t _get_type_size(const std::string& type)
-{
-	if (type == "int") return sizeof glm::ivec1;
-	if (type == "ivec2") return sizeof glm::ivec2;
-	if (type == "ivec3") return sizeof glm::ivec3;
-	if (type == "ivec4") return sizeof glm::ivec4;
-
-	if (type == "uint") return sizeof glm::uvec1;
-	if (type == "uvec2") return sizeof glm::uvec2;
-	if (type == "uvec3") return sizeof glm::uvec3;
-	if (type == "uvec4") return sizeof glm::uvec4;
-
-	if (type == "float") return sizeof glm::vec1;
-	if (type == "vec2") return sizeof glm::vec2;
-	if (type == "vec3") return sizeof glm::vec3;
-	if (type == "vec4") return sizeof glm::vec4;
-
-	if (type == "mat2") return sizeof glm::mat2;
-	if (type == "mat3") return sizeof glm::mat3;
-	if (type == "mat4") return sizeof glm::mat4;
-	if (type == "mat2x3") return sizeof glm::mat2x3;
-	if (type == "mat2x4") return sizeof glm::mat2x4;
-	if (type == "mat3x2") return sizeof glm::mat3x2;
-	if (type == "mat3x4") return sizeof glm::mat3x4;
-	if (type == "mat4x2") return sizeof glm::mat4x2;
-	if (type == "mat4x3") return sizeof glm::mat4x3;
-
-	if (type == "double") return sizeof glm::dvec1;
-	if (type == "dvec2") return sizeof glm::vec2;
-	if (type == "dvec3") return sizeof glm::vec3;
-	if (type == "dvec4") return sizeof glm::vec4;
-
-	if (type == "dmat2") return sizeof glm::dmat2;
-	if (type == "dmat3") return sizeof glm::dmat3;
-	if (type == "dmat4") return sizeof glm::dmat4;
-	if (type == "dmat2x3") return sizeof glm::dmat2x3;
-	if (type == "dmat2x4") return sizeof glm::dmat2x4;
-	if (type == "dmat3x2") return sizeof glm::dmat3x2;
-	if (type == "dmat3x4") return sizeof glm::dmat3x4;
-	if (type == "dmat4x2") return sizeof glm::dmat4x2;
-	if (type == "dmat4x3") return sizeof glm::dmat4x3;
-
-	return 0;
-}
-
 struct _shader_point_light_std140
 {
 	// ...
@@ -68,15 +23,15 @@ namespace gl_uniform_buffer_enum
 {
 	enum class layout
 	{
-		std140, // ±ê×¼²¼¾Ö
-		shared, // ¿É¹²Ïí default
-		packed, // ×îÐ¡»¯´æ´¢£¬½ûÖ¹¹²Ïí
+		std140, // ï¿½ï¿½×¼ï¿½ï¿½ï¿½ï¿½
+		shared, // ï¿½É¹ï¿½ï¿½ï¿½ default
+		packed, // ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½æ´¢ï¿½ï¿½ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½
 	};
 
 	enum class matrix_layout
 	{
-		row_major, // uniform buffer ÖÐµÄmatrix °´ÕÕ ÐÐ ´æ´¢
-		column_major // °´ÕÕ ÁÐ ´æ´¢ default
+		row_major, // uniform buffer ï¿½Ðµï¿½matrix ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½æ´¢
+		column_major // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½æ´¢ default
 	};
 
 	enum class reference_style
@@ -158,6 +113,52 @@ public:
 
 class gl_uniform_buffer_item
 {
+
+	std::size_t _get_type_size(const std::string& type)
+	{
+		if (type == "int") return sizeof glm::ivec1;
+		if (type == "ivec2") return sizeof glm::ivec2;
+		if (type == "ivec3") return sizeof glm::ivec3;
+		if (type == "ivec4") return sizeof glm::ivec4;
+
+		if (type == "uint") return sizeof glm::uvec1;
+		if (type == "uvec2") return sizeof glm::uvec2;
+		if (type == "uvec3") return sizeof glm::uvec3;
+		if (type == "uvec4") return sizeof glm::uvec4;
+
+		if (type == "float") return sizeof glm::vec1;
+		if (type == "vec2") return sizeof glm::vec2;
+		if (type == "vec3") return sizeof glm::vec3;
+		if (type == "vec4") return sizeof glm::vec4;
+
+		if (type == "mat2") return sizeof glm::mat2;
+		if (type == "mat3") return sizeof glm::mat3;
+		if (type == "mat4") return sizeof glm::mat4;
+		if (type == "mat2x3") return sizeof glm::mat2x3;
+		if (type == "mat2x4") return sizeof glm::mat2x4;
+		if (type == "mat3x2") return sizeof glm::mat3x2;
+		if (type == "mat3x4") return sizeof glm::mat3x4;
+		if (type == "mat4x2") return sizeof glm::mat4x2;
+		if (type == "mat4x3") return sizeof glm::mat4x3;
+
+		if (type == "double") return sizeof glm::dvec1;
+		if (type == "dvec2") return sizeof glm::vec2;
+		if (type == "dvec3") return sizeof glm::vec3;
+		if (type == "dvec4") return sizeof glm::vec4;
+
+		if (type == "dmat2") return sizeof glm::dmat2;
+		if (type == "dmat3") return sizeof glm::dmat3;
+		if (type == "dmat4") return sizeof glm::dmat4;
+		if (type == "dmat2x3") return sizeof glm::dmat2x3;
+		if (type == "dmat2x4") return sizeof glm::dmat2x4;
+		if (type == "dmat3x2") return sizeof glm::dmat3x2;
+		if (type == "dmat3x4") return sizeof glm::dmat3x4;
+		if (type == "dmat4x2") return sizeof glm::dmat4x2;
+		if (type == "dmat4x3") return sizeof glm::dmat4x3;
+
+		return 0;
+	}
+
 public:
 
 	gl_uniform_buffer_item(

@@ -62,8 +62,8 @@ void main()
 {
    //FragColor = vec4(mix(texture(container2, TexCoord), texture(container3, TexCoord), 0.6f).rgb, 1.0f);
    //FragColor = vec4(text + text1);
-   st.r -= 0.00005f;
-   FragColor = vec4((st + txt).rgb + ps.rgb, 1.0f);
+   //st.r -= 0.00005f;
+   //FragColor = vec4((st + txt).rgb + ps.rgb, 1.0f);
 
    color12.rgb;
 }

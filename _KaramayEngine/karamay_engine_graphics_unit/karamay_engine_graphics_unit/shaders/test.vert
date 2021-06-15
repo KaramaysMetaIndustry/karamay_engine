@@ -8,12 +8,19 @@ out vec3 position;
 out vec2 TexCoord;
 out ivec4 test;
 
+layout(shared) uniform attack
+{
+	vec4 color;
+	vec3 pos;
+	vec4 text;
+} at[2];
+
 uniform mat4 transform;
 
 void main()
 {
    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
-   position = aPos;
+   position = at[0].text.rgb;
    TexCoord = vec2(aTexCoord.x, aTexCoord.y);
    test = atest;
 }
