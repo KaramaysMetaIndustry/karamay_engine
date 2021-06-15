@@ -31,15 +31,16 @@ uniform mat4 projection_matrix;
 
 layout(shared) uniform attack
 {
-	vec4 color;
+	vec4 color12;
 	vec3 pos;
 	vec4 text;
 };
 
-layout(shared) uniform ax
+layout(shared) uniform Matrices
 {
-	vec4 color[];
-} ad[];
+	vec4 color[5];
+};
+
 
 layout(shared) uniform attack1
 {
@@ -64,5 +65,6 @@ void main()
    st.r -= 0.00005f;
    FragColor = vec4((st + txt).rgb + ps.rgb, 1.0f);
 
+   color12.rgb;
 }
 

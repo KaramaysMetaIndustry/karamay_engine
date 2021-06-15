@@ -78,6 +78,23 @@ namespace gl_uniform_buffer_enum
 		row_major, // uniform buffer 中的matrix 按照 行 存储
 		column_major // 按照 列 存储 default
 	};
+
+	enum class reference_style
+	{
+		global,
+		instanced,
+		array_instanced,
+	};
+
+	enum class reference_shader
+	{
+		vertex_shader,
+		tessc_shader,
+		tesse_shader,
+		geom_shader,
+		fragment_shader
+	};
+
 }
 
 class gl_uniform_buffer_descriptor
@@ -174,12 +191,11 @@ private:
 	
 };
 
-class gl_uniform_buffer_item_array
+class gl_uniform_buffer_static_item_array
 {
-
 public:
 
-	gl_uniform_buffer_item_array(
+	gl_uniform_buffer_static_item_array(
 		const std::string& type, 
 		const std::string& item_array_name) :
 		_item_array_name(item_array_name),
@@ -201,6 +217,11 @@ private:
 	const std::size_t _item_capacity;
 
 	std::vector<gl_uniform_buffer_item> _array;
+};
+
+class gl_uniform_buffer_dynamic_item_array
+{
+
 };
 
 class gl_uniform_buffer_instance
@@ -315,36 +336,240 @@ public:
 	~gl_uniform_buffer();
 
 
-
 public:
 
 
+	gl_uniform_buffer(
+		const std::string& block_name,
+		gl_uniform_buffer_enum::layout layout,
+		gl_uniform_buffer_enum::matrix_layout matrix_layout,
+		gl_uniform_buffer_enum::reference_style reference_style,
+		const std::vector<gl_uniform_buffer_enum::reference_shader>& reference_shaders,
+		const std::vector<gl_uniform_buffer_item>& items,
+		const std::vector<gl_uniform_buffer_static_item_array>& static_item_arrays,
+		const std::vector<gl_uniform_buffer_dynamic_item_array>& dynamic_item_arrays) :
+		_block_name(block_name),
+		_layout(layout),
+		_matrix_layout(matrix_layout),
+		_reference_style(reference_style),
+		_reference_shaders(reference_shaders)
+	{
+
+	}
 
 private:
 
-	std::unordered_map<std::string, std::shared_ptr<gl_uniform_buffer_instance>> _instances_map;
+	const std::string _block_name;
 
-	std::unordered_map<std::string, std::shared_ptr<gl_uniform_buffer_instance_array>> _instance_arrays_map;
+	const gl_uniform_buffer_enum::layout _layout;
+
+	const gl_uniform_buffer_enum::matrix_layout _matrix_layout;
+
+	const gl_uniform_buffer_enum::reference_style _reference_style;
+	
+	const std::vector<gl_uniform_buffer_enum::reference_shader> _reference_shaders;
+
+
+	std::shared_ptr<gl_uniform_buffer_instance> _instance;
+
+	std::shared_ptr<gl_uniform_buffer_instance_array> _instance_array;
 
 public:
 
-	auto get_instance(const std::string& instance_name)
+	std::shared_ptr<gl_uniform_buffer_instance> get_instance()
 	{
-		auto _iterator = _instances_map.find(instance_name);
-		if (_iterator == _instances_map.cend())
-			throw std::exception("");
-
-		return std::weak_ptr<gl_uniform_buffer_instance>(_iterator->second);
+		return _instance;
 	}
 
-	auto get_instance_array(const std::string& instance_array_name)
+	std::shared_ptr<gl_uniform_buffer_instance_array> get_instance_array()
 	{
-		auto _iterator = _instance_arrays_map.find(instance_array_name);
-		if (_iterator == _instance_arrays_map.cend())
-			throw std::exception("");
+		return _instance_array;
+	}
 
-		return std::weak_ptr<gl_uniform_buffer_instance_array>(_iterator->second);
+
+};
+
+
+class gl_block_item
+{
+public:
+
+	gl_block_item(const std::string& type, const std::string& name) :
+		_type(type),
+		_name(name),
+		_length(_get_type_size(type))
+	{
+
+	}
+
+public:
+
+	const std::string _type, _name;
+	
+	const std::size_t _length;
+	
+	std::vector<std::uint8_t> _stream;
+
+public:
+	
+	const std::string& get_name() const { return _name; }
+
+	const std::size_t get_length() const { return _length; }
+
+	void set_value(const std::vector<std::uint8_t>& stream)
+	{
+		if (stream.size() != _length) throw std::exception("stream size is not correct");
+
+		_stream = stream;
+	}
+
+	const std::vector<std::uint8_t>& get_value() const { return _stream; }
+
+};
+
+class gl_block_static_item_array
+{
+
+public:
+
+	gl_block_static_item_array(const std::string& type, const std::string& name, std::uint32_t items_num) :
+		_items_num(items_num)
+	{
+		_items.resize(items_num);
+	}
+
+	gl_block_static_item_array(const std::string& type, const std::string& name, const std::vector<std::vector<std::uint8_t>>& initial_items) :
+		_items_num(initial_items.size()),
+		_items(initial_items)
+	{}
+
+public:
+
+	const std::size_t get_items_num() const
+	{
+		return _items.size();
+	}
+
+	void set_item_value(std::uint32_t index, const std::vector<std::uint8_t> stream)
+	{
+		if (index > _items.size() - 1) throw std::exception(" the index is out of bound");
+
+		auto& _stream = _items[index];
+		if (_stream.size() != stream.size()) throw std::exception(" the stream size is not correct");
+
+		_stream = stream;
+	}
+
+private:
+
+	std::vector<std::vector<std::uint8_t>> _items;
+
+	const std::size_t _items_num;
+
+};
+
+class gl_block_dynamic_item_array
+{
+
+public:
+
+	gl_block_dynamic_item_array() :
+		_items()
+	{
+	}
+
+public:
+
+	const std::size_t get_size() const
+	{
+		return _items.size();
+	}
+
+	void add_item(const std::vector<std::uint8_t>& stream)
+	{
+		
+	}
+
+
+	void clear_items()
+	{
+
+	}
+
+private:
+	
+	std::vector<gl_block_item> _items;
+
+};
+
+class gl_block
+{
+	using _item = gl_block_item;
+	using _static_item_array = gl_block_static_item_array;
+	using _dynamic_item_array = gl_block_dynamic_item_array;
+
+public:
+
+	gl_block(
+		const std::vector<gl_block_item>& items,
+		const std::vector<gl_block_static_item_array>& static_item_arrays,
+		const std::vector<gl_block_dynamic_item_array>& dynamic_item_arrays) :
+		_items(items),
+		_static_item_arrays(static_item_arrays),
+		_dynamic_item_arrays(dynamic_item_arrays),
+		_items_num(items.size()),
+		_static_item_arrays_num(static_item_arrays.size()),
+		_dynamic_item_arrays_num(dynamic_item_arrays.size())
+	{
+
+	}
+
+protected:
+
+	std::vector<_item> _items;
+
+	std::vector<_static_item_array> _static_item_arrays;
+
+	std::vector<_dynamic_item_array> _dynamic_item_arrays;
+
+	const std::size_t _items_num, _static_item_arrays_num, _dynamic_item_arrays_num;
+
+};
+
+class gl_buffer_backed_block : public gl_block
+{
+protected:
+
+	gl_buffer_backed_block(
+		const std::vector<gl_block_item>& items,
+		const std::vector<gl_block_static_item_array>& static_item_arrays,
+		const std::vector<gl_block_dynamic_item_array>& dynamic_item_arrays) :
+		gl_block(items, static_item_arrays, dynamic_item_arrays)
+	{
+
+	}
+
+private:
+
+
+};
+
+
+class gl_uniform_buffer_block : public gl_buffer_backed_block
+{
+
+public:
+
+	gl_uniform_buffer_block()
+	{
+
 	}
 
 };
 
+
+class gl_shader_storage_buffer_block : public gl_buffer_backed_block
+{
+	gl_shader_storage_buffer_block()
+	{}
+};
