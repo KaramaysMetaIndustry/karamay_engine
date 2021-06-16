@@ -1,22 +1,11 @@
 #version 460 core
 
-uniform struct DirectionalLight
-{
-	float attenution;
-	sampler2D s;
-} dir;
 
-struct LightGroup
-{
-	DirectionalLight directionalLights[10];
-	sampler2D a;
-};
-
-uniform LightGroup light;
-
-in vec3 position;
-in vec2 TexCoord;
-flat in ivec4 test;
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec2 TexCoord;
+layout(location = 2) flat in ivec4 test;
+layout(location = 3) in vec4 _color;
+layout(location = 4) in vec4 _text;
 
 out vec4 FragColor;
 
@@ -30,23 +19,12 @@ uniform mat4 view_matrix;
 uniform mat4 projection_matrix;
 
 
-uniform Matrices
-{
-	vec4 aa;
-};
-
-
 layout(shared) uniform attack
 {
-	vec4 color12;
+	vec4 color;
 	vec3 pos;
-	vec4 text;
-};
-
-layout(shared) uniform Matricesa
-{
-	vec4 color[5];
-};
+	vec4 text[];
+} at[];
 
 
 layout(shared) uniform attack1
@@ -56,12 +34,18 @@ layout(shared) uniform attack1
 	vec4 text1;
 };
 
-layout(std430) buffer genda
+
+struct Ma
 {
-	vec4 st;
-	vec4 ps;
-	vec4 txt;
+	vec4 a;
 };
+
+layout(std430) buffer wida
+{
+	Ma ma;
+	vec4 a[];
+} ad[];
+
 
 
 
@@ -70,7 +54,6 @@ void main()
    //FragColor = vec4(mix(texture(container2, TexCoord), texture(container3, TexCoord), 0.6f).rgb, 1.0f);
    //FragColor = vec4(text + text1);
    //st.r -= 0.00005f;
-   //FragColor = vec4((st + txt).rgb + ps.rgb, 1.0f);
-   aa;
+   
 }
 

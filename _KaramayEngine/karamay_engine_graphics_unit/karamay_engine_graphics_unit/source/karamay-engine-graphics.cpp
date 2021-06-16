@@ -381,23 +381,6 @@ void test0()
 //};
 
 
-	gl_uniform_buffer ub(
-		"Matrices", 
-		gl_uniform_buffer_enum::layout::shared,
-		gl_uniform_buffer_enum::matrix_layout::row_major,
-		gl_uniform_buffer_enum::reference_style::global,
-		{
-			gl_uniform_buffer_enum::reference_shader::vertex_shader,
-			gl_uniform_buffer_enum::reference_shader::fragment_shader
-		},
-		{
-			gl_uniform_buffer_item("vec3", "color"),
-			gl_uniform_buffer_item("vec4", "normal"),
-			gl_uniform_buffer_item("vec4", "position")
-		},
-		{
-			gl_uniform_buffer_item_array("vec2", "tails")
-		});
 
 	
 
@@ -511,7 +494,7 @@ void test0()
 	//glStencilMask(GL_TRUE);
 	//glClearStencil(0);
 
-	int i = 300;
+	int i = 100;
 	float w = 0.0f;
 	while (i--)
 	{

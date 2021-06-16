@@ -4,30 +4,32 @@
           xsi:schemaLocation="http://www.karamay.com.cn Maker/Kanas.xsd">
 
     <GPUMemory>
-        <UniformBlock>
-<!--            <Item type="mat4" name="viewMatrix"/>-->
-<!--            <Item type="mat4" name="projectionMatrix"/>-->
-<!--            <StaticArray type="" name="" size="3"/>-->
-<!--            <DynamicArray type="" name=""/>-->
+
+        <Struct name="Material">
+
+        </Struct>
+
+        <UniformBlock name="Lama">
+            <Item type="vec4" name=""/>
+            <ItemDynamicArray type="Material" name="mats"/>
+            <ItemStaticArray type="vec2" name="uvs" capacity="4"/>
+            <ItemStaticArray type="mat4" name="matrices" capacity="4"/>
         </UniformBlock>
 
-<!--        <UniformBufferBlock layout="std140" blockName="Matrices">-->
-<!--            <Item type="mat4" name="viewMatrix"/>-->
-<!--            <Item type="mat4" name="projectionMatrix"/>-->
-<!--            <StaticArray type="" name="" size="3"/>-->
-<!--            <DynamicArray type="" name=""/>-->
-<!--        </UniformBufferBlock>-->
+        <BufferedUniformBlock layout="std140" name="Woda">
+            <Item type="vec4" name=""/>
+            <ItemDynamicArray type="Material" name="mats"/>
+            <ItemStaticArray type="vec2" name="uvs" capacity="4"/>
+            <ItemStaticArray type="mat4" name="matrices" capacity="4"/>
+        </BufferedUniformBlock>
 
-<!--        <ShaderStorageBuffer layout="std430" blockName="colorMap">-->
-<!--&lt;!&ndash;            <Item type="vec4" name="color"/>&ndash;&gt;-->
-<!--&lt;!&ndash;            <Item type="vec4" name="position"/>&ndash;&gt;-->
-<!--&lt;!&ndash;            <StaticArray type="mat4" name="matrices" size="3"/>&ndash;&gt;-->
-<!--&lt;!&ndash;            <DynamicArray type="mat3x2" name="kuma"/>&ndash;&gt;-->
-<!--        </ShaderStorageBuffer>-->
+        <ShaderStorageBlock layout="std430">
+            <Item type="vec4" name=""/>
+            <ItemDynamicArray type="Material" name="mats"/>
+            <ItemStaticArray type="vec2" name="uvs" capacity="4"/>
+            <ItemStaticArray type="mat4" name="matrices" capacity="4"/>
+        </ShaderStorageBlock>
 
-<!--        <AtomicCounterBuffer>-->
-
-<!--        </AtomicCounterBuffer>-->
     </GPUMemory>
 
 
