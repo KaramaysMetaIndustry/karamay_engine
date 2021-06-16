@@ -144,7 +144,16 @@
     <ClCompile Include="source\graphics\genda\gl_genda.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="source\graphics\buffer\customization\gl_interface_block.cpp">
+    <ClCompile Include="source\graphics\buffer\interface_block\gl_uniform_block.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\buffer\interface_block\gl_buffered_uniform_block.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\buffer\interface_block\gl_shader_storage_block.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\buffer\interface_block\gl_interface_block.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -296,7 +305,16 @@
     <ClInclude Include="source\graphics\genda\gl_genda.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="source\graphics\buffer\customization\gl_interface_block.h">
+    <ClInclude Include="source\graphics\buffer\interface_block\gl_uniform_block.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\buffer\interface_block\gl_buffered_uniform_block.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\buffer\interface_block\gl_shader_storage_block.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\buffer\interface_block\gl_interface_block.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

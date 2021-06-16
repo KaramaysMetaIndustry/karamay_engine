@@ -8,6 +8,7 @@
     <artifactId>karamay-engine</artifactId>
     <version>1.0-SNAPSHOT</version>
     <dependencies>
+
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>

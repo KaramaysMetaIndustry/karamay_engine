@@ -21,10 +21,13 @@
   <ItemGroup>
     <ClCompile Include="source\graphics\buffer\customization\gl_atomic_counter_buffer.cpp" />
     <ClCompile Include="source\graphics\buffer\customization\gl_element_array_buffer.cpp" />
-    <ClCompile Include="source\graphics\buffer\customization\gl_interface_block.cpp" />
     <ClCompile Include="source\graphics\buffer\customization\gl_shader_storage_buffer.cpp" />
     <ClCompile Include="source\graphics\buffer\customization\gl_uniform_buffer.cpp" />
     <ClCompile Include="source\graphics\buffer\gl_buffer.cpp" />
+    <ClCompile Include="source\graphics\buffer\interface_block\gl_buffered_uniform_block.cpp" />
+    <ClCompile Include="source\graphics\buffer\interface_block\gl_interface_block.cpp" />
+    <ClCompile Include="source\graphics\buffer\interface_block\gl_shader_storage_block.cpp" />
+    <ClCompile Include="source\graphics\buffer\interface_block\gl_uniform_block.cpp" />
     <ClCompile Include="source\graphics\camera\gl_camera.cpp" />
     <ClCompile Include="source\graphics\commands\gl_commands.cpp" />
     <ClCompile Include="source\graphics\context\gl_context.cpp" />
@@ -67,10 +70,13 @@
   <ItemGroup>
     <ClInclude Include="source\graphics\buffer\customization\gl_atomic_counter_buffer.h" />
     <ClInclude Include="source\graphics\buffer\customization\gl_element_array_buffer.h" />
-    <ClInclude Include="source\graphics\buffer\customization\gl_interface_block.h" />
     <ClInclude Include="source\graphics\buffer\customization\gl_shader_storage_buffer.h" />
     <ClInclude Include="source\graphics\buffer\customization\gl_uniform_buffer.h" />
     <ClInclude Include="source\graphics\buffer\gl_buffer.h" />
+    <ClInclude Include="source\graphics\buffer\interface_block\gl_buffered_uniform_block.h" />
+    <ClInclude Include="source\graphics\buffer\interface_block\gl_interface_block.h" />
+    <ClInclude Include="source\graphics\buffer\interface_block\gl_shader_storage_block.h" />
+    <ClInclude Include="source\graphics\buffer\interface_block\gl_uniform_block.h" />
     <ClInclude Include="source\graphics\camera\gl_camera.h" />
     <ClInclude Include="source\graphics\commands\gl_commands.h" />
     <ClInclude Include="source\graphics\context\gl_context.h" />
