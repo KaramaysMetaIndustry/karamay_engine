@@ -19,11 +19,26 @@ uniform mat4 view_matrix;
 uniform mat4 projection_matrix;
 
 
+uniform struct Material
+{
+	sampler2D texture0;
+} mats[2];
+
+
+struct Light
+{
+	vec4 color;
+	vec3 direction;
+} a;
+
+
+
 layout(shared) uniform attack
 {
 	vec4 color;
 	vec3 pos;
 	vec4 text[];
+	Light l;
 } at[];
 
 
@@ -35,14 +50,21 @@ layout(shared) uniform attack1
 };
 
 
-struct Ma
+
+uniform Material0{
+	sampler2D texture0;
+} mat0;
+
+
+uniform struct Material1
 {
-	vec4 a;
-};
+	//vec4 a;
+	sampler2D texture1;
+} wa;
+
 
 layout(std430) buffer wida
 {
-	Ma ma;
 	vec4 a[];
 } ad[];
 

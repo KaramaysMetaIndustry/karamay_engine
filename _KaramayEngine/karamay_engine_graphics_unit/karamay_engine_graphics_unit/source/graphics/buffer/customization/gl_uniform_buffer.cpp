@@ -1,12 +1,12 @@
 #include "gl_uniform_buffer.h"
 #include "graphics/program/gl_program.h"
-
+#include "public/stb.h"
+#include "public/nlohmann_json.h"
 
 
 gl_uniform_buffer::gl_uniform_buffer(const std::shared_ptr<gl_uniform_buffer_descriptor>& descriptor) :
 	_descriptor(descriptor)
 {
-
 }
 
 void gl_uniform_buffer::bind(std::int32_t binding, gl_program& program)

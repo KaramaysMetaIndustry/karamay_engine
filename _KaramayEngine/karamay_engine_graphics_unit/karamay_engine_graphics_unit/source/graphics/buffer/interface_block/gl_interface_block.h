@@ -137,22 +137,36 @@ class gl_interface_block_item_dynamic_array
 {
 public:
 
-	gl_interface_block_item_dynamic_array()
+	gl_interface_block_item_dynamic_array(const std::string& type, const std::string array_name) :
+		_type(type),
+		_array_name(array_name)
 	{
 
 	}
 
+	void set_item_value(std::uint32_t index, const std::vector<std::uint8_t>& stream)
+	{
+
+	}
 
 private:
 
+	const std::string _type;
+
 	const std::string _array_name;
+
+	std::vector<gl_interface_block_item> _items;
+
+public:
+
+
 
 };
 
-class gl_interface_block
+class gl_interface_block_instance
 {
 protected:
-	gl_interface_block(const std::string& block_name, 
+	gl_interface_block_instance(const std::string& block_name, 
 		const std::vector<gl_interface_block_item>& items, 
 		const std::vector<gl_interface_block_item_static_array>& item_static_arrays,
 		const std::vector<gl_interface_block_item_dynamic_array>& item_dynamic_arrays) :
@@ -163,9 +177,6 @@ protected:
 	{
 
 	}
-
-	class gl_interface_block_instance {};
-
 
 protected:
 
@@ -187,16 +198,54 @@ class gl_interface_block_instance_static_array
 {
 public:
 
+	gl_interface_block_instance_static_array(const std::string& instance_array_name, std::size_t capacity):
+		_max_index(capacity),
+		_instance_array_name(instance_array_name)
+	{
+
+	}
+
+private:
+
+	const std::size_t _max_index;
+
+	const std::string _instance_array_name;
+
+	std::vector<gl_interface_block_instance> _instances;
+
+public:
+	
+	// matrices[0].color[0]
+	// matrices[0].mats[0].diffuse
+	void set_item_value(std::string& name, const std::vector<uint8_t> stream)
+	{
+
+	}
+
 };
 
 class gl_interface_block_instance_dynamic_array
 {
 
+public:
+
+	gl_interface_block_instance_dynamic_array()
+	{
+
+	}
+
+private:
+	
+	std::vector<gl_interface_block_instance> _instances;
+
 };
 
-
-class gl_interface_block_stub
+class gl_opaque_type
 {
 
 };
 
+class gl_struct
+{
+
+};

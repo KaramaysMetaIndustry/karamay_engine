@@ -60,11 +60,13 @@
     <ClCompile Include="source\graphics\texture\texture_cube\gl_texture_cube.cpp" />
     <ClCompile Include="source\graphics\texture\texture_cube\gl_texture_cube_array.cpp" />
     <ClCompile Include="source\graphics\transform_feedback\gl_transform_feedback.cpp" />
+    <ClCompile Include="source\graphics\type\gl_type.cpp" />
     <ClCompile Include="source\graphics\variable\gl_variable.cpp" />
     <ClCompile Include="source\graphics\vertex_array\gl_vertex_array.cpp" />
     <ClCompile Include="source\graphics\vertex_array\gl_vertex_stream.cpp" />
     <ClCompile Include="source\graphics\vertex_specification\gl_vertex_specifiaction.cpp" />
     <ClCompile Include="source\karamay-engine-graphics.cpp" />
+    <ClCompile Include="source\public\stb.h" />
     <ClCompile Include="source\window\window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -110,6 +112,7 @@
     <ClInclude Include="source\graphics\texture\texture_cube\gl_texture_cube.h" />
     <ClInclude Include="source\graphics\texture\texture_cube\gl_texture_cube_array.h" />
     <ClInclude Include="source\graphics\transform_feedback\gl_transform_feedback.h" />
+    <ClInclude Include="source\graphics\type\gl_type.h" />
     <ClInclude Include="source\graphics\variable\glu_types.h" />
     <ClInclude Include="source\graphics\variable\glv_types.h" />
     <ClInclude Include="source\graphics\variable\gl_variable.h" />
@@ -117,6 +120,7 @@
     <ClInclude Include="source\graphics\vertex_array\gl_vertex_stream.h" />
     <ClInclude Include="source\graphics\vertex_specification\gl_vertex_specifiaction.h" />
     <ClInclude Include="source\public\glfw.h" />
+    <ClInclude Include="source\public\nlohmann_json.h" />
     <ClInclude Include="source\public\opengl.h" />
     <ClInclude Include="source\public\stl.h" />
     <ClInclude Include="source\public\winsocket.h" />

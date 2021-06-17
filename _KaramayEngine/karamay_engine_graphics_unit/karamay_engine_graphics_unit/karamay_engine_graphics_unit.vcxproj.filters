@@ -156,6 +156,12 @@
     <ClCompile Include="source\graphics\buffer\interface_block\gl_interface_block.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="source\public\stb.h">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\type\gl_type.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\graphics\buffer\customization\gl_atomic_counter_buffer.h">
@@ -315,6 +321,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="source\graphics\buffer\interface_block\gl_interface_block.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="source\public\nlohmann_json.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\type\gl_type.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
