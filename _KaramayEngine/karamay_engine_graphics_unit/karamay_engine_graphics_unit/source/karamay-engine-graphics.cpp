@@ -10,7 +10,12 @@
 #include "window/window.h"
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "../dependencies/stb_image.h"
+#include "../dependencies/stb/stb_image.h"
+
+
+#include <future>
+#include <chrono>
+
 
 float vertices[] = {
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f, //0
