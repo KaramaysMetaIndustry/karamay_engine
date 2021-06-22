@@ -13,10 +13,6 @@
 #include "../dependencies/stb/stb_image.h"
 
 
-#include <future>
-#include <chrono>
-
-
 float vertices[] = {
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f, //0
 		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
@@ -262,14 +258,6 @@ void test0();
 
 int main()
 {
-
-
-	//std::cout << "size: " << sizeof(bool) << std::endl;
-	/*std::cout << "weak ptr size: " << sizeof(std::weak_ptr<std::string>) << std::endl;
-	std::cout << "unique ptr size: " << sizeof(std::unique_ptr<std::string>) << std::endl;
-  
-	std::cout << "ori ptr size: " << sizeof(std::string*) << std::endl;*/
-
 
 	test0();
 }

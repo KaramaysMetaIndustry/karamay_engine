@@ -1,4 +1,4 @@
-package com.pb.core.shell.groovy;
+package com.pb.core.prosthesis.groovy;
 
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
@@ -6,6 +6,8 @@ import groovy.util.GroovyScriptEngine;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 public class GroovyClazzManager {
@@ -41,65 +43,52 @@ public class GroovyClazzManager {
 
             } catch (ClassNotFoundException e) {
                 System.out.println(e);
+
             }
         }
     }
 
     public static void tryLoadGroovyClazz(String clazzName)
     {
-        if(!groovyClazzMap.containsKey(clazzName)) {
-            try {
-                Class<?> clazz = groovyClassLoader.loadClass(clazzName);
-                groovyClazzMap.put(clazzName, clazz);
-                System.out.println(clazzName + " has been loaded.");
-            } catch (ClassNotFoundException e) {
-                System.out.println(e);
-            }
-        }
+        tryLoadGroovyClazz(clazzName, false);
     }
 
-    public static void tryInvokeMethod(String clazzName, String funcName, Object[] parameters)
+    public static Object tryInvokeMethod(String clazzName, String funcName, Object[] parameters)
     {
-        if(!groovyClazzMap.containsKey(clazzName)){
-            tryLoadGroovyClazz(clazzName);
-        }
+        if(!groovyClazzMap.containsKey(clazzName)) tryLoadGroovyClazz(clazzName);
 
         if(groovyClazzMap.containsKey(clazzName))
         {
-            System.out.println("the clazz has been found");
+            System.out.println("clazz: "+ clazzName +" has been found");
             try {
                 GroovyObject groovyObject = (GroovyObject) groovyClazzMap.get(clazzName).getDeclaredConstructor().newInstance();
                 Object result = groovyObject.invokeMethod(funcName, parameters);
-
-                System.out.println(clazzName + "."+funcName+" has been invoked successfully");
+                System.out.println("\n" + clazzName + "."+funcName+" has been invoked");
+                return result;
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 e.printStackTrace();
-            }
-        }else{
-            System.out.println("Do not find the clazz : " + clazzName);
-        }
-
-    }
-
-    public static void tryInvokeMethod(String clazzName, String funcName)
-    {
-        if(groovyClazzMap.containsKey(clazzName))
-        {
-            System.out.println("the clazz has been found");
-            try {
-                GroovyObject groovyObject = (GroovyObject) groovyClazzMap.get(clazzName).getDeclaredConstructor().newInstance();
-                Object[] params = {};
-                Object result = groovyObject.invokeMethod(funcName, params);
-
-                System.out.println(clazzName + "."+"funcName"+" has been invoked successfully");
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                //e.printStackTrace();
                 System.out.println(e);
             }
         }else{
-            System.out.println("Do not find the clazz : " + clazzName);
+            System.out.println("do not find the clazz : " + clazzName);
         }
+
+        return null;
     }
 
+    public static Object tryInvokeMethod(String clazzName, String funcName)
+    {
+        Object[] parameters= {};
+        return tryInvokeMethod(clazzName, funcName, parameters);
+    }
+
+
+    public static void tryInvokeMethod() throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        byte[] bytes = md.digest();
+        final char[] HEX_DIGITS = "0123456789ABCDEF".toCharArray();
+        StringBuilder ret = new StringBuilder(bytes.length * 2);
+
+    }
 
 }
