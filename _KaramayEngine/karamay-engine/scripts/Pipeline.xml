@@ -16,7 +16,7 @@
             <ItemStaticArray type="mat4" name="matrices" capacity="4"/>
         </UniformBlock>
 
-        <BufferedUniformBlock layout="std140" name="Woda">
+        <BufferedUniformBlock layout="std140" name="">
             <Item type="vec4" name=""/>
             <ItemDynamicArray type="Material" name="mats"/>
             <ItemStaticArray type="vec2" name="uvs" capacity="4"/>

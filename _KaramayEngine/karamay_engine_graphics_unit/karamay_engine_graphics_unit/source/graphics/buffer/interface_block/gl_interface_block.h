@@ -240,12 +240,3 @@ private:
 
 };
 
-class gl_opaque_type
-{
-
-};
-
-class gl_struct
-{
-
-};
