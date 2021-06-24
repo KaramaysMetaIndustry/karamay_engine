@@ -4,31 +4,21 @@
 #include "graphics/texture/texture_2d/gl_texture_2d_multisample.h"
 #include "graphics/renderbuffer/gl_renderbuffer.h"
 #include "graphics/renderbuffer/gl_multisample_renderbuffer.h"
-
-struct gl_renderer_pass
-{
-	
-};
+#include "graphics/pass/gl_pass_base.h"
 
 
 class gl_renderer
 {
-
-	gl_renderer(const std::string& config_path) {}
-
-	gl_renderer(const std::vector<gl_renderer_pass>& passes) {}
-
 public:
 
-	auto& add_pass(const std::shared_ptr<gl_pipeline_base>& pipeline)
-	{
+	gl_renderer(const std::string& xml) {}
 
-		return *this;
-	}
+
 
 private:
 
-	std::vector<std::shared_ptr<gl_pipeline_base>> _pipelines;
+	std::vector<gl_pass_base>
+
 
 };
 

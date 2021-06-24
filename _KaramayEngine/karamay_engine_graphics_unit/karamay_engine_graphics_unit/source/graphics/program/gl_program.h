@@ -148,10 +148,6 @@ public:
 
 public:
 
-	/**
-	 * once you install these component, you have no chance to remove or add them until the program destroyed
-	 * 
-	 */
 	void construct(const std::vector<std::string>& shader_paths);
 
 public:

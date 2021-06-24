@@ -19,27 +19,12 @@ uniform mat4 view_matrix;
 uniform mat4 projection_matrix;
 
 
-uniform struct Material
-{
-	sampler2D texture0;
-} mats[2];
-
-
-struct Light
-{
-	vec4 color;
-	vec3 direction;
-} a;
-
-
-
 layout(shared) uniform attack
 {
 	vec4 color;
 	vec3 pos;
-	vec4 text[];
-	Light l;
-} at[];
+	vec4 text;
+};
 
 
 layout(shared) uniform attack1
@@ -48,19 +33,6 @@ layout(shared) uniform attack1
 	vec3 pos1;
 	vec4 text1;
 };
-
-
-
-uniform Material0{
-	sampler2D texture0;
-} mat0;
-
-
-uniform struct Material1
-{
-	//vec4 a;
-	sampler2D texture1;
-} wa;
 
 
 layout(std430) buffer wida
@@ -74,7 +46,7 @@ layout(std430) buffer wida
 void main()
 {
    //FragColor = vec4(mix(texture(container2, TexCoord), texture(container3, TexCoord), 0.6f).rgb, 1.0f);
-   //FragColor = vec4(text + text1);
+   FragColor = vec4(text + text1);
    //st.r -= 0.00005f;
    
 }

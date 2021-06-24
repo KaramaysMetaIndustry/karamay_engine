@@ -28,15 +28,12 @@ namespace gl_commands
 		 * @firt: start index
 		 * @count: number of vertices
 		 */
-		static void draw_arrays(gl_commands::primitive_mode mode, GLint first, GLsizei count)
+		static void draw_arrays(gl_commands::primitive_mode mode, std::int32_t first, std::int32_t count)
 		{
 			glDrawArrays(static_cast<GLenum>(mode), first, count);
 		}
 		
-		/**
-		 * 
-		 */
-		static void draw_arrays_instanced(gl_commands::primitive_mode mode, GLint first, GLsizei count, GLsizei instance_count)
+		static void draw_arrays_instanced(gl_commands::primitive_mode mode, std::int32_t first, std::int32_t count, std::int32_t instance_count)
 		{
 			glDrawArraysInstanced(static_cast<GLenum>(mode), first, count, instance_count);
 		}
@@ -45,7 +42,9 @@ namespace gl_commands
 		{
 			//glDrawArraysInstanced(static_)
 		}
-		static void draw_arrays_indirect() {}
+		
+		static void draw_arrays_indirect() 
+		{}
 
 
 		static void draw_elements() {}

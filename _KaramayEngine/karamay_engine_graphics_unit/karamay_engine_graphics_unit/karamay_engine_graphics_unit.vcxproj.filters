@@ -63,9 +63,6 @@
     <ClCompile Include="source\graphics\program\gl_program.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="source\graphics\program_pipeline\gl_program_pipeline.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="source\graphics\renderbuffer\gl_multisample_renderbuffer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -162,6 +159,9 @@
     <ClCompile Include="source\graphics\type\gl_type.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="source\graphics\pass\gl_pass_base.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\graphics\buffer\customization\gl_atomic_counter_buffer.h">
@@ -210,9 +210,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="source\graphics\program\gl_program.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="source\graphics\program_pipeline\gl_program_pipeline.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="source\graphics\renderbuffer\gl_multisample_renderbuffer.h">
@@ -327,6 +324,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="source\graphics\type\gl_type.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphics\pass\gl_pass_base.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -37,11 +37,11 @@
     <ClCompile Include="source\graphics\glo\gl_object.cpp" />
     <ClCompile Include="source\graphics\mesh\gl_mesh.cpp" />
     <ClCompile Include="source\graphics\mesh\material\gl_material.cpp" />
+    <ClCompile Include="source\graphics\pass\gl_pass_base.cpp" />
     <ClCompile Include="source\graphics\pipeline\gl_compute_pipeline.cpp" />
     <ClCompile Include="source\graphics\pipeline\gl_graphics_pipeline.cpp" />
     <ClCompile Include="source\graphics\pipeline\gl_pipeline_base.cpp" />
     <ClCompile Include="source\graphics\program\gl_program.cpp" />
-    <ClCompile Include="source\graphics\program_pipeline\gl_program_pipeline.cpp" />
     <ClCompile Include="source\graphics\renderbuffer\gl_multisample_renderbuffer.cpp" />
     <ClCompile Include="source\graphics\renderbuffer\gl_renderbuffer.cpp" />
     <ClCompile Include="source\graphics\renderer\gl_renderer.cpp" />
@@ -88,11 +88,11 @@
     <ClInclude Include="source\graphics\glo\gl_object.h" />
     <ClInclude Include="source\graphics\mesh\gl_mesh.h" />
     <ClInclude Include="source\graphics\mesh\material\gl_material.h" />
+    <ClInclude Include="source\graphics\pass\gl_pass_base.h" />
     <ClInclude Include="source\graphics\pipeline\gl_compute_pipeline.h" />
     <ClInclude Include="source\graphics\pipeline\gl_graphics_pipeline.h" />
     <ClInclude Include="source\graphics\pipeline\gl_pipeline_base.h" />
     <ClInclude Include="source\graphics\program\gl_program.h" />
-    <ClInclude Include="source\graphics\program_pipeline\gl_program_pipeline.h" />
     <ClInclude Include="source\graphics\renderbuffer\gl_multisample_renderbuffer.h" />
     <ClInclude Include="source\graphics\renderbuffer\gl_renderbuffer.h" />
     <ClInclude Include="source\graphics\renderer\gl_renderer.h" />

@@ -23,15 +23,15 @@ namespace gl_uniform_buffer_enum
 {
 	enum class layout
 	{
-		std140, // ��׼����
-		shared, // �ɹ��� default
-		packed, // ��С���洢����ֹ����
+		std140, 
+		shared, 
+		packed, 
 	};
 
 	enum class matrix_layout
 	{
-		row_major, // uniform buffer �е�matrix ���� �� �洢
-		column_major // ���� �� �洢 default
+		row_major, 
+		column_major 
 	};
 
 	enum class reference_style

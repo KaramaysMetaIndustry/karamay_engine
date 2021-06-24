@@ -4,7 +4,7 @@ class Woda {
 
     def start()
     {
-        print("this woda xxxx")
+        print("this woda aa")
     }
 
 
