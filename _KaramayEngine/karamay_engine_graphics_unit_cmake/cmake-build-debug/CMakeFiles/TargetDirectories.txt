@@ -1,0 +1,3 @@
+C:/Users/jichengcheng/Desktop/karamay_engine_graphics_unit/cmake-build-debug/CMakeFiles/karamay_engine_graphics_unit.dir
+C:/Users/jichengcheng/Desktop/karamay_engine_graphics_unit/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/jichengcheng/Desktop/karamay_engine_graphics_unit/cmake-build-debug/CMakeFiles/rebuild_cache.dir
