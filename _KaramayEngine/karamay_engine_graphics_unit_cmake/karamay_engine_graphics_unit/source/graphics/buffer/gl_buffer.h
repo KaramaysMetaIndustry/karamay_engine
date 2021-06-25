@@ -7,11 +7,11 @@ namespace gl_buffer_enum
 {
 	enum class target : GLenum
 	{
-		ARRAY_BUFFER = GL_ARRAY_BUFFER, //**
-		ELEMENT_ARRAY_BUFFER = GL_ELEMENT_ARRAY_BUFFER, // **
+		ARRAY_BUFFER = GL_ARRAY_BUFFER,
+		ELEMENT_ARRAY_BUFFER = GL_ELEMENT_ARRAY_BUFFER,
 
-		UNIFORM_BUFFER = GL_UNIFORM_BUFFER, // **
-		SHADER_STORAGE_BUFFER = GL_SHADER_STORAGE_BUFFER, // **
+		UNIFORM_BUFFER = GL_UNIFORM_BUFFER,
+		SHADER_STORAGE_BUFFER = GL_SHADER_STORAGE_BUFFER,
 		ATOMIC_COUNTER_BUFFER = GL_ATOMIC_COUNTER_BUFFER,
 
 		DRAW_INDIRECT_BUFFER = GL_DRAW_INDIRECT_BUFFER,
@@ -146,7 +146,7 @@ namespace gl_buffer_enum
 	};
 }
 
-class gl_buffer : public gl_object
+class gl_buffer final : public gl_object
 {
 public:
 	
@@ -158,8 +158,6 @@ public:
 	
 	/*
 	* @ size : allocate bytes num
-	* @ :
-	* @ :
 	* @ : default you can map && read
 	* @ : default you can map && write
 	* @ : default you can update buffer context dynamically

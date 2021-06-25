@@ -51,10 +51,10 @@ RM = "C:\Program Files\JetBrains\CLion 2021.1.2\bin\cmake\win\bin\cmake.exe" -E 
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = C:\Users\jichengcheng\Desktop\karamay_engine_graphics_unit
+CMAKE_SOURCE_DIR = C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = C:\Users\jichengcheng\Desktop\karamay_engine_graphics_unit\cmake-build-debug
+CMAKE_BINARY_DIR = C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -83,9 +83,9 @@ rebuild_cache\fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\jichengcheng\Desktop\karamay_engine_graphics_unit\cmake-build-debug\CMakeFiles C:\Users\jichengcheng\Desktop\karamay_engine_graphics_unit\cmake-build-debug\\CMakeFiles\progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\\CMakeFiles\progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 /nologo -$(MAKEFLAGS) all
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\jichengcheng\Desktop\karamay_engine_graphics_unit\cmake-build-debug\CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles 0
 .PHONY : all
 
 # The main clean target

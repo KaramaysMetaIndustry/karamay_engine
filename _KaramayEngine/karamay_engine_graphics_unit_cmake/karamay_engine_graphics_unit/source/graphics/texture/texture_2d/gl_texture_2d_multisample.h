@@ -22,10 +22,11 @@ private:
 
 	int _internal_format;
 
-	
-
 public:
+
 	gl_texture_2d_multisample();
+
 	virtual ~gl_texture_2d_multisample();
+
 };
 

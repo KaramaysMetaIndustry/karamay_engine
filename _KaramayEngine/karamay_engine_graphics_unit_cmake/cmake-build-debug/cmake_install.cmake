@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/jichengcheng/Desktop/karamay_engine_graphics_unit
+# Install script for directory: C:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/jichengcheng/Desktop/karamay_engine_graphics_unit/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

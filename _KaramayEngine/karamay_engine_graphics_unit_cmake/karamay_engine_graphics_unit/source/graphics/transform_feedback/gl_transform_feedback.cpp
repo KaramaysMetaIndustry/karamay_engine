@@ -1,8 +1,9 @@
 #include "gl_transform_feedback.h"
 
-gl_transform_feedback::gl_transform_feedback()
+gl_transform_feedback::gl_transform_feedback(const gl_transform_feedback_descriptor &descriptor)
 {
-	glCreateTransformFeedbacks(1, &_handle);
+    glCreateTransformFeedbacks(1, &_handle);
+    _descriptor = descriptor;
 }
 
 gl_transform_feedback::~gl_transform_feedback()
@@ -25,3 +26,5 @@ void gl_transform_feedback::associate_buffer(std::uint32_t index, std::shared_pt
 		glTransformFeedbackBufferRange(_handle, index, buffer->get_handle(), offset, size);
 	}
 }
+
+

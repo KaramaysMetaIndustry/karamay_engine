@@ -1,5 +1,5 @@
-#ifndef STB_WIN64
-#define STB_WIN64
+#ifndef H_STB_WIN64
+#define H_STB_WIN64
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"

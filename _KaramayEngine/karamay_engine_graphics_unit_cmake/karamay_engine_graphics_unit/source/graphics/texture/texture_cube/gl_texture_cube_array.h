@@ -19,7 +19,10 @@ public:
 	void unbind() {}
 
 public:
+
 	gl_texture_cube_array();
+
 	virtual ~gl_texture_cube_array();
+
 };
 

@@ -1,5 +1,5 @@
-#ifndef OPENGL_WIN64
-#define OPENGL_WIN64
+#ifndef H_OPENGL_WIN64
+#define H_OPENGL_WIN64
 
 #define GLEW_STATIC
 #include "glew-2.1.0/include/GL/glew.h"

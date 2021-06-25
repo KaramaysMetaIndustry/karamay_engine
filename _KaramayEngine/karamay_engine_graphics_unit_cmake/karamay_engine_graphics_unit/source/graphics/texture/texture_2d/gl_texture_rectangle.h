@@ -1,4 +1,4 @@
-#pragma once
+
 #include "graphics/texture/base/gl_texture_base.h"
 
 class gl_texture_rectangle final : public gl_texture_base
