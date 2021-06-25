@@ -9,15 +9,12 @@ class gl_texture_1d;
 class gl_texture_1d_array;
 class gl_texture_2d;
 class gl_texture_2d_multisample;
-
 class gl_texture_2d_array;
 class gl_texture_2d_array_multisample;
 class gl_texture_3d;
 class gl_texture_cube_map;
 class gl_texture_cube_map_array;
-
 class gl_renderbuffer;
-
 
 class gl_framebuffer final : public gl_object
 {

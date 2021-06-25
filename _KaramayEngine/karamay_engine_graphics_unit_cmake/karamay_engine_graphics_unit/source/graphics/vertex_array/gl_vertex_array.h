@@ -1,4 +1,6 @@
-#pragma once
+#ifndef H_GL_VERTEX_ARRAY
+#define H_GL_VERTEX_ARRAY
+
 #include "graphics/glo/gl_object.h"
 #include "graphics/variable/glv_types.h"
 
@@ -299,3 +301,5 @@ public:
 	~gl_vertex_array();
 
 };
+
+#endif

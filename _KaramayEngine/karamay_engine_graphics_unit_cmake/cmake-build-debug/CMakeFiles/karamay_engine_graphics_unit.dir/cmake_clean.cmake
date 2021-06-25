@@ -44,7 +44,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/type/gl_type.cpp.obj"
   "CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/variable/gl_variable.cpp.obj"
   "CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.cpp.obj"
-  "CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_stream.cpp.obj"
   "CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/vertex_specification/gl_vertex_specifiaction.cpp.obj"
   "CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/karamay-engine-graphics.cpp.obj"
   "CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/window/window.cpp.obj"

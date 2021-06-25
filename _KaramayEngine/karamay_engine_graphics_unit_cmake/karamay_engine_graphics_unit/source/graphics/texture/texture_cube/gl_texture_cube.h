@@ -1,4 +1,6 @@
-#pragma once
+#ifndef H_GL_TEXTURE_CUBE
+#define H_GL_TEXTURE_CUBE
+
 #include "graphics/texture/base/gl_texture_base.h"
 
 class gl_texture_cube final : public gl_texture_base
@@ -39,3 +41,4 @@ public:
 	virtual ~gl_texture_cube();
 };
 
+#endif

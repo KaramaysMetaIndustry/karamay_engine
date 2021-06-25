@@ -1,9 +1,12 @@
-#pragma once
+#ifndef H_GL_TEXTURE_1D_ARRAY
+#define H_GL_TEXTURE_1D_ARRAY
+
 #include "graphics/texture/base/gl_texture_base.h"
 
 class gl_texture_1d_array final : public gl_texture_base
 {
 public:
+
 	void allocate(GLenum internal_format, int width, int mipmaps_num, int num);
 
 	void fill_element_base_mipmap(GLenum format, GLenum type, const void* data, int element_index);
@@ -26,8 +29,12 @@ private:
 	int _width;
 
 public:
-	gl_texture_1d_array();
+
+    gl_texture_1d_array();
+
 	virtual ~gl_texture_1d_array();
 
 };
+
+#endif
 

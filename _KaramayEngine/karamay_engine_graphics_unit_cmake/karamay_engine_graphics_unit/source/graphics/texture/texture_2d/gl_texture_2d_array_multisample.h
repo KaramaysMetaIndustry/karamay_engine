@@ -1,4 +1,6 @@
-#pragma once
+#ifndef H_GL_TEXTURE_2D_ARRAY_MULTISAMPLE
+#define H_GL_TEXTURE_2D_ARRAY_MULTISAMPLE
+
 #include "graphics/texture/base/gl_texture_base.h"
 
 class gl_texture_2d_array_multisample final : public gl_texture_base
@@ -35,4 +37,6 @@ public:
 	void unbind();
 
 };
+
+#endif
 

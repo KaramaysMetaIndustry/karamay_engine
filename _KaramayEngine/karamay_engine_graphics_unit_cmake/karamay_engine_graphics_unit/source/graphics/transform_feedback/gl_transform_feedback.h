@@ -1,4 +1,6 @@
-#pragma once
+#ifndef H_GL_TRANSFORM_FEEDBACK
+#define H_GL_TRANSFORM_FEEDBACK
+
 #include "graphics/glo/gl_object.h"
 #include "graphics/buffer/gl_buffer.h"
 
@@ -12,7 +14,7 @@ class gl_transform_feedback final : public gl_object
 {
 public:
 
-	explicit gl_transform_feedback(const gl_transform_feedback_descriptor& descriptor);
+	gl_transform_feedback(const std::shared_ptr<gl_transform_feedback_descriptor> descriptor);
 
 	~gl_transform_feedback();
 
@@ -35,6 +37,9 @@ public:
 		_varyings = varyings;
 	}
 
+
+	const auto& get_varyings(){return _varyings;}
+
 public:
 
 	void bind()
@@ -55,3 +60,5 @@ public:
 
 };
 
+
+#endif

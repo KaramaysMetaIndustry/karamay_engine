@@ -1,7 +1,7 @@
-#pragma once
+#ifndef H_GL_TEXTURE_CUBE_ARRAY
+#define H_GL_TEXTURE_CUBE_ARRAY
+
 #include "graphics/texture/base/gl_texture_base.h"
-
-
 
 class gl_texture_cube_array final : public gl_texture_base
 {
@@ -25,4 +25,6 @@ public:
 	virtual ~gl_texture_cube_array();
 
 };
+
+#endif
 

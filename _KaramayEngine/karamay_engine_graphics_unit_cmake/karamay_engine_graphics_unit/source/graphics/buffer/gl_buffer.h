@@ -7,24 +7,20 @@ namespace gl_buffer_enum
 {
 	enum class target : GLenum
 	{
+	    UNKNOWN = 0,
+
 		ARRAY_BUFFER = GL_ARRAY_BUFFER,
 		ELEMENT_ARRAY_BUFFER = GL_ELEMENT_ARRAY_BUFFER,
-
 		UNIFORM_BUFFER = GL_UNIFORM_BUFFER,
 		SHADER_STORAGE_BUFFER = GL_SHADER_STORAGE_BUFFER,
 		ATOMIC_COUNTER_BUFFER = GL_ATOMIC_COUNTER_BUFFER,
-
 		DRAW_INDIRECT_BUFFER = GL_DRAW_INDIRECT_BUFFER,
-
 		QUERY_BUFFER = GL_QUERY_BUFFER,
 		PIXEL_PACK_BUFFER = GL_PIXEL_PACK_BUFFER,
 		PIXEL_UNPACK_BUFFER = GL_PIXEL_UNPACK_BUFFER,
-
 		COPY_READ_BUFFER = GL_COPY_READ_BUFFER,
 		COPY_WRITE_BUFFER = GL_COPY_WRITE_BUFFER,
-
 		DISPATCH_INDIRECT_BUFFER = GL_DISPATCH_INDIRECT_BUFFER,
-		
 		TEXTURE_BUFFER = GL_TEXTURE_BUFFER,
 		TRANSFORM_FEEDBACK_BUFFER = GL_TRANSFORM_FEEDBACK_BUFFER
 	};
@@ -152,17 +148,10 @@ public:
 	
 	gl_buffer();
 
-	virtual ~gl_buffer();
+	~gl_buffer() override;
 
 public:
-	
-	/*
-	* @ size : allocate bytes num
-	* @ : default you can map && read
-	* @ : default you can map && write
-	* @ : default you can update buffer context dynamically
-	* @ : default data filled into buffer come from client memory
-	*/
+
 	void allocate(std::size_t size, bool is_map_persistent = false, bool is_map_coherent = false, bool is_map_read = true, bool is_map_write = true, bool is_dynamic_storage = true, bool is_client_storage = true);
 
 	void fill(std::size_t offset, std::size_t size, const void* data);

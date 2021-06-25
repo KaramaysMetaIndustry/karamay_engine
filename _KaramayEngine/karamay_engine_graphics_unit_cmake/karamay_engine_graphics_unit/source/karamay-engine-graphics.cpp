@@ -1,17 +1,12 @@
-
 #include "graphics/program/gl_program.h"
 #include "graphics/variable/gl_variable.h"
 #include "graphics/buffer/customization/gl_element_array_buffer.h"
 #include "graphics/vertex_array/gl_vertex_array.h"
 #include "graphics/camera/gl_camera.h"
-
-
-
 #include "window/window.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../dependencies/stb/stb_image.h"
-
 
 float vertices[] = {
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f, //0
@@ -207,10 +202,10 @@ std::vector<glv_f32vec3> positions{
 };
 
 #define sptr(T)\
-std::make_shared<##T##>()\
+std::make_shared<T##>()\
 
 #define uptr(T)\
-std::make_unique<##T##>()\
+std::make_unique<T##>()\
 
 template<typename T>
 std::weak_ptr<T> make_weak(std::shared_ptr<T> sptr)
@@ -296,14 +291,14 @@ std::string get_uniform_type_str<glu_ui32vec1::value_type>()
 template<typename T>
 auto create_uniform(const std::string& name, const T& value)
 {
-	const std::uint8_t* _value_ptr = reinterpret_cast<const std::uint8_t*>(&value);
+	const auto* _value_ptr = reinterpret_cast<const std::uint8_t*>(&value);
 	std::vector<std::uint8_t> _stream(_value_ptr, _value_ptr + sizeof(T));
-	const std::string type = get_uniform_type_str<T::value_type>();
+	const std::string type = get_uniform_type_str<typename T::value_type>();
 	return std::make_shared<gl_variable>(type, name, _stream);
 }
 
 
-auto string_to_stream(const std::string& type, const std::string& name, const std::string value)
+auto string_to_stream(const std::string& type, const std::string& name, const std::string& value)
 {
 
 	std::vector<std::uint8_t> stream;
@@ -312,7 +307,7 @@ auto string_to_stream(const std::string& type, const std::string& name, const st
 
 void test0()
 {
-	glfw_window* window = new glfw_window();
+	auto* window = new glfw_window();
 	window->load_context();
 	
 	std::cout << "GL_VERSION: " << glGetString(GL_VERSION) << std::endl;
@@ -372,10 +367,6 @@ void test0()
 //	1, 0, 1, 0,
 //	0, 0, 0, 1)
 //};
-
-
-
-	
 
 	// uniforms
 	auto camera_position = create_uniform("camera_position", glv_f32vec3(1.0f, 0.0f, 0.0f));

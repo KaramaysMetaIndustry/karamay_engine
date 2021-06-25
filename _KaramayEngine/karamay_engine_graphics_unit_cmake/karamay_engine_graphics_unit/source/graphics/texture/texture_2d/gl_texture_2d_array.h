@@ -1,4 +1,6 @@
-#pragma once
+#ifndef H_GL_TEXTURE_2D_ARRAY
+#define H_GL_TEXTURE_2D_ARRAY
+
 #include "graphics/texture/base/gl_texture_base.h"
 
 class gl_texture_2d_array final : public gl_texture_base
@@ -26,7 +28,10 @@ private:
 	int _mipmaps_num;
 
 public:
-	gl_texture_2d_array();
+
+    gl_texture_2d_array();
+
 	~gl_texture_2d_array();
 };
 
+#endif

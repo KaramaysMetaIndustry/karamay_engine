@@ -1,3 +1,5 @@
+#ifndef H_GL_TEXTURE_RECTANGLE
+#define H_GL_TEXTURE_RECTANGLE
 
 #include "graphics/texture/base/gl_texture_base.h"
 
@@ -38,3 +40,4 @@ public:
 	virtual ~gl_texture_rectangle();  
 };
 
+#endif

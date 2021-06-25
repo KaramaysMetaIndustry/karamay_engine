@@ -1,4 +1,6 @@
-#pragma once
+#ifndef H_GL_CONTEXT
+#define H_GL_CONTEXT
+
 #include "graphics/glo/gl_object.h"
 #include "graphics/buffer/gl_buffer.h"
 
@@ -41,4 +43,6 @@ public:
 
 
 };
+
+#endif
 

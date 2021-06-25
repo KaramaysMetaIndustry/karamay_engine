@@ -7,19 +7,68 @@ namespace gl_shader_enum
 {
 	enum class type : GLenum
 	{
+        UNKNOWN = 0,
 
+	    VERTEX_SHADER = GL_VERTEX_SHADER,
+	    TESS_CONTROL_SHADER = GL_TESS_CONTROL_SHADER,
+	    TESS_EVALUATION_SHADER = GL_TESS_EVALUATION_SHADER,
+	    GEOMETRY_SHADER = GL_GEOMETRY_SHADER,
+	    FRAGMENT_SHADER = GL_FRAGMENT_SHADER,
+
+	    COMPUTE_SHADER = GL_COMPUTE_SHADER
 	};
+
+	std::string enum_to_string(gl_shader_enum::type shader_type)
+    {
+        switch (shader_type) {
+            case type::VERTEX_SHADER:
+                return std::string("VERTEX_SHADER");
+            case type::TESS_CONTROL_SHADER:
+                return std::string("TESS_CONTROL_SHADER");
+            case type::TESS_EVALUATION_SHADER:
+                return std::string("TESS_EVALUATION_SHADER");
+            case type::GEOMETRY_SHADER:
+                return std::string("GEOMETRY_SHADER");
+            case type::FRAGMENT_SHADER:
+                return std::string("FRAGMENT_SHADER");
+            case type::COMPUTE_SHADER:
+                return std::string("COMPUTE_SHADER");
+            default:
+                return std::string("UNKNOWN");
+        }
+    }
+
+    gl_shader_enum::type string_to_enum(const std::string& shader_type)
+    {
+        if(shader_type == "VERTEX_SHADER") return gl_shader_enum::type::VERTEX_SHADER;
+        if(shader_type == "TESS_CONTROL_SHADER") return gl_shader_enum::type::TESS_CONTROL_SHADER;
+        if(shader_type == "TESS_EVALUATION_SHADER") return gl_shader_enum::type::TESS_EVALUATION_SHADER;
+        if(shader_type == "GEOMETRY_SHADER") return gl_shader_enum::type::GEOMETRY_SHADER;
+        if(shader_type == "FRAGMENT_SHADER") return gl_shader_enum::type::FRAGMENT_SHADER;
+        return gl_shader_enum::type::UNKNOWN;
+    }
 }
 
 class gl_shader final : public gl_object
 {
 public:
 
-	gl_shader();
+	explicit gl_shader(gl_shader_enum::type shader_type, const std::vector<std::uint8_t>& source_stream);
 	
-	virtual ~gl_shader();
+	~gl_shader() override;
+
+private:
+
+    gl_shader_enum::type _shader_type;
+
+    std::vector<std::uint8_t> _source_stream;
 
 public:
+
+    [[nodiscard]] gl_shader_enum::type get_shader_type() const { return _shader_type; }
+
+
+private:
 
 	void load(const std::string& path)
 	{
@@ -70,18 +119,7 @@ public:
 		glShaderSource(_handle, 1, &source, NULL);
 	}
 
-	void compile()
-	{
-		glCompileShader(_handle);
-
-		GLint result;
-		char info[512];
-		glGetShaderiv(_handle, GL_COMPILE_STATUS, &result);
-		if (result != GL_TRUE) {
-			glGetShaderInfoLog(_handle, 512, NULL, info);
-			std::cout << "shader compile fail : " << info << std::endl;
-		}
-	}
+public:
 
 	gl_shader_enum::type get_type()
 	{

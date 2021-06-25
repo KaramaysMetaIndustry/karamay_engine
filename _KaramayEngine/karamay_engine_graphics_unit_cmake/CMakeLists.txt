@@ -4,7 +4,6 @@ project(karamay_engine_graphics_unit)
 set(CMAKE_CXX_STANDARD 20)
 set(BUILD_ARCH "-m64")
 
-
 #link_directories(karamay_engine_graphics_unit/dependencies/glfw-3.3.4.bin.WIN64/lib-vc2019/)
 #link_directories(karamay_engine_graphics_unit/dependencies/glew-2.1.0/lib/Release/x64/)
 link_directories(karamay_engine_graphics_unit/dependencies/glfw-3.3.bin.WIN32/lib-vc2019/)
@@ -16,8 +15,15 @@ link_libraries(glfw3.lib)
 
 include_directories(karamay_engine_graphics_unit/dependencies)
 include_directories(karamay_engine_graphics_unit/dependencies/glm_pack/include)
-include_directories(karamay_engine_graphics_unit/source/)
+include_directories(karamay_engine_graphics_unit/source)
 
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/karamay_engine_graphics_unit/assets
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/karamay_engine_graphics_unit/shaders
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/karamay_engine_graphics_unit/assets
+ #       ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 
 add_executable(karamay_engine_graphics_unit
         karamay_engine_graphics_unit/dependencies/glew-2.1.0/include/GL/eglew.h
@@ -575,8 +581,6 @@ add_executable(karamay_engine_graphics_unit
         karamay_engine_graphics_unit/source/graphics/variable/glv_types.h
         karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.cpp
         karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.h
-        karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_stream.cpp
-        karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_stream.h
         karamay_engine_graphics_unit/source/graphics/vertex_specification/gl_vertex_specifiaction.cpp
         karamay_engine_graphics_unit/source/graphics/vertex_specification/gl_vertex_specifiaction.h
         karamay_engine_graphics_unit/source/public/glfw_win64.h
@@ -589,6 +593,7 @@ add_executable(karamay_engine_graphics_unit
         karamay_engine_graphics_unit/source/window/window.h
         karamay_engine_graphics_unit/source/karamay-engine-graphics.cpp)
 
-target_link_libraries(karamay_engine_graphics_unit #glew32.lib
-glew32s.lib
-glfw3.lib)
+target_link_libraries(karamay_engine_graphics_unit
+        #glew32.lib
+        glew32s.lib
+        glfw3.lib)

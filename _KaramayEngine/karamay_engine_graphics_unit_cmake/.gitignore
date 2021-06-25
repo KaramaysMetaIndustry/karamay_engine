@@ -1,7 +1,2 @@
 
-.vs
-Debug
-x64
-
-karamay_engine_graphics_unit\Debug
-karamay_engine_graphics_unit\x64
+cmake-build-debug

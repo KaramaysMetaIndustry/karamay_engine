@@ -46,10 +46,10 @@ RM = "C:\Program Files\JetBrains\CLion 2021.1.2\bin\cmake\win\bin\cmake.exe" -E 
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake
+CMAKE_SOURCE_DIR = G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug
+CMAKE_BINARY_DIR = G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles\karamay_engine_graphics_unit.dir\depend.make
@@ -62,933 +62,914 @@ include CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\dependencies\glm_pack\include\glm\detail\glm.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\dependencies\glm_pack\include\glm\detail\glm.cpp.obj: ..\karamay_engine_graphics_unit\dependencies\glm_pack\include\glm\detail\glm.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/dependencies/glm_pack/include/glm/detail/glm.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\dependencies\glm_pack\include\glm\detail\glm.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\dependencies\glm_pack\include\glm\detail\glm.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/dependencies/glm_pack/include/glm/detail/glm.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\dependencies\glm_pack\include\glm\detail\glm.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\dependencies\glm_pack\include\glm\detail\glm.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\dependencies\glm_pack\include\glm\detail\glm.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/dependencies/glm_pack/include/glm/detail/glm.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\dependencies\glm_pack\include\glm\detail\glm.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\dependencies\glm_pack\include\glm\detail\glm.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\dependencies\glm_pack\include\glm\detail\glm.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\dependencies\glm_pack\include\glm\detail\glm.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\dependencies\glm_pack\include\glm\detail\glm.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/dependencies/glm_pack/include/glm/detail/glm.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\dependencies\glm_pack\include\glm\detail\glm.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\dependencies\glm_pack\include\glm\detail\glm.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\dependencies\glm_pack\include\glm\detail\glm.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\dependencies\glm_pack\include\glm\detail\glm.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_atomic_counter_buffer.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_atomic_counter_buffer.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_atomic_counter_buffer.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_atomic_counter_buffer.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_atomic_counter_buffer.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_atomic_counter_buffer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_atomic_counter_buffer.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_atomic_counter_buffer.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_atomic_counter_buffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_atomic_counter_buffer.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_atomic_counter_buffer.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_atomic_counter_buffer.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_atomic_counter_buffer.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_atomic_counter_buffer.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_atomic_counter_buffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_atomic_counter_buffer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_atomic_counter_buffer.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_atomic_counter_buffer.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_atomic_counter_buffer.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_atomic_counter_buffer.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_atomic_counter_buffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_element_array_buffer.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_element_array_buffer.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_element_array_buffer.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_element_array_buffer.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_element_array_buffer.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_element_array_buffer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_element_array_buffer.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_element_array_buffer.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_element_array_buffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_element_array_buffer.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_element_array_buffer.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_element_array_buffer.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_element_array_buffer.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_element_array_buffer.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_element_array_buffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_element_array_buffer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_element_array_buffer.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_element_array_buffer.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_element_array_buffer.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_element_array_buffer.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_element_array_buffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_shader_storage_buffer.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_shader_storage_buffer.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_shader_storage_buffer.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_shader_storage_buffer.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_shader_storage_buffer.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_shader_storage_buffer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_shader_storage_buffer.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_shader_storage_buffer.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_shader_storage_buffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_shader_storage_buffer.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_shader_storage_buffer.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_shader_storage_buffer.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_shader_storage_buffer.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_shader_storage_buffer.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_shader_storage_buffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_shader_storage_buffer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_shader_storage_buffer.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_shader_storage_buffer.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_shader_storage_buffer.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_shader_storage_buffer.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_shader_storage_buffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_uniform_buffer.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_uniform_buffer.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_uniform_buffer.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_uniform_buffer.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_uniform_buffer.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_uniform_buffer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_uniform_buffer.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_uniform_buffer.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_uniform_buffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_uniform_buffer.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_uniform_buffer.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_uniform_buffer.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_uniform_buffer.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_uniform_buffer.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_uniform_buffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_uniform_buffer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_uniform_buffer.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_uniform_buffer.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_uniform_buffer.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_uniform_buffer.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\customization\gl_uniform_buffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_buffered_uniform_block.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_buffered_uniform_block.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_buffered_uniform_block.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_buffered_uniform_block.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_buffered_uniform_block.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_buffered_uniform_block.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_buffered_uniform_block.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_buffered_uniform_block.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_buffered_uniform_block.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_buffered_uniform_block.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_buffered_uniform_block.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_buffered_uniform_block.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_buffered_uniform_block.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_buffered_uniform_block.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_buffered_uniform_block.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_buffered_uniform_block.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_buffered_uniform_block.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_buffered_uniform_block.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_buffered_uniform_block.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_buffered_uniform_block.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_buffered_uniform_block.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_interface_block.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_interface_block.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_interface_block.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_interface_block.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_interface_block.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_interface_block.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_interface_block.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_interface_block.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_interface_block.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_interface_block.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_interface_block.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_interface_block.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_interface_block.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_interface_block.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_interface_block.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_interface_block.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_interface_block.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_interface_block.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_interface_block.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_interface_block.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_interface_block.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_shader_storage_block.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_shader_storage_block.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_shader_storage_block.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_shader_storage_block.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_shader_storage_block.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_shader_storage_block.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_shader_storage_block.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_shader_storage_block.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_shader_storage_block.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_shader_storage_block.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_shader_storage_block.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_shader_storage_block.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_shader_storage_block.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_shader_storage_block.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_shader_storage_block.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_shader_storage_block.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_shader_storage_block.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_shader_storage_block.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_shader_storage_block.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_shader_storage_block.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_shader_storage_block.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_uniform_block.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_uniform_block.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_uniform_block.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_uniform_block.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_uniform_block.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_uniform_block.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_uniform_block.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_uniform_block.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_uniform_block.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_uniform_block.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_uniform_block.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_uniform_block.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_uniform_block.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_uniform_block.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_uniform_block.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_uniform_block.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_uniform_block.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_uniform_block.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_uniform_block.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_uniform_block.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\interface_block\gl_uniform_block.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\gl_buffer.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\gl_buffer.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\buffer\gl_buffer.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\gl_buffer.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\gl_buffer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\gl_buffer.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\gl_buffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\gl_buffer.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\gl_buffer.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\gl_buffer.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\gl_buffer.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\gl_buffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\gl_buffer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\gl_buffer.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\gl_buffer.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\buffer\gl_buffer.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\gl_buffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\camera\gl_camera.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\camera\gl_camera.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\camera\gl_camera.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/camera/gl_camera.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\camera\gl_camera.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\camera\gl_camera.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/camera/gl_camera.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\camera\gl_camera.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\camera\gl_camera.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\camera\gl_camera.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/camera/gl_camera.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\camera\gl_camera.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\camera\gl_camera.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\camera\gl_camera.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\camera\gl_camera.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\camera\gl_camera.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/camera/gl_camera.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\camera\gl_camera.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\camera\gl_camera.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\camera\gl_camera.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\camera\gl_camera.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\commands\gl_commands.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\commands\gl_commands.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\commands\gl_commands.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/commands/gl_commands.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\commands\gl_commands.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\commands\gl_commands.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/commands/gl_commands.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\commands\gl_commands.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\commands\gl_commands.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\commands\gl_commands.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/commands/gl_commands.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\commands\gl_commands.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\commands\gl_commands.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\commands\gl_commands.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\commands\gl_commands.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\commands\gl_commands.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/commands/gl_commands.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\commands\gl_commands.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\commands\gl_commands.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\commands\gl_commands.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\commands\gl_commands.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\context\gl_context.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\context\gl_context.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\context\gl_context.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/context/gl_context.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\context\gl_context.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\context\gl_context.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/context/gl_context.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\context\gl_context.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\context\gl_context.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\context\gl_context.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/context/gl_context.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\context\gl_context.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\context\gl_context.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\context\gl_context.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\context\gl_context.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\context\gl_context.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/context/gl_context.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\context\gl_context.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\context\gl_context.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\context\gl_context.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\context\gl_context.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_default_framebuffer.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_default_framebuffer.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_default_framebuffer.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/framebuffer/gl_default_framebuffer.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_default_framebuffer.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_default_framebuffer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/framebuffer/gl_default_framebuffer.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_default_framebuffer.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_default_framebuffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_default_framebuffer.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/framebuffer/gl_default_framebuffer.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_default_framebuffer.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_default_framebuffer.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_default_framebuffer.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_default_framebuffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_default_framebuffer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/framebuffer/gl_default_framebuffer.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_default_framebuffer.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_default_framebuffer.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_default_framebuffer.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_default_framebuffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_framebuffer.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_framebuffer.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_framebuffer.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/framebuffer/gl_framebuffer.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_framebuffer.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_framebuffer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/framebuffer/gl_framebuffer.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_framebuffer.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_framebuffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_framebuffer.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/framebuffer/gl_framebuffer.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_framebuffer.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_framebuffer.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_framebuffer.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_framebuffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_framebuffer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/framebuffer/gl_framebuffer.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_framebuffer.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_framebuffer.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_framebuffer.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\framebuffer\gl_framebuffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\genda\gl_genda.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\genda\gl_genda.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\genda\gl_genda.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/genda/gl_genda.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\genda\gl_genda.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\genda\gl_genda.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/genda/gl_genda.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\genda\gl_genda.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\genda\gl_genda.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\genda\gl_genda.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/genda/gl_genda.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\genda\gl_genda.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\genda\gl_genda.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\genda\gl_genda.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\genda\gl_genda.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\genda\gl_genda.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/genda/gl_genda.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\genda\gl_genda.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\genda\gl_genda.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\genda\gl_genda.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\genda\gl_genda.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\glo\gl_object.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\glo\gl_object.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\glo\gl_object.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/glo/gl_object.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\glo\gl_object.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\glo\gl_object.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/glo/gl_object.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\glo\gl_object.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\glo\gl_object.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\glo\gl_object.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/glo/gl_object.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\glo\gl_object.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\glo\gl_object.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\glo\gl_object.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\glo\gl_object.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\glo\gl_object.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/glo/gl_object.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\glo\gl_object.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\glo\gl_object.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\glo\gl_object.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\glo\gl_object.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\mesh\material\gl_material.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\mesh\material\gl_material.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\mesh\material\gl_material.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/mesh/material/gl_material.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\mesh\material\gl_material.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\mesh\material\gl_material.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/mesh/material/gl_material.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\mesh\material\gl_material.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\mesh\material\gl_material.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\mesh\material\gl_material.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/mesh/material/gl_material.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\mesh\material\gl_material.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\mesh\material\gl_material.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\mesh\material\gl_material.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\mesh\material\gl_material.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\mesh\material\gl_material.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/mesh/material/gl_material.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\mesh\material\gl_material.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\mesh\material\gl_material.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\mesh\material\gl_material.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\mesh\material\gl_material.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\mesh\gl_mesh.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\mesh\gl_mesh.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\mesh\gl_mesh.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/mesh/gl_mesh.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\mesh\gl_mesh.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\mesh\gl_mesh.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/mesh/gl_mesh.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\mesh\gl_mesh.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\mesh\gl_mesh.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\mesh\gl_mesh.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/mesh/gl_mesh.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\mesh\gl_mesh.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\mesh\gl_mesh.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\mesh\gl_mesh.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\mesh\gl_mesh.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\mesh\gl_mesh.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/mesh/gl_mesh.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\mesh\gl_mesh.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\mesh\gl_mesh.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\mesh\gl_mesh.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\mesh\gl_mesh.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_compute_pipeline.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_compute_pipeline.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\pipeline\gl_compute_pipeline.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/pipeline/gl_compute_pipeline.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_compute_pipeline.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\pipeline\gl_compute_pipeline.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/pipeline/gl_compute_pipeline.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_compute_pipeline.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\pipeline\gl_compute_pipeline.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_compute_pipeline.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/pipeline/gl_compute_pipeline.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_compute_pipeline.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\pipeline\gl_compute_pipeline.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_compute_pipeline.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\pipeline\gl_compute_pipeline.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_compute_pipeline.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/pipeline/gl_compute_pipeline.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_compute_pipeline.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\pipeline\gl_compute_pipeline.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_compute_pipeline.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\pipeline\gl_compute_pipeline.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_graphics_pipeline.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_graphics_pipeline.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\pipeline\gl_graphics_pipeline.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/pipeline/gl_graphics_pipeline.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_graphics_pipeline.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\pipeline\gl_graphics_pipeline.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/pipeline/gl_graphics_pipeline.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_graphics_pipeline.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\pipeline\gl_graphics_pipeline.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_graphics_pipeline.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/pipeline/gl_graphics_pipeline.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_graphics_pipeline.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\pipeline\gl_graphics_pipeline.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_graphics_pipeline.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\pipeline\gl_graphics_pipeline.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_graphics_pipeline.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/pipeline/gl_graphics_pipeline.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_graphics_pipeline.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\pipeline\gl_graphics_pipeline.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_graphics_pipeline.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\pipeline\gl_graphics_pipeline.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_pipeline_base.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_pipeline_base.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\pipeline\gl_pipeline_base.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/pipeline/gl_pipeline_base.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_pipeline_base.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\pipeline\gl_pipeline_base.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/pipeline/gl_pipeline_base.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_pipeline_base.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\pipeline\gl_pipeline_base.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_pipeline_base.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/pipeline/gl_pipeline_base.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_pipeline_base.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\pipeline\gl_pipeline_base.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_pipeline_base.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\pipeline\gl_pipeline_base.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_pipeline_base.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/pipeline/gl_pipeline_base.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_pipeline_base.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\pipeline\gl_pipeline_base.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\pipeline\gl_pipeline_base.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\pipeline\gl_pipeline_base.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\program\gl_program.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\program\gl_program.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\program\gl_program.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/program/gl_program.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\program\gl_program.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\program\gl_program.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/program/gl_program.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\program\gl_program.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\program\gl_program.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\program\gl_program.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/program/gl_program.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\program\gl_program.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\program\gl_program.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\program\gl_program.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\program\gl_program.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\program\gl_program.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/program/gl_program.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\program\gl_program.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\program\gl_program.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\program\gl_program.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\program\gl_program.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\program_pipeline\gl_program_pipeline.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\program_pipeline\gl_program_pipeline.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\program_pipeline\gl_program_pipeline.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/program_pipeline/gl_program_pipeline.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\program_pipeline\gl_program_pipeline.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\program_pipeline\gl_program_pipeline.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/program_pipeline/gl_program_pipeline.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\program_pipeline\gl_program_pipeline.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\program_pipeline\gl_program_pipeline.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\program_pipeline\gl_program_pipeline.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/program_pipeline/gl_program_pipeline.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\program_pipeline\gl_program_pipeline.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\program_pipeline\gl_program_pipeline.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\program_pipeline\gl_program_pipeline.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\program_pipeline\gl_program_pipeline.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\program_pipeline\gl_program_pipeline.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/program_pipeline/gl_program_pipeline.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\program_pipeline\gl_program_pipeline.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\program_pipeline\gl_program_pipeline.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\program_pipeline\gl_program_pipeline.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\program_pipeline\gl_program_pipeline.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_multisample_renderbuffer.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_multisample_renderbuffer.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_multisample_renderbuffer.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/renderbuffer/gl_multisample_renderbuffer.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_multisample_renderbuffer.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_multisample_renderbuffer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/renderbuffer/gl_multisample_renderbuffer.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_multisample_renderbuffer.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_multisample_renderbuffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_multisample_renderbuffer.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/renderbuffer/gl_multisample_renderbuffer.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_multisample_renderbuffer.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_multisample_renderbuffer.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_multisample_renderbuffer.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_multisample_renderbuffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_multisample_renderbuffer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/renderbuffer/gl_multisample_renderbuffer.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_multisample_renderbuffer.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_multisample_renderbuffer.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_multisample_renderbuffer.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_multisample_renderbuffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_renderbuffer.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_renderbuffer.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_renderbuffer.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/renderbuffer/gl_renderbuffer.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_renderbuffer.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_renderbuffer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/renderbuffer/gl_renderbuffer.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_renderbuffer.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_renderbuffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_renderbuffer.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/renderbuffer/gl_renderbuffer.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_renderbuffer.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_renderbuffer.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_renderbuffer.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_renderbuffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_renderbuffer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/renderbuffer/gl_renderbuffer.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_renderbuffer.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_renderbuffer.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_renderbuffer.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\renderbuffer\gl_renderbuffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderer\gl_renderer.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderer\gl_renderer.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\renderer\gl_renderer.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderer\gl_renderer.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\renderer\gl_renderer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderer\gl_renderer.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\renderer\gl_renderer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderer\gl_renderer.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderer\gl_renderer.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\renderer\gl_renderer.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderer\gl_renderer.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\renderer\gl_renderer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderer\gl_renderer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderer\gl_renderer.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\renderer\gl_renderer.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\renderer\gl_renderer.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\renderer\gl_renderer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\sampler\gl_sampler.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\sampler\gl_sampler.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\sampler\gl_sampler.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/sampler/gl_sampler.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\sampler\gl_sampler.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\sampler\gl_sampler.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/sampler/gl_sampler.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\sampler\gl_sampler.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\sampler\gl_sampler.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\sampler\gl_sampler.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/sampler/gl_sampler.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\sampler\gl_sampler.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\sampler\gl_sampler.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\sampler\gl_sampler.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\sampler\gl_sampler.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\sampler\gl_sampler.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/sampler/gl_sampler.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\sampler\gl_sampler.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\sampler\gl_sampler.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\sampler\gl_sampler.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\sampler\gl_sampler.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\shader\gl_shader.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\shader\gl_shader.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\shader\gl_shader.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/shader/gl_shader.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\shader\gl_shader.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\shader\gl_shader.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/shader/gl_shader.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\shader\gl_shader.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\shader\gl_shader.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\shader\gl_shader.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/shader/gl_shader.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\shader\gl_shader.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\shader\gl_shader.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\shader\gl_shader.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\shader\gl_shader.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\shader\gl_shader.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/shader/gl_shader.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\shader\gl_shader.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\shader\gl_shader.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\shader\gl_shader.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\shader\gl_shader.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\base\gl_texture_base.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\base\gl_texture_base.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\texture\base\gl_texture_base.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/base/gl_texture_base.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\base\gl_texture_base.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\base\gl_texture_base.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/base/gl_texture_base.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\base\gl_texture_base.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\base\gl_texture_base.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\base\gl_texture_base.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/base/gl_texture_base.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\base\gl_texture_base.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\base\gl_texture_base.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\base\gl_texture_base.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\base\gl_texture_base.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\base\gl_texture_base.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/base/gl_texture_base.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\base\gl_texture_base.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\base\gl_texture_base.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\base\gl_texture_base.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\base\gl_texture_base.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_1d/gl_texture_1d.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_1d/gl_texture_1d.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_1d/gl_texture_1d.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_1d/gl_texture_1d.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d_array.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d_array.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d_array.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_1d/gl_texture_1d_array.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d_array.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d_array.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_1d/gl_texture_1d_array.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d_array.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d_array.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d_array.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_1d/gl_texture_1d_array.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d_array.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d_array.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d_array.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d_array.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d_array.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_1d/gl_texture_1d_array.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d_array.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d_array.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d_array.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_1d\gl_texture_1d_array.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_2d.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_2d.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_2d.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_2d.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_2d_array.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_2d_array.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_2d_array.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_2d_array.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array_multisample.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array_multisample.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array_multisample.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_35) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_2d_array_multisample.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array_multisample.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array_multisample.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_35) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_2d_array_multisample.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array_multisample.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array_multisample.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array_multisample.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_2d_array_multisample.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array_multisample.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array_multisample.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array_multisample.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array_multisample.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array_multisample.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_2d_array_multisample.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array_multisample.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array_multisample.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array_multisample.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_array_multisample.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_multisample.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_multisample.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_multisample.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_36) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_2d_multisample.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_multisample.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_multisample.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_36) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_2d_multisample.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_multisample.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_multisample.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_multisample.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_2d_multisample.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_multisample.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_multisample.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_multisample.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_multisample.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_multisample.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_2d_multisample.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_multisample.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_multisample.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_multisample.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_2d_multisample.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_rectangle.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_rectangle.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_rectangle.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_37) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_rectangle.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_rectangle.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_rectangle.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_37) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_rectangle.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_rectangle.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_rectangle.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_rectangle.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_rectangle.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_rectangle.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_rectangle.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_rectangle.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_rectangle.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_rectangle.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_rectangle.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_rectangle.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_rectangle.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_rectangle.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_2d\gl_texture_rectangle.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_3d\gl_texture_3d.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_3d\gl_texture_3d.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\texture\texture_3d\gl_texture_3d.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_38) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_3d/gl_texture_3d.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_3d\gl_texture_3d.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_3d\gl_texture_3d.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_38) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_3d/gl_texture_3d.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_3d\gl_texture_3d.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_3d\gl_texture_3d.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_3d\gl_texture_3d.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_3d/gl_texture_3d.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_3d\gl_texture_3d.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_3d\gl_texture_3d.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_3d\gl_texture_3d.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_3d\gl_texture_3d.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_3d\gl_texture_3d.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_3d/gl_texture_3d.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_3d\gl_texture_3d.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_3d\gl_texture_3d.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_3d\gl_texture_3d.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_3d\gl_texture_3d.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_buffer\gl_texture_buffer.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_buffer\gl_texture_buffer.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\texture\texture_buffer\gl_texture_buffer.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_39) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_buffer/gl_texture_buffer.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_buffer\gl_texture_buffer.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_buffer\gl_texture_buffer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_39) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_buffer/gl_texture_buffer.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_buffer\gl_texture_buffer.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_buffer\gl_texture_buffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_buffer\gl_texture_buffer.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_buffer/gl_texture_buffer.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_buffer\gl_texture_buffer.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_buffer\gl_texture_buffer.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_buffer\gl_texture_buffer.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_buffer\gl_texture_buffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_buffer\gl_texture_buffer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_buffer/gl_texture_buffer.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_buffer\gl_texture_buffer.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_buffer\gl_texture_buffer.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_buffer\gl_texture_buffer.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_buffer\gl_texture_buffer.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_40) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_cube/gl_texture_cube.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_40) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_cube/gl_texture_cube.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_cube/gl_texture_cube.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_cube/gl_texture_cube.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube_array.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube_array.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube_array.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_41) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_cube/gl_texture_cube_array.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube_array.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube_array.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_41) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_cube/gl_texture_cube_array.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube_array.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube_array.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube_array.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_cube/gl_texture_cube_array.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube_array.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube_array.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube_array.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube_array.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube_array.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/texture/texture_cube/gl_texture_cube_array.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube_array.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube_array.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube_array.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\texture\texture_cube\gl_texture_cube_array.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\transform_feedback\gl_transform_feedback.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\transform_feedback\gl_transform_feedback.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\transform_feedback\gl_transform_feedback.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_42) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/transform_feedback/gl_transform_feedback.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\transform_feedback\gl_transform_feedback.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\transform_feedback\gl_transform_feedback.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_42) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/transform_feedback/gl_transform_feedback.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\transform_feedback\gl_transform_feedback.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\transform_feedback\gl_transform_feedback.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\transform_feedback\gl_transform_feedback.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/transform_feedback/gl_transform_feedback.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\transform_feedback\gl_transform_feedback.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\transform_feedback\gl_transform_feedback.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\transform_feedback\gl_transform_feedback.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\transform_feedback\gl_transform_feedback.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\transform_feedback\gl_transform_feedback.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/transform_feedback/gl_transform_feedback.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\transform_feedback\gl_transform_feedback.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\transform_feedback\gl_transform_feedback.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\transform_feedback\gl_transform_feedback.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\transform_feedback\gl_transform_feedback.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\type\gl_type.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\type\gl_type.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\type\gl_type.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_43) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/type/gl_type.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\type\gl_type.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\type\gl_type.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_43) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/type/gl_type.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\type\gl_type.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\type\gl_type.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\type\gl_type.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/type/gl_type.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\type\gl_type.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\type\gl_type.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\type\gl_type.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\type\gl_type.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\type\gl_type.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/type/gl_type.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\type\gl_type.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\type\gl_type.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\type\gl_type.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\type\gl_type.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\variable\gl_variable.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\variable\gl_variable.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\variable\gl_variable.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_44) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/variable/gl_variable.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\variable\gl_variable.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\variable\gl_variable.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_44) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/variable/gl_variable.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\variable\gl_variable.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\variable\gl_variable.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\variable\gl_variable.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/variable/gl_variable.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\variable\gl_variable.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\variable\gl_variable.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\variable\gl_variable.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\variable\gl_variable.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\variable\gl_variable.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/variable/gl_variable.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\variable\gl_variable.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\variable\gl_variable.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\variable\gl_variable.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\variable\gl_variable.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_array.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_array.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_array.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_45) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_array.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_array.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_45) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_array.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_array.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_array.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_array.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_array.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_array.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_array.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_array.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_array.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_array.cpp
-<<
-
-CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
-CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_46) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_stream.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp
-<<
-
-CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_stream.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp
-<<
-
-CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_stream.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_array.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_array.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_specification\gl_vertex_specifiaction.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_specification\gl_vertex_specifiaction.cpp.obj: ..\karamay_engine_graphics_unit\source\graphics\vertex_specification\gl_vertex_specifiaction.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_47) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/vertex_specification/gl_vertex_specifiaction.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_specification\gl_vertex_specifiaction.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\vertex_specification\gl_vertex_specifiaction.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_46) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/vertex_specification/gl_vertex_specifiaction.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_specification\gl_vertex_specifiaction.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\vertex_specification\gl_vertex_specifiaction.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_specification\gl_vertex_specifiaction.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/vertex_specification/gl_vertex_specifiaction.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_specification\gl_vertex_specifiaction.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\vertex_specification\gl_vertex_specifiaction.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_specification\gl_vertex_specifiaction.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\vertex_specification\gl_vertex_specifiaction.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_specification\gl_vertex_specifiaction.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/vertex_specification/gl_vertex_specifiaction.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_specification\gl_vertex_specifiaction.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\vertex_specification\gl_vertex_specifiaction.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_specification\gl_vertex_specifiaction.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\vertex_specification\gl_vertex_specifiaction.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\window\window.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\window\window.cpp.obj: ..\karamay_engine_graphics_unit\source\window\window.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_48) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/window/window.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\window\window.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\window\window.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_47) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/window/window.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\window\window.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\window\window.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\window\window.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/window/window.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\window\window.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\window\window.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\window\window.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\window\window.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\window\window.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/window/window.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\window\window.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\window\window.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\window\window.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\window\window.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\karamay-engine-graphics.cpp.obj: CMakeFiles\karamay_engine_graphics_unit.dir\flags.make
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\karamay-engine-graphics.cpp.obj: ..\karamay_engine_graphics_unit\source\karamay-engine-graphics.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_49) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/karamay-engine-graphics.cpp.obj"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\karamay-engine-graphics.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\karamay-engine-graphics.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_48) "Building CXX object CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/karamay-engine-graphics.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\karamay-engine-graphics.cpp.obj /FdCMakeFiles\karamay_engine_graphics_unit.dir\ /FS -c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\karamay-engine-graphics.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\karamay-engine-graphics.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/karamay-engine-graphics.cpp.i"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\karamay-engine-graphics.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\karamay-engine-graphics.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe > CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\karamay-engine-graphics.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\karamay-engine-graphics.cpp
 <<
 
 CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\karamay-engine-graphics.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/karamay-engine-graphics.cpp.s"
-	C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\karamay-engine-graphics.cpp.s /c C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\karamay-engine-graphics.cpp
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\karamay-engine-graphics.cpp.s /c G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\karamay-engine-graphics.cpp
 <<
 
 # Object files for target karamay_engine_graphics_unit
@@ -1038,7 +1019,6 @@ karamay_engine_graphics_unit_OBJECTS = \
 "CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\type\gl_type.cpp.obj" \
 "CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\variable\gl_variable.cpp.obj" \
 "CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_array.cpp.obj" \
-"CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp.obj" \
 "CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_specification\gl_vertex_specifiaction.cpp.obj" \
 "CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\window\window.cpp.obj" \
 "CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\karamay-engine-graphics.cpp.obj"
@@ -1091,15 +1071,14 @@ karamay_engine_graphics_unit.exe: CMakeFiles\karamay_engine_graphics_unit.dir\ka
 karamay_engine_graphics_unit.exe: CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\type\gl_type.cpp.obj
 karamay_engine_graphics_unit.exe: CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\variable\gl_variable.cpp.obj
 karamay_engine_graphics_unit.exe: CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_array.cpp.obj
-karamay_engine_graphics_unit.exe: CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp.obj
 karamay_engine_graphics_unit.exe: CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_specification\gl_vertex_specifiaction.cpp.obj
 karamay_engine_graphics_unit.exe: CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\window\window.cpp.obj
 karamay_engine_graphics_unit.exe: CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\karamay-engine-graphics.cpp.obj
 karamay_engine_graphics_unit.exe: CMakeFiles\karamay_engine_graphics_unit.dir\build.make
 karamay_engine_graphics_unit.exe: CMakeFiles\karamay_engine_graphics_unit.dir\objects1.rsp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_50) "Linking CXX executable karamay_engine_graphics_unit.exe"
-	"C:\Program Files\JetBrains\CLion 2021.1.2\bin\cmake\win\bin\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\karamay_engine_graphics_unit.dir --rc=C:\PROGRA~2\WI3CF2~1\10\bin\100177~1.0\x86\rc.exe --mt=C:\PROGRA~2\WI3CF2~1\10\bin\100177~1.0\x86\mt.exe --manifests -- C:\PROGRA~2\MICROS~1\2019\COMMUN~1\VC\Tools\MSVC\1421~1.277\bin\Hostx86\x86\link.exe /nologo @CMakeFiles\karamay_engine_graphics_unit.dir\objects1.rsp @<<
- /out:karamay_engine_graphics_unit.exe /implib:karamay_engine_graphics_unit.lib /pdb:C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\karamay_engine_graphics_unit.pdb /version:0.0 /machine:X86 /debug /INCREMENTAL /subsystem:console   -LIBPATH:C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\dependencies\glfw-3.3.bin.WIN32\lib-vc2019  -LIBPATH:C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\dependencies\glew-2.1.0\lib\Release\Win32  opengl32.lib glew32s.lib glfw3.lib glew32s.lib glfw3.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib 
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_49) "Linking CXX executable karamay_engine_graphics_unit.exe"
+	"C:\Program Files\JetBrains\CLion 2021.1.2\bin\cmake\win\bin\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\karamay_engine_graphics_unit.dir --rc=C:\PROGRA~2\WI3CF2~1\10\bin\100190~1.0\x86\rc.exe --mt=C:\PROGRA~2\WI3CF2~1\10\bin\100190~1.0\x86\mt.exe --manifests -- C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.299\bin\Hostx86\x86\link.exe /nologo @CMakeFiles\karamay_engine_graphics_unit.dir\objects1.rsp @<<
+ /out:karamay_engine_graphics_unit.exe /implib:karamay_engine_graphics_unit.lib /pdb:G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\karamay_engine_graphics_unit.pdb /version:0.0 /machine:X86 /debug /INCREMENTAL /subsystem:console   -LIBPATH:G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\dependencies\glfw-3.3.bin.WIN32\lib-vc2019  -LIBPATH:G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\dependencies\glew-2.1.0\lib\Release\Win32  opengl32.lib glew32s.lib glfw3.lib glew32s.lib glfw3.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib 
 <<
 
 # Rule to build all files generated by this target.
@@ -1112,6 +1091,6 @@ CMakeFiles\karamay_engine_graphics_unit.dir\clean:
 .PHONY : CMakeFiles\karamay_engine_graphics_unit.dir\clean
 
 CMakeFiles\karamay_engine_graphics_unit.dir\depend:
-	$(CMAKE_COMMAND) -E cmake_depends "NMake Makefiles" C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles\karamay_engine_graphics_unit.dir\DependInfo.cmake --color=$(COLOR)
+	$(CMAKE_COMMAND) -E cmake_depends "NMake Makefiles" G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles\karamay_engine_graphics_unit.dir\DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles\karamay_engine_graphics_unit.dir\depend
 

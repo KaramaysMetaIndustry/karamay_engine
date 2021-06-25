@@ -51,10 +51,10 @@ RM = "C:\Program Files\JetBrains\CLion 2021.1.2\bin\cmake\win\bin\cmake.exe" -E 
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake
+CMAKE_SOURCE_DIR = G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug
+CMAKE_BINARY_DIR = G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -83,9 +83,9 @@ rebuild_cache\fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\\CMakeFiles\progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\\CMakeFiles\progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 /nologo -$(MAKEFLAGS) all
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\cmake-build-debug\CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -1341,33 +1341,6 @@ karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_array.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\karamay_engine_graphics_unit.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_array.cpp.s
 .PHONY : karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_array.cpp.s
 
-karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.obj: karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp.obj
-
-.PHONY : karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.obj
-
-# target to build an object file
-karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\karamay_engine_graphics_unit.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp.obj
-.PHONY : karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp.obj
-
-karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.i: karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp.i
-
-.PHONY : karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.i
-
-# target to preprocess a source file
-karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\karamay_engine_graphics_unit.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp.i
-.PHONY : karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp.i
-
-karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.s: karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp.s
-
-.PHONY : karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.s
-
-# target to generate assembly for a file
-karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\karamay_engine_graphics_unit.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\karamay_engine_graphics_unit.dir\karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp.s
-.PHONY : karamay_engine_graphics_unit\source\graphics\vertex_array\gl_vertex_stream.cpp.s
-
 karamay_engine_graphics_unit\source\graphics\vertex_specification\gl_vertex_specifiaction.obj: karamay_engine_graphics_unit\source\graphics\vertex_specification\gl_vertex_specifiaction.cpp.obj
 
 .PHONY : karamay_engine_graphics_unit\source\graphics\vertex_specification\gl_vertex_specifiaction.obj
@@ -1593,9 +1566,6 @@ help:
 	@echo ... karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.obj
 	@echo ... karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.i
 	@echo ... karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.s
-	@echo ... karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_stream.obj
-	@echo ... karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_stream.i
-	@echo ... karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_stream.s
 	@echo ... karamay_engine_graphics_unit/source/graphics/vertex_specification/gl_vertex_specifiaction.obj
 	@echo ... karamay_engine_graphics_unit/source/graphics/vertex_specification/gl_vertex_specifiaction.i
 	@echo ... karamay_engine_graphics_unit/source/graphics/vertex_specification/gl_vertex_specifiaction.s

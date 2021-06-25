@@ -1,5 +1,4 @@
 #include "gl_buffer.h"
-	
 
 void gl_buffer::allocate(std::size_t size, bool is_map_persistent, bool is_map_coherent, bool is_map_read, bool is_map_write, bool is_dynamic_storage, bool is_client_storage)
 {

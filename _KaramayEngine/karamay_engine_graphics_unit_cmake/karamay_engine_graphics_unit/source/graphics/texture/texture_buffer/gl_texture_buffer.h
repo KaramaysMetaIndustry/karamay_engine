@@ -1,7 +1,8 @@
-﻿#pragma once
+﻿#ifndef H_GL_TEXTURE_BUFFER
+#define H_GL_TEXTURE_BUFFER
+
 #include "graphics/texture/base/gl_texture_base.h"
 #include "graphics/buffer/gl_buffer.h"
-
 
 /**
  *  vec4 texelFetch(samplerBuffer s, int coord);
@@ -56,4 +57,6 @@ public:
 	void unbind() {}
 
 };
+
+#endif
 

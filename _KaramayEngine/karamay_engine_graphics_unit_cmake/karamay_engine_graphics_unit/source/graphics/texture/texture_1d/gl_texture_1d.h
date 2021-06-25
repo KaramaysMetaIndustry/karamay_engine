@@ -1,3 +1,5 @@
+#ifndef H_GL_TEXTURE_1D
+#define H_GL_TEXTURE_1D
 
 #include "graphics/texture/base/gl_texture_base.h"
 
@@ -57,4 +59,6 @@ public:
 	void unbind();
 
 };
+
+#endif
 

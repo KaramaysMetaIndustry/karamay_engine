@@ -1,4 +1,6 @@
-#pragma once
+#ifndef H_GL_TEXTURE_2D
+#define H_GL_TEXTURE_2D
+
 #include "graphics/texture/base/gl_texture_base.h"
 
 class gl_texture_2d final : public gl_texture_base
@@ -61,3 +63,5 @@ public:
 	std::uint32_t get_unit() { return 0; }
 
 };
+
+#endif
