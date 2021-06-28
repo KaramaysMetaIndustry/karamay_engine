@@ -6,7 +6,8 @@
 
 class gl_transform_feedback_descriptor
 {
-
+public:
+    std::vector<std::string> varyings;
 };
 
 
@@ -14,49 +15,36 @@ class gl_transform_feedback final : public gl_object
 {
 public:
 
-	gl_transform_feedback(const std::shared_ptr<gl_transform_feedback_descriptor> descriptor);
+	explicit gl_transform_feedback(const std::shared_ptr<gl_transform_feedback_descriptor>& descriptor);
 
-	~gl_transform_feedback();
+	~gl_transform_feedback() override;
 
 private:
 
     gl_transform_feedback_descriptor _descriptor;
 
-	std::vector<const char*> _varyings;
+	std::shared_ptr<gl_buffer> _output_buffer;
+
+	void _generate_buffer()
+    {
+	    _output_buffer = std::make_shared<gl_buffer>();
+	    _output_buffer->allocate(100);
+	    glTransformFeedbackBufferBase(_handle,0, _output_buffer->get_handle());
+    }
 
 public:
 
-	void associate_buffer(std::uint32_t index, std::shared_ptr<gl_buffer> buffer);
+    [[nodiscard]] const auto& get_varyings() const {return _descriptor.varyings;}
 
+	void associate_buffer(std::uint32_t index, const std::shared_ptr<gl_buffer>& buffer);
 
-	void associate_buffer(std::uint32_t index, std::shared_ptr<gl_buffer> buffer, std::int64_t offset, std::int64_t size);
+	void associate_buffer(std::uint32_t index, const std::shared_ptr<gl_buffer>& buffer, std::int64_t offset, std::int64_t size);
 
-	
-	void set_varyings(const std::vector<const char*>& varyings)
-	{
-		_varyings = varyings;
-	}
+	void bind();
 
+	void unbind();
 
-	const auto& get_varyings(){return _varyings;}
-
-public:
-
-	void bind()
-	{
-		glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, _handle);
-	}
-
-	void unbind()
-	{
-		GLint handle;
-		glGetIntegerv(GL_TRANSFORM_FEEDBACK_BINDING, &handle);
-		if(handle == _handle)
-		{
-			glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
-		}
-		
-	}
+	std::shared_ptr<const gl_buffer> get_output_buffer() const;
 
 };
 

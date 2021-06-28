@@ -383,10 +383,11 @@ void test0()
 	albedo_map->fill(albedo_pixels.width, albedo_pixels.height, albedo_pixels.format, (const void*)albedo_pixels.pixels);
 	albedo_map->set_name("container3");
 
-
+	//gl_transform_feedback_descriptor descriptor;
+	//gl_transform_feedback transformFeedback(descriptor);
 
 	// vertex array
-	auto vaod = sptr(gl_vertex_array_descriptor);
+	auto vaod = std::make_shared<gl_vertex_array_descriptor>();
 	vaod->add_attributes(positions);
 	vaod->add_attributes(uvs);
 	vaod->add_attributes(tests);

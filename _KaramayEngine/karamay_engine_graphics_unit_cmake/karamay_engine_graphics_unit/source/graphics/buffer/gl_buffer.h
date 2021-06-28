@@ -152,6 +152,8 @@ public:
 
 public:
 
+    void test() const{}
+
 	void allocate(std::size_t size, bool is_map_persistent = false, bool is_map_coherent = false, bool is_map_read = true, bool is_map_write = true, bool is_dynamic_storage = true, bool is_client_storage = true);
 
 	void fill(std::size_t offset, std::size_t size, const void* data);

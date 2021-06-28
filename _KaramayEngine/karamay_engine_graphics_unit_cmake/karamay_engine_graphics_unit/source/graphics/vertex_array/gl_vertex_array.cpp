@@ -129,7 +129,7 @@ void gl_vertex_array::_fill()
 		bind(); _bind_buffer();
 
 		const auto& _layouts = _descriptor->get_layouts();
-		const std::uint32_t _max_index_num = static_cast<std::uint32_t>(_layouts.size());
+		const auto _max_index_num = static_cast<std::uint32_t>(_layouts.size());
 		std::size_t _offset = 0;
 
 		for (std::uint32_t _index = 0; _index < _max_index_num; ++_index)
@@ -206,17 +206,11 @@ void gl_vertex_array::_fill()
 #endif
 }
 
-const void* gl_vertex_array_descriptor::get_stream() const
-{
-	return _stream.data();
-}
-
-const std::size_t gl_vertex_array_descriptor::get_stream_size() const
-{
-	return _stream.size();
-}
-
-const std::vector<gl_vertex_attribute_layout> gl_vertex_array_descriptor::get_layouts() const
-{
-	return _layouts;
+void gl_vertex_array::_update_attribute(const std::string &attribute_name, std::uint32_t attribute_index,
+                                        const std::uint8_t *stream_ptr, size_t size) {
+    if(_buffer && stream_ptr)
+    {
+        std::size_t _offset = 0;
+        _buffer->fill(_offset, size, stream_ptr);
+    }
 }
