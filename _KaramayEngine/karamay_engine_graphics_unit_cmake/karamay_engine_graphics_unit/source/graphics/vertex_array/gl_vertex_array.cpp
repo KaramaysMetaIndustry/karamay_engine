@@ -1,18 +1,6 @@
 #include "gl_vertex_array.h"
 #include "graphics/buffer/gl_buffer.h"
 
-gl_vertex_array::gl_vertex_array(std::shared_ptr<gl_vertex_array_descriptor> descriptor)
-{
-	glCreateVertexArrays(1, &_handle);
-
-	_descriptor = descriptor;
-
-	if (_descriptor && _descriptor->is_dirty())
-	{
-		_fill();
-	}
-}
-
 bool gl_vertex_array::is_pointer_enabled(std::uint32_t index)
 {
 	bind();
@@ -206,11 +194,68 @@ void gl_vertex_array::_fill()
 #endif
 }
 
-void gl_vertex_array::_update_attribute(const std::string &attribute_name, std::uint32_t attribute_index,
-                                        const std::uint8_t *stream_ptr, size_t size) {
-    if(_buffer && stream_ptr)
+void gl_vertex_array::_reallocate()
+{
+    if(_buffer)
     {
-        std::size_t _offset = 0;
-        _buffer->fill(_offset, size, stream_ptr);
+        _buffer->allocate(_descriptor.get_memory_demand());
     }
+
+    const auto& _vertex_attribute_descriptors = _descriptor.get_vertex_attribute_descriptors();
+    const std::uint32_t _vertices_count = _descriptor.get_vertices_count();
+    const auto& _instance_attribute_descriptors = _descriptor.get_instance_attribute_descriptors();
+
+    // handle vertex attributes [attribute, vertex_index] - [offset, size]
+    std::uint32_t _offset = 0;
+    std::uint32_t _vertex_index = 0;
+    for(const auto& _vertex_attribute_descriptor : _vertex_attribute_descriptors)
+    {
+        if(_vertex_index == _vertices_count)
+            _vertex_index = 0;
+
+        const auto _attribute_size = gl_attribute_component::get_size(_vertex_attribute_descriptor.get_component_type()) * _vertex_attribute_descriptor.get_component_count();
+        const std::string _key = _vertex_attribute_descriptor.get_name() + std::to_string(_vertex_index);
+        const std::pair<std::uint32_t, std::uint32_t> _value(_offset, _attribute_size);
+
+        //_anchor_list.emplace(_key, _value);
+
+        _offset += _attribute_size;
+        ++_vertex_index;
+    }
+
+    // handle instance attributes
+    std::uint32_t _instance_attribute_index = 0;
+    for(const auto& _instance_attribute_descriptor : _instance_attribute_descriptors)
+    {
+        if(_instance_attribute_index == _instance_attribute_descriptor.get_count())
+            _instance_attribute_index = 0;
+        //const auto
+
+        //_anchor_list.emplace()
+
+        ++_instance_attribute_index;
+    }
+
+    _buffer->allocate(100);
+    _buffer->fill(0, 100, nullptr);
+}
+
+gl_vertex_array::gl_vertex_array(const gl_vertex_array_descriptor &descriptor) {
+    _descriptor = descriptor;
+    glCreateVertexArrays(1, &_handle);
+}
+
+void gl_vertex_array::_update_attribute(const std::string &attribute_name, std::uint32_t attribute_index, const std::uint8_t *stream_ptr, size_t size)
+{
+    const auto& _memory_layout = _descriptor.get_memory_layout();
+    const std::string _location = attribute_name + std::to_string(attribute_index);
+    auto _it = _memory_layout.find(_location);
+    if(_it == _memory_layout.cend()) throw std::exception("can not find [memory layout] : attribute_name or attribute_index invalid ");
+
+    const auto& _offset_size = _it->second;
+    if(size != _offset_size.second) throw std::exception("in-size is not correct");
+
+    if(_buffer)
+        _buffer->fill(_offset_size.first, _offset_size.second, reinterpret_cast<const void*>(stream_ptr));
+
 }

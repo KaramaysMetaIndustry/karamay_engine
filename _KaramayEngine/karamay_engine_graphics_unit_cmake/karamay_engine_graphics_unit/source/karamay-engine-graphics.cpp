@@ -316,18 +316,18 @@ void test0()
 	glViewport(0, 0, window->get_framebuffer_width(), window->get_framebuffer_height());
 
 
-	std::vector<glv_f32vec3> positions{
-		glv_f32vec3(0.5f, 0.5f, 0.0f),
-		glv_f32vec3(0.5f, -0.5f, 0.0f),
-		glv_f32vec3(-0.5f, -0.5f, 0.0f),
-		glv_f32vec3(-0.5f, 0.5f, 0.0f)
+	std::vector<glv::f32vec3> positions{
+		glv::f32vec3(0.5f, 0.5f, 0.0f),
+		glv::f32vec3(0.5f, -0.5f, 0.0f),
+		glv::f32vec3(-0.5f, -0.5f, 0.0f),
+		glv::f32vec3(-0.5f, 0.5f, 0.0f)
 	};
 
-	std::vector<glv_f32vec2> uvs{
-		glv_f32vec2(1.0f, 1.0f),
-		glv_f32vec2(1.0f, 0.0f),
-		glv_f32vec2(0.0f, 0.0f),
-		glv_f32vec2(0.0f, 1.0f)
+	std::vector<glv::f32vec2> uvs{
+		glv::f32vec2(1.0f, 1.0f),
+		glv::f32vec2(1.0f, 0.0f),
+		glv::f32vec2(0.0f, 0.0f),
+		glv::f32vec2(0.0f, 1.0f)
 	};
 
 	std::vector<glm::i16vec4> tests{
@@ -369,8 +369,8 @@ void test0()
 //};
 
 	// uniforms
-	auto camera_position = create_uniform("camera_position", glv_f32vec3(1.0f, 0.0f, 0.0f));
-	auto spe_color = create_uniform("spe_color", glv_f32vec4(1.0f, 1.0f, 0.5f, 1.0f));
+	auto camera_position = create_uniform("camera_position", glv::f32vec3(1.0f, 0.0f, 0.0f));
+	auto spe_color = create_uniform("spe_color", glv::f32vec4(1.0f, 1.0f, 0.5f, 1.0f));
 
 	// textures
 	auto container2 = std::make_shared<gl_texture_2d>();
@@ -383,34 +383,36 @@ void test0()
 	albedo_map->fill(albedo_pixels.width, albedo_pixels.height, albedo_pixels.format, (const void*)albedo_pixels.pixels);
 	albedo_map->set_name("container3");
 
-	//gl_transform_feedback_descriptor descriptor;
-	//gl_transform_feedback transformFeedback(descriptor);
 
-	// vertex array
-	gl_vertex_array_descriptor _vad(
-            {
-                {"position", gl_attribute_component::type::FLOAT, 3, false},
-                {"color", gl_attribute_component::type::FLOAT, 4, false},
-                {"uv", gl_attribute_component::type::INT, 2, true}
-                },
-            120,
-            {
-                {"instance_offset_position", gl_attribute_component::type::FLOAT, 3, false, 3, 3},
-                {"instance_offset_spec", gl_attribute_component::type::INT, 4, true, 1, 9}
-                },
-            9
-	        );
+	// initialize the va by vad
+	gl_vertex_array _va({
+                                {
+                                        { 3, gl_attribute_component::type::FLOAT, "position" }, // layout(location = 0) vec3 position;
+                                        { 4, gl_attribute_component::type::FLOAT, "color" }, // layout(location = 1) vec4 color;
+                                        { 2, gl_attribute_component::type::FLOAT, "uv" } // layout(location = 2) vec2 uv;
+                                },
+                                120,
+                                {
+                                        {3, gl_attribute_component::type::DOUBLE, "instance_offset_position", 3, 3}, // layout(location = 3) dvec3 instance_offset_position;
+                                        {4, gl_attribute_component::type::INT, "instance_offset_spec", 9, 1} // layout(location = 4) ivec4 instance_offset_spec;
+                                },
+                                9
+	});
 
+	// you can change these items which will not affect the shaders compilation result
+	// optional
+    {
+        _va.set_vertices_count(145000000);
+        _va.set_instances_count(1200);
+        _va.set_instance_attribute_divisor("instance_offset_position", 1);
+        _va.set_instance_attribute_divisor("instance_offset_spec", 3);
+    }
 
-	_vad.add_attribute_descriptor<glv::f32vec3>("position");
-	_vad.add_attribute_descriptor<glv::f32vec4>("color");
-	_vad.add_attribute_descriptor<glv::f32vec2>("uv");
-	_vad.add_normalized_attribute_descriptor<glv::i32vec4>("spec");
-    _vad.set_vertices_count(120);
+	// update the value
+	_va.update_attribute("position", 98, glv::f32vec3(0.0f, 0.3f, 0.1f));
+	_va.update_attribute("position", 98, glv::f32vec3(0.0f, 0.3f, 0.1f));
+	_va.update_attribute("instance_offset_spec", 3, glv::i32vec4(1, 10, 2, 5));
 
-    _vad.add_instanced_attribute_descriptor<glv::f32vec3>("instance_position", 3, 3);
-    _vad.add_instanced_attribute_descriptor<glv::f32vec4>("instance_color", 9, 1);
-    _vad.set_instances_count(9);
 
 
 	// element array
@@ -456,7 +458,7 @@ void test0()
 	program->construct({
 		"shaders/test.vert",
 		"shaders/test.frag" });
-	program->set_vertex_array(vao);
+	program->set_vertex_array(_va);
 	program->set_element_array_buffer(ebo);
 	
 	program->add_texture(container2);
