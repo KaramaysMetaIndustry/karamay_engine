@@ -387,12 +387,31 @@ void test0()
 	//gl_transform_feedback transformFeedback(descriptor);
 
 	// vertex array
-	auto vaod = std::make_shared<gl_vertex_array_descriptor>();
-	vaod->add_attributes(positions);
-	vaod->add_attributes(uvs);
-	vaod->add_attributes(tests);
+	gl_vertex_array_descriptor _vad(
+            {
+                {"position", gl_attribute_component::type::FLOAT, 3, false},
+                {"color", gl_attribute_component::type::FLOAT, 4, false},
+                {"uv", gl_attribute_component::type::INT, 2, true}
+                },
+            120,
+            {
+                {"instance_offset_position", gl_attribute_component::type::FLOAT, 3, false, 3, 3},
+                {"instance_offset_spec", gl_attribute_component::type::INT, 4, true, 1, 9}
+                },
+            9
+	        );
 
-	auto vao = std::make_shared<gl_vertex_array>(vaod);
+
+	_vad.add_attribute_descriptor<glv::f32vec3>("position");
+	_vad.add_attribute_descriptor<glv::f32vec4>("color");
+	_vad.add_attribute_descriptor<glv::f32vec2>("uv");
+	_vad.add_normalized_attribute_descriptor<glv::i32vec4>("spec");
+    _vad.set_vertices_count(120);
+
+    _vad.add_instanced_attribute_descriptor<glv::f32vec3>("instance_position", 3, 3);
+    _vad.add_instanced_attribute_descriptor<glv::f32vec4>("instance_color", 9, 1);
+    _vad.set_instances_count(9);
+
 
 	// element array
 	auto ebod = std::make_shared<gl_element_array_buffer_descriptor>();

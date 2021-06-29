@@ -7,65 +7,138 @@
 
 class gl_buffer;
 
-namespace gl_vertex_attribute_component
+namespace gl_attribute_component
 {
-    enum class type
+    enum class type : GLenum
     {
         UNKNOWN = 0,
-
         INT = GL_INT,
         UNSIGNED_INT = GL_UNSIGNED_INT,
         FLOAT = GL_FLOAT,
         DOUBLE = GL_DOUBLE
     };
 
-    std::string to_string(gl_vertex_attribute_component::type component_type)
+    bool normalisation;
+
+
+
+    std::string to_string(gl_attribute_component::type component_type)
     {
         switch(component_type)
         {
-            case gl_vertex_attribute_component::type::INT: return "INT";
-            case gl_vertex_attribute_component::type::UNSIGNED_INT: return "UNSIGNED_INT";
-            case gl_vertex_attribute_component::type::FLOAT: return "FLOAT";
-            case gl_vertex_attribute_component::type::DOUBLE: return "DOUBLE";
+            case gl_attribute_component::type::INT: return "INT";
+            case gl_attribute_component::type::UNSIGNED_INT: return "UNSIGNED_INT";
+            case gl_attribute_component::type::FLOAT: return "FLOAT";
+            case gl_attribute_component::type::DOUBLE: return "DOUBLE";
             default: return "UNKNOWN";
         }
     }
 
-    gl_vertex_attribute_component::type to_enum(const std::string& component_type)
+    gl_attribute_component::type to_enum(const std::string& component_type)
     {
-        if(component_type == "INT") return gl_vertex_attribute_component::type::INT;
-        if(component_type == "UNSIGNED_INT") return gl_vertex_attribute_component::type::UNSIGNED_INT;
-        if(component_type == "FLOAT") return gl_vertex_attribute_component::type::FLOAT;
-        if(component_type == "DOUBLE") return gl_vertex_attribute_component::type::DOUBLE;
-        return gl_vertex_attribute_component::type::UNKNOWN;
+        if(component_type == "INT") return gl_attribute_component::type::INT;
+        if(component_type == "UNSIGNED_INT") return gl_attribute_component::type::UNSIGNED_INT;
+        if(component_type == "FLOAT") return gl_attribute_component::type::FLOAT;
+        if(component_type == "DOUBLE") return gl_attribute_component::type::DOUBLE;
+        return gl_attribute_component::type::UNKNOWN;
     }
 
-    GLenum to_GLenum(gl_vertex_attribute_component::type component_type)
+    GLenum to_GLenum(gl_attribute_component::type component_type)
     {
         return static_cast<GLenum>(component_type);
     }
 }
 
 
-struct gl_vertex_attribute_descriptor
+class gl_vertex_attribute_descriptor
 {
-    std::string name;
+public:
 
-    gl_vertex_attribute_component::type component_type;
-
-    std::uint8_t normalized;
-
-    std::uint32_t components_count;
-
-    std::uint32_t divisor;
-
-    gl_vertex_attribute_descriptor() :
-        name(),
-        component_type(gl_vertex_attribute_component::type::UNKNOWN),
-        normalized(false),
-        components_count(0),
-        divisor(0)
+    gl_vertex_attribute_descriptor(
+            const std::string& name,
+            gl_attribute_component::type component_type,
+            std::uint32_t component_count,
+            std::uint8_t normalized) :
+            _name(name),
+            _component_type(component_type),
+            _components_count(component_count),
+            _normalized(normalized)
     {}
+
+private:
+
+    std::string _name;
+
+    gl_attribute_component::type _component_type;
+
+    std::uint32_t _components_count;
+
+    bool _normalized;
+
+public:
+
+    const std::string get_name() const {return _name;}
+
+    gl_attribute_component::type get_component_type() const {return _component_type;}
+
+    std::uint32_t get_component_count() const {return _components_count;}
+
+    std::uint8_t get_normalized() const {return _normalized;}
+
+
+};
+
+class gl_instance_attribute_descriptor
+{
+public:
+
+    gl_instance_attribute_descriptor(
+            const std::string& name,
+            gl_attribute_component::type component_name,
+            std::uint32_t component_count,
+            std::uint8_t normalized,
+            std::uint32_t divisor,
+            std::uint32_t count) :
+            _name(name),
+            _component_type(component_name),
+            _components_count(component_count),
+            _normalized(normalized),
+            _divisor(divisor),
+            _count(count)
+    {}
+
+private:
+
+    std::string _name;
+
+    gl_attribute_component::type _component_type;
+
+    std::uint32_t _components_count;
+
+    std::uint8_t _normalized;
+
+    std::uint32_t _divisor;
+
+    std::uint32_t _count;
+
+public:
+
+    std::string get_name() const {return _name;}
+
+    gl_attribute_component::type get_component_type() const {return _component_type;}
+
+    std::uint8_t get_normalized() const {return _normalized;}
+
+    std::uint32_t get_divisor() const {return _divisor;}
+
+    std::uint32_t get_count() const {return _count;}
+
+public:
+
+    void set_divisor(std::uint32_t divisor);
+
+    void set_count(std::uint32_t count);
+
 };
 
 
@@ -73,85 +146,170 @@ struct gl_vertex_attribute_descriptor
 class gl_vertex_array_descriptor final
 {
 public:
-    gl_vertex_array_descriptor(std::uint32_t vertices_count, std::uint32_t instances_count) :
-        _vertices_count(vertices_count)
-    {
-//        gl_vertex_array_descriptor _vertex_array_descriptor(100, 10);
-//        _vertex_array_descriptor.add_attribute_descriptor<glv::i32vec3>("position");
-//        _vertex_array_descriptor.add_attribute_descriptor<glv::i32vec4>("color");
-//        _vertex_array_descriptor.add_attribute_descriptor<glv::i32vec2>("uv");
-//        _vertex_array_descriptor.add_attribute_descriptor<glv::i32vec3>("instance_position_offset", 3);
-//
-//        _vertex_array_descriptor.add_normalized_attribute_descriptor<glv::f32vec4>("");
-    }
+    gl_vertex_array_descriptor(
+            const std::vector<gl_vertex_attribute_descriptor>& vertex_attribute_descriptors,
+            std::uint32_t vertices_count,
+            const std::vector<gl_instance_attribute_descriptor>& instance_attribute_descriptors,
+            std::uint32_t instances_count) :
+            _vertex_attribute_descriptors(vertex_attribute_descriptors),
+            _vertices_count(vertices_count),
+            _instance_attribute_descriptors(instance_attribute_descriptors),
+            _instances_count(instances_count)
+    {}
 
+    gl_vertex_array_descriptor(
+            const std::vector<gl_vertex_attribute_descriptor>& vertex_attribute_descriptors,
+            std::uint32_t vertices_count) :
+            _vertex_attribute_descriptors(vertex_attribute_descriptors),
+            _vertices_count(vertices_count),
+            _instance_attribute_descriptors(),
+            _instances_count(0)
+    {}
 
 private:
 
+    std::vector<gl_vertex_attribute_descriptor> _vertex_attribute_descriptors;
+
     std::uint32_t _vertices_count;
 
-    std::vector<gl_vertex_attribute_descriptor> _vertex_attribute_descriptors;
+public:
+
+    template<typename T>
+    void add_attribute_descriptor(const std::string& attribute_name)
+    {
+        {
+            static_assert(
+                    std::is_same<glv::int32, T>::value ||std::is_same<glv::i32vec2, T>::value ||
+                    std::is_same<glv::i32vec3, T>::value ||std::is_same<glv::i32vec4, T>::value ||
+
+                    std::is_same<glv::uint32, T>::value ||std::is_same<glv::ui32vec2, T>::value ||
+                    std::is_same<glv::ui32vec3, T>::value ||std::is_same<glv::ui32vec4, T>::value ||
+
+                    std::is_same<glv::float32, T>::value ||std::is_same<glv::f32vec2, T>::value ||
+                    std::is_same<glv::f32vec3, T>::value ||std::is_same<glv::f32vec4, T>::value ||
+
+                    std::is_same<glv::float64, T>::value ||std::is_same<glv::f64vec2, T>::value ||
+                    std::is_same<glv::f64vec3, T>::value ||std::is_same<glv::f64vec4, T>::value ||
+
+                    std::is_same<glv::f32mat2, T>::value ||std::is_same<glv::f32mat2x3, T>::value ||std::is_same<glv::f32mat2x4, T>::value ||
+                    std::is_same<glv::f32mat3, T>::value ||std::is_same<glv::f32mat3x2, T>::value ||std::is_same<glv::f32mat3x4, T>::value ||
+                    std::is_same<glv::f32mat4, T>::value ||std::is_same<glv::f32mat4x2, T>::value ||std::is_same<glv::f32mat4x3, T>::value ||
+
+                    std::is_same<glv::f64mat2, T>::value ||std::is_same<glv::f64mat2x3, T>::value ||std::is_same<glv::f64mat2x4, T>::value ||
+                    std::is_same<glv::f64mat3, T>::value ||std::is_same<glv::f64mat3x2, T>::value ||std::is_same<glv::f64mat3x4, T>::value ||
+                    std::is_same<glv::f64mat4, T>::value ||std::is_same<glv::f64mat4x2, T>::value ||std::is_same<glv::f64mat4x3, T>::value
+                    , "T must be glv::i/ui/f32* or glv::f64* types.");
+        }
+
+        gl_vertex_attribute_descriptor _vertex_attribute_descriptor;
+        _vertex_attribute_descriptor.name = attribute_name;
+        _vertex_attribute_descriptor.component_type = _get_component_type<typename T::value_type>();
+        _vertex_attribute_descriptor.components_count = static_cast<std::uint32_t>(T::length());
+        _vertex_attribute_descriptor.divisor = 0;
+        _vertex_attribute_descriptor.normalized = false;
+        _vertex_attribute_descriptors.push_back(_vertex_attribute_descriptor);
+    }
+
+    template<typename T>
+    void add_normalized_attribute_descriptor(const std::string& attribute_name)
+    {
+        {
+            static_assert(
+                    std::is_same<glv::int32, T>::value ||std::is_same<glv::i32vec2, T>::value ||
+                    std::is_same<glv::i32vec3, T>::value ||std::is_same<glv::i32vec4, T>::value ||
+                    std::is_same<glv::uint32, T>::value ||std::is_same<glv::ui32vec2, T>::value ||
+                    std::is_same<glv::ui32vec3, T>::value ||std::is_same<glv::ui32vec4, T>::value
+                    , "T must be glv::i32* or glv::ui32* types.");
+        }
+
+        gl_vertex_attribute_descriptor _vertex_attribute_descriptor;
+        _vertex_attribute_descriptor.name = attribute_name;
+        _vertex_attribute_descriptor.component_type = _get_component_type<typename T::value_type>();
+        _vertex_attribute_descriptor.components_count = static_cast<std::uint32_t>(T::length());
+        _vertex_attribute_descriptor.divisor = 0;
+        _vertex_attribute_descriptor.normalized = true;
+        _vertex_attribute_descriptors.push_back(_vertex_attribute_descriptor);
+    }
+
+    void set_vertices_count(std::uint32_t vertices_count)
+    {
+        _vertices_count = vertices_count;
+    }
+
+private:
+
+    std::vector<gl_instance_attribute_descriptor> _instance_attribute_descriptors;
+
+    std::uint32_t _instances_count;
 
 public:
 
 	template<typename T>
-	void add_attribute_descriptor(const std::string& attribute_name, std::uint32_t divisor = 0)
-	{
-		{
-			static_assert(
-				std::is_same<glv::int32, T>::value ||std::is_same<glv::i32vec2, T>::value ||
-				std::is_same<glv::i32vec3, T>::value ||std::is_same<glv::i32vec4, T>::value ||
+    void add_instanced_attribute_descriptor(const std::string& attribute_name, std::uint32_t count, std::uint32_t divisor)
+    {
+        {
+            static_assert(
+                    std::is_same<glv::int32, T>::value ||std::is_same<glv::i32vec2, T>::value ||
+                    std::is_same<glv::i32vec3, T>::value ||std::is_same<glv::i32vec4, T>::value ||
 
-				std::is_same<glv::uint32, T>::value ||std::is_same<glv::ui32vec2, T>::value ||
-				std::is_same<glv::ui32vec3, T>::value ||std::is_same<glv::ui32vec4, T>::value ||
+                    std::is_same<glv::uint32, T>::value ||std::is_same<glv::ui32vec2, T>::value ||
+                    std::is_same<glv::ui32vec3, T>::value ||std::is_same<glv::ui32vec4, T>::value ||
 
-				std::is_same<glv::float32, T>::value ||std::is_same<glv::f32vec2, T>::value ||
-				std::is_same<glv::f32vec3, T>::value ||std::is_same<glv::f32vec4, T>::value ||
+                    std::is_same<glv::float32, T>::value ||std::is_same<glv::f32vec2, T>::value ||
+                    std::is_same<glv::f32vec3, T>::value ||std::is_same<glv::f32vec4, T>::value ||
 
-				std::is_same<glv::float64, T>::value ||std::is_same<glv::f64vec2, T>::value ||
-				std::is_same<glv::f64vec3, T>::value ||std::is_same<glv::f64vec4, T>::value ||
+                    std::is_same<glv::float64, T>::value ||std::is_same<glv::f64vec2, T>::value ||
+                    std::is_same<glv::f64vec3, T>::value ||std::is_same<glv::f64vec4, T>::value ||
 
-				std::is_same<glv::f32mat2, T>::value ||std::is_same<glv::f32mat2x3, T>::value ||std::is_same<glv::f32mat2x4, T>::value ||
-				std::is_same<glv::f32mat3, T>::value ||std::is_same<glv::f32mat3x2, T>::value ||std::is_same<glv::f32mat3x4, T>::value ||
-				std::is_same<glv::f32mat4, T>::value ||std::is_same<glv::f32mat4x2, T>::value ||std::is_same<glv::f32mat4x3, T>::value ||
+                    std::is_same<glv::f32mat2, T>::value ||std::is_same<glv::f32mat2x3, T>::value ||std::is_same<glv::f32mat2x4, T>::value ||
+                    std::is_same<glv::f32mat3, T>::value ||std::is_same<glv::f32mat3x2, T>::value ||std::is_same<glv::f32mat3x4, T>::value ||
+                    std::is_same<glv::f32mat4, T>::value ||std::is_same<glv::f32mat4x2, T>::value ||std::is_same<glv::f32mat4x3, T>::value ||
 
-				std::is_same<glv::f64mat2, T>::value ||std::is_same<glv::f64mat2x3, T>::value ||std::is_same<glv::f64mat2x4, T>::value ||
-				std::is_same<glv::f64mat3, T>::value ||std::is_same<glv::f64mat3x2, T>::value ||std::is_same<glv::f64mat3x4, T>::value ||
-				std::is_same<glv::f64mat4, T>::value ||std::is_same<glv::f64mat4x2, T>::value ||std::is_same<glv::f64mat4x3, T>::value
-				, "T must be glv::i/ui/f32* or glv::f64* types.");
-		}
-
-        gl_vertex_attribute_descriptor _vertex_attribute_descriptor;
-	    _vertex_attribute_descriptor.name = attribute_name;
-		_vertex_attribute_descriptor.component_type = _get_component_type<typename T::value_type>();
-        _vertex_attribute_descriptor.components_count = static_cast<std::uint32_t>(T::length());
-		_vertex_attribute_descriptor.divisor = divisor;
-		_vertex_attribute_descriptor.normalized = false;
-		_vertex_attribute_descriptors.push_back(_vertex_attribute_descriptor);
-	}
-
-	template<typename T>
-	void add_normalized_attribute_descriptor(const std::string& attribute_name, std::uint32_t divisor = 0)
-	{
-		{
-			static_assert(
-				std::is_same<glv::int32, T>::value ||std::is_same<glv::i32vec2, T>::value ||
-				std::is_same<glv::i32vec3, T>::value ||std::is_same<glv::i32vec4, T>::value ||
-				std::is_same<glv::uint32, T>::value ||std::is_same<glv::ui32vec2, T>::value ||
-				std::is_same<glv::ui32vec3, T>::value ||std::is_same<glv::ui32vec4, T>::value
-				, "T must be glv::i32* or glv::ui32* types.");
-		}
+                    std::is_same<glv::f64mat2, T>::value ||std::is_same<glv::f64mat2x3, T>::value ||std::is_same<glv::f64mat2x4, T>::value ||
+                    std::is_same<glv::f64mat3, T>::value ||std::is_same<glv::f64mat3x2, T>::value ||std::is_same<glv::f64mat3x4, T>::value ||
+                    std::is_same<glv::f64mat4, T>::value ||std::is_same<glv::f64mat4x2, T>::value ||std::is_same<glv::f64mat4x3, T>::value
+                    , "T must be glv::i/ui/f32* or glv::f64* types.");
+        }
 
         gl_vertex_attribute_descriptor _vertex_attribute_descriptor;
-	    _vertex_attribute_descriptor.name = attribute_name;
+        _vertex_attribute_descriptor.name = attribute_name;
         _vertex_attribute_descriptor.component_type = _get_component_type<typename T::value_type>();
         _vertex_attribute_descriptor.components_count = static_cast<std::uint32_t>(T::length());
         _vertex_attribute_descriptor.divisor = divisor;
-        _vertex_attribute_descriptor.normalized = true;
-        _vertex_attribute_descriptors.push_back(_vertex_attribute_descriptor);
-	}
+        _vertex_attribute_descriptor.normalized = false;
+        _instanced_vertex_attribute_descriptors.push_back(_vertex_attribute_descriptor);
+    }
 
-	const auto& get_attribute_descriptors() const { return _vertex_attribute_descriptors; }
+    template<typename T>
+    void add_instanced_normalized_attribute_descriptor(const std::string& attribute_name, std::uint32_t count, std::uint32_t divisor)
+    {
+        {
+            static_assert(
+                    std::is_same<glv::int32, T>::value ||std::is_same<glv::i32vec2, T>::value ||
+                    std::is_same<glv::i32vec3, T>::value ||std::is_same<glv::i32vec4, T>::value ||
+                    std::is_same<glv::uint32, T>::value ||std::is_same<glv::ui32vec2, T>::value ||
+                    std::is_same<glv::ui32vec3, T>::value ||std::is_same<glv::ui32vec4, T>::value
+                    , "T must be glv::i32* or glv::ui32* types.");
+        }
+
+        gl_vertex_attribute_descriptor _vertex_attribute_descriptor;
+        _vertex_attribute_descriptor.name = attribute_name;
+        _vertex_attribute_descriptor.component_type = _get_component_type<typename T::value_type>();
+        _vertex_attribute_descriptor.components_count = static_cast<std::uint32_t>(T::length());
+        _vertex_attribute_descriptor.divisor = 0;
+        _vertex_attribute_descriptor.normalized = true;
+        _instanced_vertex_attribute_descriptors.push_back(_vertex_attribute_descriptor);
+    }
+
+    void set_instances_count(std::uint32_t instances_count)
+    {
+        _instances_count = instances_count;
+    }
+
+    void set_instanced_attribute_divisor(const std::string& attribute_name, std::uint32_t divisor)
+    {
+
+    }
 
 private:
 
