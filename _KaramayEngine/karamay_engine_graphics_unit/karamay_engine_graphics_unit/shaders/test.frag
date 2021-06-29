@@ -41,6 +41,8 @@ layout(std430) buffer wida
 } ad[];
 
 
+uniform highp float a;
+
 
 
 void main()

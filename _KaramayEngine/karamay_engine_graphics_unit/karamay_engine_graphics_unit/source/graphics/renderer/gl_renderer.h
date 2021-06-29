@@ -17,8 +17,6 @@ public:
 
 private:
 
-	std::vector<gl_pass_base>
-
 
 };
 
