@@ -26,14 +26,14 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/karamay_engine_graphics_unit/shaders
  #       ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 
 add_executable(karamay_engine_graphics_unit
-        karamay_engine_graphics_unit/dependencies/glew-2.1.0/include/GL/eglew.h
-        karamay_engine_graphics_unit/dependencies/glew-2.1.0/include/GL/glew.h
-        karamay_engine_graphics_unit/dependencies/glew-2.1.0/include/GL/glxew.h
-        karamay_engine_graphics_unit/dependencies/glew-2.1.0/include/GL/wglew.h
-        karamay_engine_graphics_unit/dependencies/glfw-3.3.4.bin.WIN64/include/GLFW/glfw3.h
-        karamay_engine_graphics_unit/dependencies/glfw-3.3.4.bin.WIN64/include/GLFW/glfw3native.h
-        karamay_engine_graphics_unit/dependencies/glfw-3.3.bin.WIN32/include/GLFW/glfw3.h
-        karamay_engine_graphics_unit/dependencies/glfw-3.3.bin.WIN32/include/GLFW/glfw3native.h
+#        karamay_engine_graphics_unit/dependencies/glew-2.1.0/include/GL/eglew.h
+#        karamay_engine_graphics_unit/dependencies/glew-2.1.0/include/GL/glew.h
+#        karamay_engine_graphics_unit/dependencies/glew-2.1.0/include/GL/glxew.h
+#        karamay_engine_graphics_unit/dependencies/glew-2.1.0/include/GL/wglew.h
+#        karamay_engine_graphics_unit/dependencies/glfw-3.3.4.bin.WIN64/include/GLFW/glfw3.h
+#        karamay_engine_graphics_unit/dependencies/glfw-3.3.4.bin.WIN64/include/GLFW/glfw3native.h
+#        karamay_engine_graphics_unit/dependencies/glfw-3.3.bin.WIN32/include/GLFW/glfw3.h
+#        karamay_engine_graphics_unit/dependencies/glfw-3.3.bin.WIN32/include/GLFW/glfw3native.h
         karamay_engine_graphics_unit/dependencies/glm_pack/include/glm/detail/_features.hpp
         karamay_engine_graphics_unit/dependencies/glm_pack/include/glm/detail/_fixes.hpp
         karamay_engine_graphics_unit/dependencies/glm_pack/include/glm/detail/_noise.hpp
@@ -530,8 +530,6 @@ add_executable(karamay_engine_graphics_unit
         karamay_engine_graphics_unit/source/graphics/pipeline/gl_compute_pipeline.h
         karamay_engine_graphics_unit/source/graphics/pipeline/gl_graphics_pipeline.cpp
         karamay_engine_graphics_unit/source/graphics/pipeline/gl_graphics_pipeline.h
-        karamay_engine_graphics_unit/source/graphics/pipeline/gl_pipeline_base.cpp
-        karamay_engine_graphics_unit/source/graphics/pipeline/gl_pipeline_base.h
         karamay_engine_graphics_unit/source/graphics/program/gl_program.cpp
         karamay_engine_graphics_unit/source/graphics/program/gl_program.h
         karamay_engine_graphics_unit/source/graphics/program_pipeline/gl_program_pipeline.cpp
@@ -581,8 +579,6 @@ add_executable(karamay_engine_graphics_unit
         karamay_engine_graphics_unit/source/graphics/variable/glv_types.h
         karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.cpp
         karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.h
-        karamay_engine_graphics_unit/source/graphics/vertex_specification/gl_vertex_specifiaction.cpp
-        karamay_engine_graphics_unit/source/graphics/vertex_specification/gl_vertex_specifiaction.h
         karamay_engine_graphics_unit/source/public/glfw_win64.h
         karamay_engine_graphics_unit/source/public/nlohmann_json.h
         karamay_engine_graphics_unit/source/public/opengl_win64.h

@@ -1,5 +1,7 @@
 #include "gl_program.h"
-#include "graphics/texture/gl_texture.h"
+#include "graphics/vertex_array/gl_vertex_array.h"
+#include "graphics/shader/gl_shader.h"
+#include "graphics/transform_feedback/gl_transform_feedback.h"
 
 gl_program::gl_program()
 {
@@ -53,11 +55,9 @@ void gl_program::construct(const std::vector<std::string>& shader_paths)
 {
 	for (const auto& path : shader_paths)
 	{
-		auto shader = std::make_shared<gl_shader>();
+		auto shader = std::make_shared<gl_shader>(path);
 		if (shader)
 		{
-			shader->load(path);
-			shader->compile();
 			glAttachShader(_handle, shader->get_handle());
 			_shaders.push_back(shader);
 		}
@@ -256,7 +256,7 @@ inline void gl_program::_set_transform_feedback_varyings()
 		const auto& varyings = _transform_feedback->get_varyings();
 		if (varyings.size() > 0)
 		{
-			glTransformFeedbackVaryings(_handle, static_cast<GLsizei>(varyings.size()), varyings.data(), static_cast<GLenum>(gl_buffer_mode::INTERLEAVED));
+			//glTransformFeedbackVaryings(_handle, static_cast<GLsizei>(varyings.size()), varyings.data(), static_cast<GLenum>(gl_buffer_mode::INTERLEAVED));
 			glLinkProgram(_handle);
 		}
 	}

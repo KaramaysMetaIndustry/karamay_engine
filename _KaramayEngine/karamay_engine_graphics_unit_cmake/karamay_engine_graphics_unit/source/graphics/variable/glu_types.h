@@ -1,4 +1,6 @@
-#pragma once
+#ifndef H_GLU_TYPES
+#define H_GLU_TYPES
+
 #include "public/opengl_win64.h"
 
 
@@ -49,3 +51,4 @@ using glu_f64mat3x4 = glm::dmat3x4;
 using glu_f64mat4x2 = glm::dmat4x2;
 using glu_f64mat4x3 = glm::dmat4x3; // dmat
 
+#endif

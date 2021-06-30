@@ -2,9 +2,6 @@
 #define H_GL_PROGRAM
 
 #include "graphics/glo/gl_object.h"
-#include "graphics/shader/gl_shader.h"
-#include "graphics/vertex_array/gl_vertex_array.h"
-#include "graphics/transform_feedback/gl_transform_feedback.h"
 #include "graphics/variable/gl_variable.h"
 #include "graphics/buffer/gl_buffer.h"
 #include "graphics/buffer/customization/gl_element_array_buffer.h"
@@ -14,6 +11,10 @@
 #include "graphics/texture/gl_texture.h"
 #include "graphics/framebuffer/gl_framebuffer.h"
 #include "graphics/framebuffer/gl_default_framebuffer.h"
+
+class gl_shader;
+class gl_vertex_array;
+class gl_transform_feedback;
 
 enum class gl_buffer_mode
 {
@@ -158,25 +159,25 @@ public:
 
 public:
 
-	void set_vertex_array(std::shared_ptr<gl_vertex_array> vertex_array);
+	void set_vertex_array(std::shared_ptr<class gl_vertex_array> vertex_array);
 
-	void set_element_array_buffer(std::shared_ptr<gl_element_array_buffer> element_array_buffer);
+	void set_element_array_buffer(std::shared_ptr<class gl_element_array_buffer> element_array_buffer);
 
-	void set_transform_feedback(std::shared_ptr<gl_transform_feedback> transform_feedback);
+	void set_transform_feedback(std::shared_ptr<class gl_transform_feedback> transform_feedback);
 
-	void add_uniform_buffers(const std::vector<std::shared_ptr<gl_uniform_buffer>>& uniform_buffers);
+	void add_uniform_buffers(const std::vector<std::shared_ptr<class gl_uniform_buffer>>& uniform_buffers);
 
-	void add_uniform_buffer(std::shared_ptr<gl_uniform_buffer> uniform_buffer);
+	void add_uniform_buffer(std::shared_ptr<class gl_uniform_buffer> uniform_buffer);
 
-	void add_shader_storage_buffers(const std::vector<std::shared_ptr<gl_shader_storage_buffer>>& shader_storage_buffers);
+	void add_shader_storage_buffers(const std::vector<std::shared_ptr<class gl_shader_storage_buffer>>& shader_storage_buffers);
 
-	void add_shader_storage_buffer(std::shared_ptr<gl_shader_storage_buffer> shader_storage_buffer);
+	void add_shader_storage_buffer(std::shared_ptr<class gl_shader_storage_buffer> shader_storage_buffer);
 
-	void add_atomic_counter_buffers(const std::vector<std::shared_ptr<gl_atomic_counter_buffer>>& atomic_counter_buffers);
+	void add_atomic_counter_buffers(const std::vector<std::shared_ptr<class gl_atomic_counter_buffer>>& atomic_counter_buffers);
 
-	void add_atomic_counter_buffer(std::shared_ptr<gl_atomic_counter_buffer> atomic_counter_buffer);
+	void add_atomic_counter_buffer(std::shared_ptr<class gl_atomic_counter_buffer> atomic_counter_buffer);
 
-	void set_framebuffer(std::shared_ptr<gl_framebuffer> framebuffer = nullptr);
+	void set_framebuffer(std::shared_ptr<class gl_framebuffer> framebuffer = nullptr);
 
 	void set_commands(std::function<void(void)> commands_lambda);
 
@@ -350,11 +351,11 @@ private:
 
 private:
 
-	std::vector<std::shared_ptr<gl_variable>> _uniforms;
+	std::vector<std::shared_ptr<class gl_variable>> _uniforms;
 
 public:
 
-	void add_uniform(const std::shared_ptr<gl_variable>& uniform)
+	void add_uniform(const std::shared_ptr<class gl_variable>& uniform)
 	{
 		if (uniform)
 		{

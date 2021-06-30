@@ -1,11 +1,7 @@
-#pragma once
-#include "material/gl_material.h"
-#include "graphics/vertex_array/gl_vertex_array.h"
+#ifndef H_GL_MESH
+#define H_GL_MESH
 
-struct gl_mesh
-{
-	std::shared_ptr<gl_vertex_array> vertex_array;
+#endif
 
-	std::shared_ptr<gl_material> material;
-};
+
 

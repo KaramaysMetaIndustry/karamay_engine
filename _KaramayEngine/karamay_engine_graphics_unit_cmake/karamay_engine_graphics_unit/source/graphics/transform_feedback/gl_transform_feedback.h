@@ -2,7 +2,7 @@
 #define H_GL_TRANSFORM_FEEDBACK
 
 #include "graphics/glo/gl_object.h"
-#include "graphics/buffer/gl_buffer.h"
+class gl_buffer;
 
 class gl_transform_feedback_descriptor
 {
@@ -25,12 +25,7 @@ private:
 
 	std::shared_ptr<gl_buffer> _output_buffer;
 
-	void _generate_buffer()
-    {
-	    _output_buffer = std::make_shared<gl_buffer>();
-	    _output_buffer->allocate(100);
-	    glTransformFeedbackBufferBase(_handle,0, _output_buffer->get_handle());
-    }
+	void _generate_buffer();
 
 public:
 

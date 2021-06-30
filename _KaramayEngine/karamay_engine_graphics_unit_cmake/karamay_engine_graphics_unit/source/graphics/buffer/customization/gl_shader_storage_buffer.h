@@ -1,10 +1,10 @@
 #ifndef H_GL_SHADER_STORAGE_BUFFER
 #define H_GL_SHADER_STORAGE_BUFFER
 
-#include "graphics/buffer/gl_buffer.h"
 #include "graphics/variable/gl_variable.h"
 
 class gl_program;
+class gl_buffer;
 
 namespace gl_shader_storage_buffer_enum
 {
@@ -131,26 +131,7 @@ private:
 		
 	}
 
-	void _fill_std430()
-	{
-		if (_descriptor)
-		{
-			const std::size_t _block_size = _descriptor->get_block_size();
-
-			_buffer = std::make_shared<gl_buffer>();
-			_buffer->allocate(_block_size);
-
-			std::size_t _offset = 0;
-			for (const auto& _item : _descriptor->get_items())
-			{
-				if (_item)
-				{
-					_buffer->fill(_offset, _item->get_value().size(), _item->get_value().data());
-					_offset += _item->get_value().size();
-				}
-			}
-		}
-	}
+	void _fill_std430();
 
 public:
 

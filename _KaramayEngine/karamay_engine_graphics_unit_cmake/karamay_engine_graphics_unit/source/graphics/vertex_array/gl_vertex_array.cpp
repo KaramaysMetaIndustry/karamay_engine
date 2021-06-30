@@ -55,6 +55,7 @@ const std::int32_t gl_vertex_array::get_size() const
 
 gl_vertex_array::~gl_vertex_array()
 {
+    //~gl_object();
 	glDeleteVertexArrays(1, &_handle);
 }
 
@@ -70,28 +71,20 @@ void gl_vertex_array::unbind()
 
 void gl_vertex_array::enable_pointers()
 {
-	if (_descriptor)
-	{
-		const std::size_t _size = _descriptor->get_layouts().size();
-
-		for (std::uint32_t i = 0; i < _size; ++i)
-		{
-			glEnableVertexAttribArray(i);
-		}
-	}
+    const std::size_t _size = _descriptor.get_vertex_attribute_descriptors().size()  + _descriptor.get_instance_attribute_descriptors().size();
+    for(std::uint32_t _index = 0; _index < _size; ++_index)
+    {
+        glEnableVertexAttribArray(_index);
+    }
 }
 
 void gl_vertex_array::disable_pointers()
 {
-	if (_descriptor)
-	{
-		const std::size_t _size = _descriptor->get_layouts().size();
-
-		for (std::uint32_t i = 0; i < _size; ++i)
-		{
-			glDisableVertexAttribArray(i);
-		}
-	}
+    const std::size_t _size = _descriptor.get_vertex_attribute_descriptors().size()  + _descriptor.get_instance_attribute_descriptors().size();
+    for(std::uint32_t _index = 0; _index < _size; ++_index)
+    {
+        glDisableVertexAttribArray(_index);
+    }
 }
 
 void gl_vertex_array::_bind_buffer()
@@ -105,22 +98,36 @@ void gl_vertex_array::_unbind_buffer()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void gl_vertex_array::_fill()
-{
-
-}
-
 void gl_vertex_array::_reallocate()
 {
-    if(_buffer)
-    {
-        _buffer->allocate(_descriptor.get_memory_demand());
-    }
-
-    bind(); _bind_buffer();
     const auto& _vertex_attribute_descriptors = _descriptor.get_vertex_attribute_descriptors();
     const auto& _instance_attribute_descriptors = _descriptor.get_instance_attribute_descriptors();
     const auto _vertices_count = _descriptor.get_vertices_count();
+
+    // recalculate memory_size & memory_layout
+    // reallocate buffer & reset attrib pointers
+
+    for(const auto& _vertex_attribute_descriptor : _vertex_attribute_descriptors)
+    {
+        const auto _vertex_attribute_size = _vertex_attribute_descriptor.get_component_count() * gl_attribute_component::get_size(_vertex_attribute_descriptor.get_component_type());
+        _memory_demand += _vertex_attribute_size *  _vertices_count;
+    }
+
+    for(const auto& _instance_attribute_descriptor : _instance_attribute_descriptors)
+    {
+        const auto _instance_attribute_size = _instance_attribute_descriptor.get_component_count() * gl_attribute_component::get_size(_instance_attribute_descriptor.get_component_type());
+        _memory_demand += _instance_attribute_size *  _instance_attribute_descriptor.get_count();
+    }
+
+    if(!_buffer)
+    {
+        _buffer = std::make_shared<gl_buffer>();
+    }
+
+    _buffer->allocate(_memory_demand);
+
+    bind(); _bind_buffer();
+
 
     std::uint32_t _index = 0;
     std::uint32_t _offset = 0;
@@ -128,100 +135,120 @@ void gl_vertex_array::_reallocate()
     for(const auto& _vad : _vertex_attribute_descriptors)
     {
         const gl_attribute_component::type _component_type = _vad.get_component_type();
-        const auto _component_type_enum = gl_attribute_component::to_GLenum(_component_type);
         const auto _components_count = static_cast<GLint>(_vad.get_component_count());
         const auto _attribute_size = _components_count * static_cast<GLint>(gl_attribute_component::get_size(_component_type));
 
-        switch (_component_type) {
-            case gl_attribute_component::type::INT:
-            {
-                glVertexAttribIPointer(_index, _components_count, _component_type_enum, _attribute_size, reinterpret_cast<const void*>(_offset));
-            }
-                break;
-            case gl_attribute_component::type::UINT:
-            {
-                glVertexAttribIPointer(_index, _components_count, _component_type_enum, _attribute_size, reinterpret_cast<const void*>(_offset));
-            }
-                break;
-            case gl_attribute_component::type::FLOAT:
-            {
-                glVertexAttribPointer(_index, _components_count, _component_type_enum, GL_FALSE, _attribute_size, reinterpret_cast<const void*>(_offset));
-            }
-                break;
-            case gl_attribute_component::type::DOUBLE:
-            {
-                glVertexAttribLPointer(_index, _components_count, _component_type_enum, _attribute_size, reinterpret_cast<const void*>(_offset));
-            }
-                break;
-            default: break;
+        _set_vertex_pointers(_component_type, _index, _components_count, _attribute_size, _offset);
+
+        for(std::uint32_t _sub_index = 0; _sub_index < _vertices_count; ++_sub_index)
+        {
+            _memory_layouts_map.emplace(_vad.get_name() + std::to_string(_sub_index), std::make_pair(_offset, _attribute_size));
+            _offset += _attribute_size;
         }
 
-        _offset += _vertices_count * _attribute_size;
         ++_index;
     }
 
     for(const auto& _iad : _instance_attribute_descriptors) {
         const auto _component_type = _iad.get_component_type();
-        const auto _component_type_enum = gl_attribute_component::to_GLenum(_component_type);
         const auto _components_count = static_cast<GLint>(_iad.get_component_count());
         const auto _attribute_size = _components_count * static_cast<GLint>(gl_attribute_component::get_size(_component_type));
-
-        switch (_component_type) {
-            case gl_attribute_component::type::INT:
-            {
-                glVertexAttribIPointer(_index, _components_count, _component_type_enum, _attribute_size, reinterpret_cast<const void*>(_offset));
-            }
-                break;
-            case gl_attribute_component::type::UINT:
-            {
-                glVertexAttribIPointer(_index, _components_count, _component_type_enum, _attribute_size, reinterpret_cast<const void*>(_offset));
-            }
-                break;
-            case gl_attribute_component::type::FLOAT:
-            {
-                glVertexAttribPointer(_index, _components_count, _component_type_enum, GL_FALSE, _attribute_size, reinterpret_cast<const void*>(_offset));
-            }
-                break;
-            case gl_attribute_component::type::DOUBLE:
-            {
-                glVertexAttribLPointer(_index, _components_count, _component_type_enum, _attribute_size, reinterpret_cast<const void*>(_offset));
-            }
-                break;
-            default: break;
-        }
-
         const auto _divisor = _iad.get_divisor();
         const auto _count = _iad.get_count();
 
+        _set_vertex_pointers(_component_type, _index, _components_count, _attribute_size, _offset);
         glVertexAttribDivisor(_index, _divisor);
 
-        _offset += _attribute_size * _count;
+        for(std::uint32_t _sub_index = 0; _sub_index < _count; ++_sub_index)
+        {
+            _memory_layouts_map.emplace(_iad.get_name() + std::to_string(_sub_index), std::make_pair(_offset, _attribute_size));
+            _offset += _attribute_size;
+        }
+
         ++_index;
     }
 
     _unbind_buffer(); unbind();
 }
 
-void gl_vertex_array::_update_attribute(const std::string &attribute_name, std::uint32_t attribute_index, const std::uint8_t *stream_ptr, size_t size)
+void gl_vertex_array::_update_attribute(const std::string &attribute_name, std::uint32_t attribute_index, const std::vector<std::uint8_t>& stream)
 {
+    // if descriptor has been modified, the [_reallocate] will be called right now
+    // [_reallocate] will generate new [_memory_demand] & [_memory_layouts_map], also reset the vertex array pointers
     if(_descriptor.is_dirty())
     {
-        _reallocate();
-        _descriptor.
+        _reallocate(); _descriptor.dismiss_dirty();
     }
 
+    // fetch precise offset-size pair, then fill the buffer with the specified data
+    const auto& _memory_layout = _get_memory_layout(attribute_name, attribute_index);
+    if(_buffer && _check_memory_layout(_memory_layout) && stream.size() == _memory_layout.second) // check [_buffer] && check the [_memory_layout] && check stream size
+    {
+        //            :offset               :size                  :data
+        _buffer->fill(_memory_layout.first, _memory_layout.second, reinterpret_cast<const void*>(stream.data()));
+    }
+}
 
-    const auto& _memory_layout = _descriptor.get_memory_layout();
-    const std::string _location = attribute_name + std::to_string(attribute_index);
-    auto _it = _memory_layout.find(_location);
-    if(_it == _memory_layout.cend()) throw std::exception("can not find [memory layout] : attribute_name or attribute_index invalid ");
+void gl_vertex_array::set_vertices_count(std::uint32_t vertices_count) noexcept
+{
+    _descriptor.set_vertices_count(vertices_count);
+}
 
-    const auto& _offset_size = _it->second;
-    if(size != _offset_size.second) throw std::exception("in-size is not correct");
+void gl_vertex_array::set_instances_count(std::uint32_t instances_count) noexcept
+{
+    _descriptor.set_instances_count(instances_count);
+}
 
-    if(_buffer)
-        _buffer->fill(_offset_size.first, _offset_size.second, reinterpret_cast<const void*>(stream_ptr));
+void gl_vertex_array::set_instance_attribute_divisor(const std::string &attribute_name, std::uint32_t divisor) noexcept
+{
+    _descriptor.set_instance_attribute_divisor(attribute_name, divisor);
+}
 
+void gl_vertex_array::update_attribute(const std::string &attribute_name, std::uint32_t attribute_index,
+                                       const std::vector<std::uint8_t> &stream) noexcept {
+    _update_attribute(attribute_name, attribute_index, stream);
+}
+
+void gl_vertex_array::_set_vertex_pointers(gl_attribute_component::type attribute_component_type, std::uint32_t index,
+                                           std::uint32_t components_count, std::uint32_t attribute_size,
+                                           std::uint32_t offset) {
+    const auto _attribute_component_type_enum = gl_attribute_component::to_GLenum(attribute_component_type);
+
+    switch (attribute_component_type) {
+        case gl_attribute_component::type::INT:
+        {
+            glVertexAttribIPointer(index, components_count, _attribute_component_type_enum, attribute_size, reinterpret_cast<const void*>(offset));
+        }
+            break;
+        case gl_attribute_component::type::UINT:
+        {
+            glVertexAttribIPointer(index, components_count, _attribute_component_type_enum, attribute_size, reinterpret_cast<const void*>(offset));
+        }
+            break;
+        case gl_attribute_component::type::FLOAT:
+        {
+            glVertexAttribPointer(index, components_count, _attribute_component_type_enum, GL_FALSE, attribute_size, reinterpret_cast<const void*>(offset));
+        }
+            break;
+        case gl_attribute_component::type::DOUBLE:
+        {
+            glVertexAttribLPointer(index, components_count, _attribute_component_type_enum, attribute_size, reinterpret_cast<const void*>(offset));
+        }
+            break;
+        default: break;
+    }
+}
+
+const std::pair<std::uint32_t, std::uint32_t> &
+gl_vertex_array::_get_memory_layout(const std::string &attribute_name, std::uint32_t attribute_index) {
+    auto _it = _memory_layouts_map.find(attribute_name + std::to_string(attribute_index));
+    if(_it == _memory_layouts_map.cend()) return std::make_pair(0, 0);
+
+    return _it->second;
+}
+
+std::uint8_t gl_vertex_array::_check_memory_layout(const std::pair<std::uint32_t, std::uint32_t> &memory_layout) {
+    return !(memory_layout.first == 0 && memory_layout.first == memory_layout.second);
 }
 
 void gl_vertex_array_descriptor::set_instance_attribute_count(const std::string &attribute_name, std::uint32_t count)
@@ -241,7 +268,11 @@ void gl_vertex_array_descriptor::set_instance_attribute_divisor(const std::strin
         return descriptor.get_name() == attribute_name;
     });
     if(_it == _instance_attribute_descriptors.cend()) return;
+
+    if( (_instances_count % divisor) != 0) return;
+
     _it->set_divisor(divisor);
+    _it->set_count(_instances_count / divisor);
     _is_dirty = true;
 }
 
@@ -262,10 +293,12 @@ void gl_vertex_array_descriptor::dismiss_dirty()
     _is_dirty = false;
 }
 
-void gl_instance_attribute_descriptor::set_count(std::uint32_t count) {
-
+void gl_instance_attribute_descriptor::set_count(std::uint32_t count)
+{
+    _count = count;
 }
 
-void gl_instance_attribute_descriptor::set_divisor(std::uint32_t divisor) {
-
+void gl_instance_attribute_descriptor::set_divisor(std::uint32_t divisor)
+{
+    _divisor = divisor;
 }

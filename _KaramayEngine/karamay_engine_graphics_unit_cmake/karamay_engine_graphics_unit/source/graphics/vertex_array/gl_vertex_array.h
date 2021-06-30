@@ -6,8 +6,9 @@
 
 class gl_buffer;
 
-namespace gl_attribute_component
+class gl_attribute_component
 {
+public:
     enum class type : GLenum
     {
         UNKNOWN = 0,
@@ -17,33 +18,33 @@ namespace gl_attribute_component
         DOUBLE = GL_DOUBLE
     };
 
-    std::string to_string(gl_attribute_component::type component_type)
+    static std::string to_string(type component_type)
     {
         switch(component_type)
         {
-            case gl_attribute_component::type::INT: return "INT";
-            case gl_attribute_component::type::UINT: return "UINT";
-            case gl_attribute_component::type::FLOAT: return "FLOAT";
-            case gl_attribute_component::type::DOUBLE: return "DOUBLE";
+            case type::INT: return "INT";
+            case type::UINT: return "UINT";
+            case type::FLOAT: return "FLOAT";
+            case type::DOUBLE: return "DOUBLE";
             default: return "UNKNOWN";
         }
     }
 
-    gl_attribute_component::type to_enum(const std::string& component_type)
+    static type to_enum(const std::string& component_type)
     {
-        if(component_type == "INT") return gl_attribute_component::type::INT;
-        if(component_type == "UINT") return gl_attribute_component::type::UINT;
-        if(component_type == "FLOAT") return gl_attribute_component::type::FLOAT;
-        if(component_type == "DOUBLE") return gl_attribute_component::type::DOUBLE;
-        return gl_attribute_component::type::UNKNOWN;
+        if(component_type == "INT") return type::INT;
+        if(component_type == "UINT") return type::UINT;
+        if(component_type == "FLOAT") return type::FLOAT;
+        if(component_type == "DOUBLE") return type::DOUBLE;
+        return type::UNKNOWN;
     }
 
-    GLenum to_GLenum(gl_attribute_component::type component_type)
+    static GLenum to_GLenum(type component_type)
     {
         return static_cast<GLenum>(component_type);
     }
 
-    std::uint32_t get_size(gl_attribute_component::type component_type)
+    static std::uint32_t get_size(type component_type)
     {
         switch (component_type) {
             case type::INT: return sizeof(std::int32_t);
@@ -53,7 +54,97 @@ namespace gl_attribute_component
             default: return 0;
         }
     }
-}
+};
+
+class gl_attribute
+{
+    enum class type
+    {
+        UINT,UVEC2,UVEC3,UVEC4,
+        INT,IVEC2,IVEC3,IVEC4,
+        FLOAT,VEC2,VEC3,VEC4,
+        DOUBLE,DVEC2,DVEC3,DVEC4,
+
+        MAT2X2,MAT2X3,MAT2X4,MAT3X2,MAT3X3,MAT3X4,MAT4X2,MAT4X3,MAT4X4,
+        DMAT2X2,DMAT2X3,DMAT2X4,DMAT3X2,DMAT3X3,DMAT3X4,DMAT4X2,DMAT4X3,DMAT4X4,
+    };
+
+    static std::pair<gl_attribute_component::type, std::uint32_t> get_component_layout(gl_attribute::type attribute_type)
+    {
+        switch (attribute_type) {
+
+            case type::UINT:
+                return std::make_pair(gl_attribute_component::type::UINT, 1);
+            case type::UVEC2:
+                return std::make_pair(gl_attribute_component::type::UINT, 2);
+            case type::UVEC3:
+                return std::make_pair(gl_attribute_component::type::UINT, 3);
+            case type::UVEC4:
+                return std::make_pair(gl_attribute_component::type::UINT, 4);
+            case type::INT:
+                return std::make_pair(gl_attribute_component::type::INT, 1);
+            case type::IVEC2:
+                return std::make_pair(gl_attribute_component::type::INT, 2);
+            case type::IVEC3:
+                return std::make_pair(gl_attribute_component::type::INT, 3);
+            case type::IVEC4:
+                return std::make_pair(gl_attribute_component::type::INT, 4);
+            case type::FLOAT:
+                return std::make_pair(gl_attribute_component::type::FLOAT, 1);
+            case type::VEC2:
+                return std::make_pair(gl_attribute_component::type::FLOAT, 2);
+            case type::VEC3:
+                return std::make_pair(gl_attribute_component::type::FLOAT, 3);
+            case type::VEC4:
+                return std::make_pair(gl_attribute_component::type::FLOAT, 4);
+            case type::DOUBLE:
+                return std::make_pair(gl_attribute_component::type::DOUBLE, 1);
+            case type::DVEC2:
+                return std::make_pair(gl_attribute_component::type::DOUBLE, 2);
+            case type::DVEC3:
+                return std::make_pair(gl_attribute_component::type::DOUBLE, 3);
+            case type::DVEC4:
+                return std::make_pair(gl_attribute_component::type::DOUBLE, 4);
+            case type::MAT2X2:
+                return std::make_pair(gl_attribute_component::type::UINT, 1);
+            case type::MAT2X3:
+                return std::make_pair(gl_attribute_component::type::UINT, 1);
+            case type::MAT2X4:
+                return std::make_pair(gl_attribute_component::type::UINT, 1);
+            case type::MAT3X2:
+                return std::make_pair(gl_attribute_component::type::UINT, 1);
+            case type::MAT3X3:
+                return std::make_pair(gl_attribute_component::type::UINT, 1);
+            case type::MAT3X4:
+                return std::make_pair(gl_attribute_component::type::UINT, 1);
+            case type::MAT4X2:
+                return std::make_pair(gl_attribute_component::type::UINT, 1);
+            case type::MAT4X3:
+                return std::make_pair(gl_attribute_component::type::UINT, 1);
+            case type::MAT4X4:
+                return std::make_pair(gl_attribute_component::type::UINT, 1);
+            case type::DMAT2X2:
+                return std::make_pair(gl_attribute_component::type::UINT, 1);
+            case type::DMAT2X3:
+                return std::make_pair(gl_attribute_component::type::UINT, 1);
+            case type::DMAT2X4:
+                return std::make_pair(gl_attribute_component::type::UINT, 1);
+            case type::DMAT3X2:
+                return std::make_pair(gl_attribute_component::type::UINT, 1);
+            case type::DMAT3X3:
+                return std::make_pair(gl_attribute_component::type::UINT, 1);
+            case type::DMAT3X4:
+                return std::make_pair(gl_attribute_component::type::UINT, 1);
+            case type::DMAT4X2:
+                return std::make_pair(gl_attribute_component::type::UINT, 1);
+            case type::DMAT4X3:
+                return std::make_pair(gl_attribute_component::type::UINT, 1);
+            case type::DMAT4X4:
+                return std::make_pair(gl_attribute_component::type::UINT, 1);
+        }
+    }
+};
+
 
 class gl_vertex_attribute_descriptor
 {
@@ -150,19 +241,6 @@ public:
             _instance_attribute_descriptors(instance_attribute_descriptors),
             _instances_count(instances_count)
     {
-        std::uint32_t _index = 0;
-        for(const auto& _vertex_attribute_descriptor : _vertex_attribute_descriptors)
-        {
-            _vertex_attribute_descriptors_map.emplace(_vertex_attribute_descriptor.get_name(), _index);
-            ++_index;
-        }
-
-        _index = 0;
-        for(const auto& _instance_attribute_descriptor : _instance_attribute_descriptors)
-        {
-            _instance_attribute_descriptors_map.emplace(_instance_attribute_descriptor.get_name(), _index);
-            ++_index;
-        }
     }
 
     gl_vertex_array_descriptor(
@@ -201,16 +279,6 @@ private:
 
     std::vector<gl_instance_attribute_descriptor> _instance_attribute_descriptors;
 
-private:
-
-    std::unordered_map<std::string, std::uint32_t> _vertex_attribute_descriptors_map;
-
-    std::unordered_map<std::string, std::uint32_t> _instance_attribute_descriptors_map;
-
-    std::unordered_map<std::string, std::pair<std::uint32_t, std::uint32_t>> _memory_layout;
-
-    std::size_t _memory_demand;
-
 public:
 
     [[nodiscard]] std::uint8_t is_dirty() const { return _is_dirty; }
@@ -225,22 +293,6 @@ public:
 
     [[nodiscard]] const std::vector<gl_instance_attribute_descriptor>& get_instance_attribute_descriptors() const {return _instance_attribute_descriptors;}
 
-public:
-
-    [[nodiscard]] std::size_t get_memory_demand() const {return _memory_demand;}
-
-    std::pair<std::uint32_t, std::uint32_t> get_memory_layout(const std::string& attribute_name, std::uint32_t attribute_index)
-    {
-    }
-
-
-private:
-
-    inline auto _find_vertex_attribute_descriptor(const std::string& attribute_name)
-    {
-        return std::find(_vertex_attribute_descriptors.begin(), _vertex_attribute_descriptors.end(), [&attribute_name](const gl_vertex_attribute_descriptor& descriptor){return descriptor.get_name() == attribute_name;});
-    }
-
 };
 
 
@@ -248,9 +300,28 @@ class gl_vertex_array final : public gl_object
 {
 public:
 
-	explicit gl_vertex_array(const gl_vertex_array_descriptor& descriptor)
+	explicit gl_vertex_array(gl_vertex_array_descriptor descriptor) :
+            _descriptor(std::move(descriptor)),
+            _memory_demand(0)
     {
-        _descriptor = descriptor;
+        glCreateVertexArrays(1, &_handle);
+    }
+
+    explicit gl_vertex_array(const std::vector<gl_vertex_attribute_descriptor>& vertex_attribute_descriptors,
+                             std::uint32_t vertices_count,
+                             const std::vector<gl_instance_attribute_descriptor>& instance_attribute_descriptors,
+                             std::uint32_t instances_count) :
+        _descriptor(vertex_attribute_descriptors, vertices_count, instance_attribute_descriptors,instances_count),
+        _memory_demand(0)
+    {
+        glCreateVertexArrays(1, &_handle);
+    }
+
+    explicit gl_vertex_array(const std::vector<gl_vertex_attribute_descriptor>& vertex_attribute_descriptors,
+                             std::uint32_t vertices_count) :
+            _descriptor(vertex_attribute_descriptors, vertices_count),
+            _memory_demand(0)
+    {
         glCreateVertexArrays(1, &_handle);
     }
 
@@ -258,35 +329,29 @@ public:
 
 private:
 
-    gl_vertex_array_descriptor _descriptor;
-
     std::shared_ptr<gl_buffer> _buffer;
 
+    gl_vertex_array_descriptor _descriptor;
+
+    std::size_t _memory_demand;
+
+    std::unordered_map<std::string, std::pair<std::uint32_t, std::uint32_t>> _memory_layouts_map;
+
 public:
 
-    [[nodiscard]] const gl_vertex_array_descriptor& get_vertex_array_descriptor() const {return _descriptor;}
+    [[nodiscard]] inline const gl_vertex_array_descriptor& get_vertex_array_descriptor() const noexcept {return _descriptor;}
+
+    [[nodiscard]] inline std::uint32_t get_vertices_count() const {return _descriptor.get_vertices_count();};
+
+    [[nodiscard]] inline std::uint32_t get_instances_count() const {return _descriptor.get_vertices_count();};
 
 public:
 
-    void set_vertices_count(std::uint32_t vertices_count)
-    {
-       _descriptor.set_vertices_count(vertices_count);
-    }
+    void set_vertices_count(std::uint32_t vertices_count) noexcept;
 
-    void set_instances_count(std::uint32_t instances_count)
-    {
-        _descriptor.set_instances_count(instances_count);
-    }
+    void set_instances_count(std::uint32_t instances_count) noexcept;
 
-    void set_instance_attribute_divisor(const std::string& attribute_name, std::uint32_t divisor)
-    {
-        _descriptor.set_instance_attribute_divisor(attribute_name, divisor);
-    }
-
-    void set_instance_attribute_count(const std::string& attribute_name, std::uint32_t count)
-    {
-        _descriptor.set_instance_attribute_count(attribute_name, count);
-    }
+    void set_instance_attribute_divisor(const std::string& attribute_name, std::uint32_t divisor) noexcept;
 
 public:
 
@@ -294,23 +359,33 @@ public:
     void update_attribute(const std::string& attribute_name, std::uint32_t attribute_index, const T& value) noexcept
     {
         const auto _stream_ptr = reinterpret_cast<const std::uint8_t*>(glm::value_ptr(value));
-
         if(_stream_ptr)
         {
+            std::vector<std::uint8_t> _stream;
+            _stream.reserve(sizeof (T));
+            for(std::size_t _index = 0; _index < sizeof (T); _stream.push_back(_stream_ptr[_index]), ++_index) {}
+
             try {
-                _update_attribute(attribute_name, attribute_index, _stream_ptr, sizeof(T));
-            }catch (std::exception& e)
-            {
+                _update_attribute(attribute_name, attribute_index, _stream);
+            } catch (std::exception& e) {
                 std::cout<<e.what()<<std::endl;
             }
         }
     }
 
+    void update_attribute(const std::string& attribute_name, std::uint32_t attribute_index, const std::vector<std::uint8_t>& stream) noexcept;
+
 private:
+
+    void _set_vertex_pointers(gl_attribute_component::type attribute_component_type, std::uint32_t  index, std::uint32_t components_count,std::uint32_t attribute_size, std::uint32_t offset);
 
     void _reallocate();
 
-    void _update_attribute(const std::string& attribute_name, std::uint32_t vertex_index, const std::uint8_t* stream_ptr, size_t size);
+    const std::pair<std::uint32_t, std::uint32_t>& _get_memory_layout(const std::string& attribute_name, std::uint32_t attribute_index);
+
+    std::uint8_t _check_memory_layout(const std::pair<std::uint32_t, std::uint32_t>& memory_layout);
+
+    void _update_attribute(const std::string& attribute_name, std::uint32_t vertex_index, const std::vector<std::uint8_t>& stream);
 
     void _bind_buffer();
 

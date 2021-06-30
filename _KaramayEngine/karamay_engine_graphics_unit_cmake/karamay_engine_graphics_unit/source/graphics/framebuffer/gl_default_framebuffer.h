@@ -1,3 +1,5 @@
+#ifndef H_GL_DEFAULT_FRAMEBUFFER
+#define H_GL_DEFAULT_FRAMEBUFFER
 
 #include "graphics/glo/gl_object.h"
 
@@ -68,4 +70,6 @@ public:
 	{}
 
 };
+
+#endif
 

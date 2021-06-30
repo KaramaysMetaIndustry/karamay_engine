@@ -89,3 +89,9 @@ void gl_uniform_buffer_descriptor::clear_uniforms()
 {
 	_items.clear();
 }
+
+void gl_uniform_buffer_descriptor::add_uniforms(const std::vector<std::shared_ptr<gl_variable>> &items)
+{
+    _items.insert(_items.cend(), items.cbegin(), items.cend());
+    _is_dirty = true;
+}

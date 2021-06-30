@@ -1,25 +1,10 @@
 #ifndef H_GL_UNIFORM_BUFFER
 #define H_GL_UNIFORM_BUFFER
 
-#include "graphics/buffer/gl_buffer.h"
 #include "graphics/variable/gl_variable.h"
 
 class gl_program;
-
-struct _shader_point_light_std140
-{
-	// ...
-	glm::vec3 position; // Position of the point light
-	float __DUMMY_PADDING0__; // This is just needed because of std140 layout padding rules
-
-	glm::vec3 color; // Color of the point light
-	float ambientFactor; // Ambient factor (how much this light contributes to the global lighting in any case)
-
-	float constantAttenuation; // Constant attenuation factor of light with rising distance
-	float linearAttenuation; // Lienar attenuation factor of light with rising distance
-	float exponentialAttenuation; // Constant attenuation factor of light with rising distance
-	GLint isOn; // Flag telling, if the light is on
-};
+class gl_buffer;
 
 namespace gl_uniform_buffer_enum
 {
@@ -56,7 +41,6 @@ namespace gl_uniform_buffer_enum
 
 class gl_uniform_buffer_descriptor
 {
-
 public:
 
 	gl_uniform_buffer_descriptor();
@@ -65,11 +49,7 @@ public:
 
 	void add_uniform(const std::shared_ptr<gl_variable>& item);
 
-	void add_uniforms(const std::vector<std::shared_ptr<gl_variable>>& items)
-	{
-		_items.insert(_items.cend(), items.cbegin(), items.cend());
-		_is_dirty = true;
-	}
+	void add_uniforms(const std::vector<std::shared_ptr<gl_variable>>& items);
 
 	void clear_uniforms();
 
