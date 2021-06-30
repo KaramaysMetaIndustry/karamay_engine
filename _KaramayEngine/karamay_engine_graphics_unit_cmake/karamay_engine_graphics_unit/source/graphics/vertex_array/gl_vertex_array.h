@@ -79,11 +79,11 @@ private:
 
 public:
 
-    const std::string get_name() const {return _name;}
+    [[nodiscard]] const std::string& get_name() const {return _name;}
 
-    gl_attribute_component::type get_component_type() const {return _component_type;}
+    [[nodiscard]] gl_attribute_component::type get_component_type() const {return _component_type;}
 
-    std::uint32_t get_component_count() const {return _components_count;}
+    [[nodiscard]] std::uint32_t get_component_count() const {return _components_count;}
 
 };
 
@@ -118,13 +118,15 @@ private:
 
 public:
 
-    std::string get_name() const {return _name;}
+    [[nodiscard]] const std::string& get_name() const {return _name;}
 
-    gl_attribute_component::type get_component_type() const {return _component_type;}
+    [[nodiscard]] gl_attribute_component::type get_component_type() const {return _component_type;}
 
-    std::uint32_t get_divisor() const {return _divisor;}
+    [[nodiscard]] std::uint32_t get_component_count() const {return _components_count;}
 
-    std::uint32_t get_count() const {return _count;}
+    [[nodiscard]] std::uint32_t get_divisor() const {return _divisor;}
+
+    [[nodiscard]] std::uint32_t get_count() const {return _count;}
 
 public:
 
@@ -174,19 +176,33 @@ public:
             _instances_count(0)
     {}
 
+public:
+
+    void set_vertices_count(std::uint32_t vertices_count);
+
+    void set_instances_count(std::uint32_t instances_count);
+
+    void set_instance_attribute_divisor(const std::string& attribute_name, std::uint32_t divisor);
+
+    void set_instance_attribute_count(const std::string& attribute_name, std::uint32_t count);
+
 private:
 
     std::uint8_t _is_dirty;
 
-    std::vector<gl_vertex_attribute_descriptor> _vertex_attribute_descriptors;
-
-    std::unordered_map<std::string, std::uint32_t> _vertex_attribute_descriptors_map;
+private:
 
     std::uint32_t _vertices_count;
 
     std::uint32_t _instances_count;
 
+    std::vector<gl_vertex_attribute_descriptor> _vertex_attribute_descriptors;
+
     std::vector<gl_instance_attribute_descriptor> _instance_attribute_descriptors;
+
+private:
+
+    std::unordered_map<std::string, std::uint32_t> _vertex_attribute_descriptors_map;
 
     std::unordered_map<std::string, std::uint32_t> _instance_attribute_descriptors_map;
 
@@ -198,58 +214,32 @@ public:
 
     [[nodiscard]] std::uint8_t is_dirty() const { return _is_dirty; }
 
-    [[nodiscard]] const std::vector<gl_vertex_attribute_descriptor>& get_vertex_attribute_descriptors() const {return _vertex_attribute_descriptors;}
-
-    [[nodiscard]] const std::unordered_map<std::string, std::uint32_t>& get_vertex_attribute_descriptors_map() const {return _vertex_attribute_descriptors_map;}
+public:
 
     [[nodiscard]] std::uint32_t get_vertices_count() const {return _vertices_count;}
 
     [[nodiscard]] std::uint32_t get_instance_count() const {return _instances_count;}
 
+    [[nodiscard]] const std::vector<gl_vertex_attribute_descriptor>& get_vertex_attribute_descriptors() const {return _vertex_attribute_descriptors;}
+
     [[nodiscard]] const std::vector<gl_instance_attribute_descriptor>& get_instance_attribute_descriptors() const {return _instance_attribute_descriptors;}
 
-    [[nodiscard]] const std::unordered_map<std::string, std::uint32_t>& get_instance_attribute_descriptors_map() const {return _instance_attribute_descriptors_map;}
-
-    [[nodiscard]] const std::unordered_map<std::string, std::pair<std::uint32_t, std::uint32_t>>& get_memory_layout() const {return _memory_layout;}
+public:
 
     [[nodiscard]] std::size_t get_memory_demand() const {return _memory_demand;}
 
-public:
-
-    void set_vertices_count(std::uint32_t vertices_count)
+    std::pair<std::uint32_t, std::uint32_t> get_memory_layout(const std::string attribute_name, std::uint32_t attribute_index)
     {
-        _vertices_count = vertices_count;
-        _is_dirty = true;
+
     }
 
-    void set_instances_count(std::uint32_t instances_count)
+
+private:
+
+    inline auto _find_vertex_attribute_descriptor(const std::string& attribute_name)
     {
-        _instances_count = instances_count;
-        _is_dirty = true;
+        return std::find(_vertex_attribute_descriptors.begin(), _vertex_attribute_descriptors.end(), [&attribute_name](gl_vertex_attribute_descriptor& descriptor){return descriptor.get_name() == attribute_name;});
     }
-
-    void set_instance_attribute_divisor(const std::string& attribute_name, std::uint32_t divisor)
-    {
-        auto _it = _instance_attribute_descriptors_map.find(attribute_name);
-        if(_it == _instance_attribute_descriptors_map.cend()) return;
-
-        _instance_attribute_descriptors[_it->second].set_divisor(divisor);
-        _is_dirty = true;
-    }
-
-    void set_instance_attribute_count(const std::string& attribute_name, std::uint32_t count)
-    {
-        auto _it = _instance_attribute_descriptors_map.find(attribute_name);
-        if(_it == _instance_attribute_descriptors_map.cend()) return;
-
-        _instance_attribute_descriptors[_it->second].set_count(count);
-        _is_dirty = true;
-    }
-
-public:
-
-    void flush() { _is_dirty = false; }
-
 
 };
 
@@ -258,7 +248,11 @@ class gl_vertex_array final : public gl_object
 {
 public:
 
-	explicit gl_vertex_array(const gl_vertex_array_descriptor& descriptor);
+	explicit gl_vertex_array(const gl_vertex_array_descriptor& descriptor)
+    {
+        _descriptor = descriptor;
+        glCreateVertexArrays(1, &_handle);
+    }
 
     ~gl_vertex_array() override;
 

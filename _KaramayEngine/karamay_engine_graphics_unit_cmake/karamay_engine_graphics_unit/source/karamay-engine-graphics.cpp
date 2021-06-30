@@ -406,6 +406,7 @@ void test0()
         _va.set_instances_count(1200);
         _va.set_instance_attribute_divisor("instance_offset_position", 1);
         _va.set_instance_attribute_divisor("instance_offset_spec", 3);
+
     }
 
 	// update the value
