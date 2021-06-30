@@ -136,7 +136,6 @@ public:
 
 };
 
-
 class gl_vertex_array_descriptor final
 {
 public:
@@ -186,6 +185,8 @@ public:
 
     void set_instance_attribute_count(const std::string& attribute_name, std::uint32_t count);
 
+    void dismiss_dirty();
+
 private:
 
     std::uint8_t _is_dirty;
@@ -228,9 +229,8 @@ public:
 
     [[nodiscard]] std::size_t get_memory_demand() const {return _memory_demand;}
 
-    std::pair<std::uint32_t, std::uint32_t> get_memory_layout(const std::string attribute_name, std::uint32_t attribute_index)
+    std::pair<std::uint32_t, std::uint32_t> get_memory_layout(const std::string& attribute_name, std::uint32_t attribute_index)
     {
-
     }
 
 
@@ -238,7 +238,7 @@ private:
 
     inline auto _find_vertex_attribute_descriptor(const std::string& attribute_name)
     {
-        return std::find(_vertex_attribute_descriptors.begin(), _vertex_attribute_descriptors.end(), [&attribute_name](gl_vertex_attribute_descriptor& descriptor){return descriptor.get_name() == attribute_name;});
+        return std::find(_vertex_attribute_descriptors.begin(), _vertex_attribute_descriptors.end(), [&attribute_name](const gl_vertex_attribute_descriptor& descriptor){return descriptor.get_name() == attribute_name;});
     }
 
 };
@@ -311,8 +311,6 @@ private:
     void _reallocate();
 
     void _update_attribute(const std::string& attribute_name, std::uint32_t vertex_index, const std::uint8_t* stream_ptr, size_t size);
-
-    void _fill();
 
     void _bind_buffer();
 
