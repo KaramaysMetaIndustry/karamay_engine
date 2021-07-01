@@ -587,7 +587,7 @@ add_executable(karamay_engine_graphics_unit
         karamay_engine_graphics_unit/source/public/winsocket.h
         karamay_engine_graphics_unit/source/window/window.cpp
         karamay_engine_graphics_unit/source/window/window.h
-        karamay_engine_graphics_unit/source/karamay-engine-graphics.cpp)
+        karamay_engine_graphics_unit/source/karamay-engine-graphics.cpp karamay_engine_graphics_unit/source/graphics/buffer/gl_immutable_buffer.cpp karamay_engine_graphics_unit/source/graphics/buffer/gl_immutable_buffer.h karamay_engine_graphics_unit/source/graphics/buffer/gl_mutable_buffer.cpp karamay_engine_graphics_unit/source/graphics/buffer/gl_mutable_buffer.h)
 
 target_link_libraries(karamay_engine_graphics_unit
         #glew32.lib

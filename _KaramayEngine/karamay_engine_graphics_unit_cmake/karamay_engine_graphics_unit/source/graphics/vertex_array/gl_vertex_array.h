@@ -146,6 +146,7 @@ class gl_attribute
 };
 
 
+
 class gl_vertex_attribute_descriptor
 {
 public:
