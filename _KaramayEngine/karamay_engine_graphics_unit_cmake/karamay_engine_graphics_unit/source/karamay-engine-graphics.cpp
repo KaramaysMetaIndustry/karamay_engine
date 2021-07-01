@@ -2,6 +2,7 @@
 #include "window/window.h"
 #include "graphics/variable/glv_types.h"
 #include "graphics/vertex_array/gl_vertex_array.h"
+#include "graphics/buffer/gl_mutable_buffer.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../dependencies/stb/stb_image.h"
@@ -507,7 +508,77 @@ void test0()
 	//glStencilMask(GL_TRUE);
 	//glClearStencil(0);
 
-	int i = 100;
+    {
+        gl_mutable_buffer _m_buffer0(gl_mutable_buffer_usage::DYNAMIC_DRAW, 12);
+        gl_mutable_buffer _m_buffer1(gl_mutable_buffer_usage::DYNAMIC_DRAW, 12);
+        auto da = glm::vec3(1.0f, 1.5f, 0.8f);
+        auto p = glm::value_ptr(da);
+        _m_buffer0.fill(0, 12, (const std::uint8_t*)p);
+
+        _m_buffer0.launch_mutable_task(0, 12, [](std::uint8_t* data, std::int32_t size){
+            if(data)
+            {
+                const auto* _data = reinterpret_cast<const std::float_t *>(data);
+                if(_data)
+                {
+                    for(std::int32_t _index = 0; _index < size/sizeof(std::int32_t); ++_index)
+                    {
+                        std::cout<<"byte: "<<_data[_index]<<std::endl;
+                    }
+                }
+            }
+        });
+
+        _m_buffer1.launch_mutable_task(0, 12, [](std::uint8_t* data, std::int32_t size){
+            if(data)
+            {
+                auto* _data = reinterpret_cast<std::float_t *>(data);
+                if(_data)
+                {
+                    for(std::int32_t _index = 0; _index < size/sizeof(std::float_t); ++_index)
+                    {
+                        std::cout<<"byte: "<<_data[_index]<<std::endl;
+                        //_data[_index] += 1.0f;
+                    }
+                }
+            }
+        });
+
+        _m_buffer1 = _m_buffer0;
+
+        _m_buffer0.launch_mutable_task(0, 12, [](std::uint8_t* data, std::int32_t size){
+            if(data)
+            {
+                const auto* _data = reinterpret_cast<const std::float_t *>(data);
+                if(_data)
+                {
+                    for(std::int32_t _index = 0; _index < size/sizeof(std::float_t); ++_index)
+                    {
+                        std::cout<<"byte: "<<_data[_index]<<std::endl;
+                    }
+                }
+            }
+        });
+
+        _m_buffer1.launch_mutable_task(0, 12, [](std::uint8_t* data, std::int32_t size){
+            if(data)
+            {
+                auto* _data = reinterpret_cast<std::float_t *>(data);
+                if(_data)
+                {
+                    for(std::int32_t _index = 0; _index < size/sizeof(std::float_t); ++_index)
+                    {
+                        std::cout<<"byte: "<<_data[_index]<<std::endl;
+                        //_data[_index] += 1.0f;
+                    }
+                }
+            }
+        });
+
+    }
+
+
+	int i = 1;
 	float w = 0.0f;
 
     auto v0 = glv::f32vec3(0.5f, 0.5f, 0.0f); //0

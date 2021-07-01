@@ -64,8 +64,7 @@ void gl_uniform_buffer::_fill_std140()
 }
 
 gl_uniform_buffer::~gl_uniform_buffer()
-{
-}
+= default;
 
 gl_uniform_buffer_descriptor::gl_uniform_buffer_descriptor() :
 	_memory_layout(gl_uniform_buffer_enum::layout::shared),

@@ -43,8 +43,6 @@ std::string gl_vertex_array::get_attribute_component_type(std::uint32_t index)
 
 void* gl_vertex_array::get_mapped_data()
 {
-	if (_buffer)
-		return _buffer->map(gl_buffer_enum::access::READ_WRITE);
 	return nullptr;
 }
 
@@ -189,21 +187,6 @@ void gl_vertex_array::_update_attribute(const std::string &attribute_name, std::
     }
 }
 
-void gl_vertex_array::set_vertices_count(std::uint32_t vertices_count) noexcept
-{
-    _descriptor.set_vertices_count(vertices_count);
-}
-
-void gl_vertex_array::set_instances_count(std::uint32_t instances_count) noexcept
-{
-    _descriptor.set_instances_count(instances_count);
-}
-
-void gl_vertex_array::set_instance_attribute_divisor(const std::string &attribute_name, std::uint32_t divisor) noexcept
-{
-    _descriptor.set_instance_attribute_divisor(attribute_name, divisor);
-}
-
 void gl_vertex_array::update_attribute(const std::string &attribute_name, std::uint32_t attribute_index,
                                        const std::vector<std::uint8_t> &stream) noexcept {
     _update_attribute(attribute_name, attribute_index, stream);
@@ -239,7 +222,7 @@ void gl_vertex_array::_set_vertex_pointers(gl_attribute_component::type attribut
     }
 }
 
-const std::pair<std::uint32_t, std::uint32_t> &
+std::pair<std::uint32_t, std::uint32_t>
 gl_vertex_array::_get_memory_layout(const std::string &attribute_name, std::uint32_t attribute_index) {
     auto _it = _memory_layouts_map.find(attribute_name + std::to_string(attribute_index));
     if(_it == _memory_layouts_map.cend()) return std::make_pair(0, 0);

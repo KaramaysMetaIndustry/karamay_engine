@@ -15,7 +15,7 @@ void gl_texture_buffer::associate_buffer(std::shared_ptr<gl_buffer> buffer) {
     if (buffer && buffer->get_size() <= GL_MAX_TEXTURE_BUFFER_SIZE)
     {
         glBindBuffer(GL_TEXTURE_BUFFER, _handle);
-        glTexBuffer(GL_TEXTURE_BUFFER, static_cast<GLenum>(buffer->get_internal_format()), buffer->get_handle());
+        //glTexBuffer(GL_TEXTURE_BUFFER, static_cast<GLenum>(buffer->get_internal_format()), buffer->get_handle());
         glBindBuffer(GL_TEXTURE_BUFFER, 0);
     }
 }
@@ -25,7 +25,7 @@ void gl_texture_buffer::associate_sub_buffer(std::shared_ptr<gl_buffer> buffer, 
     {
         //GL_TEXTURE_BUFFER_OFFSET_ALIGNMENT
         glBindBuffer(GL_TEXTURE_BUFFER, _handle);
-        glTexBufferRange(GL_TEXTURE_BUFFER, static_cast<GLenum>(buffer->get_internal_format()), buffer->get_handle(), offset, size);
+        //glTexBufferRange(GL_TEXTURE_BUFFER, static_cast<GLenum>(buffer->get_internal_format()), buffer->get_handle(), offset, size);
         glBindBuffer(GL_TEXTURE_BUFFER, 0);
     }
 }

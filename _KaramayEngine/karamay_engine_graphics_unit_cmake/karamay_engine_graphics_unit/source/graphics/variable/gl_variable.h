@@ -1,7 +1,7 @@
 #ifndef H_GL_VARIABLE
 #define H_GL_VARIABLE
 
-#include "public/opengl_win64.h"
+#include "public/_glew.h"
 #include "public/stl.h"
 #include "graphics/variable/glu_types.h"
 

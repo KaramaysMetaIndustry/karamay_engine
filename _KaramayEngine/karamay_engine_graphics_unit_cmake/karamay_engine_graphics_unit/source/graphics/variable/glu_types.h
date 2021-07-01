@@ -1,7 +1,8 @@
 #ifndef H_GLU_TYPES
 #define H_GLU_TYPES
 
-#include "public/opengl_win64.h"
+#include "public/_glew.h"
+#include "public/glm.h"
 
 
 using glu_bvec1 = glm::bvec1;

@@ -1,39 +1,25 @@
 cmake_minimum_required(VERSION 3.19)
 project(karamay_engine_graphics_unit)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 set(BUILD_ARCH "-m64")
 
-#link_directories(karamay_engine_graphics_unit/dependencies/glfw-3.3.4.bin.WIN64/lib-vc2019/)
-#link_directories(karamay_engine_graphics_unit/dependencies/glew-2.1.0/lib/Release/x64/)
-link_directories(karamay_engine_graphics_unit/dependencies/glfw-3.3.bin.WIN32/lib-vc2019/)
-link_directories(karamay_engine_graphics_unit/dependencies/glew-2.1.0/lib/Release/Win32/)
+
+
 link_libraries(opengl32.lib)
-#link_libraries(glew32.lib)
+#
 link_libraries(glew32s.lib)
+link_directories(karamay_engine_graphics_unit/dependencies/glew-2.1.0/lib/Release/Win32/)
+#link_directories(karamay_engine_graphics_unit/dependencies/glew-2.1.0/lib/Release/x64/)
 link_libraries(glfw3.lib)
+link_directories(karamay_engine_graphics_unit/dependencies/glfw-3.3.bin.WIN32/lib-vc2019/)
+#link_directories(karamay_engine_graphics_unit/dependencies/glfw-3.3.4.bin.WIN64/lib-vc2019/)
 
 include_directories(karamay_engine_graphics_unit/dependencies)
 include_directories(karamay_engine_graphics_unit/dependencies/glm_pack/include)
 include_directories(karamay_engine_graphics_unit/source)
 
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/karamay_engine_graphics_unit/assets
-        DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/karamay_engine_graphics_unit/shaders
-        DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-
-#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/karamay_engine_graphics_unit/assets
- #       ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-
 add_executable(karamay_engine_graphics_unit
-#        karamay_engine_graphics_unit/dependencies/glew-2.1.0/include/GL/eglew.h
-#        karamay_engine_graphics_unit/dependencies/glew-2.1.0/include/GL/glew.h
-#        karamay_engine_graphics_unit/dependencies/glew-2.1.0/include/GL/glxew.h
-#        karamay_engine_graphics_unit/dependencies/glew-2.1.0/include/GL/wglew.h
-#        karamay_engine_graphics_unit/dependencies/glfw-3.3.4.bin.WIN64/include/GLFW/glfw3.h
-#        karamay_engine_graphics_unit/dependencies/glfw-3.3.4.bin.WIN64/include/GLFW/glfw3native.h
-#        karamay_engine_graphics_unit/dependencies/glfw-3.3.bin.WIN32/include/GLFW/glfw3.h
-#        karamay_engine_graphics_unit/dependencies/glfw-3.3.bin.WIN32/include/GLFW/glfw3native.h
         karamay_engine_graphics_unit/dependencies/glm_pack/include/glm/detail/_features.hpp
         karamay_engine_graphics_unit/dependencies/glm_pack/include/glm/detail/_fixes.hpp
         karamay_engine_graphics_unit/dependencies/glm_pack/include/glm/detail/_noise.hpp
@@ -579,17 +565,29 @@ add_executable(karamay_engine_graphics_unit
         karamay_engine_graphics_unit/source/graphics/variable/glv_types.h
         karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.cpp
         karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.h
-        karamay_engine_graphics_unit/source/public/glfw_win64.h
+        karamay_engine_graphics_unit/source/public/_glfw.h
         karamay_engine_graphics_unit/source/public/nlohmann_json.h
-        karamay_engine_graphics_unit/source/public/opengl_win64.h
+        karamay_engine_graphics_unit/source/public/_glew.h
         karamay_engine_graphics_unit/source/public/stb.h
         karamay_engine_graphics_unit/source/public/stl.h
         karamay_engine_graphics_unit/source/public/winsocket.h
         karamay_engine_graphics_unit/source/window/window.cpp
         karamay_engine_graphics_unit/source/window/window.h
-        karamay_engine_graphics_unit/source/karamay-engine-graphics.cpp karamay_engine_graphics_unit/source/graphics/buffer/gl_immutable_buffer.cpp karamay_engine_graphics_unit/source/graphics/buffer/gl_immutable_buffer.h karamay_engine_graphics_unit/source/graphics/buffer/gl_mutable_buffer.cpp karamay_engine_graphics_unit/source/graphics/buffer/gl_mutable_buffer.h)
+        karamay_engine_graphics_unit/source/karamay-engine-graphics.cpp
+        karamay_engine_graphics_unit/source/graphics/buffer/gl_immutable_buffer.cpp
+        karamay_engine_graphics_unit/source/graphics/buffer/gl_immutable_buffer.h
+        karamay_engine_graphics_unit/source/graphics/buffer/gl_mutable_buffer.cpp
+        karamay_engine_graphics_unit/source/graphics/buffer/gl_mutable_buffer.h
+        karamay_engine_graphics_unit/source/public/glm.h karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_base.cpp karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_base.h)
 
-target_link_libraries(karamay_engine_graphics_unit
-        #glew32.lib
-        glew32s.lib
-        glfw3.lib)
+target_link_libraries(karamay_engine_graphics_unit glew32s.lib glfw3.lib)
+
+
+
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/karamay_engine_graphics_unit/assets
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/karamay_engine_graphics_unit/shaders
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/karamay_engine_graphics_unit/assets
+#       ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)

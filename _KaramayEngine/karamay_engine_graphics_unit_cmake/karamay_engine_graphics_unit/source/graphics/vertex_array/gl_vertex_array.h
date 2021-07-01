@@ -1,6 +1,8 @@
 #ifndef H_GL_VERTEX_ARRAY
 #define H_GL_VERTEX_ARRAY
 
+#include <utility>
+
 #include "graphics/glo/gl_object.h"
 #include "graphics/variable/glv_types.h"
 
@@ -146,7 +148,6 @@ class gl_attribute
 };
 
 
-
 class gl_vertex_attribute_descriptor
 {
 public:
@@ -154,9 +155,9 @@ public:
     gl_vertex_attribute_descriptor(
             std::uint32_t component_count,
             gl_attribute_component::type component_type,
-            const std::string& name
+            std::string name
             ) :
-            _name(name),
+            _name(std::move(name)),
             _component_type(component_type),
             _components_count(component_count)
     {}
@@ -186,10 +187,10 @@ public:
     gl_instance_attribute_descriptor(
             std::uint32_t component_count,
             gl_attribute_component::type component_name,
-            const std::string& name,
+            std::string name,
             std::uint32_t count,
             std::uint32_t instance_divisor) :
-            _name(name),
+            _name(std::move(name)),
             _component_type(component_name),
             _components_count(component_count),
             _divisor(instance_divisor),
@@ -232,27 +233,49 @@ class gl_vertex_array_descriptor final
 {
 public:
     gl_vertex_array_descriptor(
-            const std::vector<gl_vertex_attribute_descriptor>& vertex_attribute_descriptors,
+            std::vector<gl_vertex_attribute_descriptor> vertex_attribute_descriptors,
             std::uint32_t vertices_count,
-            const std::vector<gl_instance_attribute_descriptor>& instance_attribute_descriptors,
+            std::vector<gl_instance_attribute_descriptor> instance_attribute_descriptors,
             std::uint32_t instances_count) :
             _is_dirty(true),
-            _vertex_attribute_descriptors(vertex_attribute_descriptors),
+            _vertex_attribute_descriptors(std::move(vertex_attribute_descriptors)),
             _vertices_count(vertices_count),
-            _instance_attribute_descriptors(instance_attribute_descriptors),
+            _instance_attribute_descriptors(std::move(instance_attribute_descriptors)),
             _instances_count(instances_count)
     {
     }
 
     gl_vertex_array_descriptor(
-            const std::vector<gl_vertex_attribute_descriptor>& vertex_attribute_descriptors,
+            std::vector<gl_vertex_attribute_descriptor> vertex_attribute_descriptors,
             std::uint32_t vertices_count) :
             _is_dirty(true),
-            _vertex_attribute_descriptors(vertex_attribute_descriptors),
+            _vertex_attribute_descriptors(std::move(vertex_attribute_descriptors)),
             _vertices_count(vertices_count),
             _instance_attribute_descriptors(),
             _instances_count(0)
     {}
+
+private:
+
+    std::uint8_t _is_dirty;
+
+    std::uint32_t _vertices_count, _instances_count;
+
+    std::vector<gl_vertex_attribute_descriptor> _vertex_attribute_descriptors;
+
+    std::vector<gl_instance_attribute_descriptor> _instance_attribute_descriptors;
+
+public:
+
+    [[nodiscard]] std::uint8_t is_dirty() const { return _is_dirty; }
+
+    [[nodiscard]] std::uint32_t get_vertices_count() const {return _vertices_count;}
+
+    [[nodiscard]] std::uint32_t get_instance_count() const {return _instances_count;}
+
+    [[nodiscard]] const std::vector<gl_vertex_attribute_descriptor>& get_vertex_attribute_descriptors() const {return _vertex_attribute_descriptors;}
+
+    [[nodiscard]] const std::vector<gl_instance_attribute_descriptor>& get_instance_attribute_descriptors() const {return _instance_attribute_descriptors;}
 
 public:
 
@@ -266,34 +289,6 @@ public:
 
     void dismiss_dirty();
 
-private:
-
-    std::uint8_t _is_dirty;
-
-private:
-
-    std::uint32_t _vertices_count;
-
-    std::uint32_t _instances_count;
-
-    std::vector<gl_vertex_attribute_descriptor> _vertex_attribute_descriptors;
-
-    std::vector<gl_instance_attribute_descriptor> _instance_attribute_descriptors;
-
-public:
-
-    [[nodiscard]] std::uint8_t is_dirty() const { return _is_dirty; }
-
-public:
-
-    [[nodiscard]] std::uint32_t get_vertices_count() const {return _vertices_count;}
-
-    [[nodiscard]] std::uint32_t get_instance_count() const {return _instances_count;}
-
-    [[nodiscard]] const std::vector<gl_vertex_attribute_descriptor>& get_vertex_attribute_descriptors() const {return _vertex_attribute_descriptors;}
-
-    [[nodiscard]] const std::vector<gl_instance_attribute_descriptor>& get_instance_attribute_descriptors() const {return _instance_attribute_descriptors;}
-
 };
 
 
@@ -301,8 +296,9 @@ class gl_vertex_array final : public gl_object
 {
 public:
 
-	explicit gl_vertex_array(gl_vertex_array_descriptor descriptor) :
-            _descriptor(std::move(descriptor)),
+    explicit gl_vertex_array(const std::vector<gl_vertex_attribute_descriptor>& vertex_attribute_descriptors,
+                             std::uint32_t vertices_count) :
+            _descriptor(vertex_attribute_descriptors, vertices_count),
             _memory_demand(0)
     {
         glCreateVertexArrays(1, &_handle);
@@ -318,9 +314,8 @@ public:
         glCreateVertexArrays(1, &_handle);
     }
 
-    explicit gl_vertex_array(const std::vector<gl_vertex_attribute_descriptor>& vertex_attribute_descriptors,
-                             std::uint32_t vertices_count) :
-            _descriptor(vertex_attribute_descriptors, vertices_count),
+    explicit gl_vertex_array(gl_vertex_array_descriptor descriptor) :
+            _descriptor(std::move(descriptor)),
             _memory_demand(0)
     {
         glCreateVertexArrays(1, &_handle);
@@ -340,19 +335,19 @@ private:
 
 public:
 
-    [[nodiscard]] inline const gl_vertex_array_descriptor& get_vertex_array_descriptor() const noexcept {return _descriptor;}
+    [[nodiscard]] inline const gl_vertex_array_descriptor& get_vertex_array_descriptor() const noexcept { return _descriptor; }
 
-    [[nodiscard]] inline std::uint32_t get_vertices_count() const {return _descriptor.get_vertices_count();};
+    [[nodiscard]] inline std::uint32_t get_vertices_count() const noexcept { return _descriptor.get_vertices_count(); }
 
-    [[nodiscard]] inline std::uint32_t get_instances_count() const {return _descriptor.get_vertices_count();};
+    [[nodiscard]] inline std::uint32_t get_instances_count() const noexcept { return _descriptor.get_vertices_count(); }
 
 public:
 
-    void set_vertices_count(std::uint32_t vertices_count) noexcept;
+    inline void set_vertices_count(std::uint32_t vertices_count) noexcept { _descriptor.set_vertices_count(vertices_count); }
 
-    void set_instances_count(std::uint32_t instances_count) noexcept;
+    inline void set_instances_count(std::uint32_t instances_count) noexcept { _descriptor.set_instances_count(instances_count); }
 
-    void set_instance_attribute_divisor(const std::string& attribute_name, std::uint32_t divisor) noexcept;
+    inline void set_instance_attribute_divisor(const std::string& attribute_name, std::uint32_t divisor) noexcept { _descriptor.set_instance_attribute_divisor(attribute_name, divisor); }
 
 public:
 
@@ -382,7 +377,7 @@ private:
 
     void _reallocate();
 
-    const std::pair<std::uint32_t, std::uint32_t>& _get_memory_layout(const std::string& attribute_name, std::uint32_t attribute_index);
+    std::pair<std::uint32_t, std::uint32_t> _get_memory_layout(const std::string& attribute_name, std::uint32_t attribute_index);
 
     std::uint8_t _check_memory_layout(const std::pair<std::uint32_t, std::uint32_t>& memory_layout);
 

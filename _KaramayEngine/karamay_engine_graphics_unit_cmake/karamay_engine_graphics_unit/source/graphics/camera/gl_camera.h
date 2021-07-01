@@ -1,7 +1,8 @@
 #ifndef H_GL_CAMERA
 #define H_GL_CAMERA
 
-#include "public/opengl_win64.h"
+#include "public/_glew.h"
+#include "public/glm.h"
 #include "public/stl.h"
 
 class gl_camera

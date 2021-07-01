@@ -42,26 +42,6 @@ void gl_buffer::copy_to(GLuint write_buffer_handle, GLintptr read_offset, GLintp
 	glCopyNamedBufferSubData(_handle, write_buffer_handle, read_offset, write_offset, size);
 }
 
-void* gl_buffer::map(gl_buffer_enum::access access)
-{
-	return glMapNamedBuffer(_handle, static_cast<GLenum>(access));
-}
-
-void* gl_buffer::map(gl_buffer_enum::access access, std::size_t offset, std::size_t size)
-{
-	return glMapNamedBufferRange(_handle, offset, size, static_cast<GLenum>(access));
-}
-
-void gl_buffer::flush_mapped_buffer(std::size_t offset, std::size_t size)
-{
-	glFlushMappedNamedBufferRange(_handle, offset, size);
-}
-
-void gl_buffer::unmap()
-{
-	glUnmapNamedBuffer(_handle);
-}
-
 
 gl_buffer::gl_buffer()
 {

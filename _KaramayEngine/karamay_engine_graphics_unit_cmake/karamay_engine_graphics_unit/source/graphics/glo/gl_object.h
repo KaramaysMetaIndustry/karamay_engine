@@ -1,7 +1,8 @@
 #ifndef H_GL_OBJECT
 #define H_GL_OBJECT
 
-#include "public/opengl_win64.h"
+#include "public/_glew.h"
+#include "public/glm.h"
 #include "public/stl.h"
 
 namespace gl_object_enum

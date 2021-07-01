@@ -1,8 +1,5 @@
-#ifndef H_OPENGL_WIN64
-#define H_OPENGL_WIN64
-
-#define GLEW_STATIC
-#include "glew-2.1.0/include/GL/glew.h"
+#ifndef H_GLM
+#define H_GLM
 
 #include "glm_pack/include/glm/glm.hpp"
 #include "glm_pack/include/glm/gtc/matrix_transform.hpp"

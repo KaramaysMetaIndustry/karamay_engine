@@ -166,72 +166,11 @@ public:
 
 public:
 
-	void* map(gl_buffer_enum::access access);
-
-	void* map(gl_buffer_enum::access access, std::size_t offset, std::size_t size);
-
-	void unmap();
-
-	void flush_mapped_buffer(std::size_t offset, std::size_t size);
-
-private:
-
-	gl_buffer_enum::internal_format _internal_format;
-
-public:
-
 	std::int32_t get_size() const
 	{
 		GLint _size = 0;
 		glGetNamedBufferParameteriv(_handle, GL_BUFFER_SIZE, &_size);
 		return _size;
-	}
-
-	const gl_buffer_enum::internal_format get_internal_format() const { return _internal_format; }
-
-};
-
-
-
-class gl_buffer_referenece
-{
-public:
-
-	std::shared_ptr<gl_buffer> _buffer;
-
-	std::size_t _offset, _size;
-
-public:
-
-	void refer_to(std::size_t offset, std::size_t size, std::shared_ptr<gl_buffer> buffer)
-	{
-		_buffer = buffer;
-		_offset = offset;
-		_size = size;
-	}
-
-	void fill(const void* data)
-	{
-		if (_buffer)
-		{
-			_buffer->fill(_offset, _size, data);
-		}
-	}
-
-	void release()
-	{
-		if (_buffer)
-		{
-			//_buffer->clear()
-		}
-	}
-
-	std::uint32_t get_handle()
-	{
-		if (_buffer)
-		{
-			return _buffer->get_handle();
-		}
 	}
 
 };
