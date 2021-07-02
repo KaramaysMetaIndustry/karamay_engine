@@ -19,7 +19,7 @@ public:
 
     void clear()
     {
-        std::uint32_t _value = 0;
+        std::uint32_t _value = 1;
         glClearNamedBufferData(_handle, GL_R32UI, GL_RED, GL_UNSIGNED_INT, &_value);
     }
 

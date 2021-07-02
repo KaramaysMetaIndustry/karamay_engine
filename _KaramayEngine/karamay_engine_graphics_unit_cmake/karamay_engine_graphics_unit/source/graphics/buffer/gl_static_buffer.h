@@ -1,0 +1,14 @@
+//
+// Created by Regicide Ji on 2021/7/1.
+//
+
+#ifndef KARAMAY_ENGINE_GRAPHICS_UNIT_GL_STATIC_BUFFER_H
+#define KARAMAY_ENGINE_GRAPHICS_UNIT_GL_STATIC_BUFFER_H
+
+
+class gl_static_buffer {
+
+};
+
+
+#endif //KARAMAY_ENGINE_GRAPHICS_UNIT_GL_STATIC_BUFFER_H
