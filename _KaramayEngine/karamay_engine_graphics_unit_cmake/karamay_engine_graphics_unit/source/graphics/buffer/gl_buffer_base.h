@@ -52,19 +52,44 @@ protected:
         _capacity(capacity)
     {}
 
-    virtual ~gl_buffer_base(){}
+    ~gl_buffer_base() override = default;
 
     std::int32_t _capacity;
 
-public:
-
-    void fill(std::int32_t offset, const std::uint8_t* data, std::int32_t data_size);
-
-    void clear();
 
 public:
 
     [[nodiscard]] std::int32_t get_capacity() const {return _capacity;}
+
+public:
+
+    /*
+     * Pure [Client -> Server]
+     * */
+    void fill(std::int32_t offset, const std::uint8_t* data, std::int32_t data_size);
+
+    template<typename GLM_T>
+    void fill(std::int32_t offset, const GLM_T& data)
+    {
+
+    }
+
+public:
+    /*
+     * Mostly [Server -> Server]
+     * */
+    void clear();
+
+public:
+    /*
+     * Pure [Server -> Server]
+     * */
+    void transfer_data(std::int32_t self_offset, int32_t self_size, gl_buffer_base* target_buffer, std::int32_t target_buffer_offset);
+
+    /*
+     * Pure [Server -> Server]
+     * */
+    void transfer_data_to(gl_buffer_base* target_buffer);
 
 public:
 
@@ -143,6 +168,12 @@ protected:
     [[nodiscard]] bool _check_capacity(std::int32_t capacity) const
     {
         return capacity != _capacity && capacity < MAX_CAPACITY;
+    }
+
+    inline void _internal_clear_by_byte_zero()
+    {
+        std::uint8_t _value = 0;
+        glClearNamedBufferData(_handle, GL_R8UI, GL_RED, GL_UNSIGNED_BYTE, &_value);
     }
 
     void _throw_errors(const std::string& func_name)

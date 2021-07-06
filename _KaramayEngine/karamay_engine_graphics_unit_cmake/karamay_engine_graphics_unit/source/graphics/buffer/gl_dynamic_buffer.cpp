@@ -3,3 +3,23 @@
 //
 
 #include "gl_dynamic_buffer.h"
+
+void gl_dynamic_buffer::reallocate(std::int32_t new_capacity, gl_dynamic_buffer_usage new_usage)
+{
+    if(!_check_capacity(new_capacity)) return;
+
+    glNamedBufferData(_handle, new_capacity, nullptr, static_cast<GLenum>(new_usage));
+
+    _capacity = new_capacity; _usage = new_usage;
+    _internal_clear_by_byte_zero();
+}
+
+void gl_dynamic_buffer::reallocate(std::int32_t new_capacity)
+{
+    if(!_check_capacity(new_capacity)) return;
+
+    glNamedBufferData(_handle, new_capacity, nullptr, static_cast<GLenum>(_usage));
+
+    _capacity = new_capacity;
+    _internal_clear_by_byte_zero();
+}

@@ -18,10 +18,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_base.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_base.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_base.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_base.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_dynamic_buffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_dynamic_buffer.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_dynamic_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_dynamic_buffer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_static_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_static_buffer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/variable/glv_types.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/variable/glv_types.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/karamay-engine-graphics.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/karamay-engine-graphics.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,6 +84,7 @@
       <workItem from="1625286406333" duration="9179000" />
       <workItem from="1625402711187" duration="680000" />
       <workItem from="1625493302613" duration="2545000" />
+      <workItem from="1625548311449" duration="4035000" />
     </task>
     <servers />
   </component>

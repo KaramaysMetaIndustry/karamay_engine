@@ -9,9 +9,9 @@
 
 enum class gl_dynamic_buffer_usage : GLenum
 {
-    STREAM_DRAW = GL_STREAM_DRAW,
-    STREAM_READ = GL_STREAM_READ,
-    STREAM_COPY = GL_STREAM_COPY,
+    STREAM_DRAW = GL_STREAM_DRAW, // draw
+    STREAM_READ = GL_STREAM_READ, // read
+    STREAM_COPY = GL_STREAM_COPY, // copy
 
     STATIC_DRAW = GL_STATIC_DRAW,
     STATIC_READ = GL_STATIC_READ,
@@ -26,42 +26,31 @@ class gl_dynamic_buffer final : public gl_buffer_base
 {
 public:
 
-    gl_dynamic_buffer(gl_dynamic_buffer_usage usage, std::int32_t capacity) :
+    gl_dynamic_buffer(std::int32_t capacity, gl_dynamic_buffer_usage usage) :
             gl_buffer_base(capacity),
             _usage(usage)
     {
         glCreateBuffers(1, &_handle);
         glNamedBufferData(_handle, capacity, nullptr, static_cast<GLenum>(usage));
         _capacity = capacity;
-        clear();
+        _internal_clear_by_byte_zero();
     }
 
-    gl_dynamic_buffer& operator=(const gl_dynamic_buffer& other)
-    {
-        if(other.get_capacity() == _capacity)
-        {
-            glCopyNamedBufferSubData(other.get_handle(), _handle, 0, 0, _capacity);
-        }
+public:
 
-        return *this;
-    }
+    /*
+     * specify a new capacity and a new usage
+     * */
+    void reallocate(std::int32_t new_capacity, gl_dynamic_buffer_usage new_usage);
+
+    /*
+     * specify a new capacity and keep the old usage
+     * */
+    void reallocate(std::int32_t new_capacity);
 
 private:
 
     gl_dynamic_buffer_usage _usage;
-
-public:
-
-    void reallocate(std::int32_t new_capacity, gl_dynamic_buffer_usage usage)
-    {
-        if(!_check_capacity(new_capacity)) return;
-
-        glNamedBufferData(_handle, new_capacity, nullptr, static_cast<GLenum>(usage));
-        _throw_errors("glNamedBufferData: ");
-        _capacity = new_capacity;
-        _usage = usage;
-        clear();
-    }
 
 };
 
