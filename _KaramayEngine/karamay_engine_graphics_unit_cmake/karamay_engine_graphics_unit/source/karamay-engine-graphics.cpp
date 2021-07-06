@@ -304,6 +304,125 @@ auto string_to_stream(const std::string& type, const std::string& name, const st
 	return std::make_shared<gl_variable>(type, name, stream);
 }
 
+
+enum class gl_debug_type : GLenum
+{
+    DEPRECATED_BEHAVIOR = GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR,
+    UNDEFINED_BEHAVIOR = GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR,
+    ERROR = GL_DEBUG_TYPE_ERROR,
+    MARKER = GL_DEBUG_TYPE_MARKER,
+    OTHER = GL_DEBUG_TYPE_OTHER,
+    PERFORMANCE = GL_DEBUG_TYPE_PERFORMANCE,
+    POP_GROUP = GL_DEBUG_TYPE_POP_GROUP,
+    PORTABILITY = GL_DEBUG_TYPE_PORTABILITY,
+    PUSH_GROUP = GL_DEBUG_TYPE_PUSH_GROUP
+};
+
+enum class gl_debug_source : GLenum
+{
+    API = GL_DEBUG_SOURCE_API,
+    APPLICATION = GL_DEBUG_SOURCE_APPLICATION,
+    OTHER = GL_DEBUG_SOURCE_OTHER,
+    SHADER_COMPILER = GL_DEBUG_SOURCE_SHADER_COMPILER,
+    THIRD_PARTY = GL_DEBUG_SOURCE_THIRD_PARTY,
+    WINDOW_SYSTEM = GL_DEBUG_SOURCE_WINDOW_SYSTEM
+};
+
+enum class gl_debug_severity : GLenum
+{
+    SEVERITY_HIGH = GL_DEBUG_SEVERITY_HIGH,
+    SEVERITY_LOW = GL_DEBUG_SEVERITY_LOW,
+    SEVERITY_MEDIUM = GL_DEBUG_SEVERITY_MEDIUM,
+    SEVERITY_NOTIFICATION = GL_DEBUG_SEVERITY_NOTIFICATION,
+};
+
+
+void GLAPIENTRY
+MessageCallback( GLenum source,
+                 GLenum type,
+                 GLuint id,
+                 GLenum severity,
+                 GLsizei length,
+                 const GLchar* message,
+                 const void* userParam )
+{
+//    fprintf( stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+//             ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
+//             type, severity, message );
+
+    auto _source = static_cast<gl_debug_source>(source);
+    auto _type = static_cast<gl_debug_type>(type);
+    auto _severity = static_cast<gl_debug_severity>(severity);
+
+    std::string _source_str;
+    std::string _type_str;
+    std::string _severity_str;
+
+
+    switch (_source) {
+
+        case gl_debug_source::API: _source_str = "API";
+            break;
+        case gl_debug_source::APPLICATION: _source_str = "APPLICATION";
+            break;
+        case gl_debug_source::OTHER: _source_str = "OTHER";
+            break;
+        case gl_debug_source::SHADER_COMPILER: _source_str = "SHADER_COMPILER";
+            break;
+        case gl_debug_source::THIRD_PARTY: _source_str = "THIRD_PARTY";
+            break;
+        case gl_debug_source::WINDOW_SYSTEM: _source_str = "WINDOW_SYSTEM";
+            break;
+    }
+
+    switch (_type) {
+
+        case gl_debug_type::DEPRECATED_BEHAVIOR: _type_str = "DEPRECATED_BEHAVIOR";
+            break;
+        case gl_debug_type::UNDEFINED_BEHAVIOR: _type_str = "UNDEFINED_BEHAVIOR";
+            break;
+        case gl_debug_type::ERROR: _type_str = "ERROR";
+            break;
+        case gl_debug_type::MARKER: _type_str = "MARKER";
+            break;
+        case gl_debug_type::OTHER: _type_str = "OTHER";
+            break;
+        case gl_debug_type::PERFORMANCE: _type_str = "PERFORMANCE";
+            break;
+        case gl_debug_type::POP_GROUP: _type_str = "POP_GROUP";
+            break;
+        case gl_debug_type::PORTABILITY: _type_str = "PORTABILITY";
+            break;
+        case gl_debug_type::PUSH_GROUP: _type_str = "PUSH_GROUP";
+            break;
+    }
+
+    switch (_severity) {
+
+        case gl_debug_severity::SEVERITY_HIGH: _severity_str = "SEVERITY_HIGH";
+            break;
+        case gl_debug_severity::SEVERITY_LOW: _severity_str = "SEVERITY_LOW";
+            break;
+        case gl_debug_severity::SEVERITY_MEDIUM: _severity_str = "SEVERITY_MEDIUM";
+            break;
+        case gl_debug_severity::SEVERITY_NOTIFICATION: _severity_str = "SEVERITY_NOTIFICATION";
+            break;
+    }
+
+    std::string _message_str(message, length);
+
+    std::cerr<<"["<<std::endl;
+    std::cerr<<"  DEBUG SOURCE: "<< _source_str << std::endl;
+    std::cerr<<"  DEBUG TYPE: "<< _type_str << std::endl;
+    std::cerr<<"  DEBUG ID: "<< id << std::endl;
+    std::cerr<<"  DEBUG SEVERITY: "<< _severity_str << std::endl;
+    std::cerr<<"  DEBUG MESSAGE: "<< _message_str << std::endl;
+    std::cerr<<"]"<<std::endl;
+
+}
+
+
+
 void test0()
 {
 	auto* window = new glfw_window();
@@ -314,6 +433,10 @@ void test0()
 
 	glViewport(0, 0, window->get_framebuffer_width(), window->get_framebuffer_height());
 
+
+    // During init, enable debug output
+    glEnable              ( GL_DEBUG_OUTPUT );
+    glDebugMessageCallback( MessageCallback, 0 );
 
 	std::vector<glv::f32vec3> positions{
 		glv::f32vec3(0.5f, 0.5f, 0.0f), //0
@@ -509,21 +632,8 @@ void test0()
 	//glClearStencil(0);
 
     {
-        gl_dynamic_buffer _m_buffer0(gl_mutable_buffer_usage::DYNAMIC_DRAW, gl_dynamic_buffer::max_capacity);
-        //gl_dynamic_buffer _m_buffer1(gl_mutable_buffer_usage::DYNAMIC_DRAW, gl_dynamic_buffer::max_capacity/3 *1.7);
-       // gl_dynamic_buffer _m_buffer1(gl_mutable_buffer_usage::DYNAMIC_DRAW, 16);
-
-        //while(true){}
-        _m_buffer0.print<std::uint32_t>();
-        //_m_buffer1.print<std::uint32_t>();
-//
-//        _m_buffer1 = _m_buffer0;
-//
-//        _m_buffer0.print<std::float_t>();
-//        _m_buffer1.print<std::float_t>();
-
-
-
+        gl_dynamic_buffer _d_buffer0(gl_dynamic_buffer_usage::STREAM_READ, gl_dynamic_buffer::MAX_CAPACITY/3);
+        _d_buffer0.print<std::uint32_t>();
     }
 
 
