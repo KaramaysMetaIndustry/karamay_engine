@@ -1,29 +1,7 @@
-//
-// Created by jichengcheng on 2021/7/1.
-//
-
-#ifndef KARAMAY_ENGINE_GRAPHICS_UNIT_GL_BUFFER_BASE_H
-#define KARAMAY_ENGINE_GRAPHICS_UNIT_GL_BUFFER_BASE_H
-
-#define OPTIMIZED
+#ifndef H_GL_BUFFER_BASE
+#define H_GL_BUFFER_BASE
 
 #include "graphics/glo/gl_object.h"
-
-
-
-enum gl_error : GLenum
-{
-    INVALID_ENUM = GL_INVALID_ENUM,
-    INVALID_VALUE = GL_INVALID_VALUE,
-    INVALID_OPERATION = GL_INVALID_OPERATION,
-    STACK_OVERFLOW = GL_STACK_OVERFLOW,
-    STACK_UNDERFLOW = GL_STACK_UNDERFLOW,
-    OUT_OF_MEMORY = GL_OUT_OF_MEMORY,
-    INVALID_FRAMEBUFFER_OPERATION = GL_INVALID_FRAMEBUFFER_OPERATION,
-    CONTEXT_LOST = GL_CONTEXT_LOST,
-    TABLE_TOO_LARGE = GL_TABLE_TOO_LARGE
-};
-
 
 enum class gl_buffer_map_access_flag : GLenum
 {
@@ -31,12 +9,9 @@ enum class gl_buffer_map_access_flag : GLenum
     MAP_WRITE_BIT = GL_MAP_WRITE_BIT,
     MAP_PERSISTENT = GL_MAP_PERSISTENT_BIT,
     MAP_COHERENT_BIT = GL_MAP_COHERENT_BIT,
-
     MAP_INVALIDATE_RANGE_BIT = GL_MAP_INVALIDATE_RANGE_BIT,
     MAP_INVALIDATE_BUFFER_BIT = GL_MAP_INVALIDATE_BUFFER_BIT,
-
     MAP_FLUSH_EXPLICIT_BIT = GL_MAP_FLUSH_EXPLICIT_BIT,
-
     MAP_UNSYNCHRONIZED_BIT = GL_MAP_UNSYNCHRONIZED_BIT
 };
 
@@ -56,7 +31,6 @@ protected:
 
     std::int32_t _capacity;
 
-
 public:
 
     [[nodiscard]] std::int32_t get_capacity() const {return _capacity;}
@@ -65,31 +39,71 @@ public:
 
     /*
      * Pure [Client -> Server]
+     * offset > 0 && data_size > 0 &&
+     * offset + data_size <= _capacity &&
+     * data's length == data_size
      * */
-    void fill(std::int32_t offset, const std::uint8_t* data, std::int32_t data_size);
+    VALID void fill(std::int32_t offset, const std::uint8_t* data, std::int32_t data_size);
+
+    /*
+     * Pure [Client -> Server]
+     * offset > 0 && data_size > 0 &&
+     * offset + data_size <= _capacity &&
+     * data's length == data_size
+     * */
+    template<typename GLM_T>
+    VALID inline void fill(std::int32_t offset, const GLM_T& data)
+    {
+        fill(offset, reinterpret_cast<const std::uint8_t*>(glm::value_ptr(data)), sizeof(GLM_T));
+    }
+
+    /*
+     * Pure [Client -> Server]
+     * offset > 0 && data_size > 0 &&
+     * offset + data_size <= _capacity &&
+     * data's length == data_size
+     * */
+    template<typename GLM_T>
+    VALID inline void fill(std::int32_t offset, const std::vector<GLM_T>& data_collection)
+    {
+        fill(offset, reinterpret_cast<const std::uint8_t*>(data_collection.data()), data_collection.size() * sizeof(GLM_T));
+    }
+
+public:
+
+    /*
+     * Mostly [Server -> Server]
+     * You must sacrifice some flexibility to get rapid filling.
+     * capacity % sizeof (data_mask) == 0
+     * */
+    VALID void rapidly_fill(std::uint8_t data_mask = 0);
 
     template<typename GLM_T>
-    void fill(std::int32_t offset, const GLM_T& data)
-    {
+    inline void rapidly_fill(const GLM_T& data_mask){}
 
+public:
+
+    /*
+     * grab another same buffer storage as new one
+     * */
+    void invalidate(std::int32_t offset, std::int32_t size);
+
+    void invalidate()
+    {
+        glInvalidateBufferData(_handle);
+        _throw_errors("glInvalidateBufferData");
     }
 
 public:
     /*
-     * Mostly [Server -> Server]
-     * */
-    void clear();
-
-public:
-    /*
      * Pure [Server -> Server]
      * */
-    void transfer_data(std::int32_t self_offset, int32_t self_size, gl_buffer_base* target_buffer, std::int32_t target_buffer_offset);
+    VALID void output_data(std::int32_t self_offset, int32_t output_size, gl_buffer_base* target_buffer, std::int32_t target_buffer_offset);
 
     /*
      * Pure [Server -> Server]
      * */
-    void transfer_data_to(gl_buffer_base* target_buffer);
+    VALID void output_data(gl_buffer_base* target_buffer);
 
 public:
 
@@ -98,40 +112,14 @@ public:
      * then execute a handler you specified (can not do any modification)
      * @ task void(mapped_memory_block, mapped_memory_block_size)
      * */
-    void execute_immutable_memory_handler(std::int32_t offset, std::int32_t size, const std::function<void(const std::uint8_t*, std::int32_t)>& handler)
-    {
-        if(offset < 0 || size < 0 || offset + size > _capacity) return;
-
-        const auto* _mapped_memory_block = reinterpret_cast<const std::uint8_t*>(
-                glMapNamedBufferRange(_handle, offset, size, static_cast<GLenum>(gl_buffer_map_access_flag::MAP_READ_BIT))
-        );
-
-        if(_mapped_memory_block) handler(_mapped_memory_block, size);
-
-        glUnmapNamedBuffer(_handle);
-    }
+    VALID void execute_immutable_memory_handler(std::int32_t offset, std::int32_t size, const std::function<void(const std::uint8_t*, std::int32_t)>& handler);
 
     /*
      * map a block of mutable memory
      * then execute a handler you specified
      * @ task void(mapped_memory_block, mapped_memory_block_size)
      * */
-    void execute_mutable_memory_handler(std::int32_t offset, std::int32_t size, const std::function<void(std::uint8_t*, std::int32_t)>& handler)
-    {
-        if(offset + size > _capacity) return;
-
-        auto* _mapped_memory_block = reinterpret_cast<std::uint8_t*>(
-                glMapNamedBufferRange(_handle, offset, size, GL_MAP_WRITE_BIT)
-        );
-
-        if(_mapped_memory_block)
-        {
-            handler(_mapped_memory_block, size);
-            glFlushMappedNamedBufferRange(_handle, offset, size);
-        } // make sure modification pushed to GPU
-
-        glUnmapNamedBuffer(_handle);
-    }
+    VALID void execute_mutable_memory_handler(std::int32_t offset, std::int32_t size, const std::function<void(std::uint8_t*, std::int32_t)>& handler);
 
 public:
 
@@ -142,25 +130,25 @@ public:
         return _buffer_size;
     }
 
-    [[nodiscard]] std::int32_t get_access() const
+    [[nodiscard]] std::uint8_t is_mapped() const
     {
-        std::int32_t _buffer_size = 0;
-        glGetNamedBufferParameteriv(_handle, GL_BUFFER_ACCESS, &_buffer_size);
-        return _buffer_size;
+        std::int32_t _is_mapped = 0;
+        glGetNamedBufferParameteriv(_handle, GL_BUFFER_MAPPED, &_is_mapped);
+        return _is_mapped == GL_TRUE;
     }
 
-    [[nodiscard]] std::int32_t is_mapped() const
+    [[nodiscard]] std::int32_t get_access() const
     {
-        std::int32_t _buffer_size = 0;
-        glGetNamedBufferParameteriv(_handle, GL_BUFFER_MAPPED, &_buffer_size);
-        return _buffer_size;
+        std::int32_t _buffer_access = 0;
+        glGetNamedBufferParameteriv(_handle, GL_BUFFER_ACCESS, &_buffer_access);
+        return _buffer_access;
     }
 
     [[nodiscard]] std::int32_t get_usage() const
     {
-        std::int32_t _buffer_size = 0;
-        glGetNamedBufferParameteriv(_handle, GL_BUFFER_USAGE, &_buffer_size);
-        return _buffer_size;
+        std::int32_t _buffer_usage = 0;
+        glGetNamedBufferParameteriv(_handle, GL_BUFFER_USAGE, &_buffer_usage);
+        return _buffer_usage;
     }
 
 protected:
@@ -176,52 +164,10 @@ protected:
         glClearNamedBufferData(_handle, GL_R8UI, GL_RED, GL_UNSIGNED_BYTE, &_value);
     }
 
-    void _throw_errors(const std::string& func_name)
-    {
-        std::vector<gl_error> _errors;
-        gl_error err;
-        while((err = static_cast<gl_error>(glGetError())) != GL_NO_ERROR)
-        {
-            _errors.push_back(err);
-        }
-        if(_errors.size())
-        {
-            std::cout<<func_name<<": ["<<std::endl;
-            for(auto _error : _errors)
-            {
-                std::cout<<"      ";
-                switch (_error) {
-                    case INVALID_ENUM:std::cout<<"INVALID_ENUM"<<std::endl;
-                        break;
-                    case INVALID_VALUE:std::cout<<"INVALID_VALUE"<<std::endl;
-                        break;
-                    case INVALID_OPERATION:std::cout<<"INVALID_OPERATION"<<std::endl;
-                        break;
-                    case STACK_OVERFLOW:std::cout<<"STACK_OVERFLOW"<<std::endl;
-                        break;
-                    case STACK_UNDERFLOW:std::cout<<"STACK_UNDERFLOW"<<std::endl;
-                        break;
-                    case OUT_OF_MEMORY:std::cout<<"OUT_OF_MEMORY"<<std::endl;
-                        break;
-                    case INVALID_FRAMEBUFFER_OPERATION:std::cout<<"INVALID_FRAMEBUFFER_OPERATION"<<std::endl;
-                        break;
-                    case CONTEXT_LOST:std::cout<<"CONTEXT_LOST"<<std::endl;
-                        break;
-                    case TABLE_TOO_LARGE:std::cout<<"TABLE_TOO_LARGE"<<std::endl;
-                        break;
-                }
-            }
-            std::cout<<"]"<<std::endl;
-        }
-
-
-
-    }
-
 public:
 
     template<typename T>
-    void print()
+    VALID void print()
     {
         execute_immutable_memory_handler(0, _capacity, [](const std::uint8_t* data, std::int32_t size){
             const auto _data = reinterpret_cast<const T*>(data);
@@ -236,12 +182,11 @@ public:
         });
     }
 
-
-    void asynchronous(){}
-
-    void synchronous(){}
-
-    void synchronized(){}
+//    void asynchronous(){}
+//
+//    void synchronous(){}
+//
+//    void synchronized(){}
 
 };
 

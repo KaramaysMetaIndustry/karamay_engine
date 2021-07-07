@@ -33,7 +33,8 @@ public:
         glCreateBuffers(1, &_handle);
         glNamedBufferData(_handle, capacity, nullptr, static_cast<GLenum>(usage));
         _capacity = capacity;
-        _internal_clear_by_byte_zero();
+
+        rapidly_fill();
     }
 
 public:

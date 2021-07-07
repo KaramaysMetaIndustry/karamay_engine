@@ -32,14 +32,9 @@ class gl_static_buffer final : public gl_buffer_base
 {
 public:
 
-    gl_static_buffer(std::int32_t capacity) :
+    explicit gl_static_buffer(int32_t capacity) :
         gl_buffer_base(capacity)
     {}
-
-    void Invalidate(std::int32_t offset, std::int32_t size)
-    {
-        glInvalidateBufferSubData(_handle, offset, size);
-    }
 
 
 };

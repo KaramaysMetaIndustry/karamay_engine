@@ -16,10 +16,14 @@
   <component name="ChangeListManager">
     <list default="true" id="799c95bd-bd6b-4bb4-95bb-3af1c0f20cb1" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_base.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_base.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_base.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_base.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_dynamic_buffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_dynamic_buffer.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_dynamic_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_dynamic_buffer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_static_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_static_buffer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/glo/gl_object.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/glo/gl_object.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/karamay-engine-graphics.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/karamay-engine-graphics.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,11 +66,22 @@
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="settings.editor.selected.configurable" value="CPPToolchains" />
   </component>
   <component name="RunManager">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="karamay_engine_graphics_unit" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="karamay_engine_graphics_unit" TARGET_NAME="karamay_engine_graphics_unit" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="karamay_engine_graphics_unit" RUN_TARGET_NAME="karamay_engine_graphics_unit">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
   </component>
@@ -85,6 +100,10 @@
       <workItem from="1625402711187" duration="680000" />
       <workItem from="1625493302613" duration="2545000" />
       <workItem from="1625548311449" duration="4035000" />
+      <workItem from="1625572932758" duration="3892000" />
+      <workItem from="1625577211709" duration="1401000" />
+      <workItem from="1625578647586" duration="72000" />
+      <workItem from="1625579861694" duration="7446000" />
     </task>
     <servers />
   </component>

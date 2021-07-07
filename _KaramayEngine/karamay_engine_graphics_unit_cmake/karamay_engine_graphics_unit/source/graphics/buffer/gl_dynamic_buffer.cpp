@@ -11,7 +11,7 @@ void gl_dynamic_buffer::reallocate(std::int32_t new_capacity, gl_dynamic_buffer_
     glNamedBufferData(_handle, new_capacity, nullptr, static_cast<GLenum>(new_usage));
 
     _capacity = new_capacity; _usage = new_usage;
-    _internal_clear_by_byte_zero();
+    rapidly_fill();
 }
 
 void gl_dynamic_buffer::reallocate(std::int32_t new_capacity)
@@ -21,5 +21,5 @@ void gl_dynamic_buffer::reallocate(std::int32_t new_capacity)
     glNamedBufferData(_handle, new_capacity, nullptr, static_cast<GLenum>(_usage));
 
     _capacity = new_capacity;
-    _internal_clear_by_byte_zero();
+    rapidly_fill();
 }

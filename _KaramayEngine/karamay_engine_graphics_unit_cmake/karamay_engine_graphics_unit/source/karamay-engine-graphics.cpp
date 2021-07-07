@@ -3,6 +3,7 @@
 #include "graphics/variable/glv_types.h"
 #include "graphics/vertex_array/gl_vertex_array.h"
 #include "graphics/buffer/gl_dynamic_buffer.h"
+#include "graphics/buffer/gl_static_buffer.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../dependencies/stb/stb_image.h"
@@ -632,10 +633,26 @@ void test0()
 	//glClearStencil(0);
 
     {
-        gl_dynamic_buffer _d_buffer0(gl_dynamic_buffer_usage::STREAM_READ, gl_dynamic_buffer::MAX_CAPACITY/3);
-        _d_buffer0.print<std::uint32_t>();
-    }
+        gl_dynamic_buffer _d_buffer0(36, gl_dynamic_buffer_usage::STREAM_DRAW);
+        gl_dynamic_buffer _d_buffer1(36, gl_dynamic_buffer_usage::STREAM_DRAW);
 
+
+        std::vector<glm::vec3> data = {
+                glm::vec3(1.5f, 1.6f, 10.9f),
+                glm::vec3(1.2f, 4.6f, 2.5f),
+                glm::vec3(1.3f, 1.4f, 1.1f)
+        };
+
+        _d_buffer0.fill(0, data);
+
+        _d_buffer0.print<std::float_t>();
+        _d_buffer0.invalidate(0, _d_buffer0.get_capacity());
+
+        //_d_buffer0.output_data(0,36,reinterpret_cast<gl_buffer_base*>(&_d_buffer1), 0);
+        _d_buffer0.print<std::float_t>();
+        _d_buffer0.print<std::float_t>();
+        //_d_buffer1.print<std::float_t>();
+    }
 
 	int i = 1;
 	float w = 0.0f;
