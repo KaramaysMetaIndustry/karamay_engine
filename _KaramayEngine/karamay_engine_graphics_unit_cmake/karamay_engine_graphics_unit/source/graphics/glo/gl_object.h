@@ -2,8 +2,9 @@
 #define H_GL_OBJECT
 
 #include "public/_glew.h"
-#include "public/glm.h"
 #include "public/stl.h"
+#include "graphics/type/glsl_types.h"
+
 
 #define VALID
 

@@ -74,8 +74,6 @@ class gl_dvec4 : public gl_vector_base
 {};
 
 
-
-
 class gl_matrix_base : public gl_transparent_type
 {};
 

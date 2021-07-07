@@ -633,25 +633,22 @@ void test0()
 	//glClearStencil(0);
 
     {
-        gl_dynamic_buffer _d_buffer0(36, gl_dynamic_buffer_usage::STREAM_DRAW);
-        gl_dynamic_buffer _d_buffer1(36, gl_dynamic_buffer_usage::STREAM_DRAW);
+        gl_buffer_base _buf(14, {
+            true,
+            true,
+            true,
+            true,
+            false,
+            false
+        });
 
+        _buf.push_back(glm::vec3(0.1f, 0.2f, 0.3f));
+        _buf.print<std::float_t>();
 
-        std::vector<glm::vec3> data = {
-                glm::vec3(1.5f, 1.6f, 10.9f),
-                glm::vec3(1.2f, 4.6f, 2.5f),
-                glm::vec3(1.3f, 1.4f, 1.1f)
-        };
-
-        _d_buffer0.fill(0, data);
-
-        _d_buffer0.print<std::float_t>();
-        _d_buffer0.invalidate(0, _d_buffer0.get_capacity());
-
-        //_d_buffer0.output_data(0,36,reinterpret_cast<gl_buffer_base*>(&_d_buffer1), 0);
-        _d_buffer0.print<std::float_t>();
-        _d_buffer0.print<std::float_t>();
-        //_d_buffer1.print<std::float_t>();
+        _buf.reserve(2);
+        //_buf.overwrite(12, glm::vec3(1.1f, 1.2f, 1.3f));
+        _buf.push_back(glm::vec4(1.1f, 1.2f, 1.3f, 1.4f));
+        _buf.print<std::float_t>();
     }
 
 	int i = 1;

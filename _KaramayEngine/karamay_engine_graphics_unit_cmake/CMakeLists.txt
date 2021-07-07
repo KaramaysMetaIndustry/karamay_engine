@@ -579,7 +579,7 @@ add_executable(karamay_engine_graphics_unit
         karamay_engine_graphics_unit/source/graphics/buffer/gl_static_buffer.h
         karamay_engine_graphics_unit/source/graphics/buffer/gl_dynamic_buffer.cpp
         karamay_engine_graphics_unit/source/graphics/buffer/gl_dynamic_buffer.h
-        karamay_engine_graphics_unit/source/public/glm.h karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_base.cpp karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_base.h)
+        karamay_engine_graphics_unit/source/public/glm.h karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_base.cpp karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_base.h karamay_engine_graphics_unit/source/graphics/type/glsl_types.h)
 
 target_link_libraries(karamay_engine_graphics_unit glew32s.lib glfw3.lib)
 

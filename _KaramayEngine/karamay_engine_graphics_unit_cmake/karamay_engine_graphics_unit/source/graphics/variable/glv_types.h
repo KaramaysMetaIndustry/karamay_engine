@@ -1,4 +1,4 @@
-#pragma once
+
 #include "public/_glew.h"
 
 namespace glv
@@ -43,85 +43,5 @@ namespace glv
     using f64mat4x2 = glm::dmat4x2;
     using f64mat4x3 = glm::dmat4x3;
 }
-
-//
-//struct glsl_transparent_class
-//{
-//    std::uint32_t component_type;
-//    std::string component_type_name;
-//    std::uint32_t component_size;
-//    std::uint32_t components_count;
-//    std::uint32_t type_size;
-//    std::uint32_t type_name;
-//
-//};
-//
-//class glsl_transparent_type
-//{
-//private:
-//    static const glsl_transparent_class _transparent_type_meta;
-//
-//public:
-//
-//    virtual glsl_transparent_class meta(){ return _transparent_type_meta;}
-//
-//};
-//
-//class glsl_float : public glsl_transparent_type
-//{
-//private:
-//
-//    static const glsl_transparent_class _float_meta_data;
-//
-//public:
-//
-//    glsl_transparent_class meta() override { return _float_meta_data;}
-//
-//
-//public:
-//
-//    glm::vec1 value;
-//
-//};
-//
-//#define DEFINE_GLSL_TRANSPARENT(CORE_NAME) \
-//class glsl_##CORE_NAME : public glsl_transparent_type\
-//{\
-//private:\
-//\
-//static const glsl_transparent_class _##CORE_NAME##_meta_data;\
-//\
-//public:\
-//\
-//glsl_transparent_class meta() override { return _##CORE_NAME##_meta_data;}\
-//\
-//};\
-//
-//
-//DEFINE_GLSL_TRANSPARENT(vec2)
-//DEFINE_GLSL_TRANSPARENT(vec3)
-//DEFINE_GLSL_TRANSPARENT(vec4)
-//DEFINE_GLSL_TRANSPARENT(double)
-//DEFINE_GLSL_TRANSPARENT(dvec2)
-//DEFINE_GLSL_TRANSPARENT(dvec3)
-//DEFINE_GLSL_TRANSPARENT(dvec4)
-//
-//DEFINE_GLSL_TRANSPARENT(int)
-//DEFINE_GLSL_TRANSPARENT(ivec2)
-//DEFINE_GLSL_TRANSPARENT(ivec3)
-//DEFINE_GLSL_TRANSPARENT(ivec4)
-//DEFINE_GLSL_TRANSPARENT(uint)
-//DEFINE_GLSL_TRANSPARENT(uvec2)
-//DEFINE_GLSL_TRANSPARENT(uvec3)
-//DEFINE_GLSL_TRANSPARENT(uvec4)
-//
-//
-//void test()
-//{
-//    glsl_vec2* uv = new glsl_vec2();
-//
-//
-//}
-
 
 

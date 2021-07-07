@@ -1,48 +1,49 @@
 #include "gl_buffer_base.h"
 
-const std::int32_t  gl_buffer_base::MAX_CAPACITY = INT32_MAX;
+const std::int64_t gl_buffer_base::THEORETICAL_MAX_CAPACITY = INT64_MAX;
+const std::int64_t gl_buffer_base::GPU_MAX_CAPACITY = 0;
+const std::int64_t gl_buffer_base::HARDWARE_MAX_CAPACITY = 0;
+const std::int64_t gl_buffer_base::BUFFER_AVAILABLE_MAX_CAPACITY = INT32_MAX;
 
-void gl_buffer_base::fill(std::int32_t offset, const std::uint8_t *data, std::int32_t data_size)
+void gl_buffer_base::overwrite(std::int64_t offset, const std::uint8_t* data, std::int64_t data_size)
 {
-    if(!data || offset < 0 || data_size < 0 || (offset + data_size > _capacity)) return;
+    if(!data || offset < 0 || data_size < 0 || offset + data_size > _capacity) return; // dangerous: data_size out of data point to
 
     glNamedBufferSubData(_handle, offset, data_size, reinterpret_cast<const void*>(data));
-    // ** data_size > data real size, it will not case exception
     // because glNamedBufferSubData operation is read-only to data
 }
 
-void gl_buffer_base::invalidate(std::int32_t offset, std::int32_t size)
+void gl_buffer_base::invalidate(std::int64_t offset, std::int64_t size)
 {
     glInvalidateBufferSubData(_handle, offset, size);
 }
 
-void gl_buffer_base::output_data(gl_buffer_base *target_buffer)
+void gl_buffer_base::output_data_to_buffer(gl_buffer_base& target_buffer)
 {
-    if(target_buffer && target_buffer->get_capacity() == _capacity)
+    if(target_buffer.get_capacity() == _capacity)
     {
-        glCopyNamedBufferSubData(_handle, target_buffer->get_handle(), 0, 0, _capacity);
+        glCopyNamedBufferSubData(_handle, target_buffer.get_handle(), 0, 0, _capacity);
     }
 }
 
-void gl_buffer_base::output_data(std::int32_t self_offset, int32_t output_size, gl_buffer_base *target_buffer, std::int32_t target_buffer_offset)
+void gl_buffer_base::output_data_to_buffer(std::int64_t self_offset, int64_t output_size, gl_buffer_base& target, std::int64_t target_offset)
 {
-    if(target_buffer
-        && self_offset + output_size <= _capacity
-        && target_buffer_offset + output_size <= target_buffer->get_capacity())
+    if(self_offset + output_size <= _capacity
+        && target_offset + output_size <= target.get_capacity())
     {
-        glCopyNamedBufferSubData(_handle, target_buffer->get_handle(), self_offset, target_buffer_offset, output_size);
+        glCopyNamedBufferSubData(_handle, target.get_handle(), self_offset, target_offset, output_size);
     }
 
 }
 
-void gl_buffer_base::rapidly_fill(std::uint8_t data_mask)
+void gl_buffer_base::rapidly_overwrite(std::uint8_t data_mask)
 {
     glClearNamedBufferData(_handle, GL_R8UI, GL_RED, GL_UNSIGNED_BYTE, &data_mask);
 }
 
-void gl_buffer_base::execute_immutable_memory_handler(std::int32_t offset, std::int32_t size, const std::function<void(const std::uint8_t *, std::int32_t)> &handler)
+void gl_buffer_base::execute_immutable_memory_handler(std::int64_t offset, std::int64_t size, const std::function<void(const std::uint8_t*, std::int64_t)>& handler)
 {
-    if(offset < 0 || size < 0 || offset + size > _capacity) return;
+    if(offset < 0 || size < 0 || offset + size > _size) return;
 
     const auto* _mapped_memory_block = reinterpret_cast<const std::uint8_t*>(
             glMapNamedBufferRange(_handle, offset, size, static_cast<GLenum>(gl_buffer_map_access_flag::MAP_READ_BIT))
@@ -53,9 +54,9 @@ void gl_buffer_base::execute_immutable_memory_handler(std::int32_t offset, std::
     glUnmapNamedBuffer(_handle);
 }
 
-void gl_buffer_base::execute_mutable_memory_handler(std::int32_t offset, std::int32_t size, const std::function<void(std::uint8_t *, std::int32_t)> &handler)
+void gl_buffer_base::execute_mutable_memory_handler(std::int64_t offset, std::int64_t size, const std::function<void(std::uint8_t*, std::int64_t)>& handler)
 {
-    if(offset + size > _capacity) return;
+    if(offset + size > _size) return;
 
     auto* _mapped_memory_block = reinterpret_cast<std::uint8_t*>(
             glMapNamedBufferRange(_handle, offset, size, GL_MAP_WRITE_BIT)
@@ -68,6 +69,28 @@ void gl_buffer_base::execute_mutable_memory_handler(std::int32_t offset, std::in
     } // make sure modification pushed to GPU
 
     glUnmapNamedBuffer(_handle);
+}
+
+void gl_buffer_base::_reallocate(std::int64_t new_capacity)
+{
+    std::cout<<"call the _reallocate"<<std::endl;
+    if(!_check_capacity(new_capacity)) return;
+
+    std::uint32_t new_handle = 0;
+    glCreateBuffers(1, &new_handle);
+    if(new_handle != 0)
+    {
+        glNamedBufferStorage(new_handle, new_capacity, nullptr, _storage_flags);
+        glCopyNamedBufferSubData(_handle,new_handle, 0, 0, _capacity);
+        glDeleteBuffers(1, &_handle);
+
+        _handle = new_handle; _capacity = new_capacity;
+    }
+}
+
+void gl_buffer_base::reserve(std::int64_t capacity)
+{
+    if(capacity >= 0 && capacity > _capacity - _size) _reallocate(_size + capacity);
 }
 
 
