@@ -2,9 +2,10 @@
 #define H_GL_UNIFORM_BUFFER
 
 #include "graphics/variable/gl_variable.h"
-
+#include "graphics/buffer/gl_buffer_base.h"
 class gl_program;
 class gl_buffer;
+
 
 namespace gl_uniform_buffer_enum
 {
@@ -39,96 +40,111 @@ namespace gl_uniform_buffer_enum
 
 }
 
-class gl_uniform_buffer_descriptor
+enum class gl_uniform_buffer_layout
 {
-public:
-
-	gl_uniform_buffer_descriptor();
-
-public:
-
-	void add_uniform(const std::shared_ptr<gl_variable>& item);
-
-	void add_uniforms(const std::vector<std::shared_ptr<gl_variable>>& items);
-
-	void clear_uniforms();
-
-private:
-
-	gl_uniform_buffer_enum::layout _memory_layout;
-
-	gl_uniform_buffer_enum::matrix_layout _memory_matrix_layout;
-
-	std::string _block_name;
-
-	std::vector<std::shared_ptr<gl_variable>> _items;
-
-	std::uint8_t _is_dirty;
-
-public:
-	
-	inline const gl_uniform_buffer_enum::layout get_memory_layout() const
-	{
-		return _memory_layout;
-	}
-
-	inline const std::string& get_block_name() const
-	{
-		return _block_name;
-	}
-
-	inline const auto& get_items()
-	{
-		return _items;
-	}
-
-	inline const std::uint8_t is_dirty() const
-	{
-		return _is_dirty;
-	}
-
-	inline void set_dirty(bool dirty) { _is_dirty = dirty; }
-
-	inline void set_block_name(const std::string& block_name) { _block_name = block_name; }
-
+    std140,
+    shared,
+    packed,
 };
-
 
 class gl_uniform_buffer final
 {
+    static std::unordered_map<std::string, std::int64_t> _glsl_type_size_map;
+
 public:
 	
-	gl_uniform_buffer(const std::shared_ptr<gl_uniform_buffer_descriptor>& descriptor);
+	gl_uniform_buffer(const std::string& block_name, gl_uniform_buffer_layout layout, const std::vector<std::pair<std::string, std::string>>& rows,
+                      std::shared_ptr<gl_buffer_base>& public_buffer, std::shared_ptr<gl_program>& owner) :
+	    _uniform_buffer_offset(0),
+	    _uniform_buffer_size(0),
+	    _binding(0),
+	    _public_buffer(public_buffer),
+	    _owner(owner)
+    {
+        switch (layout) {
 
-public:
+            case gl_uniform_buffer_layout::std140:
+                _generate_std140_memory(rows);
+                break;
+            case gl_uniform_buffer_layout::shared:
+                _generate_shared_memory(rows);
+                break;
+            case gl_uniform_buffer_layout::packed:
+                _generate_packed_memory(rows);
+                break;
+        }
+    }
 
-	void bind(std::int32_t binding, gl_program& program);
-
-	void unbind();
-
-	std::shared_ptr<gl_uniform_buffer_descriptor> get_descriptor()
-	{
-		return _descriptor;
-	}
+    ~gl_uniform_buffer() = default;
 
 private:
 
-	std::shared_ptr<gl_uniform_buffer_descriptor> _descriptor;
+    std::string _block_name;
 
-	std::shared_ptr<gl_buffer> _buffer;
+    std::int64_t _uniform_buffer_offset, _uniform_buffer_size;
 
-	std::uint32_t _binding;
+    std::unordered_map<std::string, std::pair<std::int64_t, std::int64_t>> _attribute_layout;
 
-private:
+    std::shared_ptr<gl_buffer_base> _public_buffer;
 
-	void _fill_shared_packed(const gl_program& program);
+    std::weak_ptr<gl_program> _owner;
 
-	void _fill_std140();
+    std::uint32_t _binding;
 
 public:
 
-	~gl_uniform_buffer();
+	template<typename GLSL_T>
+	void update_uniform(const std::string& name, const GLSL_T& value)
+    {
+	    if(_public_buffer)
+        {
+            auto _it = _attribute_layout.find(name); if(_it == _attribute_layout.cend()) return;
+            auto _memory_offset = _it->second.first;
+            auto _memory_size = _it->second.second;
+            if(_memory_size != sizeof(GLSL_T)) return;
+            _public_buffer->overwrite(_memory_offset, reinterpret_cast<const std::uint8_t*>(&value), _memory_size);
+        }
+    }
 
+public:
+
+    [[nodiscard]] const std::string& get_block_name() const{return _block_name;}
+
+    [[nodiscard]] std::int64_t get_uniform_buffer_offset() const {return _uniform_buffer_offset;}
+
+    [[nodiscard]] std::int64_t get_uniform_buffer_size() const {return _uniform_buffer_size;}
+
+    const auto& get_attribute_layout()
+    {
+        return _attribute_layout;
+    }
+
+    [[nodiscard]] const std::shared_ptr<gl_buffer_base>& get_public_buffer() const {return _public_buffer;}
+
+    void bind(std::uint32_t binding);
+
+    void unbind();
+
+private:
+
+    void _generate_std140_memory(const std::vector<std::pair<std::string, std::string>>& rows)
+    {
+        // fetch a uniform buffer offset from the public buffer
+        _uniform_buffer_offset = _public_buffer->get_size();
+        std::int64_t _offset = _uniform_buffer_offset;
+        for(const auto& row : rows)
+        {
+            auto _attribute_size = _glsl_type_size_map.find(row.first)->second;
+            _attribute_layout.emplace(row.second, std::pair<std::int64_t, std::int64_t>(_offset, _attribute_size));
+            _uniform_buffer_size += _attribute_size; // calculate the uniform buffer size
+        }
+        // place the public buffer
+        _public_buffer->overwrite_by_byte(_uniform_buffer_offset, _uniform_buffer_size);
+    }
+
+    void _generate_shared_memory(const std::vector<std::pair<std::string, std::string>>& rows){}
+
+    void _generate_packed_memory(const std::vector<std::pair<std::string, std::string>>& rows);
 
 };
 

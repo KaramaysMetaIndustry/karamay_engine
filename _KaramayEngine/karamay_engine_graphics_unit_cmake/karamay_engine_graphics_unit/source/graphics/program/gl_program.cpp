@@ -319,12 +319,12 @@ inline void gl_program::_bind_uniform_buffers()
 			if (uniform_buffer)
 			{
 				// bind buffer to context
-				uniform_buffer->bind(i, *this);
+				uniform_buffer->bind(i);
 				// bind program to context
-				const std::string& block_name = uniform_buffer->get_descriptor()->get_block_name();
+				const std::string& block_name = uniform_buffer->get_block_name();
 				const auto _index = glGetUniformBlockIndex(_handle, block_name.c_str());
 				glUniformBlockBinding(_handle, _index, i);
-				
+
 #ifdef _DEBUG
 				std::cout << "[ " << i << " uniform buffer is bound.]" << std::endl;
 #endif

@@ -131,6 +131,12 @@ enum class gl_uniform_type : GLenum
 	UNSIGNED_INT_ATOMIC_COUNTER	= GL_UNSIGNED_INT_ATOMIC_COUNTER	//atomic_uint
 };
 
+struct gl_uniform_buffer_descriptor {
+    std::string block_name;
+    gl_uniform_buffer_layout layout;
+    std::vector<std::pair<std::string, std::string>> rows;
+};
+
 
 /**
  * [Fixed] you must call this func at some time
@@ -141,7 +147,7 @@ enum class gl_uniform_type : GLenum
  * 
  * 
  */
-class gl_program final : public gl_object
+class gl_program final : public gl_object, public std::enable_shared_from_this<gl_program>
 {
 public:
 
@@ -168,6 +174,22 @@ public:
 	void add_uniform_buffers(const std::vector<std::shared_ptr<class gl_uniform_buffer>>& uniform_buffers);
 
 	void add_uniform_buffer(std::shared_ptr<class gl_uniform_buffer> uniform_buffer);
+
+	void add_uniform_buffers(const std::vector<gl_uniform_buffer_descriptor>& descriptors) {
+        auto _owner = shared_from_this();
+
+        gl_buffer_storage_options _storage_options{true, true, true, true, false, false};
+	    auto _public_uniform_buffer = std::make_shared<gl_buffer_base>(12, _storage_options);
+
+        for(const auto& descriptor : descriptors) {
+            _uniform_buffers.push_back(
+                    std::make_shared<gl_uniform_buffer>(descriptor.block_name, descriptor.layout, descriptor.rows,_public_uniform_buffer, _owner)
+            );
+        }
+
+    }
+
+    void find_uniform_buffer(const std::string& uniform_buffer_name) {}
 
 	void add_shader_storage_buffers(const std::vector<std::shared_ptr<class gl_shader_storage_buffer>>& shader_storage_buffers);
 

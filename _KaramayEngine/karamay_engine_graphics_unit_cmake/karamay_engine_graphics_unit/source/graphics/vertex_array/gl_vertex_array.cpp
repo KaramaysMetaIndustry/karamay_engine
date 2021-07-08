@@ -37,7 +37,6 @@ std::string gl_vertex_array::get_attribute_component_type(std::uint32_t index)
 	case GL_FLOAT: return "FLOAT";
 	case GL_DOUBLE: return "DOUBLE";
 	default: return "";
-		break;
 	}
 }
 

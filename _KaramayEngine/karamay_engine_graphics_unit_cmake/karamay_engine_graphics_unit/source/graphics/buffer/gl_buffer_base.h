@@ -3,6 +3,45 @@
 
 #include "graphics/glo/gl_object.h"
 
+
+#define STATIC_ASSERT_GLSL_T()\
+static_assert(\
+        std::is_same<GLSL_T, glsl_float>::value ||\
+        std::is_same<GLSL_T, glsl_vec2>::value ||\
+        std::is_same<GLSL_T, glsl_vec3>::value ||\
+        std::is_same<GLSL_T, glsl_vec4>::value ||\
+        std::is_same<GLSL_T, glsl_double>::value ||\
+        std::is_same<GLSL_T, glsl_dvec2>::value ||\
+        std::is_same<GLSL_T, glsl_dvec3>::value ||\
+        std::is_same<GLSL_T, glsl_dvec4>::value ||\
+        std::is_same<GLSL_T, glsl_int>::value ||\
+        std::is_same<GLSL_T, glsl_ivec2>::value ||\
+        std::is_same<GLSL_T, glsl_ivec3>::value ||\
+        std::is_same<GLSL_T, glsl_ivec4>::value ||\
+        std::is_same<GLSL_T, glsl_uint>::value ||\
+        std::is_same<GLSL_T, glsl_uvec2>::value ||\
+        std::is_same<GLSL_T, glsl_uvec3>::value ||\
+        std::is_same<GLSL_T, glsl_uvec4>::value ||\
+        std::is_same<GLSL_T, glsl_mat2>::value ||\
+        std::is_same<GLSL_T, glsl_mat2x3>::value ||\
+        std::is_same<GLSL_T, glsl_mat2x4>::value ||\
+        std::is_same<GLSL_T, glsl_mat3>::value ||\
+        std::is_same<GLSL_T, glsl_mat3x2>::value ||\
+        std::is_same<GLSL_T, glsl_mat3x4>::value ||\
+        std::is_same<GLSL_T, glsl_mat4>::value ||\
+        std::is_same<GLSL_T, glsl_mat4x2>::value ||\
+        std::is_same<GLSL_T, glsl_mat4x3>::value ||\
+        std::is_same<GLSL_T, glsl_dmat2>::value ||\
+        std::is_same<GLSL_T, glsl_dmat2x3>::value ||\
+        std::is_same<GLSL_T, glsl_dmat2x4>::value ||\
+        std::is_same<GLSL_T, glsl_dmat3>::value ||\
+        std::is_same<GLSL_T, glsl_dmat3x2>::value ||\
+        std::is_same<GLSL_T, glsl_dmat3x4>::value ||\
+        std::is_same<GLSL_T, glsl_dmat4>::value ||\
+        std::is_same<GLSL_T, glsl_dmat4x2>::value ||\
+        std::is_same<GLSL_T, glsl_dmat4x3>::value\
+        , "GLSL_T must be glsl_*")\
+
 enum class internal_format : GLenum
 {
     R8 = GL_R8,
@@ -226,7 +265,9 @@ public:
      * */
     void push_back(const std::uint8_t* data, std::int64_t data_size)
     {
+        // check the dynamic updating validation
         if(!_storage_options.is_dynamic_storage|| !data || data_size < 0 || _size < 0) return;
+        // check the rest capacity
         if(_size + data_size > _capacity)  _reallocate(_size + data_size);
 
         glNamedBufferSubData(_handle, _size, data_size, reinterpret_cast<const void*>(data));
@@ -236,20 +277,24 @@ public:
 
     /*
      * [App -> GL]
+     * 使用情形：离散数据，非离散数据请使用数组更新，会大幅降低上下文开销
      * */
-    template<typename GLM_T>
-    inline void push_back(const GLM_T& data)
+    template<typename GLSL_T>
+    inline void push_back(const GLSL_T& data)
     {
-        push_back(reinterpret_cast<const std::uint8_t*>(glm::value_ptr(data)), sizeof (GLM_T));
+        STATIC_ASSERT_GLSL_T();
+        push_back(reinterpret_cast<const std::uint8_t*>(glm::value_ptr(data)), sizeof (GLSL_T));
     }
 
     /*
      * [App -> GL]
+     * 插入非离散同类数据
      * */
-    template<typename GLM_T>
-    inline void push_back(const std::vector<GLM_T>& data_collection)
+    template<typename GLSL_T>
+    inline void push_back(const std::vector<GLSL_T>& data_collection)
     {
-        push_back(reinterpret_cast<const std::uint8_t*>(data_collection.data()), data_collection.size() * sizeof(GLM_T));
+        STATIC_ASSERT_GLSL_T();
+        push_back(reinterpret_cast<const std::uint8_t*>(data_collection.data()), data_collection.size() * sizeof(GLSL_T));
     }
 
 public:
@@ -268,10 +313,11 @@ public:
      * offset + data_size <= _capacity &&
      * data's length == data_size
      * */
-    template<typename GLM_T>
-    inline void overwrite(std::int64_t offset, const GLM_T& data)
+    template<typename GLSL_T>
+    inline void overwrite(std::int64_t offset, const GLSL_T& data)
     {
-        overwrite(offset, reinterpret_cast<const std::uint8_t*>(glm::value_ptr(data)), static_cast<std::int64_t>(sizeof(GLM_T)));
+        STATIC_ASSERT_GLSL_T();
+        overwrite(offset, reinterpret_cast<const std::uint8_t*>(&data), static_cast<std::int64_t>(sizeof(GLSL_T)));
     }
 
     /*
@@ -280,10 +326,11 @@ public:
      * offset + data_size <= _capacity &&
      * data's length == data_size
      * */
-    template<typename GLM_T>
-    inline void overwrite(std::int64_t offset, const std::vector<GLM_T>& data_collection)
+    template<typename GLSL_T>
+    inline void overwrite(std::int64_t offset, const std::vector<GLSL_T>& data_collection)
     {
-        overwrite(offset, reinterpret_cast<const std::uint8_t*>(data_collection.data()), static_cast<std::int64_t>(data_collection.size() * sizeof(GLM_T)));
+        STATIC_ASSERT_GLSL_T();
+        overwrite(offset, reinterpret_cast<const std::uint8_t*>(data_collection.data()), static_cast<std::int64_t>(data_collection.size() * sizeof(GLSL_T)));
     }
 
 public:
@@ -293,12 +340,12 @@ public:
      * You must sacrifice some flexibility to get rapid filling.
      * capacity % sizeof (data_mask) == 0
      * */
-    void overwrite_by_unit(std::uint8_t unit = 0);
+    void overwrite_by_byte(std::int64_t offset, std::int64_t size);
 
-    template<typename GLM_T>
-    inline void overwrite_by_unit(const GLM_T& unit)
+    template<typename GLSL_T>
+    inline void overwrite_by_unit(std::int64_t offset, std::int64_t size, const GLSL_T& unit)
     {
-
+        glClearNamedBufferSubData(_handle, 0, offset, size, 0, 0, reinterpret_cast<const std::uint8_t*>(&unit));
     }
 
 public:
@@ -342,35 +389,35 @@ public:
 
 public:
 
-    [[nodiscard]] std::int64_t get_buffer_size() const
+    [[nodiscard]] std::int64_t query_buffer_size() const
     {
         std::int64_t _buffer_size = 0;
         glGetNamedBufferParameteri64v(_handle, GL_BUFFER_SIZE, &_buffer_size);
         return _buffer_size;
     }
 
-    [[nodiscard]] std::uint8_t is_mapped() const
+    [[nodiscard]] std::uint8_t query_buffer_mapped() const
     {
         std::int32_t _is_mapped = 0;
         glGetNamedBufferParameteriv(_handle, GL_BUFFER_MAPPED, &_is_mapped);
         return _is_mapped == GL_TRUE;
     }
 
-    [[nodiscard]] std::int32_t get_access() const
+    [[nodiscard]] std::int32_t query_buffer_access() const
     {
         std::int32_t _buffer_access = 0;
         glGetNamedBufferParameteriv(_handle, GL_BUFFER_ACCESS, &_buffer_access);
         return _buffer_access;
     }
 
-    [[nodiscard]] std::int32_t get_usage() const
+    [[nodiscard]] std::int32_t query_buffer_usage() const
     {
         std::int32_t _buffer_usage = 0;
         glGetNamedBufferParameteriv(_handle, GL_BUFFER_USAGE, &_buffer_usage);
         return _buffer_usage;
     }
 
-protected:
+private:
 
     [[nodiscard]] inline bool _check_capacity(std::int64_t capacity) const
     {

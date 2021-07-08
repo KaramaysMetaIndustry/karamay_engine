@@ -554,26 +554,8 @@ void test0()
 	ebo->fill(ebod);
 
 	// ubo
-	auto u0 = create_uniform("color", glu_f32vec4(1.0f, 0.0f, 0.0f, 1.0f));
-	auto u1 = create_uniform("pos", glu_f32vec3(0.0f, 1.0f, 0.0f));
-	auto u2 = create_uniform("text", glu_f32vec4(0.0f, 0.0f, 1.0f, 1.0f));
-	auto ubod = std::make_shared<gl_uniform_buffer_descriptor>();
-	ubod->set_block_name("attack");
-	ubod->add_uniform(u0);
-	ubod->add_uniform(u1);
-	ubod->add_uniform(u2);
-	auto ubo = std::make_shared<gl_uniform_buffer>(ubod);
-
-	// ubo1
-	auto u01 = create_uniform("color1", glu_f32vec4(1.0f, 0.0f, 0.0f, 1.0f));
-	auto u11 = create_uniform("pos1", glu_f32vec3(0.0f, 1.0f, 0.0f));
-	auto u21 = create_uniform("text1", glu_f32vec4(0.0f, 0.0f, 1.0f, 1.0f));
-	auto ubod1 = std::make_shared<gl_uniform_buffer_descriptor>();
-	ubod1->set_block_name("attack1");
-	ubod1->add_uniform(u01);
-	ubod1->add_uniform(u11);
-	ubod1->add_uniform(u21);
-	auto ubo1 = std::make_shared<gl_uniform_buffer>(ubod1);
+    std::shared_ptr<gl_program> program = std::make_shared<gl_program>();
+    auto count = program.use_count();
 
 	// ssbo
 	auto ssbod = std::make_shared<gl_shader_storage_buffer_descriptor>();
@@ -586,7 +568,7 @@ void test0()
 	auto ssbo = std::make_shared<gl_shader_storage_buffer>(ssbod);
 
 	// program
-	auto program = std::make_shared<gl_program>();
+
 	program->construct({
 		"shaders/test.vert",
 		"shaders/test.frag" });
@@ -598,9 +580,12 @@ void test0()
 	
 	program->add_uniform(camera_position);
 	program->add_uniform(spe_color);
+	program->add_uniform_buffers({
+    {"matrices", gl_uniform_buffer_layout::std140, {{"vec4", "color"}, {"vec3", "position"}}},
+    {"matrices", gl_uniform_buffer_layout::std140, {{"vec4", "color"}, {"vec3", "position"}}},
+    {"matrices", gl_uniform_buffer_layout::std140, {{"vec4", "color"}, {"vec3", "position"}}}
+	});
 
-	program->add_uniform_buffer(ubo);
-	program->add_uniform_buffer(ubo1);
 	program->add_shader_storage_buffer(ssbo);
 	
 	
@@ -633,6 +618,19 @@ void test0()
 	//glClearStencil(0);
 
     {
+//        auto t1=std::chrono::steady_clock::now();
+//        //run code
+//        auto t2=std::chrono::steady_clock::now();
+
+//        //√Î
+//        double dr_s=std::chrono::duration<double>(t2-t1).count();
+//        //∫¡√Îº∂
+//        double dr_ms=std::chrono::duration<double,std::milli>(t2-t1).count();
+//        //Œ¢√Óº∂
+//        double dr_us=std::chrono::duration<double,std::micro>(t2-t1).count();
+//        //ƒ…√Îº∂
+//        double dr_ns=std::chrono::duration<double,std::nano>(t2-t1).count();
+
         gl_buffer_base _buf(14, {
             true,
             true,
@@ -642,13 +640,19 @@ void test0()
             false
         });
 
-        _buf.push_back(glm::vec3(0.1f, 0.2f, 0.3f));
-        _buf.print<std::float_t>();
 
-        _buf.shrink_to_fit();
-        _buf.overwrite_by_unit();
 
-        _buf.print<std::float_t>();
+        auto t1=std::chrono::steady_clock::now();
+        _buf.push_back<glm::vec3>({glm::vec3(0.1f, 0.2f, 0.3f),
+                                   glm::vec3(0.1f, 0.2f, 0.3f),
+                                   glm::vec3(0.1f, 0.2f, 0.3f),
+                                   });
+
+        auto t2=std::chrono::steady_clock::now();
+        double dr_us=std::chrono::duration<double,std::micro>(t2-t1).count();
+        std::cout<<"time: "<< dr_us << "ms" <<std::endl;
+
+        _buf.print<std::double_t>();
     }
 
 	int i = 1;

@@ -36,9 +36,10 @@ void gl_buffer_base::output_data_to_buffer(std::int64_t self_offset, int64_t out
 
 }
 
-void gl_buffer_base::overwrite_by_unit(std::uint8_t uint)
+void gl_buffer_base::overwrite_by_byte(std::int64_t offset, std::int64_t size)
 {
-    glClearNamedBufferData(_handle, GL_R8UI, GL_RED, GL_UNSIGNED_BYTE, &uint);
+    std::uint8_t unit = 0;
+    glClearNamedBufferSubData(_handle, GL_R8UI, offset, size, GL_RED, GL_UNSIGNED_BYTE, &unit);
 }
 
 void gl_buffer_base::execute_immutable_memory_handler(std::int64_t offset, std::int64_t size, const std::function<void(const std::uint8_t*, std::int64_t)>& handler)
@@ -66,7 +67,7 @@ void gl_buffer_base::execute_mutable_memory_handler(std::int64_t offset, std::in
     {
         handler(_mapped_memory_block, size);
         glFlushMappedNamedBufferRange(_handle, offset, size);
-        glMemoryBarrier()
+        //glMemoryBarrier();
     } // make sure modification pushed to GPU
 
     glUnmapNamedBuffer(_handle);
