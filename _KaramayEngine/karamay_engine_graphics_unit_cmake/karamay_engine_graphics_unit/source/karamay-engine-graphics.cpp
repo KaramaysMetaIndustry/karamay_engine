@@ -645,9 +645,9 @@ void test0()
         _buf.push_back(glm::vec3(0.1f, 0.2f, 0.3f));
         _buf.print<std::float_t>();
 
-        _buf.reserve(2);
-        //_buf.overwrite(12, glm::vec3(1.1f, 1.2f, 1.3f));
-        _buf.push_back(glm::vec4(1.1f, 1.2f, 1.3f, 1.4f));
+        _buf.shrink_to_fit();
+        _buf.overwrite_by_unit();
+
         _buf.print<std::float_t>();
     }
 

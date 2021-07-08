@@ -25,9 +25,8 @@ private:
 
 	std::shared_ptr<gl_buffer> _output_buffer;
 
-	void _generate_buffer();
-
 public:
+
 
     [[nodiscard]] const auto& get_varyings() const {return _descriptor.varyings;}
 

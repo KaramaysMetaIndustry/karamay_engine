@@ -47,10 +47,5 @@ std::shared_ptr<const gl_buffer> gl_transform_feedback::get_output_buffer() cons
     return _output_buffer;
 }
 
-void gl_transform_feedback::_generate_buffer() {
-    _output_buffer = std::make_shared<gl_buffer>();
-    _output_buffer->allocate(100);
-    glTransformFeedbackBufferBase(_handle,0, _output_buffer->get_handle());
-}
 
 
