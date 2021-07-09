@@ -555,7 +555,6 @@ void test0()
 
 	// ubo
     std::shared_ptr<gl_program> program = std::make_shared<gl_program>();
-    auto count = program.use_count();
 
 	// ssbo
 	auto ssbod = std::make_shared<gl_shader_storage_buffer_descriptor>();
@@ -582,14 +581,19 @@ void test0()
 	program->add_uniform(spe_color);
 
 	program->add_uniform_buffers({
-    {"Block0", gl_uniform_buffer_layout::std140, {{"vec4", "color0"}, {"vec4", "position0"}}},
-    {"Block1", gl_uniform_buffer_layout::std140, {{"vec4", "color1"}, {"vec4", "position1"}}},
-    {"Block2", gl_uniform_buffer_layout::std140, {{"vec4", "color2"}, {"vec4", "position2"}}}
+    {"Block0", gl_uniform_buffer_layout::shared, {{"vec4", "color0"}, {"vec4", "position0"}}},
+    {"Block1", gl_uniform_buffer_layout::shared, {{"vec4", "color1"}, {"vec4", "position1"}}},
+    {"Block2", gl_uniform_buffer_layout::shared, {{"vec4", "color2"}, {"vec4", "position2"}}}
 	});
 
-	auto _ubBlock2 = program->find_uniform_buffer("Block2");
-	_ubBlock2->update_uniform("color2", glsl_vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
+
+
+
+    auto _ubBlock2 = program->find_uniform_buffer("Block0");
+	_ubBlock2->update_uniform("color0", glsl_vec4(0.0f, 1.0f, 0.0f, 1.0f));
+
+	_ubBlock2->get_public_buffer()->print<std::float_t>();
 	program->add_shader_storage_buffer(ssbo);
 	
 	
@@ -604,7 +608,6 @@ void test0()
 	//glEnable(GL_COLOR_BUFFER_BIT);
 	//glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-
 	//glEnable(GL_ACCUM_BUFFER_BIT);
 	//glClearAccum(1.0f, 0.2f, 1.0f, 1.0f);
 

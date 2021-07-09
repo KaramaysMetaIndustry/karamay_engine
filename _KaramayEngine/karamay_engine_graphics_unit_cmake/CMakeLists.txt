@@ -18,7 +18,7 @@ link_directories(karamay_engine_graphics_unit/dependencies/glfw-3.3.4.bin.WIN64/
 
 include_directories(karamay_engine_graphics_unit/dependencies)
 include_directories(karamay_engine_graphics_unit/dependencies/glm_pack/include)
-include_directories(karamay_engine_graphics_unit/source/)
+include_directories(karamay_engine_graphics_unit/source)
 
 add_executable(karamay_engine_graphics_unit
         karamay_engine_graphics_unit/dependencies/glm_pack/include/glm/detail/_features.hpp
@@ -493,8 +493,6 @@ add_executable(karamay_engine_graphics_unit
         karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_shader_storage_block.h
         karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_uniform_block.cpp
         karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_uniform_block.h
-        karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer.cpp
-        karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer.h
         karamay_engine_graphics_unit/source/graphics/camera/gl_camera.cpp
         karamay_engine_graphics_unit/source/graphics/camera/gl_camera.h
         karamay_engine_graphics_unit/source/graphics/commands/gl_commands.cpp
@@ -579,7 +577,7 @@ add_executable(karamay_engine_graphics_unit
         karamay_engine_graphics_unit/source/graphics/buffer/gl_static_buffer.h
         karamay_engine_graphics_unit/source/graphics/buffer/gl_dynamic_buffer.cpp
         karamay_engine_graphics_unit/source/graphics/buffer/gl_dynamic_buffer.h
-        karamay_engine_graphics_unit/source/public/glm.h karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_base.cpp karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_base.h karamay_engine_graphics_unit/source/graphics/type/glsl_types.h)
+        karamay_engine_graphics_unit/source/public/glm.h karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer.cpp karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer.h karamay_engine_graphics_unit/source/graphics/type/glsl_types.h karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/static_mesh_renderer/gl_static_mesh_renderer.cpp karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/static_mesh_renderer/gl_static_mesh_renderer.h karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/particle_system_renderer/gl_particle_system_renderer.cpp karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/particle_system_renderer/gl_particle_system_renderer.h karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/instanced_static_mesh_renderer/gl_instanced_static_mesh_renderer.cpp karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/instanced_static_mesh_renderer/gl_instanced_static_mesh_renderer.h karamay_engine_graphics_unit/source/dispatcher/gl_renderer_dispatcher.cpp karamay_engine_graphics_unit/source/dispatcher/gl_renderer_dispatcher.h karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_tools.h)
 
 target_link_libraries(karamay_engine_graphics_unit glew32s.lib glfw3.lib)
 

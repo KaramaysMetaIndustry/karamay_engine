@@ -2,7 +2,7 @@
 #define H_GL_UNIFORM_BUFFER
 
 #include "graphics/variable/gl_variable.h"
-#include "graphics/buffer/gl_buffer_base.h"
+#include "graphics/buffer/gl_buffer.h"
 class gl_program;
 class gl_buffer;
 
@@ -54,7 +54,7 @@ class gl_uniform_buffer final
 public:
 	
 	gl_uniform_buffer(const std::string& block_name, gl_uniform_buffer_layout layout, const std::vector<std::pair<std::string, std::string>>& rows,
-                      std::shared_ptr<gl_buffer_base>& public_buffer, std::shared_ptr<gl_program>& owner) :
+                      std::shared_ptr<gl_buffer>& public_buffer, std::shared_ptr<gl_program>& owner) :
 	    _uniform_buffer_offset(0),
 	    _uniform_buffer_size(0),
 	    _binding(0),
@@ -62,18 +62,7 @@ public:
 	    _owner(owner),
         _block_name(block_name)
     {
-        switch (layout) {
-
-            case gl_uniform_buffer_layout::std140:
-                _generate_std140_memory(rows);
-                break;
-            case gl_uniform_buffer_layout::shared:
-                _generate_shared_memory(rows);
-                break;
-            case gl_uniform_buffer_layout::packed:
-                _generate_packed_memory(rows);
-                break;
-        }
+        _generate_memory_layout(layout, rows);
     }
 
     ~gl_uniform_buffer() = default;
@@ -86,7 +75,7 @@ private:
 
     std::unordered_map<std::string, std::pair<std::int64_t, std::int64_t>> _attribute_layout;
 
-    std::shared_ptr<gl_buffer_base> _public_buffer;
+    std::shared_ptr<gl_buffer> _public_buffer;
 
     std::weak_ptr<gl_program> _owner;
 
@@ -104,6 +93,7 @@ public:
             auto _memory_size = _it->second.second;
             if(_memory_size != sizeof(GLSL_T)) return;
             _public_buffer->overwrite(_memory_offset, reinterpret_cast<const std::uint8_t*>(&value), _memory_size);
+            GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT;
         }
     }
 
@@ -120,7 +110,7 @@ public:
         return _attribute_layout;
     }
 
-    [[nodiscard]] const std::shared_ptr<gl_buffer_base>& get_public_buffer() const {return _public_buffer;}
+    [[nodiscard]] const std::shared_ptr<gl_buffer>& get_public_buffer() const {return _public_buffer;}
 
     void bind(std::uint32_t binding);
 
@@ -144,9 +134,25 @@ private:
         _public_buffer->push_back('0', _uniform_buffer_size);
     }
 
-    void _generate_shared_memory(const std::vector<std::pair<std::string, std::string>>& rows){}
+    void _generate_shared_memory(const std::vector<std::pair<std::string, std::string>>& rows);
 
     void _generate_packed_memory(const std::vector<std::pair<std::string, std::string>>& rows);
+
+    void _generate_memory_layout(gl_uniform_buffer_layout layout, const std::vector<std::pair<std::string, std::string>>& rows)
+    {
+        switch (layout) {
+
+            case gl_uniform_buffer_layout::std140:
+                _generate_std140_memory(rows);
+                break;
+            case gl_uniform_buffer_layout::shared:
+                _generate_shared_memory(rows);
+                break;
+            case gl_uniform_buffer_layout::packed:
+                _generate_packed_memory(rows);
+                break;
+        }
+    }
 
 };
 

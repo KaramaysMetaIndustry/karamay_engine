@@ -1,22 +1,20 @@
-#pragma once
-#include "graphics/texture/texture_2d/gl_texture_2d.h"
-#include "graphics/texture/texture_2d/gl_texture_2d_multisample.h"
-#include "graphics/renderbuffer/gl_renderbuffer.h"
-#include "graphics/renderbuffer/gl_multisample_renderbuffer.h"
+#ifndef H_RENDERER
+#define H_RENDERER
 
-struct gl_renderer_pass
-{
-	
-};
+#include "public/stl.h"
 
+class gl_program;
 
 class gl_renderer
 {
+public:
 
-	gl_renderer(const std::string& config_path) {}
+    virtual void assembly() = 0;
 
-	gl_renderer(const std::vector<gl_renderer_pass>& passes) {}
-
+    virtual void render(std::float_t delta_time) = 0;
 
 };
+
+
+#endif
 

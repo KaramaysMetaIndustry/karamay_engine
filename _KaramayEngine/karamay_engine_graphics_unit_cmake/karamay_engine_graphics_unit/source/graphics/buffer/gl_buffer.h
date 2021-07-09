@@ -1,180 +1,271 @@
-#ifndef H_GL_BUFFER
-#define H_GL_BUFFER
+#ifndef H_GL_BUFFER_BASE
+#define H_GL_BUFFER_BASE
 
 #include "graphics/glo/gl_object.h"
+#include "graphics/buffer/gl_buffer_tools.h"
 
-namespace gl_buffer_enum
-{
-	enum class target : GLenum
-	{
-	    UNKNOWN = 0,
 
-		ARRAY_BUFFER = GL_ARRAY_BUFFER,
-		ELEMENT_ARRAY_BUFFER = GL_ELEMENT_ARRAY_BUFFER,
-		UNIFORM_BUFFER = GL_UNIFORM_BUFFER,
-		SHADER_STORAGE_BUFFER = GL_SHADER_STORAGE_BUFFER,
-		ATOMIC_COUNTER_BUFFER = GL_ATOMIC_COUNTER_BUFFER,
-		DRAW_INDIRECT_BUFFER = GL_DRAW_INDIRECT_BUFFER,
-		QUERY_BUFFER = GL_QUERY_BUFFER,
-		PIXEL_PACK_BUFFER = GL_PIXEL_PACK_BUFFER,
-		PIXEL_UNPACK_BUFFER = GL_PIXEL_UNPACK_BUFFER,
-		COPY_READ_BUFFER = GL_COPY_READ_BUFFER,
-		COPY_WRITE_BUFFER = GL_COPY_WRITE_BUFFER,
-		DISPATCH_INDIRECT_BUFFER = GL_DISPATCH_INDIRECT_BUFFER,
-		TEXTURE_BUFFER = GL_TEXTURE_BUFFER,
-		TRANSFORM_FEEDBACK_BUFFER = GL_TRANSFORM_FEEDBACK_BUFFER
-	};
 
-	enum class storage_flag : GLenum
-	{
-		MAP_READ_BIT = GL_MAP_READ_BIT,
-		MAP_WRITE_BIT = GL_MAP_WRITE_BIT,
-
-		DYNAMIC_STORAGE_BIT = GL_DYNAMIC_STORAGE_BIT,
-		CLIENT_STORAGE_BIT = GL_CLIENT_STORAGE_BIT,
-
-		MAP_PERSISTENT_BIT = GL_MAP_PERSISTENT_BIT,
-		MAP_COHERENT_BIT = GL_MAP_COHERENT_BIT
-	};
-
-	enum class usage : GLenum
-	{
-		STREAM_DRAW = GL_STREAM_DRAW,
-		STREAM_READ = GL_STREAM_READ,
-		STREAM_COPY = GL_STREAM_COPY,
-
-		STATIC_DRAW = GL_STATIC_DRAW,
-		STATIC_READ = GL_STATIC_READ,
-		STATIC_COPY = GL_STATIC_COPY,
-
-		DYNAMIC_DRAW = GL_DYNAMIC_DRAW,
-		DYNAMIC_READ = GL_DYNAMIC_READ,
-		DYNAMIC_COPY = GL_DYNAMIC_COPY
-	};
-
-	enum class internal_format : GLenum
-	{
-		R8 = GL_R8,
-		R16 = GL_R16,
-		R16F = GL_R16F,
-		R32F = GL_R32F,
-		R8I = GL_R8I,
-		R16I = GL_R16I,
-		R32I = GL_R32I,
-		R8UI = GL_R8UI,
-		R16UI = GL_R16UI,
-		R32UI = GL_R32UI,
-		RG8 = GL_RG8,
-		RG16 = GL_RG16,
-		RG16F = GL_RG16F,
-		RG32F = GL_RG32F,
-		RG8I = GL_RG8I,
-		RG16I = GL_RG16I,
-		RG32I = GL_RG32I,
-		RG8UI = GL_RG8UI,
-		RG16UI = GL_RG16UI,
-		RG32UI = GL_RG32UI,
-		RGB32F = GL_RGB32F,
-		RGB32I = GL_RGB32I,
-		RGB32UI = GL_RGB32UI,
-		RGBA8 = GL_RGBA8,
-		RGBA16 = GL_RGBA16,
-		RGBA16F = GL_RGBA16F,
-		RGBA32F = GL_RGBA32F,
-		RGBA8I = GL_RGBA8I,
-		RGBA16I = GL_RGBA16I,
-		RGBA32I = GL_RGBA32I,
-		RGBA8UI = GL_RGBA8UI,
-		RGBA16UI = GL_RGBA16UI,
-		RGBA32UI = GL_RGBA32UI
-	};
-
-	enum class format : GLenum
-	{
-		RED = GL_RED,
-		RG = GL_RG,
-		RGB = GL_RGB,
-		BGR = GL_BGR,
-		RGBA = GL_RGBA,
-		BGRA = GL_BGRA,
-		RED_INTEGER = GL_RED_INTEGER,
-		RG_INTEGER = GL_RG_INTEGER,
-		RGB_INTEGER = GL_RGB_INTEGER,
-		BGR_INTEGER = GL_BGR_INTEGER,
-		RGBA_INTEGER = GL_RGBA_INTEGER,
-		BGRA_INTEGER = GL_BGRA_INTEGER,
-		STENCIL_INDEX = GL_STENCIL_INDEX,
-		DEPTH_COMPONENT = GL_DEPTH_COMPONENT,
-		DEPTH_STENCIL = GL_DEPTH_STENCIL
-	};
-
-	enum class data_type : GLenum
-	{
-		HALF_FLOAT = GL_HALF_FLOAT,
-		FLOAT = GL_FLOAT,
-
-		BYTE = GL_BYTE,
-		UNSIGNED_BYTE = GL_UNSIGNED_BYTE,
-		SHORT = GL_SHORT,
-		UNSIGNED_SHORT = GL_UNSIGNED_SHORT,
-		INT = GL_INT,
-		UNSIGNED_INT = GL_UNSIGNED_INT,
-		
-		UNSIGNED_BYTE_3_3_2 = GL_UNSIGNED_BYTE_3_3_2,
-		UNSIGNED_BYTE_2_3_3_REV = GL_UNSIGNED_BYTE_2_3_3_REV,
-		UNSIGNED_SHORT_5_6_5 = GL_UNSIGNED_SHORT_5_6_5,
-		UNSIGNED_SHORT_5_6_5_REV = GL_UNSIGNED_SHORT_5_6_5_REV,
-		UNSIGNED_SHORT_4_4_4_4 = GL_UNSIGNED_SHORT_4_4_4_4,
-		UNSIGNED_SHORT_4_4_4_4_REV = GL_UNSIGNED_SHORT_4_4_4_4_REV,
-		UNSIGNED_SHORT_5_5_5_1 = GL_UNSIGNED_SHORT_5_5_5_1,
-		UNSIGNED_SHORT_1_5_5_5_REV = GL_UNSIGNED_SHORT_1_5_5_5_REV,
-		UNSIGNED_INT_8_8_8_8 = GL_UNSIGNED_INT_8_8_8_8,
-		UNSIGNED_INT_8_8_8_8_REV = GL_UNSIGNED_INT_8_8_8_8_REV,
-		UNSIGNED_INT_10_10_10_2 = GL_UNSIGNED_INT_10_10_10_2,
-		UNSIGNED_INT_2_10_10_10_REV = GL_UNSIGNED_INT_2_10_10_10_REV
-	};
-
-	enum class access : GLenum
-	{
-		READ_WRITE = GL_READ_WRITE,
-		READ_ONLY = GL_READ_ONLY,
-		WRITE_ONLY = GL_WRITE_ONLY
-	};
-}
-
-class gl_buffer final : public gl_object
+class gl_buffer : public gl_object
 {
 public:
-	
-	gl_buffer();
 
-	~gl_buffer() override;
-
-public:
-
-    void test() const{}
-
-	void allocate(std::size_t size, bool is_map_persistent = false, bool is_map_coherent = false, bool is_map_read = true, bool is_map_write = true, bool is_dynamic_storage = true, bool is_client_storage = true);
-
-	void fill(std::size_t offset, std::size_t size, const void* data);
-
-	void clear(GLenum internal_format, GLenum format, GLenum type, const void* data);
-
-	void clear(GLenum internal_format, GLenum format, GLenum type, const void* data, GLintptr offset, GLsizeiptr size);
-
-	void copy_to(GLuint write_buffer_handle, GLintptr read_offset, GLintptr write_offset, GLsizeiptr size);
+    const static std::int64_t THEORETICAL_MAX_CAPACITY;
+    const static std::int64_t HARDWARE_MAX_CAPACITY;
+    const static std::int64_t GPU_MAX_CAPACITY;
+    const static std::int64_t BUFFER_AVAILABLE_MAX_CAPACITY;
 
 public:
 
-	std::int32_t get_size() const
-	{
-		GLint _size = 0;
-		glGetNamedBufferParameteriv(_handle, GL_BUFFER_SIZE, &_size);
-		return _size;
-	}
+    explicit gl_buffer(std::int64_t capacity, gl_buffer_storage_options storage_options) :
+        _capacity(capacity),
+        _size(0),
+        _storage_flags(0),
+        _storage_options(storage_options)
+    {
+        glCreateBuffers(1, &_handle);
+        if(_handle != 0)
+        {
+            if(storage_options.is_map_read) _storage_flags |= GL_MAP_READ_BIT;
+            if(storage_options.is_map_write) _storage_flags |= GL_MAP_WRITE_BIT;
+            if(storage_options.is_map_persistent) _storage_flags |= GL_MAP_PERSISTENT_BIT;
+            if(storage_options.is_map_coherent) _storage_flags |= GL_MAP_COHERENT_BIT;
+            if(storage_options.is_client_storage) _storage_flags |= GL_CLIENT_STORAGE_BIT;
+            if(storage_options.is_dynamic_storage) _storage_flags |= GL_DYNAMIC_STORAGE_BIT;
+
+            glNamedBufferStorage(_handle, capacity, nullptr, _storage_flags);
+            _capacity = capacity;
+        }
+    }
+
+    ~gl_buffer() override
+    {
+        glDeleteBuffers(1, &_handle);
+    }
+
+public:
+
+    [[nodiscard]] std::int64_t get_capacity() const { return _capacity; }
+
+    [[nodiscard]] std::int64_t get_size() const { return _size; }
+
+    [[nodiscard]] std::uint32_t get_storage_flags() const { return _storage_flags; }
+
+public:
+
+    void reserve(std::int64_t capacity);
+
+    void shrink_to_fit();
+
+public:
+
+    /*
+     * [App -> GL]
+     * */
+    void push_back(const std::uint8_t* data, std::int64_t data_size)
+    {
+        // check the dynamic updating validation
+        if(!_storage_options.is_dynamic_storage|| !data || data_size < 0 || _size < 0) return;
+        // check the rest capacity
+        if(_size + data_size > _capacity)  _reallocate(_size + data_size);
+
+        glNamedBufferSubData(_handle, _size, data_size, reinterpret_cast<const void*>(data));
+
+        _size += data_size;
+    }
+
+    /*
+     * [App -> GL]
+     * 使用情形：离散数据，非离散数据请使用数组更新，会大幅降低上下文开销
+     * */
+    template<typename GLSL_T>
+    inline void push_back(const GLSL_T& data)
+    {
+        STATIC_ASSERT_GLSL_T();
+        push_back(reinterpret_cast<const std::uint8_t*>(glm::value_ptr(data)), sizeof (GLSL_T));
+    }
+
+    /*
+     * [App -> GL]
+     * 插入非离散同类数据
+     * */
+    template<typename GLSL_T>
+    inline void push_back(const std::vector<GLSL_T>& data_collection)
+    {
+        STATIC_ASSERT_GLSL_T();
+        push_back(reinterpret_cast<const std::uint8_t*>(data_collection.data()), data_collection.size() * sizeof(GLSL_T));
+    }
+
+    inline void push_back(std::uint8_t data, std::int64_t count)
+    {
+        std::vector<std::uint8_t> _data(data, count);
+        push_back(_data.data(), count);
+    }
+
+public:
+
+    /*
+     * Pure [Client -> Server]
+     * offset > 0 && data_size > 0 &&
+     * offset + data_size <= _capacity &&
+     * data's length == data_size
+     * */
+    void overwrite(std::int64_t offset, const std::uint8_t* data, std::int64_t data_size);
+
+    /*
+     * Pure [Client -> Server]
+     * offset > 0 && data_size > 0 &&
+     * offset + data_size <= _capacity &&
+     * data's length == data_size
+     * */
+    template<typename GLSL_T>
+    inline void overwrite(std::int64_t offset, const GLSL_T& data)
+    {
+        STATIC_ASSERT_GLSL_T();
+        overwrite(offset, reinterpret_cast<const std::uint8_t*>(&data), static_cast<std::int64_t>(sizeof(GLSL_T)));
+    }
+
+    /*
+     * Pure [Client -> Server]
+     * offset > 0 && data_size > 0 &&
+     * offset + data_size <= _capacity &&
+     * data's length == data_size
+     * */
+    template<typename GLSL_T>
+    inline void overwrite(std::int64_t offset, const std::vector<GLSL_T>& data_collection)
+    {
+        STATIC_ASSERT_GLSL_T();
+        overwrite(offset, reinterpret_cast<const std::uint8_t*>(data_collection.data()), static_cast<std::int64_t>(data_collection.size() * sizeof(GLSL_T)));
+    }
+
+public:
+
+    /*
+     * Mostly [Server -> Server]
+     * You must sacrifice some flexibility to get rapid filling.
+     * capacity % sizeof (data_mask) == 0
+     * */
+    void overwrite_by_byte(std::int64_t offset, std::int64_t size);
+
+    template<typename GLSL_T>
+    inline void overwrite_by_unit(std::int64_t offset, std::int64_t size, const GLSL_T& unit)
+    {
+        glClearNamedBufferSubData(_handle, 0, offset, size, 0, 0, reinterpret_cast<const std::uint8_t*>(&unit));
+    }
+
+public:
+
+    /*
+     * grab another same buffer storage as new one
+     * */
+    void invalidate(std::int64_t offset, std::int64_t size);
+
+    void invalidate()
+    {
+        glInvalidateBufferData(_handle);
+    }
+
+public:
+    /*
+     * Pure [Server -> Server]
+     * */
+    void output_data_to_buffer(std::int64_t self_offset, int64_t output_size, gl_buffer& target, std::int64_t target_offset);
+
+    /*
+     * Pure [Server -> Server]
+     * */
+    void output_data_to_buffer(gl_buffer& target_buffer);
+
+public:
+
+    /*
+     * map a block of immutable memory
+     * then execute a handler you specified (can not do any modification)
+     * @ task void(mapped_memory_block, mapped_memory_block_size)
+     * */
+    void execute_immutable_memory_handler(std::int64_t offset, std::int64_t size, const std::function<void(const std::uint8_t*, std::int64_t)>& handler);
+
+    /*
+     * map a block of mutable memory
+     * then execute a handler you specified
+     * @ task void(mapped_memory_block, mapped_memory_block_size)
+     * */
+    void execute_mutable_memory_handler(std::int64_t offset, std::int64_t size, const std::function<void(std::uint8_t*, std::int64_t)>& handler);
+
+public:
+
+    [[nodiscard]] std::int64_t query_buffer_size() const
+    {
+        std::int64_t _buffer_size = 0;
+        glGetNamedBufferParameteri64v(_handle, GL_BUFFER_SIZE, &_buffer_size);
+        return _buffer_size;
+    }
+
+    [[nodiscard]] std::uint8_t query_buffer_mapped() const
+    {
+        std::int32_t _is_mapped = 0;
+        glGetNamedBufferParameteriv(_handle, GL_BUFFER_MAPPED, &_is_mapped);
+        return _is_mapped == GL_TRUE;
+    }
+
+    [[nodiscard]] std::int32_t query_buffer_access() const
+    {
+        std::int32_t _buffer_access = 0;
+        glGetNamedBufferParameteriv(_handle, GL_BUFFER_ACCESS, &_buffer_access);
+        return _buffer_access;
+    }
+
+    [[nodiscard]] std::int32_t query_buffer_usage() const
+    {
+        std::int32_t _buffer_usage = 0;
+        glGetNamedBufferParameteriv(_handle, GL_BUFFER_USAGE, &_buffer_usage);
+        return _buffer_usage;
+    }
+
+private:
+
+    [[nodiscard]] inline bool _check_capacity(std::int64_t capacity) const
+    {
+        return capacity != _capacity && capacity < BUFFER_AVAILABLE_MAX_CAPACITY;
+    }
+
+public:
+
+    template<typename T>
+    void print()
+    {
+        execute_immutable_memory_handler(0, _size, [](const std::uint8_t* data, std::int64_t size){
+            const auto _data = reinterpret_cast<const T*>(data);
+            if(_data)
+            {
+                for(std::int32_t _index = 0; _index < size/ sizeof(T); ++_index)
+                {
+                    std::cout<<": "<<_data[_index] <<std::endl;
+
+                }
+            }
+        });
+    }
+
+private:
+
+    void _reallocate(std::int64_t new_capacity);
+
+private:
+
+    std::int64_t _capacity, _size;
+
+    std::uint32_t _storage_flags;
+
+    gl_buffer_storage_options _storage_options;
+
+    //    void asynchronous(){}
+//
+//    void synchronous(){}
+//
+//    void synchronized(){}
+
 
 };
 
 #endif
-
-

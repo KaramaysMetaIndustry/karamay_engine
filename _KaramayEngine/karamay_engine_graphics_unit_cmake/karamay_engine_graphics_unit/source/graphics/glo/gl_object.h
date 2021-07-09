@@ -57,9 +57,9 @@ protected:
 
 	gl_object_enum::type _type;
 
-protected:
+public:
 
-    void _throw_errors(const std::string& func_name)
+    static void _throw_errors(const std::string& func_name)
     {
         std::vector<gl_error> _errors;
         gl_error err;

@@ -193,11 +193,14 @@ std::shared_ptr<gl_framebuffer> gl_program::get_framebuffer()
 void gl_program::render(std::float_t delta_time)
 {
 	_install();
-	_enable();
-	// must launch uniforms after program enabled
-	_launch_uniforms();
-	_call_commands();
-	_disable();
+    {
+        _enable();
+        {
+            _launch_uniforms();	// must launch uniforms after program enabled
+            _call_commands();
+        }
+        _disable();
+    }
 	_uninstall();
 }
 
@@ -318,14 +321,13 @@ inline void gl_program::_bind_uniform_buffers()
 		{
 			if (uniform_buffer)
 			{
+			    // bind uniform buffer to context binding
 				uniform_buffer->bind(i);
-
-				const std::string& block_name = uniform_buffer->get_block_name();
-				const auto _index = glGetUniformBlockIndex(_handle, block_name.c_str());
-				glUniformBlockBinding(_handle, _index, i);
-
+				// bind program uniform index to context binding
+				std::uint32_t _uniform_block_index = glGetUniformBlockIndex(_handle, uniform_buffer->get_block_name().c_str());
+				glUniformBlockBinding(_handle, _uniform_block_index, i);
 #ifdef _DEBUG
-				std::cout << "[ " << _index << " uniform buffer is bound.]" << std::endl;
+				std::cout << "[ uniform block index: "<< _uniform_block_index <<".]" << std::endl;
 #endif
 
 			}

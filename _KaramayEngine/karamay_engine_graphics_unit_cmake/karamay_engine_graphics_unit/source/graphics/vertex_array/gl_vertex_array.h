@@ -180,7 +180,7 @@ public:
 
 };
 
-class gl_instance_attribute_descriptor
+class gl_instanced_attribute_descriptor
 {
 public:
 
@@ -292,9 +292,44 @@ public:
 };
 
 
+struct gl_attribute_descriptor
+{
+    std::string type_name;
+    std::string attribute_name;
+};
+
+struct gl_instance_attribute_descriptor
+{
+    std::string type_name;
+    std::string attribute_name;
+    std::uint32_t divisor;
+};
+
 class gl_vertex_array final : public gl_object
 {
+
 public:
+
+    gl_vertex_array(std::vector<gl_attribute_descriptor>& attribute_descriptors,
+                    std::vector<gl_instance_attribute_descriptor>& instance_attribute_descriptors)
+    {
+
+    }
+
+private:
+
+
+public:
+
+    void set_vertices_count();
+
+    void set_instances_count();
+
+    void set_attributes(const std::string& attribute_name, const std::uint8_t* data, std::int64_t data_size)
+    {
+
+    }
+
 
     explicit gl_vertex_array(const std::vector<gl_vertex_attribute_descriptor>& vertex_attribute_descriptors,
                              std::uint32_t vertices_count) :

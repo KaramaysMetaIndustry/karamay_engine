@@ -181,7 +181,7 @@ public:
             true, true, true, true,
             false, false};
 
-        auto _public_uniform_buffer = std::make_shared<gl_buffer_base>(12, _storage_options);
+        auto _public_uniform_buffer = std::make_shared<gl_buffer>(12, _storage_options);
 
         for(const auto& descriptor : descriptors) {
             _uniform_buffers.push_back(

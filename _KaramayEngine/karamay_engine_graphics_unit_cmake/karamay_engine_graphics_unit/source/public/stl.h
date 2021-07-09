@@ -28,5 +28,6 @@
 #include <functional>
 
 #include <filesystem>
+#include <optional>
 
 #endif

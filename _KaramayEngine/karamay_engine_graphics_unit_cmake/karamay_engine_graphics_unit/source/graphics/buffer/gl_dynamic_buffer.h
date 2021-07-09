@@ -5,7 +5,7 @@
 #ifndef GL_DYNAMIC_BUFFER_H
 #define GL_DYNAMIC_BUFFER_H
 
-#include "gl_buffer_base.h"
+#include "gl_buffer.h"
 //DRAW: The user will be writing data to the buffer, but the user will not read it.
 //READ: The user will not be writing data, but the user will be reading it back.
 //COPY: The user will be neither writing nor reading the data.
@@ -29,7 +29,7 @@ enum class gl_dynamic_buffer_usage : GLenum
     STREAM_COPY = GL_STREAM_COPY
 };
 
-class gl_dynamic_buffer final : public gl_buffer_base
+class gl_dynamic_buffer final : public gl_buffer
 {
 
 };

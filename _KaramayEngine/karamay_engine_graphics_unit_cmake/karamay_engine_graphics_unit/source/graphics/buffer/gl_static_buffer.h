@@ -1,7 +1,7 @@
 #ifndef H_GL_STATIC_BUFFER
 #define H_GL_STATIC_BUFFER
 
-#include "gl_buffer_base.h"
+#include "gl_buffer.h"
 
 /*
  * The following operations are always valid on immutable buffers regardless of the flags field:
@@ -12,7 +12,7 @@
  * (4) Asynchronous pixel transfers into the buffer. This sets the data in a buffer, but only through pure-OpenGL mechanisms.
  * (5) Using glGetBufferSubData to read a part of the buffer back to the CPU. This is not a "server-side" operation, but it's always available regardless
  * */
-class gl_static_buffer final : public gl_buffer_base
+class gl_static_buffer final : public gl_buffer
 {
 };
 

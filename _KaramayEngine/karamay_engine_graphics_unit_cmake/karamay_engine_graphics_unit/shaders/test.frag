@@ -18,22 +18,22 @@ uniform mat4 view_matrix;
 uniform mat4 projection_matrix;
 
 
-layout(std140) uniform Block0
+layout(shared) uniform Block0
 {
 	vec4 color0;
-	vec3 position0;
+	vec4 position0;
 };
 
-layout(std140) uniform Block1
+layout(shared) uniform Block1
 {
 	vec4 color1;
-	vec3 position1;
+	vec4 position1;
 };
 
-layout(std140) uniform Block2
+layout(shared) uniform Block2
 {
-	vec4 color1;
-	vec3 position1;
+	vec4 color2;
+	vec4 position2;
 };
 
 
@@ -41,6 +41,6 @@ layout(std140) uniform Block2
 
 void main()
 {
-   FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+   FragColor = color0;
 }
 
