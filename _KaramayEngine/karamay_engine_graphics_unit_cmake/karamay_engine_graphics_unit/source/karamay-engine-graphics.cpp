@@ -580,11 +580,15 @@ void test0()
 	
 	program->add_uniform(camera_position);
 	program->add_uniform(spe_color);
+
 	program->add_uniform_buffers({
-    {"matrices", gl_uniform_buffer_layout::std140, {{"vec4", "color"}, {"vec3", "position"}}},
-    {"matrices", gl_uniform_buffer_layout::std140, {{"vec4", "color"}, {"vec3", "position"}}},
-    {"matrices", gl_uniform_buffer_layout::std140, {{"vec4", "color"}, {"vec3", "position"}}}
+    {"Block0", gl_uniform_buffer_layout::std140, {{"vec4", "color0"}, {"vec4", "position0"}}},
+    {"Block1", gl_uniform_buffer_layout::std140, {{"vec4", "color1"}, {"vec4", "position1"}}},
+    {"Block2", gl_uniform_buffer_layout::std140, {{"vec4", "color2"}, {"vec4", "position2"}}}
 	});
+
+	auto _ubBlock2 = program->find_uniform_buffer("Block2");
+	_ubBlock2->update_uniform("color2", glsl_vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
 	program->add_shader_storage_buffer(ssbo);
 	
@@ -617,46 +621,9 @@ void test0()
 	//glStencilMask(GL_TRUE);
 	//glClearStencil(0);
 
-    {
-//        auto t1=std::chrono::steady_clock::now();
-//        //run code
-//        auto t2=std::chrono::steady_clock::now();
-
-//        //√Î
-//        double dr_s=std::chrono::duration<double>(t2-t1).count();
-//        //∫¡√Îº∂
-//        double dr_ms=std::chrono::duration<double,std::milli>(t2-t1).count();
-//        //Œ¢√Óº∂
-//        double dr_us=std::chrono::duration<double,std::micro>(t2-t1).count();
-//        //ƒ…√Îº∂
-//        double dr_ns=std::chrono::duration<double,std::nano>(t2-t1).count();
-
-        gl_buffer_base _buf(14, {
-            true,
-            true,
-            true,
-            true,
-            false,
-            false
-        });
 
 
-
-        auto t1=std::chrono::steady_clock::now();
-        _buf.push_back<glm::vec3>({glm::vec3(0.1f, 0.2f, 0.3f),
-                                   glm::vec3(0.1f, 0.2f, 0.3f),
-                                   glm::vec3(0.1f, 0.2f, 0.3f),
-                                   });
-
-        auto t2=std::chrono::steady_clock::now();
-        double dr_us=std::chrono::duration<double,std::micro>(t2-t1).count();
-        std::cout<<"time: "<< dr_us << "ms" <<std::endl;
-
-        _buf.print<std::double_t>();
-    }
-
-	int i = 1;
-	float w = 0.0f;
+	int i = 10;
 
     auto v0 = glv::f32vec3(0.5f, 0.5f, 0.0f); //0
     auto v2 = glv::f32vec3(-0.5f, -0.5f, 0.0f); //2
@@ -669,14 +636,14 @@ void test0()
 		program->render(0.0f);
 		window->tick(0.0f);
 
-		if(i%2 == 0)
-        {
-            _va->update_attribute("position", 2, v0);
-        }else{
-            _va->update_attribute("position", 2, v2);
-		}
-
-		_va->set_vertices_count(3);
+//		if(i%2 == 0)
+//        {
+//            _va->update_attribute("position", 2, v0);
+//        }else{
+//            _va->update_attribute("position", 2, v2);
+//		}
+//
+//		_va->set_vertices_count(3);
 
 
 

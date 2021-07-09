@@ -59,7 +59,8 @@ public:
 	    _uniform_buffer_size(0),
 	    _binding(0),
 	    _public_buffer(public_buffer),
-	    _owner(owner)
+	    _owner(owner),
+        _block_name(block_name)
     {
         switch (layout) {
 
@@ -137,9 +138,10 @@ private:
             auto _attribute_size = _glsl_type_size_map.find(row.first)->second;
             _attribute_layout.emplace(row.second, std::pair<std::int64_t, std::int64_t>(_offset, _attribute_size));
             _uniform_buffer_size += _attribute_size; // calculate the uniform buffer size
+            _offset += _attribute_size;
         }
         // place the public buffer
-        _public_buffer->overwrite_by_byte(_uniform_buffer_offset, _uniform_buffer_size);
+        _public_buffer->push_back('0', _uniform_buffer_size);
     }
 
     void _generate_shared_memory(const std::vector<std::pair<std::string, std::string>>& rows){}

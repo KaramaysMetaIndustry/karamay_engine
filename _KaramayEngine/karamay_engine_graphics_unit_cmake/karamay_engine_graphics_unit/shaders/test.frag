@@ -18,19 +18,22 @@ uniform mat4 view_matrix;
 uniform mat4 projection_matrix;
 
 
-layout(shared) uniform attack
+layout(std140) uniform Block0
 {
-	vec4 color;
-	vec3 pos;
-	vec4 text;
+	vec4 color0;
+	vec3 position0;
 };
 
-
-layout(shared) uniform attack1
+layout(std140) uniform Block1
 {
 	vec4 color1;
-	vec3 pos1;
-	vec4 text1;
+	vec3 position1;
+};
+
+layout(std140) uniform Block2
+{
+	vec4 color1;
+	vec3 position1;
 };
 
 
@@ -38,9 +41,6 @@ layout(shared) uniform attack1
 
 void main()
 {
-   //FragColor = vec4(mix(texture(container2, TexCoord), texture(container3, TexCoord), 0.6f).rgb, 1.0f);
-   FragColor = vec4(text + text1);
-   //st.r -= 0.00005f;
-   
+   FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 }
 

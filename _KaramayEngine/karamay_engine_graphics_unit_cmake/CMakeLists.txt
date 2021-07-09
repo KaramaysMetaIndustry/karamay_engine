@@ -18,7 +18,7 @@ link_directories(karamay_engine_graphics_unit/dependencies/glfw-3.3.4.bin.WIN64/
 
 include_directories(karamay_engine_graphics_unit/dependencies)
 include_directories(karamay_engine_graphics_unit/dependencies/glm_pack/include)
-include_directories(karamay_engine_graphics_unit/source)
+include_directories(karamay_engine_graphics_unit/source/)
 
 add_executable(karamay_engine_graphics_unit
         karamay_engine_graphics_unit/dependencies/glm_pack/include/glm/detail/_features.hpp

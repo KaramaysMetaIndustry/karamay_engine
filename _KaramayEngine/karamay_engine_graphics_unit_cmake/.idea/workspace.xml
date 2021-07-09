@@ -16,14 +16,13 @@
   <component name="ChangeListManager">
     <list default="true" id="799c95bd-bd6b-4bb4-95bb-3af1c0f20cb1" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_uniform_buffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_uniform_buffer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/shaders/test.frag" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/shaders/test.frag" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/shaders/test.vert" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/shaders/test.vert" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_uniform_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_uniform_buffer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_base.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_base.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_base.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_base.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/program/gl_program.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/program/gl_program.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/program/gl_program.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/program/gl_program.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/type/glsl_types.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/type/glsl_types.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/karamay-engine-graphics.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/karamay-engine-graphics.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -70,6 +69,11 @@
     <property name="settings.editor.selected.configurable" value="CPPToolchains" />
   </component>
   <component name="RunManager">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="karamay_engine_graphics_unit" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="karamay_engine_graphics_unit" TARGET_NAME="karamay_engine_graphics_unit" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="karamay_engine_graphics_unit" RUN_TARGET_NAME="karamay_engine_graphics_unit">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -105,6 +109,8 @@
       <workItem from="1625702121090" duration="1833000" />
       <workItem from="1625708086025" duration="783000" />
       <workItem from="1625708886102" duration="29846000" />
+      <workItem from="1625754130201" duration="535000" />
+      <workItem from="1625754677798" duration="5699000" />
     </task>
     <servers />
   </component>
@@ -130,14 +136,14 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_uniform_buffer.h</url>
-          <line>132</line>
-          <option name="timeStamp" value="4" />
+          <url>file://$PROJECT_DIR$/karamay_engine_graphics_unit/source/karamay-engine-graphics.cpp</url>
+          <line>590</line>
+          <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/program/gl_program.h</url>
-          <line>178</line>
-          <option name="timeStamp" value="7" />
+          <url>file://$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_uniform_buffer.h</url>
+          <line>105</line>
+          <option name="timeStamp" value="14" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

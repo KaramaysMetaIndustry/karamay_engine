@@ -11,13 +11,6 @@ layout(location = 3) out vec4 _color;
 layout(location = 4) out vec4 _text;
 
 
-layout(shared) uniform attack
-{
-	vec4 color;
-	vec3 pos;
-	vec4 text[];
-} at[];
-
 uniform mat4 transform;
 
 void main()

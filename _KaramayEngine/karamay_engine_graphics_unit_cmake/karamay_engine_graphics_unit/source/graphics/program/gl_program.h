@@ -177,9 +177,11 @@ public:
 
 	void add_uniform_buffers(const std::vector<gl_uniform_buffer_descriptor>& descriptors) {
         auto _owner = shared_from_this();
+        gl_buffer_storage_options _storage_options{
+            true, true, true, true,
+            false, false};
 
-        gl_buffer_storage_options _storage_options{true, true, true, true, false, false};
-	    auto _public_uniform_buffer = std::make_shared<gl_buffer_base>(12, _storage_options);
+        auto _public_uniform_buffer = std::make_shared<gl_buffer_base>(12, _storage_options);
 
         for(const auto& descriptor : descriptors) {
             _uniform_buffers.push_back(
@@ -189,7 +191,14 @@ public:
 
     }
 
-    void find_uniform_buffer(const std::string& uniform_buffer_name) {}
+    auto find_uniform_buffer(const std::string& uniform_buffer_name)
+    {
+	    for(auto& _ub : _uniform_buffers)
+	    {
+	        if(_ub->get_block_name() == uniform_buffer_name) return _ub;
+        }
+	    return std::shared_ptr<gl_uniform_buffer>(nullptr);
+    }
 
 	void add_shader_storage_buffers(const std::vector<std::shared_ptr<class gl_shader_storage_buffer>>& shader_storage_buffers);
 

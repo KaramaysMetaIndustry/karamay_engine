@@ -297,6 +297,12 @@ public:
         push_back(reinterpret_cast<const std::uint8_t*>(data_collection.data()), data_collection.size() * sizeof(GLSL_T));
     }
 
+    inline void push_back(std::uint8_t data, std::int64_t count)
+    {
+        std::vector<std::uint8_t> _data(data, count);
+        push_back(_data.data(), count);
+    }
+
 public:
 
     /*
