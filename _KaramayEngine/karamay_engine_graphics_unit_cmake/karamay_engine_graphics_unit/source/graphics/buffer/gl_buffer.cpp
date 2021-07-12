@@ -13,11 +13,6 @@ void gl_buffer::overwrite(std::int64_t offset, const std::uint8_t* data, std::in
     // because glNamedBufferSubData operation is read-only to data
 }
 
-void gl_buffer::invalidate(std::int64_t offset, std::int64_t size)
-{
-    glInvalidateBufferSubData(_handle, offset, size);
-}
-
 void gl_buffer::output_data_to_buffer(gl_buffer& target_buffer)
 {
     if(target_buffer.get_capacity() == _capacity)
@@ -75,7 +70,6 @@ void gl_buffer::execute_mutable_memory_handler(std::int64_t offset, std::int64_t
 
 void gl_buffer::_reallocate(std::int64_t new_capacity)
 {
-    std::cout<<"call the _reallocate"<<std::endl;
     if(!_check_capacity(new_capacity)) return;
 
     std::uint32_t new_handle = 0;
@@ -83,26 +77,21 @@ void gl_buffer::_reallocate(std::int64_t new_capacity)
     if(new_handle != 0)
     {
         glNamedBufferStorage(new_handle, new_capacity, nullptr, _storage_flags);
-        glCopyNamedBufferSubData(_handle,new_handle, 0, 0, _size);
+        //glCopyNamedBufferSubData(_handle,new_handle, 0, 0, _size);
         glDeleteBuffers(1, &_handle);
 
         _handle = new_handle; _capacity = new_capacity;
     }
 }
 
-void gl_buffer::reserve(std::int64_t capacity)
+void gl_buffer::reserve(std::int64_t required_capacity)
 {
-    if(capacity >= 0 && capacity > _capacity - _size) _reallocate(_size + capacity);
+    if(required_capacity > _capacity - _size) _reallocate(_size + required_capacity);
 }
 
 void gl_buffer::shrink_to_fit()
 {
-    std::cout<<"size: "<< _size << std::endl;
-    std::cout<<"capacity: "<<_capacity<<std::endl;
-    if(_size < _capacity)
-    {
-        _reallocate(_size);
-    }
+    if(_size < _capacity) _reallocate(_size);
 }
 
 

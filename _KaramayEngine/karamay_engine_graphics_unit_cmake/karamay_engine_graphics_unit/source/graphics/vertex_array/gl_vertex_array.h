@@ -168,6 +168,11 @@ struct gL_attribute_layout
     std::int64_t size;
 };
 
+/*
+ * Dynamic Storage : if required capacity is not enough,
+ *
+ *
+ * */
 class gl_vertex_array final : public gl_object
 {
 

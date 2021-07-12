@@ -5,7 +5,10 @@
 #include "graphics/buffer/gl_buffer_tools.h"
 
 
-
+/*
+ * gl_buffer which can only accept glsl_type and bytes
+ *
+ * */
 class gl_buffer : public gl_object
 {
 public:
@@ -45,36 +48,41 @@ public:
 
 public:
 
-    [[nodiscard]] std::int64_t get_capacity() const { return _capacity; }
-
-    [[nodiscard]] std::int64_t get_size() const { return _size; }
-
-    [[nodiscard]] std::uint32_t get_storage_flags() const { return _storage_flags; }
-
-public:
-
     void reserve(std::int64_t capacity);
 
     void shrink_to_fit();
 
 public:
 
+    void write(){}
+
+    void write_with_mask()
+    {
+
+    }
+
+    void invalidate(){}
+
+
+public:
+
     /*
      * [App -> GL]
      * */
-    void push_back(const std::uint8_t* data, std::int64_t data_size)
+    void push_back(const std::uint8_t* stream, std::int64_t stream_size)
     {
         // check the dynamic updating validation
-        if(!_storage_options.is_dynamic_storage|| !data || data_size < 0 || _size < 0) return;
+        if(!_storage_options.is_dynamic_storage|| !stream || stream_size < 0 || _size < 0) return;
         // check the rest capacity
-        if(_size + data_size > _capacity)  _reallocate(_size + data_size);
+        if(_size + stream_size > _capacity)  _reallocate(_size + stream_size);
 
-        glNamedBufferSubData(_handle, _size, data_size, reinterpret_cast<const void*>(data));
+        glNamedBufferSubData(_handle, _size, stream_size, reinterpret_cast<const void*>(stream));
 
-        _size += data_size;
+        _size += stream_size;
     }
 
     /*
+     * Static
      * [App -> GL]
      * 使用情形：离散数据，非离散数据请使用数组更新，会大幅降低上下文开销
      * */
@@ -86,6 +94,7 @@ public:
     }
 
     /*
+     * Static
      * [App -> GL]
      * 插入非离散同类数据
      * */
@@ -94,6 +103,24 @@ public:
     {
         STATIC_ASSERT_GLSL_T();
         push_back(reinterpret_cast<const std::uint8_t*>(data_collection.data()), data_collection.size() * sizeof(GLSL_T));
+    }
+
+    /*
+     * Dynamic
+     * */
+    inline void push_back(glsl_type type, std::uint8_t* stream)
+    {
+        if(!stream) return;
+        push_back(stream, get_glsl_type_size(type));
+    }
+
+    /*
+     * Dynamic
+     * */
+    inline void push_back(glsl_type type, std::uint32_t num, std::uint8_t* stream)
+    {
+        if(!stream) return;
+        push_back(stream, get_glsl_type_size(type) * num);
     }
 
     inline void push_back(std::uint8_t data, std::int64_t count)
@@ -156,13 +183,20 @@ public:
 public:
 
     /*
-     * grab another same buffer storage as new one
+     * Invalidate the whole buffer, data in buffer will become undefined.
      * */
-    void invalidate(std::int64_t offset, std::int64_t size);
-
     void invalidate()
     {
         glInvalidateBufferData(_handle);
+    }
+
+    /*
+     * grab another same buffer storage as new one
+     * */
+    void invalidate(std::int64_t offset, std::int64_t size)
+    {
+        if(offset < 0 || size < 0 || offset + size > _capacity) return; // VALUE_INVALID
+        glInvalidateBufferSubData(_handle, offset, size);
     }
 
 public:
@@ -193,6 +227,13 @@ public:
     void execute_mutable_memory_handler(std::int64_t offset, std::int64_t size, const std::function<void(std::uint8_t*, std::int64_t)>& handler);
 
 public:
+
+    [[nodiscard]] std::int64_t get_capacity() const { return _capacity; }
+
+    [[nodiscard]] std::int64_t get_size() const { return _size; }
+
+    [[nodiscard]] std::uint32_t get_storage_flags() const { return _storage_flags; }
+
 
     [[nodiscard]] std::int64_t query_buffer_size() const
     {
@@ -260,10 +301,8 @@ private:
     gl_buffer_storage_options _storage_options;
 
     //    void asynchronous(){}
-//
-//    void synchronous(){}
-//
-//    void synchronized(){}
+    //    void synchronous(){}
+    //    void synchronized(){}
 
 
 };

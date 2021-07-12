@@ -15,19 +15,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="799c95bd-bd6b-4bb4-95bb-3af1c0f20cb1" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.vs/ProjectSettings.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.vs/VSWorkspaceState.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.vs/karamay_engine_graphics_unit_cmake/v16/.suo" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.vs/karamay_engine_graphics_unit_cmake/v16/Browse.VC.db" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.vs/slnx.sqlite" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/build/x64-Debug/.cmake/api/v1/query/client-MicrosoftVS/query.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/build/x64-Debug/CMakeCache.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/build/x64-Debug/CMakeFiles/cmake.check_cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/build/x64-Debug/VSInheritEnvironments.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_atomic_counter_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_atomic_counter_buffer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/type/glsl_types.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/type/glsl_types.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/karamay-engine-graphics.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/karamay-engine-graphics.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -119,6 +111,7 @@
       <workItem from="1625911592514" duration="764000" />
       <workItem from="1626012243016" duration="5000" />
       <workItem from="1626012436153" duration="3039000" />
+      <workItem from="1626058290433" duration="11655000" />
     </task>
     <servers />
   </component>
