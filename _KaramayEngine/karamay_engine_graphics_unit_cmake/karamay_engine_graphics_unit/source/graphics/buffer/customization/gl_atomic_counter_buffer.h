@@ -48,8 +48,8 @@ public:
 	void fill(const std::vector<std::string>& variable_names)
 	{
 		// fill buffer
-		_size = sizeof(GLuint) * variable_names.size();
-		_ref_buffer->fill(_offset, _size, nullptr);
+		//_size = sizeof(GLuint) * variable_names.size();
+		//_ref_buffer->fill(_offset, _size, nullptr);
 		
 		//_generate_template_code(variable_names);
 	}

@@ -507,21 +507,16 @@ void test0()
 	albedo_map->set_name("container3");
 
 
-	// initialize the va by vad
-	gl_vertex_array_descriptor _vad({
-                                            { 3, gl_attribute_component::type::FLOAT, "position" }, // layout(location = 0) vec3 position;
-                                            { 2, gl_attribute_component::type::FLOAT, "uv" } // layout(location = 1) vec2 uv;
-                                    },
-                                    4);
-
-//    ,
-//    {
-//        {3, gl_attribute_component::type::DOUBLE, "instance_offset_position", 3, 3}, // layout(location = 3) dvec3 instance_offset_position;
-//        {4, gl_attribute_component::type::INT, "instance_offset_spec", 9, 1} // layout(location = 4) ivec4 instance_offset_spec;
-//    },
-//    9
-
-	auto _va = std::make_shared<gl_vertex_array>(_vad);
+	gl_vertex_array _va(
+	        {
+	            {"vec3", "position"},
+	            {"vec4", "color"},
+                {"vec2", "uv"}
+	        },
+            {
+	            {"vec3", "offset_position", 3},
+                {"vec2", "offset_uv", 3}
+            });
 
 	std::uint32_t _index = 0;
 	for(const auto& position : positions)

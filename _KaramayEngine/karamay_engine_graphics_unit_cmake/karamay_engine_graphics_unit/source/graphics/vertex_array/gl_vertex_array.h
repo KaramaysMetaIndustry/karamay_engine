@@ -148,150 +148,6 @@ class gl_attribute
 };
 
 
-class gl_vertex_attribute_descriptor
-{
-public:
-
-    gl_vertex_attribute_descriptor(
-            std::uint32_t component_count,
-            gl_attribute_component::type component_type,
-            std::string name
-            ) :
-            _name(std::move(name)),
-            _component_type(component_type),
-            _components_count(component_count)
-    {}
-
-private:
-
-    std::string _name;
-
-    gl_attribute_component::type _component_type;
-
-    std::uint32_t _components_count;
-
-public:
-
-    [[nodiscard]] const std::string& get_name() const {return _name;}
-
-    [[nodiscard]] gl_attribute_component::type get_component_type() const {return _component_type;}
-
-    [[nodiscard]] std::uint32_t get_component_count() const {return _components_count;}
-
-};
-
-class gl_instanced_attribute_descriptor
-{
-public:
-
-    gl_instance_attribute_descriptor(
-            std::uint32_t component_count,
-            gl_attribute_component::type component_name,
-            std::string name,
-            std::uint32_t count,
-            std::uint32_t instance_divisor) :
-            _name(std::move(name)),
-            _component_type(component_name),
-            _components_count(component_count),
-            _divisor(instance_divisor),
-            _count(count)
-    {}
-
-private:
-
-    std::string _name;
-
-    gl_attribute_component::type _component_type;
-
-    std::uint32_t _components_count;
-
-    std::uint32_t _divisor;
-
-    std::uint32_t _count;
-
-public:
-
-    [[nodiscard]] const std::string& get_name() const {return _name;}
-
-    [[nodiscard]] gl_attribute_component::type get_component_type() const {return _component_type;}
-
-    [[nodiscard]] std::uint32_t get_component_count() const {return _components_count;}
-
-    [[nodiscard]] std::uint32_t get_divisor() const {return _divisor;}
-
-    [[nodiscard]] std::uint32_t get_count() const {return _count;}
-
-public:
-
-    void set_divisor(std::uint32_t divisor);
-
-    void set_count(std::uint32_t count);
-
-};
-
-class gl_vertex_array_descriptor final
-{
-public:
-    gl_vertex_array_descriptor(
-            std::vector<gl_vertex_attribute_descriptor> vertex_attribute_descriptors,
-            std::uint32_t vertices_count,
-            std::vector<gl_instance_attribute_descriptor> instance_attribute_descriptors,
-            std::uint32_t instances_count) :
-            _is_dirty(true),
-            _vertex_attribute_descriptors(std::move(vertex_attribute_descriptors)),
-            _vertices_count(vertices_count),
-            _instance_attribute_descriptors(std::move(instance_attribute_descriptors)),
-            _instances_count(instances_count)
-    {
-    }
-
-    gl_vertex_array_descriptor(
-            std::vector<gl_vertex_attribute_descriptor> vertex_attribute_descriptors,
-            std::uint32_t vertices_count) :
-            _is_dirty(true),
-            _vertex_attribute_descriptors(std::move(vertex_attribute_descriptors)),
-            _vertices_count(vertices_count),
-            _instance_attribute_descriptors(),
-            _instances_count(0)
-    {}
-
-private:
-
-    std::uint8_t _is_dirty;
-
-    std::uint32_t _vertices_count, _instances_count;
-
-    std::vector<gl_vertex_attribute_descriptor> _vertex_attribute_descriptors;
-
-    std::vector<gl_instance_attribute_descriptor> _instance_attribute_descriptors;
-
-public:
-
-    [[nodiscard]] std::uint8_t is_dirty() const { return _is_dirty; }
-
-    [[nodiscard]] std::uint32_t get_vertices_count() const {return _vertices_count;}
-
-    [[nodiscard]] std::uint32_t get_instance_count() const {return _instances_count;}
-
-    [[nodiscard]] const std::vector<gl_vertex_attribute_descriptor>& get_vertex_attribute_descriptors() const {return _vertex_attribute_descriptors;}
-
-    [[nodiscard]] const std::vector<gl_instance_attribute_descriptor>& get_instance_attribute_descriptors() const {return _instance_attribute_descriptors;}
-
-public:
-
-    void set_vertices_count(std::uint32_t vertices_count);
-
-    void set_instances_count(std::uint32_t instances_count);
-
-    void set_instance_attribute_divisor(const std::string& attribute_name, std::uint32_t divisor);
-
-    void set_instance_attribute_count(const std::string& attribute_name, std::uint32_t count);
-
-    void dismiss_dirty();
-
-};
-
-
 struct gl_attribute_descriptor
 {
     std::string type_name;
@@ -305,53 +161,23 @@ struct gl_instance_attribute_descriptor
     std::uint32_t divisor;
 };
 
+struct gL_attribute_layout
+{
+    std::string attribute_name;
+    std::int64_t offset;
+    std::int64_t size;
+};
+
 class gl_vertex_array final : public gl_object
 {
 
 public:
 
     gl_vertex_array(std::vector<gl_attribute_descriptor>& attribute_descriptors,
-                    std::vector<gl_instance_attribute_descriptor>& instance_attribute_descriptors)
-    {
-
-    }
-
-private:
-
-
-public:
-
-    void set_vertices_count();
-
-    void set_instances_count();
-
-    void set_attributes(const std::string& attribute_name, const std::uint8_t* data, std::int64_t data_size)
-    {
-
-    }
-
-
-    explicit gl_vertex_array(const std::vector<gl_vertex_attribute_descriptor>& vertex_attribute_descriptors,
-                             std::uint32_t vertices_count) :
-            _descriptor(vertex_attribute_descriptors, vertices_count),
-            _memory_demand(0)
-    {
-        glCreateVertexArrays(1, &_handle);
-    }
-
-    explicit gl_vertex_array(const std::vector<gl_vertex_attribute_descriptor>& vertex_attribute_descriptors,
-                             std::uint32_t vertices_count,
-                             const std::vector<gl_instance_attribute_descriptor>& instance_attribute_descriptors,
-                             std::uint32_t instances_count) :
-        _descriptor(vertex_attribute_descriptors, vertices_count, instance_attribute_descriptors,instances_count),
-        _memory_demand(0)
-    {
-        glCreateVertexArrays(1, &_handle);
-    }
-
-    explicit gl_vertex_array(gl_vertex_array_descriptor descriptor) :
-            _descriptor(std::move(descriptor)),
-            _memory_demand(0)
+                    std::vector<gl_instance_attribute_descriptor>& instance_attribute_descriptors) :
+                    _vertices_count(0),
+                    _instances_count(0),
+                    _memory_size(0)
     {
         glCreateVertexArrays(1, &_handle);
     }
@@ -360,29 +186,21 @@ public:
 
 private:
 
+    std::uint32_t _vertices_count;
+
+    std::uint32_t _instances_count;
+
+    std::int64_t _memory_size;
+
+    std::unordered_map<std::string, gL_attribute_layout> _attributes_layout;
+
     std::shared_ptr<gl_buffer> _buffer;
 
-    gl_vertex_array_descriptor _descriptor;
-
-    std::size_t _memory_demand;
-
-    std::unordered_map<std::string, std::pair<std::uint32_t, std::uint32_t>> _memory_layouts_map;
-
 public:
 
-    [[nodiscard]] inline const gl_vertex_array_descriptor& get_vertex_array_descriptor() const noexcept { return _descriptor; }
+    void set_vertices_count(std::uint32_t vertices_count) { _vertices_count = vertices_count; }
 
-    [[nodiscard]] inline std::uint32_t get_vertices_count() const noexcept { return _descriptor.get_vertices_count(); }
-
-    [[nodiscard]] inline std::uint32_t get_instances_count() const noexcept { return _descriptor.get_vertices_count(); }
-
-public:
-
-    inline void set_vertices_count(std::uint32_t vertices_count) noexcept { _descriptor.set_vertices_count(vertices_count); }
-
-    inline void set_instances_count(std::uint32_t instances_count) noexcept { _descriptor.set_instances_count(instances_count); }
-
-    inline void set_instance_attribute_divisor(const std::string& attribute_name, std::uint32_t divisor) noexcept { _descriptor.set_instance_attribute_divisor(attribute_name, divisor); }
+    void set_instances_count(std::uint32_t instances_count) { _instances_count = instances_count; }
 
 public:
 
@@ -407,6 +225,11 @@ public:
     void update_attribute(const std::string& attribute_name, std::uint32_t attribute_index, const std::vector<std::uint8_t>& stream) noexcept;
 
 private:
+
+    void _generate_attributes_layout()
+    {
+
+    }
 
     void _set_vertex_pointers(gl_attribute_component::type attribute_component_type, std::uint32_t  index, std::uint32_t components_count,std::uint32_t attribute_size, std::uint32_t offset);
 
