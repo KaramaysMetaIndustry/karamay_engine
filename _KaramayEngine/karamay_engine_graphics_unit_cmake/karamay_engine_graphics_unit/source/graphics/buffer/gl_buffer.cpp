@@ -84,14 +84,3 @@ void gl_buffer::_reallocate(std::int64_t new_capacity)
     }
 }
 
-void gl_buffer::reserve(std::int64_t required_capacity)
-{
-    if(required_capacity > _capacity - _size) _reallocate(_size + required_capacity);
-}
-
-void gl_buffer::shrink_to_fit()
-{
-    if(_size < _capacity) _reallocate(_size);
-}
-
-

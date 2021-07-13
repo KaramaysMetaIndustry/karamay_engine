@@ -148,6 +148,16 @@ struct gl_buffer_storage_options
     std::uint8_t is_client_storage;
     std::uint8_t is_map_persistent;
     std::uint8_t is_map_coherent;
+
+    bool operator==(const gl_buffer_storage_options& other) const
+    {
+        return other.is_map_read == is_map_read &&
+        other.is_map_write == is_map_write &&
+        other.is_map_coherent == is_map_coherent &&
+        other.is_map_persistent == is_map_persistent &&
+        other.is_dynamic_storage == is_dynamic_storage &&
+        other.is_client_storage == is_client_storage;
+    }
 };
 
 enum class gl_buffer_map_access_flag : GLenum

@@ -5,7 +5,21 @@
 #include "graphics/buffer/gl_buffer_tools.h"
 
 
+struct gl_buffer_pool_element
+{
+    std::uint32_t handle;
+    std::int64_t capacity;
+    gl_buffer_storage_options storage_options;
+    std::uint32_t storage_flags;
+
+    gl_buffer_pool_element(const gl_buffer_pool_element& other)
+    {
+
+    }
+};
+
 /*
+ * [You must trust clients who will use your class.]
  * gl_buffer which can only accept glsl_type and bytes
  *
  * */
@@ -20,150 +34,160 @@ public:
 
 public:
 
-    explicit gl_buffer(std::int64_t capacity, gl_buffer_storage_options storage_options) :
-        _capacity(capacity),
-        _size(0),
-        _storage_flags(0),
-        _storage_options(storage_options)
+    explicit gl_buffer(std::int64_t required_capacity, gl_buffer_storage_options storage_options) :
+        _required_capacity(required_capacity),
+        _storage_options(storage_options),
+        _capacity(0),
+        _storage_flags(0)
     {
-        glCreateBuffers(1, &_handle);
-        if(_handle != 0)
-        {
-            if(storage_options.is_map_read) _storage_flags |= GL_MAP_READ_BIT;
-            if(storage_options.is_map_write) _storage_flags |= GL_MAP_WRITE_BIT;
-            if(storage_options.is_map_persistent) _storage_flags |= GL_MAP_PERSISTENT_BIT;
-            if(storage_options.is_map_coherent) _storage_flags |= GL_MAP_COHERENT_BIT;
-            if(storage_options.is_client_storage) _storage_flags |= GL_CLIENT_STORAGE_BIT;
-            if(storage_options.is_dynamic_storage) _storage_flags |= GL_DYNAMIC_STORAGE_BIT;
-
-            glNamedBufferStorage(_handle, capacity, nullptr, _storage_flags);
-            _capacity = capacity;
-        }
+        reallocate(required_capacity, storage_options);
     }
 
     ~gl_buffer() override
     {
-        glDeleteBuffers(1, &_handle);
-    }
-
-public:
-
-    void reserve(std::int64_t capacity);
-
-    void shrink_to_fit();
-
-public:
-
-    void write(){}
-
-    void write_with_mask()
-    {
-
-    }
-
-    void invalidate(){}
-
-
-public:
-
-    /*
-     * [App -> GL]
-     * */
-    void push_back(const std::uint8_t* stream, std::int64_t stream_size)
-    {
-        // check the dynamic updating validation
-        if(!_storage_options.is_dynamic_storage|| !stream || stream_size < 0 || _size < 0) return;
-        // check the rest capacity
-        if(_size + stream_size > _capacity)  _reallocate(_size + stream_size);
-
-        glNamedBufferSubData(_handle, _size, stream_size, reinterpret_cast<const void*>(stream));
-
-        _size += stream_size;
-    }
-
-    /*
-     * Static
-     * [App -> GL]
-     * 使用情形：离散数据，非离散数据请使用数组更新，会大幅降低上下文开销
-     * */
-    template<typename GLSL_T>
-    inline void push_back(const GLSL_T& data)
-    {
-        STATIC_ASSERT_GLSL_T();
-        push_back(reinterpret_cast<const std::uint8_t*>(glm::value_ptr(data)), sizeof (GLSL_T));
-    }
-
-    /*
-     * Static
-     * [App -> GL]
-     * 插入非离散同类数据
-     * */
-    template<typename GLSL_T>
-    inline void push_back(const std::vector<GLSL_T>& data_collection)
-    {
-        STATIC_ASSERT_GLSL_T();
-        push_back(reinterpret_cast<const std::uint8_t*>(data_collection.data()), data_collection.size() * sizeof(GLSL_T));
-    }
-
-    /*
-     * Dynamic
-     * */
-    inline void push_back(glsl_type type, std::uint8_t* stream)
-    {
-        if(!stream) return;
-        push_back(stream, get_glsl_type_size(type));
-    }
-
-    /*
-     * Dynamic
-     * */
-    inline void push_back(glsl_type type, std::uint32_t num, std::uint8_t* stream)
-    {
-        if(!stream) return;
-        push_back(stream, get_glsl_type_size(type) * num);
-    }
-
-    inline void push_back(std::uint8_t data, std::int64_t count)
-    {
-        std::vector<std::uint8_t> _data(data, count);
-        push_back(_data.data(), count);
+        _buffer_pool.insert_after(_buffer_pool.end(), gl_buffer_pool_element{_handle, _storage_options, _capacity});
     }
 
 public:
 
     /*
-     * Pure [Client -> Server]
-     * offset > 0 && data_size > 0 &&
-     * offset + data_size <= _capacity &&
-     * data's length == data_size
+     * Description: immediately write << bytes stream >> into [offset, offset + byte_stream_size)
+     *
      * */
-    void overwrite(std::int64_t offset, const std::uint8_t* data, std::int64_t data_size);
-
-    /*
-     * Pure [Client -> Server]
-     * offset > 0 && data_size > 0 &&
-     * offset + data_size <= _capacity &&
-     * data's length == data_size
-     * */
-    template<typename GLSL_T>
-    inline void overwrite(std::int64_t offset, const GLSL_T& data)
+    void write(std::int64_t offset, const std::uint8_t* byte_stream, std::int64_t byte_stream_size)
     {
-        STATIC_ASSERT_GLSL_T();
-        overwrite(offset, reinterpret_cast<const std::uint8_t*>(&data), static_cast<std::int64_t>(sizeof(GLSL_T)));
+        if(!byte_stream || offset < 0 || offset + byte_stream_size > _capacity) return;
+        glNamedBufferSubData(_handle, offset, byte_stream_size, byte_stream);
+    }
+
+public:
+    /*
+     * Description: immediately write << single exact type value >> into [offset, offset + sizeof(GLSL_TRANSPARENT_T))
+     *
+     * */
+    template<typename GLSL_TRANSPARENT_T>
+    void write(int64_t offset, const GLSL_TRANSPARENT_T& value)
+    {
+        static_assert(std::is_base_of<glsl_transparent_type, GLSL_TRANSPARENT_T>::value, "type must derived from glsl_transparent_type");
+        const std::int64_t _value_size = sizeof(GLSL_TRANSPARENT_T);
+        if(offset < 0 || offset + _value_size > _capacity) return;
+        glNamedBufferSubData(_handle, offset, _value_size, reinterpret_cast<const void*>(&value));
     }
 
     /*
-     * Pure [Client -> Server]
-     * offset > 0 && data_size > 0 &&
-     * offset + data_size <= _capacity &&
-     * data's length == data_size
+     * Description: immediately write << single abstract type value >> into [offset, offset + sizeof(GLSL_TRANSPARENT_T))
      * */
-    template<typename GLSL_T>
-    inline void overwrite(std::int64_t offset, const std::vector<GLSL_T>& data_collection)
+    void write(std::int64_t offset, const glsl_transparent_type* value)
     {
-        STATIC_ASSERT_GLSL_T();
-        overwrite(offset, reinterpret_cast<const std::uint8_t*>(data_collection.data()), static_cast<std::int64_t>(data_collection.size() * sizeof(GLSL_T)));
+        if(!value || offset < 0 || offset + value->meta().type_size > _capacity) return;
+        glNamedBufferSubData(_handle, offset, value->meta().type_size, value->data());
     }
+
+public:
+
+    /*
+     * Description: immediately write << consequent exact type values >> into [offset, offset + sizeof(GLSL_TRANSPARENT_T) * num)
+     * */
+    template<typename GLSL_TRANSPARENT_T>
+    void write(std::int64_t offset, const std::vector<GLSL_TRANSPARENT_T>& consequent_values)
+    {
+        static_assert(std::is_base_of<glsl_transparent_type, GLSL_TRANSPARENT_T>::value, "type must derived from glsl_transparent_type");
+        const std::int64_t _consequent_values_size = sizeof(GLSL_TRANSPARENT_T) * consequent_values.size();
+        if(offset < 0 || offset +  _consequent_values_size > _capacity) return;
+        glNamedBufferSubData(_handle, offset, _consequent_values_size, reinterpret_cast<const void*>(consequent_values.data()));
+    }
+
+    /*
+     * Description: immediately write << consequent abstract type values >> into [offset, offset + )
+     * */
+    void write(std::int64_t offset, const std::vector<glsl_transparent_type*>& consequent_values)
+    {
+        std::int64_t _total_size = 0;
+        for(auto _value : consequent_values)
+        {
+            if(_value)  _total_size += _value->meta().type_size;
+        }
+
+        execute_mutable_memory_handler(offset, _total_size, [&consequent_values](std::uint8_t* memory, std::int64_t size){
+            std::int64_t _offset = 0;
+            for(auto _value : consequent_values)
+            {
+                if(_value) std::memcpy(memory + _offset, _value->data(), _value->meta().type_size);
+            }
+        });
+    }
+
+public:
+
+    /*
+     * Description: async write << dispersed abstract type values >> into [)
+     * */
+    void write(const std::vector<std::pair<std::int64_t, const glsl_transparent_type*>>& dispersed_values)
+    {
+        std::int64_t _min_offset, _max_offset;
+        _min_offset = _max_offset = 0;
+    }
+
+private:
+
+    static std::forward_list<gl_buffer_pool_element> _buffer_pool;
+
+public:
+
+    void reallocate(std::int64_t capacity, gl_buffer_storage_options storage_options)
+    {
+        // search the suitable buffer
+        auto _it = std::find_if(_buffer_pool.begin(), _buffer_pool.end(), [&](const gl_buffer_pool_element& element){
+            return _check_buffer_validation(capacity, storage_options);
+        });
+
+        // do not find one, create a new one
+        if(_it == _buffer_pool.end())
+        {
+            glCreateBuffers(1, &_handle);
+            if(_handle != 0)
+            {
+                if(storage_options.is_map_read) _storage_flags |= GL_MAP_READ_BIT;
+                if(storage_options.is_map_write) _storage_flags |= GL_MAP_WRITE_BIT;
+                if(storage_options.is_map_persistent) _storage_flags |= GL_MAP_PERSISTENT_BIT;
+                if(storage_options.is_map_coherent) _storage_flags |= GL_MAP_COHERENT_BIT;
+                if(storage_options.is_client_storage) _storage_flags |= GL_CLIENT_STORAGE_BIT;
+                if(storage_options.is_dynamic_storage) _storage_flags |= GL_DYNAMIC_STORAGE_BIT;
+
+                glNamedBufferStorage(_handle, capacity, nullptr, _storage_flags);
+                _required_capacity = capacity;
+            }
+        }else{ // find a suitable buffer
+            // fetch
+            _handle = _it->handle;
+            _required_capacity = capacity;
+            _storage_options = _it->storage_options;
+            _storage_flags = _it->storage_flags;
+            _capacity = _it->capacity;
+
+            //_buffer_pool.remove(*_it);
+        }
+    }
+
+    void reallocate(std::int64_t capacity)
+    {
+        reallocate(capacity, _storage_options);
+    }
+
+private:
+
+    bool _check_buffer_validation(std::int64_t required_capacity, gl_buffer_storage_options storage_options)
+    {
+
+    }
+
+    void _release_all_buffers()
+    {
+
+
+    }
+
+    void _release_isolated_buffers(){}
 
 public:
 
@@ -228,12 +252,9 @@ public:
 
 public:
 
-    [[nodiscard]] std::int64_t get_capacity() const { return _capacity; }
-
-    [[nodiscard]] std::int64_t get_size() const { return _size; }
+    [[nodiscard]] std::int64_t get_capacity() const { return _required_capacity; }
 
     [[nodiscard]] std::uint32_t get_storage_flags() const { return _storage_flags; }
-
 
     [[nodiscard]] std::int64_t query_buffer_size() const
     {
@@ -275,7 +296,7 @@ public:
     template<typename T>
     void print()
     {
-        execute_immutable_memory_handler(0, _size, [](const std::uint8_t* data, std::int64_t size){
+        execute_immutable_memory_handler(0, _required_capacity, [](const std::uint8_t* data, std::int64_t size){
             const auto _data = reinterpret_cast<const T*>(data);
             if(_data)
             {
@@ -294,15 +315,11 @@ private:
 
 private:
 
-    std::int64_t _capacity, _size;
+    std::int64_t _capacity, _required_capacity;
 
     std::uint32_t _storage_flags;
 
     gl_buffer_storage_options _storage_options;
-
-    //    void asynchronous(){}
-    //    void synchronous(){}
-    //    void synchronized(){}
 
 
 };
