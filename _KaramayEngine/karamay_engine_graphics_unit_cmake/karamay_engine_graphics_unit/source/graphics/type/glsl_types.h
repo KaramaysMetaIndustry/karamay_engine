@@ -16,6 +16,16 @@ struct glsl_transparent_type_meta
     const std::string type_component_name;
     const std::int64_t type_component_size;
     const std::int32_t type_components_count;
+
+    bool operator==(const glsl_transparent_type_meta& other) const
+    {
+        return type_name == other.type_name;
+    }
+
+    bool operator!=(const glsl_transparent_type_meta& other) const
+    {
+        return type_name != other.type_name;
+    }
 };
 
 class glsl_transparent_type : public glsl_type
@@ -190,7 +200,6 @@ class glsl_opaque_type : public glsl_type
 {
 
 };
-
 
 //
 //

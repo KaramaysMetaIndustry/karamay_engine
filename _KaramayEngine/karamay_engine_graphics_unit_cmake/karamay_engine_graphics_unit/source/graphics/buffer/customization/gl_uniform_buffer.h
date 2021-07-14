@@ -47,20 +47,22 @@ enum class gl_uniform_buffer_layout
     packed,
 };
 
+#define STATIC_ASSERT_UNIFORM_T()
+
+
+
 class gl_uniform_buffer final
 {
     static std::unordered_map<std::string, std::int64_t> _glsl_type_size_map;
 
 public:
 	
-	gl_uniform_buffer(const std::string& block_name, gl_uniform_buffer_layout layout, const std::vector<std::pair<std::string, std::string>>& rows,
-                      std::shared_ptr<gl_buffer>& public_buffer, std::shared_ptr<gl_program>& owner) :
-	    _uniform_buffer_offset(0),
-	    _uniform_buffer_size(0),
-	    _binding(0),
-	    _public_buffer(public_buffer),
-	    _owner(owner),
-        _block_name(block_name)
+	gl_uniform_buffer(std::shared_ptr<gl_program>& owner,
+                      const std::string& block_name, gl_uniform_buffer_layout layout, const std::vector<std::pair<std::string, std::string>>& rows) :
+            _owner(owner),
+            _block_name(block_name),
+	        _uniform_buffer_size(0),
+	        _binding(0)
     {
         _generate_memory_layout(layout, rows);
     }
@@ -69,48 +71,56 @@ public:
 
 private:
 
+    std::weak_ptr<gl_program> _owner;
+
+    std::shared_ptr<gl_buffer> _buffer;
+
     std::string _block_name;
 
+    std::unordered_map<std::string, std::pair<std::int64_t, const glsl_transparent_type_meta*>> _attribute_layout;
+
     std::int64_t _uniform_buffer_offset, _uniform_buffer_size;
-
-    std::unordered_map<std::string, std::pair<std::int64_t, std::int64_t>> _attribute_layout;
-
-    std::shared_ptr<gl_buffer> _public_buffer;
-
-    std::weak_ptr<gl_program> _owner;
 
     std::uint32_t _binding;
 
 public:
 
-	template<typename GLSL_T>
-	void update_uniform(const std::string& name, const GLSL_T& value)
+	template<typename GLSL_TRANSPARENT_T>
+	void update_uniform(const std::string& name, const GLSL_TRANSPARENT_T& value)
     {
-	    if(_public_buffer)
+        STATIC_ASSERT_UNIFORM_T();
+
+    }
+
+    /*
+     * must check offset, type
+     * */
+    void update_uniform(const std::string& name, const glsl_transparent_type* value)
+    {
+        if(_buffer && value)
         {
-            auto _it = _attribute_layout.find(name); if(_it == _attribute_layout.cend()) return;
-            auto _memory_offset = _it->second.first;
-            auto _memory_size = _it->second.second;
-            if(_memory_size != sizeof(GLSL_T)) return;
-            _public_buffer->overwrite(_memory_offset, reinterpret_cast<const std::uint8_t*>(&value), _memory_size);
-            GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT;
+            auto _it = _attribute_layout.find(name);
+            const glsl_transparent_type_meta* _meta = _it->second.second;
+            if(_meta && _it != _attribute_layout.cend() && value->meta() == *_meta)
+            {
+                _buffer->write(_it->second.first, value->data(), _meta->type_size);
+            }
         }
     }
 
 public:
 
-    [[nodiscard]] const std::string& get_block_name() const{return _block_name;}
+    [[nodiscard]] const std::string& block_name() const{return _block_name;}
 
-    [[nodiscard]] std::int64_t get_uniform_buffer_offset() const {return _uniform_buffer_offset;}
+    [[nodiscard]] std::int64_t uniform_buffer_offset() const {return _uniform_buffer_offset;}
 
-    [[nodiscard]] std::int64_t get_uniform_buffer_size() const {return _uniform_buffer_size;}
+    [[nodiscard]] std::int64_t uniform_buffer_size() const {return _uniform_buffer_size;}
 
     const auto& get_attribute_layout()
     {
         return _attribute_layout;
     }
 
-    [[nodiscard]] const std::shared_ptr<gl_buffer>& get_public_buffer() const {return _public_buffer;}
 
     void bind(std::uint32_t binding);
 

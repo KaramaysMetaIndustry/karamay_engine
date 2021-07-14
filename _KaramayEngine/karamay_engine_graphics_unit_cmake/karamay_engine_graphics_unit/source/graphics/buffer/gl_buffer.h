@@ -14,7 +14,6 @@ struct gl_buffer_pool_element
 
     gl_buffer_pool_element(const gl_buffer_pool_element& other)
     {
-
     }
 };
 
@@ -45,7 +44,7 @@ public:
 
     ~gl_buffer() override
     {
-        _buffer_pool.insert_after(_buffer_pool.end(), gl_buffer_pool_element{_handle, _storage_options, _capacity});
+        //_buffer_pool.insert_after(_buffer_pool.end(), gl_buffer_pool_element{_handle, _storage_options, _capacity});
     }
 
 public:
@@ -61,6 +60,16 @@ public:
     }
 
 public:
+
+    /*
+     * Description: immediately write << single abstract type value >> into [offset, offset + sizeof(GLSL_TRANSPARENT_T))
+     * */
+    void write(std::int64_t offset, const glsl_transparent_type* value)
+    {
+        if(!value || offset < 0 || offset + value->meta().type_size > _capacity) return;
+        glNamedBufferSubData(_handle, offset, value->meta().type_size, value->data());
+    }
+
     /*
      * Description: immediately write << single exact type value >> into [offset, offset + sizeof(GLSL_TRANSPARENT_T))
      *
@@ -74,28 +83,7 @@ public:
         glNamedBufferSubData(_handle, offset, _value_size, reinterpret_cast<const void*>(&value));
     }
 
-    /*
-     * Description: immediately write << single abstract type value >> into [offset, offset + sizeof(GLSL_TRANSPARENT_T))
-     * */
-    void write(std::int64_t offset, const glsl_transparent_type* value)
-    {
-        if(!value || offset < 0 || offset + value->meta().type_size > _capacity) return;
-        glNamedBufferSubData(_handle, offset, value->meta().type_size, value->data());
-    }
-
 public:
-
-    /*
-     * Description: immediately write << consequent exact type values >> into [offset, offset + sizeof(GLSL_TRANSPARENT_T) * num)
-     * */
-    template<typename GLSL_TRANSPARENT_T>
-    void write(std::int64_t offset, const std::vector<GLSL_TRANSPARENT_T>& consequent_values)
-    {
-        static_assert(std::is_base_of<glsl_transparent_type, GLSL_TRANSPARENT_T>::value, "type must derived from glsl_transparent_type");
-        const std::int64_t _consequent_values_size = sizeof(GLSL_TRANSPARENT_T) * consequent_values.size();
-        if(offset < 0 || offset +  _consequent_values_size > _capacity) return;
-        glNamedBufferSubData(_handle, offset, _consequent_values_size, reinterpret_cast<const void*>(consequent_values.data()));
-    }
 
     /*
      * Description: immediately write << consequent abstract type values >> into [offset, offset + )
@@ -115,6 +103,19 @@ public:
                 if(_value) std::memcpy(memory + _offset, _value->data(), _value->meta().type_size);
             }
         });
+    }
+
+    /*
+     * Description: immediately write << consequent exact type values >> into [offset, offset + sizeof(GLSL_TRANSPARENT_T) * num)
+     * */
+    template<typename GLSL_TRANSPARENT_T>
+    void write(std::int64_t offset, const std::vector<GLSL_TRANSPARENT_T>& consequent_values)
+    {
+        static_assert(std::is_base_of<glsl_transparent_type, GLSL_TRANSPARENT_T>::value, "type must derived from glsl_transparent_type");
+
+        const std::int64_t _consequent_values_size = sizeof(GLSL_TRANSPARENT_T) * consequent_values.size();
+        if(offset < 0 || offset +  _consequent_values_size > _capacity) return;
+        glNamedBufferSubData(_handle, offset, _consequent_values_size, reinterpret_cast<const void*>(consequent_values.data()));
     }
 
 public:
