@@ -178,8 +178,7 @@ class gl_vertex_array final : public gl_object
 
 public:
 
-    gl_vertex_array(std::vector<gl_attribute_descriptor>& attribute_descriptors,
-                    std::vector<gl_instance_attribute_descriptor>& instance_attribute_descriptors) :
+    gl_vertex_array(std::vector<gl_attribute_descriptor>& attribute_descriptors, std::vector<gl_instance_attribute_descriptor>& instance_attribute_descriptors) :
                     _vertices_count(0),
                     _instances_count(0),
                     _memory_size(0)

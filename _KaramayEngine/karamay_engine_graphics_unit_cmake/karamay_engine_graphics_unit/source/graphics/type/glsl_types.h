@@ -3,39 +3,74 @@
 
 #include "public/glm.h"
 
-
-class glsl_type
+class glsl_clazz
 {
 
 };
 
-struct glsl_transparent_type_meta
+class glsl_class {
+
+protected:
+
+    static std::unordered_map<std::string, const glsl_clazz*> _clazz_map;
+
+};
+
+
+
+
+class glsl_transparent_clazz : public glsl_clazz
 {
+
+public:
+    virtual class glsl_transparent_class* create_instance(const std::vector<std::string>& params) const = 0;
+
+public:
     const std::string type_name;
     const std::int64_t type_size;
     const std::string type_component_name;
     const std::int64_t type_component_size;
     const std::int32_t type_components_count;
 
-    bool operator==(const glsl_transparent_type_meta& other) const
+    bool operator==(const glsl_transparent_clazz& other) const
     {
         return type_name == other.type_name;
     }
 
-    bool operator!=(const glsl_transparent_type_meta& other) const
+    bool operator!=(const glsl_transparent_clazz& other) const
     {
         return type_name != other.type_name;
     }
 };
 
-class glsl_transparent_type : public glsl_type
+class glsl_transparent_class : public glsl_class
 {
+private:
+
+    static std::unordered_map<std::string, const glsl_transparent_clazz*> _clazz_map;
+
 public:
-    [[nodiscard]] virtual const glsl_transparent_type_meta& meta() const = 0;
+
+    static glsl_transparent_class* create(const std::string& class_name, const std::vector<std::string>& params)
+    {
+        auto _it = _clazz_map.find(class_name);
+        if(_it != _clazz_map.cend())
+        {
+            const glsl_transparent_clazz* _clazz = _it->second;
+            if(_clazz->type_components_count == params.size())
+            {
+                return _clazz->create_instance(params);
+            }
+        }
+    }
+
+    [[nodiscard]] virtual const glsl_transparent_clazz& clazz() const = 0;
+
     [[nodiscard]] virtual const std::uint8_t* data() const = 0;
+
 };
 
-class glsl_float : public glsl_transparent_type
+class glsl_float : public glsl_transparent_class
 {
 public:
     using client_t = glm::vec1;
@@ -46,21 +81,20 @@ public:
 
     client_t client_value;
 
+private:
+
+    static const glsl_transparent_clazz _clazz;
+
 public:
 
-    [[nodiscard]] const glsl_transparent_type_meta& meta() const override {return _meta; }
+    [[nodiscard]] const glsl_transparent_clazz& clazz() const override {return _clazz; }
 
     [[nodiscard]] const std::uint8_t* data() const override {return reinterpret_cast<const std::uint8_t*>(&client_value);}
 
-private:
-
-    static const glsl_transparent_type_meta _meta;
-
 };
 
-const glsl_transparent_type_meta glsl_float::_meta = {};
 
-class glsl_vec2 : public glsl_transparent_type
+class glsl_vec2 : public glsl_transparent_class
 {
 public:
     using client_t = glm::vec2;
@@ -73,19 +107,18 @@ public:
 
 public:
 
-    [[nodiscard]] const glsl_transparent_type_meta& meta() const override {return _meta; }
+    [[nodiscard]] const glsl_transparent_clazz& clazz() const override {return _clazz; }
 
     [[nodiscard]] const std::uint8_t* data() const override {return reinterpret_cast<const std::uint8_t*>(&client_value);}
 
 private:
 
-    static const glsl_transparent_type_meta _meta;
+    static const glsl_transparent_clazz _clazz;
 
 };
 
-const glsl_transparent_type_meta glsl_vec2::_meta = {};
 
-class glsl_vec3 : public glsl_transparent_type
+class glsl_vec3 : public glsl_transparent_class
 {
 public:
     using client_t = glm::vec3;
@@ -98,19 +131,19 @@ public:
 
 public:
 
-    [[nodiscard]] const glsl_transparent_type_meta& meta() const override {return _meta; }
+    [[nodiscard]] const glsl_transparent_clazz& clazz() const override {return _clazz; }
 
     [[nodiscard]] const std::uint8_t* data() const override {return reinterpret_cast<const std::uint8_t*>(&client_value);}
 
 private:
 
-    static const glsl_transparent_type_meta _meta;
+    static const glsl_transparent_clazz _clazz;
 
 };
 
-const glsl_transparent_type_meta glsl_vec3::_meta = {};
+const glsl_transparent_clazz glsl_vec3::_clazz = {};
 
-class glsl_vec4 : public glsl_transparent_type
+class glsl_vec4 : public glsl_transparent_class
 {
 public:
     using client_t = glm::vec4;
@@ -123,23 +156,23 @@ public:
 
 public:
 
-    [[nodiscard]] const glsl_transparent_type_meta& meta() const override {return _meta; }
+    [[nodiscard]] const glsl_transparent_clazz& clazz() const override {return _clazz; }
 
     [[nodiscard]] const std::uint8_t* data() const override {return reinterpret_cast<const std::uint8_t*>(&client_value);}
 
 private:
 
-    static const glsl_transparent_type_meta _meta;
+    static const glsl_transparent_clazz _clazz;
 
 };
 
-const glsl_transparent_type_meta glsl_vec4::_meta = {};
+const glsl_transparent_clazz glsl_vec4::_clazz = {};
 
 
 
 
 
-class glsl_int : public glsl_transparent_type
+class glsl_int : public glsl_transparent_class
 {
 public:
     using client_t = glm::ivec1;
@@ -152,21 +185,21 @@ public:
 
 public:
 
-    [[nodiscard]] const glsl_transparent_type_meta& meta() const override {return _meta;}
+    [[nodiscard]] const glsl_transparent_clazz& meta() const override {return _meta;}
 
     [[nodiscard]] const std::uint8_t* data() const override { return reinterpret_cast<const std::uint8_t*>(&client_value); }
 
 private:
 
-    static const glsl_transparent_type_meta _meta;
+    static const glsl_transparent_clazz _meta;
 
 };
 
-const glsl_transparent_type_meta glsl_int::_meta
+const glsl_transparent_clazz glsl_int::_meta
 = {"int", sizeof(glm::vec1), "int", sizeof(glm::vec1::value_type), 1};
 
 
-class glsl_ivec2 : public glsl_transparent_type
+class glsl_ivec2 : public glsl_transparent_class
 {
 public:
     using client_t = glm::ivec2;
@@ -177,29 +210,34 @@ public:
 
     client_t client_value;
 
-    [[nodiscard]] const glsl_transparent_type_meta& meta() const override {return _meta;}
+    [[nodiscard]] const glsl_transparent_clazz& meta() const override {return _meta;}
 
     [[nodiscard]] const std::uint8_t* data() const override {return reinterpret_cast<const std::uint8_t*>(&client_value);}
 
 private:
 
-    static const glsl_transparent_type_meta _meta;
+    static const glsl_transparent_clazz _meta;
 
 };
 
-const glsl_transparent_type_meta glsl_ivec2::_meta
+const glsl_transparent_clazz glsl_ivec2::_meta
 = {"ivec2", sizeof(glm::vec2), "int", sizeof(glm::vec2::value_type), 2};
 
 
-class glsl_opaque_type_meta
+class glsl_opaque_clazz : public glsl_clazz
 {
 
 };
 
-class glsl_opaque_type : public glsl_type
+class glsl_opaque_type : public glsl_class
 {
 
 };
+
+
+
+
+
 
 //
 //

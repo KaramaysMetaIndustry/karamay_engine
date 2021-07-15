@@ -40,6 +40,13 @@ public:
         _storage_flags(0)
     {
         reallocate(required_capacity, storage_options);
+
+        auto value = glsl_transparent_class::create("vec3", {"1.0f", "1.0f", "1.0f"});
+        auto _value = dynamic_cast<glsl_vec3*>(value);
+        if(_value)
+        {
+            
+        }
     }
 
     ~gl_buffer() override
