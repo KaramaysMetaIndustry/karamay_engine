@@ -35,7 +35,7 @@ void gl_shader_storage_buffer::bind(std::uint32_t binding)
 		}
 	}
 
-	glBindBufferRange(GL_SHADER_STORAGE_BUFFER, binding, _buffer->get_handle(), 0, _buffer->get_size());
+	glBindBufferRange(GL_SHADER_STORAGE_BUFFER, binding, _buffer->get_handle(), 0, _buffer->get_capacity());
 	//_binding = binding;
 }
 
@@ -57,18 +57,5 @@ void gl_shader_storage_buffer::_fill_std430() {
     if (_descriptor)
     {
         const std::size_t _block_size = _descriptor->get_block_size();
-
-        _buffer = std::make_shared<gl_buffer>();
-        _buffer->allocate(_block_size);
-
-        std::size_t _offset = 0;
-        for (const auto& _item : _descriptor->get_items())
-        {
-            if (_item)
-            {
-                _buffer->fill(_offset, _item->get_value().size(), _item->get_value().data());
-                _offset += _item->get_value().size();
-            }
-        }
     }
 }

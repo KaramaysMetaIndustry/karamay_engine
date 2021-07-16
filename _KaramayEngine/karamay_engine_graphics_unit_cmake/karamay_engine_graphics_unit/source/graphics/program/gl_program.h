@@ -184,19 +184,16 @@ public:
         auto _public_uniform_buffer = std::make_shared<gl_buffer>(12, _storage_options);
 
         for(const auto& descriptor : descriptors) {
-            _uniform_buffers.push_back(
-                    std::make_shared<gl_uniform_buffer>(descriptor.block_name, descriptor.layout, descriptor.rows,_public_uniform_buffer, _owner)
-            );
+//            _uniform_buffers.push_back(
+//                    std::make_shared<gl_uniform_buffer>(descriptor.block_name, descriptor.layout, descriptor.rows,_public_uniform_buffer, _owner)
+//            );
         }
 
     }
 
     auto find_uniform_buffer(const std::string& uniform_buffer_name)
     {
-	    for(auto& _ub : _uniform_buffers)
-	    {
-	        if(_ub->get_block_name() == uniform_buffer_name) return _ub;
-        }
+
 	    return std::shared_ptr<gl_uniform_buffer>(nullptr);
     }
 

@@ -3,42 +3,42 @@
 
 #include "public/_glew.h"
 
-#define STATIC_ASSERT_GLSL_T()\
+#define STATIC_ASSERT_GLSL_TRANSPARENT_T()\
 static_assert(\
-        std::is_same<GLSL_T, glsl_float>::value ||\
-        std::is_same<GLSL_T, glsl_vec2>::value ||\
-        std::is_same<GLSL_T, glsl_vec3>::value ||\
-        std::is_same<GLSL_T, glsl_vec4>::value ||\
-        std::is_same<GLSL_T, glsl_double>::value ||\
-        std::is_same<GLSL_T, glsl_dvec2>::value ||\
-        std::is_same<GLSL_T, glsl_dvec3>::value ||\
-        std::is_same<GLSL_T, glsl_dvec4>::value ||\
-        std::is_same<GLSL_T, glsl_int>::value ||\
-        std::is_same<GLSL_T, glsl_ivec2>::value ||\
-        std::is_same<GLSL_T, glsl_ivec3>::value ||\
-        std::is_same<GLSL_T, glsl_ivec4>::value ||\
-        std::is_same<GLSL_T, glsl_uint>::value ||\
-        std::is_same<GLSL_T, glsl_uvec2>::value ||\
-        std::is_same<GLSL_T, glsl_uvec3>::value ||\
-        std::is_same<GLSL_T, glsl_uvec4>::value ||\
-        std::is_same<GLSL_T, glsl_mat2>::value ||\
-        std::is_same<GLSL_T, glsl_mat2x3>::value ||\
-        std::is_same<GLSL_T, glsl_mat2x4>::value ||\
-        std::is_same<GLSL_T, glsl_mat3>::value ||\
-        std::is_same<GLSL_T, glsl_mat3x2>::value ||\
-        std::is_same<GLSL_T, glsl_mat3x4>::value ||\
-        std::is_same<GLSL_T, glsl_mat4>::value ||\
-        std::is_same<GLSL_T, glsl_mat4x2>::value ||\
-        std::is_same<GLSL_T, glsl_mat4x3>::value ||\
-        std::is_same<GLSL_T, glsl_dmat2>::value ||\
-        std::is_same<GLSL_T, glsl_dmat2x3>::value ||\
-        std::is_same<GLSL_T, glsl_dmat2x4>::value ||\
-        std::is_same<GLSL_T, glsl_dmat3>::value ||\
-        std::is_same<GLSL_T, glsl_dmat3x2>::value ||\
-        std::is_same<GLSL_T, glsl_dmat3x4>::value ||\
-        std::is_same<GLSL_T, glsl_dmat4>::value ||\
-        std::is_same<GLSL_T, glsl_dmat4x2>::value ||\
-        std::is_same<GLSL_T, glsl_dmat4x3>::value\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_float>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_vec2>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_vec3>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_vec4>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_double>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_dvec2>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_dvec3>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_dvec4>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_int>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_ivec2>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_ivec3>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_ivec4>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_uint>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_uvec2>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_uvec3>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_uvec4>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_mat2>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_mat2x3>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_mat2x4>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_mat3>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_mat3x2>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_mat3x4>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_mat4>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_mat4x2>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_mat4x3>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_dmat2>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_dmat2x3>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_dmat2x4>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_dmat3>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_dmat3x2>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_dmat3x4>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_dmat4>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_dmat4x2>::value ||\
+        std::is_same<GLSL_TRANSPARENT_T, glsl_dmat4x3>::value\
         , "GLSL_T must be glsl_*")\
 
 enum class internal_format : GLenum

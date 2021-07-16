@@ -15,25 +15,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="799c95bd-bd6b-4bb4-95bb-3af1c0f20cb1" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffers.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/type/glsl.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/type/glsl_class/glsl_class.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/type/glsl_class/glsl_opaque_class/glsl_opaque_class.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/type/glsl_class/glsl_transparent_class/glsl_transparent_class.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/type/glsl_class/glsl_transparent_class/glsl_transparent_class.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_atomic_counter_buffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_atomic_counter_buffer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_atomic_counter_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_atomic_counter_buffer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_element_array_buffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_element_array_buffer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_element_array_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_element_array_buffer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_shader_storage_buffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_shader_storage_buffer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_shader_storage_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_shader_storage_buffer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_uniform_buffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_uniform_buffer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/customization/gl_uniform_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_uniform_buffer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_dynamic_buffer.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_dynamic_buffer.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_static_buffer.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_static_buffer.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_tools.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_tools.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_element_array_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_element_array_buffer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_shader_storage_buffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_shader_storage_buffer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_uniform_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_uniform_buffer.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/program/gl_program.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/program/gl_program.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/type/gl_type.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/type/gl_type.h" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/type/glsl_types.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/type/glsl_types.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,6 +143,8 @@
       <workItem from="1626229415993" duration="7706000" />
       <workItem from="1626270342624" duration="93000" />
       <workItem from="1626270445540" duration="5559000" />
+      <workItem from="1626313106821" duration="12000000" />
+      <workItem from="1626342082804" duration="8938000" />
     </task>
     <servers />
   </component>

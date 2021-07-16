@@ -73,12 +73,6 @@ private:
 
 	void _fill()
 	{
-		if (_descriptor)
-		{
-			_buffer = std::make_shared<gl_buffer>();
-			_buffer->allocate(_descriptor->get_data_size());
-			_buffer->fill(0, _descriptor->get_data_size(), _descriptor->get_data());
-		}
 	}
 
 public:

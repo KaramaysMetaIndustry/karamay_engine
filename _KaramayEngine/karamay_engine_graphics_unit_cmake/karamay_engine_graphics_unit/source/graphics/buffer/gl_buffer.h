@@ -3,6 +3,7 @@
 
 #include "graphics/glo/gl_object.h"
 #include "graphics/buffer/gl_buffer_tools.h"
+#include "graphics/type/glsl_class/glsl_transparent_class/glsl_transparent_class.h"
 
 
 struct gl_buffer_pool_element
@@ -21,6 +22,7 @@ struct gl_buffer_pool_element
  * [You must trust clients who will use your class.]
  * gl_buffer which can only accept glsl_type and bytes
  *
+ * 该类提供的 write 系列接口定义的参数是对应情形下最高效的数据组织方式，请阅读接口对应情形并严格考量写入数据的情形以保证效率。
  * */
 class gl_buffer : public gl_object
 {
@@ -40,13 +42,6 @@ public:
         _storage_flags(0)
     {
         reallocate(required_capacity, storage_options);
-
-        auto value = glsl_transparent_class::create("vec3", {"1.0f", "1.0f", "1.0f"});
-        auto _value = dynamic_cast<glsl_vec3*>(value);
-        if(_value)
-        {
-            
-        }
     }
 
     ~gl_buffer() override
@@ -58,82 +53,108 @@ public:
 
     /*
      * Description: immediately write << bytes stream >> into [offset, offset + byte_stream_size)
-     *
+     * 包含安全处理的原生接口
+     * 使用须知：调用该接口会产生通讯开销，频繁调用影响性能（即连续数据尽量整合一起写入，避免多次开销）
      * */
-    void write(std::int64_t offset, const std::uint8_t* byte_stream, std::int64_t byte_stream_size)
+    inline void write(std::int64_t offset, const std::uint8_t* byte_stream, std::int64_t byte_stream_size)
     {
-        if(!byte_stream || offset < 0 || offset + byte_stream_size > _capacity) return;
+        if(!_storage_options.is_dynamic_storage || !byte_stream || offset < 0 || offset + byte_stream_size > _capacity) return;
         glNamedBufferSubData(_handle, offset, byte_stream_size, byte_stream);
     }
 
 public:
 
     /*
-     * Description: immediately write << single abstract type value >> into [offset, offset + sizeof(GLSL_TRANSPARENT_T))
-     * */
-    void write(std::int64_t offset, const glsl_transparent_type* value)
-    {
-        if(!value || offset < 0 || offset + value->meta().type_size > _capacity) return;
-        glNamedBufferSubData(_handle, offset, value->meta().type_size, value->data());
-    }
-
-    /*
-     * Description: immediately write << single exact type value >> into [offset, offset + sizeof(GLSL_TRANSPARENT_T))
+     * 当前上下文中仅需写入[类型明确的 GLSL_TRANSPARENT_T ]的[单个数据]
      *
      * */
     template<typename GLSL_TRANSPARENT_T>
     void write(int64_t offset, const GLSL_TRANSPARENT_T& value)
     {
-        static_assert(std::is_base_of<glsl_transparent_type, GLSL_TRANSPARENT_T>::value, "type must derived from glsl_transparent_type");
-        const std::int64_t _value_size = sizeof(GLSL_TRANSPARENT_T);
-        if(offset < 0 || offset + _value_size > _capacity) return;
-        glNamedBufferSubData(_handle, offset, _value_size, reinterpret_cast<const void*>(&value));
-    }
-
-public:
-
-    /*
-     * Description: immediately write << consequent abstract type values >> into [offset, offset + )
-     * */
-    void write(std::int64_t offset, const std::vector<glsl_transparent_type*>& consequent_values)
-    {
-        std::int64_t _total_size = 0;
-        for(auto _value : consequent_values)
-        {
-            if(_value)  _total_size += _value->meta().type_size;
-        }
-
-        execute_mutable_memory_handler(offset, _total_size, [&consequent_values](std::uint8_t* memory, std::int64_t size){
-            std::int64_t _offset = 0;
-            for(auto _value : consequent_values)
-            {
-                if(_value) std::memcpy(memory + _offset, _value->data(), _value->meta().type_size);
-            }
-        });
+        if(offset < 0 || offset + sizeof(GLSL_TRANSPARENT_T) > _capacity) return;
+        glNamedBufferSubData(_handle, offset, sizeof(GLSL_TRANSPARENT_T), reinterpret_cast<const void*>(&value));
     }
 
     /*
-     * Description: immediately write << consequent exact type values >> into [offset, offset + sizeof(GLSL_TRANSPARENT_T) * num)
+     * 当前上下文中需写入[类型明确的 GLSL_TRANSPARENT_T]的[离散][数据集]
      * */
     template<typename GLSL_TRANSPARENT_T>
-    void write(std::int64_t offset, const std::vector<GLSL_TRANSPARENT_T>& consequent_values)
+    void write_dispersed_list(const std::vector<std::pair<std::int64_t, GLSL_TRANSPARENT_T>>& dispersed_list)
     {
-        static_assert(std::is_base_of<glsl_transparent_type, GLSL_TRANSPARENT_T>::value, "type must derived from glsl_transparent_type");
 
-        const std::int64_t _consequent_values_size = sizeof(GLSL_TRANSPARENT_T) * consequent_values.size();
-        if(offset < 0 || offset +  _consequent_values_size > _capacity) return;
-        glNamedBufferSubData(_handle, offset, _consequent_values_size, reinterpret_cast<const void*>(consequent_values.data()));
+        if(dispersed_list.size() < 5) for(const auto& _pair : dispersed_list) write(_pair.first, _pair.second);
+        else {
+            const std::int64_t _dispersed_list_covered_size = 0;
+            const std::int64_t _min_offset = 0;
+            if(_min_offset < 0 || _min_offset + _dispersed_list_covered_size > _capacity) return;
+            execute_mutable_memory_handler(_min_offset, _dispersed_list_covered_size, [&dispersed_list](std::uint8_t* mapped_memory, std::int64_t mapped_memory_size){
+                if(mapped_memory)
+                {
+                    for(const auto& _pair : dispersed_list)
+                    {
+                        //std::memcpy(mapped_memory, _pair.second, )
+                    }
+                }
+            });
+        }
     }
 
-public:
+    /*
+     * 当前上下文需写入[抽象类型的 GLSL_TRANSPARENT_T]的[离散][数据集]
+     * */
+    void write_dispersed_interracial_list(const std::vector<std::pair<int64_t, const glsl_transparent_class*>>& dispersed_interracial_list)
+    {
+
+    }
 
     /*
-     * Description: async write << dispersed abstract type values >> into [)
+     * 当前上下文需写入[类型明确的 GLSL_TRANSPARENT_T]的[连续][数据集]
      * */
-    void write(const std::vector<std::pair<std::int64_t, const glsl_transparent_type*>>& dispersed_values)
+    template<typename GLSL_TRANSPARENT_T>
+    void write_consequent_list(std::int64_t offset, const std::vector<GLSL_TRANSPARENT_T>& consequent_list)
     {
-        std::int64_t _min_offset, _max_offset;
-        _min_offset = _max_offset = 0;
+        const std::int64_t _consequent_list_size = consequent_list.size() * sizeof(GLSL_TRANSPARENT_T);
+        if(offset < 0 || offset +  _consequent_list_size > _capacity) return;
+        glNamedBufferSubData(_handle, offset, _consequent_list_size, reinterpret_cast<const void*>(consequent_list.data()));
+    }
+
+    /*
+     * 当前上下文需写入[抽象类型的 GLSL_TRANSPARENT_T]的[离散][数据集]
+     * */
+    void write_consequent_interracial_list(std::int64_t offset, const std::vector<const glsl_transparent_class*>& consequent_interracial_list)
+    {
+        std::int64_t _consequent_interracial_list_size = 0;
+        for(const auto& _value : consequent_interracial_list) if(_value) _consequent_interracial_list_size += _value->clazz()->class_size;
+
+        if(offset < 0 || _consequent_interracial_list_size < 0 || offset + _consequent_interracial_list_size > _capacity) return;
+        {
+            auto* _tmp_data = (std::uint8_t*)malloc(_consequent_interracial_list_size);
+            std::int64_t _tmp_data_offset = 0;
+            for(const auto* _value : consequent_interracial_list)
+            {
+                if(_tmp_data && _value)
+                {
+                    std::memcpy(_tmp_data + _tmp_data_offset, _value->stream(), _value->clazz()->class_size);
+                    _tmp_data_offset += _value->clazz()->class_size;
+                }
+            }
+            glNamedBufferSubData(_handle, offset, _consequent_interracial_list_size, _tmp_data);
+        }
+
+        //
+//        {
+//            execute_mutable_memory_handler(offset, _consequent_interracial_list_size, [&consequent_interracial_list](std::uint8_t* mapped_memory, std::int64_t mapped_memory_size){
+//                if(mapped_memory)
+//                {
+//                    std::int64_t _offset = 0;
+//                    for(const auto& _pair : consequent_interracial_list)
+//                    {
+//                        std::memcpy(mapped_memory + _offset, _pair.first, _pair.second);
+//                        _offset += _pair.second;
+//                    }
+//                }
+//            });
+//        }
     }
 
 private:
@@ -142,40 +163,7 @@ private:
 
 public:
 
-    void reallocate(std::int64_t capacity, gl_buffer_storage_options storage_options)
-    {
-        // search the suitable buffer
-        auto _it = std::find_if(_buffer_pool.begin(), _buffer_pool.end(), [&](const gl_buffer_pool_element& element){
-            return _check_buffer_validation(capacity, storage_options);
-        });
-
-        // do not find one, create a new one
-        if(_it == _buffer_pool.end())
-        {
-            glCreateBuffers(1, &_handle);
-            if(_handle != 0)
-            {
-                if(storage_options.is_map_read) _storage_flags |= GL_MAP_READ_BIT;
-                if(storage_options.is_map_write) _storage_flags |= GL_MAP_WRITE_BIT;
-                if(storage_options.is_map_persistent) _storage_flags |= GL_MAP_PERSISTENT_BIT;
-                if(storage_options.is_map_coherent) _storage_flags |= GL_MAP_COHERENT_BIT;
-                if(storage_options.is_client_storage) _storage_flags |= GL_CLIENT_STORAGE_BIT;
-                if(storage_options.is_dynamic_storage) _storage_flags |= GL_DYNAMIC_STORAGE_BIT;
-
-                glNamedBufferStorage(_handle, capacity, nullptr, _storage_flags);
-                _required_capacity = capacity;
-            }
-        }else{ // find a suitable buffer
-            // fetch
-            _handle = _it->handle;
-            _required_capacity = capacity;
-            _storage_options = _it->storage_options;
-            _storage_flags = _it->storage_flags;
-            _capacity = _it->capacity;
-
-            //_buffer_pool.remove(*_it);
-        }
-    }
+    void reallocate(std::int64_t capacity, gl_buffer_storage_options storage_options);
 
     void reallocate(std::int64_t capacity)
     {
@@ -184,18 +172,20 @@ public:
 
 private:
 
-    bool _check_buffer_validation(std::int64_t required_capacity, gl_buffer_storage_options storage_options)
-    {
-
-    }
-
-    void _release_all_buffers()
-    {
-
-
-    }
+    bool _check_buffer_validation(std::int64_t required_capacity, gl_buffer_storage_options storage_options) {return false;}
 
     void _release_isolated_buffers(){}
+
+    void _release_all_pool_buffers() {
+        for(const auto& _buffer_element : _buffer_pool)
+        {
+            glDeleteBuffers(1, &_buffer_element.handle);
+        }
+
+        std::istringstream a("12.223232");
+        std::int32_t x;
+        a >> x;
+    }
 
 public:
 

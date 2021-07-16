@@ -3,242 +3,14 @@
 
 #include "public/glm.h"
 
-class glsl_clazz
-{
 
-};
 
-class glsl_class {
 
-protected:
 
-    static std::unordered_map<std::string, const glsl_clazz*> _clazz_map;
 
-};
 
-
-
-
-class glsl_transparent_clazz : public glsl_clazz
-{
-
-public:
-    virtual class glsl_transparent_class* create_instance(const std::vector<std::string>& params) const = 0;
-
-public:
-    const std::string type_name;
-    const std::int64_t type_size;
-    const std::string type_component_name;
-    const std::int64_t type_component_size;
-    const std::int32_t type_components_count;
-
-    bool operator==(const glsl_transparent_clazz& other) const
-    {
-        return type_name == other.type_name;
-    }
-
-    bool operator!=(const glsl_transparent_clazz& other) const
-    {
-        return type_name != other.type_name;
-    }
-};
-
-class glsl_transparent_class : public glsl_class
-{
-private:
-
-    static std::unordered_map<std::string, const glsl_transparent_clazz*> _clazz_map;
-
-public:
-
-    static glsl_transparent_class* create(const std::string& class_name, const std::vector<std::string>& params)
-    {
-        auto _it = _clazz_map.find(class_name);
-        if(_it != _clazz_map.cend())
-        {
-            const glsl_transparent_clazz* _clazz = _it->second;
-            if(_clazz->type_components_count == params.size())
-            {
-                return _clazz->create_instance(params);
-            }
-        }
-    }
-
-    [[nodiscard]] virtual const glsl_transparent_clazz& clazz() const = 0;
-
-    [[nodiscard]] virtual const std::uint8_t* data() const = 0;
-
-};
-
-class glsl_float : public glsl_transparent_class
-{
-public:
-    using client_t = glm::vec1;
-
-    explicit glsl_float(std::float_t scalar) :
-        client_value(scalar)
-    {}
-
-    client_t client_value;
-
-private:
-
-    static const glsl_transparent_clazz _clazz;
-
-public:
-
-    [[nodiscard]] const glsl_transparent_clazz& clazz() const override {return _clazz; }
-
-    [[nodiscard]] const std::uint8_t* data() const override {return reinterpret_cast<const std::uint8_t*>(&client_value);}
-
-};
-
-
-class glsl_vec2 : public glsl_transparent_class
-{
-public:
-    using client_t = glm::vec2;
-
-    explicit glsl_vec2(std::float_t x, std::float_t y) :
-            client_value(x, y)
-    {}
-
-    client_t client_value;
-
-public:
-
-    [[nodiscard]] const glsl_transparent_clazz& clazz() const override {return _clazz; }
-
-    [[nodiscard]] const std::uint8_t* data() const override {return reinterpret_cast<const std::uint8_t*>(&client_value);}
-
-private:
-
-    static const glsl_transparent_clazz _clazz;
-
-};
-
-
-class glsl_vec3 : public glsl_transparent_class
-{
-public:
-    using client_t = glm::vec3;
-
-    explicit glsl_vec3(std::float_t x, std::float_t y, std::float_t z) :
-            client_value(x, y, z)
-    {}
-
-    client_t client_value;
-
-public:
-
-    [[nodiscard]] const glsl_transparent_clazz& clazz() const override {return _clazz; }
-
-    [[nodiscard]] const std::uint8_t* data() const override {return reinterpret_cast<const std::uint8_t*>(&client_value);}
-
-private:
-
-    static const glsl_transparent_clazz _clazz;
-
-};
-
-const glsl_transparent_clazz glsl_vec3::_clazz = {};
-
-class glsl_vec4 : public glsl_transparent_class
-{
-public:
-    using client_t = glm::vec4;
-
-    explicit glsl_vec4(std::float_t x, std::float_t y, std::float_t z, std::float_t w) :
-            client_value(x, y, z, w)
-    {}
-
-    client_t client_value;
-
-public:
-
-    [[nodiscard]] const glsl_transparent_clazz& clazz() const override {return _clazz; }
-
-    [[nodiscard]] const std::uint8_t* data() const override {return reinterpret_cast<const std::uint8_t*>(&client_value);}
-
-private:
-
-    static const glsl_transparent_clazz _clazz;
-
-};
-
-const glsl_transparent_clazz glsl_vec4::_clazz = {};
-
-
-
-
-
-class glsl_int : public glsl_transparent_class
-{
-public:
-    using client_t = glm::ivec1;
-
-    explicit glsl_int(std::int32_t scalar) :
-        client_value(scalar)
-    {}
-
-    client_t client_value;
-
-public:
-
-    [[nodiscard]] const glsl_transparent_clazz& meta() const override {return _meta;}
-
-    [[nodiscard]] const std::uint8_t* data() const override { return reinterpret_cast<const std::uint8_t*>(&client_value); }
-
-private:
-
-    static const glsl_transparent_clazz _meta;
-
-};
-
-const glsl_transparent_clazz glsl_int::_meta
-= {"int", sizeof(glm::vec1), "int", sizeof(glm::vec1::value_type), 1};
-
-
-class glsl_ivec2 : public glsl_transparent_class
-{
-public:
-    using client_t = glm::ivec2;
-
-    glsl_ivec2(std::int32_t x, std::int32_t y) :
-        client_value(x, y)
-    {}
-
-    client_t client_value;
-
-    [[nodiscard]] const glsl_transparent_clazz& meta() const override {return _meta;}
-
-    [[nodiscard]] const std::uint8_t* data() const override {return reinterpret_cast<const std::uint8_t*>(&client_value);}
-
-private:
-
-    static const glsl_transparent_clazz _meta;
-
-};
-
-const glsl_transparent_clazz glsl_ivec2::_meta
-= {"ivec2", sizeof(glm::vec2), "int", sizeof(glm::vec2::value_type), 2};
-
-
-class glsl_opaque_clazz : public glsl_clazz
-{
-
-};
-
-class glsl_opaque_type : public glsl_class
-{
-
-};
-
-
-
-
-
-
+//
+//
 //
 //
 //using glsl_bool = glm::bvec1;
@@ -383,7 +155,7 @@ class glsl_opaque_type : public glsl_class
 //using glsl_imageBuffer = glm::uvec1;
 //using glsl_iimageBuffer = glm::uvec1;
 //using glsl_uimageBuffer = glm::uvec1;
-
+//
 
 enum class glsl_type_enum
 {
@@ -460,6 +232,7 @@ int64_t get_glsl_type_size(glsl_type_enum type)
         case glsl_type_enum::UVEC2: return sizeof(glm::uvec2);
         case glsl_type_enum::UVEC3: return sizeof(glm::uvec3);
         case glsl_type_enum::UVEC4: return sizeof(glm::uvec4);
+        default: return 0;
     }
 }
 
