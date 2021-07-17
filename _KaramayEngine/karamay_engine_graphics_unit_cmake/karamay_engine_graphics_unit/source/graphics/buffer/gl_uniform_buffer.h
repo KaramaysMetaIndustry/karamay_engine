@@ -36,10 +36,11 @@ namespace gl_uniform_buffer_enum
 	enum class reference_shader
 	{
 		vertex_shader,
-		tessc_shader,
-		tesse_shader,
-		geom_shader,
-		fragment_shader
+		tessellation_control_shader,
+		tessellation_evaluation_shader,
+		geometry_shader,
+		fragment_shader,
+		compute_shader
 	};
 
 }
@@ -50,9 +51,6 @@ enum class gl_uniform_buffer_layout
     shared,
     packed,
 };
-
-#define STATIC_ASSERT_UNIFORM_T()
-
 
 
 class gl_uniform_buffer final
@@ -82,9 +80,9 @@ private:
 
     std::int64_t _uniform_buffer_size;
 
-    std::vector<std::pair<const glsl_transparent_clazz*, std::int64_t>> _attribute_layout;
+    std::vector<std::tuple<std::string, const glsl_transparent_clazz*, std::int64_t>> _attribute_layout;
 
-    std::uint32_t _binding;
+    std::uint32_t _context_binding;
 
 public:
 
@@ -95,7 +93,7 @@ public:
         {
             for(const auto& _attribute_anchor : _attribute_layout)
             {
-                const auto* _clazz = _attribute_anchor.first;
+                const auto* _clazz = _attribute_anchor
                 if(_clazz && _clazz->class_name == name && value.clazz() == _clazz)
                 {
                     _buffer->write(_attribute_anchor.second, value.stream(), _clazz->class_size);

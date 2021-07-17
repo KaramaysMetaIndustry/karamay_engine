@@ -4,7 +4,7 @@
 
 #include "public/stl.h"
 
-class gl_renderer;
+#include "graphics/renderer/gl_renderer.h"
 
 class gl_renderer_dispatcher {
 public:
@@ -17,8 +17,20 @@ private:
 
 public:
 
+    void add_renderer(std::shared_ptr<gl_renderer> renderer)
+    {
+        if(renderer)
+        {
+            renderer->assembly();
+        }
+    }
+
     void tick(std::float_t delta_time)
     {
+        for(auto& _renderer : _renderers_map)
+        {
+            _renderer.second->render(delta_time);
+        }
     }
 
 };

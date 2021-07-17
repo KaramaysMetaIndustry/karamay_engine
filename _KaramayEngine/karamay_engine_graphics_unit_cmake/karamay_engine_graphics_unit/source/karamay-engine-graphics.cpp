@@ -422,10 +422,23 @@ MessageCallback( GLenum source,
 
 }
 
+#include "renderers/gl_template_renderer_family/static_mesh_renderer/gl_static_mesh_renderer.h"
 
 
 void test0()
 {
+    gl_vertex_array a(
+            {
+                    {"vec2", "uv"},
+                    {"vec3", "position"},
+                    {"vec4", "colors"}
+            },
+            {
+                    {"vec2", "instance_uv_offset", 3},
+                    {"vec3", "instance_position_offset", 2}
+            });
+    a.reallocate_attributes();
+
 	auto* window = new glfw_window();
 	window->load_context();
 	

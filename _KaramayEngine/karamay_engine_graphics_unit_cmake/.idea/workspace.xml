@@ -16,8 +16,22 @@
   <component name="ChangeListManager">
     <list default="true" id="799c95bd-bd6b-4bb4-95bb-3af1c0f20cb1" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/dispatcher/gl_renderer_dispatcher.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/dispatcher/gl_renderer_dispatcher.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_uniform_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_uniform_buffer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/context/gl_context.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/context/gl_context.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/genda/gl_genda.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/genda/gl_genda.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/pipeline/gl_graphics_pipeline.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/pipeline/gl_graphics_pipeline.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/karamay-engine-graphics.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/karamay-engine-graphics.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/instanced_static_mesh_renderer/gl_instanced_static_mesh_renderer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/static_mesh_renderer/gl_instanced_static_mesh_renderer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/instanced_static_mesh_renderer/gl_instanced_static_mesh_renderer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/static_mesh_renderer/gl_instanced_static_mesh_renderer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/static_mesh_renderer/gl_static_mesh_renderer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/static_mesh_renderer/gl_static_mesh_renderer.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,6 +79,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\renderers\gl_template_renderer_family\static_mesh_renderer" />
       <recent name="C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer" />
       <recent name="G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\renderers\gl_template_renderer_family\instanced_static_mesh_renderer" />
       <recent name="G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\renderers\gl_template_renderer_family" />
@@ -72,14 +87,19 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="karamay_engine_graphics_unit" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="karamay_engine_graphics_unit" TARGET_NAME="karamay_engine_graphics_unit" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="karamay_engine_graphics_unit" RUN_TARGET_NAME="karamay_engine_graphics_unit">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+    <configuration name="karamay_engine_graphics_unit" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="karamay_engine_graphics_unit" TARGET_NAME="karamay_engine_graphics_unit" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="karamay_engine_graphics_unit" RUN_TARGET_NAME="karamay_engine_graphics_unit">
       <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
   </component>
@@ -128,6 +148,7 @@
       <workItem from="1626342082804" duration="8938000" />
       <workItem from="1626435878077" duration="16000" />
       <workItem from="1626435924452" duration="3003000" />
+      <workItem from="1626488679916" duration="15720000" />
     </task>
     <servers />
   </component>

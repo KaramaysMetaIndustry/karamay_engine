@@ -4,7 +4,7 @@
 #include <utility>
 
 #include "graphics/glo/gl_object.h"
-#include "graphics/variable/glv_types.h"
+#include "graphics/type/glsl.h"
 
 class gl_buffer;
 
@@ -161,15 +161,25 @@ struct gl_instance_attribute_descriptor
     std::uint32_t divisor;
 };
 
-struct gL_attribute_layout
+struct gL_attribute_list_anchor
 {
     std::string attribute_name;
+    std::uint32_t attributes_count;
     std::int64_t offset;
     std::int64_t size;
+    const glsl_transparent_clazz* _clazz;
 };
 
 /*
  * Dynamic Storage : if required capacity is not enough,
+ *
+ *
+ * [          ] [vertex0] [vertex1] [vertex2] [vertexN]
+ * [attribute0] [       ] [       ] [      ] [.......]
+ * [attribute1] [       ] [       ] [      ] [.......]
+ * [attribute2] [       ] [       ] [      ] [.......]
+ * [attributeN] [       ] [       ] [      ] [.......]
+ *
  *
  *
  * */
@@ -178,55 +188,65 @@ class gl_vertex_array final : public gl_object
 
 public:
 
-    gl_vertex_array(std::vector<gl_attribute_descriptor>& attribute_descriptors, std::vector<gl_instance_attribute_descriptor>& instance_attribute_descriptors) :
+    gl_vertex_array(const std::vector<gl_attribute_descriptor>& attribute_descriptors, const std::vector<gl_instance_attribute_descriptor>& instance_attribute_descriptors) :
                     _vertices_count(0),
                     _instances_count(0),
                     _memory_size(0)
     {
         glCreateVertexArrays(1, &_handle);
+
+        _generate_attributes_layout();
+
     }
 
     ~gl_vertex_array() override;
 
+public:
+
+    /*
+     * Range of type [bytes]
+     * Anchor way [bytes offset, bytes size]
+     * */
+    void update(std::int64_t offset, std::uint8_t* byte_stream, std::int64_t byte_stream_size) noexcept;
+
+    /*
+     * Range of type [bytes]
+     * Anchor way [attribute_name, bytes offset]
+     * */
+    void update(const std::string& attribute_name,
+                std::int64_t offset, std::uint8_t* byte_stream, std::int64_t byte_stream_size) noexcept;
+
+public:
+
+    /*
+     * Anchor [attribute_name, attribute_index] -> Range [specific attribute collection]
+     * Update [GLSL_TRANSPARENT_T]
+     * */
+    template<typename GLSL_TRANSPARENT_T>
+    void update(const std::string& attribute_name, std::uint32_t attribute_index, std::vector<GLSL_TRANSPARENT_T>& values) noexcept
+    {
+
+    }
+
+public:
+
+    void update(){}
+
+public:
+
+    void reallocate_attributes(std::uint32_t new_vertices_count);
+
+    void reallocate_instance_attributes(const std::vector<std::pair<std::string, std::uint32_t>>&);
+
 private:
 
-    std::uint32_t _vertices_count;
-
-    std::uint32_t _instances_count;
+    std::uint32_t _vertices_count, _instances_count;
 
     std::int64_t _memory_size;
 
-    std::unordered_map<std::string, gL_attribute_layout> _attributes_layout;
-
     std::shared_ptr<gl_buffer> _buffer;
 
-public:
-
-    void set_vertices_count(std::uint32_t vertices_count) { _vertices_count = vertices_count; }
-
-    void set_instances_count(std::uint32_t instances_count) { _instances_count = instances_count; }
-
-public:
-
-    template<typename T>
-    void update_attribute(const std::string& attribute_name, std::uint32_t attribute_index, const T& value) noexcept
-    {
-        const auto _stream_ptr = reinterpret_cast<const std::uint8_t*>(glm::value_ptr(value));
-        if(_stream_ptr)
-        {
-            std::vector<std::uint8_t> _stream;
-            _stream.reserve(sizeof (T));
-            for(std::size_t _index = 0; _index < sizeof (T); _stream.push_back(_stream_ptr[_index]), ++_index) {}
-
-            try {
-                _update_attribute(attribute_name, attribute_index, _stream);
-            } catch (std::exception& e) {
-                std::cout<<e.what()<<std::endl;
-            }
-        }
-    }
-
-    void update_attribute(const std::string& attribute_name, std::uint32_t attribute_index, const std::vector<std::uint8_t>& stream) noexcept;
+    std::unordered_map<std::string, gL_attribute_list_anchor> _attributes_layout;
 
 private:
 
@@ -238,8 +258,6 @@ private:
     void _set_vertex_pointers(gl_attribute_component::type attribute_component_type, std::uint32_t  index, std::uint32_t components_count,std::uint32_t attribute_size, std::uint32_t offset);
 
     void _reallocate();
-
-    std::pair<std::uint32_t, std::uint32_t> _get_memory_layout(const std::string& attribute_name, std::uint32_t attribute_index);
 
     std::uint8_t _check_memory_layout(const std::pair<std::uint32_t, std::uint32_t>& memory_layout);
 

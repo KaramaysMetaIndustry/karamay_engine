@@ -221,66 +221,15 @@ void gl_vertex_array::_set_vertex_pointers(gl_attribute_component::type attribut
     }
 }
 
-std::pair<std::uint32_t, std::uint32_t>
-gl_vertex_array::_get_memory_layout(const std::string &attribute_name, std::uint32_t attribute_index) {
-    auto _it = _memory_layouts_map.find(attribute_name + std::to_string(attribute_index));
-    if(_it == _memory_layouts_map.cend()) return std::make_pair(0, 0);
-
-    return _it->second;
-}
-
 std::uint8_t gl_vertex_array::_check_memory_layout(const std::pair<std::uint32_t, std::uint32_t> &memory_layout) {
     return !(memory_layout.first == 0 && memory_layout.first == memory_layout.second);
 }
 
-void gl_vertex_array_descriptor::set_instance_attribute_count(const std::string &attribute_name, std::uint32_t count)
-{
-    auto _it = std::find_if(_instance_attribute_descriptors.begin(), _instance_attribute_descriptors.end(),[&attribute_name](const gl_instance_attribute_descriptor& descriptor){
-        return descriptor.get_name() == attribute_name;
-    });
-    if(_it == _instance_attribute_descriptors.cend()) return;
+void gl_vertex_array::update(std::int64_t offset, std::uint8_t *byte_stream, std::int64_t byte_stream_size) noexcept {
 
-    _it->set_count(count);
-    _is_dirty = true;
 }
 
-void gl_vertex_array_descriptor::set_instance_attribute_divisor(const std::string &attribute_name, std::uint32_t divisor)
-{
-    auto _it = std::find_if(_instance_attribute_descriptors.begin(), _instance_attribute_descriptors.end(),[&attribute_name](const gl_instance_attribute_descriptor& descriptor){
-        return descriptor.get_name() == attribute_name;
-    });
-    if(_it == _instance_attribute_descriptors.cend()) return;
+void gl_vertex_array::update(const std::string &attribute_name, std::int64_t offset, std::uint8_t *byte_stream,
+                             std::int64_t byte_stream_size) noexcept {
 
-    if( (_instances_count % divisor) != 0) return;
-
-    _it->set_divisor(divisor);
-    _it->set_count(_instances_count / divisor);
-    _is_dirty = true;
-}
-
-void gl_vertex_array_descriptor::set_instances_count(std::uint32_t instances_count)
-{
-    _instances_count = instances_count;
-    _is_dirty = true;
-}
-
-void gl_vertex_array_descriptor::set_vertices_count(std::uint32_t vertices_count)
-{
-    _vertices_count = vertices_count;
-    _is_dirty = true;
-}
-
-void gl_vertex_array_descriptor::dismiss_dirty()
-{
-    _is_dirty = false;
-}
-
-void gl_instance_attribute_descriptor::set_count(std::uint32_t count)
-{
-    _count = count;
-}
-
-void gl_instance_attribute_descriptor::set_divisor(std::uint32_t divisor)
-{
-    _divisor = divisor;
 }

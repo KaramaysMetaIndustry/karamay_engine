@@ -4,8 +4,8 @@
 
 #include "graphics/renderer/gl_renderer.h"
 
-class gl_instanced_static_mesh_renderer : public gl_renderer {
-
+class gl_instanced_static_mesh_renderer : public gl_renderer
+{
 public:
 
     void assembly() override;
