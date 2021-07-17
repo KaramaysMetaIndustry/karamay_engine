@@ -3,7 +3,7 @@
 
 #include "graphics/glo/gl_object.h"
 #include "graphics/buffer/gl_buffer_tools.h"
-#include "graphics/type/glsl_class/glsl_transparent_class/glsl_transparent_class.h"
+#include "graphics/type/glsl.h"
 
 
 struct gl_buffer_pool_element

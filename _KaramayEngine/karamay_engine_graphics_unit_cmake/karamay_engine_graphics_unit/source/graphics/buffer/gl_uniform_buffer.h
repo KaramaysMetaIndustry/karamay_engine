@@ -67,7 +67,7 @@ public:
 	        _uniform_buffer_size(0),
 	        _binding(0)
     {
-        _generate_memory_layout(layout, rows);
+	    if(_check_uniform_validation()) _generate_memory_layout(layout, rows);
     }
 
     ~gl_uniform_buffer() = default;
@@ -80,9 +80,9 @@ private:
 
     std::string _block_name;
 
-    std::unordered_map<std::string, std::pair<std::int64_t, const glsl_transparent_clazz*>> _attribute_layout;
-
     std::int64_t _uniform_buffer_size;
+
+    std::vector<std::pair<const glsl_transparent_clazz*, std::int64_t>> _attribute_layout;
 
     std::uint32_t _binding;
 
@@ -93,11 +93,14 @@ public:
     {
         if(_buffer)
         {
-            auto _it = _attribute_layout.find(name);
-            if(_it != _attribute_layout.cend())
+            for(const auto& _attribute_anchor : _attribute_layout)
             {
-                const auto* _clazz = _it->second.second;
-                if(_clazz && value.meta() == _clazz) _buffer->write(_it->second.first, value.data(), _clazz->class_size);
+                const auto* _clazz = _attribute_anchor.first;
+                if(_clazz && _clazz->class_name == name && value.clazz() == _clazz)
+                {
+                    _buffer->write(_attribute_anchor.second, value.stream(), _clazz->class_size);
+                    break;
+                }
             }
         }
     }
@@ -106,11 +109,14 @@ public:
     {
         if(value && _buffer)
         {
-            auto _it = _attribute_layout.find(name);
-            if(_it != _attribute_layout.cend())
+            for(const auto& _attribute_anchor : _attribute_layout)
             {
-                const auto* _clazz = _it->second.second;
-                if(_clazz && value->clazz() == _clazz) _buffer->write(_it->second.first, value->stream(), _clazz->class_size);
+                const auto* _clazz = _attribute_anchor.first;
+                if(_clazz && _clazz->class_name == name && value->clazz() == _clazz)
+                {
+                    _buffer->write(_attribute_anchor.second, value->stream(), _clazz->class_size);
+                    break;
+                }
             }
         }
     }
@@ -129,9 +135,9 @@ public:
 
 private:
 
-    void _check_uniform_validation()
+    bool _check_uniform_validation()
     {
-
+        return false;
     }
 
     void _generate_memory_layout(gl_uniform_buffer_layout layout, const std::vector<std::pair<std::string, std::string>>& rows)
