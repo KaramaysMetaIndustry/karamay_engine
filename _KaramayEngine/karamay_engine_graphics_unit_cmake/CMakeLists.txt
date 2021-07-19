@@ -477,8 +477,8 @@ add_executable(karamay_engine_graphics_unit
 #        karamay_engine_graphics_unit/dependencies/stb/stb_truetype.h
 #        karamay_engine_graphics_unit/dependencies/stb/stb_vorbis.c
 #        karamay_engine_graphics_unit/dependencies/stb/stb_voxel_render.h
-        karamay_engine_graphics_unit/source/graphics/buffer/gl_atomic_counter_buffer.cpp
-        karamay_engine_graphics_unit/source/graphics/buffer/gl_atomic_counter_buffer.h
+        karamay_engine_graphics_unit/source/graphics/buffer/specialization/gl_atomic_counter_buffer.cpp
+        karamay_engine_graphics_unit/source/graphics/buffer/specialization/gl_atomic_counter_buffer.h
         karamay_engine_graphics_unit/source/graphics/buffer/gl_element_array_buffer.cpp
         karamay_engine_graphics_unit/source/graphics/buffer/gl_element_array_buffer.h
         karamay_engine_graphics_unit/source/graphics/buffer/gl_shader_storage_buffer.cpp

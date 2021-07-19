@@ -59,9 +59,12 @@ class gl_uniform_buffer final
 
 public:
 	
-	gl_uniform_buffer(std::shared_ptr<gl_program>& owner, std::string block_name, gl_uniform_buffer_layout layout, const std::vector<std::pair<std::string, std::string>>& rows) :
+	gl_uniform_buffer(std::shared_ptr<gl_program>& owner,
+                      std::string block_name, gl_uniform_buffer_layout layout, const std::vector<std::pair<std::string, std::string>>& rows,
+                      std::uint32_t instances_count) :
             _owner(owner),
             _block_name(std::move(block_name)),
+            _instances_count(instances_count),
 	        _uniform_buffer_size(0)
     {
 	    if(_check_uniform_validation()) _generate_memory_layout(layout, rows);
@@ -75,13 +78,15 @@ private:
 
     std::shared_ptr<gl_buffer> _buffer;
 
+    std::uint32_t _instances_count;
+
     std::string _block_name;
 
     std::int64_t _uniform_buffer_size;
 
     std::vector<std::tuple<std::string, const glsl_transparent_clazz*, std::int64_t>> _attribute_layout;
 
-    std::uint32_t _context_binding;
+    std::uint32_t _context_binding{};
 
 public:
 

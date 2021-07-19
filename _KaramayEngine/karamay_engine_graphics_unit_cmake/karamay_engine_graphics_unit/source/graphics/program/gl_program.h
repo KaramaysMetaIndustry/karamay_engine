@@ -7,7 +7,7 @@
 #include "graphics/buffer/gl_element_array_buffer.h"
 #include "graphics/buffer/gl_uniform_buffer.h"
 #include "graphics/buffer/gl_shader_storage_buffer.h"
-#include "graphics/buffer/gl_atomic_counter_buffer.h"
+#include "graphics/buffer/specialization/gl_atomic_counter_buffer.h"
 #include "graphics/texture/gl_texture.h"
 #include "graphics/framebuffer/gl_framebuffer.h"
 #include "graphics/framebuffer/gl_default_framebuffer.h"
