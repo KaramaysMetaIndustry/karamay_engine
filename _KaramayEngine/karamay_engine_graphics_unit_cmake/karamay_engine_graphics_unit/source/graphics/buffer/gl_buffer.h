@@ -46,7 +46,6 @@ public:
 
     ~gl_buffer() override
     {
-        //_buffer_pool.insert_after(_buffer_pool.end(), gl_buffer_pool_element{_handle, _storage_options, _capacity});
     }
 
 public:

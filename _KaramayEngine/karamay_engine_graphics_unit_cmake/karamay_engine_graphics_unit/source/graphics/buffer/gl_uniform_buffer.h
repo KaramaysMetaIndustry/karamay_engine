@@ -62,8 +62,7 @@ public:
 	gl_uniform_buffer(std::shared_ptr<gl_program>& owner, std::string block_name, gl_uniform_buffer_layout layout, const std::vector<std::pair<std::string, std::string>>& rows) :
             _owner(owner),
             _block_name(std::move(block_name)),
-	        _uniform_buffer_size(0),
-	        _binding(0)
+	        _uniform_buffer_size(0)
     {
 	    if(_check_uniform_validation()) _generate_memory_layout(layout, rows);
     }

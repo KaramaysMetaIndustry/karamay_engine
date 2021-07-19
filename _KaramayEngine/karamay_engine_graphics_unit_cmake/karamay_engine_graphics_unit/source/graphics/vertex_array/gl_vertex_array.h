@@ -188,10 +188,14 @@ class gl_vertex_array final : public gl_object
 
 public:
 
-    gl_vertex_array(const std::vector<gl_attribute_descriptor>& attribute_descriptors, const std::vector<gl_instance_attribute_descriptor>& instance_attribute_descriptors) :
-                    _vertices_count(0),
-                    _instances_count(0),
-                    _memory_size(0)
+    gl_vertex_array(
+            std::int64_t vertices_count,
+            const std::vector<gl_attribute_descriptor>& attribute_descriptors,
+            std::int32_t instance_count,
+            const std::vector<gl_instance_attribute_descriptor>& instance_attribute_descriptors) :
+            _vertices_count(vertices_count),
+            _instances_count(instance_count),
+            _memory_size(0)
     {
         glCreateVertexArrays(1, &_handle);
 
@@ -240,7 +244,9 @@ public:
 
 private:
 
-    std::uint32_t _vertices_count, _instances_count;
+    std::int64_t _vertices_count;
+
+    std::int32_t _instances_count;
 
     std::int64_t _memory_size;
 
@@ -250,22 +256,12 @@ private:
 
 private:
 
-    void _generate_attributes_layout()
-    {
-
-    }
+    void _generate_attributes_layout();
 
     void _set_vertex_pointers(gl_attribute_component::type attribute_component_type, std::uint32_t  index, std::uint32_t components_count,std::uint32_t attribute_size, std::uint32_t offset);
 
     void _reallocate();
 
-    std::uint8_t _check_memory_layout(const std::pair<std::uint32_t, std::uint32_t>& memory_layout);
-
-    void _update_attribute(const std::string& attribute_name, std::uint32_t vertex_index, const std::vector<std::uint8_t>& stream);
-
-    void _bind_buffer();
-
-    void _unbind_buffer();
 
 public:
 

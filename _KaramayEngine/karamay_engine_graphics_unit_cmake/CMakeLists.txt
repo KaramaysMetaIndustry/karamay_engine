@@ -497,14 +497,10 @@ add_executable(karamay_engine_graphics_unit
         karamay_engine_graphics_unit/source/graphics/camera/gl_camera.h
         karamay_engine_graphics_unit/source/graphics/commands/gl_commands.cpp
         karamay_engine_graphics_unit/source/graphics/commands/gl_commands.h
-        karamay_engine_graphics_unit/source/graphics/context/gl_context.cpp
-        karamay_engine_graphics_unit/source/graphics/context/gl_context.h
         karamay_engine_graphics_unit/source/graphics/framebuffer/gl_default_framebuffer.cpp
         karamay_engine_graphics_unit/source/graphics/framebuffer/gl_default_framebuffer.h
         karamay_engine_graphics_unit/source/graphics/framebuffer/gl_framebuffer.cpp
         karamay_engine_graphics_unit/source/graphics/framebuffer/gl_framebuffer.h
-        karamay_engine_graphics_unit/source/graphics/genda/gl_genda.cpp
-        karamay_engine_graphics_unit/source/graphics/genda/gl_genda.h
         karamay_engine_graphics_unit/source/graphics/glo/gl_object.cpp
         karamay_engine_graphics_unit/source/graphics/glo/gl_object.h
         karamay_engine_graphics_unit/source/graphics/mesh/material/gl_material.cpp
