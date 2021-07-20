@@ -47,7 +47,7 @@ public:
 
 	void fill(const std::vector<std::string>& variable_names)
 	{
-		// fill buffer
+		// fill buffers
 		//_size = sizeof(GLuint) * variable_names.size();
 		//_ref_buffer->fill(_offset, _size, nullptr);
 		

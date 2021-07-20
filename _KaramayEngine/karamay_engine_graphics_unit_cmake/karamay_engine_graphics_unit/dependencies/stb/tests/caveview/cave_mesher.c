@@ -634,7 +634,7 @@ void build_chunk(int chunk_x, int chunk_y, fast_chunk *fc_table[4][4], raw_mesh 
    map->blocktype = &rm->sv_blocktype[1][1][1]; // this is (0,0,0), but we need to be able to query off the edges
    map->lighting = &rm->sv_lighting[1][1][1];
 
-   // fill in the top two rows of the buffer
+   // fill in the top two rows of the buffers
    for (a=0; a < 34; ++a) {
       for (b=0; b < 34; ++b) {
          rm->sv_blocktype[a][b][16] = 0;
@@ -930,4 +930,4 @@ void mesh_init(void)
 //   39% building mesh from stb input format
 //   18% converting from minecraft blocks to stb blocks
 //    9% reordering from minecraft axis order to stb axis order
-//    7% uploading vertex buffer to OpenGL
+//    7% uploading vertex buffers to OpenGL

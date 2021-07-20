@@ -179,7 +179,7 @@ STBIWDEF int stbi_write_hdr(char const *filename, int w, int h, int comp, const 
 STBIWDEF int stbi_write_jpg(char const *filename, int x, int y, int comp, const void  *data, int quality);
 
 #ifdef STBI_WINDOWS_UTF8
-STBIWDEF int stbiw_convert_wchar_to_utf8(char *buffer, size_t bufferlen, const wchar_t* input);
+STBIWDEF int stbiw_convert_wchar_to_utf8(char *buffers, size_t bufferlen, const wchar_t* input);
 #endif
 #endif
 
@@ -267,7 +267,7 @@ typedef struct
 {
    stbi_write_func *func;
    void *context;
-   unsigned char buffer[64];
+   unsigned char buffers[64];
    int buf_used;
 } stbi__write_context;
 
@@ -294,9 +294,9 @@ static void stbi__stdio_write(void *context, void *data, int size)
 STBIW_EXTERN __declspec(dllimport) int __stdcall MultiByteToWideChar(unsigned int cp, unsigned long flags, const char *str, int cbmb, wchar_t *widestr, int cchwide);
 STBIW_EXTERN __declspec(dllimport) int __stdcall WideCharToMultiByte(unsigned int cp, unsigned long flags, const wchar_t *widestr, int cchwide, char *str, int cbmb, const char *defchar, int *used_default);
 
-STBIWDEF int stbiw_convert_wchar_to_utf8(char *buffer, size_t bufferlen, const wchar_t* input)
+STBIWDEF int stbiw_convert_wchar_to_utf8(char *buffers, size_t bufferlen, const wchar_t* input)
 {
-	return WideCharToMultiByte(65001 /* UTF8 */, 0, input, -1, buffer, (int) bufferlen, NULL, NULL);
+	return WideCharToMultiByte(65001 /* UTF8 */, 0, input, -1, buffers, (int) bufferlen, NULL, NULL);
 }
 #endif
 
@@ -385,7 +385,7 @@ static void stbiw__writef(stbi__write_context *s, const char *fmt, ...)
 static void stbiw__write_flush(stbi__write_context *s)
 {
    if (s->buf_used) {
-      s->func(s->context, &s->buffer, s->buf_used);
+      s->func(s->context, &s->buffers, s->buf_used);
       s->buf_used = 0;
    }
 }
@@ -397,21 +397,21 @@ static void stbiw__putc(stbi__write_context *s, unsigned char c)
 
 static void stbiw__write1(stbi__write_context *s, unsigned char a)
 {
-   if (s->buf_used + 1 > sizeof(s->buffer))
+   if (s->buf_used + 1 > sizeof(s->buffers))
       stbiw__write_flush(s);
-   s->buffer[s->buf_used++] = a;
+   s->buffers[s->buf_used++] = a;
 }
 
 static void stbiw__write3(stbi__write_context *s, unsigned char a, unsigned char b, unsigned char c)
 {
    int n;
-   if (s->buf_used + 3 > sizeof(s->buffer))
+   if (s->buf_used + 3 > sizeof(s->buffers))
       stbiw__write_flush(s);
    n = s->buf_used;
    s->buf_used = n+3;
-   s->buffer[n+0] = a;
-   s->buffer[n+1] = b;
-   s->buffer[n+2] = c;
+   s->buffers[n+0] = a;
+   s->buffers[n+1] = b;
+   s->buffers[n+2] = c;
 }
 
 static void stbiw__write_pixel(stbi__write_context *s, int rgb_dir, int comp, int write_alpha, int expand_mono, unsigned char *d)
@@ -683,7 +683,7 @@ static void stbiw__write_hdr_scanline(stbi__write_context *s, int width, int nco
       }
    } else {
       int c,r;
-      /* encode into scratch buffer */
+      /* encode into scratch buffers */
       for (x=0; x < width; x++) {
          switch(ncomp) {
             case 4: /* fallthrough */
@@ -752,16 +752,16 @@ static int stbi_write_hdr_core(stbi__write_context *s, int x, int y, int comp, f
       // Each component is stored separately. Allocate scratch space for full output scanline.
       unsigned char *scratch = (unsigned char *) STBIW_MALLOC(x*4);
       int i, len;
-      char buffer[128];
+      char buffers[128];
       char header[] = "#?RADIANCE\n# Written by stb_image_write.h\nFORMAT=32-bit_rle_rgbe\n";
       s->func(s->context, header, sizeof(header)-1);
 
 #ifdef __STDC_WANT_SECURE_LIB__
-      len = sprintf_s(buffer, sizeof(buffer), "EXPOSURE=          1.0000000000000\n\n-Y %d +X %d\n", y, x);
+      len = sprintf_s(buffers, sizeof(buffers), "EXPOSURE=          1.0000000000000\n\n-Y %d +X %d\n", y, x);
 #else
-      len = sprintf(buffer, "EXPOSURE=          1.0000000000000\n\n-Y %d +X %d\n", y, x);
+      len = sprintf(buffers, "EXPOSURE=          1.0000000000000\n\n-Y %d +X %d\n", y, x);
 #endif
-      s->func(s->context, buffer, len);
+      s->func(s->context, buffers, len);
 
       for(i=0; i < y; i++)
          stbiw__write_hdr_scanline(s, x, comp, scratch, data + comp*x*(stbi__flip_vertically_on_write ? y-1-i : i));
@@ -797,7 +797,7 @@ STBIWDEF int stbi_write_hdr(char const *filename, int x, int y, int comp, const 
 //
 
 #ifndef STBIW_ZLIB_COMPRESS
-// stretchy buffer; stbiw__sbpush() == vector<>::push_back() -- stbiw__sbcount() == vector<>::size()
+// stretchy buffers; stbiw__sbpush() == vector<>::push_back() -- stbiw__sbcount() == vector<>::size()
 #define stbiw__sbraw(a) ((int *) (void *) (a) - 2)
 #define stbiw__sbm(a)   stbiw__sbraw(a)[0]
 #define stbiw__sbn(a)   stbiw__sbraw(a)[1]
@@ -991,10 +991,10 @@ STBIWDEF unsigned char * stbi_zlib_compress(unsigned char *data, int data_len, i
 #endif // STBIW_ZLIB_COMPRESS
 }
 
-static unsigned int stbiw__crc32(unsigned char *buffer, int len)
+static unsigned int stbiw__crc32(unsigned char *buffers, int len)
 {
 #ifdef STBIW_CRC32
-    return STBIW_CRC32(buffer, len);
+    return STBIW_CRC32(buffers, len);
 #else
    static unsigned int crc_table[256] =
    {
@@ -1035,7 +1035,7 @@ static unsigned int stbiw__crc32(unsigned char *buffer, int len)
    unsigned int crc = ~0u;
    int i;
    for (i=0; i < len; ++i)
-      crc = (crc >> 8) ^ crc_table[buffer[i] ^ (crc & 0xff)];
+      crc = (crc >> 8) ^ crc_table[buffers[i] ^ (crc & 0xff)];
    return ~crc;
 #endif
 }

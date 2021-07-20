@@ -4,9 +4,9 @@
 #include "graphics/glo/gl_object.h"
 #include "graphics/variable/gl_variable.h"
 #include "graphics/buffer/gl_buffer.h"
-#include "graphics/buffer/gl_element_array_buffer.h"
-#include "graphics/buffer/gl_uniform_buffer.h"
-#include "graphics/buffer/gl_shader_storage_buffer.h"
+#include "graphics/buffer/specialization/gl_element_array_buffer.h"
+#include "graphics/buffer/specialization/gl_uniform_buffer.h"
+#include "graphics/buffer/specialization/gl_shader_storage_buffer.h"
 #include "graphics/buffer/specialization/gl_atomic_counter_buffer.h"
 #include "graphics/texture/gl_texture.h"
 #include "graphics/framebuffer/gl_framebuffer.h"
@@ -349,7 +349,7 @@ private:
 	}
 	void _unbind_uniform_buffers()
 	{
-		// clear all unifrom buffer binding is too expensive
+		// clear all unifrom buffers binding is too expensive
 		// use the stored ids
 		for (std::int32_t i = 0; i < _uniform_buffers.size(); ++i)
 		{

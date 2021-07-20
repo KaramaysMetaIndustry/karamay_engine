@@ -78,7 +78,7 @@ void gl_buffer::_reallocate(std::int64_t new_capacity)
 
 void gl_buffer::reallocate(std::int64_t capacity, gl_buffer_storage_options storage_options)
 {
-    // search the suitable buffer
+    // search the suitable buffers
     auto _it = std::find_if(_buffer_pool.begin(), _buffer_pool.end(), [&](const gl_buffer_pool_element& element){
         return _check_buffer_validation(capacity, storage_options);
     });
@@ -99,7 +99,7 @@ void gl_buffer::reallocate(std::int64_t capacity, gl_buffer_storage_options stor
             glNamedBufferStorage(_handle, capacity, nullptr, _storage_flags);
             _required_capacity = capacity;
         }
-    }else{ // find a suitable buffer
+    }else{ // find a suitable buffers
         // fetch
         _handle = _it->handle;
         _required_capacity = capacity;

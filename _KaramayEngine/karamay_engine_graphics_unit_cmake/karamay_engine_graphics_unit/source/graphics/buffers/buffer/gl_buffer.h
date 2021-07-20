@@ -204,7 +204,7 @@ public:
 public:
 
     /*
-     * Invalidate the whole buffer, data in buffer will become undefined.
+     * Invalidate the whole buffers, data in buffers will become undefined.
      * */
     void invalidate()
     {
@@ -212,7 +212,7 @@ public:
     }
 
     /*
-     * grab another same buffer storage as new one
+     * grab another same buffers storage as new one
      * */
     void invalidate(std::int64_t offset, std::int64_t size)
     {

@@ -460,14 +460,14 @@ GLFWAPI EGLSurface glfwGetEGLSurface(GLFWwindow* window);
 #endif
 
 #if defined(GLFW_EXPOSE_NATIVE_OSMESA)
-/*! @brief Retrieves the color buffer associated with the specified window.
+/*! @brief Retrieves the color buffers associated with the specified window.
  *
- *  @param[in] window The window whose color buffer to retrieve.
- *  @param[out] width Where to store the width of the color buffer, or `NULL`.
- *  @param[out] height Where to store the height of the color buffer, or `NULL`.
+ *  @param[in] window The window whose color buffers to retrieve.
+ *  @param[out] width Where to store the width of the color buffers, or `NULL`.
+ *  @param[out] height Where to store the height of the color buffers, or `NULL`.
  *  @param[out] format Where to store the OSMesa pixel format of the color
- *  buffer, or `NULL`.
- *  @param[out] buffer Where to store the address of the color buffer, or
+ *  buffers, or `NULL`.
+ *  @param[out] buffers Where to store the address of the color buffers, or
  *  `NULL`.
  *  @return `GLFW_TRUE` if successful, or `GLFW_FALSE` if an
  *  [error](@ref error_handling) occurred.
@@ -479,16 +479,16 @@ GLFWAPI EGLSurface glfwGetEGLSurface(GLFWwindow* window);
  *
  *  @ingroup native
  */
-GLFWAPI int glfwGetOSMesaColorBuffer(GLFWwindow* window, int* width, int* height, int* format, void** buffer);
+GLFWAPI int glfwGetOSMesaColorBuffer(GLFWwindow* window, int* width, int* height, int* format, void** buffers);
 
-/*! @brief Retrieves the depth buffer associated with the specified window.
+/*! @brief Retrieves the depth buffers associated with the specified window.
  *
- *  @param[in] window The window whose depth buffer to retrieve.
- *  @param[out] width Where to store the width of the depth buffer, or `NULL`.
- *  @param[out] height Where to store the height of the depth buffer, or `NULL`.
+ *  @param[in] window The window whose depth buffers to retrieve.
+ *  @param[out] width Where to store the width of the depth buffers, or `NULL`.
+ *  @param[out] height Where to store the height of the depth buffers, or `NULL`.
  *  @param[out] bytesPerValue Where to store the number of bytes per depth
- *  buffer element, or `NULL`.
- *  @param[out] buffer Where to store the address of the depth buffer, or
+ *  buffers element, or `NULL`.
+ *  @param[out] buffers Where to store the address of the depth buffers, or
  *  `NULL`.
  *  @return `GLFW_TRUE` if successful, or `GLFW_FALSE` if an
  *  [error](@ref error_handling) occurred.
@@ -500,7 +500,7 @@ GLFWAPI int glfwGetOSMesaColorBuffer(GLFWwindow* window, int* width, int* height
  *
  *  @ingroup native
  */
-GLFWAPI int glfwGetOSMesaDepthBuffer(GLFWwindow* window, int* width, int* height, int* bytesPerValue, void** buffer);
+GLFWAPI int glfwGetOSMesaDepthBuffer(GLFWwindow* window, int* width, int* height, int* bytesPerValue, void** buffers);
 
 /*! @brief Returns the `OSMesaContext` of the specified window.
  *

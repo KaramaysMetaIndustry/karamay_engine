@@ -1,66 +1,33 @@
 #ifndef H_GL_UNIFORM_BUFFER
 #define H_GL_UNIFORM_BUFFER
 
-#include <utility>
-
-#include "graphics/variable/gl_variable.h"
-#include "graphics/buffer/gl_buffer.h"
 #include "graphics/type/glsl.h"
+#include "graphics/buffers/buffer/gl_buffer.h"
+
 
 class gl_program;
 class gl_buffer;
 
 
-namespace gl_uniform_buffer_enum
-{
-	enum class layout
-	{
-		std140,
-		shared,
-		packed,
-	};
-
-	enum class matrix_layout
-	{
-		row_major,
-		column_major
-	};
-
-	enum class reference_style
-	{
-		global,
-		instanced,
-		array_instanced,
-	};
-
-	enum class reference_shader
-	{
-		vertex_shader,
-		tessellation_control_shader,
-		tessellation_evaluation_shader,
-		geometry_shader,
-		fragment_shader,
-		compute_shader
-	};
-
-}
-
 enum class gl_uniform_buffer_layout
 {
     std140,
     shared,
-    packed,
+    packed
 };
 
+enum class gl_uniform_buffer_matrix_layout
+{
+    row_major,
+    column_major
+};
 
 class gl_uniform_buffer final
 {
-    static std::unordered_map<std::string, std::int64_t> _glsl_type_size_map;
-
 public:
 	
 	gl_uniform_buffer(std::shared_ptr<gl_program>& owner,
-                      std::string block_name, gl_uniform_buffer_layout layout, const std::vector<std::pair<std::string, std::string>>& rows,
+                      gl_uniform_buffer_layout layout, std::string block_name, const std::vector<std::pair<std::string, std::string>>& rows,
                       std::uint32_t instances_count) :
             _owner(owner),
             _block_name(std::move(block_name)),
@@ -165,7 +132,7 @@ private:
         {
             auto _attribute_size = _glsl_type_size_map.find(row.first)->second;
             _attribute_layout.emplace(row.second, std::pair<std::int64_t, std::int64_t>(_offset, _attribute_size));
-            _uniform_buffer_size += _attribute_size; // calculate the uniform buffer size
+            _uniform_buffer_size += _attribute_size; // calculate the uniform buffers size
             _offset += _attribute_size;
         }
 

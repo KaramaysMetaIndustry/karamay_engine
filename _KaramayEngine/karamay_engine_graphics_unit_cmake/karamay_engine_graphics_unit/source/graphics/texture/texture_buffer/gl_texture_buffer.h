@@ -11,7 +11,7 @@ class gl_buffer;
  * 
  * 
  * the texture can only access up to GL_MAX_TEXTURE_BUFFER_SIZE texels
- * The offset​ specifies a byte offset from the beginning of the buffer. It must be aligned to GL_TEXTURE_BUFFER_OFFSET_ALIGNMENT
+ * The offset​ specifies a byte offset from the beginning of the buffers. It must be aligned to GL_TEXTURE_BUFFER_OFFSET_ALIGNMENT
  * Buffer textures are not mip-mapped; they can only store a single image.
  * Buffer textures cannot be attached to Framebuffer Objects.
  */

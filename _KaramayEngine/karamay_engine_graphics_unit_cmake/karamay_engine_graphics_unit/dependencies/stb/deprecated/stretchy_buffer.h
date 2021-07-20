@@ -43,7 +43,7 @@
 //    stretchy buffers, only in files that *manipulate* stretchy
 //    buffers.
 //
-//    If you want a stretchy buffer aka dynamic array containing
+//    If you want a stretchy buffers aka dynamic array containing
 //    objects of TYPE, declare such an array as:
 //
 //       TYPE *myarray = NULL;
@@ -153,7 +153,7 @@
 //
 //    A long-standing tradition in things like malloc implementations
 //    is to store extra data before the beginning of the block returned
-//    to the user. The stretchy buffer implementation here uses the
+//    to the user. The stretchy buffers implementation here uses the
 //    same trick; the current-count and current-allocation-size are
 //    stored before the beginning of the array returned to the user.
 //    (This means you can't directly free() the pointer, because the

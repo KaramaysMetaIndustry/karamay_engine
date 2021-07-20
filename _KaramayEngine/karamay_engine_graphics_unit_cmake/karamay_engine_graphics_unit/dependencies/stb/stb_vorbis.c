@@ -100,7 +100,7 @@ extern "C" {
 //
 // You can modify the wrapper functions in the source (setup_malloc,
 // setup_temp_malloc, temp_malloc) to change this behavior, or you
-// can use a simpler allocation model: you pass in a buffer from
+// can use a simpler allocation model: you pass in a buffers from
 // which stb_vorbis will allocate _all_ its memory (including the
 // temp memory). "open" may fail with a VORBIS_outofmem if you
 // do not pass in enough data; there is no way to determine how
@@ -108,7 +108,7 @@ extern "C" {
 // query get_info to find the exact amount required. yes I know
 // this is lame).
 //
-// If you pass in a non-NULL buffer of the type below, allocation
+// If you pass in a non-NULL buffers of the type below, allocation
 // will occur from it as described above. Otherwise just pass NULL
 // to use malloc()/alloca()
 
@@ -163,7 +163,7 @@ extern void stb_vorbis_close(stb_vorbis *f);
 extern int stb_vorbis_get_sample_offset(stb_vorbis *f);
 
 // returns the current seek point within the file, or offset from the beginning
-// of the memory buffer. In pushdata mode it returns 0.
+// of the memory buffers. In pushdata mode it returns 0.
 extern unsigned int stb_vorbis_get_file_offset(stb_vorbis *f);
 
 ///////////   PUSHDATA API
@@ -171,7 +171,7 @@ extern unsigned int stb_vorbis_get_file_offset(stb_vorbis *f);
 #ifndef STB_VORBIS_NO_PUSHDATA_API
 
 // this API allows you to get blocks of data from any source and hand
-// them to stb_vorbis. you have to buffer them; stb_vorbis will tell
+// them to stb_vorbis. you have to buffers them; stb_vorbis will tell
 // you how much it used, and you have to give it the rest next time;
 // and stb_vorbis may not have enough data to work with and you will
 // need to give it the same data again PLUS more. Note that the Vorbis
@@ -209,7 +209,7 @@ extern int stb_vorbis_decode_frame_pushdata(
 // note that after opening a file, you will ALWAYS get one N-bytes,0-sample
 // frame, because Vorbis always "discards" the first frame.
 //
-// Note that on resynch, stb_vorbis will rarely consume all of the buffer,
+// Note that on resynch, stb_vorbis will rarely consume all of the buffers,
 // instead only datablock_length_in_bytes-3 or less. This is because it wants
 // to avoid missing parts of a page header if they cross a datablock boundary,
 // without writing state-machiney code to record a partial detection.
@@ -252,7 +252,7 @@ extern int stb_vorbis_decode_filename(const char *filename, int *channels, int *
 extern int stb_vorbis_decode_memory(const unsigned char *mem, int len, int *channels, int *sample_rate, short **output);
 #endif
 // decode an entire file and output the data interleaved into a malloc()ed
-// buffer stored in *output. The return value is the number of samples
+// buffers stored in *output. The return value is the number of samples
 // decoded, or -1 if the file could not be opened or was not an ogg vorbis file.
 // When you're done with it, just free() the pointer returned in *output.
 
@@ -323,8 +323,8 @@ extern int stb_vorbis_get_frame_short            (stb_vorbis *f, int num_c, shor
 //
 // The data is coerced to the number of channels you request according to the
 // channel coercion rules (see below). You must pass in the size of your
-// buffer(s) so that stb_vorbis will not overwrite the end of the buffer.
-// The maximum buffer size needed can be gotten from get_info(); however,
+// buffers(s) so that stb_vorbis will not overwrite the end of the buffers.
+// The maximum buffers size needed can be gotten from get_info(); however,
 // the Vorbis I specification implies an absolute maximum of 4096 samples
 // per channel.
 
@@ -832,7 +832,7 @@ struct stb_vorbis
 
    uint32 total_samples;
 
-  // decode buffer
+  // decode buffers
    float *channel_buffers[STB_VORBIS_MAX_CHANNELS];
    float *outputs        [STB_VORBIS_MAX_CHANNELS];
 
@@ -907,7 +907,7 @@ static int error(vorb *f, enum STBVorbisError e)
 
 // these functions are used for allocating temporary memory
 // while decoding. if you can afford the stack space, use
-// alloca(); otherwise, provide a temp buffer and it will
+// alloca(); otherwise, provide a temp buffers and it will
 // allocate out of those.
 
 #define array_size_required(count,size)  (count*(sizeof(void *)+(size)))
@@ -1613,7 +1613,7 @@ static uint32 get_bits(vorb *f, int n)
 }
 
 // @OPTIMIZE: primary accumulator for huffman
-// expand the buffer to as many bits as possible without reading off end of packet
+// expand the buffers to as many bits as possible without reading off end of packet
 // it might be nice to allow f->valid_bits and f->acc to be stored in registers,
 // e.g. cache them locally and decode locally
 static __forceinline void prep_huffman(vorb *f)
@@ -1870,7 +1870,7 @@ static int codebook_decode_deinterleave_repeat(vorb *f, Codebook *c, float **out
 
       // if this will take us off the end of the buffers, stop short!
       // we check by computing the length of the virtual interleaved
-      // buffer (len*ch), our current offset within it (p_inter*ch)+(c_inter),
+      // buffers (len*ch), our current offset within it (p_inter*ch)+(c_inter),
       // and the length we'll be using (effective)
       if (c_inter + p_inter*ch + effective > len * ch) {
          effective = len*ch - (p_inter*ch - c_inter);
@@ -2271,12 +2271,12 @@ static void decode_residue(vorb *f, float *residue_buffers[], int ch, int n, int
 
 #if 0
 // slow way for debugging
-void inverse_mdct_slow(float *buffer, int n)
+void inverse_mdct_slow(float *buffers, int n)
 {
    int i,j;
    int n2 = n >> 1;
    float *x = (float *) malloc(sizeof(*x) * n2);
-   memcpy(x, buffer, sizeof(*x) * n2);
+   memcpy(x, buffers, sizeof(*x) * n2);
    for (i=0; i < n; ++i) {
       float acc = 0;
       for (j=0; j < n2; ++j)
@@ -2288,19 +2288,19 @@ void inverse_mdct_slow(float *buffer, int n)
          // however, what actually works is NO MULTIPLIER!?!
          //acc += 64 * 2.0f / n2 * x[j] * (float) cos(M_PI/n2 * (i + 0.5 + n2/2)*(j + 0.5));
          acc += x[j] * (float) cos(M_PI / 2 / n * (2 * i + 1 + n/2.0)*(2*j+1));
-      buffer[i] = acc;
+      buffers[i] = acc;
    }
    free(x);
 }
 #elif 0
 // same as above, but just barely able to run in real time on modern machines
-void inverse_mdct_slow(float *buffer, int n, vorb *f, int blocktype)
+void inverse_mdct_slow(float *buffers, int n, vorb *f, int blocktype)
 {
    float mcos[16384];
    int i,j;
    int n2 = n >> 1, nmask = (n << 2) -1;
    float *x = (float *) malloc(sizeof(*x) * n2);
-   memcpy(x, buffer, sizeof(*x) * n2);
+   memcpy(x, buffers, sizeof(*x) * n2);
    for (i=0; i < 4*n; ++i)
       mcos[i] = (float) cos(M_PI / 2 * i / n);
 
@@ -2308,41 +2308,41 @@ void inverse_mdct_slow(float *buffer, int n, vorb *f, int blocktype)
       float acc = 0;
       for (j=0; j < n2; ++j)
          acc += x[j] * mcos[(2 * i + 1 + n2)*(2*j+1) & nmask];
-      buffer[i] = acc;
+      buffers[i] = acc;
    }
    free(x);
 }
 #elif 0
 // transform to use a slow dct-iv; this is STILL basically trivial,
 // but only requires half as many ops
-void dct_iv_slow(float *buffer, int n)
+void dct_iv_slow(float *buffers, int n)
 {
    float mcos[16384];
    float x[2048];
    int i,j;
    int n2 = n >> 1, nmask = (n << 3) - 1;
-   memcpy(x, buffer, sizeof(*x) * n);
+   memcpy(x, buffers, sizeof(*x) * n);
    for (i=0; i < 8*n; ++i)
       mcos[i] = (float) cos(M_PI / 4 * i / n);
    for (i=0; i < n; ++i) {
       float acc = 0;
       for (j=0; j < n; ++j)
          acc += x[j] * mcos[((2 * i + 1)*(2*j+1)) & nmask];
-      buffer[i] = acc;
+      buffers[i] = acc;
    }
 }
 
-void inverse_mdct_slow(float *buffer, int n, vorb *f, int blocktype)
+void inverse_mdct_slow(float *buffers, int n, vorb *f, int blocktype)
 {
    int i, n4 = n >> 2, n2 = n >> 1, n3_4 = n - n4;
    float temp[4096];
 
-   memcpy(temp, buffer, n2 * sizeof(float));
+   memcpy(temp, buffers, n2 * sizeof(float));
    dct_iv_slow(temp, n2);  // returns -c'-d, a-b'
 
-   for (i=0; i < n4  ; ++i) buffer[i] = temp[i+n4];            // a-b'
-   for (   ; i < n3_4; ++i) buffer[i] = -temp[n3_4 - i - 1];   // b-a', c+d'
-   for (   ; i < n   ; ++i) buffer[i] = -temp[i - n3_4];       // c'+d
+   for (i=0; i < n4  ; ++i) buffers[i] = temp[i+n4];            // a-b'
+   for (   ; i < n3_4; ++i) buffers[i] = -temp[n3_4 - i - 1];   // b-a', c+d'
+   for (   ; i < n   ; ++i) buffers[i] = -temp[i - n3_4];       // c'+d
 }
 #endif
 
@@ -2370,7 +2370,7 @@ extern void mdct_backward(mdct_lookup *init, float *in, float *out);
 
 mdct_lookup M1,M2;
 
-void inverse_mdct(float *buffer, int n, vorb *f, int blocktype)
+void inverse_mdct(float *buffers, int n, vorb *f, int blocktype)
 {
    mdct_lookup *M;
    if (M1.n == n) M = &M1;
@@ -2382,7 +2382,7 @@ void inverse_mdct(float *buffer, int n, vorb *f, int blocktype)
       M = &M2;
    }
 
-   mdct_backward(M, buffer, buffer);
+   mdct_backward(M, buffers, buffers);
 }
 #endif
 
@@ -2850,7 +2850,7 @@ static void inverse_mdct(float *buffer, int n, vorb *f, int blocktype)
    // data must be in buf2
 
 
-   // step 8+decode   (paper output is X, now buffer)
+   // step 8+decode   (paper output is X, now buffers)
    // this generates pairs of data a la 8 and pushes them directly through
    // the decode kernel (pushing rather than pulling) to avoid having
    // to make another pass later
@@ -2916,7 +2916,7 @@ static void inverse_mdct(float *buffer, int n, vorb *f, int blocktype)
 
 #if 0
 // this is the original version of the above code, if you want to optimize it from scratch
-void inverse_mdct_naive(float *buffer, int n)
+void inverse_mdct_naive(float *buffers, int n)
 {
    float s;
    float A[1 << 12], B[1 << 12], C[1 << 11];
@@ -2946,8 +2946,8 @@ void inverse_mdct_naive(float *buffer, int n)
    // are noted below as "paper bug".
 
    // copy and reflect spectral data
-   for (k=0; k < n2; ++k) u[k] = buffer[k];
-   for (   ; k < n ; ++k) u[k] = -buffer[n - k - 1];
+   for (k=0; k < n2; ++k) u[k] = buffers[k];
+   for (   ; k < n ; ++k) u[k] = -buffers[n - k - 1];
    // kernel from paper
    // step 1
    for (k=k2=k4=0; k < n4; k+=1, k2+=2, k4+=4) {
@@ -3036,9 +3036,9 @@ void inverse_mdct_naive(float *buffer, int n)
    // [[[ note! the s value of 0.5 is compensated for by the B[] in the current code,
    //     so it needs to use the "old" B values to behave correctly, or else
    //     set s to 1.0 ]]]
-   for (i=0; i < n4  ; ++i) buffer[i] = s * X[i+n4];
-   for (   ; i < n3_4; ++i) buffer[i] = -s * X[n3_4 - i - 1];
-   for (   ; i < n   ; ++i) buffer[i] = -s * X[i - n3_4];
+   for (i=0; i < n4  ; ++i) buffers[i] = s * X[i+n4];
+   for (   ; i < n3_4; ++i) buffers[i] = -s * X[n3_4 - i - 1];
+   for (   ; i < n   ; ++i) buffers[i] = -s * X[i - n3_4];
 }
 #endif
 
@@ -3101,7 +3101,7 @@ static int do_floor(vorb *f, Mapping *map, int i, int n, float *target, YTYPE *f
 //     all of the samples from left_end to right_start can be output without mixing; however,
 //        this interval is 0-length except when transitioning between short and long frames
 //     all of the samples from right_start to right_end need to be mixed with the next frame,
-//        which we don't have, so those get saved in a buffer
+//        which we don't have, so those get saved in a buffers
 //     frame N's right_end-right_start, the number of samples to mix with the next frame,
 //        has to be the same as frame N+1's left_end-left_start (which they are by
 //        construction)
@@ -3267,7 +3267,7 @@ static int vorbis_decode_packet_rest(vorb *f, int *len, Mode *m, int left_start,
          }
          // So we just defer everything else to later
 
-         // at this point we've decoded the floor into buffer
+         // at this point we've decoded the floor into buffers
       }
    }
    CHECK(f);
@@ -3444,7 +3444,7 @@ static int vorbis_finish_frame(stb_vorbis *f, int len, int left, int right)
    // to determine how much to return, rather than inferring from the rules
    // (same result, clearer code); 'left' indicates where our sin() window
    // starts, therefore where the previous window's right edge starts, and
-   // therefore where to start mixing from the previous buffer. 'right'
+   // therefore where to start mixing from the previous buffers. 'right'
    // indicates where our sin() ending-window starts, therefore that's where
    // we start saving, and where our returned-data ends.
 

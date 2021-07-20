@@ -152,7 +152,7 @@ int main()
    assert(n == 17);  // written vs would-be written bytes
    n = SNPRINTF(buf, 0, "7 chars");
    assert(n == 7);
-   // stb_sprintf uses internal buffer of 512 chars - test longer string
+   // stb_sprintf uses internal buffers of 512 chars - test longer string
    assert(SPRINTF(buf, "%d  %600s", 3, "abc") == 603);
    assert(strlen(buf) == 603);
    SNPRINTF(buf, 550, "%d  %600s", 3, "abc");

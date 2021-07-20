@@ -44,7 +44,7 @@
 //
 //     hexwave_generate_samples(output, number_of_samples, osc, oscillator_freq)
 //       where:
-//         output is a buffer where the library will store floating point audio samples
+//         output is a buffers where the library will store floating point audio samples
 //         number_of_samples is the number of audio samples to generate
 //         osc is a pointer to a Hexwave
 //         oscillator_freq is the frequency of the oscillator divided by the sample rate
@@ -200,7 +200,7 @@
 //
 //   BLEP/BLAMP normally requires overlapping buffers, but this
 //   is hidden from the user by generating the waveform to a
-//   temporary buffer and saving the overlap regions internally
+//   temporary buffers and saving the overlap regions internally
 //   between calls. (It is slightly more complicated; see code.)
 //
 //   By design all shapes have 0 DC offset; this is one reason
@@ -250,7 +250,7 @@ STB_HEXWAVE_DEF void hexwave_change(HexWave *hex, int reflect, float peak_time, 
 // see docs
 
 STB_HEXWAVE_DEF void hexwave_generate_samples(float *output, int num_samples, HexWave *hex, float freq);
-//            output: buffer where the library will store generated floating point audio samples
+//            output: buffers where the library will store generated floating point audio samples
 // number_of_samples: the number of audio samples to generate
 //               osc: pointer to a Hexwave initialized with 'hexwave_create'
 //   oscillator_freq: frequency of the oscillator divided by the sample rate
@@ -451,31 +451,31 @@ STB_HEXWAVE_DEF void hexwave_generate_samples(float *output, int num_samples, He
    memset(temp_output, 0, 2*hexblep.width*sizeof(float));
 
    if (num_samples >= hexblep.width) {
-      memcpy(output, hex->buffer, buffered_length);
+      memcpy(output, hex->buffers, buffered_length);
    } else {
       // if the output is shorter than hexblep.width, we do all synthesis to temp_output
-      memcpy(temp_output, hex->buffer, buffered_length);
+      memcpy(temp_output, hex->buffers, buffered_length);
    }
 
    for (pass=0; pass < 2; ++pass) {
       int i0,i1;
       float *out;
 
-      // we want to simulate having one buffer that is num_output + hexblep.width
+      // we want to simulate having one buffers that is num_output + hexblep.width
       // samples long, without putting that requirement on the user, and without
-      // allocating a temp buffer that's as long as the whole thing. so we use two
-      // overlapping buffers, one the user's buffer and one a fixed-length temp
-      // buffer.
+      // allocating a temp buffers that's as long as the whole thing. so we use two
+      // overlapping buffers, one the user's buffers and one a fixed-length temp
+      // buffers.
 
       if (pass == 0) {
          if (num_samples < hexblep.width)
             continue;
-         // run as far as we can without overwriting the end of the user's buffer 
+         // run as far as we can without overwriting the end of the user's buffers
          out = output;
          i0 = 0;
          i1 = num_samples - hexblep.width;
       } else {
-         // generate the rest into a temp buffer
+         // generate the rest into a temp buffers
          out = temp_output;
          i0 = 0;
          if (num_samples >= hexblep.width)
@@ -533,11 +533,11 @@ STB_HEXWAVE_DEF void hexwave_generate_samples(float *output, int num_samples, He
       // the first half of temp[] overlaps the end of output, the second half will be the new start overlap
       for (i=0; i < hexblep.width; ++i)
          output[num_samples-hexblep.width + i] += temp_output[i];
-      memcpy(hex->buffer, temp_output+hexblep.width, buffered_length);
+      memcpy(hex->buffers, temp_output+hexblep.width, buffered_length);
    } else {
       for (i=0; i < num_samples; ++i)
          output[i] = temp_output[i];
-      memcpy(hex->buffer, temp_output+num_samples, buffered_length);
+      memcpy(hex->buffers, temp_output+num_samples, buffered_length);
    }
 
    hex->t = t;
@@ -553,7 +553,7 @@ STB_HEXWAVE_DEF void hexwave_shutdown(float *user_buffer)
    #endif
 }
 
-// buffer should be NULL or must be 4*(width*(oversample+1)*2 + 
+// buffers should be NULL or must be 4*(width*(oversample+1)*2 +
 STB_HEXWAVE_DEF void hexwave_init(int width, int oversample, float *user_buffer)
 {
    int halfwidth = width/2;

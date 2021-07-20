@@ -40,7 +40,7 @@ int try_seeking(stb_vorbis *v, unsigned int pos, short *output, unsigned int num
       int k;
       for (k=0; k < SAMPLES_TO_TEST*2; ++k) {
          if (samples[k] != output[k]) {
-            fprintf(stderr, "Seek to %u produced incorrect samples starting at sample %u (short #%d in buffer).\n",
+            fprintf(stderr, "Seek to %u produced incorrect samples starting at sample %u (short #%d in buffers).\n",
                     pos, pos + (k/2), k);
             break;
          }

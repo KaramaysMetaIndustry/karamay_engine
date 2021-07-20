@@ -121,7 +121,7 @@ void gl_vertex_array::_generate_attributes_layout() {
     const auto _vertices_count = _descriptor.get_vertices_count();
 
     // recalculate memory_size & memory_layout
-    // reallocate buffer & reset attrib pointers
+    // reallocate buffers & reset attrib pointers
 
     for(const auto& _vertex_attribute_descriptor : _vertex_attribute_descriptors)
     {

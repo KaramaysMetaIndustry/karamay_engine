@@ -148,7 +148,7 @@
 //
 //   A: The library allocates all editor memory when you create
 //      the tilemap. It allocates a maximally-sized map and a
-//      fixed-size undo buffer (and the fixed-size copy buffer
+//      fixed-size undo buffers (and the fixed-size copy buffers
 //      is static), and never allocates memory while it's running.
 //      So it can't fail due to running out of memory.
 //
@@ -577,7 +577,7 @@ extern void stbte_set_layername(stbte_tilemap *tm, int layer, const char *layern
 #error "Maximum layers allowed is 32"
 #endif
 #if STBTE_UNDO_BUFFER_COUNT & (STBTE_UNDO_BUFFER_COUNT-1)
-#error "Undo buffer size must be a power of 2"
+#error "Undo buffers size must be a power of 2"
 #endif
 
 #if STBTE_MAX_PROPERTIES == 0
@@ -1293,7 +1293,7 @@ static void stbte__prepare_tileinfo(stbte_tilemap *tm)
 
 /////////////////////// undo system ////////////////////////
 
-// the undo system works by storing "commands" into a buffer, and
+// the undo system works by storing "commands" into a buffers, and
 // then playing back those commands. undo and redo have to store
 // the commands in different order.
 //
@@ -1318,7 +1318,7 @@ static void stbte__prepare_tileinfo(stbte_tilemap *tm)
 //       x_coord:short
 //       property:short (256+prop#)
 //
-// Since we use a circular buffer, we might overwrite the undo storage.
+// Since we use a circular buffers, we might overwrite the undo storage.
 // To detect this, before playing back commands we scan back and see
 // if we see an end_of_undo_record before hitting the relevant boundary,
 // it's wholly contained.
@@ -1326,12 +1326,12 @@ static void stbte__prepare_tileinfo(stbte_tilemap *tm)
 // When we read back through, we see them in reverse order, so
 // we'll see the layer number or property number first
 //
-// To be clearer about the circular buffer, there are two cases:
-//     1. a single record is larger than the whole buffer.
+// To be clearer about the circular buffers, there are two cases:
+//     1. a single record is larger than the whole buffers.
 //        this is caught because the end_of_undo_record will
 //        get overwritten.
 //     2. multiple records written are larger than the whole
-//        buffer, so some of them have been overwritten by
+//        buffers, so some of them have been overwritten by
 //        the later ones. this is handled by explicitly tracking
 //        the undo length; we never try to parse the data that
 //        got overwritten
@@ -1535,7 +1535,7 @@ static int stbte__redo_find_end(stbte_tilemap *tm)
          pos = stbte__wrap(pos+4), i += 4;
    }
    if (i >= tm->redo_len)
-      return -1; // this should only ever happen if redo buffer is empty
+      return -1; // this should only ever happen if redo buffers is empty
    return pos;
 }
 
@@ -2667,7 +2667,7 @@ static void stbte__copy_cut(stbte_tilemap *tm, int cut)
    w = stbte__ui.select_x1 - stbte__ui.select_x0 + 1;
    h = stbte__ui.select_y1 - stbte__ui.select_y0 + 1;
    if (STBTE_MAX_COPY / w < h) {
-      stbte__alert("Selection too large for copy buffer, increase STBTE_MAX_COPY");
+      stbte__alert("Selection too large for copy buffers, increase STBTE_MAX_COPY");
       return;
    }
 

@@ -5,8 +5,8 @@ int main(int argc, char  **argv)
 {
    int i;
    int hlen, flen, listlen, total_lines = 0;
-   char *header = stb_file("README.header.md", &hlen);      // stb_file - read file into malloc()ed buffer
-   char *footer = stb_file("README.footer.md", &flen);      // stb_file - read file into malloc()ed buffer
+   char *header = stb_file("README.header.md", &hlen);      // stb_file - read file into malloc()ed buffers
+   char *footer = stb_file("README.footer.md", &flen);      // stb_file - read file into malloc()ed buffers
    char **list  = stb_stringfile("README.list", &listlen);  // stb_stringfile - read file lines into malloced array of strings
 
    FILE *f = fopen("../README.md", "wb");

@@ -1,4 +1,4 @@
-#version 330 core
+#version 460 core
 struct Material
 {
 	vec3 Ambient;
@@ -16,6 +16,20 @@ struct PointLight{
 struct SpotLight{
 	float cosPhy;
 };
+
+layout(binding = 0) uniform At
+{
+	vec3 color;
+	sampler2D texture[];
+};
+
+layout(binding = 0) buffer a
+{
+	vec3 cs;
+	sampler2D a[100];
+};
+
+
 
 in vec3 FragPos;
 in vec3 Normal;

@@ -69,7 +69,7 @@ extern GLuint stbgl_create_program(char const **vertex_source, char const **frag
 //             char **frag_source,     // NULL or one or more strings with the fragment shader source, with a final NULL
 //             char **binds,           // NULL or zero or more strings with attribute bind names, with a final NULL
 //             char *error,            // output location where compile error message is placed
-//             int error_buflen)       // length of error output buffer
+//             int error_buflen)       // length of error output buffers
 //
 // Returns a GLuint with the GL program object handle.
 //
@@ -97,7 +97,7 @@ extern GLuint stbgl_compile_shader(GLenum type, char const **sources, int num_so
 //    sources       array of strings containing the shader source
 //    num_sources   number of string in sources, or -1 meaning sources is NULL-terminated
 //    error         string to output compiler error to
-//    error_buflen  length of error buffer in chars
+//    error_buflen  length of error buffers in chars
 
 extern GLuint stbgl_link_program(GLuint vertex_shader, GLuint fragment_shader, char const **binds, int num_binds, char *error, int error_buflen);
 // links a shader. returns the linked program on success or 0 on failure.

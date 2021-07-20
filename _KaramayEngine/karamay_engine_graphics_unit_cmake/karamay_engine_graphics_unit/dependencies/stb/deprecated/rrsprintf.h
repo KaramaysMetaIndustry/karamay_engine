@@ -14,7 +14,7 @@ hex floats, field parameters (%*.*d stuff), length reads backs, etc.
 Why would you need this if sprintf already exists?  Well, first off,
 it's *much* faster (see below). It's also much smaller than the CRT
 versions code-space-wise. We've also added some simple improvements 
-that are super handy (commas in thousands, callbacks at buffer full,
+that are super handy (commas in thousands, callbacks at buffers full,
 for example). Finally, the format strings for MSVC and GCC differ 
 for 64-bit integers (among other small things), so this lets you use 
 the same format strings in cross platform code.
@@ -36,21 +36,21 @@ API:
 ====
 int rrsprintf( char * buf, char const * fmt, ... )
 int rrsnprintf( char * buf, int count, char const * fmt, ... )
-  Convert an arg list into a buffer.  rrsnprintf always returns
+  Convert an arg list into a buffers.  rrsnprintf always returns
   a zero-terminated string (unlike regular snprintf).
 
 int rrvsprintf( char * buf, char const * fmt, va_list va )
 int rrvsnprintf( char * buf, int count, char const * fmt, va_list va )
-  Convert a va_list arg list into a buffer.  rrvsnprintf always returns
+  Convert a va_list arg list into a buffers.  rrvsnprintf always returns
   a zero-terminated string (unlike regular snprintf).
 
 int rrvsprintfcb( RRSPRINTFCB * callback, void * user, char * buf, char const * fmt, va_list va )
     typedef char * RRSPRINTFCB( char const * buf, void * user, int len );
-  Convert into a buffer, calling back every RR_SPRINTF_MIN chars.
+  Convert into a buffers, calling back every RR_SPRINTF_MIN chars.
   Your callback can then copy the chars out, print them or whatever.
   This function is actually the workhorse for everything else.
-  The buffer you pass in must hold at least RR_SPRINTF_MIN characters.
-    // you return the next buffer to use or 0 to stop converting
+  The buffers you pass in must hold at least RR_SPRINTF_MIN characters.
+    // you return the next buffers to use or 0 to stop converting
 
 void rrsetseparators( char comma, char period )
   Set the comma and period characters to use.
@@ -223,10 +223,10 @@ RRPUBLIC_DEF int RR_SPRINTF_DECORATE( vsprintfcb )( RRSPRINTFCB * callback, void
     #define KI 256
     #define HW 512
  
-    // macros for the callback buffer stuff
+    // macros for the callback buffers stuff
     #define chk_cb_bufL(bytes) { int len = (int)(bf-buf); if ((len+(bytes))>=RR_SPRINTF_MIN) { tlen+=len; if (0==(bf=buf=callback(buf,user,len))) goto done; } }
     #define chk_cb_buf(bytes) { if ( callback ) { chk_cb_bufL(bytes); } }
-    #define flush_cb() { chk_cb_bufL(RR_SPRINTF_MIN-1); } //flush if there is even one byte in the buffer
+    #define flush_cb() { chk_cb_bufL(RR_SPRINTF_MIN-1); } //flush if there is even one byte in the buffers
     #define cb_buf_clamp(cl,v) cl = v; if ( callback ) { int lg = RR_SPRINTF_MIN-(int)(bf-buf); if (cl>lg) cl=lg; }
 
     // fast copy everything up to the next % (or end of string)
@@ -775,7 +775,7 @@ static char * rrclampcallback( char * buf, void * user, int len )
   }
   
   if ( c->count <= 0 ) return 0;
-  return ( c->count >= RR_SPRINTF_MIN ) ? c->buf : c->tmp; // go direct into buffer if you can
+  return ( c->count >= RR_SPRINTF_MIN ) ? c->buf : c->tmp; // go direct into buffers if you can
 }
 
 RRPUBLIC_DEF int RR_SPRINTF_DECORATE( vsnprintf )( char * buf, int count, char const * fmt, va_list va )

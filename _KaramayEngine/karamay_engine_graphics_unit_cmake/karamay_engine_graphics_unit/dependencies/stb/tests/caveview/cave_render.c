@@ -630,7 +630,7 @@ void prepare_threads(void)
 }
 
 
-// "better" buffer uploading
+// "better" buffers uploading
 #if 0
    if (glBufferStorage) {
       glDeleteBuffersARB(1, &vb->vbuf);

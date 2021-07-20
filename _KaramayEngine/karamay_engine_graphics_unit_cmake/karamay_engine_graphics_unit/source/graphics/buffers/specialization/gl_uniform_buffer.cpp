@@ -50,7 +50,7 @@ void gl_uniform_buffer::bind(std::uint32_t binding)
         _binding = binding;
     }
 #ifdef _DEBUG
-    std::cout << "uniform buffer [ "<< _block_name <<"]" << std::endl;
+    std::cout << "uniform buffers [ "<< _block_name <<"]" << std::endl;
     std::cout << "binding: " << _binding <<std::endl;
     std::cout << "offset: " << _uniform_buffer_offset<<std::endl;
     std::cout << "size: " << _uniform_buffer_size<<std::endl;
@@ -83,7 +83,7 @@ void gl_uniform_buffer::_generate_shared_memory(const std::vector<std::pair<std:
             auto _attribute_size = _glsl_type_size_map.find(row.first)->second;
             _attribute_layout.emplace(row.second, std::pair<std::int64_t, std::int64_t>(_offset, _attribute_size));
         }
-        // place the public buffer
+        // place the public buffers
         _public_buffer->push_back('0', _uniform_buffer_size);
     }
 }

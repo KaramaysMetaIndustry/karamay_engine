@@ -41,7 +41,7 @@ hex floats, field parameters (%*.*d stuff), length reads backs, etc.
 Why would you need this if sprintf already exists?  Well, first off,
 it's *much* faster (see below). It's also much smaller than the CRT
 versions code-space-wise. We've also added some simple improvements
-that are super handy (commas in thousands, callbacks at buffer full,
+that are super handy (commas in thousands, callbacks at buffers full,
 for example). Finally, the format strings for MSVC and GCC differ
 for 64-bit integers (among other small things), so this lets you use
 the same format strings in cross platform code.
@@ -63,21 +63,21 @@ API:
 ====
 int stbsp_sprintf( char * buf, char const * fmt, ... )
 int stbsp_snprintf( char * buf, int count, char const * fmt, ... )
-  Convert an arg list into a buffer.  stbsp_snprintf always returns
+  Convert an arg list into a buffers.  stbsp_snprintf always returns
   a zero-terminated string (unlike regular snprintf).
 
 int stbsp_vsprintf( char * buf, char const * fmt, va_list va )
 int stbsp_vsnprintf( char * buf, int count, char const * fmt, va_list va )
-  Convert a va_list arg list into a buffer.  stbsp_vsnprintf always returns
+  Convert a va_list arg list into a buffers.  stbsp_vsnprintf always returns
   a zero-terminated string (unlike regular snprintf).
 
 int stbsp_vsprintfcb( STBSP_SPRINTFCB * callback, void * user, char * buf, char const * fmt, va_list va )
     typedef char * STBSP_SPRINTFCB( char const * buf, void * user, int len );
-  Convert into a buffer, calling back every STB_SPRINTF_MIN chars.
+  Convert into a buffers, calling back every STB_SPRINTF_MIN chars.
   Your callback can then copy the chars out, print them or whatever.
   This function is actually the workhorse for everything else.
-  The buffer you pass in must hold at least STB_SPRINTF_MIN characters.
-    // you return the next buffer to use or 0 to stop converting
+  The buffers you pass in must hold at least STB_SPRINTF_MIN characters.
+    // you return the next buffers to use or 0 to stop converting
 
 void stbsp_set_separators( char comma, char period )
   Set the comma and period characters to use.
@@ -305,7 +305,7 @@ STBSP__PUBLICDEF int STB_SPRINTF_DECORATE(vsprintfcb)(STBSP_SPRINTFCB *callback,
       stbsp__int32 fw, pr, tz;
       stbsp__uint32 fl;
 
-      // macros for the callback buffer stuff
+      // macros for the callback buffers stuff
       #define stbsp__chk_cb_bufL(bytes)                        \
          {                                                     \
             int len = (int)(bf - buf);                         \
@@ -324,7 +324,7 @@ STBSP__PUBLICDEF int STB_SPRINTF_DECORATE(vsprintfcb)(STBSP_SPRINTFCB *callback,
       #define stbsp__flush_cb()                      \
          {                                           \
             stbsp__chk_cb_bufL(STB_SPRINTF_MIN - 1); \
-         } // flush if there is even one byte in the buffer
+         } // flush if there is even one byte in the buffers
       #define stbsp__cb_buf_clamp(cl, v)                \
          cl = v;                                        \
          if (callback) {                                \
@@ -1388,7 +1388,7 @@ static char *stbsp__clamp_callback(const char *buf, void *user, int len)
 
    if (c->count <= 0)
       return c->tmp;
-   return (c->count >= STB_SPRINTF_MIN) ? c->buf : c->tmp; // go direct into buffer if you can
+   return (c->count >= STB_SPRINTF_MIN) ? c->buf : c->tmp; // go direct into buffers if you can
 }
 
 static char * stbsp__count_clamp_callback( const char * buf, void * user, int len )
@@ -1397,7 +1397,7 @@ static char * stbsp__count_clamp_callback( const char * buf, void * user, int le
    (void) sizeof(buf);
 
    c->length += len;
-   return c->tmp; // go direct into buffer if you can
+   return c->tmp; // go direct into buffers if you can
 }
 
 STBSP__PUBLICDEF int STB_SPRINTF_DECORATE( vsnprintf )( char * buf, int count, char const * fmt, va_list va )

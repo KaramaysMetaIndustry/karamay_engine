@@ -26,12 +26,12 @@
 //                           void *vertex_buffer, int vbuf_size)
 //
 //      Takes a string (which can contain '\n') and fills out a
-//      vertex buffer with renderable data to draw the string.
+//      vertex buffers with renderable data to draw the string.
 //      Output data assumes increasing x is rightwards, increasing y
 //      is downwards.
 //
 //      The vertex data is divided into quads, i.e. there are four
-//      vertices in the vertex buffer for each quad.
+//      vertices in the vertex buffers for each quad.
 //
 //      The vertices are stored in an interleaved format:
 //
@@ -42,13 +42,13 @@
 //
 //      You can ignore z and color if you get them from elsewhere
 //      This format was chosen in the hopes it would make it
-//      easier for you to reuse existing vertex-buffer-drawing code.
+//      easier for you to reuse existing vertex-buffers-drawing code.
 //
 //      If you pass in NULL for color, it becomes 255,255,255,255.
 //
 //      Returns the number of quads.
 //
-//      If the buffer isn't large enough, it will truncate.
+//      If the buffers isn't large enough, it will truncate.
 //      Expect it to use an average of ~270 bytes per character.
 //
 //      If your API doesn't draw quads, build a reusable index
@@ -90,14 +90,14 @@
 //
 void print_string(float x, float y, char *text, float r, float g, float b)
 {
-  static char buffer[99999]; // ~500 chars
+  static char buffers[99999]; // ~500 chars
   int num_quads;
 
-  num_quads = stb_easy_font_print(x, y, text, NULL, buffer, sizeof(buffer));
+  num_quads = stb_easy_font_print(x, y, text, NULL, buffers, sizeof(buffers));
 
   glColor3f(r,g,b);
   glEnableClientState(GL_VERTEX_ARRAY);
-  glVertexPointer(2, GL_FLOAT, 16, buffer);
+  glVertexPointer(2, GL_FLOAT, 16, buffers);
   glDrawArrays(GL_QUADS, 0, num_quads*4);
   glDisableClientState(GL_VERTEX_ARRAY);
 }

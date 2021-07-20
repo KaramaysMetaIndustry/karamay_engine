@@ -15,14 +15,70 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="799c95bd-bd6b-4bb4-95bb-3af1c0f20cb1" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffers/gl_buffers.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_atomic_counter_buffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/specialization/gl_atomic_counter_buffer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_atomic_counter_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/specialization/gl_atomic_counter_buffer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffers.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffers.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_uniform_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_uniform_buffer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_uniform_block.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_uniform_block.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/glfw-3.3.4.bin.WIN64/include/GLFW/glfw3.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/glfw-3.3.4.bin.WIN64/include/GLFW/glfw3.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/glfw-3.3.4.bin.WIN64/include/GLFW/glfw3native.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/glfw-3.3.4.bin.WIN64/include/GLFW/glfw3native.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/glfw-3.3.bin.WIN32/include/GLFW/glfw3.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/glfw-3.3.bin.WIN32/include/GLFW/glfw3.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/glfw-3.3.bin.WIN32/include/GLFW/glfw3native.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/glfw-3.3.bin.WIN32/include/GLFW/glfw3native.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/glm_pack/include/glm/detail/_swizzle.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/glm_pack/include/glm/detail/_swizzle.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/glm_pack/include/glm/gtc/type_ptr.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/glm_pack/include/glm/gtc/type_ptr.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/nlohmann/json.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/nlohmann/json.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/deprecated/rrsprintf.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/deprecated/rrsprintf.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/deprecated/stb_image.c" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/deprecated/stb_image.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/deprecated/stretchy_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/deprecated/stretchy_buffer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_ds.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_ds.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_easy_font.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_easy_font.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_herringbone_wang_tile.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_herringbone_wang_tile.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_hexwave.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_hexwave.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_image.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_image.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_image_resize.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_image_resize.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_image_write.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_image_write.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_sprintf.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_sprintf.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_textedit.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_textedit.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_tilemap_editor.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_tilemap_editor.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_truetype.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_truetype.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_vorbis.c" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_vorbis.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_voxel_render.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/stb_voxel_render.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/tests/caveview/cave_mesher.c" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/tests/caveview/cave_mesher.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/tests/caveview/cave_render.c" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/tests/caveview/cave_render.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/tests/caveview/stb_glprog.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/tests/caveview/stb_glprog.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/tests/prerelease/stb_lib.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/tests/prerelease/stb_lib.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/tests/test_sprintf.c" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/tests/test_sprintf.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/tests/vorbseek/vorbseek.c" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/tests/vorbseek/vorbseek.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/tools/make_readme.c" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/dependencies/stb/tools/make_readme.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/shaders/FragmentShader.frag" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/shaders/FragmentShader.frag" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffers/buffer/gl_buffer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffers/buffer/gl_buffer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_tools.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffers/buffer/gl_buffer_tools.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffers.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_element_array_buffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_element_array_buffer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_element_array_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_element_array_buffer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_shader_storage_buffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_shader_storage_buffer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_shader_storage_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_shader_storage_buffer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_uniform_buffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_uniform_buffer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_uniform_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_uniform_buffer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_buffered_uniform_block.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_buffered_uniform_block.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_buffered_uniform_block.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_buffered_uniform_block.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_interface_block.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_interface_block.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_interface_block.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_interface_block.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_shader_storage_block.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_shader_storage_block.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_shader_storage_block.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_shader_storage_block.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_uniform_block.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_uniform_block.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_uniform_block.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_uniform_block.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/specialization/gl_atomic_counter_buffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_atomic_counter_buffer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/specialization/gl_atomic_counter_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_atomic_counter_buffer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/program/gl_program.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/program/gl_program.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/program/gl_program.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/program/gl_program.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/renderbuffer/gl_multisample_renderbuffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/renderbuffer/gl_multisample_renderbuffer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/renderbuffer/gl_renderbuffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/renderbuffer/gl_renderbuffer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/renderbuffer/gl_renderbuffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/renderbuffer/gl_renderbuffer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/texture/texture_buffer/gl_texture_buffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/texture/texture_buffer/gl_texture_buffer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/texture/texture_buffer/gl_texture_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/texture/texture_buffer/gl_texture_buffer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/window/window.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/karamay_engine_graphics_unit/source/window/window.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,19 +126,14 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffers\buffer" />
+      <recent name="C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\specialization" />
       <recent name="G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer\specialization" />
       <recent name="G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\renderers\gl_template_renderer_family\static_mesh_renderer" />
       <recent name="C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\graphics\buffer" />
-      <recent name="G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\renderers\gl_template_renderer_family\instanced_static_mesh_renderer" />
-      <recent name="G:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\source\renderers\gl_template_renderer_family" />
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="karamay_engine_graphics_unit" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="karamay_engine_graphics_unit" TARGET_NAME="karamay_engine_graphics_unit" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="karamay_engine_graphics_unit" RUN_TARGET_NAME="karamay_engine_graphics_unit">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -141,6 +192,8 @@
       <workItem from="1626435924452" duration="3003000" />
       <workItem from="1626488679916" duration="15720000" />
       <workItem from="1626660151436" duration="3450000" />
+      <workItem from="1626704434904" duration="469000" />
+      <workItem from="1626704939404" duration="6431000" />
     </task>
     <servers />
   </component>
@@ -166,7 +219,7 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffer/gl_uniform_buffer.cpp</url>
+          <url>file://$PROJECT_DIR$/karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_uniform_buffer.cpp</url>
           <line>47</line>
           <option name="timeStamp" value="19" />
         </line-breakpoint>

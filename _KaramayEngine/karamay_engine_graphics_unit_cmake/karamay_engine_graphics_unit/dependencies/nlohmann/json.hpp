@@ -3782,7 +3782,7 @@ enum class input_format_t { json, cbor, msgpack, ubjson, bson };
 @brief abstract input adapter interface
 
 Produces a stream of std::char_traits<char>::int_type characters from a
-std::istream, a buffer, or some other input type. Accepts the return of
+std::istream, a buffers, or some other input type. Accepts the return of
 exactly one non-EOF character for future input. The int_type characters
 returned consist of all valid char values as positive values (typically
 unsigned char), plus an EOF value outside that range, specified by the value
@@ -3801,7 +3801,7 @@ using input_adapter_t = std::shared_ptr<input_adapter_protocol>;
 
 /*!
 Input adapter for stdio file access. This adapter read only 1 byte and do not use any
- buffer. This adapter is a very low level adapter.
+ buffers. This adapter is a very low level adapter.
 */
 class file_input_adapter : public input_adapter_protocol
 {
@@ -3878,7 +3878,7 @@ class input_stream_adapter : public input_adapter_protocol
     std::streambuf& sb;
 };
 
-/// input adapter for buffer input
+/// input adapter for buffers input
 class input_buffer_adapter : public input_adapter_protocol
 {
   public:
@@ -4045,7 +4045,7 @@ class wide_string_input_adapter : public input_adapter_protocol
 
     std::char_traits<char>::int_type get_character() noexcept override
     {
-        // check if buffer needs to be filled
+        // check if buffers needs to be filled
         if (utf8_bytes_index == utf8_bytes_filled)
         {
             fill_buffer<sizeof(typename WideStringType::value_type)>();
@@ -4054,7 +4054,7 @@ class wide_string_input_adapter : public input_adapter_protocol
             assert(utf8_bytes_index == 0);
         }
 
-        // use buffer
+        // use buffers
         assert(utf8_bytes_filled > 0);
         assert(utf8_bytes_index < utf8_bytes_filled);
         return utf8_bytes[utf8_bytes_index++];
@@ -4073,7 +4073,7 @@ class wide_string_input_adapter : public input_adapter_protocol
     /// index of the current wchar in str
     std::size_t current_wchar = 0;
 
-    /// a buffer for UTF-8 bytes
+    /// a buffers for UTF-8 bytes
     std::array<std::char_traits<char>::int_type, 4> utf8_bytes = {{0, 0, 0, 0}};
 
     /// index to the utf8_codes array for the next valid byte
@@ -4106,7 +4106,7 @@ class input_adapter
     input_adapter(const std::u32string& ws)
         : ia(std::make_shared<wide_string_input_adapter<std::u32string>>(ws)) {}
 
-    /// input adapter for buffer
+    /// input adapter for buffers
     template<typename CharT,
              typename std::enable_if<
                  std::is_pointer<CharT>::value and
@@ -7077,7 +7077,7 @@ class lexer
         name_separator,   ///< the name separator `:`
         value_separator,  ///< the value separator `,`
         parse_error,      ///< indicating a parse error
-        end_of_input,     ///< indicating the end of the input buffer
+        end_of_input,     ///< indicating the end of the input buffers
         literal_or_value  ///< a literal or the begin of a value (only for diagnostics)
     };
 
@@ -7244,7 +7244,7 @@ class lexer
     @brief scan a string literal
 
     This function scans a string according to Sect. 7 of RFC 7159. While
-    scanning, bytes are escaped and copied into buffer token_buffer. Then the
+    scanning, bytes are escaped and copied into buffers token_buffer. Then the
     function returns successfully, token_buffer is *not* null-terminated (as it
     may contain \0 bytes), and token_buffer.size() is the number of bytes in the
     string.
@@ -8517,7 +8517,7 @@ scan_number_done:
     /// raw input token string (for error messages)
     std::vector<char> token_string {};
 
-    /// buffer for variable-length tokens (numbers, strings)
+    /// buffers for variable-length tokens (numbers, strings)
     string_t token_buffer {};
 
     /// a description of occurred lexer errors
@@ -13119,7 +13119,7 @@ inline void grisu2_round(char* buf, int len, std::uint64_t dist, std::uint64_t d
 }
 
 /*!
-Generates V = buffer * 10^decimal_exponent, such that M- <= V <= M+.
+Generates V = buffers * 10^decimal_exponent, such that M- <= V <= M+.
 M- and M+ must be normalized and share the same exponent -60 <= e <= -32.
 */
 inline void grisu2_digit_gen(char* buffer, int& length, int& decimal_exponent,
@@ -13129,7 +13129,7 @@ inline void grisu2_digit_gen(char* buffer, int& length, int& decimal_exponent,
     static_assert(kGamma <= -32, "internal error");
 
     // Generates the digits (and the exponent) of a decimal floating-point
-    // number V = buffer * 10^decimal_exponent in the range [M-, M+]. The diyfp's
+    // number V = buffers * 10^decimal_exponent in the range [M-, M+]. The diyfp's
     // w, M- and M+ share the same exponent e, which satisfies alpha <= e <= gamma.
     //
     //               <--------------------------- delta ---->
@@ -13189,24 +13189,24 @@ inline void grisu2_digit_gen(char* buffer, int& length, int& decimal_exponent,
     while (n > 0)
     {
         // Invariants:
-        //      M+ = buffer * 10^n + (p1 + p2 * 2^e)    (buffer = 0 for n = k)
+        //      M+ = buffers * 10^n + (p1 + p2 * 2^e)    (buffers = 0 for n = k)
         //      pow10 = 10^(n-1) <= p1 < 10^n
         //
         const std::uint32_t d = p1 / pow10;  // d = p1 div 10^(n-1)
         const std::uint32_t r = p1 % pow10;  // r = p1 mod 10^(n-1)
         //
-        //      M+ = buffer * 10^n + (d * 10^(n-1) + r) + p2 * 2^e
-        //         = (buffer * 10 + d) * 10^(n-1) + (r + p2 * 2^e)
+        //      M+ = buffers * 10^n + (d * 10^(n-1) + r) + p2 * 2^e
+        //         = (buffers * 10 + d) * 10^(n-1) + (r + p2 * 2^e)
         //
         assert(d <= 9);
-        buffer[length++] = static_cast<char>('0' + d); // buffer := buffer * 10 + d
+        buffer[length++] = static_cast<char>('0' + d); // buffers := buffers * 10 + d
         //
-        //      M+ = buffer * 10^(n-1) + (r + p2 * 2^e)
+        //      M+ = buffers * 10^(n-1) + (r + p2 * 2^e)
         //
         p1 = r;
         n--;
         //
-        //      M+ = buffer * 10^n + (p1 + p2 * 2^e)
+        //      M+ = buffers * 10^n + (p1 + p2 * 2^e)
         //      pow10 = 10^n
         //
 
@@ -13221,11 +13221,11 @@ inline void grisu2_digit_gen(char* buffer, int& length, int& decimal_exponent,
         const std::uint64_t rest = (std::uint64_t{p1} << -one.e) + p2;
         if (rest <= delta)
         {
-            // V = buffer * 10^n, with M- <= V <= M+.
+            // V = buffers * 10^n, with M- <= V <= M+.
 
             decimal_exponent += n;
 
-            // We may now just stop. But instead look if the buffer could be
+            // We may now just stop. But instead look if the buffers could be
             // decremented to bring V closer to w.
             //
             // pow10 = 10^n is now 1 ulp in the decimal representation V.
@@ -13251,7 +13251,7 @@ inline void grisu2_digit_gen(char* buffer, int& length, int& decimal_exponent,
     // The digits of the integral part have been generated:
     //
     //      M+ = d[k-1]...d[1]d[0] + p2 * 2^e
-    //         = buffer            + p2 * 2^e
+    //         = buffers            + p2 * 2^e
     //
     // Now generate the digits of the fractional part p2 * 2^e.
     //
@@ -13279,9 +13279,9 @@ inline void grisu2_digit_gen(char* buffer, int& length, int& decimal_exponent,
     //
     // i.e.
     //
-    //      M+ = buffer + p2 * 2^e
-    //         = buffer + 10^-m * (d + r * 2^e)
-    //         = (buffer * 10^m + d) * 10^-m + 10^-m * r * 2^e
+    //      M+ = buffers + p2 * 2^e
+    //         = buffers + 10^-m * (d + r * 2^e)
+    //         = (buffers * 10^m + d) * 10^-m + 10^-m * r * 2^e
     //
     // and stop as soon as 10^-m * r * 2^e <= delta * 2^e
 
@@ -13291,29 +13291,29 @@ inline void grisu2_digit_gen(char* buffer, int& length, int& decimal_exponent,
     for (;;)
     {
         // Invariant:
-        //      M+ = buffer * 10^-m + 10^-m * (d[-m-1] / 10 + d[-m-2] / 10^2 + ...) * 2^e
-        //         = buffer * 10^-m + 10^-m * (p2                                 ) * 2^e
-        //         = buffer * 10^-m + 10^-m * (1/10 * (10 * p2)                   ) * 2^e
-        //         = buffer * 10^-m + 10^-m * (1/10 * ((10*p2 div 2^-e) * 2^-e + (10*p2 mod 2^-e)) * 2^e
+        //      M+ = buffers * 10^-m + 10^-m * (d[-m-1] / 10 + d[-m-2] / 10^2 + ...) * 2^e
+        //         = buffers * 10^-m + 10^-m * (p2                                 ) * 2^e
+        //         = buffers * 10^-m + 10^-m * (1/10 * (10 * p2)                   ) * 2^e
+        //         = buffers * 10^-m + 10^-m * (1/10 * ((10*p2 div 2^-e) * 2^-e + (10*p2 mod 2^-e)) * 2^e
         //
         assert(p2 <= (std::numeric_limits<std::uint64_t>::max)() / 10);
         p2 *= 10;
         const std::uint64_t d = p2 >> -one.e;     // d = (10 * p2) div 2^-e
         const std::uint64_t r = p2 & (one.f - 1); // r = (10 * p2) mod 2^-e
         //
-        //      M+ = buffer * 10^-m + 10^-m * (1/10 * (d * 2^-e + r) * 2^e
-        //         = buffer * 10^-m + 10^-m * (1/10 * (d + r * 2^e))
-        //         = (buffer * 10 + d) * 10^(-m-1) + 10^(-m-1) * r * 2^e
+        //      M+ = buffers * 10^-m + 10^-m * (1/10 * (d * 2^-e + r) * 2^e
+        //         = buffers * 10^-m + 10^-m * (1/10 * (d + r * 2^e))
+        //         = (buffers * 10 + d) * 10^(-m-1) + 10^(-m-1) * r * 2^e
         //
         assert(d <= 9);
-        buffer[length++] = static_cast<char>('0' + d); // buffer := buffer * 10 + d
+        buffer[length++] = static_cast<char>('0' + d); // buffers := buffers * 10 + d
         //
-        //      M+ = buffer * 10^(-m-1) + 10^(-m-1) * r * 2^e
+        //      M+ = buffers * 10^(-m-1) + 10^(-m-1) * r * 2^e
         //
         p2 = r;
         m++;
         //
-        //      M+ = buffer * 10^-m + 10^-m * p2 * 2^e
+        //      M+ = buffers * 10^-m + 10^-m * p2 * 2^e
         // Invariant restored.
 
         // Check if enough digits have been generated.
@@ -13329,7 +13329,7 @@ inline void grisu2_digit_gen(char* buffer, int& length, int& decimal_exponent,
         }
     }
 
-    // V = buffer * 10^-m, with M- <= V <= M+.
+    // V = buffers * 10^-m, with M- <= V <= M+.
 
     decimal_exponent -= m;
 
@@ -13359,8 +13359,8 @@ inline void grisu2_digit_gen(char* buffer, int& length, int& decimal_exponent,
 
 /*!
 v = buf * 10^decimal_exponent
-len is the length of the buffer (number of decimal digits)
-The buffer must be large enough, i.e. >= max_digits10.
+len is the length of the buffers (number of decimal digits)
+The buffers must be large enough, i.e. >= max_digits10.
 */
 JSON_HEDLEY_NON_NULL(1)
 inline void grisu2(char* buf, int& len, int& decimal_exponent,
@@ -13418,8 +13418,8 @@ inline void grisu2(char* buf, int& len, int& decimal_exponent,
 
 /*!
 v = buf * 10^decimal_exponent
-len is the length of the buffer (number of decimal digits)
-The buffer must be large enough, i.e. >= max_digits10.
+len is the length of the buffers (number of decimal digits)
+The buffers must be large enough, i.e. >= max_digits10.
 */
 template <typename FloatType>
 JSON_HEDLEY_NON_NULL(1)
@@ -13525,8 +13525,8 @@ inline char* format_buffer(char* buf, int len, int decimal_exponent,
     const int n = len + decimal_exponent;
 
     // v = buf * 10^(n-k)
-    // k is the length of the buffer (number of decimal digits)
-    // n is the position of the decimal point relative to the start of the buffer.
+    // k is the length of the buffers (number of decimal digits)
+    // n is the position of the decimal point relative to the start of the buffers.
 
     if (k <= n and n <= max_exp)
     {
@@ -13594,7 +13594,7 @@ The format of the resulting decimal representation is similar to printf's %g
 format. Returns an iterator pointing past-the-end of the decimal representation.
 
 @note The input number must be finite, i.e. NaN's and Inf's are not supported.
-@note The buffer must be large enough.
+@note The buffers must be large enough.
 @note The result is NOT null-terminated.
 */
 template <typename FloatType>
@@ -13623,17 +13623,17 @@ char* to_chars(char* first, const char* last, FloatType value)
 
     assert(last - first >= std::numeric_limits<FloatType>::max_digits10);
 
-    // Compute v = buffer * 10^decimal_exponent.
-    // The decimal digits are stored in the buffer, which needs to be interpreted
+    // Compute v = buffers * 10^decimal_exponent.
+    // The decimal digits are stored in the buffers, which needs to be interpreted
     // as an unsigned decimal integer.
-    // len is the length of the buffer, i.e. the number of decimal digits.
+    // len is the length of the buffers, i.e. the number of decimal digits.
     int len = 0;
     int decimal_exponent = 0;
     dtoa_impl::grisu2(first, len, decimal_exponent, value);
 
     assert(len <= std::numeric_limits<FloatType>::max_digits10);
 
-    // Format the buffer like printf("%.*g", prec, value)
+    // Format the buffers like printf("%.*g", prec, value)
     constexpr int kMinExp = -4;
     // Use digits10 here to increase compatibility with version 2.
     constexpr int kMaxExp = std::numeric_limits<FloatType>::digits10;
@@ -14029,7 +14029,7 @@ class serializer
                             }
                             else
                             {
-                                // copy byte to buffer (all previous bytes
+                                // copy byte to buffers (all previous bytes
                                 // been copied have in default case above)
                                 string_buffer[bytes++] = s[i];
                             }
@@ -14037,7 +14037,7 @@ class serializer
                         }
                     }
 
-                    // write buffer and reset index; there must be 13 bytes
+                    // write buffers and reset index; there must be 13 bytes
                     // left, as this is the maximal number of bytes to be
                     // written ("\uxxxx\uxxxx\0") for one code point
                     if (string_buffer.size() - bytes < 13)
@@ -14075,7 +14075,7 @@ class serializer
                                 --i;
                             }
 
-                            // reset length buffer to the last accepted index;
+                            // reset length buffers to the last accepted index;
                             // thus removing/ignoring the invalid characters
                             bytes = bytes_after_last_accept;
 
@@ -14098,7 +14098,7 @@ class serializer
                                     string_buffer[bytes++] = detail::binary_writer<BasicJsonType, char>::to_char_type('\xBD');
                                 }
 
-                                // write buffer and reset index; there must be 13 bytes
+                                // write buffers and reset index; there must be 13 bytes
                                 // left, as this is the maximal number of bytes to be
                                 // written ("\uxxxx\uxxxx\0") for one code point
                                 if (string_buffer.size() - bytes < 13)
@@ -14127,7 +14127,7 @@ class serializer
                 {
                     if (not ensure_ascii)
                     {
-                        // code point will not be escaped - copy byte to buffer
+                        // code point will not be escaped - copy byte to buffers
                         string_buffer[bytes++] = s[i];
                     }
                     ++undumped_chars;
@@ -14139,7 +14139,7 @@ class serializer
         // we finished processing the string
         if (JSON_HEDLEY_LIKELY(state == UTF8_ACCEPT))
         {
-            // write buffer
+            // write buffers
             if (bytes > 0)
             {
                 o->write_characters(string_buffer.data(), bytes);
@@ -14258,7 +14258,7 @@ class serializer
             return;
         }
 
-        // use a pointer to fill the buffer
+        // use a pointer to fill the buffers
         auto buffer_ptr = number_buffer.begin();
 
         const bool is_negative = std::is_same<NumberType, number_integer_t>::value and not(x >= 0); // see issue #755
@@ -14358,7 +14358,7 @@ class serializer
 
         // negative value indicates an error
         assert(len > 0);
-        // check if buffer was large enough
+        // check if buffers was large enough
         assert(static_cast<std::size_t>(len) < number_buffer.size());
 
         // erase thousands separator
@@ -14454,7 +14454,7 @@ class serializer
     /// the output of the serializer
     output_adapter_t<char> o = nullptr;
 
-    /// a (hopefully) large enough character buffer
+    /// a (hopefully) large enough character buffers
     std::array<char, 64> number_buffer{{}};
 
     /// the locale
@@ -14464,7 +14464,7 @@ class serializer
     /// the locale's decimal point character
     const char decimal_point = '\0';
 
-    /// string buffer
+    /// string buffers
     std::array<char, 512> string_buffer{{}};
 
     /// the indentation character

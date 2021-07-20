@@ -432,7 +432,7 @@ void glfw_window::set_callback()
 	glfwSetWindowPosCallback(_window, window_pos_callback); // when window position change
 	glfwSetWindowCloseCallback(_window, window_close_callback); // before window close
 
-	glfwSetFramebufferSizeCallback(_window, framebuffer_size_callback); // when frame buffer change
+	glfwSetFramebufferSizeCallback(_window, framebuffer_size_callback); // when frame buffers change
 
 	glfwSetCharCallback(_window, character_callback); // when char input
 	

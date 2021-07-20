@@ -291,7 +291,7 @@ inline void gl_program::_bind_element_array_buffer()
 		_element_array_buffer->bind();
 
 #ifdef _DEBUG
-		std::cout << "[element array buffer is bound.]" << std::endl;
+		std::cout << "[element array buffers is bound.]" << std::endl;
 #endif
 	}
 }
@@ -321,7 +321,7 @@ inline void gl_program::_bind_uniform_buffers()
 		{
 			if (uniform_buffer)
 			{
-			    // bind uniform buffer to context binding
+			    // bind uniform buffers to context binding
 				uniform_buffer->bind(i);
 				// bind program uniform index to context binding
 				std::uint32_t _uniform_block_index = glGetUniformBlockIndex(_handle, uniform_buffer->get_block_name().c_str());
@@ -346,14 +346,14 @@ inline void gl_program::_bind_shader_storage_buffers()
 		{
 			if (shader_storage_buffer)
 			{
-				// bind buffer to context
+				// bind buffers to context
 				shader_storage_buffer->bind(i);
 				// bind program to context
 				const GLuint _index = glGetProgramResourceIndex(_handle, GL_SHADER_STORAGE_BLOCK, shader_storage_buffer->get_descriptor()->get_block_name().c_str());
 				glShaderStorageBlockBinding(_handle, _index, i);
 				
 #ifdef _DEBUG
-				std::cout << "[ " << i << " shader storage buffer is bound.]" << std::endl;
+				std::cout << "[ " << i << " shader storage buffers is bound.]" << std::endl;
 #endif // DEBUG	
 			}
 		}
@@ -371,10 +371,10 @@ inline void gl_program::_bind_atomic_counter_buffers()
 		{
 			if (atomic_counter_buffer)
 			{
-				// bind buffer to context
+				// bind buffers to context
 				atomic_counter_buffer->bind(i);
 #ifdef _DEBUG
-				std::cout << "[ " << i << " atomic counter buffer is bound.]" << std::endl;
+				std::cout << "[ " << i << " atomic counter buffers is bound.]" << std::endl;
 #endif // DEBUG
 				
 			}

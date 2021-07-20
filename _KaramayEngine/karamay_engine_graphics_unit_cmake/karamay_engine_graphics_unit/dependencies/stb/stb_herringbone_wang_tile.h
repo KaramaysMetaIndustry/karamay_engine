@@ -124,7 +124,7 @@ int main(int argc, char **argv)
    stbhw_build_tileset_from_image(&ts, data, w*3, w, h);
    free(data);
 
-   // allocate a buffer to create the final image to
+   // allocate a buffers to create the final image to
    data = malloc(3 * xs * ys);
 
    srand(time(NULL));
