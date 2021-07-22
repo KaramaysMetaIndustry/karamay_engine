@@ -2,10 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "Release/karamay_engine_graphics_unit.exe"
+			"path" : "MinSizeRel/karamay_engine_graphics_unit.exe"
 		},
 		{
-			"path" : "Release/karamay_engine_graphics_unit.pdb"
+			"path" : "MinSizeRel/karamay_engine_graphics_unit.pdb"
 		}
 	],
 	"backtrace" : 1,
@@ -70,7 +70,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /O2 /Ob2 /DNDEBUG -MD"
+					"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /O1 /Ob1 /DNDEBUG -MD"
 				},
 				{
 					"fragment" : "-std:c++17"
@@ -165,7 +165,7 @@
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /O2 /Ob2 /DNDEBUG -MD",
+				"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /O1 /Ob1 /DNDEBUG -MD",
 				"role" : "flags"
 			},
 			{
@@ -2601,89 +2601,89 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "karamay_engine_graphics_unit/source/graphics/buffer/specialization/gl_atomic_counter_buffer.cpp",
+			"path" : "karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_atomic_counter_buffer.cpp",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
-			"path" : "karamay_engine_graphics_unit/source/graphics/buffer/specialization/gl_atomic_counter_buffer.h",
+			"path" : "karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_atomic_counter_buffer.h",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "karamay_engine_graphics_unit/source/graphics/buffer/gl_element_array_buffer.cpp",
+			"path" : "karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_element_array_buffer.cpp",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
-			"path" : "karamay_engine_graphics_unit/source/graphics/buffer/gl_element_array_buffer.h",
+			"path" : "karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_element_array_buffer.h",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "karamay_engine_graphics_unit/source/graphics/buffer/gl_shader_storage_buffer.cpp",
+			"path" : "karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_shader_storage_buffer.cpp",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
-			"path" : "karamay_engine_graphics_unit/source/graphics/buffer/gl_shader_storage_buffer.h",
+			"path" : "karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_shader_storage_buffer.h",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "karamay_engine_graphics_unit/source/graphics/buffer/gl_uniform_buffer.cpp",
+			"path" : "karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_uniform_buffer.cpp",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
-			"path" : "karamay_engine_graphics_unit/source/graphics/buffer/gl_uniform_buffer.h",
+			"path" : "karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_uniform_buffer.h",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_buffered_uniform_block.cpp",
+			"path" : "karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_buffered_uniform_block.cpp",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
-			"path" : "karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_buffered_uniform_block.h",
+			"path" : "karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_buffered_uniform_block.h",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_interface_block.cpp",
+			"path" : "karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_interface_block.cpp",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
-			"path" : "karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_interface_block.h",
+			"path" : "karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_interface_block.h",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_shader_storage_block.cpp",
+			"path" : "karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_shader_storage_block.cpp",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
-			"path" : "karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_shader_storage_block.h",
+			"path" : "karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_shader_storage_block.h",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_uniform_block.cpp",
+			"path" : "karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_uniform_block.cpp",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
-			"path" : "karamay_engine_graphics_unit/source/graphics/buffer/interface_block/gl_uniform_block.h",
+			"path" : "karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_uniform_block.h",
 			"sourceGroupIndex" : 0
 		},
 		{
@@ -3097,12 +3097,12 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer.cpp",
+			"path" : "karamay_engine_graphics_unit/source/graphics/buffers/buffer/gl_buffer.cpp",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
-			"path" : "karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer.h",
+			"path" : "karamay_engine_graphics_unit/source/graphics/buffers/buffer/gl_buffer.h",
 			"sourceGroupIndex" : 0
 		},
 		{
@@ -3156,12 +3156,12 @@
 		},
 		{
 			"backtrace" : 1,
-			"path" : "karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer_tools.h",
+			"path" : "karamay_engine_graphics_unit/source/graphics/buffers/buffer/gl_buffer_tools.h",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
-			"path" : "karamay_engine_graphics_unit/source/graphics/buffer/gl_buffers.h",
+			"path" : "karamay_engine_graphics_unit/source/graphics/buffers/gl_buffers.h",
 			"sourceGroupIndex" : 0
 		},
 		{

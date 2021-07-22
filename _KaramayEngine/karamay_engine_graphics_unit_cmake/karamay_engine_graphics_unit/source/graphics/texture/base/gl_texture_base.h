@@ -1,4 +1,6 @@
-#pragma once
+#ifndef GL_TEXTURE_BASE_H
+#define GL_TEXTURE_BASE_H
+
 #include "graphics/glo/gl_object.h"
 
 namespace gl_texture_enum
@@ -294,3 +296,4 @@ protected:
 	
 };
 
+#endif

@@ -1,8 +1,6 @@
 #ifndef H_GL_VERTEX_ARRAY
 #define H_GL_VERTEX_ARRAY
 
-#include <utility>
-
 #include "graphics/glo/gl_object.h"
 #include "graphics/type/glsl.h"
 
@@ -148,7 +146,7 @@ class gl_attribute
 };
 
 
-struct gl_attribute_descriptor
+struct gl_vertex_attribute_descriptor
 {
     std::string type_name;
     std::string attribute_name;
@@ -180,7 +178,7 @@ struct gl_attribute_list_anchor
  * [attribute2] [       ] [       ] [      ] [.......]
  * [attributeN] [       ] [       ] [      ] [.......]
  *
- *
+ * Store Vertex Attributes & Instance Attributes
  *
  * */
 class gl_vertex_array final : public gl_object
@@ -189,44 +187,42 @@ class gl_vertex_array final : public gl_object
 public:
 
     gl_vertex_array(
-            std::int64_t vertices_count, const std::vector<gl_attribute_descriptor>& attribute_descriptors,
+            std::int64_t vertex_count, const std::vector<gl_vertex_attribute_descriptor>& vertex_attribute_descriptors,
             std::int32_t instance_count, const std::vector<gl_instance_attribute_descriptor>& instance_attribute_descriptors) :
-            _vertices_count(vertices_count),
-            _instances_count(instance_count),
-            _memory_size(0)
+            _vertex_count(vertex_count),
+            _instance_count(instance_count)
     {
         glCreateVertexArrays(1, &_handle);
-
-        //_generate_attributes_layout();
-
     }
 
     ~gl_vertex_array() override;
 
 public:
 
-    /*
-     * Range of type [bytes]
-     * Anchor way [bytes offset, bytes size]
-     * */
-    void update(std::int64_t offset, std::uint8_t* byte_stream, std::int64_t byte_stream_size) noexcept;
+    template<typename GLSL_STREAMABLE_CLASS>
+    void update_vertex_attribute(const std::string& attribute_name, std::int32_t attribute_index, const GLSL_STREAMABLE_CLASS& value)
+    {
 
-    /*
-     * Range of type [bytes]
-     * Anchor way [attribute_name, bytes offset]
-     * */
-    void update(const std::string& attribute_name,
-                std::int64_t offset, std::uint8_t* byte_stream, std::int64_t byte_stream_size) noexcept;
+    }
 
-    void update_vertex_attribute(const std::string& attribute_name, std::int32_t attribute_index, glsl_transparent_class* value)
+    template<typename GLSL_STREAMABLE_CLASS>
+    void update_vertex_attributes(const std::string& attribute_name, std::int32_t attribute_index, const std::vector<GLSL_STREAMABLE_CLASS>& values)
     {}
+
+    void update_vertex_attributes(){}
 
 public:
 
+    /*
+    * 单个attribute
+    */
     template<typename GLSL_TRANSPARENT_CLASS>
     void update_instance_attribute(const std::string& attribute_name, std::int32_t attribute_index, const GLSL_TRANSPARENT_CLASS& value)
     {}
 
+    /*
+    * 同组连续 attribute
+    */
     template<typename GLSL_TRANSPARENT_CLASS>
     void update_instance_attributes(const std::string& attribute_name, std::int32_t attribute_index, const std::vector<GLSL_TRANSPARENT_CLASS>& values)
     {}
@@ -235,6 +231,7 @@ public:
     * @Param0 attribute_name
     * @Param1 attribute_index
     * @Parma2 attribute_value
+    * 不同组不连续
     */
     void update_instance_attributes(const std::vector<std::tuple<std::string, std::int32_t, const glsl_transparent_class*>>& list)
     {
@@ -253,27 +250,15 @@ public:
 
         if(_instance_attribute_buffer)
         {
-            _instance_attribute_buffer->execute_mutable_memory_handler(_mapped_memory_offset, _mapped_memory_size, 
-            [&_baked_list](std::uint8_t* mapped_memory, std::int64_t size)
-            {
-                for(const auto& _item : _baked_list)
-                {
-                    std::memcpy(mapped_memory + _item.first, _item.second->stream(), _item.second->stream_size());
-                }
-            });
+            // _instance_attribute_buffer->execute_mutable_memory_handler(_mapped_memory_offset, _mapped_memory_size, 
+            // [&_baked_list](std::uint8_t* mapped_memory, std::int64_t size)
+            // {
+            //     for(const auto& _item : _baked_list)
+            //     {
+            //         std::memcpy(mapped_memory + _item.first, _item.second->stream(), _item.second->stream_size());
+            //     }
+            // });
         }
-    }
-
-public:
-
-    /*
-     * Anchor [attribute_name, attribute_index] -> Range [specific attribute collection]
-     * Update [GLSL_TRANSPARENT_T]
-     * */
-    template<typename GLSL_TRANSPARENT_T>
-    void update(const std::string& attribute_name, std::uint32_t attribute_index, std::vector<GLSL_TRANSPARENT_T>& values) noexcept
-    {
-
     }
 
 public:
@@ -284,15 +269,17 @@ public:
 
 private:
 
-    std::int64_t _vertices_count;
-
-    std::int32_t _instances_count;
-
-    std::int64_t _memory_size;
-
     std::shared_ptr<gl_buffer> _vertex_attribute_buffer;
 
     std::shared_ptr<gl_buffer> _instance_attribute_buffer;
+
+    std::int64_t _vertex_count;
+
+    std::vector<gl_vertex_attribute_descriptor> _vertex_attribute_descriptors;
+
+    std::int32_t _instance_count;
+
+    std::vector<gl_vertex_attribute_descriptor> _instance_attribute_descriptors;
 
     std::unordered_map<std::string, gl_attribute_list_anchor> _vertex_attribute_layout;
 
@@ -300,12 +287,11 @@ private:
 
 private:
 
-    void _generate_attributes_layout();
+    void _generate_attribute_layout();
 
     void _set_vertex_pointers(gl_attribute_component::type attribute_component_type, std::uint32_t  index, std::uint32_t components_count,std::uint32_t attribute_size, std::uint32_t offset);
 
     void _reallocate();
-
 
 public:
 
@@ -329,40 +315,7 @@ public:
 
 	[[nodiscard]] const std::int32_t get_size() const;
 
-
-private:
-
-    template<typename T>
-    gl_attribute_component::type _get_component_type()
-    {
-        return gl_attribute_component::type::UNKNOWN;
-    }
-
-    template<>
-    gl_attribute_component::type _get_component_type<typename glv::i32vec4::value_type>()
-    {
-        return gl_attribute_component::type::INT;
-    }
-
-    template<>
-    gl_attribute_component::type _get_component_type<typename glv::ui32vec4::value_type>()
-    {
-        return gl_attribute_component::type::UINT;
-    }
-
-    template<>
-    gl_attribute_component::type _get_component_type<typename glv::f32vec4::value_type>()
-    {
-        return gl_attribute_component::type::FLOAT;
-    }
-
-    template<>
-    gl_attribute_component::type _get_component_type<typename glv::f64vec4::value_type>()
-    {
-        return gl_attribute_component::type::DOUBLE;
-    }
-
-
+   
 };
 
 #endif

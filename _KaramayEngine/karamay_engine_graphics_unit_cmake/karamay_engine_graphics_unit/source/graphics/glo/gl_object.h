@@ -98,7 +98,7 @@ public:
         }
     }
 
-    virtual std::uint8_t _check_object_validation() const {}
+    virtual std::uint8_t _check_object_validation() const { return 0;}
 
 public:
 	

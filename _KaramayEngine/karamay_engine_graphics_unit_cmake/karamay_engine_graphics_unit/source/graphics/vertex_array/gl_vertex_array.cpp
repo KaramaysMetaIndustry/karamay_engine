@@ -115,13 +115,12 @@ void gl_vertex_array::_set_vertex_pointers(gl_attribute_component::type attribut
     }
 }
 
-void gl_vertex_array::_generate_attributes_layout() {
+void gl_vertex_array::_generate_attribute_layout() 
+{
+    
     const auto& _vertex_attribute_descriptors = _descriptor.get_vertex_attribute_descriptors();
     const auto& _instance_attribute_descriptors = _descriptor.get_instance_attribute_descriptors();
     const auto _vertices_count = _descriptor.get_vertices_count();
-
-    // recalculate memory_size & memory_layout
-    // reallocate buffers & reset attrib pointers
 
     for(const auto& _vertex_attribute_descriptor : _vertex_attribute_descriptors)
     {

@@ -1,9 +1,7 @@
-#include "graphics/program/gl_program.h"
 #include "window/window.h"
 #include "graphics/variable/glv_types.h"
 #include "graphics/vertex_array/gl_vertex_array.h"
-#include "graphics/buffer/gl_dynamic_buffer.h"
-#include "graphics/buffer/gl_static_buffer.h"
+#include "graphics/program/gl_program.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../dependencies/stb/stb_image.h"
@@ -478,9 +476,9 @@ void test0()
 		1, 2, 3 // polygon1
 	};
 
-	// Ä¬ÈÏ°´column´æ
-// ³ýÁËµ¥¾«¶È¸¡µãÊý£¬ÆäËûÀàÐÍ¶¥µãÊý¾ÝÔÚfragÖÐÉùÃ÷Ê±£¬±ØÐëÊ¹ÓÃflat±êÊ¶£¬
-// ²¢ÇÒËùÓÐÆ¬¶ÎÄÃµ½µÄ¸Ä¶¥µãÖµµÈÓÚ×îºóÒ»¸ö¶¥µãµÄÖµ
+	// Ä¬ï¿½Ï°ï¿½columnï¿½ï¿½
+// ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½fragï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½flatï¿½ï¿½Ê¶ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¬ï¿½ï¿½ï¿½Ãµï¿½ï¿½Ä¸Ä¶ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
 //std::vector<glv_dmat4> tests{
 //	glv_dmat4(
 //	0, 1, 1, 0, // column
@@ -611,7 +609,7 @@ void test0()
 		});
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //GL_FILL GL_POINT
-	//glFrontFace(GL_CW);//default ÄæÊ±Õë GL_CW Ë³Ê±Õë
+	//glFrontFace(GL_CW);//default ï¿½ï¿½Ê±ï¿½ï¿½ GL_CW Ë³Ê±ï¿½ï¿½
 
 	//glEnable(GL_COLOR_BUFFER_BIT);
 	//glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
@@ -855,7 +853,7 @@ void test0()
 //
 //
 //	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //GL_FILL GL_POINT
-//	//glFrontFace(GL_CW);//default ÄæÊ±Õë GL_CW Ë³Ê±Õë
+//	//glFrontFace(GL_CW);//default ï¿½ï¿½Ê±ï¿½ï¿½ GL_CW Ë³Ê±ï¿½ï¿½
 //
 //	//glEnable(GL_COLOR_BUFFER_BIT);
 //	//glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);

@@ -120,8 +120,29 @@ public:
 
 };
 
+class glsl_streamable_class : public glsl_transparent_class
+{
+
+};
+
+// class glsl_float : public glsl_transparent_class
+// {
+// public:
+
+//    [[nodiscard]] const glsl_transparent_clazz* clazz() const override { return _clazz_map.find("float")->second; }
+
+//    [[nodiscard]] const std::uint8_t* stream() const override { return reinterpret_cast<const std::uint8_t*>(&value); }
+
+// public:
+
+//    glsl_float() = default;
+
+//    glm::vec1 value{};
+
+// };
+
 #define DEFINE_TRANSPARENT_CLASS(CLASS_NAME, CLASS_NAME_STR, GLM_T) \
-class glsl_##CLASS_NAME : public glsl_transparent_class\
+class glsl_##CLASS_NAME : public glsl_streamable_class\
 {\
 public:\
 [[nodiscard]] const glsl_transparent_clazz* clazz() const override { return _clazz_map.find(CLASS_NAME_STR)->second; }\
@@ -134,23 +155,23 @@ glm::GLM_T val{};\
 
 DEFINE_TRANSPARENT_CLASS(float, "float", vec1);
 DEFINE_TRANSPARENT_CLASS(vec2, "vec2", vec2);
-DEFINE_TRANSPARENT_CLASS(vec3, "vec2", vec3);
-DEFINE_TRANSPARENT_CLASS(vec4, "vec2", vec4);
+DEFINE_TRANSPARENT_CLASS(vec3, "vec3", vec3);
+DEFINE_TRANSPARENT_CLASS(vec4, "vec4", vec4);
 
 DEFINE_TRANSPARENT_CLASS(double, "double", dvec1);
 DEFINE_TRANSPARENT_CLASS(dvec2, "dvec2", dvec2);
-DEFINE_TRANSPARENT_CLASS(dvec3, "dvec2", dvec3);
-DEFINE_TRANSPARENT_CLASS(dvec4, "dvec2", dvec4);
+DEFINE_TRANSPARENT_CLASS(dvec3, "dvec3", dvec3);
+DEFINE_TRANSPARENT_CLASS(dvec4, "dvec4", dvec4);
 
 DEFINE_TRANSPARENT_CLASS(int, "int", ivec1);
 DEFINE_TRANSPARENT_CLASS(ivec2, "ivec2", ivec2);
-DEFINE_TRANSPARENT_CLASS(ivec3, "ivec2", ivec3);
-DEFINE_TRANSPARENT_CLASS(ivec4, "ivec2", ivec4);
+DEFINE_TRANSPARENT_CLASS(ivec3, "ivec3", ivec3);
+DEFINE_TRANSPARENT_CLASS(ivec4, "ivec4", ivec4);
 
 DEFINE_TRANSPARENT_CLASS(uint, "uint", uvec1);
 DEFINE_TRANSPARENT_CLASS(uvec2, "uvec2", uvec2);
-DEFINE_TRANSPARENT_CLASS(uvec3, "uvec2", uvec3);
-DEFINE_TRANSPARENT_CLASS(uvec4, "uvec2", uvec4);
+DEFINE_TRANSPARENT_CLASS(uvec3, "uvec3", uvec3);
+DEFINE_TRANSPARENT_CLASS(uvec4, "uvec4", uvec4);
 
 DEFINE_TRANSPARENT_CLASS(mat2, "mat2", mat2);
 DEFINE_TRANSPARENT_CLASS(mat2x3, "mat2x3", mat2x3);
@@ -170,25 +191,5 @@ DEFINE_TRANSPARENT_CLASS(dmat3x4, "dmat3x4", dmat3x4);
 DEFINE_TRANSPARENT_CLASS(dmat4, "dmat4", dmat4);
 DEFINE_TRANSPARENT_CLASS(dmat4x2, "dmat4x2", dmat4x2);
 DEFINE_TRANSPARENT_CLASS(dmat4x3, "dmat4x3", dmat4x3);
-
-
-
-
-//class glsl_float : public glsl_transparent_class
-//{
-//public:
-//
-//    [[nodiscard]] const glsl_transparent_clazz* clazz() const override { return _clazz_map.find("float")->second; }
-//
-//    [[nodiscard]] const std::uint8_t* stream() const override { return reinterpret_cast<const std::uint8_t*>(&value); }
-//
-//public:
-//
-//    glsl_float() = default;
-//
-//    glm::vec1 value{};
-//
-//};
-
 
 #endif
