@@ -98,6 +98,8 @@ public:
         }
     }
 
+    virtual std::uint8_t _check_object_validation() const {}
+
 public:
 	
 	[[nodiscard]] std::uint32_t get_handle() const { return _handle; }

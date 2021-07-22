@@ -161,7 +161,7 @@ struct gl_instance_attribute_descriptor
     std::uint32_t divisor;
 };
 
-struct gL_attribute_list_anchor
+struct gl_attribute_list_anchor
 {
     std::string attribute_name;
     std::uint32_t attributes_count;
@@ -189,17 +189,15 @@ class gl_vertex_array final : public gl_object
 public:
 
     gl_vertex_array(
-            std::int64_t vertices_count,
-            const std::vector<gl_attribute_descriptor>& attribute_descriptors,
-            std::int32_t instance_count,
-            const std::vector<gl_instance_attribute_descriptor>& instance_attribute_descriptors) :
+            std::int64_t vertices_count, const std::vector<gl_attribute_descriptor>& attribute_descriptors,
+            std::int32_t instance_count, const std::vector<gl_instance_attribute_descriptor>& instance_attribute_descriptors) :
             _vertices_count(vertices_count),
             _instances_count(instance_count),
             _memory_size(0)
     {
         glCreateVertexArrays(1, &_handle);
 
-        _generate_attributes_layout();
+        //_generate_attributes_layout();
 
     }
 
@@ -220,6 +218,52 @@ public:
     void update(const std::string& attribute_name,
                 std::int64_t offset, std::uint8_t* byte_stream, std::int64_t byte_stream_size) noexcept;
 
+    void update_vertex_attribute(const std::string& attribute_name, std::int32_t attribute_index, glsl_transparent_class* value)
+    {}
+
+public:
+
+    template<typename GLSL_TRANSPARENT_CLASS>
+    void update_instance_attribute(const std::string& attribute_name, std::int32_t attribute_index, const GLSL_TRANSPARENT_CLASS& value)
+    {}
+
+    template<typename GLSL_TRANSPARENT_CLASS>
+    void update_instance_attributes(const std::string& attribute_name, std::int32_t attribute_index, const std::vector<GLSL_TRANSPARENT_CLASS>& values)
+    {}
+
+    /*
+    * @Param0 attribute_name
+    * @Param1 attribute_index
+    * @Parma2 attribute_value
+    */
+    void update_instance_attributes(const std::vector<std::tuple<std::string, std::int32_t, const glsl_transparent_class*>>& list)
+    {
+        std::int64_t _mapped_memory_offset = 0;
+        std::int64_t _mapped_memory_size = 0;
+        std::vector<std::pair<std::int64_t, const glsl_transparent_class*>> _baked_list;
+
+        for(const auto& _item : list)
+        {
+            auto _it = _instance_attribute_layout.find(std::get<0>(_item));
+            if(_it == _instance_attribute_layout.cend()) return;
+            std::int64_t _instance_attribute_list_offset = _it->second.offset;
+            std::int64_t _instance_attribute_offset = _instance_attribute_list_offset + std::get<1>(_item) * std::get<2>(_item)->clazz()->class_size;
+            _baked_list.push_back(std::make_pair(_instance_attribute_offset, std::get<2>(_item)));
+        }
+
+        if(_instance_attribute_buffer)
+        {
+            _instance_attribute_buffer->execute_mutable_memory_handler(_mapped_memory_offset, _mapped_memory_size, 
+            [&_baked_list](std::uint8_t* mapped_memory, std::int64_t size)
+            {
+                for(const auto& _item : _baked_list)
+                {
+                    std::memcpy(mapped_memory + _item.first, _item.second->stream(), _item.second->stream_size());
+                }
+            });
+        }
+    }
+
 public:
 
     /*
@@ -231,10 +275,6 @@ public:
     {
 
     }
-
-public:
-
-    void update(){}
 
 public:
 
@@ -250,9 +290,13 @@ private:
 
     std::int64_t _memory_size;
 
-    std::shared_ptr<gl_buffer> _buffer;
+    std::shared_ptr<gl_buffer> _vertex_attribute_buffer;
 
-    std::unordered_map<std::string, gL_attribute_list_anchor> _attributes_layout;
+    std::shared_ptr<gl_buffer> _instance_attribute_buffer;
+
+    std::unordered_map<std::string, gl_attribute_list_anchor> _vertex_attribute_layout;
+
+    std::unordered_map<std::string, gl_attribute_list_anchor> _instance_attribute_layout;
 
 private:
 

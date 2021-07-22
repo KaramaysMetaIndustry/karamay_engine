@@ -76,6 +76,7 @@ void gl_buffer::_reallocate(std::int64_t new_capacity)
     }
 }
 
+<<<<<<< Updated upstream:_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/source/graphics/buffers/buffer/gl_buffer.cpp
 void gl_buffer::reallocate(std::int64_t capacity, gl_buffer_storage_options storage_options)
 {
     // search the suitable buffers
@@ -111,3 +112,5 @@ void gl_buffer::reallocate(std::int64_t capacity, gl_buffer_storage_options stor
     }
 }
 
+=======
+>>>>>>> Stashed changes:_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/source/graphics/buffer/gl_buffer.cpp

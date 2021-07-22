@@ -1,0 +1,10 @@
+^G:\PRIVATEREPOS\KARAMAYS\_KARAMAYENGINE\KARAMAY_ENGINE_GRAPHICS_UNIT_CMAKE\BUILD\CMAKEFILES\D348E347C238BCC26B1E0326E6BEA5EB\GENERATE.STAMP.RULE
+setlocal
+"G:\Program Files\CMake\bin\cmake.exe" -SG:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake -BG:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file G:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/build/karamay_engine_graphics_unit.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
