@@ -27,8 +27,8 @@ class gl_uniform_buffer final
 public:
 	
 	gl_uniform_buffer(std::shared_ptr<gl_program>& owner,
-                      gl_uniform_buffer_layout layout, std::string block_name, const std::vector<std::pair<std::string, std::string>>& rows,
-                      std::uint32_t instances_count) :
+		gl_uniform_buffer_layout layout, std::string block_name, const std::vector<std::pair<std::string, std::string>>& rows,
+		std::uint32_t instances_count) :
             _owner(owner),
             _block_name(std::move(block_name)),
             _instances_count(instances_count),
@@ -76,6 +76,8 @@ public:
 
     void update_uniform(const std::string& name, const glsl_transparent_class* value)
     {
+		_buffer->execute_mapped_memory_writer(0, 100, [](std::uint8_t* mapped_memory, std::int64_t mapped_memory_size) {});
+
         if(value && _buffer)
         {
             for(const auto& _attribute_anchor : _attribute_layout)

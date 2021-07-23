@@ -28,6 +28,7 @@ public:
         glDeleteRenderbuffers(1, &_handle);
     }
 
+
 private:
 	
 	std::int32_t _width, _height;
@@ -52,10 +53,10 @@ public:
 	void unbind()
     {
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
     }
 
 };
-
 
 class gl_multisample_renderbuffer final : public gl_object
 {
@@ -141,7 +142,6 @@ public:
     }
 
 };
-
 
 
 #endif

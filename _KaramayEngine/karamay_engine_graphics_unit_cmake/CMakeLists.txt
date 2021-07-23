@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.14)
 project(karamay_engine_graphics_unit)
 
 set(CMAKE_CXX_STANDARD 17)
-set(BUILD_ARCH "-m64")
+set(BUILD_ARCH "-m64") 
 
 
 
@@ -515,8 +515,6 @@ add_executable(karamay_engine_graphics_unit
         karamay_engine_graphics_unit/source/graphics/program/gl_program.h
         karamay_engine_graphics_unit/source/graphics/program_pipeline/gl_program_pipeline.cpp
         karamay_engine_graphics_unit/source/graphics/program_pipeline/gl_program_pipeline.h
-        karamay_engine_graphics_unit/source/graphics/renderbuffer/gl_multisample_renderbuffer.cpp
-        karamay_engine_graphics_unit/source/graphics/renderbuffer/gl_multisample_renderbuffer.h
         karamay_engine_graphics_unit/source/graphics/renderbuffer/gl_renderbuffer.cpp
         karamay_engine_graphics_unit/source/graphics/renderbuffer/gl_renderbuffer.h
         karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer.cpp
