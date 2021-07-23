@@ -76,6 +76,7 @@ private:
     {
         if(!_check_object_validation() || !_storage_options.is_dynamic_storage || !byte_stream || offset < 0 || offset + byte_stream_size > _capacity) return;
         glNamedBufferSubData(_handle, offset, byte_stream_size, byte_stream);
+		glMemoryBarrier(0);
     }
 
 
@@ -185,9 +186,10 @@ public:
 
 	inline void copy_from(int64_t offset, gl_buffer_sptr& source_buffer, int64_t source_offset, int64_t byte_stream_size) 
 	{
-		if (target_buffer.get_capacity() == _capacity)
+		if (source_buffer.get_capacity() == _capacity)
 		{
 			glCopyNamedBufferSubData(_handle, target_buffer.get_handle(), 0, 0, _capacity);
+			glMemoryBarrier(0);
 		}
 	}
 
@@ -199,6 +201,8 @@ public:
 		}
 	}
 
+
+	std::int64_t get_capacity() const { return _capacity; }
 
 private:
 

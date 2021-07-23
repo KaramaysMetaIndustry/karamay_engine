@@ -104,6 +104,19 @@ public:
 	
 	[[nodiscard]] std::uint32_t get_handle() const { return _handle; }
 
+
+
+    void sync()
+    {
+        GLsync _sync;
+        glClientWaitSync();
+        glWaitSync();
+        glFlush();
+        glFinish();
+        glFenceSync();
+        glMemoryBarrier(0);
+
+    }
 };
 
 #endif
