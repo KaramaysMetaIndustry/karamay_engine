@@ -20,27 +20,35 @@ struct gl_static_mesh
 };
 
 
-class gl_static_mesh_renderer final : public gl_renderer {
-
+class gl_static_mesh_renderer final : public gl_renderer 
+{
 public:
 
     gl_static_mesh_renderer(const std::string& name):
             gl_renderer(name)
-    {
-    }
+    {}
 
+protected:
 
-    std::vector<std::shared_ptr<gl_static_mesh>> _static_meshes;
+    void assembly(gl_renderer_builder& builder) override;
 
-public:
+    void pre_render(std::float_t delta_time) override;
 
-    void assembly() override;
-
-    void render(std::float_t delta_time) override;
+    void post_render(std::float_t delta_time) override;
 
 private:
 
-    std::vector<std::shared_ptr<gl_program>> _passes;
+    std::vector<gl_static_mesh> _static_meshes;
+
+public:
+
+    void add_static_mesh(const gl_static_mesh& static_mesh)
+    {}
+
+    void add_static_meshes(const std::vector<gl_static_mesh>& static_meshes)
+    {}
+
+
 
 };
 

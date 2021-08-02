@@ -1,30 +1,38 @@
 #include "gl_static_mesh_renderer.h"
+#include "graphics/pipeline/gl_graphics_pipeline.h"
+#include "graphics/pipeline/gl_compute_pipeline.h"
 #include "graphics/program/gl_program.h"
 #include "graphics/vertex_array/gl_vertex_array.h"
 #include "graphics/framebuffer/gl_framebuffer.h"
+#include "graphics/texture/texture_2d/gl_texture_2d.h"
 
-#define DEFINE_RENDERER(RENDERER_NAME)
-#define END_DEFINE_RENDERER()
-#define DEFINE_PASS(PASS_NAME) \
-_passes.push_back(std::make_shared<gl_program>())\
+void gl_static_mesh_renderer::assembly(gl_renderer_builder& builder)
+{   
 
-#define REFER_PASS(PASS_NAME)\
+    auto _graphics_pip = builder.create_graphics_pipeline();
+    auto _compute_pip = builder.create_compute_pipeline();
 
-
-void gl_static_mesh_renderer::assembly()
-{
-    _passes.push_back(std::make_shared<gl_program>());
+    auto _render_target = builder.create_texture_2d();
 
 
+    _add_pass("RenderSimplePixels", [=]() {
+        _graphics_pip->draw_triangles();
+        });
+
+    _add_pass("PostProcessing", [=]() {
+        _compute_pip->dispatch(64, 1, 1);
+        });
+
+    _add_pass("ReadbackFinalPixels", []() {
+
+        });
+    
 }
 
-void gl_static_mesh_renderer::render(std::float_t delta_time)
+void gl_static_mesh_renderer::pre_render(std::float_t delta_time)
 {
-    _passes[0]->get_vertex_array() = _passes[1]->get_vertex_array();
+}
 
-    _passes[0]->render(delta_time);
-
-    _passes[1]->render(delta_time);
-
-
+void gl_static_mesh_renderer::post_render(std::float_t delta_time)
+{
 }
