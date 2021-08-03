@@ -5,39 +5,28 @@ void gl_graphics_pipeline::install()
 
     // Stencil test
     {
+		// do stencil test and update the stencil buffer
+		glEnable(GL_STENCIL_TEST);
 
-        enum gl_stencil_func : GLenum
-        {
-            never = GL_NEVER,
-            always = GL_ALWAYS,
-            less = GL_LESS,
-            less_equal = GL_LEQUAL,
-            greater = GL_GREATER,
-            greater_equal = GL_GEQUAL,
-            equal = GL_EQUAL,
-            not_equeal = GL_NOTEQUAL
-        };
-
+        
         gl_stencil_func _stencil_func;
-        glEnable(GL_STENCIL_TEST);
-        glStencilFunc(static_cast<GLenum>(_stencil_func), 0, 1);
+        glStencilFunc(_stencil_func, 0, 1); // set front and back function and
         glStencilFuncSeparate(static_cast<GLenum>(_stencil_func), static_cast<GLenum>(_stencil_func), 0, 1);
         
-        enum gl_stencil_op : GLenum
-        {
-            keep = GL_KEEP,
-            zero = GL_ZERO,
-            replace = GL_REPLACE,
-            incr = GL_INCR,
-            incr_wrap = GL_INCR_WRAP,
-            decr = GL_DECR,
-            decr_wrap = GL_DECR_WRAP,
-            invert = GL_INVERT
-        };
-        glStencilOp();
-        glStencilOpSeparate();
-        glStencilMask();
-        glStencilMaskSeparate();
+       
+
+		gl_stencil_op _stencil_op;
+		// stencil test fail , stencil stencil test pass but depth test fail, both pass 
+       
+        glStencilOpSeparate(GL_FRONT, _stencil_op, _stencil_op, _stencil_op);
+        glStencilOpSeparate(GL_BACK, _stencil_op, _stencil_op, _stencil_op);
+        glStencilOpSeparate(GL_FRONT_AND_BACK, _stencil_op, _stencil_op, _stencil_op);
+		//glStencilOp(_stencil_op, _stencil_op, _stencil_op);
+        glStencilMaskSeparate(GL_FRONT, 1);
+        glStencilMaskSeparate(GL_BACK, 1);
+        glStencilMaskSeparate(GL_FRONT_AND_BACK, 1);
+		//glStencilMask(1);
+
     }
 
     // Depth test

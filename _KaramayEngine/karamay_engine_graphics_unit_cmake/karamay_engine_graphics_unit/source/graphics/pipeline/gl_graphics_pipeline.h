@@ -18,6 +18,30 @@ enum class gl_rasterizer_state
 enum class gl_depth_stencil_state
 {};
 
+enum gl_stencil_op : GLenum
+{
+	keep = GL_KEEP, // keep current val
+	zero = GL_ZERO, // set val to 0
+	replace = GL_REPLACE, //set val to ref specified by glStencilFunc
+	incr = GL_INCR, // 
+	incr_wrap = GL_INCR_WRAP,
+	decr = GL_DECR,
+	decr_wrap = GL_DECR_WRAP,
+	invert = GL_INVERT
+};
+
+enum gl_stencil_func : GLenum
+{
+	never = GL_NEVER,
+	always = GL_ALWAYS,
+	less = GL_LESS,
+	less_equal = GL_LEQUAL,
+	greater = GL_GREATER,
+	greater_equal = GL_GEQUAL,
+	equal = GL_EQUAL,
+	not_equeal = GL_NOTEQUAL
+};
+
 struct gl_graphics_pipeline_descriptor
 {
     struct gl_vertex_specification
@@ -67,7 +91,13 @@ struct gl_graphics_pipeline_descriptor
     {
         gl_blend_state blend_state;
         bool enable_alpha_to_coverage;
-        bool enable_stencil_test;
+        
+		bool enable_stencil_test;
+		gl_stencil_func front_stencil_func;
+		gl_stencil_func back_stencil_func;
+		gl_stencil_op front_stencil_op;
+		gl_stencil_op back_stencil_op;
+
         bool enable_depth_test;
 
 

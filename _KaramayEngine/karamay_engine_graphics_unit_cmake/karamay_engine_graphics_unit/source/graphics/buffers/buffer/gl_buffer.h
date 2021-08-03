@@ -41,6 +41,10 @@ public:
 
 public:
 
+	/*
+	* GL_MAP_READ_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT
+	* GL_DYNAMIC_STORAGE_BIT | GL_CLIENT_STORAGE_BIT
+	*/
     explicit gl_buffer(std::int64_t capacity, gl_buffer_storage_options storage_options) : 
 		_capacity(capacity),
 		_storage_options(storage_options)
@@ -79,28 +83,28 @@ private:
 		glMemoryBarrier(0);
     }
 
-
 public:
 
 	using mapped_memory_handler = std::function<void(std::uint8_t*, std::int64_t)>;
 
+	using mapped_memory_writer = std::function<void(std::uint8_t*, std::int64_t)>;
+	
+	using mapped_memory_reader = std::function<void(const std::uint8_t*, std::int64_t)>;
+
 	/*
+	 * execute a handler(which can read/write) on mapped memory (specified by offset and size)
 	 * mapped memory has valid content which come from GPU memory
 	 * also your bytes write into mapped memory can affect GPU memory
 	 * */
-	void execute_mapped_memory_handler(std::int64_t offset, std::int64_t size, const mapped_memory_handler& handler, std::uint8_t should_async = false) {
+	void execute_mapped_memory_handler(std::int64_t offset, std::int64_t size, const mapped_memory_handler& handler, std::uint8_t should_async = false) 
+	{
 		if (offset < 0 || size < 0 || offset + size > _capacity) return;
-
 		auto* _mapped_memory = reinterpret_cast<std::uint8_t*>(
 			glMapNamedBufferRange(_handle, offset, size, static_cast<GLenum>(gl_buffer_map_access_flag::MAP_WRITE_BIT))
 			);
-
 		if (_mapped_memory) handler(_mapped_memory, size);
-
 		glUnmapNamedBuffer(_handle);
 	}
-
-	using mapped_memory_writer = std::function<void(std::uint8_t*, std::int64_t)>;
 
 	/*
 	 * map a block of mutable memory
@@ -127,8 +131,6 @@ public:
 
 		glUnmapNamedBuffer(_handle);
 	}
-
-	using mapped_memory_reader = std::function<void(const std::uint8_t*, std::int64_t)>;
 	
 	/*
 	 * map a block of immutable memory
