@@ -12,10 +12,9 @@ class gl_compute_pipeline final
 {
 public:
 
-	gl_compute_pipeline(const gl_compute_pipeline_descriptor& descriptor) :
+	explicit gl_compute_pipeline(const gl_compute_pipeline_descriptor& descriptor) :
 		_descriptor(descriptor)
-	{
-	}
+	{}
 
 	~gl_compute_pipeline() = default;
 
@@ -25,6 +24,7 @@ private:
 
 	const gl_compute_pipeline_descriptor _descriptor;
 
+public:
 
 	/*
 	* Buffered Interface Block, which shaders can only read
@@ -34,7 +34,7 @@ private:
 	* }
 	*
 	*/
-	void set_uniform_blocks();
+	void add_uniform_blocks();
 
 	/*
 	* Bufferred Inteface Block, which shaders can read and write
@@ -44,8 +44,13 @@ private:
 	* }
 	* 
 	*/
-	void set_shader_storage_blocks();
+	void add_shader_storage_blocks();
 
+public:
+
+	void install();
+
+public:
 
 	/*
 	* Dispatch the compute pipeline
