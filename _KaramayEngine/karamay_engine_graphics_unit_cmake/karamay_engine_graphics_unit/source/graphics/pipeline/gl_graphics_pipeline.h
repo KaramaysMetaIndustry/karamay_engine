@@ -87,20 +87,23 @@ struct gl_graphics_pipeline_descriptor
         {
             std::shared_ptr<gl_geometry_shader> geometry_shader;
         } geometry_shading;
-        struct gl_transform_feedback
-        {
-            std::shared_ptr<gl_buffer> transform_feedback_target;
-            std::string semantic_name;
-        } transform_feedback;
-        struct gl_primitive_clipping
-        {
+		struct gl_post_vertex_processing
+		{
+			struct gl_transform_feedback
+			{
+				std::shared_ptr<gl_buffer> transform_feedback_target;
+				std::string semantic_name;
+			} transform_feedback;
+			struct gl_primitive_clipping
+			{
 
-        } primitive_clipping;
-        struct gl_coordinate_transformations
-        {
-            std::int32_t viewport_x, viewport_y, viewport_width, viewport_height; // glViewport
+			} primitive_clipping;
+			struct gl_coordinate_transformations
+			{
+				std::int32_t viewport_x, viewport_y, viewport_width, viewport_height; // glViewport
 
-        } coordinate_transformations;
+			} coordinate_transformations;
+		} post_vertex_processing;
     } vertex_processing; // vertex shading, tessellation, geometry shading, transform feedback, clipping, coordinates transformation
     struct gl_primitive_assembly 
     {

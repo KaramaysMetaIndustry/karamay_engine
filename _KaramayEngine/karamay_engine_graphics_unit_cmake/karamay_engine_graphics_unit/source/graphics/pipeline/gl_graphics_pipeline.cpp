@@ -13,12 +13,27 @@ void gl_graphics_pipeline::install()
 
     // vertex process
     {
+		//shading
 
+		// flatshading
+		glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);
 
         // clipping
-        glEnable(GL_CLIP_DISTANCE0); // 0 - 5
+		glEnable(GL_CLIP_DISTANCE0); // [0, GL_MAX_CLIP_DISTANCES-1]
+		glClipControl(GL_LOWER_LEFT, GL_NEGATIVE_ONE_TO_ONE);
         glEnable(GL_DEPTH_CLAMP);
         glDepthRange(1.0l, 1.1l);
+
+		// viewport
+		glDepthRangeArrayv();
+		glDepthRangeIndexed();
+		glDepthRange();
+		glDepthRangef();
+		glViewportArrayv();
+		glViewportIndexedf();
+		glViewportIndexedfv();
+		glViewport();
+
     }
 
     // primitive assmebly
