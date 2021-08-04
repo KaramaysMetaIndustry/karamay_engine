@@ -1,38 +1,22 @@
 #include "gl_static_mesh_renderer.h"
-#include "graphics/pipeline/gl_graphics_pipeline.h"
-#include "graphics/pipeline/gl_compute_pipeline.h"
-#include "graphics/program/gl_program.h"
-#include "graphics/vertex_array/gl_vertex_array.h"
-#include "graphics/framebuffer/gl_framebuffer.h"
-#include "graphics/texture/texture_2d/gl_texture_2d.h"
 
 void gl_static_mesh_renderer::assembly(gl_renderer_builder& builder)
-{   
+{
+	gl_graphics_pipeline_descriptor _graphics_pipeline_descriptor;
+	_graphics_pipeline_descriptor.vertex_assembly.vertex_specification;
+	_graphics_pipeline_descriptor.vertex_assembly.primitive_restart.enabled = true;
 
-    auto _graphics_pip = builder.create_graphics_pipeline();
-    auto _compute_pip = builder.create_compute_pipeline();
+	auto _graphics_pipeline = builder.create_graphics_pipeline(_graphics_pipeline_descriptor);
+	_graphics_pipeline->set_primitive_clipping(gl_clip_control_origin::lower_left, gl_clip_control_depth_mode::negative_one_to_one);
 
-    auto _render_target = builder.create_texture_2d();
-
-
-    _add_pass("RenderSimplePixels", [=]() {
-        _graphics_pip->draw_triangles();
-        });
-
-    _add_pass("PostProcessing", [=]() {
-        _compute_pip->dispatch(64, 1, 1);
-        });
-
-    _add_pass("ReadbackFinalPixels", []() {
-
-        });
-    
+	_add_pass("CalculateNormals", [_graphics_pipeline]() {
+		_graphics_pipeline->draw_triangles();
+		});
 }
 
-void gl_static_mesh_renderer::pre_render(std::float_t delta_time)
+void gl_static_mesh_renderer::render(std::float_t delta_time)
 {
-}
 
-void gl_static_mesh_renderer::post_render(std::float_t delta_time)
-{
+	// Async all commands, block main thread here
+	glFlush();
 }

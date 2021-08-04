@@ -1,13 +1,14 @@
 #ifndef H_RENDERER
 #define H_RENDERER
 
-#include "public/stl.h"
+#include "graphics/pipeline/graphics/gl_graphics_pipeline.h"
+#include "graphics/pipeline/graphics/gl_vertex_processing_pipeline.h"
+#include "graphics/pipeline/compute/gl_compute_pipeline.h"
 
-class gl_pipeline;
+class gl_pipeline_base;
 class gl_graphics_pipeline;
+class gl_vertex_processing_pipeline;
 class gl_compute_pipeline;
-class gl_ray_tracing_pipeline;
-
 
 class gl_renderer_builder
 {
@@ -19,23 +20,19 @@ private:
 
     struct gl_renderer_resource
     {
-        std::vector<std::shared_ptr<gl_pipeline>> pipelines;
+        std::vector<std::shared_ptr<gl_pipeline_base>> pipelines;
 
     } _resource;
 
 
 public:
 
-    std::shared_ptr<gl_graphics_pipeline> create_graphics_pipeline()
+    std::shared_ptr<gl_graphics_pipeline> create_graphics_pipeline(const gl_graphics_pipeline_descriptor& descriptor)
     {
+        return std::make_shared<gl_graphics_pipeline>(descriptor);
     }
 
     std::shared_ptr<gl_compute_pipeline> create_compute_pipeline()
-    {
-
-    }
-
-    std::shared_ptr<gl_ray_tracing_pipeline> create_ray_tracing_pipeline()
     {
 
     }
@@ -63,7 +60,6 @@ public:
 
 };
 
-
 class gl_renderer
 {
 public:
@@ -75,62 +71,45 @@ public:
 
     ~gl_renderer() = default;
 
-private:
+public:
 
-    gl_renderer_builder _renderer_builder;
+    virtual void assembly(gl_renderer_builder& builder) = 0;
+
+    virtual void render(std::float_t delta_time) = 0;
 
 protected:
 
-    
-    
     using _pass_lambda = std::function<void(void)>;
-
-private:
-
-    std::unordered_map<std::string, std::shared_ptr<gl_pipeline>> _pipeline_map;
     
-    std::vector<_pass_lambda> _passes;
-
-protected:
-
-   
     void _add_pass(const std::string& pass_name, const _pass_lambda& pass_lambda)
     {
         _passes.push_back(pass_lambda);
     }
 
-    void _pre_compile_renderer()
+private:
+
+    std::string name; 
+
+    gl_renderer_builder _renderer_builder;
+
+    std::vector<std::shared_ptr<gl_pipeline_base>> _pipelines;
+
+    std::vector<_pass_lambda> _passes;
+
+    bool _validate()
     {
-        _generate_glslx_file();
+        for (auto& _pipeline : _pipelines)
+        {
+            if (!_pipeline || !_pipeline->validate()) return false;
+        }
     }
 
-    void _generate_glslx_file() {}
+    bool _check_dir(const std::string& dir);
 
-    void _compile_renderer() 
-    {
-        _pre_compile_renderer();
-        
-    }
+    void _initialize_renderer();
 
-public:
-
-    virtual void assembly(gl_renderer_builder& builder) = 0;
-
-    virtual void pre_render(std::float_t delta_time) = 0;
-    virtual void post_render(std::float_t delta_time) = 0;
-
-    virtual void launch_render_task() = 0;
-
-
-    void render(std::float_t delta_time)
-    {
-        pre_render(delta_time);
-        for (auto& _pass : _passes) _pass();
-        post_render(delta_time);
-    }
-
+    void _compile(); 
 };
-
 
 #endif
 
