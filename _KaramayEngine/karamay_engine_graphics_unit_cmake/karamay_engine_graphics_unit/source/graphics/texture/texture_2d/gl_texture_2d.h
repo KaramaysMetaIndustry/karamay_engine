@@ -1,30 +1,37 @@
 #ifndef H_GL_TEXTURE_2D
 #define H_GL_TEXTURE_2D
 
-#include "graphics/texture/base/gl_texture_base.h"
+#include "graphics/texture/base/gl_texture.h"
+
+struct gl_texture_2d_descriptor
+{
+	std::int32_t width, height;
+	std::int32_t mipmaps_count;
+	gl_texture_enum::internal_format internal_format;
+};
 
 class gl_texture_2d final : public gl_texture_base
 {
 public:
 	
-	gl_texture_2d();
+	explicit gl_texture_2d(const gl_texture_2d_descriptor& descriptor)
+	{
+		_allocate(descriptor.internal_format, descriptor.width, descriptor.height, descriptor.mipmaps_count);
+	}
 	
 	virtual ~gl_texture_2d();
 
 private:
+
+	gl_texture_2d_descriptor _descriptor;
 	
-	int _width, _height;
-
-	int _internal_format;
-
-	int _mipmaps_num;
-
-public:
-	
-	void allocate(gl_texture_enum::internal_format internal_format, std::int32_t width, std::int32_t height, int mipmaps_num)
+	void _allocate(gl_texture_enum::internal_format internal_format, std::int32_t width, std::int32_t height, int mipmaps_num)
 	{
+		glCreateTextures(GL_TEXTURE_2D, 1, &_handle);
 		glTextureStorage2D(_handle, mipmaps_num, static_cast<GLenum>(internal_format), width, height);
 	}
+
+public:
 
 	void fill(int width, int height, std::uint32_t format, const void* pixels)
 	{
@@ -40,7 +47,6 @@ public:
 		glGenerateMipmap(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
-
 
 public:
 

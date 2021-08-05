@@ -3,8 +3,6 @@
 
 #include "graphics/type/glsl_class/glsl_class.h"
 
-
-
 class glsl_transparent_clazz : public glsl_clazz
 {
 protected:

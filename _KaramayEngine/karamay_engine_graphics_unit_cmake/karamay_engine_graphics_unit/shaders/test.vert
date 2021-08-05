@@ -10,6 +10,16 @@ layout(location = 2) out ivec4 test;
 layout(location = 3) out vec4 _color;
 layout(location = 4) out vec4 _text;
 
+layout(std140) uniform att
+{
+	vec2 ax;
+};
+
+
+uniform sampler2D texturex[10];
+
+
+
 
 uniform mat4 transform;
 

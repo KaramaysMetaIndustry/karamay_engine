@@ -1,4 +1,4 @@
-#include "gl_texture_base.h"
+#include "gl_texture.h"
 
 gl_texture_base::gl_texture_base()
 {

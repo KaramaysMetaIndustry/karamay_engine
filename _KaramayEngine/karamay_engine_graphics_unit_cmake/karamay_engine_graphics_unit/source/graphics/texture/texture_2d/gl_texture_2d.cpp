@@ -1,10 +1,5 @@
 #include "gl_texture_2d.h"
 
-gl_texture_2d::gl_texture_2d()
-{
-	glCreateTextures(GL_TEXTURE_2D, 1, &_handle);
-}
-
 gl_texture_2d::~gl_texture_2d()
 {
 	glDeleteTextures(1, &_handle);

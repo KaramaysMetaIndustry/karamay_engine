@@ -259,6 +259,10 @@ public:
 
 	void set_sampler(std::shared_ptr<class gl_sampler> sampler);
 
+	virtual void bind(std::uint32_t unit_index){}
+
+	virtual void unbind() {}
+
 protected:
 
 	std::string _name;
