@@ -3,70 +3,98 @@
 
 #include "graphics/texture/base/gl_texture.h"
 
-struct gl_texture_2d_descriptor
-{
-	std::int32_t width, height;
-	std::int32_t mipmaps_count;
-	gl_texture_enum::internal_format internal_format;
-};
-
-class gl_texture_2d final : public gl_texture_base
+template<gl_texture_pixel_format format>
+class gl_pixels
 {
 public:
-	
-	explicit gl_texture_2d(const gl_texture_2d_descriptor& descriptor)
-	{
-		_allocate(descriptor.internal_format, descriptor.width, descriptor.height, descriptor.mipmaps_count);
-	}
-	
-	virtual ~gl_texture_2d();
+
+	gl_pixels(std::int32_t count, const void* data)
+	{}
+
+public:
+
+	gl_texture_pixel_format get_format() const { return format; }
+
+	void* get_data();
 
 private:
 
-	gl_texture_2d_descriptor _descriptor;
-	
-	void _allocate(gl_texture_enum::internal_format internal_format, std::int32_t width, std::int32_t height, int mipmaps_num)
-	{
-		glCreateTextures(GL_TEXTURE_2D, 1, &_handle);
-		glTextureStorage2D(_handle, mipmaps_num, static_cast<GLenum>(internal_format), width, height);
-	}
+	std::vector<int> pixels;
 
+};
+
+class gl_texture_2d_base : public gl_texture_base
+{
 public:
 
-	void fill(int width, int height, std::uint32_t format, const void* pixels)
+	void bind(std::uint32_t unit)
 	{
-		glActiveTexture(GL_TEXTURE0);
+		glActiveTexture(GL_TEXTURE0 + unit);
 		glBindTexture(GL_TEXTURE_2D, _handle);
-		//
+	}
+
+	void unbind();
+};
+
+template<gl_texture_pixel_format format>
+class gl_texture_2d final : public gl_texture_2d_base
+{
+public:
+	
+	explicit gl_texture_2d(std::int32_t mipmaps_count, std::int32_t width, std::int32_t height) :
+		_mipmaps_count(mipmaps_count),
+		_width(width),
+		_height(height)
+	{
+		glCreateTextures(GL_TEXTURE_2D, 1, &_handle);
+		glTextureStorage2D(_handle, _mipmaps_count, static_cast<GLenum>(format), _width, _height);
+		//glActiveTexture(GL_TEXTURE0);
 		/*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);*/
-		//
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, pixels);
-		glGenerateMipmap(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+	
+	virtual ~gl_texture_2d() = default;
+
+private:
+	
+	gl_texture_2d() = default;
+
+	std::int32_t _mipmaps_count, _width, _height
+
+public:
+
+	gl_texture_pixel_format get_format() const { return format; }
+
+	std::pair<std::int32_t, std::int32_t> inline get_mipmap_size(std::uint32_t mipmap_index) const
+	{
+		return std::make_pair(_width >> mipmap_index, _height >> mipmap_index);
 	}
 
 public:
 
-	void fill_base_mipmap(GLenum format, GLenum type, const void* data);
-	
-	void fill_miniature_mipmap(GLenum format, GLenum type, const void* data, int mipmap_index);
+	/*
+	* index of mipmap
+	* x offset(unit = pixel), y offset(uint = pixel)
+	* in_pixels
+	*/
+	void fill(std::int32_t mipmap_index, std::int32_t x_offset, std::int32_t y_offset)
+	{
+		if (mipmap_index < 0 || mipmap_index >= _mipmaps_count || x_offset < 0 || y_offset < 0 || x_offset >= _width || y_offset >= _height) return;
 
-	void fill_base_sub_mipmap(GLenum format, GLenum type, const void* data, int x_offset, int y_offset, int width, int height);
-	
-	void fill_miniature_sub_mipmap(GLenum format, GLenum type, const void* data, int mipmap_index, int x_offset, int y_offset, int width, int height);
-	
-	void fill_miniature_mipmaps();
+		glBindTexture(GL_TEXTURE_2D, _handle);
+		auto data_format = pixel_format_to_data_format(_descriptor.pixel_format);
+		glTexSubImage2D(GL_TEXTURE_2D, mipmap_index,
+			x_offset, y_offset, _descriptor.width, _descriptor.height,
+			static_cast<std::uint32_t>(data_format.first), static_cast<std::uint32_t>(data_format.second), pixels.get_data());
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 
-	void bind(std::uint32_t unit);
-	
-	void unbind();
-
-public:
-
-	std::uint32_t get_unit() { return 0; }
+	void fetch_pixels(std::int32_t mipmap_index, gl_pixels<format>& out_pixels)
+	{
+		glGetTexImage(GL_TEXTURE_2D)
+	}
 
 };
 

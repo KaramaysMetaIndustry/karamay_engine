@@ -35,14 +35,22 @@ private:
 public:
 
 	/*
-	* you can only fill the base mipmap
-	*
+	* you can fill the base mipmap
 	*/
-	void fill(std::int32_t offset, std::int32_t mipmap_width, const void* pixels, gl_texture_enum::pixels_format pixels_format, gl_texture_enum::pixels_type pixels_type)
+	void fill(std::int32_t offset, std::int32_t mipmap_width, const void* pixels, gl_texture_enum::pixels_format pixels_format, gl_texture_enum::pixels_type pixels_type, std::int32_t mipmap_index = 0)
 	{
 		if (!pixels) return;
 		glBindTexture(GL_TEXTURE_1D, _handle);
-		glTexSubImage1D(GL_TEXTURE_1D, 0, offset, mipmap_width, static_cast<GLenum>(pixels_format), static_cast<GLenum>(pixels_type), pixels);
+		glTexSubImage1D(GL_TEXTURE_1D, mipmap_index, offset, mipmap_width, static_cast<GLenum>(pixels_format), static_cast<GLenum>(pixels_type), pixels);
+		glBindTexture(GL_TEXTURE_1D, 0);
+	}
+
+	/*
+	* generate all rest mipmaps according to base mipmap, if you have manually filled any mipmaps, this action will overwrite them
+	*/
+	void generate_mipmaps()
+	{
+		glBindTexture(GL_TEXTURE_1D, _handle);
 		glGenerateMipmap(GL_TEXTURE_1D);
 		glBindTexture(GL_TEXTURE_1D, 0);
 	}

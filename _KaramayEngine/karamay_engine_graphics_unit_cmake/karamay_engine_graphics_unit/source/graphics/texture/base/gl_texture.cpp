@@ -1,9 +1,5 @@
 #include "gl_texture.h"
 
-gl_texture_base::gl_texture_base()
-{
-}
-
 void gl_texture_base::set_sampler(std::shared_ptr<class gl_sampler> sampler)
 {
 	_sampler = sampler;

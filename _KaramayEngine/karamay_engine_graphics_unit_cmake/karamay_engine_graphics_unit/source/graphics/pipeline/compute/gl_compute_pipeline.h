@@ -56,8 +56,8 @@ struct MyUniformStruct
 #define glsl_uniform_layout_std140 alignas(16)
 #define glsl_shader_storage_layout_std140 alignas(16)
 
-
-
+gl_texture_2d<gl_texture_pixel_format::SRGB8> a;
+gl_pixels<gl_texture_pixel_format::R8> sa();
 
 template<typename uniform_struct_t, const char* instance_name, int array_size>
 class gl_uniform_buffer
