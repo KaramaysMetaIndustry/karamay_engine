@@ -1,7 +1,7 @@
 ﻿#ifndef H_GL_TEXTURE_BUFFER
 #define H_GL_TEXTURE_BUFFER
 
-#include "graphics/texture/base/gl_texture_base.h"
+#include "graphics/texture/base/gl_texture.h"
 class gl_buffer;
 
 /**
@@ -16,7 +16,7 @@ class gl_buffer;
  * Buffer textures cannot be attached to Framebuffer Objects.
  */
 
-class gl_texture_buffer : public gl_texture_base
+class gl_texture_buffer : public gl_texture
 {
 public:
 	

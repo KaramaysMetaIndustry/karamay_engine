@@ -10,14 +10,15 @@ struct gl_texture_1d_descriptor
 	gl_texture_enum::internal_format internal_format; // how to combine a pixel
 };
 
-class gl_texture_1d : public gl_texture_base
+class gl_texture_1d final : public gl_texture
 {
 public:
 
 	explicit gl_texture_1d(const gl_texture_1d_descriptor& descriptor) :
 		_descriptor(descriptor)
 	{
-		_allocate(descriptor);
+		glCreateTextures(GL_TEXTURE_1D, 1, &_handle);
+		glTextureStorage1D(_handle, descriptor.mipmaps_count, static_cast<GLenum>(descriptor.internal_format), descriptor.length);
 	}
 
 	virtual ~gl_texture_1d();
@@ -26,22 +27,15 @@ private:
 
 	gl_texture_1d_descriptor _descriptor;
 
-	void _allocate(const gl_texture_1d_descriptor& descriptor)
-	{
-		glCreateTextures(GL_TEXTURE_1D, 1, &_handle);
-		glTextureStorage1D(_handle, descriptor.mipmaps_count, static_cast<GLenum>(descriptor.internal_format), descriptor.length);
-	}
-
 public:
 
 	/*
 	* you can fill the base mipmap
 	*/
-	void fill(std::int32_t offset, std::int32_t mipmap_width, const void* pixels, gl_texture_enum::pixels_format pixels_format, gl_texture_enum::pixels_type pixels_type, std::int32_t mipmap_index = 0)
+	void fill(std::int32_t mipmap_index, std::int32_t x_offset, const void* data)
 	{
-		if (!pixels) return;
 		glBindTexture(GL_TEXTURE_1D, _handle);
-		glTexSubImage1D(GL_TEXTURE_1D, mipmap_index, offset, mipmap_width, static_cast<GLenum>(pixels_format), static_cast<GLenum>(pixels_type), pixels);
+		glTexSubImage1D(GL_TEXTURE_1D, mipmap_index, x_offset, _descriptor.length, GL_RGBA, GL_UNSIGNED_BYTE, data);
 		glBindTexture(GL_TEXTURE_1D, 0);
 	}
 

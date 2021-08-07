@@ -1,38 +1,74 @@
 #ifndef H_GL_TEXTURE_1D_ARRAY
 #define H_GL_TEXTURE_1D_ARRAY
 
-#include "graphics/texture/base/gl_texture_base.h"
+#include "graphics/texture/base/gl_texture.h"
 
-class gl_texture_1d_array final : public gl_texture_base
+struct gl_texture_1d_array_descriptor
 {
+	std::int32_t elements_count;
+	std::int32_t length;
+	std::int32_t mipmaps_count;
+	gl_texture_pixel_format format;
+};
+
+class gl_texture_1d_array final : public gl_texture
+{
+
 public:
+	
+	explicit gl_texture_1d_array(const gl_texture_1d_array_descriptor& descriptor) :
+		_descriptor(descriptor)
+	{
+		_allocate();
+	}
 
-	void allocate(GLenum internal_format, int width, int mipmaps_num, int num);
-
-	void fill_element_base_mipmap(GLenum format, GLenum type, const void* data, int element_index);
-	void fill_element_base_sub_mipmap(GLenum format, GLenum type, const void* data, int x_offset, int width, int element_index);
-	void fill_element_miniature_mipmap(GLenum format, GLenum type, const void* data, int element_index, int mipmap_index);
-	void fill_element_miniature_sub_mipmap(GLenum format, GLenum type, const void* data, int x_offset, int width, int element_index, int mipmap_index);
-
-	void fill_array_miniature_mipmaps();
-
-	void bind(unsigned int unit);
-	void unbind();
+	~gl_texture_1d_array() override {}
 
 private:
-	int _num;
 
-	int _mipmaps_num;
+	gl_texture_1d_array_descriptor _descriptor;
 
-	GLenum _internal_format;
+	void _allocate()
+	{
+		glTextureStorage2D(
+			_handle,
+			_descriptor.mipmaps_count, static_cast<GLenum>(_descriptor.format), 
+			_descriptor.length, 
+			_descriptor.elements_count
+		);
+	}
 
-	int _width;
+public:
+	
+	void bind(std::uint32_t unit) override;
+
+	void unbind() override;
 
 public:
 
-    gl_texture_1d_array();
+	void fill(std::int32_t element_index, std::int32_t mipmap_index, std::int32_t x_offset, const void* data)
+	{
+		if (nullptr || 
+			element_index < 0 || element_index >= _descriptor.elements_count ||
+			mipmap_index < 0 || mipmap_index >= _descriptor.mipmaps_count ||
+			x_offset < 0 || x_offset >= _descriptor.length
+			) return;
 
-	virtual ~gl_texture_1d_array();
+		glTexSubImage2D(
+			GL_TEXTURE_1D_ARRAY, 
+			mipmap_index, x_offset, 0, _descriptor.length,
+			element_index, 
+			GL_RGBA, GL_UNSIGNED_BYTE,
+			data
+		);
+	}
+
+	void generate_mipmaps()
+	{
+		glBindTexture(GL_TEXTURE_1D_ARRAY, _handle);
+		glGenerateMipmap(GL_TEXTURE_1D_ARRAY);
+		glBindTexture(GL_TEXTURE_1D_ARRAY, 0);
+	}
 
 };
 

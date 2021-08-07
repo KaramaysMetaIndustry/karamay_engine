@@ -8,8 +8,7 @@ class gl_pixels
 {
 public:
 
-	gl_pixels(std::int32_t count, const void* data)
-	{}
+	gl_pixels(std::int32_t count, const void* data) {}
 
 public:
 
@@ -23,7 +22,7 @@ private:
 
 };
 
-class gl_texture_2d_base : public gl_texture_base
+class gl_texture_2d_base : public gl_texture
 {
 public:
 

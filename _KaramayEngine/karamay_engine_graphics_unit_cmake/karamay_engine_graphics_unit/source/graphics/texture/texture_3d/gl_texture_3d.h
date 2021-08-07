@@ -1,36 +1,47 @@
 #ifndef H_GL_TEXTURE_3D
 #define H_GL_TEXTURE_3D
 
-#include "graphics/texture/base/gl_texture_base.h"
+#include "graphics/texture/base/gl_texture.h"
 
-class gl_texture_3d final: public gl_texture_base
+struct gl_texture_3d_descriptor
+{
+	std::int32_t width, height, depth;
+	std::int32_t mipmaps_count;
+	gl_texture_pixel_format format;
+};
+
+class gl_texture_3d final: public gl_texture
 {
 public:
 
-	void allocate(GLenum internal_format, int width, int height, int depth, int mipmaps_num);
+	explicit gl_texture_3d(const gl_texture_3d_descriptor& descriptor) :
+		_descriptor(descriptor)
+	{
+		glCreateTextures(GL_TEXTURE_3D, 1, &_handle);
+		glTextureStorage3D(_handle, _descriptor.mipmaps_count, static_cast<GLenum>(_descriptor.format), _descriptor.width, _descriptor.height, _descriptor.depth);
+	}
 
-	void fill_base_mipmap(GLenum format, GLenum type, const void* data);
-	void fill_miniature_mipmap(GLenum format, GLenum type, const void* data, int mipmap_index);
-
-	void fill_base_sub_mipmap(GLenum format, GLenum type, const void* data, int x_offset, int y_offset, int z_offset, int width, int height, int depth);
-	void fill_miniature_sub_mipmap(GLenum format, GLenum type, const void* data, int mipmap_index, int x_offset, int y_offset, int z_offset, int width, int height, int depth);
-
-	void bind(unsigned int unit);
-	void unbind();
+	virtual ~gl_texture_3d();
 
 private:
 
-	int _width, _height, _depth;
-
-	int _internal_format;
-
-	int _mipmaps_num;
+	gl_texture_3d_descriptor _descriptor;
 
 public:
 
-    gl_texture_3d();
+	void fill(std::int32_t mipmap_index, std::int32_t x_offset, std::int32_t y_offset, std::int32_t z_offset, const void* data)
+	{
+		glTexSubImage3D(
+			GL_TEXTURE_3D, 
+			mipmap_index, x_offset, y_offset, z_offset, 
+			width, height, depth, format, type, data
+		);
+	}
 
-	virtual ~gl_texture_3d();
+	void bind(std::uint32_t unit);
+
+	void unbind();
+
 };
 
 #endif

@@ -69,6 +69,12 @@ namespace gl_sampler_enum
 	};
 }
 
+
+struct gl_sampler_descriptor
+{
+
+};
+
 class gl_sampler final : public gl_object
 {
 public:
@@ -126,7 +132,6 @@ public:
 	 */
 	void set_texture_wrap_r(gl_sampler_enum::texture_wrap_option texture_wrap_option);
 
-	
 	/**
 	 * 
 	 */
@@ -215,7 +220,6 @@ public:
 		return glm::vec4();
 	}
 
-
 	gl_sampler_enum::texture_compare_mode get_texture_compare_mode()
 	{
 		GLint value = 0;
@@ -236,9 +240,6 @@ private:
 	{
 		return glIsSampler(_handle) == GL_TRUE ? true : false;
 	}
-
-	
-
 };
 
 #endif

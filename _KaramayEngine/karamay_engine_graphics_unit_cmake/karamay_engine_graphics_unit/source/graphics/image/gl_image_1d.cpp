@@ -1,1 +1,0 @@
-#include "gl_image_1d.h"

@@ -218,81 +218,13 @@ namespace gl_texture_enum
 	};
 }
 
-
-enum class e_cube_face : GLenum {
+enum class gl_cube_face_index : GLenum {
 	positive_x = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
 	negative_x = GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
 	positive_y = GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
 	negative_y = GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
 	positive_z = GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
 	negative_z = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z,
-};
-
-
-struct gl_texture_pixels_pack
-{
-	const void* pixels;
-	gl_texture_enum::pixels_format format;
-	gl_texture_enum::pixels_type type;
-	std::uint32_t width;
-	std::uint32_t max_mipmaps_num_supported;
-};
-
-class gl_sampler;
-
-class gl_texture_base : public gl_object
-{
-public:
-	
-	gl_texture_base() = default;
-
-	virtual ~gl_texture_base();
-
-public:
-
-	virtual void bind(std::uint32_t unit) = 0;
-
-	virtual void unbind() = 0;
-
-	void set_sampler(std::shared_ptr<class gl_sampler> sampler);
-
-protected:
-
-	std::string _name;
-
-	std::shared_ptr<gl_sampler> _sampler;
-
-public:
-
-	void set_name(const std::string& name)
-	{
-		_name = name;
-	}
-
-	const std::string get_name() const
-	{
-		return _name;
-	}
-
-protected:
-	void set_depth_stencil_texture_mode(gl_texture_enum::type texture_type, gl_texture_enum::depth_stencil_texture_mode depth_stencil_texture_mode);
-
-	/**
-	 * Default value is 0
-	 */
-	void set_texture_base_level(gl_texture_enum::type texture_type, std::uint32_t texture_base_level);
-
-	/**
-	 * Default value is 1000
-	 */
-	void set_texture_max_level(gl_texture_enum::type texture_type, std::uint32_t texture_max_level);
-
-	/**
-	 * Default value is vec4(RED, GREEN, BLUE, ALPHA)
-	 * Try to specify component comb
-	 */
-	void set_texture_swizzle_rgba(gl_texture_enum::type texture_type, std::array<gl_texture_enum::texture_swizzle_component, 4> texture_swizzle_rgba);
-	
 };
 
 enum class gl_texture_pixel_format : GLenum
@@ -415,6 +347,44 @@ std::pair<std::uint32_t, std::uint32_t> pixel_format_to_data_format(gl_texture_p
 {
 	return std::make_pair(0, 0);
 }
+
+class gl_texture : public gl_object
+{
+public:
+	
+	gl_texture() = default;
+
+	virtual ~gl_texture();
+
+public:
+
+	virtual void bind(std::uint32_t unit) = 0;
+
+	virtual void unbind() = 0;
+
+protected:
+
+	void set_depth_stencil_texture_mode(gl_texture_enum::type texture_type, gl_texture_enum::depth_stencil_texture_mode depth_stencil_texture_mode);
+
+	/**
+	 * Default value is 0
+	 */
+	void set_texture_base_level(gl_texture_enum::type texture_type, std::uint32_t texture_base_level);
+
+	/**
+	 * Default value is 1000
+	 */
+	void set_texture_max_level(gl_texture_enum::type texture_type, std::uint32_t texture_max_level);
+
+	/**
+	 * Default value is vec4(RED, GREEN, BLUE, ALPHA)
+	 * Try to specify component comb
+	 */
+	void set_texture_swizzle_rgba(gl_texture_enum::type texture_type, std::array<gl_texture_enum::texture_swizzle_component, 4> texture_swizzle_rgba);
+	
+};
+
+
 
 
 #endif

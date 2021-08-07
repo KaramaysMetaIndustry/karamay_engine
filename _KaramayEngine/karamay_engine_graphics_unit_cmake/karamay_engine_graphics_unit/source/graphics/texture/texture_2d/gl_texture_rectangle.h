@@ -1,9 +1,9 @@
 #ifndef H_GL_TEXTURE_RECTANGLE
 #define H_GL_TEXTURE_RECTANGLE
 
-#include "graphics/texture/base/gl_texture_base.h"
+#include "graphics/texture/base/gl_texture.h"
 
-class gl_texture_rectangle final : public gl_texture_base
+class gl_texture_rectangle final : public gl_texture
 {
 public:
 	void allocate(GLenum internal_format, int width, int height)
@@ -19,7 +19,6 @@ public:
 	{
 		glTexSubImage2D(GL_TEXTURE_RECTANGLE, 0, x_offset, y_offset, width, height, format, type, pixels);
 	}
-
 
 	void bind(std::uint32_t unit)
 	{

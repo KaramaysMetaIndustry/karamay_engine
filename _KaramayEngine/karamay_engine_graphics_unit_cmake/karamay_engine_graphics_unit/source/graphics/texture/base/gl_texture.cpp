@@ -1,10 +1,5 @@
 #include "gl_texture.h"
 
-void gl_texture_base::set_sampler(std::shared_ptr<class gl_sampler> sampler)
-{
-	_sampler = sampler;
-}
-
 void gl_texture_base::set_depth_stencil_texture_mode(gl_texture_enum::type texture_type, gl_texture_enum::depth_stencil_texture_mode depth_stencil_texture_mode)
 {
 	glTexParameteri(static_cast<GLenum>(texture_type),
