@@ -70,10 +70,7 @@ public:
 	{
 		glActiveTexture(GL_TEXTURE0 + unit);
 		glBindTexture(GL_TEXTURE_1D, _handle);
-		if (_sampler)
-		{
-			_sampler->bind(unit);
-		}
+		
 	}
 
 	void unbind();
