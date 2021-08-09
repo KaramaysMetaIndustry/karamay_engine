@@ -12,12 +12,3 @@ void gl_texture_3d::unbind()
 	glBindTexture(GL_TEXTURE_3D, 0);
 	glActiveTexture(GL_TEXTURE0);
 }
-
-gl_texture_3d::gl_texture_3d()
-{
-	glCreateTextures(GL_TEXTURE_3D, 1, &_handle);
-}
-
-gl_texture_3d::~gl_texture_3d()
-{
-}

@@ -2,12 +2,24 @@
 	"entries" : 
 	[
 		{
+			"name" : "CMAKE_AR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a program."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.28.29910/bin/Hostx64/x64/lib.exe"
+		},
+		{
 			"name" : "CMAKE_BUILD_TYPE",
 			"properties" : 
 			[
 				{
 					"name" : "HELPSTRING",
-					"value" : "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel ..."
+					"value" : "No help, variable specified on the command line."
 				}
 			],
 			"type" : "STRING",
@@ -23,7 +35,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "c:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/out/build/x64-Debug"
+			"value" : "g:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/out/build/x64-Debug"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -47,7 +59,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "14"
+			"value" : "19"
 		},
 		{
 			"name" : "CMAKE_CACHE_PATCH_VERSION",
@@ -59,7 +71,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "19050301"
+			"value" : "20122902"
 		},
 		{
 			"name" : "CMAKE_COMMAND",
@@ -107,11 +119,11 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "No help, variable specified on the command line."
+					"value" : "CXX compiler"
 				}
 			],
-			"type" : "FILEPATH",
-			"value" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.21.27702/bin/HostX64/x64/cl.exe"
+			"type" : "STRING",
+			"value" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.28.29910/bin/Hostx64/x64/cl.exe"
 		},
 		{
 			"name" : "CMAKE_CXX_FLAGS",
@@ -143,7 +155,7 @@
 				}
 			],
 			"type" : "STRING",
-			"value" : "/MDd /ZI /Ob0 /Od /RTC1 /JMC"
+			"value" : "/MDd /Zi /Ob0 /Od /RTC1"
 		},
 		{
 			"name" : "CMAKE_CXX_FLAGS_MINSIZEREL",
@@ -219,11 +231,11 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "No help, variable specified on the command line."
+					"value" : "C compiler"
 				}
 			],
-			"type" : "FILEPATH",
-			"value" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.21.27702/bin/HostX64/x64/cl.exe"
+			"type" : "STRING",
+			"value" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.28.29910/bin/Hostx64/x64/cl.exe"
 		},
 		{
 			"name" : "CMAKE_C_FLAGS",
@@ -255,7 +267,7 @@
 				}
 			],
 			"type" : "STRING",
-			"value" : "/MDd /ZI /Ob0 /Od /RTC1 /JMC"
+			"value" : "/MDd /Zi /Ob0 /Od /RTC1"
 		},
 		{
 			"name" : "CMAKE_C_FLAGS_MINSIZEREL",
@@ -427,7 +439,7 @@
 				}
 			],
 			"type" : "BOOL",
-			"value" : "OFF"
+			"value" : ""
 		},
 		{
 			"name" : "CMAKE_EXTRA_GENERATOR",
@@ -499,7 +511,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "C:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake"
+			"value" : "G:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -511,7 +523,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "C:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/out/install/x64-Debug"
+			"value" : "G:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/out/install/x64-Debug"
 		},
 		{
 			"name" : "CMAKE_LINKER",
@@ -527,7 +539,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.21.27702/bin/Hostx64/x64/link.exe"
+			"value" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.28.29910/bin/Hostx64/x64/link.exe"
 		},
 		{
 			"name" : "CMAKE_MAKE_PROGRAM",
@@ -635,7 +647,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x64/mt.exe"
+			"value" : "C:/Program Files (x86)/Windows Kits/10/bin/10.0.19041.0/x64/mt.exe"
 		},
 		{
 			"name" : "CMAKE_NUMBER_OF_MAKEFILES",
@@ -711,7 +723,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x64/rc.exe"
+			"value" : "C:/Program Files (x86)/Windows Kits/10/bin/10.0.19041.0/x64/rc.exe"
 		},
 		{
 			"name" : "CMAKE_RC_COMPILER_WORKS",
@@ -739,7 +751,7 @@
 				}
 			],
 			"type" : "STRING",
-			"value" : "/DWIN32"
+			"value" : "-DWIN32"
 		},
 		{
 			"name" : "CMAKE_RC_FLAGS_DEBUG",
@@ -755,7 +767,7 @@
 				}
 			],
 			"type" : "STRING",
-			"value" : "/D_DEBUG"
+			"value" : "-D_DEBUG"
 		},
 		{
 			"name" : "CMAKE_RC_FLAGS_MINSIZEREL",
@@ -815,7 +827,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.14"
+			"value" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.19"
 		},
 		{
 			"name" : "CMAKE_SHARED_LINKER_FLAGS",
@@ -1035,7 +1047,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/out/build/x64-Debug"
+			"value" : "G:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/out/build/x64-Debug"
 		},
 		{
 			"name" : "karamay_engine_graphics_unit_SOURCE_DIR",
@@ -1047,7 +1059,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake"
+			"value" : "G:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake"
 		}
 	],
 	"kind" : "cache",
