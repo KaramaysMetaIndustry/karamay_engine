@@ -5,6 +5,8 @@
 #include "graphics/pipeline/graphics/gl_vertex_processing_pipeline.h"
 #include "graphics/pipeline/compute/gl_compute_pipeline.h"
 
+#include "graphics/texture/gl_texture.h"
+
 class gl_pipeline_base;
 class gl_graphics_pipeline;
 class gl_vertex_processing_pipeline;
@@ -37,24 +39,51 @@ public:
 
     }
 
-    std::shared_ptr<gl_texture_2d> create_texture_2d()
-    {
 
+    static std::shared_ptr<gl_texture_2d> create_texture_2d(
+        std::int32_t width, std::int32_t height, 
+        gl_texture_pixel_format pixel_format,
+        std::int32_t mipmaps_count
+    )
+    {
+        if (
+            width < 0 || width > GL_MAX_TEXTURE_SIZE || 
+            height < 0 || height > GL_MAX_TEXTURE_SIZE || 
+            mipmaps_count < 0
+            ) return;
+
+        gl_texture_2d_descriptor _desc{ width, height, pixel_format,mipmaps_count };
+        return std::make_shared<gl_texture_2d>(_desc);
     }
 
-    std::shared_ptr<gl_texture_2d_array> create_texture_2d_array() {}
+    static std::shared_ptr<gl_texture_2d_array> create_texture_2d_array(
+        std::int32_t elements_count,
+        std::int32_t width, std::int32_t height,
+        gl_texture_pixel_format pixel_format,
+        std::int32_t mipmaps_count
+    ) 
+    {
+        if (
+            elements_count < 0 || width < 0 ||
+            width > GL_MAX_TEXTURE_SIZE ||
+            height < 0 || height > GL_MAX_TEXTURE_SIZE ||
+            mipmaps_count < 0
+            ) return;
+        gl_texture_2d_array_descriptor _desc(elements_count, width, height, pixel_format, mipmaps_count);
+        return std::make_shared<gl_texture_2d_array>(_desc);
+    }
 
-    std::shared_ptr<gl_texture_2d_multisample> create_texture_2d_multisample() {}
+    static std::shared_ptr<gl_texture_2d_multisample> create_texture_2d_multisample() {}
 
-    std::shared_ptr<gl_texture_2d_array_multisample> create_texture_2d_array_multisample() {}
+    static std::shared_ptr<gl_texture_2d_array_multisample> create_texture_2d_array_multisample() {}
 
-    std::shared_ptr<gl_texture_3d> create_texture_3d() {}
+    static std::shared_ptr<gl_texture_3d> create_texture_3d() {}
 
-    std::shared_ptr<gl_texture_cube> create_texture_cube() {}
+    static std::shared_ptr<gl_texture_cube> create_texture_cube() {}
 
-    std::shared_ptr<gl_texture_cube_array> create_texture_cube_array() {}
+    static std::shared_ptr<gl_texture_cube_array> create_texture_cube_array() {}
 
-    std::shared_ptr<gl_texture_rectangle> create_texture_rectangle() {}
+    static std::shared_ptr<gl_texture_rectangle> create_texture_rectangle() {}
 
     std::shared_ptr<gl_uniform_buffer> create_uniform_buffer() {}
 

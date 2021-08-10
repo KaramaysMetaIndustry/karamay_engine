@@ -163,6 +163,9 @@ public: /** constructor / desctructor  */
 		_sampler(nullptr)
 	{}
 
+	explicit glsl_sampler2DArray(std::shared_ptr<gl_texture_2d_array> texture, std::shared_ptr<gl_sampler> sampler)
+	{}
+
 	glsl_sampler2DArray() = delete;
 
 	virtual ~glsl_sampler2DArray() = default;
@@ -170,6 +173,12 @@ public: /** constructor / desctructor  */
 public: /** implement functions */
 
 	const glsl_opaque_t_meta& meta() const override { return _meta; }
+
+public:
+
+	void lock_texture(std::shared_ptr<gl_texture_2d_array> texture);
+
+	void unlock_texture();
 
 private:
 
@@ -190,21 +199,37 @@ public:
 	void unbind() {}
 
 };
-glsl_opaque_t_meta glsl_sampler2DArray::_meta{};
+glsl_opaque_t_meta glsl_sampler2DArray::meta{};
+
+enum class gl_image_access_mode : GLenum
+{
+	read_only,
+	write_only,
+	read_and_write
+};
 
 class glsl_image2DArray : public glsl_image_t
 {
 public:
 
-	glsl_image2DArray() 
-	{}
+	explicit glsl_image2DArray(const std::shared_ptr<gl_texture_2d_array> texture_2d_array, gl_image_access_mode access_mode)
+	{
+		glBindImageTexture(GL_TEXTURE0,
+			texture_2d_array->get_handle(),
+			0, 
+			false, 0, 
+			static_cast<GLenum>(access_mode),
+			static_cast<GLenum>(texture_2d_array->get_descriptor().pixel_format)
+		);
+	}
 
-	std::unique_ptr<gl_texture_2d_array> texture_2d_array;
-	
-public:
 
+	~glsl_image2DArray();
 
-private:
+};
+
+class glsl_image2D : public glsl_image_t
+{
 
 };
 
@@ -324,19 +349,7 @@ void create_glsl_atomic_unit();
 
 void test()
 {
-	glsl_dvec3 position();
 
-	glsl_dvec2 uv(glm::dvec2(1.0L));
-
-
-	gl_texture_2d_array_descriptor desc;
-	desc.elements_count = 2;
-	desc.width = 2048;
-	desc.height = 2048;
-	desc.mipmaps_count = 10;
-	desc.format = gl_texture_pixel_format::RGBA32F;
-
-	glsl_sampler2DArray _albedo_maps(desc);
 
 }
 

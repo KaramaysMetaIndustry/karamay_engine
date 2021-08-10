@@ -62,7 +62,7 @@ namespace gl_texture_enum
 
 		UNSIGNED_SHORT_5_6_5 = GL_UNSIGNED_SHORT_5_6_5,
 		UNSIGNED_SHORT_5_6_5_REV = GL_UNSIGNED_SHORT_5_6_5_REV,
-		UNSIGNED_SHORT_4_4_4_4 = GL_UNSIGNED_SHORT_4_4_4_4,
+		UNSIGNED_SHORT_4_4_4_4 = GL_UNSIGNED_SHORT_4_4_4_4, // 16
 		UNSIGNED_SHORT_4_4_4_4_REV = GL_UNSIGNED_SHORT_4_4_4_4_REV,
 		UNSIGNED_SHORT_5_5_5_1 = GL_UNSIGNED_SHORT_5_5_5_1,
 		UNSIGNED_SHORT_1_5_5_5_REV = GL_UNSIGNED_SHORT_1_5_5_5_REV,
@@ -354,7 +354,10 @@ public:
 	
 	gl_texture() = default;
 
-	virtual ~gl_texture();
+	~gl_texture() override
+	{
+		glDeleteTextures(1, &_handle);
+	}
 
 public:
 

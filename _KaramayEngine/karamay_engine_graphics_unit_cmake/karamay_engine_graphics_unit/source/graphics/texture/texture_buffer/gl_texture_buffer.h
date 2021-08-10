@@ -16,6 +16,11 @@ class gl_buffer;
  * Buffer textures cannot be attached to Framebuffer Objects.
  */
 
+struct gl_texture_buffer_descriptor
+{
+
+};
+
 class gl_texture_buffer : public gl_texture
 {
 public:

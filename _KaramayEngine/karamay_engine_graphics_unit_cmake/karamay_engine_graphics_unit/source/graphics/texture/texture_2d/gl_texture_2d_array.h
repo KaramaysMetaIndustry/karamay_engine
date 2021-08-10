@@ -62,6 +62,8 @@ private:
 
 public:
 
+	gl_texture_2d_array_descriptor get_descriptor() const { return _descriptor; }
+
 	void fill(std::int32_t element_index, std::int32_t mipmap_index, std::int32_t x_offset, std::int32_t y_offset, const void*data)
 	{
 		std::int32_t _width = 0;

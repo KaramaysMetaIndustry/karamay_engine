@@ -1,13 +1,12 @@
 #ifndef H_GL_TEXTURE_1D
 #define H_GL_TEXTURE_1D
-
 #include "graphics/texture/base/gl_texture.h"
 
 struct gl_texture_1d_descriptor
 {
 	std::int32_t length; // how many pixels
-	std::int32_t mipmaps_count; // how many mipmaps
 	gl_texture_pixel_format pixel_format; // how to combine a pixel
+	std::int32_t mipmaps_count; // how many mipmaps
 
 	gl_texture_1d_descriptor(std::int32_t _length, std::int32_t _mipmaps_count, gl_texture_pixel_format _pixel_format) :
 		length(_length),
@@ -21,6 +20,11 @@ struct gl_texture_1d_descriptor
 		pixel_format(_pixel_format)
 	{}
 
+	gl_texture_1d_descriptor() = delete;
+	gl_texture_1d_descriptor(const gl_texture_1d_descriptor&) = default;
+	gl_texture_1d_descriptor& operator=(const gl_texture_1d_descriptor&) = default;
+
+	~gl_texture_1d_descriptor() = default;
 };
 
 class gl_texture_1d final : public gl_texture
@@ -39,10 +43,7 @@ public:
 		);
 	}
 
-	~gl_texture_1d() override
-	{
-		glDeleteTextures(1, &_handle);
-	}
+	~gl_texture_1d() override = default;
 	
 private:
 

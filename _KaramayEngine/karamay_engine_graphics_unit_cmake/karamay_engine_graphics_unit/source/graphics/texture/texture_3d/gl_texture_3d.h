@@ -6,8 +6,8 @@
 struct gl_texture_3d_descriptor
 {
 	std::int32_t width, height, depth;
-	std::int32_t mipmaps_count;
 	gl_texture_pixel_format pixel_format;
+	std::int32_t mipmaps_count;
 
 	gl_texture_3d_descriptor(std::int32_t _width, std::int32_t _height, std::int32_t _depth, gl_texture_pixel_format  _pixel_format, std::int32_t _mipmaps_count) :
 		width(_width), height(_height), depth(_depth),
@@ -21,6 +21,11 @@ struct gl_texture_3d_descriptor
 		pixel_format(_pixel_format)
 	{}
 
+	gl_texture_3d_descriptor() = delete;
+	gl_texture_3d_descriptor(const gl_texture_3d_descriptor&) = default;
+	gl_texture_3d_descriptor& operator=(const gl_texture_3d_descriptor&) = default;
+
+	~gl_texture_3d_descriptor() = default;
 };
 
 class gl_texture_3d final: public gl_texture
@@ -39,8 +44,7 @@ public:
 		);
 	}
 
-	virtual ~gl_texture_3d()
-	{}
+	~gl_texture_3d() override = default;
 
 private:
 
