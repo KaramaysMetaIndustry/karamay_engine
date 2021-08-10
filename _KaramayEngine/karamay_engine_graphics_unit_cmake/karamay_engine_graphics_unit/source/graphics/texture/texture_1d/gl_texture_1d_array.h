@@ -7,8 +7,27 @@ struct gl_texture_1d_array_descriptor
 {
 	std::int32_t elements_count;
 	std::int32_t length;
+	gl_texture_pixel_format pixel_format;
 	std::int32_t mipmaps_count;
-	gl_texture_pixel_format format;
+
+	gl_texture_1d_array_descriptor(std::int32_t _elements_count, std::int32_t _length, gl_texture_pixel_format _pixel_format, std::int32_t _mipmaps_count) :
+		elements_count(_elements_count),
+		length(_length),
+		pixel_format(_pixel_format),
+		mipmaps_count(_mipmaps_count)
+	{}
+
+	gl_texture_1d_array_descriptor(std::int32_t _elements_count, std::int32_t _length, gl_texture_pixel_format _pixel_format) :
+		elements_count(_elements_count),
+		length(_length),
+		pixel_format(_pixel_format),
+		mipmaps_count(1)
+	{}
+
+	gl_texture_1d_array_descriptor() = delete;
+
+	gl_texture_1d_array_descriptor(const gl_texture_1d_array_descriptor&) = default;
+
 };
 
 class gl_texture_1d_array final : public gl_texture
@@ -19,26 +38,27 @@ public:
 	explicit gl_texture_1d_array(const gl_texture_1d_array_descriptor& descriptor) :
 		_descriptor(descriptor)
 	{
-		_allocate();
+		glCreateTextures(GL_TEXTURE_1D_ARRAY, 1, &_handle);
+		glTextureStorage2D(
+			_handle,
+			_descriptor.mipmaps_count, static_cast<GLenum>(_descriptor.pixel_format),
+			_descriptor.length, // 2d width
+			_descriptor.elements_count // 2d height
+		);
 	}
 
-	~gl_texture_1d_array() override {}
+	~gl_texture_1d_array() override 
+	{
+		glDeleteTextures(1, &_handle);
+	}
 
 private:
 
 	gl_texture_1d_array_descriptor _descriptor;
 
-	void _allocate()
-	{
-		glTextureStorage2D(
-			_handle,
-			_descriptor.mipmaps_count, static_cast<GLenum>(_descriptor.format), 
-			_descriptor.length, 
-			_descriptor.elements_count
-		);
-	}
-
 public:
+
+	gl_texture_1d_array_descriptor get_descriptor() const { return _descriptor; }
 	
 	void bind(std::uint32_t unit) override;
 

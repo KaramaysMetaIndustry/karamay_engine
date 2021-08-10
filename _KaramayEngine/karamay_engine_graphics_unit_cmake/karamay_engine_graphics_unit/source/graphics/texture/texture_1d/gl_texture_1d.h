@@ -7,7 +7,20 @@ struct gl_texture_1d_descriptor
 {
 	std::int32_t length; // how many pixels
 	std::int32_t mipmaps_count; // how many mipmaps
-	gl_texture_enum::internal_format internal_format; // how to combine a pixel
+	gl_texture_pixel_format pixel_format; // how to combine a pixel
+
+	gl_texture_1d_descriptor(std::int32_t _length, std::int32_t _mipmaps_count, gl_texture_pixel_format _pixel_format) :
+		length(_length),
+		mipmaps_count(_mipmaps_count),
+		pixel_format(_pixel_format)
+	{}
+
+	gl_texture_1d_descriptor(std::int32_t _length, gl_texture_pixel_format _pixel_format) :
+		length(_length),
+		mipmaps_count(1),
+		pixel_format(_pixel_format)
+	{}
+
 };
 
 class gl_texture_1d final : public gl_texture
@@ -18,16 +31,26 @@ public:
 		_descriptor(descriptor)
 	{
 		glCreateTextures(GL_TEXTURE_1D, 1, &_handle);
-		glTextureStorage1D(_handle, descriptor.mipmaps_count, static_cast<GLenum>(descriptor.internal_format), descriptor.length);
+		glTextureStorage1D(
+			_handle, 
+			descriptor.mipmaps_count, 
+			static_cast<GLenum>(descriptor.pixel_format),
+			descriptor.length
+		);
 	}
 
-	virtual ~gl_texture_1d();
+	~gl_texture_1d() override
+	{
+		glDeleteTextures(1, &_handle);
+	}
 	
 private:
 
 	gl_texture_1d_descriptor _descriptor;
 
 public:
+
+	gl_texture_1d_descriptor get_descriptor() const { return _descriptor; }
 
 	/*
 	* you can fill the base mipmap
@@ -60,7 +83,12 @@ public:
 		glInvalidateTexSubImage(_handle, mipmap_index, x_offset, 0, 0, width, 0, 0);
 	}
 
-	void* fetch_pixels(GLuint mipmap_index, GLenum format, GLenum type);
+	void* fetch_pixels(GLuint mipmap_index, GLenum format, GLenum type)
+	{
+		void* pixels = nullptr;
+		glGetTexImage(GL_TEXTURE_1D, mipmap_index, format, type, pixels);
+		return pixels;
+	}
 
 	std::int32_t get_pixels_count() const { return _descriptor.length; }
 	

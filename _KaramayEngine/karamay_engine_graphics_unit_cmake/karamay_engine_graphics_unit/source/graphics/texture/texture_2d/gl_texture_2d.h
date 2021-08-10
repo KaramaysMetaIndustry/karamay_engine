@@ -22,9 +22,58 @@ private:
 
 };
 
-class gl_texture_2d_base : public gl_texture
+
+struct gl_texture_2d_descriptor
+{
+	std::int32_t width, height;
+	gl_texture_pixel_format pixel_format;
+	std::int32_t mipmaps_count;
+
+	gl_texture_2d_descriptor(std::int32_t _width, std::int32_t _height, gl_texture_pixel_format _pixel_format, std::int32_t _mipmaps_count) :
+		width(_width), height(_height),
+		pixel_format(_pixel_format),
+		mipmaps_count(_mipmaps_count)
+	{}
+
+	gl_texture_2d_descriptor(std::int32_t _width, std::int32_t _height, gl_texture_pixel_format _pixel_format) :
+		width(_width), height(_height),
+		pixel_format(_pixel_format),
+		mipmaps_count(1)
+	{}
+
+	gl_texture_2d_descriptor() = delete;
+
+	gl_texture_2d_descriptor(const gl_texture_2d_descriptor&) = default;
+
+};
+
+
+class gl_texture_2d final : public gl_texture
 {
 public:
+	
+	explicit gl_texture_2d(const gl_texture_2d_descriptor& descriptor) :
+		_descriptor(descriptor)
+	{
+		glCreateTextures(GL_TEXTURE_2D, 1, &_handle);
+		glTextureStorage2D(
+			_handle, _descriptor.mipmaps_count, 
+			static_cast<GLenum>(_descriptor.pixel_format), 
+			_descriptor.width, _descriptor.height
+		);
+	}
+
+	gl_texture_2d() = delete;
+	
+	virtual ~gl_texture_2d() = default;
+	
+private:
+
+	gl_texture_2d_descriptor _descriptor;
+
+public:
+
+	gl_texture_2d_descriptor get_descriptor() const { return _descriptor; }
 
 	void bind(std::uint32_t unit)
 	{
@@ -33,38 +82,6 @@ public:
 	}
 
 	void unbind();
-};
-
-template<gl_texture_pixel_format format>
-class gl_texture_2d final : public gl_texture_2d_base
-{
-public:
-	
-	explicit gl_texture_2d(std::int32_t mipmaps_count, std::int32_t width, std::int32_t height) :
-		_mipmaps_count(mipmaps_count),
-		_width(width),
-		_height(height)
-	{
-		glCreateTextures(GL_TEXTURE_2D, 1, &_handle);
-		glTextureStorage2D(_handle, _mipmaps_count, static_cast<GLenum>(format), _width, _height);
-		//glActiveTexture(GL_TEXTURE0);
-		/*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);*/
-	}
-	
-	virtual ~gl_texture_2d() = default;
-
-private:
-	
-	gl_texture_2d() = default;
-
-	std::int32_t _mipmaps_count, _width, _height
-
-public:
-
-	gl_texture_pixel_format get_format() const { return format; }
 
 	std::pair<std::int32_t, std::int32_t> inline get_mipmap_size(std::uint32_t mipmap_index) const
 	{
