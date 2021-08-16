@@ -9,8 +9,4 @@ protected:
 
 public:
 
-	virtual bool initialize() = 0;
-
-	virtual void install() = 0;
-
 };

@@ -85,7 +85,6 @@ public:
 
     static std::shared_ptr<gl_texture_rectangle> create_texture_rectangle() {}
 
-    std::shared_ptr<gl_uniform_buffer> create_uniform_buffer() {}
 
 };
 

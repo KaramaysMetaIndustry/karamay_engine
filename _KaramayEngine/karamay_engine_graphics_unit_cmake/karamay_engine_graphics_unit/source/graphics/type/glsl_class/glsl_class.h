@@ -17,12 +17,7 @@ class glsl_cacheable
 	virtual std::int64_t offset() const;
 };
 
-class glsl_texture_linkable
-{
-
-};
-
-class glsl_transparent_t : public glsl_t , public glsl_cacheable
+class glsl_transparent_t : public glsl_t
 {
 public:
 	virtual const glsl_transparent_t_meta& meta() const = 0;
@@ -56,7 +51,7 @@ struct glsl_transparent_t_meta
 class glsl_##GLSL_T_NAME final : public glsl_transparent_t\
 {\
 public:\
-	glsl_##GLSL_T_NAME() = delete;\
+	glsl_##GLSL_T_NAME() = default;\
 	explicit glsl_##GLSL_T_NAME(const glm::GLSL_T_SEMANTIC_NAME& value){}\
 	~glsl_##GLSL_T_NAME() = default;\
 public:\
@@ -116,6 +111,35 @@ DEFINE_GLSL_TRANSPARENT_T(uvec2, uvec2, "uvec2")
 DEFINE_GLSL_TRANSPARENT_T(uvec3, uvec3, "uvec3")
 DEFINE_GLSL_TRANSPARENT_T(uvec4, uvec4, "uvec4")
 
+
+class gl_uniform_block_item
+{
+
+};
+
+class gl_uniform_block
+{
+	static std::vector<gl_uniform_block_item*> items;
+
+public:
+
+	virtual void bind() = 0;
+
+	virtual void unbind() = 0;
+
+};
+
+class gl_shader_storage_block_item
+{
+
+};
+
+class gl_shader_storage_block
+{
+	std::vector<gl_shader_storage_block_item*> items;
+};
+
+
 //class glsl_dvec3 final : public glsl_transparent_t
 //{
 //public:
@@ -139,14 +163,54 @@ class glsl_opaque_t_meta
 
 class glsl_opaque_t : public glsl_t {
 	virtual const glsl_opaque_t_meta& meta() const = 0;
+	virtual void bind() = 0;
+	virtual void unbind() = 0;
+	virtual void launch() = 0;
 };
+
+
+/// <summary>
+/// samplers
+/// </summary>
+
 class glsl_sampler_t : public glsl_opaque_t 
 {
 	std::string semantic_instance_name;
 };
-class glsl_image_t : public glsl_opaque_t {};
 
-class glsl_sampler2DArray final : public glsl_sampler_t
+class glsl_sampler2D : public glsl_sampler_t
+{
+public:
+
+	explicit glsl_sampler2D()
+	{}
+
+
+public:
+
+	void associate(std::shared_ptr<gl_texture_2d> texture_2d, int sampler_options)
+	{
+		_texture_2d = texture_2d;
+	}
+
+public:
+
+	void bind() override
+	{}
+
+	void unbind() override
+	{
+	}
+
+private:
+
+	std::shared_ptr<gl_texture_2d> _texture_2d;
+
+	std::shared_ptr<gl_sampler> _sampler;
+
+};
+
+class glsl_sampler2DArray : public glsl_sampler_t
 {
 public: /** constructor / desctructor  */
 
@@ -173,16 +237,23 @@ public: /** constructor / desctructor  */
 public: /** implement functions */
 
 	const glsl_opaque_t_meta& meta() const override { return _meta; }
+	
+	void bind() override
+	{
 
-public:
+	}
+	
+	void unbind() override
+	{
 
-	void lock_texture(std::shared_ptr<gl_texture_2d_array> texture);
-
-	void unlock_texture();
+	}
+	
+	void launch() override
+	{
+		
+	}
 
 private:
-
-	static glsl_opaque_t_meta _meta;
 
 	std::unique_ptr<gl_texture_2d_array> _texture_2d_array;
 
@@ -192,14 +263,98 @@ public:
 
 	gl_texture_2d_array& texture() { return *_texture_2d_array; }
 
-	void bind(std::uint32_t unit)
-	{
-	}
-
-	void unbind() {}
+	static glsl_opaque_t_meta _meta;
 
 };
-glsl_opaque_t_meta glsl_sampler2DArray::meta{};
+
+#define DEFINE_GLSL_SAMPLER_T(GLSL_SAMPLER_T_SEMANTIC_NAME)\
+class glsl_##GLSL_SAMPLER_T_SEMANTIC_NAME : public glsl_sampler_t\
+{\
+\
+};\
+
+DEFINE_GLSL_SAMPLER_T(sampler1D)
+DEFINE_GLSL_SAMPLER_T(sampler1DArray)
+DEFINE_GLSL_SAMPLER_T(sampler2D)
+DEFINE_GLSL_SAMPLER_T(sampler2DArray)
+DEFINE_GLSL_SAMPLER_T(sampler2DRect)
+DEFINE_GLSL_SAMPLER_T(sampler2DMS)
+DEFINE_GLSL_SAMPLER_T(sampler2DMSArray)
+DEFINE_GLSL_SAMPLER_T(sampler3D)
+DEFINE_GLSL_SAMPLER_T(samplerCube)
+DEFINE_GLSL_SAMPLER_T(samplerCubeArray)
+DEFINE_GLSL_SAMPLER_T(samplerBuffer)
+DEFINE_GLSL_SAMPLER_T(sampler1DShadow)
+DEFINE_GLSL_SAMPLER_T(sampler2DShadow)
+DEFINE_GLSL_SAMPLER_T(sampler2DRectShadow)
+DEFINE_GLSL_SAMPLER_T(sampler1DArrayShadow)
+DEFINE_GLSL_SAMPLER_T(sampler2DArrayShadow)
+DEFINE_GLSL_SAMPLER_T(samplerCubeShadow)
+DEFINE_GLSL_SAMPLER_T(samplerCubeArrayShadow)
+DEFINE_GLSL_SAMPLER_T(isampler1D)
+DEFINE_GLSL_SAMPLER_T(isampler1DArray)
+DEFINE_GLSL_SAMPLER_T(isampler2D)
+DEFINE_GLSL_SAMPLER_T(isampler2DArray)
+DEFINE_GLSL_SAMPLER_T(isampler2DRect)
+DEFINE_GLSL_SAMPLER_T(isampler2DMS)
+DEFINE_GLSL_SAMPLER_T(isampler2DMSArray)
+DEFINE_GLSL_SAMPLER_T(isampler3D)
+DEFINE_GLSL_SAMPLER_T(isamplerCube)
+DEFINE_GLSL_SAMPLER_T(isamplerCubeArray)
+DEFINE_GLSL_SAMPLER_T(isamplerBuffer)
+DEFINE_GLSL_SAMPLER_T(isampler1DShadow)
+DEFINE_GLSL_SAMPLER_T(isampler2DShadow)
+DEFINE_GLSL_SAMPLER_T(isampler2DRectShadow)
+DEFINE_GLSL_SAMPLER_T(isampler1DArrayShadow)
+DEFINE_GLSL_SAMPLER_T(isampler2DArrayShadow)
+DEFINE_GLSL_SAMPLER_T(isamplerCubeShadow)
+DEFINE_GLSL_SAMPLER_T(isamplerCubeArrayShadow)
+DEFINE_GLSL_SAMPLER_T(usampler1D)
+DEFINE_GLSL_SAMPLER_T(usampler1DArray)
+DEFINE_GLSL_SAMPLER_T(usampler2D)
+DEFINE_GLSL_SAMPLER_T(usampler2DArray)
+DEFINE_GLSL_SAMPLER_T(usampler2DRect)
+DEFINE_GLSL_SAMPLER_T(usampler2DMS)
+DEFINE_GLSL_SAMPLER_T(usampler2DMSArray)
+DEFINE_GLSL_SAMPLER_T(usampler3D)
+DEFINE_GLSL_SAMPLER_T(usamplerCube)
+DEFINE_GLSL_SAMPLER_T(usamplerCubeArray)
+DEFINE_GLSL_SAMPLER_T(usamplerBuffer)
+DEFINE_GLSL_SAMPLER_T(usampler1DShadow)
+DEFINE_GLSL_SAMPLER_T(usampler2DShadow)
+DEFINE_GLSL_SAMPLER_T(usampler2DRectShadow)
+DEFINE_GLSL_SAMPLER_T(usampler1DArrayShadow)
+DEFINE_GLSL_SAMPLER_T(usampler2DArrayShadow)
+DEFINE_GLSL_SAMPLER_T(usamplerCubeShadow)
+DEFINE_GLSL_SAMPLER_T(usamplerCubeArrayShadow)
+
+/// <summary>
+///  images
+/// </summary>
+
+enum class glsl_image_format_layout_qualifier
+{
+	// r16f, r32f
+	// rg16f, rg32f
+	// rgb16f, rgb32f
+	// rgba16f, rgba32f
+
+	// rgba8, rgba16
+	// r11f_g11f_b10f
+	// rgb10_a2, rgb10_a2ui
+	// rg8, rg16
+	// r8, r16
+
+	// rgba{8,16,32}i
+	// rg{8,16,32}i
+	// r{8,16,32}
+	// rgba{32,16,8}ui
+	// rg{32,16,8} ui
+	// r{32,16,8} ui
+	// rgba{16,8}_snorm
+	// rg{16,8}_snorm
+	// r{16,8}_snorm
+};
 
 enum class gl_image_access_mode : GLenum
 {
@@ -207,6 +362,14 @@ enum class gl_image_access_mode : GLenum
 	write_only,
 	read_and_write
 };
+
+class glsl_image_t : public glsl_opaque_t
+{
+
+};
+
+class glsl_image2D : public glsl_image_t
+{};
 
 class glsl_image2DArray : public glsl_image_t
 {
@@ -216,57 +379,47 @@ public:
 	{
 		glBindImageTexture(GL_TEXTURE0,
 			texture_2d_array->get_handle(),
-			0, 
+			0,
 			false, 0, 
 			static_cast<GLenum>(access_mode),
 			static_cast<GLenum>(texture_2d_array->get_descriptor().pixel_format)
 		);
 	}
 
-
 	~glsl_image2DArray();
+
+public:
+
 
 };
 
-class glsl_image2D : public glsl_image_t
+struct gl_program_real_time_struct_maps
 {
 
 };
+struct ImmdStruct {
+	
+	std::array<glsl_sampler2D, 5> AlbedoMap;
+	std::array<glsl_sampler2DArray, 5> DisplacementMaps;
 
+	glsl_image1D normals;
+
+} Parameters[10];
+
+void test()
+{
+	sizeof ImmdStruct * 10;
+	Parameters->AlbedoMap[0];
+	Parameters->AlbedoMap[1];
+	Parameters->AlbedoMap[2];
+	Parameters->AlbedoMap[5];
+}
 
 #define DEFINE_GLSL_IMAGE_T(GLSL_IMAGE_T_SEMANTIC_NAME)\
 class glsl_##GLSL_IMAGE_T_SEMANTIC_NAME : public glsl_image_t\
 {\
 \
 };\
-
-#define DEFINE_GLSL_SAMPLER_T(GLSL_SAMPLER_T_SEMANTIC_NAME)\
-class glsl_##GLSL_SAMPLER_T_SEMANTIC_NAME : public glsl_sampler_t\
-{\
-\
-};\
-
-
-
-
-DEFINE_GLSL_SAMPLER_T(sampler1D) // 1D
-DEFINE_GLSL_SAMPLER_T(sampler1DArray)
-DEFINE_GLSL_SAMPLER_T(sampler2D) // 2D
-DEFINE_GLSL_SAMPLER_T(sampler2DArray)
-DEFINE_GLSL_SAMPLER_T(sampler2DRect) // 2DRect
-DEFINE_GLSL_SAMPLER_T(sampler2DMS) // 2DMS
-DEFINE_GLSL_SAMPLER_T(sampler2DMSArray)
-DEFINE_GLSL_SAMPLER_T(sampler3D) // 3D
-DEFINE_GLSL_SAMPLER_T(samplerCube) // Cube
-DEFINE_GLSL_SAMPLER_T(samplerCubeArray)
-DEFINE_GLSL_SAMPLER_T(samplerBuffer) // Buffer
-DEFINE_GLSL_SAMPLER_T(sampler1DShadow) // shadow
-DEFINE_GLSL_SAMPLER_T(sampler2DShadow)
-DEFINE_GLSL_SAMPLER_T(sampler2DRectShadow)
-DEFINE_GLSL_SAMPLER_T(sampler1DArrayShadow)
-DEFINE_GLSL_SAMPLER_T(sampler2DArrayShadow)
-DEFINE_GLSL_SAMPLER_T(samplerCubeShadow)
-DEFINE_GLSL_SAMPLER_T(samplerCubeArrayShadow)
 
 DEFINE_GLSL_IMAGE_T(image1D)
 DEFINE_GLSL_IMAGE_T(image1DArray)
@@ -279,27 +432,6 @@ DEFINE_GLSL_IMAGE_T(image3D)
 DEFINE_GLSL_IMAGE_T(imageCube)
 DEFINE_GLSL_IMAGE_T(imageCubeArray)
 DEFINE_GLSL_IMAGE_T(imageBuffer)
-
-
-DEFINE_GLSL_SAMPLER_T(isampler1D) // 1D
-DEFINE_GLSL_SAMPLER_T(isampler1DArray)
-DEFINE_GLSL_SAMPLER_T(isampler2D) // 2D
-DEFINE_GLSL_SAMPLER_T(isampler2DArray)
-DEFINE_GLSL_SAMPLER_T(isampler2DRect) // 2DRect
-DEFINE_GLSL_SAMPLER_T(isampler2DMS) // 2DMS
-DEFINE_GLSL_SAMPLER_T(isampler2DMSArray)
-DEFINE_GLSL_SAMPLER_T(isampler3D) // 3D
-DEFINE_GLSL_SAMPLER_T(isamplerCube) // Cube
-DEFINE_GLSL_SAMPLER_T(isamplerCubeArray)
-DEFINE_GLSL_SAMPLER_T(isamplerBuffer) // Buffer
-DEFINE_GLSL_SAMPLER_T(isampler1DShadow) // shadow
-DEFINE_GLSL_SAMPLER_T(isampler2DShadow)
-DEFINE_GLSL_SAMPLER_T(isampler2DRectShadow)
-DEFINE_GLSL_SAMPLER_T(isampler1DArrayShadow)
-DEFINE_GLSL_SAMPLER_T(isampler2DArrayShadow)
-DEFINE_GLSL_SAMPLER_T(isamplerCubeShadow)
-DEFINE_GLSL_SAMPLER_T(isamplerCubeArrayShadow)
-
 DEFINE_GLSL_IMAGE_T(iimage1D)
 DEFINE_GLSL_IMAGE_T(iimage1DArray)
 DEFINE_GLSL_IMAGE_T(iimage2D)
@@ -311,26 +443,6 @@ DEFINE_GLSL_IMAGE_T(iimage3D)
 DEFINE_GLSL_IMAGE_T(iimageCube)
 DEFINE_GLSL_IMAGE_T(iimageCubeArray)
 DEFINE_GLSL_IMAGE_T(iimageBuffer)
-
-DEFINE_GLSL_SAMPLER_T(usampler1D) // 1D
-DEFINE_GLSL_SAMPLER_T(usampler1DArray)
-DEFINE_GLSL_SAMPLER_T(usampler2D) // 2D
-DEFINE_GLSL_SAMPLER_T(usampler2DArray)
-DEFINE_GLSL_SAMPLER_T(usampler2DRect) // 2DRect
-DEFINE_GLSL_SAMPLER_T(usampler2DMS) // 2DMS
-DEFINE_GLSL_SAMPLER_T(usampler2DMSArray)
-DEFINE_GLSL_SAMPLER_T(usampler3D) // 3D
-DEFINE_GLSL_SAMPLER_T(usamplerCube) // Cube
-DEFINE_GLSL_SAMPLER_T(usamplerCubeArray)
-DEFINE_GLSL_SAMPLER_T(usamplerBuffer) // Buffer
-DEFINE_GLSL_SAMPLER_T(usampler1DShadow) // shadow
-DEFINE_GLSL_SAMPLER_T(usampler2DShadow)
-DEFINE_GLSL_SAMPLER_T(usampler2DRectShadow)
-DEFINE_GLSL_SAMPLER_T(usampler1DArrayShadow)
-DEFINE_GLSL_SAMPLER_T(usampler2DArrayShadow)
-DEFINE_GLSL_SAMPLER_T(usamplerCubeShadow)
-DEFINE_GLSL_SAMPLER_T(usamplerCubeArrayShadow)
-
 DEFINE_GLSL_IMAGE_T(uimage1D)
 DEFINE_GLSL_IMAGE_T(uimage1DArray)
 DEFINE_GLSL_IMAGE_T(uimage2D)
@@ -345,12 +457,9 @@ DEFINE_GLSL_IMAGE_T(uimageBuffer)
 
 class glsl_atomic_uint : public glsl_opaque_t {};
 
-void create_glsl_atomic_unit();
 
-void test()
+void tes()
 {
-
-
 }
 
 #endif

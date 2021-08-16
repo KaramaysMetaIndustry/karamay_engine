@@ -58,10 +58,6 @@ class glsl_samplerCube : public glsl_sampler
 
 };
 
-class glsl_image
-{};
-
-
 
 
 #endif

@@ -2,6 +2,7 @@
 #define H_GL_SAMPLER
 
 #include "graphics/glo/gl_object.h"
+#include "public/glm.h"
 
 namespace gl_sampler_enum
 {
@@ -24,54 +25,91 @@ namespace gl_sampler_enum
 		TEXTURE_COMPARE_FUNC = GL_TEXTURE_COMPARE_FUNC
 	};
 
-
-	enum class texture_wrap_option : GLenum
-	{
-		CLAMP_TO_EDGE = GL_CLAMP_TO_EDGE,
-		CLAMP_TO_BORDER = GL_CLAMP_TO_BORDER,
-		MIRRORED_REPEAT = GL_MIRRORED_REPEAT,
-		REPEAT = GL_REPEAT,
-		MIRROR_CLAMP_TO_EDGE = GL_MIRROR_CLAMP_TO_EDGE
-	};
-
-	enum class texture_mag_filter : GLenum
-	{
-		NEAREST = GL_NEAREST,
-		LINEAR = GL_LINEAR
-	};
-
-	enum class texture_min_filter : GLenum
-	{
-		NEAREST = GL_NEAREST,
-		LINEAR = GL_LINEAR,
-		NEAREST_MIPMAP_NEAREST = GL_NEAREST_MIPMAP_NEAREST,
-		NEAREST_MIPMAP_LINEAR = GL_NEAREST_MIPMAP_LINEAR,
-		LINEAR_MIPMAP_LINEAR = GL_LINEAR_MIPMAP_LINEAR,
-		LINEAR_MIPMAP_NEAREST = GL_LINEAR_MIPMAP_NEAREST
-	};
-	
-	enum class texture_compare_func : GLenum
-	{
-		LEQUAL = GL_LEQUAL,
-		GEQUAL = GL_GEQUAL,
-		LESS = GL_LESS,
-		GREATER = GL_GREATER,
-		EQUAL = GL_EQUAL,
-		NOTEQUAL = GL_NOTEQUAL,
-		ALWAYS = GL_ALWAYS,
-		NEVER = GL_NEVER
-	};
-
-	enum class texture_compare_mode : GLenum
-	{
-		COMPARE_REF_TO_TEXTURE = GL_COMPARE_REF_TO_TEXTURE,
-		NONE = GL_NONE
-	};
 }
 
+enum class gl_depth_stencil_texture_mode : GLenum
+{
+	DEPTH_COMPONENT = GL_DEPTH_COMPONENT, // initial
+	STENCIL_INDEX = GL_STENCIL_INDEX
+};
+
+enum class gl_texture_compare_func : GLenum
+{
+	LEQUAL = GL_LEQUAL,
+	GEQUAL = GL_GEQUAL,
+	LESS = GL_LESS,
+	GREATER = GL_GREATER,
+	EQUAL = GL_EQUAL,
+	NOTEQUAL = GL_NOTEQUAL,
+	ALWAYS = GL_ALWAYS,
+	NEVER = GL_NEVER
+};
+
+enum class gl_texture_compare_mode : GLenum
+{
+	COMPARE_REF_TO_TEXTURE = GL_COMPARE_REF_TO_TEXTURE,
+	NONE = GL_NONE
+};
+
+enum class gl_texture_wrap_option : GLenum
+{
+	CLAMP_TO_EDGE = GL_CLAMP_TO_EDGE,
+	CLAMP_TO_BORDER = GL_CLAMP_TO_BORDER,
+	MIRRORED_REPEAT = GL_MIRRORED_REPEAT,
+	REPEAT = GL_REPEAT,
+	MIRROR_CLAMP_TO_EDGE = GL_MIRROR_CLAMP_TO_EDGE
+};
+
+enum class gl_texture_mag_filter : GLenum
+{
+	NEAREST = GL_NEAREST,
+	LINEAR = GL_LINEAR
+};
+
+enum class gl_texture_min_filter : GLenum
+{
+	NEAREST = GL_NEAREST,
+	LINEAR = GL_LINEAR,
+	NEAREST_MIPMAP_NEAREST = GL_NEAREST_MIPMAP_NEAREST,
+	NEAREST_MIPMAP_LINEAR = GL_NEAREST_MIPMAP_LINEAR,
+	LINEAR_MIPMAP_LINEAR = GL_LINEAR_MIPMAP_LINEAR,
+	LINEAR_MIPMAP_NEAREST = GL_LINEAR_MIPMAP_NEAREST
+};
+
+enum class gl_texture_swizzle_component : GLenum
+{
+	RED = GL_RED,
+	GREEN = GL_GREEN,
+	BLUE = GL_BLUE,
+	ZERO = GL_ZERO
+};
 
 struct gl_sampler_descriptor
 {
+	gl_depth_stencil_texture_mode  depth_stencil_texture_mode;
+	std::int32_t texture_base_level; // inital 0
+	glm::vec4 texture_border_color; // initial (0.0, 0.0, 0.0, 0.0)
+	gl_texture_compare_func texture_compare_func; //
+	gl_texture_compare_mode texture_compare_mode;// 
+	std::float_t texture_lod_bias; // inital 0.0
+	gl_texture_min_filter texture_min_filter; // GL_NEAREST_MIPMAP_LINEAR.
+	gl_texture_mag_filter texture_mag_filter; // GL_LINEAR.
+	std::float_t texture_min_lod; // initial -1000
+	std::float_t texture_max_lod; // initial 1000
+	std::int32_t texture_max_level; // initial 1000
+	gl_texture_swizzle_component texture_swizzle_r; //RED
+	gl_texture_swizzle_component texture_swizzle_g; //GREEN
+	gl_texture_swizzle_component texture_swizzle_b; //BLUE
+	gl_texture_swizzle_component texture_swizzle_a; // ALPHA
+	gl_texture_swizzle_component texture_swizzle_rgba;
+	gl_texture_wrap_option texture_wrap_s; //REPEAT
+	gl_texture_wrap_option texture_wrap_t; //REPEAT
+	gl_texture_wrap_option texture_wrap_r; //REPEAT
+
+	gl_sampler_descriptor()
+	{
+
+	}
 
 };
 
@@ -79,13 +117,41 @@ class gl_sampler final : public gl_object
 {
 public:
 
-	gl_sampler();
+	explicit gl_sampler(const gl_sampler_descriptor& descriptor) :
+		_descriptor(descriptor)
+	{
+		glCreateSamplers(1, &_handle);
+		_initialize_paramters();
+	}
 
 	virtual ~gl_sampler();
 
 private:
 
-	std::uint32_t _unit;
+	gl_sampler_descriptor _descriptor;
+
+	void _initialize_paramters()
+	{
+		glSamplerParameteri(_handle, GL_DEPTH_STENCIL_TEXTURE_MODE, static_cast<GLint>(_descriptor.depth_stencil_texture_mode));
+		glSamplerParameteri(_handle, GL_TEXTURE_BASE_LEVEL, static_cast<GLint>(_descriptor.texture_base_level));
+		glSamplerParameterfv(_handle, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(_descriptor.texture_border_color));
+		glSamplerParameteri(_handle, GL_TEXTURE_COMPARE_FUNC, static_cast<GLint>(_descriptor.texture_compare_func));
+		glSamplerParameteri(_handle, GL_TEXTURE_COMPARE_MODE, static_cast<GLint>(_descriptor.texture_compare_mode));
+		glSamplerParameterf(_handle, GL_TEXTURE_LOD_BIAS, _descriptor.texture_lod_bias);
+		glSamplerParameteri(_handle, GL_TEXTURE_MIN_FILTER, static_cast<GLint>(_descriptor.texture_min_filter));
+		glSamplerParameteri(_handle, GL_TEXTURE_MAG_FILTER, static_cast<GLint>(_descriptor.texture_mag_filter));
+		glSamplerParameterf(_handle, GL_TEXTURE_MIN_LOD, _descriptor.texture_min_lod);
+		glSamplerParameterf(_handle, GL_TEXTURE_MAX_LOD, _descriptor.texture_max_lod);
+		glSamplerParameteri(_handle, GL_TEXTURE_MAX_LEVEL, _descriptor.texture_max_level);
+		glSamplerParameteri(_handle, GL_TEXTURE_SWIZZLE_R, static_cast<GLint>(_descriptor.texture_swizzle_r));
+		glSamplerParameteri(_handle, GL_TEXTURE_SWIZZLE_G, static_cast<GLint>(_descriptor.texture_swizzle_g));
+		glSamplerParameteri(_handle, GL_TEXTURE_SWIZZLE_B, static_cast<GLint>(_descriptor.texture_swizzle_b));
+		glSamplerParameteri(_handle, GL_TEXTURE_SWIZZLE_A, static_cast<GLint>(_descriptor.texture_swizzle_a));
+		glSamplerParameteriv(_handle, GL_TEXTURE_SWIZZLE_RGBA, glm::value_ptr(glm::ivec4()));
+		glSamplerParameteri(_handle, GL_TEXTURE_WRAP_S, static_cast<GLint>(_descriptor.texture_wrap_s));
+		glSamplerParameteri(_handle, GL_TEXTURE_WRAP_T, static_cast<GLint>(_descriptor.texture_wrap_t));
+		glSamplerParameteri(_handle, GL_TEXTURE_WRAP_R, static_cast<GLint>(_descriptor.texture_wrap_r));
+	}
 
 public:
 
@@ -102,64 +168,6 @@ public:
 	{
 		glBindSampler(_unit, 0);
 	}
-
-public:
-
-	/**
-	 * Minifying function.
-	 * Default value is NEAREST_MIPMAP_LINEAR
-	 */
-	void set_texture_min_filter(gl_sampler_enum::texture_min_filter texture_min_filter);
-
-	/**
-	 * Magnification function.	
-	 * Default value is LINEAR
-	 */
-	void set_texture_mag_filter(gl_sampler_enum::texture_mag_filter texture_mag_filter);
-	
-	/**
-	 * Default value is REPEAT
-	 */
-	void set_texture_wrap_s(gl_sampler_enum::texture_wrap_option texture_wrap_option);
-
-	/**
-	 * Default value is REPEAT
-	 */
-	void set_texture_wrap_t(gl_sampler_enum::texture_wrap_option texture_wrap_option);
-
-	/**
-	 * Default value is REPEAT
-	 */
-	void set_texture_wrap_r(gl_sampler_enum::texture_wrap_option texture_wrap_option);
-
-	/**
-	 * 
-	 */
-	void set_texture_compare_func(gl_sampler_enum::texture_compare_func texture_compare_func);
-
-	void set_texture_compare_mode(gl_sampler_enum::texture_compare_mode texture_compare_mode);
-
-	/**
-	 * Default value is vec4(0.0f, 0.0f, 0.0f, 0.0f)
-	 */
-	void set_texture_border_color(glm::vec4 texture_border_color);
-	
-	/**
-	 * Specify a bias for texture sampling. 
-	 * The value is clamped into [-GL_MAX_TEXTURE_LOD_BIAS, GL_MAX_TEXTURE_LOD_BIAS]
-	 * Default value is 0.0f.
-	 */
-	void set_texture_lod_bias(std::float_t texture_lod_bias);
-	
-	/**
-	 * Default value is -1000.0f
-	 */
-	void set_texture_min_lod(std::float_t texture_min_lod);
-
-	/**
-	 * Default value is 1000.0f
-	 */
-	void set_texture_max_lod(std::float_t texture_max_lod);
 
 
 public:

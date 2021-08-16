@@ -3,48 +3,38 @@
 
 #include "graphics/texture/base/gl_texture.h"
 
-template<gl_texture_pixel_format format>
-class gl_pixels
-{
-public:
-
-	gl_pixels(std::int32_t count, const void* data) {}
-
-public:
-
-	gl_texture_pixel_format get_format() const { return format; }
-
-	void* get_data();
-
-private:
-
-	std::vector<int> pixels;
-
-};
-
-
 struct gl_texture_2d_descriptor
 {
+	/* pixels num = width * height */
 	std::int32_t width, height;
+	/* combination of a pixel */
 	gl_texture_pixel_format pixel_format;
+	/* num of mipmaps (include base image) */
 	std::int32_t mipmaps_count;
 
-	gl_texture_2d_descriptor(std::int32_t _width, std::int32_t _height, gl_texture_pixel_format _pixel_format, std::int32_t _mipmaps_count) :
+	/* whole params for constructing texture 2d */
+	explicit gl_texture_2d_descriptor(std::int32_t _width, std::int32_t _height, gl_texture_pixel_format _pixel_format, std::int32_t _mipmaps_count) :
 		width(_width), height(_height),
 		pixel_format(_pixel_format),
 		mipmaps_count(_mipmaps_count)
 	{}
 
-	gl_texture_2d_descriptor(std::int32_t _width, std::int32_t _height, gl_texture_pixel_format _pixel_format) :
+	/* 
+	* _width : 
+	* _height : 
+	* _pixel_format: 
+	*/
+	explicit gl_texture_2d_descriptor(std::int32_t _width, std::int32_t _height, gl_texture_pixel_format _pixel_format) :
 		width(_width), height(_height),
 		pixel_format(_pixel_format),
 		mipmaps_count(1)
 	{}
 
 	gl_texture_2d_descriptor() = delete;
-
 	gl_texture_2d_descriptor(const gl_texture_2d_descriptor&) = default;
-
+	gl_texture_2d_descriptor& operator=(const gl_texture_2d_descriptor&) = default;
+	
+	~gl_texture_2d_descriptor() = default;
 };
 
 
@@ -75,13 +65,16 @@ public:
 
 	gl_texture_2d_descriptor get_descriptor() const { return _descriptor; }
 
-	void bind(std::uint32_t unit)
+	void bind(std::uint32_t unit) override
 	{
 		glActiveTexture(GL_TEXTURE0 + unit);
 		glBindTexture(GL_TEXTURE_2D, _handle);
 	}
 
-	void unbind();
+	void unbind() override
+	{
+
+	}
 
 	std::pair<std::int32_t, std::int32_t> inline get_mipmap_size(std::uint32_t mipmap_index) const
 	{

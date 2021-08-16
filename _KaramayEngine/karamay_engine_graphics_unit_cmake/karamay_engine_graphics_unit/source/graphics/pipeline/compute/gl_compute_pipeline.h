@@ -56,29 +56,10 @@ struct MyUniformStruct
 #define glsl_uniform_layout_std140 alignas(16)
 #define glsl_shader_storage_layout_std140 alignas(16)
 
-gl_texture_2d<gl_texture_pixel_format::SRGB8> a;
-gl_pixels<gl_texture_pixel_format::R8> sa();
-
-template<typename uniform_struct_t, const char* instance_name, int array_size>
-class gl_uniform_buffer
-{
-	uniform_struct_t instance[array_size];
-
-	const std::uint8_t* get_stream() const
-	{
-		return reinterpret_cast<const std::uint8_t*>(&instance);
-	}
-
-	std::int64_t get_stream_size() const
-	{
-		return sizeof(uniform_struct_t) * array_size;
-	}
-
-};
-
 
 class gl_compute_pipeline_parameters
 {
+	
 };
 
 #define define_compute_pipeline_parameters()
@@ -101,36 +82,38 @@ public:
 		_initialize_compute_pipeline();
 	}
 
+	gl_compute_pipeline(const gl_compute_pipeline&) = delete;
+	gl_compute_pipeline& operator=(const gl_compute_pipeline&) = delete;
+	
 	~gl_compute_pipeline() = default;
 
 private:
-
-	gl_compute_pipeline() = default;
 
 	const gl_compute_pipeline_descriptor _descriptor;
 
 	void _initialize_compute_pipeline();
 
+	inline void _install() {}
+
+	inline void _uninstall() {}
+
 public:
 	/*
 	* Dispatch compute shader
 	*/
-	inline void install() 
-	{
-
-	}
-
 	inline void dispatch(std::uint32_t group_size_x, std::uint32_t group_size_y, std::uint32_t group_size_z)
 	{
+		_install();
 		glDispatchCompute(group_size_x, group_size_y, group_size_z);
+		_uninstall();
 	}
-
-	inline void dispatch()
-	{
-
-	}
-
-	inline void uninstall() {}
 
 };
 
+
+void test()
+{
+	gl_compute_pipeline_descriptor _desc;
+	
+	gl_compute_pipeline _comp_pip(_desc);
+}
