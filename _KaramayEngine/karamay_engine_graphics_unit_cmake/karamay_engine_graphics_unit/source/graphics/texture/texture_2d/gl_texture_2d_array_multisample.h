@@ -11,7 +11,13 @@ struct gl_texture_2d_array_multisample_descriptor
 	gl_texture_pixel_format pixel_format;
 	bool fixed_sample_location;
 
-	gl_texture_2d_array_multisample_descriptor(std::int32_t _elements_count, std::int32_t _samples_count, std::int32_t _width, std::int32_t _height, gl_texture_pixel_format _pixel_format, bool _fixed_sample_location) :
+	gl_texture_2d_array_multisample_descriptor(
+		std::int32_t _elements_count, 
+		std::int32_t _samples_count, 
+		std::int32_t _width, std::int32_t _height, 
+		gl_texture_pixel_format _pixel_format, 
+		bool _fixed_sample_location
+	) :
 		elements_count(_elements_count),
 		samples_count(_samples_count),
 		width(_width), height(_height),
@@ -19,7 +25,12 @@ struct gl_texture_2d_array_multisample_descriptor
 		fixed_sample_location(_fixed_sample_location)
 	{}
 
-	gl_texture_2d_array_multisample_descriptor(std::int32_t _elements_count, std::int32_t _samples_count, std::int32_t _width, std::int32_t _height, gl_texture_pixel_format _pixel_format) :
+	gl_texture_2d_array_multisample_descriptor(
+		std::int32_t _elements_count, 
+		std::int32_t _samples_count, 
+		std::int32_t _width, std::int32_t _height, 
+		gl_texture_pixel_format _pixel_format
+	) :
 		elements_count(_elements_count),
 		samples_count(_samples_count),
 		width(_width), height(_height),
@@ -30,6 +41,7 @@ struct gl_texture_2d_array_multisample_descriptor
 	gl_texture_2d_array_multisample_descriptor() = delete;
 	gl_texture_2d_array_multisample_descriptor(const gl_texture_2d_array_multisample_descriptor&) = default;
 	gl_texture_2d_array_multisample_descriptor& opeator = (const gl_texture_2d_array_multisample_descriptor&) = default;
+
 	~gl_texture_2d_array_multisample_descriptor() = default;
 };
 
@@ -38,7 +50,8 @@ class gl_texture_2d_array_multisample final : public gl_texture
 {
 public:
 	
-	explicit gl_texture_2d_array_multisample(const gl_texture_2d_array_multisample_descriptor& descriptor)
+	explicit gl_texture_2d_array_multisample(const gl_texture_2d_array_multisample_descriptor& descriptor) :
+		_descriptor(descriptor)
 	{
 		glCreateTextures(GL_TEXTURE_2D_MULTISAMPLE_ARRAY, 1, &_handle);
 		glTextureStorage3DMultisample(_handle, 
@@ -65,10 +78,8 @@ private:
 
 public:
 
-	void fill(GLsizei Level,  GLsizei Width, GLsizei Height, GLsizei Num,GLenum Format, GLenum Type, std::vector<const void*> Datas) {
-		gl_texture_2d_array_multisample_descriptor _desc(10, 2, 1024, 1024, gl_texture_pixel_format::COMPRESSED_RED);
-		gl_texture_2d_array_multisample _tarray(_desc);
-		
+	void fill(GLsizei Level,  GLsizei Width, GLsizei Height, GLsizei Num,GLenum Format, GLenum Type, std::vector<const void*> Datas) 
+	{
 		for (std::int32_t i = 0; i < Num; ++i)
 		{
 			glTexSubImage3D(GL_TEXTURE_2D_MULTISAMPLE_ARRAY, Level, 0, 0, i, Width, Height, 1, Format, Type, Datas[i]);

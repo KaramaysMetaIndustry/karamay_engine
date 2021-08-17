@@ -27,6 +27,7 @@ struct gl_texture_2d_multisample_descriptor
 	gl_texture_2d_multisample_descriptor() = delete;
 	gl_texture_2d_multisample_descriptor(const gl_texture_2d_multisample_descriptor&) = default;
 	gl_texture_2d_multisample_descriptor& operator=(const gl_texture_2d_multisample_descriptor&) = default;
+
 	~gl_texture_2d_multisample_descriptor() = default;
 };
 
@@ -45,6 +46,14 @@ public:
 			_descriptor.width, _descriptor.height, 
 			_descriptor.fixed_sample_location
 		);
+		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _handle);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE,
+			_descriptor.samples_count,
+			static_cast<GLenum>(_descriptor.pixel_format),
+			_descriptor.width, _descriptor.height,
+			_descriptor.fixed_sample_location
+		);
+		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 	}
 
 	gl_texture_2d_multisample() = delete;
@@ -62,13 +71,19 @@ private:
 
 public:
 
-	void fill(int samples_num, int width, int height, GLboolean FixedSampleLocation) {
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples_num, _internal_format, width, height, FixedSampleLocation);
+	const gl_texture_2d_multisample_descriptor& get_descriptor() const { return _descriptor; }
+
+	void bind() override;
+	{
+		glActiveTexture(unit);
+		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _handle);
 	}
 
-	void bind(std::uint32_t unit);
-
-	void unbind();
+	void unbind()
+	{
+		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _handle);
+		glActiveTexture(0);
+	}
 
 };
 

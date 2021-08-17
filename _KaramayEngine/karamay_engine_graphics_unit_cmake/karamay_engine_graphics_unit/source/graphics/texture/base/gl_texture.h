@@ -462,15 +462,10 @@ public:
 	~gl_texture() override
 	{
 		glDeleteTextures(1, &_handle);
-		std::uint8_t a = 257;
-		std::uint16_t b = 2;
-		std::uint32_t c = 3;
 	}
 
 public:
-
-	virtual void bind(std::uint32_t unit) = 0;
-
+	virtual void bind() = 0;
 	virtual void unbind() = 0;
 
 protected:

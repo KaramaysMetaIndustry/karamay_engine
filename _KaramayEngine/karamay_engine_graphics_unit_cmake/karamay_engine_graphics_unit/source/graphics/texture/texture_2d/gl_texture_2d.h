@@ -56,7 +56,20 @@ public:
 	gl_texture_2d() = delete;
 	
 	virtual ~gl_texture_2d() = default;
-	
+
+public:
+
+	void bind() override
+	{
+		glActiveTexture(GL_TEXTURE0 + 0);
+		glBindTexture(GL_TEXTURE_2D, _handle);
+	}
+
+	void unbind() override
+	{
+
+	}
+
 private:
 
 	gl_texture_2d_descriptor _descriptor;
@@ -65,16 +78,6 @@ public:
 
 	gl_texture_2d_descriptor get_descriptor() const { return _descriptor; }
 
-	void bind(std::uint32_t unit) override
-	{
-		glActiveTexture(GL_TEXTURE0 + unit);
-		glBindTexture(GL_TEXTURE_2D, _handle);
-	}
-
-	void unbind() override
-	{
-
-	}
 
 	std::pair<std::int32_t, std::int32_t> inline get_mipmap_size(std::uint32_t mipmap_index) const
 	{
