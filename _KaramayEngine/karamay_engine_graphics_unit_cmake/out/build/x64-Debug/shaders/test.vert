@@ -1,19 +1,26 @@
 #version 460 core
-
+// define the shader's input 
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in lowp vec2 aTexCoord;
 layout (location = 2) in ivec4 atest;
-
+// define the shader's output
 layout(location = 0) out vec3 position;
 layout(location = 1) out vec2 TexCoord;
 layout(location = 2) out ivec4 test;
 layout(location = 3) out vec4 _color;
 layout(location = 4) out vec4 _text;
 
+// uniforms
 layout(std140) uniform att
 {
 	vec2 ax;
 };
+
+uniform struct opaque_block{
+	sampler2DShadow REX;
+
+}a;
+
 
 
 uniform sampler2D texturex[10];
@@ -22,13 +29,15 @@ layout (binding = 0, r32f, location = 1) coherent uniform image1D input_image;
 
 uniform mat4 transform;
 
+layout(binding = 0, offset = 4) uniform atomic_uint x;
+
 void main()
 {
    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
-
+   
    TexCoord = vec2(aTexCoord.x, aTexCoord.y);
    test = atest;
 
-   float x = imageLoad(input_image, int(0)).x;
-
+   vec2 x = imageLoad(input_image, int(0)).xy;
+   a.REX;
 }

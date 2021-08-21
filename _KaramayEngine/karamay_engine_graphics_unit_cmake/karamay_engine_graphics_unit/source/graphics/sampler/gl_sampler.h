@@ -81,35 +81,35 @@ enum class gl_texture_swizzle_component : GLenum
 	RED = GL_RED,
 	GREEN = GL_GREEN,
 	BLUE = GL_BLUE,
+	ALPHA = GL_ALPHA,
 	ZERO = GL_ZERO
 };
 
 struct gl_sampler_descriptor
 {
-	gl_depth_stencil_texture_mode  depth_stencil_texture_mode;
-	std::int32_t texture_base_level; // inital 0
-	glm::vec4 texture_border_color; // initial (0.0, 0.0, 0.0, 0.0)
-	gl_texture_compare_func texture_compare_func; //
-	gl_texture_compare_mode texture_compare_mode;// 
-	std::float_t texture_lod_bias; // inital 0.0
-	gl_texture_min_filter texture_min_filter; // GL_NEAREST_MIPMAP_LINEAR.
-	gl_texture_mag_filter texture_mag_filter; // GL_LINEAR.
-	std::float_t texture_min_lod; // initial -1000
-	std::float_t texture_max_lod; // initial 1000
-	std::int32_t texture_max_level; // initial 1000
-	gl_texture_swizzle_component texture_swizzle_r; //RED
-	gl_texture_swizzle_component texture_swizzle_g; //GREEN
-	gl_texture_swizzle_component texture_swizzle_b; //BLUE
-	gl_texture_swizzle_component texture_swizzle_a; // ALPHA
-	gl_texture_swizzle_component texture_swizzle_rgba;
-	gl_texture_wrap_option texture_wrap_s; //REPEAT
-	gl_texture_wrap_option texture_wrap_t; //REPEAT
-	gl_texture_wrap_option texture_wrap_r; //REPEAT
+	gl_texture_min_filter texture_min_filter;
+	gl_texture_mag_filter texture_mag_filter;
+	std::float_t texture_min_lod;
+	std::float_t texture_max_lod;
+	gl_texture_wrap_option texture_wrap_s;
+	gl_texture_wrap_option texture_wrap_t;
+	gl_texture_wrap_option texture_wrap_r;
+	glm::vec4 texture_border_color;
+	gl_texture_compare_mode texture_compare_mode;
+	gl_texture_compare_func texture_compare_func;
 
-	gl_sampler_descriptor()
-	{
-
-	}
+	gl_sampler_descriptor() :
+		texture_min_filter(gl_texture_min_filter::NEAREST_MIPMAP_LINEAR),
+		texture_mag_filter(gl_texture_mag_filter::LINEAR),
+		texture_min_lod(-1000.0f),
+		texture_max_lod(1000.0f),
+		texture_wrap_s(gl_texture_wrap_option::REPEAT),
+		texture_wrap_t(gl_texture_wrap_option::REPEAT),
+		texture_wrap_r(gl_texture_wrap_option::REPEAT),
+		texture_border_color(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)),
+		texture_compare_mode(gl_texture_compare_mode::NONE), // ?
+		texture_compare_func(gl_texture_compare_func::ALWAYS) // ?
+	{}
 
 };
 
@@ -132,25 +132,16 @@ private:
 
 	void _initialize_paramters()
 	{
-		glSamplerParameteri(_handle, GL_DEPTH_STENCIL_TEXTURE_MODE, static_cast<GLint>(_descriptor.depth_stencil_texture_mode));
-		glSamplerParameteri(_handle, GL_TEXTURE_BASE_LEVEL, static_cast<GLint>(_descriptor.texture_base_level));
-		glSamplerParameterfv(_handle, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(_descriptor.texture_border_color));
-		glSamplerParameteri(_handle, GL_TEXTURE_COMPARE_FUNC, static_cast<GLint>(_descriptor.texture_compare_func));
-		glSamplerParameteri(_handle, GL_TEXTURE_COMPARE_MODE, static_cast<GLint>(_descriptor.texture_compare_mode));
-		glSamplerParameterf(_handle, GL_TEXTURE_LOD_BIAS, _descriptor.texture_lod_bias);
 		glSamplerParameteri(_handle, GL_TEXTURE_MIN_FILTER, static_cast<GLint>(_descriptor.texture_min_filter));
 		glSamplerParameteri(_handle, GL_TEXTURE_MAG_FILTER, static_cast<GLint>(_descriptor.texture_mag_filter));
 		glSamplerParameterf(_handle, GL_TEXTURE_MIN_LOD, _descriptor.texture_min_lod);
 		glSamplerParameterf(_handle, GL_TEXTURE_MAX_LOD, _descriptor.texture_max_lod);
-		glSamplerParameteri(_handle, GL_TEXTURE_MAX_LEVEL, _descriptor.texture_max_level);
-		glSamplerParameteri(_handle, GL_TEXTURE_SWIZZLE_R, static_cast<GLint>(_descriptor.texture_swizzle_r));
-		glSamplerParameteri(_handle, GL_TEXTURE_SWIZZLE_G, static_cast<GLint>(_descriptor.texture_swizzle_g));
-		glSamplerParameteri(_handle, GL_TEXTURE_SWIZZLE_B, static_cast<GLint>(_descriptor.texture_swizzle_b));
-		glSamplerParameteri(_handle, GL_TEXTURE_SWIZZLE_A, static_cast<GLint>(_descriptor.texture_swizzle_a));
-		glSamplerParameteriv(_handle, GL_TEXTURE_SWIZZLE_RGBA, glm::value_ptr(glm::ivec4()));
+		glSamplerParameterfv(_handle, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(_descriptor.texture_border_color));
 		glSamplerParameteri(_handle, GL_TEXTURE_WRAP_S, static_cast<GLint>(_descriptor.texture_wrap_s));
 		glSamplerParameteri(_handle, GL_TEXTURE_WRAP_T, static_cast<GLint>(_descriptor.texture_wrap_t));
 		glSamplerParameteri(_handle, GL_TEXTURE_WRAP_R, static_cast<GLint>(_descriptor.texture_wrap_r));
+		glSamplerParameteri(_handle, GL_TEXTURE_COMPARE_MODE, static_cast<GLint>(_descriptor.texture_compare_mode));
+		glSamplerParameteri(_handle, GL_TEXTURE_COMPARE_FUNC, static_cast<GLint>(_descriptor.texture_compare_func));
 	}
 
 public:
@@ -160,7 +151,6 @@ public:
 		if (unit < GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS)
 		{
 			glBindSampler(unit, _handle);
-			_unit = unit;
 		}
 	}
 

@@ -2,6 +2,7 @@
 #define GL_TEXTURE_BASE_H
 
 #include "graphics/glo/gl_object.h"
+#include "graphics/sampler/gl_sampler.h"
 
 namespace gl_texture_enum
 {
@@ -228,8 +229,6 @@ enum class gl_cube_face_index : GLenum {
 };
 
 
-
-
 enum class gl_texture_pixel_format : GLenum
 {
 	// normalized (i/ui)
@@ -429,8 +428,6 @@ enum class gl_image_format : GLenum
 	
 };
 
-
-
 class gl_pixels
 {
 public:
@@ -443,6 +440,9 @@ public:
 	std::uint8_t* data() {
 		gl_image_format::F_R32;
 	}
+
+
+
 };
 
 
@@ -452,6 +452,54 @@ std::pair<std::uint32_t, std::uint32_t> pixel_format_to_data_format(gl_texture_p
 	return std::make_pair(0, 0);
 }
 
+
+struct gl_texture_descriptor
+{
+	struct gl_texture_base_parameters
+	{
+		gl_depth_stencil_texture_mode  depth_stencil_texture_mode;
+		std::int32_t texture_base_level;
+		std::int32_t texture_max_level;
+		gl_texture_swizzle_component texture_swizzle_r;
+		gl_texture_swizzle_component texture_swizzle_g;
+		gl_texture_swizzle_component texture_swizzle_b;
+		gl_texture_swizzle_component texture_swizzle_a;
+		std::float_t texture_lod_bias;
+
+		gl_texture_base_parameters() :
+			depth_stencil_texture_mode(),
+			texture_base_level(0),
+			texture_max_level(1000),
+			texture_swizzle_r(gl_texture_swizzle_component::RED),
+			texture_swizzle_g(gl_texture_swizzle_component::GREEN),
+			texture_swizzle_b(gl_texture_swizzle_component::BLUE),
+			texture_swizzle_a(gl_texture_swizzle_component::ALPHA),
+			texture_lod_bias(0.0f)
+		{}
+	} base_parameters;
+	
+
+	//explicit gl_texture_descriptor(
+	//	gl_depth_stencil_texture_mode _depth_stencil_texture_mode, 
+	//	std::int32_t _texture_base_level, 
+	//	std::int32_t _texture_max_level, 
+	//	gl_texture_swizzle_component _texture_swizzle_r,
+	//	gl_texture_swizzle_component _texture_swizzle_g,
+	//	gl_texture_swizzle_component _texture_swizzle_b,
+	//	gl_texture_swizzle_component _texture_swizzle_a,
+	//	std::float_t _texture_lod_bias
+	//) :
+	//	depth_stencil_texture_mode(_depth_stencil_texture_mode),
+	//	texture_base_level(_texture_base_level),
+	//	texture_max_level(_texture_max_level),
+	//	texture_swizzle_r(_texture_swizzle_r),
+	//	texture_swizzle_g(_texture_swizzle_g),
+	//	texture_swizzle_b(_texture_swizzle_b),
+	//	texture_swizzle_a(_texture_swizzle_a),
+	//	texture_lod_bias(_texture_lod_bias)
+	//{}
+
+};
 
 class gl_texture : public gl_object
 {
@@ -628,28 +676,6 @@ protected:
 			break;
 		}
 	}
-
-
-public:
-
-	void set_depth_stencil_texture_mode(gl_texture_enum::type texture_type, gl_texture_enum::depth_stencil_texture_mode depth_stencil_texture_mode);
-
-	/**
-	 * Default value is 0
-	 */
-	void set_texture_base_level(gl_texture_enum::type texture_type, std::uint32_t texture_base_level);
-
-	/**
-	 * Default value is 1000
-	 */
-	void set_texture_max_level(gl_texture_enum::type texture_type, std::uint32_t texture_max_level);
-
-	/**
-	 * Default value is vec4(RED, GREEN, BLUE, ALPHA)
-	 * Try to specify component comb
-	 */
-	void set_texture_swizzle_rgba(gl_texture_enum::type texture_type, std::array<gl_texture_enum::texture_swizzle_component, 4> texture_swizzle_rgba);
-	
 };
 
 

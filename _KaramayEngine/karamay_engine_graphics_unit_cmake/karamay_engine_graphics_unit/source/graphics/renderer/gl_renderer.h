@@ -88,6 +88,11 @@ public:
 
 };
 
+/*
+* Every Renderer's resource refs must be dependent to each other
+* 
+* 
+*/
 class gl_renderer
 {
 public:
@@ -106,6 +111,19 @@ public:
     virtual void render(std::float_t delta_time) = 0;
 
 protected:
+
+    void initialize()
+    {
+        // assembly all program resources
+        assembly(_renderer_builder); 
+        // check shaders
+            // if not, create template shaders
+        // if true, complie shaders
+        // if complie success, check resources validation
+
+    }
+
+    
 
     using _pass_lambda = std::function<void(void)>;
     

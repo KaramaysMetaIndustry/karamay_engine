@@ -16,20 +16,28 @@ layout(std140) uniform att
 	vec2 ax;
 };
 
+uniform struct opaque_block{
+	sampler2DShadow REX;
+
+}a;
+
+
 
 uniform sampler2D texturex[10];
 uniform writeonly image1D imagex;
-layout (binding = 0, r32f, location = 1) coherent uniform image1D input_image;
+ layout (binding = 0, r32f, location = 1) coherent uniform image1D input_image;
 
 uniform mat4 transform;
+
+layout(binding = 0, offset = 4) uniform atomic_uint x;
 
 void main()
 {
    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
-
+   
    TexCoord = vec2(aTexCoord.x, aTexCoord.y);
    test = atest;
 
    vec2 x = imageLoad(input_image, int(0)).xy;
-
+   a.REX;
 }

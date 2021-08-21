@@ -3,38 +3,6 @@
 #include "graphics/type/glsl_class/glsl_transparent_class/glsl_transparent_class.h"
 #include "graphics/type/glsl_class/glsl_opaque_class/glsl_opaque_class.h"
 
-#define begin_uniform_struct(struct_name, instance_name) \
-struct struct_name {\
-
-#define end_uniform_struct }
-
-
-
-#define uniform_struct_array(struct_name, instance_name, array_size) \
-
-#define shader_storage_struct()
-#define shader_storage_struct_array()
-
-#define uniform_struct_transparent_t(type_name, attrib_name) \
-type_name attrib_name\
-
-#define program_parameters_begin()\
-struct gl_program_parameters {\
-
-#define program_parameters_end() \
-}\
-
-
-#define immediate_texture_2d(texture_name)
-#define immediate_texture_2d(texture_name)
-#define immediate_texture_2d(texture_name)
-#define immediate_texture_2d(texture_name)
-
-program_parameters_begin()
-
-program_parameters_end();
-
-
 struct MyUniformStruct
 {
 	glsl_dmat2 mat_x;
@@ -62,16 +30,10 @@ class gl_compute_pipeline_parameters
 	
 };
 
-#define define_compute_pipeline_parameters()
-
 struct gl_compute_pipeline_descriptor
 {
 };
 
-/*
-*
-* 
-*/
 class gl_compute_pipeline final : public gl_pipeline
 {
 public:

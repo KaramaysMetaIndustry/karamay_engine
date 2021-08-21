@@ -3,7 +3,7 @@
 
 #include "graphics/texture/base/gl_texture.h"
 
-struct gl_texture_2d_descriptor
+struct gl_texture_2d_descriptor : public gl_texture_descriptor
 {
 	/* pixels num = width * height */
 	std::int32_t width, height;
@@ -12,22 +12,25 @@ struct gl_texture_2d_descriptor
 	/* num of mipmaps (include base image) */
 	std::int32_t mipmaps_count;
 
-	/* whole params for constructing texture 2d */
-	explicit gl_texture_2d_descriptor(std::int32_t _width, std::int32_t _height, gl_texture_pixel_format _pixel_format, std::int32_t _mipmaps_count) :
+	explicit gl_texture_2d_descriptor(
+		std::int32_t _width, std::int32_t _height, 
+		gl_texture_pixel_format _pixel_format, 
+		std::int32_t _mipmaps_count
+	) :
 		width(_width), height(_height),
 		pixel_format(_pixel_format),
-		mipmaps_count(_mipmaps_count)
+		mipmaps_count(_mipmaps_count),
+		gl_texture_descriptor()
 	{}
 
-	/* 
-	* _width : 
-	* _height : 
-	* _pixel_format: 
-	*/
-	explicit gl_texture_2d_descriptor(std::int32_t _width, std::int32_t _height, gl_texture_pixel_format _pixel_format) :
+	explicit gl_texture_2d_descriptor(
+		std::int32_t _width, std::int32_t _height, 
+		gl_texture_pixel_format _pixel_format
+	) :
 		width(_width), height(_height),
 		pixel_format(_pixel_format),
-		mipmaps_count(1)
+		mipmaps_count(1),
+		gl_texture_descriptor()
 	{}
 
 	gl_texture_2d_descriptor() = delete;
@@ -37,7 +40,6 @@ struct gl_texture_2d_descriptor
 	~gl_texture_2d_descriptor() = default;
 };
 
-
 class gl_texture_2d final : public gl_texture
 {
 public:
@@ -46,18 +48,24 @@ public:
 		_descriptor(descriptor)
 	{
 		glCreateTextures(GL_TEXTURE_2D, 1, &_handle);
-		glTextureStorage2D(
-			_handle, _descriptor.mipmaps_count, 
-			static_cast<GLenum>(_descriptor.pixel_format), 
+		glTextureStorage2D(_handle, 
+			_descriptor.mipmaps_count, 
+			static_cast<std::uint32_t>(_descriptor.pixel_format), 
 			_descriptor.width, _descriptor.height
 		);
 	}
 
 	gl_texture_2d() = delete;
 	
-	virtual ~gl_texture_2d() = default;
+	~gl_texture_2d() = default;
 
 public:
+
+	void clone(std::shared_ptr<gl_texture_2d> texture_2d)
+	{
+		if (!texture_2d) return;
+
+	}
 
 	void bind() override
 	{
@@ -65,47 +73,44 @@ public:
 		glBindTexture(GL_TEXTURE_2D, _handle);
 	}
 
-	void unbind() override
-	{
-
-	}
+	void unbind() override {}
 
 private:
 
 	gl_texture_2d_descriptor _descriptor;
 
-public:
+	void _allocate();
 
-	gl_texture_2d_descriptor get_descriptor() const { return _descriptor; }
-
-
-	std::pair<std::int32_t, std::int32_t> inline get_mipmap_size(std::uint32_t mipmap_index) const
-	{
-		return std::make_pair(_width >> mipmap_index, _height >> mipmap_index);
-	}
+	void _release();
 
 public:
 
-	/*
-	* index of mipmap
-	* x offset(unit = pixel), y offset(uint = pixel)
-	* in_pixels
-	*/
+	const gl_texture_2d_descriptor& descriptor() const { return _descriptor; }
+
 	void fill(std::int32_t mipmap_index, std::int32_t x_offset, std::int32_t y_offset)
 	{
-		if (mipmap_index < 0 || mipmap_index >= _mipmaps_count || x_offset < 0 || y_offset < 0 || x_offset >= _width || y_offset >= _height) return;
+		if (
+			mipmap_index < 0 || 
+			mipmap_index >= _descriptor.mipmaps_count || 
+			x_offset < 0 || y_offset < 0 || 
+			x_offset >= _descriptor.width || 
+			y_offset >= _descriptor.height
+			) return;
 
-		glBindTexture(GL_TEXTURE_2D, _handle);
 		auto data_format = pixel_format_to_data_format(_descriptor.pixel_format);
-		glTexSubImage2D(GL_TEXTURE_2D, mipmap_index,
+		glTextureSubImage2D(_handle, 
+			mipmap_index,
 			x_offset, y_offset, _descriptor.width, _descriptor.height,
-			static_cast<std::uint32_t>(data_format.first), static_cast<std::uint32_t>(data_format.second), pixels.get_data());
-		glBindTexture(GL_TEXTURE_2D, 0);
+			static_cast<std::uint32_t>(data_format.first), 
+			static_cast<std::uint32_t>(data_format.second), 
+			pixels.get_data()
+		);
+
 	}
 
-	void fetch_pixels(std::int32_t mipmap_index, gl_pixels<format>& out_pixels)
+	void fetch_pixels(std::int32_t mipmap_index)
 	{
-		glGetTexImage(GL_TEXTURE_2D)
+		glGetTextureImage(_handle, 0, );
 	}
 
 };

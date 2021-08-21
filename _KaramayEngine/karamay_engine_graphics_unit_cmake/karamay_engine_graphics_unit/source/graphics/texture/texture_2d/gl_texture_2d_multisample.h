@@ -73,7 +73,7 @@ public:
 
 	const gl_texture_2d_multisample_descriptor& get_descriptor() const { return _descriptor; }
 
-	void bind() override;
+	void bind() override
 	{
 		glActiveTexture(unit);
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _handle);

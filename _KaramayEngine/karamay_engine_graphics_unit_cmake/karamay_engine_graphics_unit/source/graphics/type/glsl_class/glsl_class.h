@@ -9,13 +9,15 @@
 #include "graphics/texture/gl_texture.h"
 
 class glsl_t
-{};
-
-class glsl_cacheable
 {
-	virtual std::int64_t size() const;
-	virtual std::int64_t offset() const;
+	//virtual std::string get_t_token() = 0;
+
 };
+
+/*
+* transparent_t
+* include [scalars] [vectors] [matrices]
+*/
 
 class glsl_transparent_t : public glsl_t
 {
@@ -76,6 +78,7 @@ constexpr std::uint32_t to_enum<glm::uvec1::value_type>() { return GL_UNSIGNED_I
 template<>
 constexpr std::uint32_t to_enum<glm::ivec1::value_type>() { return GL_INT; }
 
+// float scalar && vectors && matrices
 DEFINE_GLSL_TRANSPARENT_T(float, vec1, "float")
 DEFINE_GLSL_TRANSPARENT_T(vec2, vec2, "vec2")
 DEFINE_GLSL_TRANSPARENT_T(vec3, vec3, "vec3")
@@ -89,6 +92,7 @@ DEFINE_GLSL_TRANSPARENT_T(mat3x4, mat3x4, "mat3x4")
 DEFINE_GLSL_TRANSPARENT_T(mat4, mat4, "mat4")
 DEFINE_GLSL_TRANSPARENT_T(mat4x2, mat4x2, "mat4x2")
 DEFINE_GLSL_TRANSPARENT_T(mat4x3, mat4x3, "mat4x3")
+// double scalar && vectors && matrices
 DEFINE_GLSL_TRANSPARENT_T(double, dvec1, "double")
 DEFINE_GLSL_TRANSPARENT_T(dvec2, dvec2, "dvec2")
 DEFINE_GLSL_TRANSPARENT_T(dvec3, dvec3, "dvec3")
@@ -102,42 +106,17 @@ DEFINE_GLSL_TRANSPARENT_T(dmat3x4, dmat3x4, "dmat3x4")
 DEFINE_GLSL_TRANSPARENT_T(dmat4, dmat4, "dmat4")
 DEFINE_GLSL_TRANSPARENT_T(dmat4x2, dmat4x2, "dmat4x2")
 DEFINE_GLSL_TRANSPARENT_T(dmat4x3, dmat4x3, "dmat4x3")
+// int scalar && vectors
 DEFINE_GLSL_TRANSPARENT_T(int, ivec1, "int")
 DEFINE_GLSL_TRANSPARENT_T(ivec2, ivec2, "ivec2")
 DEFINE_GLSL_TRANSPARENT_T(ivec3, ivec3, "ivec3")
 DEFINE_GLSL_TRANSPARENT_T(ivec4, ivec4, "ivec4")
+// uint scalar && vectors
 DEFINE_GLSL_TRANSPARENT_T(uint, uvec1, "uint")
 DEFINE_GLSL_TRANSPARENT_T(uvec2, uvec2, "uvec2")
 DEFINE_GLSL_TRANSPARENT_T(uvec3, uvec3, "uvec3")
 DEFINE_GLSL_TRANSPARENT_T(uvec4, uvec4, "uvec4")
 
-
-class gl_uniform_block_item
-{
-
-};
-
-class gl_uniform_block
-{
-	static std::vector<gl_uniform_block_item*> items;
-
-public:
-
-	virtual void bind() = 0;
-
-	virtual void unbind() = 0;
-
-};
-
-class gl_shader_storage_block_item
-{
-
-};
-
-class gl_shader_storage_block
-{
-	std::vector<gl_shader_storage_block_item*> items;
-};
 
 
 //class glsl_dvec3 final : public glsl_transparent_t
@@ -156,28 +135,26 @@ class gl_shader_storage_block
 //};
 //const glsl_transparent_t_meta glsl_dvec3::_meta(glm::dvec3::length(), sizeof(glm::dvec3::value_type), to_enum<glm::dvec3::value_type>(), sizeof(glm::dvec3), "dvec3");
 
-class glsl_opaque_t_meta
-{
-	std::string semantic_t_name;
-};
+
+/*
+* glsl opaque types
+* which can only be used as global uniform
+* 
+* include [sampler][image][atomic_uint]
+*
+*/
 
 class glsl_opaque_t : public glsl_t {
-	virtual const glsl_opaque_t_meta& meta() const = 0;
-	virtual void bind() = 0;
-	virtual void unbind() = 0;
-	virtual void launch() = 0;
 };
-
-
-/// <summary>
-/// samplers
-/// </summary>
 
 class glsl_sampler_t : public glsl_opaque_t 
 {
-	std::string semantic_instance_name;
 };
 
+/*
+* definitions of sampler_ts
+* 
+*/
 class glsl_sampler2D : public glsl_sampler_t
 {
 public:
@@ -236,23 +213,6 @@ public: /** constructor / desctructor  */
 
 public: /** implement functions */
 
-	const glsl_opaque_t_meta& meta() const override { return _meta; }
-	
-	void bind() override
-	{
-
-	}
-	
-	void unbind() override
-	{
-
-	}
-	
-	void launch() override
-	{
-		
-	}
-
 private:
 
 	std::unique_ptr<gl_texture_2d_array> _texture_2d_array;
@@ -262,8 +222,6 @@ private:
 public:
 
 	gl_texture_2d_array& texture() { return *_texture_2d_array; }
-
-	static glsl_opaque_t_meta _meta;
 
 };
 
@@ -328,10 +286,6 @@ DEFINE_GLSL_SAMPLER_T(usampler2DArrayShadow)
 DEFINE_GLSL_SAMPLER_T(usamplerCubeShadow)
 DEFINE_GLSL_SAMPLER_T(usamplerCubeArrayShadow)
 
-/// <summary>
-///  images
-/// </summary>
-
 enum class glsl_image_format_layout_qualifier
 {
 	// r16f, r32f
@@ -358,18 +312,230 @@ enum class glsl_image_format_layout_qualifier
 
 enum class gl_image_access_mode : GLenum
 {
-	read_only,
-	write_only,
-	read_and_write
+	READ_ONLY = GL_READ_ONLY,
+	WRITE_ONLY = GL_WRITE_ONLY,
+	READ_WRITE = GL_READ_WRITE
+};
+
+enum class gl_image_format : GLenum
+{
+	R32F = GL_R32F, // [std::float_t] x 1
+	RG32F = GL_RG32F, // [std::float_t] x 2
+	RGBA32F = GL_RGBA32F,// [std::float_t] x 4
+	R32UI = GL_R32UI,
+	RG32UI = GL_RG32UI,
+	RGBA32UI = GL_RGBA32UI,
+	R32I = GL_R32I,
+	RG32I = GL_RG32I,
+	RGBA32I = GL_RGBA32I,
+	
+#ifdef GENERAL
+	R11F_G11F_B10F = GL_R11F_G11F_B10F,
+
+	RGBA16F = GL_RGBA16F,
+	RG16F = GL_RG16F,
+	R16F	 = GL_R16F,
+	RGBA16UI = GL_RGBA16UI,
+	RGB10_A2UI = GL_RGB10_A2UI,
+	RGBA8UI = GL_RGBA8UI,
+	RG16UI = GL_RG16UI,
+	RG8UI = GL_RG8UI,
+	R16UI = GL_R16UI,
+	R8UI = GL_R8UI,
+	RGBA16I = GL_RGBA16I,
+	RGBA8I = GL_RGBA8I,
+	RG16I = GL_RG16I,
+	RG8I = GL_RG8I,
+	R16I	= GL_R16I,
+	R8I = GL_R8I,
+	RGBA16 = GL_RGBA16,
+	RGB10_A2 = GL_RGB10_A2,
+	RGBA8	= GL_RGBA8,
+	RG16 = GL_RG16,
+	RG8 = GL_RG8,
+	R16 = GL_R16,
+	R8 = GL_R8,
+	RGBA16_SNORM	= GL_RGBA16_SNORM,
+	RGBA8_SNORM = GL_RGBA8_SNORM,
+	RG16_SNORM	= GL_RG16_SNORM,
+	RG8_SNORM = GL_RG8_SNORM,
+	R16_SNORM = GL_R16_SNORM,
+	R8_SNORM = GL_R8_SNORM
+#endif
+};
+
+std::string transfer_to_image_format_token(gl_image_format format)
+{
+	switch (format)
+	{
+	case gl_image_format::stencil_index:
+		break;
+	case gl_image_format::depth_component:
+		break;
+	case gl_image_format::depth_stencil:
+		break;
+	case gl_image_format::r:
+		break;
+	case gl_image_format::rg:
+		break;
+	case gl_image_format::rgb:
+		break;
+	case gl_image_format::rgba:
+		break;
+	case gl_image_format::compressed_r:
+		break;
+	case gl_image_format::compressed_rg:
+		break;
+	case gl_image_format::compressed_rgb:
+		break;
+	case gl_image_format::compressed_rgba:
+		break;
+	case gl_image_format::compressed_srgb:
+		break;
+	case gl_image_format::compressed_srgb_alpha:
+		break;
+	case gl_image_format::NOR_UI_R8:
+		break;
+	case gl_image_format::NOR_I_R8:
+		break;
+	case gl_image_format::NOR_UI_R16:
+		break;
+	case gl_image_format::NOR_I_R16:
+		break;
+	case gl_image_format::NOR_UI_RG8:
+		break;
+	case gl_image_format::NOR_I_RG8:
+		break;
+	case gl_image_format::NOR_UI_RG16:
+		break;
+	case gl_image_format::NOR_I_RG16:
+		break;
+	case gl_image_format::NOR_UI_R3_G3_B2:
+		break;
+	case gl_image_format::NOR_UI_RGB4:
+		break;
+	case gl_image_format::NOR_UI_RGB5:
+		break;
+	case gl_image_format::NOR_UI_R5_G6_B5:
+		break;
+	case gl_image_format::NOR_UI_RGB8:
+		break;
+	case gl_image_format::NOR_I_RGB8:
+		break;
+	case gl_image_format::NOR_UI_RGB10:
+		break;
+	case gl_image_format::NOR_UI_RGB12:
+		break;
+	case gl_image_format::NOR_UI_RGB16:
+		break;
+	case gl_image_format::NOR_I_RGB16:
+		break;
+	case gl_image_format::NOR_UI_RGBA2:
+		break;
+	case gl_image_format::NOR_UI_RGBA4:
+		break;
+	case gl_image_format::NOR_UI_RGB5_A1:
+		break;
+	case gl_image_format::NOR_UI_RGBA8:
+		break;
+	case gl_image_format::NOR_I_RGBA8:
+		break;
+	case gl_image_format::NOR_UI_RGB10_A2:
+		break;
+	case gl_image_format::UI_RGB10_A2:
+		break;
+	case gl_image_format::NOR_UI_RGBA12:
+		break;
+	case gl_image_format::NOR_UI_RGBA16:
+		break;
+	case gl_image_format::NOR_I_RGBA16:
+		break;
+	case gl_image_format::NOR_UI_SRGB8:
+		break;
+	case gl_image_format::NOR_UI_SRGB8_ALPHA8:
+		break;
+	case gl_image_format::F_R32:
+		break;
+	case gl_image_format::F_RG32:
+		break;
+	case gl_image_format::F_RGB32:
+		break;
+	case gl_image_format::F_RGBA32:
+		break;
+	case gl_image_format::F_R11_G11_B10:
+		break;
+	case gl_image_format::rgb9_e5:
+		break;
+	case gl_image_format::I_R32:
+		break;
+	case gl_image_format::I_RG32:
+		break;
+	case gl_image_format::I_RGB32:
+		break;
+	case gl_image_format::I_RGBA32:
+		break;
+	case gl_image_format::UI_R32:
+		break;
+	case gl_image_format::UI_RG32:
+		break;
+	case gl_image_format::UI_RGB32:
+		break;
+	case gl_image_format::UI_RGBA32:
+		break;
+	default:
+		break;
+	}
+}
+
+struct glsl_image_layout_qualifier
+{
+
+
+};
+
+enum glsl_image_memory_qualifier
+{
+	COHERENT,
+	VOLATILE,
+	RESTRICT,
+	READONLY,
+	WRITEONLY
 };
 
 class glsl_image_t : public glsl_opaque_t
 {
+public:
+
+	virtual const std::string& get_glsl_image_token() = 0;
+
+protected:
+
+	std::string _generate_glsl_image_token()
+	{
+		return "##layout## ##memory## uniform image2D input_image;";
+	}
 
 };
 
 class glsl_image2D : public glsl_image_t
-{};
+{
+
+	glsl_image2D()
+	{
+		_glsl_image_token = _generate_glsl_image_token();
+	}
+
+public:
+
+	const std::string& get_glsl_image_token() override
+	{
+		return _glsl_image_token;
+	}
+
+private:
+
+	std::string _glsl_image_token;
+};
 
 class glsl_image2DArray : public glsl_image_t
 {
@@ -380,7 +546,7 @@ public:
 		glBindImageTexture(GL_TEXTURE0,
 			texture_2d_array->get_handle(),
 			0,
-			false, 0, 
+			false, 0,
 			static_cast<GLenum>(access_mode),
 			static_cast<GLenum>(texture_2d_array->get_descriptor().pixel_format)
 		);
@@ -390,30 +556,9 @@ public:
 
 public:
 
-
-};
-
-struct gl_program_real_time_struct_maps
-{
-
-};
-struct ImmdStruct {
 	
-	std::array<glsl_sampler2D, 5> AlbedoMap;
-	std::array<glsl_sampler2DArray, 5> DisplacementMaps;
 
-	glsl_image1D normals;
-
-} Parameters[10];
-
-void test()
-{
-	sizeof ImmdStruct * 10;
-	Parameters->AlbedoMap[0];
-	Parameters->AlbedoMap[1];
-	Parameters->AlbedoMap[2];
-	Parameters->AlbedoMap[5];
-}
+};
 
 #define DEFINE_GLSL_IMAGE_T(GLSL_IMAGE_T_SEMANTIC_NAME)\
 class glsl_##GLSL_IMAGE_T_SEMANTIC_NAME : public glsl_image_t\
@@ -455,8 +600,148 @@ DEFINE_GLSL_IMAGE_T(uimageCube)
 DEFINE_GLSL_IMAGE_T(uimageCubeArray)
 DEFINE_GLSL_IMAGE_T(uimageBuffer)
 
+/*
+* layout(binding = 0, offset = 0) uniform atomic_uint;
+* only declare in global scope as a uniform
+* 
+*/
 class glsl_atomic_uint : public glsl_opaque_t {};
 
+
+
+/*
+* All of interface blocks can not include any opaque types(only transparent types)
+* glsl_scalar
+* glsl_vector
+* glsl_matrix
+*/
+#define DEFINE_UNIFORM_INTERFACE_BLOCK
+#define DEFINE_IN_INTERFACE_BLOCK
+#define DEFINE_OUT_INTERFACE_BLOCK
+#define DEFINE_BUFFER_INTERFACE_BLOCK 
+
+class glsl_interface_block
+{
+public:
+
+	glsl_interface_block()
+	{}
+
+private:
+	// declaration spec + var name
+	std::vector<std::pair<const glsl_transparent_t*, std::string>> _cached_items;
+
+};
+
+class glsl_in_interface_block
+{};
+class glsl_out_interface_block
+{};
+
+class glsl_uniform_interface_block
+{
+public:
+	
+	glsl_uniform_interface_block() {}
+
+private:
+
+	
+
+};
+
+#define DEFINE_UNIFORM_INTERFACE_BEGIN(UNIFORM_INTERFACE_BLOCK_NAME)\
+struct UNIFORM_INTERFACE_BLOCK_NAME {\
+
+#define DEFINE_UNIFORM_INTERFACE_END(UNIFORM_INTERFACE_BLOCK_INSTANCE_NAME)\
+} UNIFORM_INTERFACE_BLOCK_INSTANCE_NAME;\
+const std::uint8_t* block_ptr()\
+{\
+	return reinterpret_cast<const std::uint8_t*>(&UNIFORM_INTERFACE_BLOCK_INSTANCE_NAME);\
+}\
+const std::uint64_t block_size()\
+{\
+	return sizeof UNIFORM_INTERFACE_BLOCK_INSTANCE_NAME;\
+}\
+
+#define DEFINE_UNIFORM_INTERFACE_ARRAY_END(UNIFORM_INTERFACE_BLOCK_INSTANCE_NAME, ARRAY_SIZE)\
+} UNIFORM_INTERFACE_BLOCK_INSTANCE_NAME[ARRAY_SIZE];\
+const std::uint8_t* block_ptr()\
+{\
+	return reinterpret_cast<const std::uint8_t*>(&UNIFORM_INTERFACE_BLOCK_INSTANCE_NAME);\
+}\
+const std::uint64_t block_size()\
+{\
+	return sizeof UNIFORM_INTERFACE_BLOCK_INSTANCE_NAME * ARRAY_SIZE;\
+}\
+
+#define DEFINE_UNIFORM_INTERFACE_ITEM(GLSL_TRANSPARENT_T, ITEM_NAME)\
+GLSL_TRANSPARENT_T ITEM_NAME\
+
+#define DEFINE_UNIFORM_INTERFACE_ITEM_ARRAY(GLSL_TRANSPARENT_T, ITEM_NAME, ARRAY_SIZE)\
+GLSL_TRANSPARENT_T ITEM_NAME[ARRAY_SIZE] \
+
+
+
+
+
+class PPUniformBlock : public glsl_uniform_interface_block
+{
+
+
+public:
+
+	DEFINE_UNIFORM_INTERFACE_BEGIN(glsl_ppp)
+	DEFINE_UNIFORM_INTERFACE_ITEM_ARRAY(glsl_vec4, color, 10);
+	DEFINE_UNIFORM_INTERFACE_ITEM(glsl_vec4, postion);
+	DEFINE_UNIFORM_INTERFACE_ITEM(glsl_mat4x3, matrix, 2);
+	DEFINE_UNIFORM_INTERFACE_ARRAY_END(app, 10)
+
+
+	void test()
+	{
+		app[0].color[0] = 10;
+	}
+};
+
+void test()
+{
+	PPUniformBlock al;
+	
+}
+
+
+class gl_buffer_interface_block
+{};
+
+
+
+class glsl_memeber
+{
+public:
+
+	glsl_memeber(std::function<void(glsl_opaque_t*)> registerer)
+	{
+		
+	}
+};
+
+#define DEFINE_GLSL_IMAGE_T(GLSL_IMAGE_T, MEMBER_NAME)\
+GLSL_IMAGE_T MEMBER_NAME{register_member}\
+
+class MapStruct : public gl_immediate_uniform_block
+{
+
+public:
+
+	static void register_member(glsl_opaque_t*);
+
+	glsl_memeber m1{register_member};
+
+	DEFINE_GLSL_IMAGE_T(glsl_memeber, positions);
+
+
+};
 
 void tes()
 {

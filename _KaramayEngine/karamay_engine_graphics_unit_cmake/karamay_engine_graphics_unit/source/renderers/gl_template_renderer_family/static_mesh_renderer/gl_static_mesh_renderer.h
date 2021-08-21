@@ -9,17 +9,6 @@
 #include "graphics/type/glsl_types.h"
 
 
-struct gl_material
-{
-
-};
-
-struct gl_static_mesh
-{
-    gl_material material;
-};
-
-
 class gl_static_mesh_renderer final : public gl_renderer 
 {
 public:
