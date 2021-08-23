@@ -25,7 +25,7 @@ uniform struct opaque_block{
 
 uniform sampler2D texturex[10];
 uniform writeonly image1D imagex;
-layout (binding = 0, r32f, location = 1) coherent uniform image1D input_image;
+ layout (binding = 0, r32f, location = 1) coherent uniform image1D input_image;
 
 uniform mat4 transform;
 

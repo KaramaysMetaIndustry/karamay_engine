@@ -1,8 +1,0 @@
-# ninja log v5
-25	527	6508924361641885	CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/mesh/gl_mesh.cpp.obj	dd444d9ce75b672b
-10	535	6508924361651856	CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_buffered_uniform_block.cpp.obj	dcd7b6ba7ace540d
-12	537	6508924361831374	CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_shader_storage_block.cpp.obj	e26a67af3fc9fe90
-4	1696	6508924373430305	CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/dependencies/glm_pack/include/glm/detail/glm.cpp.obj	6193cb3e1a68398f
-13	1738	6508924373859148	CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_interface_block.cpp.obj	9fa014eb745276f0
-9	1750	6508924373978841	CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_uniform_block.cpp.obj	b9b723b1ad1a5ff1
-14	1900	6508924375474833	CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/camera/gl_camera.cpp.obj	e26c381dbb9a1211

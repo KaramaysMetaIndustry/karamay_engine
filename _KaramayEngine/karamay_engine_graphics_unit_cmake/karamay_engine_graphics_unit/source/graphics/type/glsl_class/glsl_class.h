@@ -170,15 +170,6 @@ public:
 		_texture_2d = texture_2d;
 	}
 
-public:
-
-	void bind() override
-	{}
-
-	void unbind() override
-	{
-	}
-
 private:
 
 	std::shared_ptr<gl_texture_2d> _texture_2d;
@@ -556,9 +547,9 @@ public:
 
 public:
 
-	
 
 };
+
 
 #define DEFINE_GLSL_IMAGE_T(GLSL_IMAGE_T_SEMANTIC_NAME)\
 class glsl_##GLSL_IMAGE_T_SEMANTIC_NAME : public glsl_image_t\
@@ -633,12 +624,11 @@ private:
 
 };
 
-class glsl_in_interface_block
+class glsl_in_block
 {};
-class glsl_out_interface_block
+class glsl_out_block
 {};
-
-class glsl_uniform_interface_block
+class glsl_uniform_block
 {
 public:
 	
@@ -648,6 +638,25 @@ private:
 
 	
 
+};
+class glsl_shader_storage_block
+{};
+
+class gl_pipeline_global_parameters
+{
+private:
+	
+	std::vector<glsl_uniform_block*> _uniform_blocks;
+	
+	std::vector<glsl_shader_storage_block*> _shader_storage_blocks;
+
+};
+
+class gl_pipeline_parameters
+{
+	glsl_in_block* _in_block;
+
+	glsl_out_block* _out_block;
 };
 
 #define DEFINE_UNIFORM_INTERFACE_BEGIN(UNIFORM_INTERFACE_BLOCK_NAME)\
@@ -676,75 +685,36 @@ const std::uint64_t block_size()\
 }\
 
 #define DEFINE_UNIFORM_INTERFACE_ITEM(GLSL_TRANSPARENT_T, ITEM_NAME)\
-GLSL_TRANSPARENT_T ITEM_NAME\
+glsl_##GLSL_TRANSPARENT_T ITEM_NAME\
 
 #define DEFINE_UNIFORM_INTERFACE_ITEM_ARRAY(GLSL_TRANSPARENT_T, ITEM_NAME, ARRAY_SIZE)\
-GLSL_TRANSPARENT_T ITEM_NAME[ARRAY_SIZE] \
+glsl_##GLSL_TRANSPARENT_T ITEM_NAME[ARRAY_SIZE] \
 
 
-
-
-
-class PPUniformBlock : public glsl_uniform_interface_block
+class PPUniformBlock : public glsl_uniform_block
 {
 
-
 public:
-
-	DEFINE_UNIFORM_INTERFACE_BEGIN(glsl_ppp)
-	DEFINE_UNIFORM_INTERFACE_ITEM_ARRAY(glsl_vec4, color, 10);
-	DEFINE_UNIFORM_INTERFACE_ITEM(glsl_vec4, postion);
-	DEFINE_UNIFORM_INTERFACE_ITEM(glsl_mat4x3, matrix, 2);
-	DEFINE_UNIFORM_INTERFACE_ARRAY_END(app, 10)
-
-
 	void test()
 	{
-		app[0].color[0] = 10;
-	}
-};
-
-void test()
-{
-	PPUniformBlock al;
-	
-}
-
-
-class gl_buffer_interface_block
-{};
-
-
-
-class glsl_memeber
-{
-public:
-
-	glsl_memeber(std::function<void(glsl_opaque_t*)> registerer)
-	{
+		matrices[0].postion;
 		
 	}
-};
-
-#define DEFINE_GLSL_IMAGE_T(GLSL_IMAGE_T, MEMBER_NAME)\
-GLSL_IMAGE_T MEMBER_NAME{register_member}\
-
-class MapStruct : public gl_immediate_uniform_block
-{
 
 public:
 
-	static void register_member(glsl_opaque_t*);
-
-	glsl_memeber m1{register_member};
-
-	DEFINE_GLSL_IMAGE_T(glsl_memeber, positions);
-
+	DEFINE_UNIFORM_INTERFACE_BEGIN(Matrix)
+	DEFINE_UNIFORM_INTERFACE_ITEM_ARRAY(vec4, color, 10);
+	DEFINE_UNIFORM_INTERFACE_ITEM(vec4, postion);
+	DEFINE_UNIFORM_INTERFACE_ITEM(mat4x3, matrix, 2);
+	DEFINE_UNIFORM_INTERFACE_ARRAY_END(matrices, 10)
 
 };
 
-void tes()
-{
-}
+
+
+
+
+
 
 #endif
