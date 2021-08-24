@@ -269,23 +269,6 @@ public:
     explicit gl_graphics_pipeline(const gl_graphics_pipeline_descriptor& descriptor) :
         _descriptor(descriptor)
     {
-        std::vector<std::shared_ptr<gl_shader>> _shaders;
-        if (const auto& _vs = _descriptor.vertex_processing.vertex_shading.shader)
-        {
-            _shaders.push_back(_vs);
-        }
-        if (const auto& _gs = _descriptor.vertex_processing.geometry_shading.shader)
-        {
-            _shaders.push_back(_gs);
-        }
-
-        // generate shader templates
-        for (const auto& _shader : _shaders)
-        {
-            _shader->get_shader_glsl_template();
-        }
-
-
     }
 
     ~gl_graphics_pipeline() = default;
@@ -299,7 +282,25 @@ public:
 
     void generate()
     {
-        
+        std::vector<std::shared_ptr<gl_shader>> _shaders;
+        if (const auto& _vs = _descriptor.vertex_processing.vertex_shading.shader)
+        {
+            _shaders.push_back(_vs);
+        }
+        if (const auto& _gs = _descriptor.vertex_processing.geometry_shading.shader)
+        {
+            _shaders.push_back(_gs);
+        }
+
+        // check dir
+
+        // generate shader templates
+        for (const auto& _shader : _shaders)
+        {
+            _shader->get_shader_glsl_template();
+        }
+
+        // load source code and compile    
 
     }
 
@@ -311,6 +312,31 @@ public:
 
         }
     }
+
+    std::vector<std::shared_ptr<gl_shader>> _shaders;
+
+    void generate_pipeline_dir(const std::string& renderer_dir)
+    {
+        if (std::filesystem::exists(renderer_dir)) // check the renderer dir
+        {
+            std::string _pipeline_dir = renderer_dir + _name + "\\";
+            if (std::filesystem::create_directory(_pipeline_dir))
+            {
+                for (const auto& _shader : _shaders)
+                {
+                    std::ofstream _file(_pipeline_dir + _name + ".ext");
+                    _file.open(_pipeline_dir + _name + ".ext", 1, 2);
+                    _file.write(_shader->get_shader_glsl_template().c_str(), _shader->get_shader_glsl_template().length());
+                    _file.close();
+                }
+                //std::ofstream _xml_file;
+                //_xml_file.open(_pipeline_dir + _name + ".xml");
+                //_xml_file.write();
+                //_xml_file.close();
+            }
+        }
+    }
+
 
 public:
 
@@ -328,6 +354,17 @@ public:
         _descriptor.vertex_processing.post_vertex_processing.coordinate_transformations.viewport_height = height;*/
     }
 
+private:
+
+    bool _check_shader_ext(const std::string& path, const std::string& ext)
+    {
+        return path.substr(path.find_first_of('.')) == ext;
+    }
+
+    void _install();
+
+    void _uninstall();
+
 public:
 
     inline void draw_points(std::int32_t first, std::uint32_t count)
@@ -342,17 +379,6 @@ public:
     inline void draw_triangle_strips() {}
 
     inline void draw_rectangles() {}
-
-private:
-
-    bool _check_shader_ext(const std::string& path, const std::string& ext)
-    {
-        return path.substr(path.find_first_of('.')) == ext;
-    }
-
-    void _install();
-
-    void _uninstall();
 
 };
 

@@ -21,7 +21,7 @@ private:
 
     struct gl_renderer_resource
     {
-        std::vector<std::shared_ptr<gl_pipeline_base>> pipelines;
+        std::vector<std::shared_ptr<gl_pipeline>> pipelines;
 
     } _resource;
 
@@ -96,18 +96,21 @@ class gl_renderer
 {
 public:
 
-    gl_renderer()
-    {
-        assembly(_renderer_builder);
-    }
+    gl_renderer(){}
 
     ~gl_renderer() = default;
 
 public:
 
-    virtual void assembly(gl_renderer_builder& builder) = 0;
+    void build(gl_renderer_builder& builder);
 
-    virtual void render(std::float_t delta_time) = 0;
+    void render(std::float_t delta_time);
+
+protected:
+
+    virtual void _implementation_build(gl_renderer_builder& builder) = 0;
+
+    virtual void _implementation_render(std::float_t delta_time) = 0;
 
 protected:
 
@@ -121,8 +124,6 @@ protected:
         // if complie success, check resources validation
 
     }
-
-    
 
     using _pass_lambda = std::function<void(void)>;
     
@@ -140,14 +141,6 @@ private:
     std::vector<std::shared_ptr<gl_pipeline>> _pipelines;
 
     std::vector<_pass_lambda> _passes;
-
-    bool _validate()
-    {
-        for (auto& _pipeline : _pipelines)
-        {
-            if (!_pipeline || !_pipeline->validate()) return false;
-        }
-    }
 
     bool _check_dir(const std::string& dir);
 
@@ -174,6 +167,41 @@ private:
     }
 
 };
+
+
+#define DEFINE_RENDERER_CONSTRUCTOR(RENDERER_NAME)\
+private:\
+    static std::shared_ptr<RENDERER_NAME> _instance;\
+    RENDERER_NAME() = default;\
+    RENDERER_NAME(const gl_static_mesh_renderer&) = delete;\
+    RENDERER_NAME& operator=(const RENDERER_NAME&) = delete;\
+    ~RENDERER_NAME() = default;\
+public:\
+    static std::shared_ptr<RENDERER_NAME> invoke()\
+    {\
+        if (!_instance)\
+        {\
+            _instance = std::make_shared<RENDERER_NAME>();\
+        }\
+        return _instance;\
+    }\
+
+
+#define IMPLEMENTATION_FUNC_BUILD()\
+protected:\
+void _implementation_build(gl_renderer_builder& builder) override\
+
+#define IMPLEMENTATION_FUNC_RENDER()\
+protected:\
+void _implementation_render(std::float_t delta_time) override\
+
+
+#define DEFINE_RENDERER_BEGIN(RENDERER_NAME)\
+class RENDERER_NAME final : protected gl_renderer{\
+DEFINE_RENDERER_CONSTRUCTOR(RENDERER_NAME)\
+
+#define DEFINE_RENDERER_END()\
+};\
 
 #endif
 
