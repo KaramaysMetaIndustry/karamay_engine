@@ -7,7 +7,6 @@
 
 #include "graphics/texture/gl_texture.h"
 
-class gl_pipeline_base;
 class gl_graphics_pipeline;
 class gl_vertex_processing_pipeline;
 class gl_compute_pipeline;
@@ -89,7 +88,7 @@ public:
 };
 
 /*
-* Every Renderer's resource refs must be dependent to each other
+* Every Renderer's resource refs must be dependent to each other.
 * 
 * 
 */
@@ -134,11 +133,11 @@ protected:
 
 private:
 
-    std::string name; 
+    std::string _renderer_name; 
 
     gl_renderer_builder _renderer_builder;
 
-    std::vector<std::shared_ptr<gl_pipeline_base>> _pipelines;
+    std::vector<std::shared_ptr<gl_pipeline>> _pipelines;
 
     std::vector<_pass_lambda> _passes;
 
@@ -155,6 +154,25 @@ private:
     void _initialize_renderer();
 
     void _compile(); 
+
+    static std::string _global_renderers_dir;
+
+    bool generate_renderer_glsl_template()
+    {
+        const std::string _renderer_dir = _global_renderers_dir + _renderer_name + "\\";
+        bool _generation_result = false;
+        if (std::filesystem::create_directory(_renderer_dir))
+        {
+            for (const auto& _pipeline : _pipelines)
+            {
+                if (!_pipeline || !_pipeline->ouput_pipeline_glsl_template(_renderer_dir)) 
+                    return _generation_result;
+            }
+            _generation_result = true;
+        }
+        return _generation_result;
+    }
+
 };
 
 #endif

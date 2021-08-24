@@ -49,9 +49,10 @@ namespace gl_shader_enum
 //    }
 }
 
-class gl_shader final : public gl_object
+class gl_shader : public gl_object
 {
 public:
+	gl_shader();
 
 	explicit gl_shader(gl_shader_enum::type shader_type, const std::vector<std::uint8_t>& source_stream);
 
@@ -69,6 +70,7 @@ public:
 
     [[nodiscard]] gl_shader_enum::type get_shader_type() const { return _shader_type; }
 
+	virtual const std::string& get_shader_glsl_template() const = 0;
 
 public:
 

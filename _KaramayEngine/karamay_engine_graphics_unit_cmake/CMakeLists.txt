@@ -485,14 +485,6 @@ add_executable(karamay_engine_graphics_unit
         karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_shader_storage_buffer.h
         karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_uniform_buffer.cpp
         karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_uniform_buffer.h
-        karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_buffered_uniform_block.cpp
-        karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_buffered_uniform_block.h
-        karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_interface_block.cpp
-        karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_interface_block.h
-        karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_shader_storage_block.cpp
-        karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_shader_storage_block.h
-        karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_uniform_block.cpp
-        karamay_engine_graphics_unit/source/graphics/buffers/interface_block/gl_uniform_block.h
         karamay_engine_graphics_unit/source/graphics/camera/gl_camera.cpp
         karamay_engine_graphics_unit/source/graphics/camera/gl_camera.h
         karamay_engine_graphics_unit/source/graphics/commands/gl_commands.cpp
@@ -565,7 +557,38 @@ add_executable(karamay_engine_graphics_unit
         karamay_engine_graphics_unit/source/window/window.cpp
         karamay_engine_graphics_unit/source/window/window.h
         karamay_engine_graphics_unit/source/karamay-engine-graphics.cpp
-        karamay_engine_graphics_unit/source/public/glm.h karamay_engine_graphics_unit/source/graphics/buffers/buffer/gl_buffer.cpp karamay_engine_graphics_unit/source/graphics/buffers/buffer/gl_buffer.h  karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/static_mesh_renderer/gl_static_mesh_renderer.cpp karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/static_mesh_renderer/gl_static_mesh_renderer.h karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/particle_system_renderer/gl_particle_system_renderer.cpp karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/particle_system_renderer/gl_particle_system_renderer.h karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/static_mesh_renderer/gl_instanced_static_mesh_renderer.cpp karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/static_mesh_renderer/gl_instanced_static_mesh_renderer.h karamay_engine_graphics_unit/source/dispatcher/gl_renderer_dispatcher.cpp karamay_engine_graphics_unit/source/dispatcher/gl_renderer_dispatcher.h karamay_engine_graphics_unit/source/graphics/buffers/buffer/gl_buffer_tools.h karamay_engine_graphics_unit/source/graphics/buffers/gl_buffers.h karamay_engine_graphics_unit/source/graphics/type/glsl_class/glsl_transparent_class/glsl_transparent_class.h karamay_engine_graphics_unit/source/graphics/type/glsl_class/glsl_class.h karamay_engine_graphics_unit/source/graphics/type/glsl_class/glsl_opaque_class/glsl_opaque_class.h karamay_engine_graphics_unit/source/graphics/type/glsl_class/glsl_transparent_class/glsl_transparent_class.cpp karamay_engine_graphics_unit/source/graphics/type/glsl.h "karamay_engine_graphics_unit/source/graphics/shader/gl_vertex_shader.h" "karamay_engine_graphics_unit/source/graphics/shader/gl_geometry_shader.h" "karamay_engine_graphics_unit/source/graphics/shader/gl_tessellation_control_shader.h" "karamay_engine_graphics_unit/source/graphics/shader/gl_tessellation_evaluation_shader.h" "karamay_engine_graphics_unit/source/graphics/shader/gl_fragment_shader.h" "karamay_engine_graphics_unit/source/graphics/shader/gl_fragment_shader.cpp"   "karamay_engine_graphics_unit/source/graphics/pipeline/graphics/gl_vertex_processing_pipeline.h" "karamay_engine_graphics_unit/source/graphics/pipeline/graphics/gl_vertex_processing_pipeline.cpp" "karamay_engine_graphics_unit/source/graphics/shader/gl_geometry_shader.cpp" "karamay_engine_graphics_unit/source/graphics/shader/gl_vertex_shader.cpp" "karamay_engine_graphics_unit/source/graphics/shader/gl_tessellation_control_shader.cpp" "karamay_engine_graphics_unit/source/graphics/shader/gl_tessellation_evaluation_shader.cpp" "karamay_engine_graphics_unit/source/graphics/pipeline/base/gl_pipeline.h" "karamay_engine_graphics_unit/source/graphics/pipeline/base/gl_pipeline.cpp" "karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer_dispatcher.h" "karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer_dispatcher.cpp")
+        karamay_engine_graphics_unit/source/public/glm.h 
+
+karamay_engine_graphics_unit/source/graphics/buffers/buffer/gl_buffer.cpp 
+karamay_engine_graphics_unit/source/graphics/buffers/buffer/gl_buffer.h  
+karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/static_mesh_renderer/gl_static_mesh_renderer.cpp 
+karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/static_mesh_renderer/gl_static_mesh_renderer.h 
+karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/particle_system_renderer/gl_particle_system_renderer.cpp 
+karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/particle_system_renderer/gl_particle_system_renderer.h 
+karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/static_mesh_renderer/gl_instanced_static_mesh_renderer.cpp 
+karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/static_mesh_renderer/gl_instanced_static_mesh_renderer.h 
+karamay_engine_graphics_unit/source/dispatcher/gl_renderer_dispatcher.cpp 
+karamay_engine_graphics_unit/source/dispatcher/gl_renderer_dispatcher.h 
+karamay_engine_graphics_unit/source/graphics/buffers/buffer/gl_buffer_tools.h 
+karamay_engine_graphics_unit/source/graphics/buffers/gl_buffers.h 
+"karamay_engine_graphics_unit/source/graphics/shader/gl_vertex_shader.h" 
+"karamay_engine_graphics_unit/source/graphics/shader/gl_geometry_shader.h" 
+"karamay_engine_graphics_unit/source/graphics/shader/gl_tessellation_control_shader.h" 
+"karamay_engine_graphics_unit/source/graphics/shader/gl_tessellation_evaluation_shader.h" 
+"karamay_engine_graphics_unit/source/graphics/shader/gl_fragment_shader.h" 
+"karamay_engine_graphics_unit/source/graphics/shader/gl_fragment_shader.cpp"  
+"karamay_engine_graphics_unit/source/graphics/pipeline/graphics/gl_vertex_processing_pipeline.h" 
+"karamay_engine_graphics_unit/source/graphics/pipeline/graphics/gl_vertex_processing_pipeline.cpp" 
+"karamay_engine_graphics_unit/source/graphics/shader/gl_geometry_shader.cpp" 
+"karamay_engine_graphics_unit/source/graphics/shader/gl_vertex_shader.cpp" 
+"karamay_engine_graphics_unit/source/graphics/shader/gl_tessellation_control_shader.cpp" 
+"karamay_engine_graphics_unit/source/graphics/shader/gl_tessellation_evaluation_shader.cpp" 
+"karamay_engine_graphics_unit/source/graphics/pipeline/base/gl_pipeline.h" 
+"karamay_engine_graphics_unit/source/graphics/pipeline/base/gl_pipeline.cpp" 
+"karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer_dispatcher.h" 
+"karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer_dispatcher.cpp" 
+"karamay_engine_graphics_unit/source/graphics/shader/gl_compute_shader.h" 
+"karamay_engine_graphics_unit/source/graphics/shader/gl_compute_shader.cpp")
 
 target_link_libraries(karamay_engine_graphics_unit glew32s.lib glfw3.lib)
 

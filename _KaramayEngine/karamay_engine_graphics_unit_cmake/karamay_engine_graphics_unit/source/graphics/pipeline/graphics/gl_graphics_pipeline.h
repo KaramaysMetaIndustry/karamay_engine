@@ -2,12 +2,12 @@
 #define H_GRAPHICS_PIPELINE
 
 #include "graphics/pipeline/base/gl_pipeline.h"
-
-class gl_vertex_shader;
-class gl_fragment_shader;
-class gl_geometry_shader;
-class gl_tessellation_control_shader;
-class gl_tessellation_evaluation_shader;
+#include "graphics/shader/gl_vertex_shader.h"
+#include "graphics/shader/gl_tessellation_control_shader.h"
+#include "graphics/shader/gl_tessellation_evaluation_shader.h"
+#include "graphics/shader/gl_geometry_shader.h"
+#include "graphics/shader/gl_fragment_shader.h"
+#include "graphics/type/glsl_class.h"
 
 enum gl_stencil_op : GLenum
 {
@@ -83,12 +83,14 @@ enum gl_clip_control_depth_mode : GLenum
     zero_to_one = GL_ZERO_TO_ONE
 };
 
+
+
 // 顶点装配， 顶点处理，图元装配，光栅化，片段处理，输出FB
 struct gl_graphics_pipeline_descriptor
 {
     struct gl_vertex_assembly
     {
-       struct gl_vertex_specification{} vertex_specification;
+       struct gl_vertex_specification{} specification;
        struct gl_primitive_restart
         {
             bool enabled;
@@ -100,19 +102,16 @@ struct gl_graphics_pipeline_descriptor
     {
         struct gl_vertex_shading
         {
-            bool enabled;
-            std::string vertex_shader_path;
+            std::shared_ptr<gl_vertex_shader> shader;
         }vertex_shading;
         struct gl_tessellation
         {
-            bool enabled;
-            std::string tessellation_control_shader_path;
-            std::string tessellation_evaluation_shader_path;
+            std::shared_ptr<gl_tessellation_control_shader> control_shader;
+            std::shared_ptr<gl_tessellation_evaluation_shader> evaluation_shader;
         } tessellation;
         struct gl_geometry_shading
         {
-            bool enabled;
-            std::string geometry_shader_path;
+            std::shared_ptr<gl_geometry_shader> shader;
         } geometry_shading;
 		struct gl_post_vertex_processing
 		{
@@ -171,8 +170,7 @@ struct gl_graphics_pipeline_descriptor
         } pre_fragment_operations;
         struct gl_fragment_shading
         {
-            bool enabled;
-            std::string fragment_shader_path;
+            std::shared_ptr<gl_fragment_shader> shader;
         } fragment_shading;
         struct gl_post_fragment_operations
         {
@@ -229,53 +227,105 @@ struct gl_graphics_pipeline_descriptor
             } addtional_multisample_fragment_operations;
         } post_fragment_operations;
     } fragment_processing; // process fragments
-    struct gl_framebuffer
+    struct gl_render_target
     {
-        bool custom_enabled;
-        struct gl_custom_framebuffer
-        {
-
-        } custom_framebuffer;
-        struct gl_default_framebuffer
-        {} default_framebuffer;
-    } framebuffer;
+        std::shared_ptr<gl_framebuffer> framebuffer;
+    } render_target;
 };
+
+
+void test()
+{
+    auto _vs = std::make_shared<gl_vertex_shader>();
+    _vs->parameters.input;
+    _vs->parameters.output;
+
+    auto _tescs = std::make_shared<gl_tessellation_control_shader>();
+    auto _teses = std::make_shared<gl_tessellation_evaluation_shader>();
+
+    auto _geoms = std::make_shared<gl_geometry_shader>();
+
+    gl_graphics_pipeline_descriptor _desc;
+
+    _desc.vertex_assembly;
+    _desc.vertex_processing.vertex_shading.shader = _vs;
+    _desc.vertex_processing.tessellation.control_shader = _tescs;
+    _desc.vertex_processing.tessellation.evaluation_shader = _teses;
+    _desc.vertex_processing.geometry_shading.shader = _geoms;
+    _desc.vertex_processing.post_vertex_processing;
+
+
+    auto _pip = std::make_shared<gl_graphics_pipeline>(_desc);
+    
+    
+}
 
 class gl_graphics_pipeline : public gl_pipeline
 {
-private:
-
-    gl_graphics_pipeline() = default;
-
 public:
-    
+
+    gl_graphics_pipeline() = delete;
+
     explicit gl_graphics_pipeline(const gl_graphics_pipeline_descriptor& descriptor) :
         _descriptor(descriptor)
     {
-        _initialize_graphics_pipeline();
+        std::vector<std::shared_ptr<gl_shader>> _shaders;
+        if (const auto& _vs = _descriptor.vertex_processing.vertex_shading.shader)
+        {
+            _shaders.push_back(_vs);
+        }
+        if (const auto& _gs = _descriptor.vertex_processing.geometry_shading.shader)
+        {
+            _shaders.push_back(_gs);
+        }
+
+        // generate shader templates
+        for (const auto& _shader : _shaders)
+        {
+            _shader->get_shader_glsl_template();
+        }
+
+
     }
 
     ~gl_graphics_pipeline() = default;
 
 
+private:
+    
+    const gl_graphics_pipeline_descriptor _descriptor;
+
 public:
 
-    bool initialize() override;
+    void generate()
+    {
+        
+
+    }
+
+    bool ouput_pipeline_glsl_template(const std::string& renderer_dir) const override
+    {
+        const std::string _pipeline_dir = renderer_dir + _name + "\\";
+        if (std::filesystem::create_directory(_pipeline_dir))
+        {
+
+        }
+    }
 
 public:
 
     void set_primitive_clipping(gl_clip_control_origin origin, gl_clip_control_depth_mode depth_mode)
     {
-        _descriptor.vertex_processing.post_vertex_processing.primitive_clipping.clip_control_origin = origin;
-        _descriptor.vertex_processing.post_vertex_processing.primitive_clipping.clip_control_depth_mode = depth_mode;
+        /*_descriptor.vertex_processing.post_vertex_processing.primitive_clipping.clip_control_origin = origin;
+        _descriptor.vertex_processing.post_vertex_processing.primitive_clipping.clip_control_depth_mode = depth_mode;*/
     }
 
     void set_viewport(std::int32_t x, std::int32_t y, std::uint32_t width, std::uint32_t height)
     {
-        _descriptor.vertex_processing.post_vertex_processing.coordinate_transformations.viewport_x = x;
+        /*_descriptor.vertex_processing.post_vertex_processing.coordinate_transformations.viewport_x = x;
         _descriptor.vertex_processing.post_vertex_processing.coordinate_transformations.viewport_y = y;
         _descriptor.vertex_processing.post_vertex_processing.coordinate_transformations.viewport_width = width;
-        _descriptor.vertex_processing.post_vertex_processing.coordinate_transformations.viewport_height = height;
+        _descriptor.vertex_processing.post_vertex_processing.coordinate_transformations.viewport_height = height;*/
     }
 
 public:
@@ -294,17 +344,11 @@ public:
     inline void draw_rectangles() {}
 
 private:
-    
-    gl_graphics_pipeline_descriptor _descriptor;
-
-    std::shared_ptr<gl_program> _program;
 
     bool _check_shader_ext(const std::string& path, const std::string& ext)
     {
         return path.substr(path.find_first_of('.')) == ext;
     }
-
-    void _initialize_graphics_pipeline();
 
     void _install();
 

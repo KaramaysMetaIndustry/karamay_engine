@@ -1,58 +1,5 @@
 #include "gl_graphics_pipeline.h"
 
-void gl_graphics_pipeline::_initialize_graphics_pipeline()
-{
-    // pre-compile pipeline, check conditions
-    bool pipeline_validation = false;
-    bool pipeline_exist_on_disk = false;
-    std::vector<std::string> shader_paths;
-    if (_descriptor.vertex_processing.vertex_shading.enabled &&
-        _descriptor.vertex_processing.tessellation.enabled &&
-        _descriptor.vertex_processing.geometry_shading.enabled &&
-        _descriptor.fragment_processing.fragment_shading.enabled
-        )
-    {
-        pipeline_validation = true;
-    }
-    else if (
-        true
-        )
-    {
-
-    }
-
-#ifdef _RELEASE
-    if (!pipeline_validation) return;
-#endif // 
-#ifdef _DEBUG
-    if (!pipeline_validation) throw std::exception("pipeline descriptor is invalidate");
-#endif // _DEBUG
-
-    std::filesystem::path renderer_path;
-    std::filesystem::create_directory(renderer_path.string() + "_pipelines");
-    std::ifstream pipeline_file("");
-    
-    
-    
-    // generate shader templates
-    // create shader strings
-    // add input/output attributes
-    // add parameter refs
-    // add some other specifier
-    // create shader files
-    
-
-    // compile shader templates, link program
-    // collect shaders
-
-
-    _program = std::make_shared<gl_program>();
-    if (_program)
-    {
-        _program->construct(shader_paths);
-    }
-}
-
 void gl_graphics_pipeline::_install()
 {
 

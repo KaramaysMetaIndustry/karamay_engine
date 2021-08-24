@@ -2,11 +2,8 @@
 #ifndef H_GL_STATIC_MESH_RENDERER
 #define H_GL_STATIC_MESH_RENDERER
 
-
-#include <utility>
-
 #include "graphics/renderer/gl_renderer.h"
-#include "graphics/type/glsl_types.h"
+
 
 
 class gl_static_mesh_renderer final : public gl_renderer 

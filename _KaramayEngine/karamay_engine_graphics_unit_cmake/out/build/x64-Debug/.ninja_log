@@ -1,0 +1,4 @@
+# ninja log v5
+22	529	6514930611466666	CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/mesh/gl_mesh.cpp.obj	dd444d9ce75b672b
+1	1585	6514930622078155	CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/dependencies/glm_pack/include/glm/detail/glm.cpp.obj	6193cb3e1a68398f
+12	1751	6514930623743352	CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/camera/gl_camera.cpp.obj	e26c381dbb9a1211
