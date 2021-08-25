@@ -14,7 +14,6 @@
 		"commands" : 
 		[
 			"add_executable",
-			"link_directories",
 			"include_directories"
 		],
 		"files" : 
@@ -35,29 +34,17 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 13,
+				"line" : 19,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 17,
-				"parent" : 0
-			},
-			{
-				"command" : 2,
-				"file" : 0,
-				"line" : 19,
-				"parent" : 0
-			},
-			{
-				"command" : 2,
-				"file" : 0,
 				"line" : 20,
 				"parent" : 0
 			},
 			{
-				"command" : 2,
+				"command" : 1,
 				"file" : 0,
 				"line" : 21,
 				"parent" : 0
@@ -70,36 +57,25 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1"
-				},
-				{
-					"fragment" : "-std:c++17"
+					"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /ZI /Ob0 /Od /RTC1 /JMC   -std:c++17"
 				}
 			],
 			"includes" : 
 			[
 				{
+					"backtrace" : 2,
+					"path" : "C:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/dependencies"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "C:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/dependencies/glm_pack/include"
+				},
+				{
 					"backtrace" : 4,
-					"path" : "G:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/dependencies"
-				},
-				{
-					"backtrace" : 5,
-					"path" : "G:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/dependencies/glm_pack/include"
-				},
-				{
-					"backtrace" : 6,
-					"path" : "G:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/source"
+					"path" : "C:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/source"
 				}
 			],
 			"language" : "CXX",
-			"languageStandard" : 
-			{
-				"backtraces" : 
-				[
-					1
-				],
-				"standard" : "17"
-			},
 			"sourceIndexes" : 
 			[
 				24,
@@ -161,7 +137,7 @@
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1",
+				"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /ZI /Ob0 /Od /RTC1 /JMC",
 				"role" : "flags"
 			},
 			{
@@ -169,42 +145,11 @@
 				"role" : "flags"
 			},
 			{
-				"backtrace" : 2,
-				"fragment" : "-LIBPATH:G:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\dependencies\\glew-2.1.0\\lib\\Release\\x64",
+				"fragment" : "-LIBPATH:C:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\dependencies\\glew-2.1.0\\lib\\Release\\x64  -LIBPATH:C:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\dependencies\\glfw-3.3.4.bin.WIN64\\lib-vc2019",
 				"role" : "libraryPath"
 			},
 			{
-				"backtrace" : 3,
-				"fragment" : "-LIBPATH:G:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\dependencies\\glfw-3.3.4.bin.WIN64\\lib-vc2019",
-				"role" : "libraryPath"
-			},
-			{
-				"backtrace" : 1,
-				"fragment" : "opengl32.lib",
-				"role" : "libraries"
-			},
-			{
-				"backtrace" : 1,
-				"fragment" : "glew32s.lib",
-				"role" : "libraries"
-			},
-			{
-				"backtrace" : 1,
-				"fragment" : "glfw3.lib",
-				"role" : "libraries"
-			},
-			{
-				"backtrace" : 1,
-				"fragment" : "glew32s.lib",
-				"role" : "libraries"
-			},
-			{
-				"backtrace" : 1,
-				"fragment" : "glfw3.lib",
-				"role" : "libraries"
-			},
-			{
-				"fragment" : "kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib",
+				"fragment" : "opengl32.lib glew32s.lib glfw3.lib glew32s.lib glfw3.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib",
 				"role" : "libraries"
 			}
 		],

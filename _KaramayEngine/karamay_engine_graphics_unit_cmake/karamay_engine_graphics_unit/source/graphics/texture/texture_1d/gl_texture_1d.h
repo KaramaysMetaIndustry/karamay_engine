@@ -58,9 +58,9 @@ public:
 	*/
 	void fill(std::int32_t mipmap_index, std::int32_t x_offset, const void* data)
 	{
-		glBindTexture(GL_TEXTURE_1D, _handle);
-		glTexSubImage1D(GL_TEXTURE_1D, mipmap_index, x_offset, _descriptor.length, GL_RGBA, GL_UNSIGNED_BYTE, data);
-		glBindTexture(GL_TEXTURE_1D, 0);
+		//glBindTexture(GL_TEXTURE_1D, _handle);
+		glTextureSubImage1D(_handle, mipmap_index, x_offset, _descriptor.length, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		//glBindTexture(GL_TEXTURE_1D, 0);
 	}
 
 	/*

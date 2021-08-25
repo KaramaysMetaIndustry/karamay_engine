@@ -1,4 +1,4 @@
-#ifndef H_GL_ATOMIC_COUNTER_BUFFER
+ #ifndef H_GL_ATOMIC_COUNTER_BUFFER
 #define H_GL_ATOMIC_COUNTER_BUFFER
 
 #include "graphics/buffers/buffer/gl_buffer.h"
