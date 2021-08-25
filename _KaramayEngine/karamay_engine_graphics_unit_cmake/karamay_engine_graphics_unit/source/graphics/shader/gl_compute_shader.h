@@ -1,7 +1,7 @@
 #include "gl_shader.h"
 
 
-struct gl_compute_shader_parameters
+struct gl_compute_shader_descriptor
 {
 	std::vector<std::shared_ptr<glsl_uniform_block_t>> referenced_uniform_blocks;
 	std::vector<std::shared_ptr<glsl_shader_storage_block_t>> referenced_shader_storage_blocks;
@@ -16,8 +16,8 @@ public:
 	
 	gl_compute_shader() = delete;
 
-	explicit gl_compute_shader(const gl_compute_shader_parameters& parameters) :
-		_parameters(parameters)
+	explicit gl_compute_shader(const gl_compute_shader_descriptor& descriptor) :
+		descriptor(descriptor)
 	{
 
 	}
@@ -28,7 +28,7 @@ public:
 
 private:
 
-	gl_compute_shader_parameters _parameters;
+	gl_compute_shader_descriptor descriptor;
 
 public:
 

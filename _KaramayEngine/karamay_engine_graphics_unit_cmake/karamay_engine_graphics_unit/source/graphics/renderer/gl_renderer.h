@@ -4,7 +4,6 @@
 #include "graphics/pipeline/graphics/gl_graphics_pipeline.h"
 #include "graphics/pipeline/graphics/gl_vertex_processing_pipeline.h"
 #include "graphics/pipeline/compute/gl_compute_pipeline.h"
-
 #include "graphics/texture/gl_texture.h"
 
 class gl_graphics_pipeline;
@@ -17,29 +16,15 @@ public:
 
     gl_renderer_builder() = default;
 
-private:
-
-    struct gl_renderer_resource
-    {
-        std::vector<std::shared_ptr<gl_pipeline>> pipelines;
-
-    } _resource;
-
-
 public:
 
-    std::shared_ptr<gl_graphics_pipeline> create_graphics_pipeline(const gl_graphics_pipeline_descriptor& descriptor)
-    {
-        return std::make_shared<gl_graphics_pipeline>(descriptor);
-    }
+    std::shared_ptr<gl_texture_1d> create_texture_1d(const gl_texture_1d_descriptor& descriptor) {}
 
-    std::shared_ptr<gl_compute_pipeline> create_compute_pipeline()
-    {
+    std::shared_ptr<gl_texture_1d_array> create_texture_1d_array(const gl_texture_1d_array_descriptor& descriptor) {}
 
-    }
+    std::shared_ptr<gl_texture_rectangle> create_texture_rectangle(const gl_texture_rectangle_descriptor& descriptor) {}
 
-
-    static std::shared_ptr<gl_texture_2d> create_texture_2d(
+    std::shared_ptr<gl_texture_2d> create_texture_2d(
         std::int32_t width, std::int32_t height, 
         gl_texture_pixel_format pixel_format,
         std::int32_t mipmaps_count
@@ -55,7 +40,7 @@ public:
         return std::make_shared<gl_texture_2d>(_desc);
     }
 
-    static std::shared_ptr<gl_texture_2d_array> create_texture_2d_array(
+    std::shared_ptr<gl_texture_2d_array> create_texture_2d_array(
         std::int32_t elements_count,
         std::int32_t width, std::int32_t height,
         gl_texture_pixel_format pixel_format,
@@ -72,18 +57,71 @@ public:
         return std::make_shared<gl_texture_2d_array>(_desc);
     }
 
-    static std::shared_ptr<gl_texture_2d_multisample> create_texture_2d_multisample() {}
+    std::shared_ptr<gl_texture_2d_multisample> create_texture_2d_multisample(const gl_texture_2d_multisample_descriptor& descriptor) {}
 
-    static std::shared_ptr<gl_texture_2d_array_multisample> create_texture_2d_array_multisample() {}
+    std::shared_ptr<gl_texture_2d_array_multisample> create_texture_2d_array_multisample(const gl_texture_2d_array_multisample& descriptor) {}
 
-    static std::shared_ptr<gl_texture_3d> create_texture_3d() {}
+    std::shared_ptr<gl_texture_3d> create_texture_3d(const gl_texture_3d_descriptor& descriptor) {}
 
-    static std::shared_ptr<gl_texture_cube> create_texture_cube() {}
+    std::shared_ptr<gl_texture_cube> create_texture_cube(const gl_texture_cube_descriptor& descriptor) {}
 
-    static std::shared_ptr<gl_texture_cube_array> create_texture_cube_array() {}
+    std::shared_ptr<gl_texture_cube_array> create_texture_cube_array(const gl_texture_cube_array_descriptor& descriptor) {}
 
-    static std::shared_ptr<gl_texture_rectangle> create_texture_rectangle() {}
+public:
 
+    std::shared_ptr<gl_renderbuffer> create_renderbuffer(const gl_renderbuffer_descriptor& descriptor)
+    {
+
+    }
+
+    std::shared_ptr<gl_renderbuffer_multisample> create_renderbuffer_multisample(const gl_renderbuffer_multisample_descriptor& descriptor)
+    {
+
+    }
+
+public:
+
+    std::shared_ptr<gl_vertex_shader> create_vertex_shader(const gl_vertex_shader_descriptor& descriptor) 
+    {
+        return std::make_shared<gl_vertex_shader>(descriptor);
+    }
+    
+    std::shared_ptr<gl_tessellation_control_shader> create_tessellation_control_shader(const gl_tessellation_control_shader_descriptor& descriptor) 
+    {
+        return std::make_shared<gl_tessellation_control_shader>(descriptor);
+    }
+    
+    std::shared_ptr<gl_tessellation_evaluation_shader> create_tessellation_evaluation_shader(const gl_tessellation_evaluation_shader_descriptor& descriptor)
+    {
+        return std::make_shared<gl_tessellation_evaluation_shader>(descriptor);
+    }
+    
+    std::shared_ptr<gl_geometry_shader> create_geometry_shader(const gl_geometry_shader_descriptor& descriptor)
+    {
+        return std::make_shared<gl_geometry_shader>(descriptor);
+    }
+    
+    std::shared_ptr<gl_fragment_shader> create_fragment_shader(const gl_fragment_shader_descriptor& descriptor)
+    {
+        return std::make_shared<gl_fragment_shader>(descriptor);
+    }
+
+    std::shared_ptr<gl_compute_shader> create_compute_shader(const gl_compute_shader_descriptor& descriptor)
+    {
+
+    }
+
+public:
+
+    std::shared_ptr<gl_graphics_pipeline> create_graphics_pipeline(const gl_graphics_pipeline_descriptor& descriptor)
+    {
+        return std::make_shared<gl_graphics_pipeline>(descriptor);
+    }
+
+    std::shared_ptr<gl_compute_pipeline> create_compute_pipeline(const gl_compute_pipeline_descriptor& descriptor)
+    {
+        return std::make_shared<gl_compute_pipeline>(descriptor);
+    }
 
 };
 

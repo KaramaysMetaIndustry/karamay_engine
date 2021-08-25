@@ -9,9 +9,24 @@ enum class gl_renderbuffer_internal_format
 };
 
 
+struct gl_renderbuffer_descriptor
+{
+
+};
+
+struct gl_renderbuffer_multisample_descriptor
+{
+
+};
+
+
+
 class gl_renderbuffer final : public gl_object
 {
 public:
+
+    gl_renderbuffer(const gl_renderbuffer_descriptor& descriptor)
+    {}
 
 	gl_renderbuffer(std::int32_t width, std::int32_t height, gl_renderbuffer_internal_format internal_format) :
 		_width(width),
@@ -58,11 +73,14 @@ public:
 
 };
 
-class gl_multisample_renderbuffer final : public gl_object
+class gl_renderbuffer_multisample final : public gl_object
 {
 public:
 
-    gl_multisample_renderbuffer(std::int32_t samples_count, std::int32_t width, std::int32_t height, gl_renderbuffer_internal_format internal_format) :
+    gl_renderbuffer_multisample(const gl_renderbuffer_multisample_descriptor& descriptor)
+    {}
+
+    gl_renderbuffer_multisample(std::int32_t samples_count, std::int32_t width, std::int32_t height, gl_renderbuffer_internal_format internal_format) :
         _samples_count(samples_count),
         _width(width),
         _height(height),
@@ -74,7 +92,7 @@ public:
         glNamedRenderbufferStorageMultisample(_handle, samples_count, static_cast<GLenum>(internal_format), width, height);
     }
 
-    ~gl_multisample_renderbuffer() override
+    ~gl_renderbuffer_multisample() override
     {
         glDeleteRenderbuffers(1, &_handle);
     }
@@ -102,44 +120,6 @@ public:
     void bind();
 
     void unbind();
-
-};
-
-
-class gl_renderbuffer_factory
-{
-private:
-
-    static std::forward_list<std::shared_ptr<gl_renderbuffer>> _renderbuffer_pool;
-
-    static std::forward_list<std::shared_ptr<gl_multisample_renderbuffer>> _multisample_renderbuffer_pool;
-
-public:
-
-    static std::shared_ptr<gl_renderbuffer> get_renderbuffer(std::int32_t width, std::int32_t height, gl_renderbuffer_internal_format internal_format)
-    {
-        for(const auto& _renderbuffer : _renderbuffer_pool)
-        {
-            if(_renderbuffer &&
-            _renderbuffer->get_width() == width &&
-            _renderbuffer->get_height() == height &&
-            _renderbuffer->get_internal_format() == internal_format) return _renderbuffer;
-        }
-        return std::make_shared<gl_renderbuffer>(width, height, internal_format);
-    }
-
-    static std::shared_ptr<gl_multisample_renderbuffer> get_multisample_renderbuffer(std::int32_t samples_count, std::int32_t width, std::int32_t height, gl_renderbuffer_internal_format internal_format)
-    {
-        for(const auto& _multisample_renderbuffer : _multisample_renderbuffer_pool)
-        {
-            if(_multisample_renderbuffer &&
-            _multisample_renderbuffer->get_samples_count() == samples_count &&
-            _multisample_renderbuffer->get_width() == width &&
-            _multisample_renderbuffer->get_height() == height &&
-            _multisample_renderbuffer->get_internal_format() == internal_format) return _multisample_renderbuffer;
-        }
-        return std::make_shared<gl_multisample_renderbuffer>(samples_count, width, height, internal_format);
-    }
 
 };
 

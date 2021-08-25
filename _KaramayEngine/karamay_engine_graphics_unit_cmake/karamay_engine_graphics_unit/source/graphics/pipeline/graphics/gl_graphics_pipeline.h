@@ -84,10 +84,15 @@ enum gl_clip_control_depth_mode : GLenum
 };
 
 
+class gl_graphics_pipeline_parameters
+{
+
+};
 
 // 顶点装配， 顶点处理，图元装配，光栅化，片段处理，输出FB
 struct gl_graphics_pipeline_descriptor
 {
+    std::shared_ptr<gl_graphics_pipeline_parameters> parameters;
     struct gl_vertex_assembly
     {
        struct gl_vertex_specification{} specification;
@@ -233,33 +238,6 @@ struct gl_graphics_pipeline_descriptor
     } render_target;
 };
 
-
-void test()
-{
-    auto _vs = std::make_shared<gl_vertex_shader>();
-    _vs->parameters.input;
-    _vs->parameters.output;
-
-    auto _tescs = std::make_shared<gl_tessellation_control_shader>();
-    auto _teses = std::make_shared<gl_tessellation_evaluation_shader>();
-
-    auto _geoms = std::make_shared<gl_geometry_shader>();
-
-    gl_graphics_pipeline_descriptor _desc;
-
-    _desc.vertex_assembly;
-    _desc.vertex_processing.vertex_shading.shader = _vs;
-    _desc.vertex_processing.tessellation.control_shader = _tescs;
-    _desc.vertex_processing.tessellation.evaluation_shader = _teses;
-    _desc.vertex_processing.geometry_shading.shader = _geoms;
-    _desc.vertex_processing.post_vertex_processing;
-
-
-    auto _pip = std::make_shared<gl_graphics_pipeline>(_desc);
-    
-    
-}
-
 class gl_graphics_pipeline : public gl_pipeline
 {
 public:
@@ -337,7 +315,6 @@ public:
         }
     }
 
-
 public:
 
     void set_primitive_clipping(gl_clip_control_origin origin, gl_clip_control_depth_mode depth_mode)
@@ -381,6 +358,48 @@ public:
     inline void draw_rectangles() {}
 
 };
+
+
+#define DEFINE_GRAPHICS_PIPELINE_PARAMETERS_BEGIN(PIPELINE_NAME)\
+struct gl_##PIPELINE_NAME##_graphics_pipeline_parameters : public gl_graphics_pipeline_parameters\
+{\
+
+
+#define DEFINE_GRAPHICS_PIPELINE_PARAMETERS_END()\
+} PIPELINE_NAME##_parameters;\
+
+
+#define DEFINE_VERTEX_SHADER_PARAMETERS_BEGIN()
+#define DEFINE_VERTEX_SHADER_PARAMETERS_END()
+
+#define DEFINE_TESC_SHADER_PARAMETERS_BEGIN()
+#define DEFINE_TESC_SHADER_PARAMETERS_END()
+
+#define DEFINE_TESE_SHADER_PARAMETERS_BEGIN()
+#define DEFINE_TESE_SHADER_PARAMETERS_END()
+
+#define DEFINE_GEOMETRY_SHADER_PARAMETERS_BEGIN()
+#define DEFINE_GEOMETRY_SHADER_PARAMETERS_END()
+
+#define DEFINE_FRAGMENT_SHADER_PARAMETERS_BEGIN()
+#define DEFINE_FRAGMENT_SHADER_PARAMETERS_END()
+
+
+#define DEFINE_SHADER_PARAMETER_IMAGE()
+#define DEFINE_SHADER_PARAMETER_SAMPLER()
+#define DEFINE_SHADER_PARAMETER_ATOMIC_COUNTER()
+#define DEFINE_SHADER_PARAMETER_UNIFORM_BLOCK()
+#define DEFINE_SHADER_PARAMETER_SHADER_STORAGE_BLOCK()
+
+#define DEFINE_STREAM_INPUT()
+#define DEFINE_VERTEX_FRAGMENT_STREAM()
+#define DEFINE_VERTEX_TESC_STREAM()
+#define DEFINE_VERTEX_GEOMETRY_STREAM()
+#define DEFINE_TESC_TESE_STREAM()
+#define DEFINE_TESE_GEOMETRY_STREAM()
+#define DEFINE_TESE_FRAGMENT_STREAM()
+#define DEFINE_GEOMETRY_FRAGMENT_STREAM()
+#define DEFINE_STREAM_OUTPUT()
 
 #endif
 
