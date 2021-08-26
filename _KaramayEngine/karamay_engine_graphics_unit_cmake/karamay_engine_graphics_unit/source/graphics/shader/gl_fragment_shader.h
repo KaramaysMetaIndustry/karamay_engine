@@ -4,7 +4,7 @@
 
 struct gl_fragment_shader_descriptor
 {
-
+	std::shared_ptr<gl_shader_parameters> parameters;
 };
 
 class gl_fragment_shader : public gl_shader
@@ -12,7 +12,10 @@ class gl_fragment_shader : public gl_shader
 
 public:
 
-	gl_fragment_shader();
+	gl_fragment_shader() = delete;
+	gl_fragment_shader(const gl_fragment_shader_descriptor descriptor)
+	{}
+
 
 };
 

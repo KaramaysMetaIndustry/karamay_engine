@@ -37,33 +37,22 @@ class gl_texture_2d_multisample : public gl_texture
 public:
 
 	explicit gl_texture_2d_multisample(const gl_texture_2d_multisample_descriptor& descriptor) :
+		gl_texture(gl_texture_type::TEXTURE_2D_MULTISAMPLE),
 		_descriptor(descriptor)
 	{
-		glCreateTextures(GL_TEXTURE_2D_MULTISAMPLE, 1, &_handle);
 		glTextureStorage2DMultisample(_handle,
 			descriptor.samples_count, 
 			static_cast<GLenum>(_descriptor.pixel_format), 
 			_descriptor.width, _descriptor.height, 
 			_descriptor.fixed_sample_location
 		);
-		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _handle);
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE,
-			_descriptor.samples_count,
-			static_cast<GLenum>(_descriptor.pixel_format),
-			_descriptor.width, _descriptor.height,
-			_descriptor.fixed_sample_location
-		);
-		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 	}
 
 	gl_texture_2d_multisample() = delete;
 	gl_texture_2d_multisample(const gl_texture_2d_multisample&) = delete;
 	gl_texture_2d_multisample& operator=(const gl_texture_2d_multisample&) = delete;
 
-	virtual ~gl_texture_2d_multisample()
-	{
-		glDeleteTextures(1, &_handle);
-	}
+	~gl_texture_2d_multisample() override = default;
 
 private:
 

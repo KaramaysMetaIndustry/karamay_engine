@@ -4,7 +4,7 @@
 
 struct gl_tessellation_evaluation_shader_descriptor
 {
-
+	std::shared_ptr<gl_shader_parameters> parameters;
 };
 
 class gl_tessellation_evaluation_shader : public gl_shader

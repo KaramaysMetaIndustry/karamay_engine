@@ -53,6 +53,7 @@ class glsl_##GLSL_T_NAME final : public glsl_transparent_t\
 public:\
 	glsl_##GLSL_T_NAME() = default;\
 	explicit glsl_##GLSL_T_NAME(const glm::GLSL_T_SEMANTIC_NAME& value){}\
+	explicit glsl_##GLSL_T_NAME(std::function<void(glsl_transparent_t*)> _register){}\
 	~glsl_##GLSL_T_NAME() = default;\
 public:\
 	glm::GLSL_T_SEMANTIC_NAME client_value;\
@@ -454,12 +455,11 @@ class glsl_##GLSL_IMAGE_T_SEMANTIC_NAME : public glsl_image_t\
 #define DEFINE_OUT_INTERFACE_BLOCK
 #define DEFINE_BUFFER_INTERFACE_BLOCK 
 
-class glsl_interface_block
+class glsl_interface_block_t
 {
 public:
 
-	glsl_interface_block()
-	{}
+	glsl_interface_block_t() = default;
 
 private:
 	// declaration spec + var name
@@ -470,35 +470,47 @@ class glsl_in_block_t
 {};
 class glsl_out_block_t
 {};
-class glsl_vertex_shader_in_block_t {};
-class glsl_vertex_shader_out_block_t {};
-class glsl_tesc_shader_in_block_t {};
-class glsl_tesc_shader_out_block_t {};
-class glsl_tese_shader_in_block_t {};
-class glsl_tese_shader_out_block_t {};
-class glsl_geometry_shader_in_block_t {};
-class glsl_geometry_shader_out_block_t {};
-class glsl_fragment_shader_in_block_t {};
-class glsl_fragment_shader_out_block_t {};
-class glsl_uniform_block_t : public glsl_token
+//class glsl_vertex_shader_in_block_t {};
+//class glsl_vertex_shader_out_block_t {};
+//class glsl_tesc_shader_in_block_t {};
+//class glsl_tesc_shader_out_block_t {};
+//class glsl_tese_shader_in_block_t {};
+//class glsl_tese_shader_out_block_t {};
+//class glsl_geometry_shader_in_block_t {};
+//class glsl_geometry_shader_out_block_t {};
+//class glsl_fragment_shader_in_block_t {};
+//class glsl_fragment_shader_out_block_t {};
+class glsl_uniform_block_t : 
+	public glsl_interface_block, 
+	public glsl_token
 {
 public:
 	
-	static glsl_uniform_block_t* get_instance();
-
-private:
-
 	glsl_uniform_block_t() = default;
 
+	 static std::function<void(glsl_transparent_t*)> item_register;
 
 public:
 	
-	virtual std::string get_token();
+	const std::string& generate_token() const override {}
 
+public:
+	virtual const std::uint8_t* data() const = 0;
+	virtual std::int64_t size() const = 0;
 
 };
-class glsl_shader_storage_block_t : public glsl_token
-{};
+class glsl_shader_storage_block_t : 
+	public glsl_interface_block,
+	public glsl_token
+{
+public:
+	glsl_shader_storage_block_t() = default;
+
+public:
+	
+	virtual const std::uint8_t* data() const = 0;
+	virtual std::int64_t size() const = 0;
+};
 
 
 #define GLSL_UNIFORM_LAYOUT_STD140 alignas(16)

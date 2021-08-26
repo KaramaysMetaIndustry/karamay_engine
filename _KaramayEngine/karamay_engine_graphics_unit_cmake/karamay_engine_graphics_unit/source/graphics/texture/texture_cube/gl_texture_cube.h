@@ -31,11 +31,11 @@ struct gl_texture_cube_descriptor
 class gl_texture_cube final : public gl_texture
 {
 public:
-
+	gl_texture_cube() = delete;
 	explicit gl_texture_cube(const gl_texture_cube_descriptor& descriptor) :
+		gl_texture(gl_texture_type::TEXTURE_CUBE_MAP),
 		_descriptor(descriptor)
 	{
-		glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &_handle);
 		glTextureStorage3D(_handle,
 			_descriptor.mipmaps_count, 
 			static_cast<GLenum>(_descriptor.pixel_format), 
@@ -44,7 +44,6 @@ public:
 		);
 	}
 
-	gl_texture_cube() = delete;
 	gl_texture_cube(const gl_texture_cube&) = delete;
 	gl_texture_cube& operator=(const gl_texture_cube&) = delete;
 

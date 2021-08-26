@@ -46,14 +46,14 @@ struct gl_texture_2d_array_multisample_descriptor
 };
 
 
-class gl_texture_2d_array_multisample final : public gl_texture
+class gl_texture_2d_multisample_array final : public gl_texture
 {
 public:
 	
-	explicit gl_texture_2d_array_multisample(const gl_texture_2d_array_multisample_descriptor& descriptor) :
+	explicit gl_texture_2d_multisample_array(const gl_texture_2d_array_multisample_descriptor& descriptor) :
+		gl_texture(gl_texture_type::TEXTURE_2D_MULTISAMPLE_ARRAY),
 		_descriptor(descriptor)
 	{
-		glCreateTextures(GL_TEXTURE_2D_MULTISAMPLE_ARRAY, 1, &_handle);
 		glTextureStorage3DMultisample(_handle, 
 			_descriptor.samples_count, 
 			static_cast<GLenum>(_descriptor.pixel_format),
@@ -63,14 +63,11 @@ public:
 		);
 	}
 
-	gl_texture_2d_array_multisample() = delete;
-	gl_texture_2d_array_multisample(const gl_texture_2d_array_multisample&) = delete;
-	gl_texture_2d_array_multisample& operator=(const gl_texture_2d_array_multisample&) = delete;
+	gl_texture_2d_multisample_array() = delete;
+	gl_texture_2d_multisample_array(const gl_texture_2d_multisample_array&) = delete;
+	gl_texture_2d_multisample_array& operator=(const gl_texture_2d_multisample_array&) = delete;
 	
-	virtual ~gl_texture_2d_array_multisample()
-	{
-		glDeleteTextures(1, &_handle);
-	}
+	~gl_texture_2d_multisample_array() override = default;
 
 private:
 

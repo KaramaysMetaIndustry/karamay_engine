@@ -6,27 +6,6 @@
 
 namespace gl_texture_enum
 {
-	enum class type : GLenum
-	{
-		TEXTURE_1D = GL_TEXTURE_1D,
-		TEXTURE_1D_ARRAY = GL_TEXTURE_1D_ARRAY,
-
-		TEXTURE_2D = GL_TEXTURE_2D,
-		TEXTURE_2D_ARRAY = GL_TEXTURE_2D_ARRAY,
-
-		TEXTURE_2D_MULTISAMPLE = GL_TEXTURE_2D_MULTISAMPLE,
-		TEXTURE_2D_MULTISAMPLE_ARRAY = GL_TEXTURE_2D_MULTISAMPLE_ARRAY,
-
-		TEXTURE_RECTANGLE = GL_TEXTURE_RECTANGLE,
-
-		TEXTURE_3D = GL_TEXTURE_3D,
-
-		TEXTURE_CUBE_MAP = GL_TEXTURE_CUBE_MAP,
-		TEXTURE_CUBE_MAP_ARRAY = GL_TEXTURE_CUBE_MAP_ARRAY,
-
-		TEXTURE_BUFFER = GL_TEXTURE_BUFFER
-	};
-
 	enum class pixels_format : GLenum
 	{
 		RED = GL_RED,
@@ -228,7 +207,6 @@ enum class gl_cube_face_index : GLenum {
 	negative_z = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z,
 };
 
-
 enum class gl_texture_pixel_format : GLenum
 {
 	// normalized (i/ui)
@@ -330,7 +308,6 @@ enum class gl_texture_pixel_format : GLenum
 
 };
 
-// texImage*
 enum class gl_image_format : GLenum
 {
 	// base format
@@ -428,25 +405,6 @@ enum class gl_image_format : GLenum
 	
 };
 
-class gl_pixels
-{
-public:
-	gl_pixels();
-
-	const std::uint32_t format;
-	const std::uint32_t type;
-	const std::uint32_t internal_format;
-public:
-	std::uint8_t* data() {
-		gl_image_format::F_R32;
-	}
-
-
-
-};
-
-
-
 std::pair<std::uint32_t, std::uint32_t> pixel_format_to_data_format(gl_texture_pixel_format format)
 {
 	return std::make_pair(0, 0);
@@ -501,22 +459,45 @@ struct gl_texture_descriptor
 
 };
 
+
+enum class gl_texture_type : GLenum
+{
+	TEXTURE_1D = GL_TEXTURE_1D,
+	TEXTURE_1D_ARRAY = GL_TEXTURE_1D_ARRAY,
+
+	TEXTURE_2D = GL_TEXTURE_2D,
+	TEXTURE_2D_ARRAY = GL_TEXTURE_2D_ARRAY,
+	TEXTURE_2D_MULTISAMPLE = GL_TEXTURE_2D_MULTISAMPLE,
+	TEXTURE_2D_MULTISAMPLE_ARRAY = GL_TEXTURE_2D_MULTISAMPLE_ARRAY,
+	TEXTURE_RECTANGLE = GL_TEXTURE_RECTANGLE,
+
+	TEXTURE_3D = GL_TEXTURE_3D,
+
+	TEXTURE_CUBE_MAP = GL_TEXTURE_CUBE_MAP,
+	TEXTURE_CUBE_MAP_ARRAY = GL_TEXTURE_CUBE_MAP_ARRAY,
+
+	TEXTURE_BUFFER = GL_TEXTURE_BUFFER
+};
+
 class gl_texture : public gl_object
 {
-public:
-	
-	gl_texture() = default;
+protected:
+
+	gl_texture() = delete;
+	gl_texture(gl_texture_type type):
+		_type(type)
+	{
+		glCreateTextures(static_cast<GLenum>(_type), 1, &_handle);
+	}
 
 	~gl_texture() override
 	{
 		glDeleteTextures(1, &_handle);
 	}
 
-public:
+protected:
 
-	virtual void bind() = 0;
-	
-	virtual void unbind() = 0;
+	gl_texture_type _type;
 
 protected:
 
@@ -678,6 +659,12 @@ protected:
 			break;
 		}
 	}
+
+public:
+
+	virtual void bind() = 0;
+	virtual void unbind() = 0;
+
 };
 
 

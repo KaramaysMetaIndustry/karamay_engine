@@ -33,9 +33,9 @@ class gl_texture_3d final: public gl_texture
 public:
 
 	explicit gl_texture_3d(const gl_texture_3d_descriptor& descriptor) :
+		gl_texture(gl_texture_type::TEXTURE_3D),
 		_descriptor(descriptor)
 	{
-		glCreateTextures(GL_TEXTURE_3D, 1, &_handle);
 		glTextureStorage3D(
 			_handle, 
 			_descriptor.mipmaps_count, 
@@ -54,20 +54,32 @@ public:
 
 	gl_texture_3d_descriptor get_descriptor() const { return _descriptor; }
 
+public:
+
 	void fill(std::int32_t mipmap_index, std::int32_t x_offset, std::int32_t y_offset, std::int32_t z_offset, const void* data)
 	{
-		glBindTexture(GL_TEXTURE_3D, _handle);
-		glTexSubImage3D(
-			GL_TEXTURE_3D, 
+		glTextureSubImage3D(
+			_handle, 
 			mipmap_index, x_offset, y_offset, z_offset, 
-			width, height, depth, format, type, data
+			_descriptor.width, _descriptor.height, _descriptor.depth,
+			static_cast<std::uint32_t>(_descriptor.pixel_format), _descriptor.type,
+			data
 		);
+	}
+
+public:
+
+	void bind(std::uint32_t unit)
+	{
+		glActiveTexture(GL_TEXTURE0 + unit);
 		glBindTexture(GL_TEXTURE_3D, _handle);
 	}
 
-	void bind(std::uint32_t unit);
-
-	void unbind();
+	void unbind(std::uint32_t unit)
+	{
+		glActiveTexture(GL_TEXTURE0 + unit);
+		glBindTexture(GL_TEXTURE_3D, 0);
+	}
 
 };
 

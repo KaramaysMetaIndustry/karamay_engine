@@ -4,13 +4,7 @@
 
 struct gl_vertex_shader_descriptor
 {
-	std::shared_ptr<glsl_vertex_shader_in_block_t> input;
-	std::vector<std::shared_ptr<glsl_image_t>> images;
-	std::vector<std::shared_ptr<glsl_sampler_t>> samplers;
-	std::vector<std::shared_ptr<glsl_atomic_uint>> atomic_counters;
-	std::vector<std::shared_ptr<glsl_uniform_block_t>> uniform_blocks;
-	std::vector<std::shared_ptr<glsl_shader_storage_block_t>> shader_storage_blocks;
-	std::shared_ptr<glsl_vertex_shader_out_block_t> output;
+	std::shared_ptr<gl_shader_parameters> parameters;
 };
 
 class gl_vertex_shader : public gl_shader
@@ -18,23 +12,22 @@ class gl_vertex_shader : public gl_shader
 public:
 
 	gl_vertex_shader() = delete;
-	
-	explicit gl_vertex_shader(const gl_vertex_shader_descriptor& descriptor) :
+	gl_vertex_shader(const gl_vertex_shader_descriptor& descriptor) :
 		descriptor(descriptor)
 	{}
 
 public:
-
-	const gl_vertex_shader_descriptor descriptor;
 
 	const std::string& get_shader_glsl_template() const override
 	{
 		return _glsl_template;
 	}
 
-private:
+public:
 
-	std::weak_ptr<gl_pipeline> _owner;
+	const gl_vertex_shader_descriptor descriptor;
+
+private:
 
 	std::string _glsl_template;
 

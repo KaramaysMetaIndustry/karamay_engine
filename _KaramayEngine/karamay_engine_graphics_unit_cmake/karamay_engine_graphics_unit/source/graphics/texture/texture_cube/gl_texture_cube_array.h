@@ -36,9 +36,9 @@ class gl_texture_cube_array final : public gl_texture
 public:
 
 	explicit gl_texture_cube_array(const gl_texture_cube_array_descriptor& descriptor) :
+		gl_texture(gl_texture_type::TEXTURE_CUBE_MAP_ARRAY),
 		_descriptor(descriptor)
 	{
-		glCreateTextures(GL_TEXTURE_CUBE_MAP_ARRAY, 1, &_handle);
 		glTextureStorage3D(
 			_handle, 
 			_descriptor.mipmaps_count, 

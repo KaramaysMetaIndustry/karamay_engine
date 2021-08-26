@@ -18,22 +18,38 @@ class gl_buffer;
 
 struct gl_texture_buffer_descriptor
 {
+	std::shared_ptr<gl_buffer> buffer;
+	gl_texture_pixel_format pixel_format;
+	std::int32_t offset, length;
 
+	gl_texture_buffer_descriptor()
+	{}
 };
 
 class gl_texture_buffer : public gl_texture
 {
 public:
 	
-	gl_texture_buffer();
+	gl_texture_buffer() = delete;
+	gl_texture_buffer(const gl_texture_buffer_descriptor& descriptor) :
+		gl_texture(gl_texture_type::TEXTURE_BUFFER),
+		_descriptor(descriptor)
+	{
+		//GL_TEXTURE_BUFFER_OFFSET_ALIGNMENT
+		glTextureBufferRange(_handle, 
+			static_cast<GLenum>(_descriptor.pixel_format), 
+			_descriptor.buffer->get_handle(),
+			_descriptor.offset, _descriptor.length
+		);
+	}
 	
-	virtual ~gl_texture_buffer();
+	~gl_texture_buffer() override = default;
+
+private:
+
+	gl_texture_buffer_descriptor _descriptor;
 
 public:
-	
-	void associate_buffer(std::shared_ptr<gl_buffer> buffer);
-	
-	void associate_sub_buffer(std::shared_ptr<gl_buffer> buffer, std::size_t offset, std::size_t size);
 
 	void bind(std::uint32_t unit)
 	{

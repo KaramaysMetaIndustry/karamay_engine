@@ -43,11 +43,11 @@ struct gl_texture_2d_descriptor : public gl_texture_descriptor
 class gl_texture_2d final : public gl_texture
 {
 public:
-	
+	gl_texture_2d() = delete;
 	explicit gl_texture_2d(const gl_texture_2d_descriptor& descriptor) :
+		gl_texture(gl_texture_type::TEXTURE_2D),
 		_descriptor(descriptor)
 	{
-		glCreateTextures(GL_TEXTURE_2D, 1, &_handle);
 		glTextureStorage2D(_handle, 
 			_descriptor.mipmaps_count, 
 			static_cast<std::uint32_t>(_descriptor.pixel_format), 
@@ -55,17 +55,10 @@ public:
 		);
 	}
 
-	gl_texture_2d() = delete;
 	
 	~gl_texture_2d() = default;
 
 public:
-
-	void clone(std::shared_ptr<gl_texture_2d> texture_2d)
-	{
-		if (!texture_2d) return;
-
-	}
 
 	void bind() override
 	{
@@ -78,10 +71,6 @@ public:
 private:
 
 	gl_texture_2d_descriptor _descriptor;
-
-	void _allocate();
-
-	void _release();
 
 public:
 

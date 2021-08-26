@@ -9,19 +9,15 @@ class gl_pipeline_parameters
 	std::vector<std::shared_ptr<glsl_atomic_uint>> atomic_counters;
 };
 
-class gl_pipeline 
+class gl_pipeline
 {
 
 public:
 
-	gl_pipeline() = default;
-	
-	gl_pipeline(const gl_pipeline_parameters& parameters)
-	{}
-
-
-
-	const std::string& name() const { return _name; }
+	gl_pipeline()
+	{
+		_program = std::make_shared<gl_program>();
+	}
 
 public:
 
@@ -29,11 +25,7 @@ public:
 
 protected:
 	
-	
-
 	std::string _name;
-
-	gl_pipeline_parameters _parameters;
 
 	std::shared_ptr<gl_program> _program;
 

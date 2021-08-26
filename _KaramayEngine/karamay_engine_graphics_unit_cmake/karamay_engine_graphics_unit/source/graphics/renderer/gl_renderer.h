@@ -138,6 +138,10 @@ public:
 
     ~gl_renderer() = default;
 
+
+
+
+
 public:
 
     void build(gl_renderer_builder& builder);
@@ -204,6 +208,49 @@ private:
         return _generation_result;
     }
 
+    struct gl_PIP_NAME_graphics_pipeline_parameters : public gl_graphics_pipeline_parameters
+    {
+
+        class gl_pp_compute_shader_parameters : public gl_compute_shader_parameters
+        {
+        public:
+            class glsl_pp_uniform_block_t : public glsl_uniform_block_t
+            {
+            public:
+                glsl_pp_uniform_block_t() = delete;
+                glsl_pp_uniform_block_t(std::function<void(const glsl_uniform_block_t& uniform_block)> _register)
+                {}
+
+                const std::uint8_t* data() const override
+                {
+                    return reinterpret_cast<const std::uint8_t*>(&memory);
+                }
+
+                std::int64_t size() const override
+                {
+                    return sizeof(memory) * 10;
+                }
+                
+                struct gl_struct
+                {
+                    glsl_vec3 position0{item_register};
+                    glsl_vec3 position1{item_register};
+                    glsl_vec3 position2{item_register};
+                } memory[10];
+
+
+            } _ublock0{uniform_block_register};
+        } compute_parameters;
+
+
+    };
+    std::shared_ptr<class gl_PIP_NAME_graphics_pipeline_parameters> _parameters;
+
+    void test()
+    {
+        _parameters->compute_parameters._ublock0.memory[0].position0.client_value = glm::vec3(0.0f);
+    }
+
 };
 
 
@@ -240,6 +287,11 @@ DEFINE_RENDERER_CONSTRUCTOR(RENDERER_NAME)\
 
 #define DEFINE_RENDERER_END()\
 };\
+
+
+#define CLASS_NAME(__CLASS__)  #__CLASS__
+
+CLASS_NAME(AAA);
 
 #endif
 

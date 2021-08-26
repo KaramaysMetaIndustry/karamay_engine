@@ -37,9 +37,9 @@ class gl_texture_2d_array final : public gl_texture
 public:
 
 	explicit gl_texture_2d_array(const gl_texture_2d_array_descriptor& descriptor) : 
+		gl_texture(gl_texture_type::TEXTURE_2D_ARRAY),
 		_descriptor(descriptor)
 	{
-		glCreateTextures(GL_TEXTURE_2D_ARRAY, 1, &_handle);
 		glTextureStorage3D(_handle,
 			_descriptor.mipmaps_count, static_cast<GLenum>(_descriptor.pixel_format),
 			_descriptor.width, _descriptor.height,
@@ -51,10 +51,7 @@ public:
 	gl_texture_2d_array(const gl_texture_2d_array&) = delete;
 	gl_texture_2d_array& operator=(const gl_texture_2d_array&) = delete;
 
-	virtual ~gl_texture_2d_array()
-	{
-		glDeleteTextures(1, &_handle);
-	}
+	~gl_texture_2d_array() override = default;
 
 private:
 	

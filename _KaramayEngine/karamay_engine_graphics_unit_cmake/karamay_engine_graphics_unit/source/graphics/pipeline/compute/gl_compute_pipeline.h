@@ -1,19 +1,17 @@
 #pragma once
 #include "graphics/pipeline/base/gl_pipeline.h"
 #include "graphics/shader/gl_compute_shader.h"
-#include "graphics/type/glsl_class/glsl_class.h"
+#include "graphics/type/glsl_class.h"
+
+class gl_compute_pipeline_parameters
+{
+
+};
 
 struct gl_compute_pipeline_descriptor
 {
 	struct gl_compute_shading
 	{
-		struct gl_compute_shader_parameters
-		{
-			std::vector<std::shared_ptr<glsl_uniform_block>> referenced_uniform_blocks;
-			std::vector<std::shared_ptr<glsl_shader_storage_block>> referenced_shader_storage_blocks;
-			std::vector<std::shared_ptr<glsl_image_t>> referenced_images;
-			std::vector<std::shared_ptr<glsl_sampler_t>> referenced_samplers;
-		} parameters;
 		std::shared_ptr<gl_compute_shader> shader;
 	} compute_shading;
 };
@@ -74,3 +72,44 @@ public:
 	}
 
 };
+
+
+#define DEFINE_COMPUTE_PIPELINE_PARAMETERS_BEGIN(PIPELINE_NAME)\
+struct gl_##PIPELINE_NAME##_graphics_pipeline_parameters\
+{\
+	class gl_##PIPELINE_NAME##_compute_shader_parameters : public gl_compute_shader_parameters\
+	{\
+	public:\
+
+#define DEFINE_COMPUTE_PIPELINE_PARAMETERS_END(PIPELINE_NAME)\
+	} compute_shader_parameters;\
+};\
+std::shared_ptr<class gl_##PIPELINE_NAME##_graphics_pipeline_parameters> _##PIPELINE_NAME##_parameters;\
+
+
+class glsl_pp_uniform_block_t : public glsl_uniform_block_t
+{
+public:
+	glsl_pp_uniform_block_t() = delete;
+	glsl_pp_uniform_block_t(std::function<void(const glsl_uniform_block_t& uniform_block)> _register)
+	{}
+
+	const std::uint8_t* data() const override
+	{
+		return reinterpret_cast<const std::uint8_t*>(&memory);
+	}
+
+	std::int64_t size() const override
+	{
+		return sizeof(memory) * 10;
+	}
+
+	struct gl_struct
+	{
+		glsl_vec3 position0{ item_register };
+		glsl_vec3 position1{ item_register };
+		glsl_vec3 position2{ item_register };
+	} memory[10];
+
+
+} _ublock0{ uniform_block_register };

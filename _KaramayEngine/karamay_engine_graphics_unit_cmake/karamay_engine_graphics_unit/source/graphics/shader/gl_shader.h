@@ -49,10 +49,31 @@ namespace gl_shader_enum
 //    }
 }
 
+class gl_shader_parameters
+{
+public:
+	gl_shader_parameters() = default;
+
+private:
+
+	std::vector<std::shared_ptr<glsl_image_t>> images;
+	std::vector<std::shared_ptr<glsl_sampler_t>> samplers;
+	std::vector<std::shared_ptr<glsl_atomic_uint>> atomic_counters;
+	std::vector<std::shared_ptr<glsl_uniform_block_t>> uniform_blocks;
+	std::vector<std::shared_ptr<glsl_shader_storage_block_t>> shader_storage_blocks;
+
+protected:
+	std::function<void(glsl_image_t*)> _image_registerer;
+	std::function<void(glsl_sampler_t*)> _sampler_registerer;
+	std::function<void(glsl_atomic_uint*)> _atomic_counter_registerer;
+	std::function<void(glsl_uniform_block_t*)> _uniform_block_registerer;
+	std::function<void(glsl_shader_storage_block_t*)> _shader_storage_block_registerer;
+};
+
 class gl_shader : public gl_object
 {
 public:
-	gl_shader();
+	gl_shader() = default;
 
 	explicit gl_shader(gl_shader_enum::type shader_type, const std::vector<std::uint8_t>& source_stream);
 
@@ -60,19 +81,28 @@ public:
 
 	~gl_shader() override;
 
+public:
+
+	virtual const std::string& get_shader_glsl_template() const = 0;
+
+
 private:
 
     gl_shader_enum::type _shader_type;
 
     std::vector<std::uint8_t> _source_stream;
+	
+	std::weak_ptr<gl_pipeline> _owner;
 
 public:
 
     [[nodiscard]] gl_shader_enum::type get_shader_type() const { return _shader_type; }
 
-	virtual const std::string& get_shader_glsl_template() const = 0;
 
-public:
+	void set_onwer(const std::shared_ptr<gl_pipeline>& owner)
+	{
+		_owner = owner;
+	}
 
 	void load(const std::string& path)
 	{

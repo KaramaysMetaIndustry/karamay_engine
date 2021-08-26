@@ -83,16 +83,9 @@ enum gl_clip_control_depth_mode : GLenum
     zero_to_one = GL_ZERO_TO_ONE
 };
 
-
-class gl_graphics_pipeline_parameters
-{
-
-};
-
 // 顶点装配， 顶点处理，图元装配，光栅化，片段处理，输出FB
 struct gl_graphics_pipeline_descriptor
 {
-    std::shared_ptr<gl_graphics_pipeline_parameters> parameters;
     struct gl_vertex_assembly
     {
        struct gl_vertex_specification{} specification;
@@ -243,14 +236,13 @@ class gl_graphics_pipeline : public gl_pipeline
 public:
 
     gl_graphics_pipeline() = delete;
-
-    explicit gl_graphics_pipeline(const gl_graphics_pipeline_descriptor& descriptor) :
+    gl_graphics_pipeline(const gl_graphics_pipeline_descriptor& descriptor) :
         _descriptor(descriptor)
-    {
-    }
+    {}
+    gl_graphics_pipeline(const gl_graphics_pipeline&) = delete;
+    gl_graphics_pipeline& operator=(const gl_graphics_pipeline&) = delete;
 
     ~gl_graphics_pipeline() = default;
-
 
 private:
     
@@ -258,8 +250,94 @@ private:
 
 public:
 
-    void generate()
+    enum class shader_combination_flag : std::uint8_t
     {
+        _vs,
+        _vs_tescs_teses,
+        _vs_tescs_teses_gs,
+        
+        _vs_fs,
+        _vs_gs_fs,
+        _vs_tescs_teses_fs,
+        _vs_tescs_teses_gs_fs,
+        
+    };
+
+    void initialize()
+    {
+        auto& _vs = _descriptor.vertex_processing.vertex_shading.shader;
+        auto& _tescs = _descriptor.vertex_processing.tessellation.control_shader;
+        auto& _teses = _descriptor.vertex_processing.tessellation.evaluation_shader;
+        auto& _gs = _descriptor.vertex_processing.geometry_shading.shader;
+        auto& _fs = _descriptor.fragment_processing.fragment_shading.shader;
+
+        shader_combination_flag _combination_flag;
+        std::uint8_t _flag = 0;
+
+        if (_vs)
+        {
+            _flag |= 0;
+        }
+        if (_tescs)
+        {
+
+        }
+
+        // check the shaders combination invalidation
+        switch (_combination_flag)
+        {
+        case gl_graphics_pipeline::shader_combination_flag::_vs:
+        {
+            if (!_descriptor.primitive_assembly.discard_all_primitives)
+            {
+                std::cout << "You must specify a fragment shader otherwise enable the option 'discard_all_primitives'" << std::endl;
+                return;
+            }
+
+            // generate pipeline shaders template
+            const auto& _vs_template = _vs->get_shader_glsl_template();
+
+            //_program->construct();
+
+        }
+            break;
+        case gl_graphics_pipeline::shader_combination_flag::_vs_tescs_teses:
+        {
+            if (!_descriptor.primitive_assembly.discard_all_primitives)
+            {
+                std::cout << "You must specify a fragment shader otherwise enable the option 'discard_all_primitives'" << std::endl;
+                return;
+            }
+        }
+            break;
+        case gl_graphics_pipeline::shader_combination_flag::_vs_tescs_teses_gs:
+        {
+            if (!_descriptor.primitive_assembly.discard_all_primitives)
+            {
+                std::cout << "You must specify a fragment shader otherwise enable the option 'discard_all_primitives'" << std::endl;
+                return;
+            }
+
+
+        }
+            break;
+        case gl_graphics_pipeline::shader_combination_flag::_vs_fs:
+            break;
+        case gl_graphics_pipeline::shader_combination_flag::_vs_gs_fs:
+            break;
+        case gl_graphics_pipeline::shader_combination_flag::_vs_tescs_teses_fs:
+            break;
+        case gl_graphics_pipeline::shader_combination_flag::_vs_tescs_teses_gs_fs:
+            break;
+        default:
+            break;
+        }
+
+
+
+
+
+
         std::vector<std::shared_ptr<gl_shader>> _shaders;
         if (const auto& _vs = _descriptor.vertex_processing.vertex_shading.shader)
         {
@@ -278,8 +356,7 @@ public:
             _shader->get_shader_glsl_template();
         }
 
-        // load source code and compile    
-
+        // load source code and compile  
     }
 
     bool ouput_pipeline_glsl_template(const std::string& renderer_dir) const override
@@ -360,13 +437,9 @@ public:
 };
 
 
-#define DEFINE_GRAPHICS_PIPELINE_PARAMETERS_BEGIN(PIPELINE_NAME)\
+#define DEFINE_GRAPHICS_PIPELINE_PARAMETERS(PIPELINE_NAME)\
+std::shared_ptr<class gl_##PIPELINE_NAME##_graphics_pipeline_parameters> PIPELINE_NAME##_parameters;\
 struct gl_##PIPELINE_NAME##_graphics_pipeline_parameters : public gl_graphics_pipeline_parameters\
-{\
-
-
-#define DEFINE_GRAPHICS_PIPELINE_PARAMETERS_END()\
-} PIPELINE_NAME##_parameters;\
 
 
 #define DEFINE_VERTEX_SHADER_PARAMETERS_BEGIN()

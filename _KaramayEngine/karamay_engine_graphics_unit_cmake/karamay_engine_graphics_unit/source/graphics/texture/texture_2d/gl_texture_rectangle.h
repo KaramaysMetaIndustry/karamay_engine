@@ -10,16 +10,21 @@ struct gl_texture_rectangle_descriptor
 	std::int32_t width, height;
 	gl_texture_pixel_format pixel_format;
 
+	gl_texture_rectangle_descriptor()
+	{
+
+	}
+
 };
 
 class gl_texture_rectangle final : public gl_texture
 {
 public:
-	
-	explicit gl_texture_rectangle(const gl_texture_rectangle_descriptor& descriptor) :
+	gl_texture_rectangle() = delete;
+	gl_texture_rectangle(const gl_texture_rectangle_descriptor& descriptor) :
+		gl_texture(gl_texture_type::TEXTURE_RECTANGLE),
 		_descriptor(descriptor)
 	{
-		glCreateTextures(GL_TEXTURE_RECTANGLE, 1, &_handle);
 		glTextureStorage2D(_handle, 
 			_descriptor.mipmaps_count, 
 			static_cast<GLenum>(_descriptor.pixel_format),
@@ -28,9 +33,8 @@ public:
 		);
 	}
 
-	gl_texture_rectangle();
 	
-	~gl_texture_rectangle();
+	~gl_texture_rectangle() override = default;
 
 private:
 

@@ -34,11 +34,11 @@ class gl_texture_1d_array final : public gl_texture
 {
 
 public:
-	
-	explicit gl_texture_1d_array(const gl_texture_1d_array_descriptor& descriptor) :
+	gl_texture_1d_array() = delete;
+	gl_texture_1d_array(const gl_texture_1d_array_descriptor& descriptor) :
+		gl_texture(gl_texture_type::TEXTURE_1D_ARRAY),
 		_descriptor(descriptor)
 	{
-		glCreateTextures(GL_TEXTURE_1D_ARRAY, 1, &_handle);
 		glTextureStorage2D(
 			_handle,
 			_descriptor.mipmaps_count, static_cast<GLenum>(_descriptor.pixel_format),
@@ -47,10 +47,7 @@ public:
 		);
 	}
 
-	~gl_texture_1d_array() override 
-	{
-		glDeleteTextures(1, &_handle);
-	}
+	~gl_texture_1d_array() = default;
 
 private:
 
