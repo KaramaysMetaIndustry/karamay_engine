@@ -1,1 +1,0 @@
-#include "gl_texture_rectangle.h"

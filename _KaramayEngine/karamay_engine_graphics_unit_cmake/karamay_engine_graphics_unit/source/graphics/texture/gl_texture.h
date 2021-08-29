@@ -1,16 +1,1643 @@
-#ifndef H_GL_TEXTURE
-#define H_GL_TEXTURE
+#ifndef GL_TEXTURE_BASE_H
+#define GL_TEXTURE_BASE_H
 
-#include "texture_1d/gl_texture_1d.h"
-#include "texture_1d/gl_texture_1d_array.h"
-#include "texture_2d/gl_texture_2d.h"
-#include "texture_2d/gl_texture_2d_array.h"
-#include "texture_2d/gl_texture_2d_multisample.h"
-#include "texture_2d/gl_texture_2d_array_multisample.h"
-#include "texture_2d/gl_texture_rectangle.h"
-#include "texture_3d/gl_texture_3d.h"
-#include "texture_cube/gl_texture_cube.h"
-#include "texture_cube/gl_texture_cube_array.h"
-#include "texture_buffer/gl_texture_buffer.h"
+#include "graphics/glo/gl_object.h"
+#include "graphics/sampler/gl_sampler.h"
+
+namespace gl_texture_enum
+{
+	enum class pixels_format : GLenum
+	{
+		RED = GL_RED,
+		RG = GL_RG,
+		RGB = GL_RGB,
+		BGR = GL_BGR,
+		RGBA = GL_RGBA,
+		BGRA = GL_BGRA,
+		RED_INTEGER = GL_RED_INTEGER,
+		RG_INTEGER = GL_RG_INTEGER,
+		RGB_INTEGER = GL_RGB_INTEGER,
+		BGR_INTEGER = GL_BGR_INTEGER,
+		RGBA_INTEGER = GL_RGBA_INTEGER,
+		BGRA_INTEGER = GL_BGRA_INTEGER,
+		STENCIL_INDEX = GL_STENCIL_INDEX,
+		DEPTH_COMPONENT = GL_DEPTH_COMPONENT,
+		DEPTH_STENCIL = GL_DEPTH_STENCIL
+	};
+
+	enum class pixels_type : GLenum
+	{
+		UNSIGNED_BYTE = GL_UNSIGNED_BYTE, // uint8
+		BYTE = GL_BYTE, // int8
+		UNSIGNED_SHORT = GL_UNSIGNED_SHORT, // uint16
+		SHORT = GL_SHORT, //int16
+		UNSIGNED_INT = GL_UNSIGNED_INT, //uint32
+		INT = GL_INT, //int32
+		
+		HALF_FLOAT = GL_HALF_FLOAT, // float16
+		FLOAT = GL_FLOAT, // float32
+
+		UNSIGNED_BYTE_3_3_2 = GL_UNSIGNED_BYTE_3_3_2,
+		UNSIGNED_BYTE_2_3_3_REV = GL_UNSIGNED_BYTE_2_3_3_REV,
+
+		UNSIGNED_SHORT_5_6_5 = GL_UNSIGNED_SHORT_5_6_5,
+		UNSIGNED_SHORT_5_6_5_REV = GL_UNSIGNED_SHORT_5_6_5_REV,
+		UNSIGNED_SHORT_4_4_4_4 = GL_UNSIGNED_SHORT_4_4_4_4, // 16
+		UNSIGNED_SHORT_4_4_4_4_REV = GL_UNSIGNED_SHORT_4_4_4_4_REV,
+		UNSIGNED_SHORT_5_5_5_1 = GL_UNSIGNED_SHORT_5_5_5_1,
+		UNSIGNED_SHORT_1_5_5_5_REV = GL_UNSIGNED_SHORT_1_5_5_5_REV,
+
+		UNSIGNED_INT_8_8_8_8 = GL_UNSIGNED_INT_8_8_8_8,
+		UNSIGNED_INT_8_8_8_8_REV = GL_UNSIGNED_INT_8_8_8_8_REV,
+		UNSIGNED_INT_10_10_10_2 = GL_UNSIGNED_INT_10_10_10_2,
+		UNSIGNED_INT_2_10_10_10_REV = GL_UNSIGNED_INT_2_10_10_10_REV
+	};
+
+	enum class internal_format : GLenum
+	{
+		// base format
+		DEPTH_COMPONENT = GL_DEPTH_COMPONENT,
+		DEPTH_STENCI = GL_DEPTH_STENCIL,
+		
+		RED = GL_RED,
+		RG = GL_RG,
+		RGB = GL_RGB,
+		RGBA = GL_RGBA,
+
+		R8 = GL_R8, //r-8bit-unsigned_normalized_integer [0, 2^8-1] maps [0.0, 1.0]
+		R8_SNORM = GL_R8_SNORM, //r-8bit signed normalized integer [-2^8, 2^8] maps [-1.0, 1.0]
+		R16 = GL_R16, //r-16bit unsigned normalized integer [0, 2^16-1] maps [0.0, 1.0]
+		R16_SNORM = GL_R16_SNORM, //r-16bit signed normalized integer [-2^16, 2^16] maps [-1.0, 1.0]
+
+		// 2-components
+		RG8 = GL_RG8, // rg-8bit
+		RG8_SNORM = GL_RG8_SNORM, // rg-8bit
+		RG16 = GL_RG16,
+		RG16_SNORM = GL_RG16_SNORM,
+
+		// 3-components
+		R3_G3_B2 = GL_R3_G3_B2,
+		RGB4 = GL_RGB4,
+		RGB5 = GL_RGB5,
+		RGB8 = GL_RGB8,
+		RGB8_SNORM = GL_RGB8_SNORM,
+		RGB10 = GL_RGB10,
+		RGB12 = GL_RGB12,
+		RGB16_SNORM = GL_RGB16_SNORM,
+
+		// 4-components
+		RGBA2 = GL_RGBA2,
+		RGBA4 = GL_RGBA4,
+		RGB5_A1 = GL_RGB5_A1,
+		RGBA8 = GL_RGBA8,
+		RGBA8_SNORM = GL_RGBA8_SNORM,
+		RGB10_A2 = GL_RGB10_A2,
+		RGB10_A2UI = GL_RGB10_A2UI,
+		RGBA12 = GL_RGBA12,
+		RGBA16 = GL_RGBA16,
+
+		// sRGB
+		SRGB8 = GL_SRGB8,
+		SRGB8_ALPHA8 = GL_SRGB8_ALPHA8,
+
+		// per-float16
+		R16F = GL_R16F,
+		RG16F = GL_RG16F,
+		RGB16F = GL_RGB16F,
+		RGBA16F = GL_RGBA16F,
+		// per-float32
+		R32F = GL_R32F,
+		RG32F = GL_RG32F,
+		RGB32F = GL_RGB32F,
+		RGBA32F = GL_RGBA32F,
+		// 32bit per-float
+		R11F_G11F_B10F = GL_R11F_G11F_B10F,
+		// 32bit
+		RGB9_E5 = GL_RGB9_E5,
+
+		// 8 int
+		R8I = GL_R8I,
+		RG8I = GL_RG8I,
+		RGB8I = GL_RGB8I,
+		RGBA8I = GL_RGBA8I,
+		// 8 uint
+		R8UI = GL_R8UI,
+		RG8UI = GL_RG8UI,
+		RGB8UI = GL_RGB8UI,
+		RGBA8UI = GL_RGBA8UI,
+		// 16 int
+		R16I = GL_R16I,
+		RG16I = GL_RG16I,
+		RGB16I = GL_RGB16I,
+		RGBA16I = GL_RGBA16I,
+		// 16 uint
+		R16UI = GL_R16UI,
+		RG16UI = GL_RG16UI,
+		RGB16UI = GL_RGB16UI,
+		RGBA16UI = GL_RGBA16UI,
+		// 32 int
+		R32I = GL_R32I,
+		RG32I = GL_RG32I,
+		RGB32I = GL_RGB32I,
+		RGBA32I = GL_RGBA32I,
+		// 32 int
+		R32UI = GL_R32UI,
+		RG32UI = GL_RG32UI,
+		RGB32UI = GL_RGB32UI,
+		RGBA32UI = GL_RGBA32UI,
+
+
+		// compressed format
+		// generic formats
+		COMPRESSED_RED = GL_COMPRESSED_RED,
+		COMPRESSED_RG = GL_COMPRESSED_RG,
+		COMPRESSED_RGB = GL_COMPRESSED_RGB,
+		COMPRESSED_RGBA = GL_COMPRESSED_RGBA,
+		COMPRESSED_SRGB = GL_COMPRESSED_SRGB,
+		COMPRESSED_SRGB_ALPHA = GL_COMPRESSED_SRGB_ALPHA,
+
+		// specific formats
+		// https://zhuanlan.zhihu.com/p/144389736
+		COMPRESSED_RED_RGTC1 = GL_COMPRESSED_RED_RGTC1, // UNSIGNED NORMALIZED 1-COMPONENT ONLY
+		COMPRESSED_SIGNED_RED_RGTC1 = GL_COMPRESSED_SIGNED_RED_RGTC1, // SIGNED NORMALIZED 1-COMPONENT ONLY
+		COMPRESSED_RG_RGTC2 = GL_COMPRESSED_RG_RGTC2, // UNSIGNED NORMALIZED 2-COMPONENTS
+		COMPRESSED_SIGNED_RG_RGTC2 = GL_COMPRESSED_SIGNED_RG_RGTC2, // signed normalized 2-components
+	
+		COMPRESSED_RGBA_BPTC_UNORM = GL_COMPRESSED_RGBA_BPTC_UNORM, // UNSIGNED NORMALIZED 4-COMPONENTS
+		COMPRESSED_SRGB_ALPHA_BPTC_UNORM = GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM, // UNSIGNED NORMALIZED 4-COMPONENTS IN THE SRGB COLOR SPACE
+		COMPRESSED_RGB_BPTC_SIGNED_FLOAT = GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT, // SIGNED, FLOATING-POINT 3-COMPONENTS
+		COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT = GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT // unsigned, floating-point 3-components
+	};
+
+	enum class parameter : GLenum
+	{
+		DEPTH_STENCIL_TEXTURE_MODE = GL_DEPTH_STENCIL_TEXTURE_MODE,
+		TEXTURE_BASE_LEVEL = GL_TEXTURE_BASE_LEVEL,
+		TEXTURE_MAX_LEVEL = GL_TEXTURE_MAX_LEVEL,
+		TEXTURE_SWIZZLE_R = GL_TEXTURE_SWIZZLE_R,
+		TEXTURE_SWIZZLE_G = GL_TEXTURE_SWIZZLE_G,
+		TEXTURE_SWIZZLE_B = GL_TEXTURE_SWIZZLE_B,
+		TEXTURE_SWIZZLE_A = GL_TEXTURE_SWIZZLE_A,
+		TEXTURE_SWIZZLE_RGBA =  GL_TEXTURE_SWIZZLE_RGBA
+	};
+
+	enum class texture_swizzle_component : GLenum
+	{
+		RED = GL_RED,
+		GREEN = GL_GREEN,
+		BLUE = GL_BLUE,
+		ALPHA = GL_ALPHA,
+		ZERO = GL_ZERO,
+		ONE = GL_ONE
+	};
+
+	enum class depth_stencil_texture_mode : GLenum
+	{
+		STENCIL_INDEX = GL_STENCIL_INDEX,
+		DEPTH_COMPONENT = GL_DEPTH_COMPONENT
+	};
+}
+
+enum class gl_cube_face_index : GLenum {
+	positive_x = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+	negative_x = GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+	positive_y = GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
+	negative_y = GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+	positive_z = GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
+	negative_z = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z,
+};
+
+enum class gl_texture_pixel_format : GLenum
+{
+	// normalized (i/ui)
+	// uint8 [0, 255] => [0, 1.0]
+	// NormalizedUI8R
+	r8_ui_nor = GL_R8, // £¨uint8, uint8, uint8£©
+	r8_i_nor = GL_R8_SNORM, //(int8, int8, int8)
+	r16_ui_nor = GL_R16, // (uint16, uint16, uint16)
+	r16_i_nor = GL_R16_SNORM, //(int16, int16, int16)
+	rg8_ui_nor = GL_RG8, //
+	rg8_i_nor = GL_RG8_SNORM,
+	rg16_ui_nor = GL_RG16,
+	rg16_i_nor = GL_RG16_SNORM,
+
+	r3_g3_b2_ui_nor, //
+	
+	rgb4_ui_nor,
+	rgb5_ui_nor,
+
+	rgb8_ui_nor, //
+	rgb8_i_nor,
+	
+	rgb10_ui_nor,
+	rgb12_ui_nor,
+
+	rgb16_i_nor, // (int16, int16, int16)
+	
+	rgba2_ui_nor,
+	rgba4_ui_nor,
+	rgb5_a1_ui_nor,
+	rgba8_ui_nor,
+	rgba8_i_nor,
+	rgb10_a2_ui_nor,
+	rgb10_a2_ui,
+	rgba12_ui_nor,
+
+	rgba16_ui_nor,
+	
+	srgb8_ui_nor,
+	srgb8_a8_ui_nor,
+
+	r16_f,
+	rg16_f,
+	rgb16_f,
+	rgba16_f,
+	r32_f,
+	rg32_f,
+	rgb32_f,
+	rgba32_f,
+	r11_g11_b10_f,
+	
+	rgb9_e5,
+
+	r8_i,
+	r8_ui,
+	r16_i,
+	r16_ui,
+	r32_i,
+	r32_ui,
+	rg8_i,
+	rg8_ui,
+	rg16_i,
+	rg16_ui,
+	rg32_i,
+	rg32_ui,
+	rgb8_i,
+	rgb8_ui,
+	rgb16_i,
+	rgb16_ui,
+	rgb32_i,
+	rgb32_ui,
+	rgba8_i,
+	rgba8_ui,
+	rgba16_i,
+	rgba16_ui,
+	rgba32_i,
+	rgba32_ui,
+
+	// compressed format
+	// generic formats
+	COMPRESSED_RED = GL_COMPRESSED_RED,
+	COMPRESSED_RG = GL_COMPRESSED_RG,
+	COMPRESSED_RGB = GL_COMPRESSED_RGB,
+	COMPRESSED_RGBA = GL_COMPRESSED_RGBA,
+	COMPRESSED_SRGB = GL_COMPRESSED_SRGB,
+	COMPRESSED_SRGB_ALPHA = GL_COMPRESSED_SRGB_ALPHA,
+
+	// specific formats
+	// https://zhuanlan.zhihu.com/p/144389736
+	COMPRESSED_RED_RGTC1 = GL_COMPRESSED_RED_RGTC1, // UNSIGNED NORMALIZED 1-COMPONENT ONLY
+	COMPRESSED_SIGNED_RED_RGTC1 = GL_COMPRESSED_SIGNED_RED_RGTC1, // SIGNED NORMALIZED 1-COMPONENT ONLY
+	COMPRESSED_RG_RGTC2 = GL_COMPRESSED_RG_RGTC2, // UNSIGNED NORMALIZED 2-COMPONENTS
+	COMPRESSED_SIGNED_RG_RGTC2 = GL_COMPRESSED_SIGNED_RG_RGTC2, // signed normalized 2-components
+
+	COMPRESSED_RGBA_BPTC_UNORM = GL_COMPRESSED_RGBA_BPTC_UNORM, // UNSIGNED NORMALIZED 4-COMPONENTS
+	COMPRESSED_SRGB_ALPHA_BPTC_UNORM = GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM, // UNSIGNED NORMALIZED 4-COMPONENTS IN THE SRGB COLOR SPACE
+	COMPRESSED_RGB_BPTC_SIGNED_FLOAT = GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT, // SIGNED, FLOATING-POINT 3-COMPONENTS
+	COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT = GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT // unsigned, floating-point 3-components
+
+};
+
+enum class gl_image_format : GLenum
+{
+	// base format
+	stencil_index = GL_STENCIL_INDEX,
+	depth_component = GL_DEPTH_COMPONENT,
+	depth_stencil = GL_DEPTH_STENCIL,
+	r = GL_RED,
+	rg =  GL_RG,
+	rgb = GL_RGB,
+	rgba = GL_RGBA,
+	//
+	compressed_r = GL_COMPRESSED_RED,
+	compressed_rg = GL_COMPRESSED_RG,
+	compressed_rgb = GL_COMPRESSED_RGB,
+	compressed_rgba =  GL_COMPRESSED_RGBA,
+	compressed_srgb = GL_COMPRESSED_SRGB,
+	compressed_srgb_alpha = GL_COMPRESSED_SRGB_ALPHA,
+	// sized format
+	NOR_UI_R8 = GL_R8, // uint8[0, 255] => [0.0f, 1.0f]
+	NOR_I_R8 = GL_R8_SNORM, // int8[-128, 127] = > [-1.0f, 1.0f]
+	NOR_UI_R16 = GL_R16, // uint16[] => []
+	NOR_I_R16 = GL_R16_SNORM, // int16[] => []
+	NOR_UI_RG8 = GL_RG8, //
+	NOR_I_RG8 = GL_RG8_SNORM,
+	NOR_UI_RG16 = GL_RG16,
+	NOR_I_RG16 = GL_RG16_SNORM, // NOR_I_RG16
+
+	NOR_UI_R3_G3_B2 = GL_R3_G3_B2, // NOR_UI_R3_G3_B2
+	NOR_UI_RGB4 = GL_RGB4, // NOR_UI_RGB4
+	NOR_UI_RGB5 = GL_RGB5, // NOR_UI_RGB5
+	NOR_UI_R5_G6_B5 = GL_RGB565, // NOR_UI_R5_G6_B5
+	NOR_UI_RGB8 = GL_RGB8,// NOR_UI_RGB8
+	NOR_I_RGB8 = GL_RGB8_SNORM, // NOR_I_RGB8
+
+	NOR_UI_RGB10 = GL_RGB10, // NOR_UI_RGB10
+	NOR_UI_RGB12 = GL_RGB12, // NOR_UI_RGB12
+	NOR_UI_RGB16 = GL_RGB16, // NOR_UI_RGB16
+	NOR_I_RGB16 = GL_RGB16_SNORM, // NOR_I_RGB16
+
+	NOR_UI_RGBA2 = GL_RGBA2, // NOR_UI_RGBA2
+	NOR_UI_RGBA4 = GL_RGBA4, // NOR_UI_RGBA4
+	NOR_UI_RGB5_A1 = GL_RGB5_A1, // NOR_UI_RGB5_A1
+	NOR_UI_RGBA8 = GL_RGBA8, // NOR_UI_RGBA8
+	NOR_I_RGBA8 = GL_RGBA8_SNORM, // NOR_I_RGBA8
+	NOR_UI_RGB10_A2 = GL_RGB10_A2, // NOR_UI_RGB10_A2
+	UI_RGB10_A2 = GL_RGB10_A2UI, // UI_RGB10_A2
+	NOR_UI_RGBA12 = GL_RGBA12, // NOR_UI_RGBA12
+	NOR_UI_RGBA16 = GL_RGBA16, // NOR_UI_RGBA16
+	NOR_I_RGBA16 = GL_RGBA16_SNORM, // NOR_I_RGBA16
+
+	NOR_UI_SRGB8 = GL_SRGB8,
+	NOR_UI_SRGB8_ALPHA8 = GL_SRGB8_ALPHA8,
+
+	//F_R16 = GL_R16F,
+	//F_RG16 = GL_RG16F,
+	//F_RGB16 = GL_RGB16F,
+	//F_RGBA16 = GL_RGBA16F,
+	F_R32 = GL_R32F, //float
+	F_RG32 = GL_RG32F, // vec2
+	F_RGB32 = GL_RGB32F, // vec3
+	F_RGBA32 = GL_RGBA32F, // vec4
+
+	F_R11_G11_B10 =  GL_R11F_G11F_B10F,
+
+	rgb9_e5,
+
+	//I_R8 = GL_R8I,
+	//I_R16 = GL_R16I,
+	I_R32 = GL_R32I, // int
+	//I_RG8 = GL_RG8I,
+	//I_RG16 = GL_RG16I,
+	I_RG32 = GL_RG32I, // ivec2
+	//I_RGB8 = GL_RGB8I,
+	//I_RGB16 = GL_RGB16I,
+	I_RGB32 = GL_RGB32I, // ivec3
+	//I_RGBA8 = GL_RGBA8I,
+	//I_RGBA16 = GL_RGBA16I,
+	I_RGBA32 = GL_RGBA32I, // ivec4
+	//UI_R8 = GL_R8UI,
+	//UI_R16= GL_R16UI,
+	UI_R32 = GL_R32UI, // uint
+	//UI_RG8 = GL_RG8UI,
+	//UI_RG16 = GL_RG16UI,
+	UI_RG32 = GL_RG32UI, // uvec2
+	//UI_RGB8 = GL_RGB8UI,
+	//UI_RGB16 = GL_RGB16UI,
+	UI_RGB32 = GL_RGB32UI, // uvec3
+	//UI_RGBA8 = GL_RGBA8UI,
+	//UI_RGBA16 = GL_RGBA16UI,
+	UI_RGBA32 = GL_RGBA32UI // uvec4
+	// compressed format
+
+
+
+	
+};
+
+std::pair<std::uint32_t, std::uint32_t> pixel_format_to_data_format(gl_texture_pixel_format format)
+{
+	return std::make_pair(0, 0);
+}
+
+struct gl_texture_descriptor
+{
+	struct gl_texture_base_parameters
+	{
+		gl_depth_stencil_texture_mode  depth_stencil_texture_mode;
+		std::int32_t texture_base_level;
+		std::int32_t texture_max_level;
+		gl_texture_swizzle_component texture_swizzle_r;
+		gl_texture_swizzle_component texture_swizzle_g;
+		gl_texture_swizzle_component texture_swizzle_b;
+		gl_texture_swizzle_component texture_swizzle_a;
+		std::float_t texture_lod_bias;
+
+		gl_texture_base_parameters() :
+			depth_stencil_texture_mode(),
+			texture_base_level(0),
+			texture_max_level(1000),
+			texture_swizzle_r(gl_texture_swizzle_component::RED),
+			texture_swizzle_g(gl_texture_swizzle_component::GREEN),
+			texture_swizzle_b(gl_texture_swizzle_component::BLUE),
+			texture_swizzle_a(gl_texture_swizzle_component::ALPHA),
+			texture_lod_bias(0.0f)
+		{}
+	} base_parameters;
+	
+
+	//explicit gl_texture_descriptor(
+	//	gl_depth_stencil_texture_mode _depth_stencil_texture_mode, 
+	//	std::int32_t _texture_base_level, 
+	//	std::int32_t _texture_max_level, 
+	//	gl_texture_swizzle_component _texture_swizzle_r,
+	//	gl_texture_swizzle_component _texture_swizzle_g,
+	//	gl_texture_swizzle_component _texture_swizzle_b,
+	//	gl_texture_swizzle_component _texture_swizzle_a,
+	//	std::float_t _texture_lod_bias
+	//) :
+	//	depth_stencil_texture_mode(_depth_stencil_texture_mode),
+	//	texture_base_level(_texture_base_level),
+	//	texture_max_level(_texture_max_level),
+	//	texture_swizzle_r(_texture_swizzle_r),
+	//	texture_swizzle_g(_texture_swizzle_g),
+	//	texture_swizzle_b(_texture_swizzle_b),
+	//	texture_swizzle_a(_texture_swizzle_a),
+	//	texture_lod_bias(_texture_lod_bias)
+	//{}
+
+};
+
+enum class gl_texture_type : GLenum
+{
+	TEXTURE_1D = GL_TEXTURE_1D,
+	TEXTURE_1D_ARRAY = GL_TEXTURE_1D_ARRAY,
+
+	TEXTURE_2D = GL_TEXTURE_2D,
+	TEXTURE_2D_ARRAY = GL_TEXTURE_2D_ARRAY,
+	TEXTURE_2D_MULTISAMPLE = GL_TEXTURE_2D_MULTISAMPLE,
+	TEXTURE_2D_MULTISAMPLE_ARRAY = GL_TEXTURE_2D_MULTISAMPLE_ARRAY,
+	TEXTURE_RECTANGLE = GL_TEXTURE_RECTANGLE,
+
+	TEXTURE_3D = GL_TEXTURE_3D,
+
+	TEXTURE_CUBE_MAP = GL_TEXTURE_CUBE_MAP,
+	TEXTURE_CUBE_MAP_ARRAY = GL_TEXTURE_CUBE_MAP_ARRAY,
+
+	TEXTURE_BUFFER = GL_TEXTURE_BUFFER
+};
+
+
+class gl_pixels
+{
+public:
+	virtual const void* data() const = 0;
+	virtual void format() const = 0;
+	virtual void type() const = 0;
+};
+
+template<typename GLSL_TRANSPARENT_T>
+class gl_pixel_collection : public gl_pixels
+{
+public:
+	std::vector<GLSL_TRANSPARENT_T> pixels;
+
+
+};
+
+
+class gl_texture : public gl_object
+{
+protected:
+
+	gl_texture() = delete;
+	gl_texture(gl_texture_type type):
+		_type(type)
+	{
+		glCreateTextures(static_cast<GLenum>(_type), 1, &_handle);
+	}
+
+	~gl_texture() override
+	{
+		glDeleteTextures(1, &_handle);
+	}
+
+protected:
+
+	gl_texture_type _type;
+
+protected:
+
+	std::pair<GLenum, GLenum> _get_data_format_type(gl_texture_pixel_format pixel_format)
+	{
+		switch (pixel_format)
+		{
+		case gl_texture_pixel_format::r8_ui_nor:
+			break;
+		case gl_texture_pixel_format::r8_i_nor:
+			break;
+		case gl_texture_pixel_format::r16_ui_nor:
+			break;
+		case gl_texture_pixel_format::r16_i_nor:
+			break;
+		case gl_texture_pixel_format::rg8_ui_nor:
+			break;
+		case gl_texture_pixel_format::rg8_i_nor:
+			break;
+		case gl_texture_pixel_format::rg16_ui_nor:
+			break;
+		case gl_texture_pixel_format::rg16_i_nor:
+			break;
+		case gl_texture_pixel_format::r3_g3_b2_ui_nor:
+			break;
+		case gl_texture_pixel_format::rgb4_ui_nor:
+			break;
+		case gl_texture_pixel_format::rgb5_ui_nor:
+			break;
+		case gl_texture_pixel_format::rgb8_ui_nor:
+			break;
+		case gl_texture_pixel_format::rgb8_i_nor:
+			break;
+		case gl_texture_pixel_format::rgb10_ui_nor:
+			break;
+		case gl_texture_pixel_format::rgb12_ui_nor:
+			break;
+		case gl_texture_pixel_format::rgb16_i_nor:
+			break;
+		case gl_texture_pixel_format::rgba2_ui_nor:
+			break;
+		case gl_texture_pixel_format::rgba4_ui_nor:
+			break;
+		case gl_texture_pixel_format::rgb5_a1_ui_nor:
+			break;
+		case gl_texture_pixel_format::rgba8_ui_nor:
+			break;
+		case gl_texture_pixel_format::rgba8_i_nor:
+			break;
+		case gl_texture_pixel_format::rgb10_a2_ui_nor:
+			break;
+		case gl_texture_pixel_format::rgb10_a2_ui:
+			break;
+		case gl_texture_pixel_format::rgba12_ui_nor:
+			break;
+		case gl_texture_pixel_format::rgba16_ui_nor:
+			break;
+		case gl_texture_pixel_format::srgb8_ui_nor:
+			break;
+		case gl_texture_pixel_format::srgb8_a8_ui_nor:
+			break;
+		case gl_texture_pixel_format::r16_f:
+			break;
+		case gl_texture_pixel_format::rg16_f:
+			break;
+		case gl_texture_pixel_format::rgb16_f:
+			break;
+		case gl_texture_pixel_format::rgba16_f:
+			break;
+		case gl_texture_pixel_format::r32_f:
+			break;
+		case gl_texture_pixel_format::rg32_f:
+			break;
+		case gl_texture_pixel_format::rgb32_f:
+			break;
+		case gl_texture_pixel_format::rgba32_f:
+			break;
+		case gl_texture_pixel_format::r11_g11_b10_f:
+			break;
+		case gl_texture_pixel_format::rgb9_e5:
+			break;
+		case gl_texture_pixel_format::r8_i:
+			break;
+		case gl_texture_pixel_format::r8_ui:
+			break;
+		case gl_texture_pixel_format::r16_i:
+			break;
+		case gl_texture_pixel_format::r16_ui:
+			break;
+		case gl_texture_pixel_format::r32_i:
+			break;
+		case gl_texture_pixel_format::r32_ui:
+			break;
+		case gl_texture_pixel_format::rg8_i:
+			break;
+		case gl_texture_pixel_format::rg8_ui:
+			break;
+		case gl_texture_pixel_format::rg16_i:
+			break;
+		case gl_texture_pixel_format::rg16_ui:
+			break;
+		case gl_texture_pixel_format::rg32_i:
+			break;
+		case gl_texture_pixel_format::rg32_ui:
+			break;
+		case gl_texture_pixel_format::rgb8_i:
+			break;
+		case gl_texture_pixel_format::rgb8_ui:
+			break;
+		case gl_texture_pixel_format::rgb16_i:
+			break;
+		case gl_texture_pixel_format::rgb16_ui:
+			break;
+		case gl_texture_pixel_format::rgb32_i:
+			break;
+		case gl_texture_pixel_format::rgb32_ui:
+			break;
+		case gl_texture_pixel_format::rgba8_i:
+			break;
+		case gl_texture_pixel_format::rgba8_ui:
+			break;
+		case gl_texture_pixel_format::rgba16_i:
+			break;
+		case gl_texture_pixel_format::rgba16_ui:
+			break;
+		case gl_texture_pixel_format::rgba32_i:
+			break;
+		case gl_texture_pixel_format::rgba32_ui:
+			break;
+		case gl_texture_pixel_format::COMPRESSED_RED:
+			break;
+		case gl_texture_pixel_format::COMPRESSED_RG:
+			break;
+		case gl_texture_pixel_format::COMPRESSED_RGB:
+			break;
+		case gl_texture_pixel_format::COMPRESSED_RGBA:
+			break;
+		case gl_texture_pixel_format::COMPRESSED_SRGB:
+			break;
+		case gl_texture_pixel_format::COMPRESSED_SRGB_ALPHA:
+			break;
+		case gl_texture_pixel_format::COMPRESSED_RED_RGTC1:
+			break;
+		case gl_texture_pixel_format::COMPRESSED_SIGNED_RED_RGTC1:
+			break;
+		case gl_texture_pixel_format::COMPRESSED_RG_RGTC2:
+			break;
+		case gl_texture_pixel_format::COMPRESSED_SIGNED_RG_RGTC2:
+			break;
+		case gl_texture_pixel_format::COMPRESSED_RGBA_BPTC_UNORM:
+			break;
+		case gl_texture_pixel_format::COMPRESSED_SRGB_ALPHA_BPTC_UNORM:
+			break;
+		case gl_texture_pixel_format::COMPRESSED_RGB_BPTC_SIGNED_FLOAT:
+			break;
+		case gl_texture_pixel_format::COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT:
+			break;
+		default:
+			break;
+		}
+	}
+
+public:
+
+	virtual void bind() = 0;
+	virtual void unbind() = 0;
+
+};
+
+struct gl_texture_1d_descriptor
+{
+	std::int32_t length; // how many pixels
+	gl_texture_pixel_format pixel_format; // how to combine a pixel
+	std::int32_t mipmaps_count; // how many mipmaps
+
+	gl_texture_1d_descriptor(std::int32_t _length, std::int32_t _mipmaps_count, gl_texture_pixel_format _pixel_format) :
+		length(_length),
+		mipmaps_count(_mipmaps_count),
+		pixel_format(_pixel_format)
+	{}
+	gl_texture_1d_descriptor(std::int32_t _length, gl_texture_pixel_format _pixel_format) :
+		length(_length),
+		mipmaps_count(1),
+		pixel_format(_pixel_format)
+	{}
+
+	gl_texture_1d_descriptor() = delete;
+	gl_texture_1d_descriptor(const gl_texture_1d_descriptor&) = default;
+	gl_texture_1d_descriptor& operator=(const gl_texture_1d_descriptor&) = default;
+
+	~gl_texture_1d_descriptor() = default;
+};
+
+class gl_texture_1d final : 
+	public gl_texture
+{
+public:
+
+	gl_texture_1d() = delete;
+	gl_texture_1d(const gl_texture_1d_descriptor& descriptor) :
+		gl_texture(gl_texture_type::TEXTURE_1D),
+		descriptor(descriptor)
+	{
+		glTextureStorage1D(
+			_handle,
+			descriptor.mipmaps_count,
+			static_cast<GLenum>(descriptor.pixel_format),
+			descriptor.length
+		);
+
+		_generate_mipmaps_length();
+	}
+
+	gl_texture_1d(const gl_texture_1d&) = delete;
+	gl_texture_1d& operator=(const gl_texture_1d&) = delete;
+	~gl_texture_1d() override = default;
+
+private:
+
+	std::vector<std::int32_t> _mipmaps_length;
+
+	void _generate_mipmaps_length()
+	{
+		_mipmaps_length.resize(descriptor.mipmaps_count);
+		for (std::int32_t _index = 0; _index < descriptor.mipmaps_count; ++_index)
+		{
+			_mipmaps_length[_index] = descriptor.length / 2;
+		}
+	}
+
+public:
+
+	const gl_texture_1d_descriptor descriptor;
+
+	std::int32_t get_mipmap_length(std::int32_t mipmap_index)
+	{
+		if(mipmap_index < 0 || mipmap_index >= _mipmaps_length.size()) return -1;
+		return _mipmaps_length[mipmap_index];
+	}
+
+public:
+
+	void fill(std::int32_t x_offset, gl_pixels* pixels)
+	{
+
+	}
+
+	void fill(std::int32_t x_offset, const void* data)
+	{
+		std::int32_t _mipmap_length = get_mipmap_length(0);
+		if (!data || _mipmap_length < 0 || x_offset < 0 || x_offset > _mipmap_length) return;
+		glTextureSubImage1D(_handle,
+			0,
+			x_offset, _mipmap_length,
+			GL_RGBA, GL_UNSIGNED_BYTE, data
+		);
+	}
+
+	void fill(std::int32_t mipmap_index, std::int32_t x_offset, const void* data)
+	{
+		std::int32_t _mipmap_length = get_mipmap_length(mipmap_index);
+		if (!data || _mipmap_length < 0 || x_offset < 0 || x_offset > _mipmap_length) return;
+		
+		glTextureSubImage1D(_handle,
+			mipmap_index,
+			x_offset, descriptor.length,
+			GL_RGBA, GL_UNSIGNED_BYTE, data
+		);
+	}
+
+	void fill_mask(std::int32_t x_offset, std::int32_t length, GLenum format, GLenum type, const void* data)
+	{
+		glClearTexSubImage(_handle, 
+			0,
+			x_offset, 0, 0, 
+			length, 0, 0,
+			format, type, data
+		);
+	}
+
+	void fill_mask(std::int32_t mipmap_index, std::int32_t x_offset, std::int32_t length, GLenum format, GLenum type, const void* data)
+	{
+		glClearTexSubImage(_handle,
+			mipmap_index,
+			x_offset, 0, 0,
+			length, 0, 0,
+			format, type, data
+		);
+	}
+
+	void generate_mipmaps()
+	{
+		glBindTexture(GL_TEXTURE_1D, _handle);
+		glGenerateMipmap(GL_TEXTURE_1D);
+		glBindTexture(GL_TEXTURE_1D, 0);
+	}
+
+	std::uint8_t* fetch_pixels(GLuint mipmap_index, GLenum format, GLenum type)
+	{
+		std::uint8_t* _pixels = nullptr;
+		glGetTextureImage(_handle, 
+			mipmap_index, 
+			format, type, 
+			0, _pixels
+		);
+		return _pixels;
+	}
+
+public:
+
+	void bind(std::uint32_t unit)
+	{
+		glActiveTexture(GL_TEXTURE0 + unit);
+		glBindTexture(GL_TEXTURE_1D, _handle);
+	}
+
+	void unbind();
+
+private:
+	void invalidate_mipmap(std::int32_t mipmap_index, std::int32_t x_offset, std::int32_t width)
+	{
+		glInvalidateTexSubImage(_handle, mipmap_index, x_offset, 0, 0, width, 0, 0);
+	}
+
+};
+
+template<typename GLSL_TRANSPARENT_T>
+class gl_texture_1d_w : public gl_texture_1d
+{
+
+public:
+
+	using pixel_collection_type = gl_pixel_collection<GLSL_TRANSPARENT_T>;
+
+	void fill(std::int32_t offset, const pixel_collection_type& pixels)
+	{
+		pixels.data();
+		pixels.format();
+		pixels.type();
+	}
+
+
+};
+
+
+struct gl_texture_1d_array_descriptor
+{
+	std::int32_t elements_count;
+	std::int32_t length;
+	gl_texture_pixel_format pixel_format;
+	std::int32_t mipmaps_count;
+
+	gl_texture_1d_array_descriptor(std::int32_t _elements_count, std::int32_t _length, gl_texture_pixel_format _pixel_format, std::int32_t _mipmaps_count) :
+		elements_count(_elements_count),
+		length(_length),
+		pixel_format(_pixel_format),
+		mipmaps_count(_mipmaps_count)
+	{}
+
+	gl_texture_1d_array_descriptor(std::int32_t _elements_count, std::int32_t _length, gl_texture_pixel_format _pixel_format) :
+		elements_count(_elements_count),
+		length(_length),
+		pixel_format(_pixel_format),
+		mipmaps_count(1)
+	{}
+
+	gl_texture_1d_array_descriptor() = delete;
+
+	gl_texture_1d_array_descriptor(const gl_texture_1d_array_descriptor&) = default;
+
+};
+
+class gl_texture_1d_array final : public gl_texture
+{
+
+public:
+	gl_texture_1d_array() = delete;
+	gl_texture_1d_array(const gl_texture_1d_array_descriptor& descriptor) :
+		gl_texture(gl_texture_type::TEXTURE_1D_ARRAY),
+		_descriptor(descriptor)
+	{
+		glTextureStorage2D(
+			_handle,
+			_descriptor.mipmaps_count, static_cast<GLenum>(_descriptor.pixel_format),
+			_descriptor.length, // 2d width
+			_descriptor.elements_count // 2d height
+		);
+	}
+
+	~gl_texture_1d_array() = default;
+
+private:
+
+	gl_texture_1d_array_descriptor _descriptor;
+
+public:
+
+	gl_texture_1d_array_descriptor get_descriptor() const { return _descriptor; }
+
+	void bind(std::uint32_t unit) override;
+
+	void unbind() override;
+
+public:
+
+	void fill(std::int32_t element_index, std::int32_t mipmap_index, std::int32_t x_offset, const void* data)
+	{
+		if (nullptr ||
+			element_index < 0 || element_index >= _descriptor.elements_count ||
+			mipmap_index < 0 || mipmap_index >= _descriptor.mipmaps_count ||
+			x_offset < 0 || x_offset >= _descriptor.length
+			) return;
+
+		glTexSubImage2D(
+			GL_TEXTURE_1D_ARRAY,
+			mipmap_index, x_offset, 0, _descriptor.length,
+			element_index,
+			GL_RGBA, GL_UNSIGNED_BYTE,
+			data
+		);
+	}
+
+	void generate_mipmaps()
+	{
+		glBindTexture(GL_TEXTURE_1D_ARRAY, _handle);
+		glGenerateMipmap(GL_TEXTURE_1D_ARRAY);
+		glBindTexture(GL_TEXTURE_1D_ARRAY, 0);
+	}
+
+};
+
+struct gl_texture_2d_descriptor : public gl_texture_descriptor
+{
+	/* pixels num = width * height */
+	std::int32_t width, height;
+	/* combination of a pixel */
+	gl_texture_pixel_format pixel_format;
+	/* num of mipmaps (include base image) */
+	std::int32_t mipmaps_count;
+
+	explicit gl_texture_2d_descriptor(
+		std::int32_t _width, std::int32_t _height,
+		gl_texture_pixel_format _pixel_format,
+		std::int32_t _mipmaps_count
+	) :
+		width(_width), height(_height),
+		pixel_format(_pixel_format),
+		mipmaps_count(_mipmaps_count),
+		gl_texture_descriptor()
+	{}
+
+	explicit gl_texture_2d_descriptor(
+		std::int32_t _width, std::int32_t _height,
+		gl_texture_pixel_format _pixel_format
+	) :
+		width(_width), height(_height),
+		pixel_format(_pixel_format),
+		mipmaps_count(1),
+		gl_texture_descriptor()
+	{}
+
+	gl_texture_2d_descriptor() = delete;
+	gl_texture_2d_descriptor(const gl_texture_2d_descriptor&) = default;
+	gl_texture_2d_descriptor& operator=(const gl_texture_2d_descriptor&) = default;
+
+	~gl_texture_2d_descriptor() = default;
+};
+
+class gl_texture_2d final : public gl_texture
+{
+public:
+	gl_texture_2d() = delete;
+	explicit gl_texture_2d(const gl_texture_2d_descriptor& descriptor) :
+		gl_texture(gl_texture_type::TEXTURE_2D),
+		_descriptor(descriptor)
+	{
+		glTextureStorage2D(_handle,
+			_descriptor.mipmaps_count,
+			static_cast<std::uint32_t>(_descriptor.pixel_format),
+			_descriptor.width, _descriptor.height
+		);
+	}
+
+
+	~gl_texture_2d() = default;
+
+public:
+
+	void bind() override
+	{
+		glActiveTexture(GL_TEXTURE0 + 0);
+		glBindTexture(GL_TEXTURE_2D, _handle);
+	}
+
+	void unbind() override {}
+
+private:
+
+	gl_texture_2d_descriptor _descriptor;
+
+public:
+
+	const gl_texture_2d_descriptor& descriptor() const { return _descriptor; }
+
+	void fill(std::int32_t mipmap_index, std::int32_t x_offset, std::int32_t y_offset)
+	{
+		if (
+			mipmap_index < 0 ||
+			mipmap_index >= _descriptor.mipmaps_count ||
+			x_offset < 0 || y_offset < 0 ||
+			x_offset >= _descriptor.width ||
+			y_offset >= _descriptor.height
+			) return;
+
+		auto data_format = pixel_format_to_data_format(_descriptor.pixel_format);
+		glTextureSubImage2D(_handle,
+			mipmap_index,
+			x_offset, y_offset, _descriptor.width, _descriptor.height,
+			static_cast<std::uint32_t>(data_format.first),
+			static_cast<std::uint32_t>(data_format.second),
+			pixels.get_data()
+		);
+
+	}
+
+	void fetch_pixels(std::int32_t mipmap_index)
+	{
+		glGetTextureImage(_handle, 0, );
+	}
+
+};
+
+struct gl_texture_2d_array_descriptor
+{
+	std::int32_t elements_count;
+	std::int32_t width, height;
+	gl_texture_pixel_format pixel_format;
+	std::int32_t mipmaps_count;
+
+	gl_texture_2d_array_descriptor(std::int32_t _elements_count, std::int32_t _width, std::int32_t _height, gl_texture_pixel_format _pixel_format, std::int32_t _mipmaps_count) :
+		elements_count(_elements_count),
+		width(_width), height(_height),
+		pixel_format(_pixel_format),
+		mipmaps_count(_mipmaps_count)
+	{}
+
+	gl_texture_2d_array_descriptor(std::int32_t _elements_count, std::int32_t _width, std::int32_t _height, gl_texture_pixel_format _pixel_format) :
+		elements_count(_elements_count),
+		width(_width), height(_height),
+		pixel_format(_pixel_format),
+		mipmaps_count(1)
+	{}
+
+	gl_texture_2d_array_descriptor() = delete;
+
+	gl_texture_2d_array_descriptor(const gl_texture_2d_array_descriptor&) = default;
+
+	~gl_texture_2d_array_descriptor() = default;
+
+};
+
+class gl_texture_2d_array final : public gl_texture
+{
+public:
+
+	explicit gl_texture_2d_array(const gl_texture_2d_array_descriptor& descriptor) :
+		gl_texture(gl_texture_type::TEXTURE_2D_ARRAY),
+		_descriptor(descriptor)
+	{
+		glTextureStorage3D(_handle,
+			_descriptor.mipmaps_count, static_cast<GLenum>(_descriptor.pixel_format),
+			_descriptor.width, _descriptor.height,
+			_descriptor.elements_count
+		);
+	}
+
+	gl_texture_2d_array() = delete;
+	gl_texture_2d_array(const gl_texture_2d_array&) = delete;
+	gl_texture_2d_array& operator=(const gl_texture_2d_array&) = delete;
+
+	~gl_texture_2d_array() override = default;
+
+private:
+
+	gl_texture_2d_array_descriptor _descriptor;
+
+public:
+
+	gl_texture_2d_array_descriptor get_descriptor() const { return _descriptor; }
+
+	void fill(std::int32_t element_index, std::int32_t mipmap_index, std::int32_t x_offset, std::int32_t y_offset, const void* data)
+	{
+		std::int32_t _width = 0;
+		std::int32_t _height = 0;
+		glTexSubImage3D(
+			GL_TEXTURE_2D_ARRAY,
+			mipmap_index, x_offset, y_offset,
+			element_index, _width, _height, 1,
+			static_cast<GLenum>(_descriptor.pixel_format), type,
+			data
+		);
+	}
+
+	void generate_mipmaps()
+	{
+		glBindTexture(GL_TEXTURE_2D_ARRAY, _handle);
+		glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+		glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
+	}
+
+	void bind(std::uint32_t unit)
+	{
+		glActiveTexture(GL_TEXTURE0 + unit);
+		glBindTexture(GL_TEXTURE_2D_ARRAY, _handle);
+	}
+
+	void unbind();
+
+};
+
+struct gl_texture_2d_multisample_descriptor
+{
+	std::int32_t samples_count;
+	std::int32_t width, height;
+	gl_texture_pixel_format pixel_format;
+	bool fixed_sample_location;
+
+	gl_texture_2d_multisample_descriptor(std::int32_t _samples_count, std::int32_t _width, std::int32_t _height, gl_texture_pixel_format _pixel_format, bool _fixed_sample_location) :
+		samples_count(_samples_count),
+		width(_width), height(_height),
+		pixel_format(_pixel_format),
+		fixed_sample_location(_fixed_sample_location)
+	{}
+
+	gl_texture_2d_multisample_descriptor(std::int32_t _samples_count, std::int32_t _width, std::int32_t _height, gl_texture_pixel_format _pixel_format) :
+		samples_count(_samples_count),
+		width(_width), height(_height),
+		pixel_format(_pixel_format),
+		fixed_sample_location(false)
+	{}
+
+	gl_texture_2d_multisample_descriptor() = delete;
+	gl_texture_2d_multisample_descriptor(const gl_texture_2d_multisample_descriptor&) = default;
+	gl_texture_2d_multisample_descriptor& operator=(const gl_texture_2d_multisample_descriptor&) = default;
+
+	~gl_texture_2d_multisample_descriptor() = default;
+};
+
+class gl_texture_2d_multisample : public gl_texture
+{
+
+public:
+
+	explicit gl_texture_2d_multisample(const gl_texture_2d_multisample_descriptor& descriptor) :
+		gl_texture(gl_texture_type::TEXTURE_2D_MULTISAMPLE),
+		_descriptor(descriptor)
+	{
+		glTextureStorage2DMultisample(_handle,
+			descriptor.samples_count,
+			static_cast<GLenum>(_descriptor.pixel_format),
+			_descriptor.width, _descriptor.height,
+			_descriptor.fixed_sample_location
+		);
+	}
+
+	gl_texture_2d_multisample() = delete;
+	gl_texture_2d_multisample(const gl_texture_2d_multisample&) = delete;
+	gl_texture_2d_multisample& operator=(const gl_texture_2d_multisample&) = delete;
+
+	~gl_texture_2d_multisample() override = default;
+
+private:
+
+	gl_texture_2d_multisample_descriptor _descriptor;
+
+public:
+
+	const gl_texture_2d_multisample_descriptor& get_descriptor() const { return _descriptor; }
+
+	void bind() override
+	{
+		glActiveTexture(unit);
+		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _handle);
+	}
+
+	void unbind()
+	{
+		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _handle);
+		glActiveTexture(0);
+	}
+
+};
+
+struct gl_texture_2d_array_multisample_descriptor
+{
+	std::int32_t elements_count;
+	std::int32_t samples_count;
+	std::int32_t width, height;
+	gl_texture_pixel_format pixel_format;
+	bool fixed_sample_location;
+
+	gl_texture_2d_array_multisample_descriptor(
+		std::int32_t _elements_count,
+		std::int32_t _samples_count,
+		std::int32_t _width, std::int32_t _height,
+		gl_texture_pixel_format _pixel_format,
+		bool _fixed_sample_location
+	) :
+		elements_count(_elements_count),
+		samples_count(_samples_count),
+		width(_width), height(_height),
+		pixel_format(_pixel_format),
+		fixed_sample_location(_fixed_sample_location)
+	{}
+
+	gl_texture_2d_array_multisample_descriptor(
+		std::int32_t _elements_count,
+		std::int32_t _samples_count,
+		std::int32_t _width, std::int32_t _height,
+		gl_texture_pixel_format _pixel_format
+	) :
+		elements_count(_elements_count),
+		samples_count(_samples_count),
+		width(_width), height(_height),
+		pixel_format(_pixel_format),
+		fixed_sample_location(false)
+	{}
+
+	gl_texture_2d_array_multisample_descriptor() = delete;
+	gl_texture_2d_array_multisample_descriptor(const gl_texture_2d_array_multisample_descriptor&) = default;
+	gl_texture_2d_array_multisample_descriptor& opeator = (const gl_texture_2d_array_multisample_descriptor&) = default;
+
+	~gl_texture_2d_array_multisample_descriptor() = default;
+};
+
+class gl_texture_2d_multisample_array final : public gl_texture
+{
+public:
+
+	explicit gl_texture_2d_multisample_array(const gl_texture_2d_array_multisample_descriptor& descriptor) :
+		gl_texture(gl_texture_type::TEXTURE_2D_MULTISAMPLE_ARRAY),
+		_descriptor(descriptor)
+	{
+		glTextureStorage3DMultisample(_handle,
+			_descriptor.samples_count,
+			static_cast<GLenum>(_descriptor.pixel_format),
+			_descriptor.width, _descriptor.height,
+			_descriptor.elements_count,
+			_descriptor.fixed_sample_location
+		);
+	}
+
+	gl_texture_2d_multisample_array() = delete;
+	gl_texture_2d_multisample_array(const gl_texture_2d_multisample_array&) = delete;
+	gl_texture_2d_multisample_array& operator=(const gl_texture_2d_multisample_array&) = delete;
+
+	~gl_texture_2d_multisample_array() override = default;
+
+private:
+
+	gl_texture_2d_array_multisample_descriptor _descriptor;
+
+public:
+
+	void fill(GLsizei Level, GLsizei Width, GLsizei Height, GLsizei Num, GLenum Format, GLenum Type, std::vector<const void*> Datas)
+	{
+		for (std::int32_t i = 0; i < Num; ++i)
+		{
+			glTexSubImage3D(GL_TEXTURE_2D_MULTISAMPLE_ARRAY, Level, 0, 0, i, Width, Height, 1, Format, Type, Datas[i]);
+		}
+	}
+
+	void bind(GLuint Unit);
+
+	void unbind();
+
+};
+
+struct gl_texture_rectangle_descriptor
+{
+	std::int32_t mipmaps_count;
+	std::int32_t width, height;
+	gl_texture_pixel_format pixel_format;
+
+	gl_texture_rectangle_descriptor()
+	{
+
+	}
+
+};
+
+class gl_texture_rectangle final : public gl_texture
+{
+public:
+	gl_texture_rectangle() = delete;
+	gl_texture_rectangle(const gl_texture_rectangle_descriptor& descriptor) :
+		gl_texture(gl_texture_type::TEXTURE_RECTANGLE),
+		_descriptor(descriptor)
+	{
+		glTextureStorage2D(_handle,
+			_descriptor.mipmaps_count,
+			static_cast<GLenum>(_descriptor.pixel_format),
+			_descriptor.width,
+			_descriptor.height
+		);
+	}
+
+
+	~gl_texture_rectangle() override = default;
+
+private:
+
+	gl_texture_rectangle_descriptor _descriptor;
+
+public:
+
+	void fill_base_sub_mipmap(GLenum format, GLenum type, const void* pixels, int x_offset, int y_offset, int width, int height)
+	{
+		glTexSubImage2D(GL_TEXTURE_RECTANGLE, 0, x_offset, y_offset, width, height, format, type, pixels);
+	}
+
+	void bind() override
+	{
+		glActiveTexture(GL_TEXTURE0 + 0);
+		glBindTexture(GL_TEXTURE_2D, _handle);
+	}
+
+	void unbind() override
+	{}
+
+};
+
+struct gl_texture_3d_descriptor
+{
+	std::int32_t width, height, depth;
+	gl_texture_pixel_format pixel_format;
+	std::int32_t mipmaps_count;
+
+	gl_texture_3d_descriptor(std::int32_t _width, std::int32_t _height, std::int32_t _depth, gl_texture_pixel_format  _pixel_format, std::int32_t _mipmaps_count) :
+		width(_width), height(_height), depth(_depth),
+		mipmaps_count(_mipmaps_count),
+		pixel_format(_pixel_format)
+	{}
+
+	gl_texture_3d_descriptor(std::int32_t _width, std::int32_t _height, std::int32_t _depth, gl_texture_pixel_format _pixel_format) :
+		width(_width), height(_height), depth(_depth),
+		mipmaps_count(1),
+		pixel_format(_pixel_format)
+	{}
+
+	gl_texture_3d_descriptor() = delete;
+	gl_texture_3d_descriptor(const gl_texture_3d_descriptor&) = default;
+	gl_texture_3d_descriptor& operator=(const gl_texture_3d_descriptor&) = default;
+
+	~gl_texture_3d_descriptor() = default;
+};
+
+class gl_texture_3d final : public gl_texture
+{
+public:
+
+	explicit gl_texture_3d(const gl_texture_3d_descriptor& descriptor) :
+		gl_texture(gl_texture_type::TEXTURE_3D),
+		_descriptor(descriptor)
+	{
+		glTextureStorage3D(
+			_handle,
+			_descriptor.mipmaps_count,
+			static_cast<GLenum>(_descriptor.pixel_format),
+			_descriptor.width, _descriptor.height, _descriptor.depth
+		);
+	}
+
+	~gl_texture_3d() override = default;
+
+private:
+
+	gl_texture_3d_descriptor _descriptor;
+
+public:
+
+	gl_texture_3d_descriptor get_descriptor() const { return _descriptor; }
+
+public:
+
+	void fill(std::int32_t mipmap_index, std::int32_t x_offset, std::int32_t y_offset, std::int32_t z_offset, const void* data)
+	{
+		glTextureSubImage3D(
+			_handle,
+			mipmap_index, x_offset, y_offset, z_offset,
+			_descriptor.width, _descriptor.height, _descriptor.depth,
+			static_cast<std::uint32_t>(_descriptor.pixel_format), _descriptor.type,
+			data
+		);
+	}
+
+public:
+
+	void bind(std::uint32_t unit)
+	{
+		glActiveTexture(GL_TEXTURE0 + unit);
+		glBindTexture(GL_TEXTURE_3D, _handle);
+	}
+
+	void unbind(std::uint32_t unit)
+	{
+		glActiveTexture(GL_TEXTURE0 + unit);
+		glBindTexture(GL_TEXTURE_3D, 0);
+	}
+
+};
+
+struct gl_texture_buffer_descriptor
+{
+	std::shared_ptr<gl_buffer> buffer;
+	gl_texture_pixel_format pixel_format;
+	std::int32_t offset, length;
+
+	gl_texture_buffer_descriptor()
+	{}
+};
+
+class gl_texture_buffer : public gl_texture
+{
+public:
+
+	gl_texture_buffer() = delete;
+	gl_texture_buffer(const gl_texture_buffer_descriptor& descriptor) :
+		gl_texture(gl_texture_type::TEXTURE_BUFFER),
+		_descriptor(descriptor)
+	{
+		//GL_TEXTURE_BUFFER_OFFSET_ALIGNMENT
+		glTextureBufferRange(_handle,
+			static_cast<GLenum>(_descriptor.pixel_format),
+			_descriptor.buffer->get_handle(),
+			_descriptor.offset, _descriptor.length
+		);
+	}
+
+	~gl_texture_buffer() override = default;
+
+private:
+
+	gl_texture_buffer_descriptor _descriptor;
+
+public:
+
+	void bind(std::uint32_t unit)
+	{
+		glActiveTexture(GL_TEXTURE0 + unit);
+		glBindTexture(GL_TEXTURE_BUFFER, _handle);
+	}
+
+	void unbind() {}
+
+};
+
+struct gl_texture_cube_descriptor
+{
+	std::int32_t width;
+	gl_texture_pixel_format pixel_format;
+	std::int32_t mipmaps_count;
+
+	gl_texture_cube_descriptor(std::int32_t _width, gl_texture_pixel_format _pixel_format, std::int32_t _mipmaps_count) :
+		width(_width),
+		pixel_format(_pixel_format),
+		mipmaps_count(_mipmaps_count)
+	{}
+
+	gl_texture_cube_descriptor(std::int32_t _width, gl_texture_pixel_format _pixel_format) :
+		width(_width),
+		pixel_format(_pixel_format),
+		mipmaps_count(1)
+	{}
+
+	gl_texture_cube_descriptor() = delete;
+	gl_texture_cube_descriptor(const gl_texture_cube_descriptor&) = default;
+	gl_texture_cube_descriptor& operator=(const gl_texture_cube_descriptor&) = default;
+
+	~gl_texture_cube_descriptor() = default;
+};
+
+class gl_texture_cube final : public gl_texture
+{
+public:
+	gl_texture_cube() = delete;
+	explicit gl_texture_cube(const gl_texture_cube_descriptor& descriptor) :
+		gl_texture(gl_texture_type::TEXTURE_CUBE_MAP),
+		_descriptor(descriptor)
+	{
+		glTextureStorage3D(_handle,
+			_descriptor.mipmaps_count,
+			static_cast<GLenum>(_descriptor.pixel_format),
+			_descriptor.width, _descriptor.width,
+			6
+		);
+	}
+
+	gl_texture_cube(const gl_texture_cube&) = delete;
+	gl_texture_cube& operator=(const gl_texture_cube&) = delete;
+
+	~gl_texture_cube() override = default;
+
+private:
+
+	gl_texture_cube_descriptor _descriptor;
+
+public:
+
+	gl_texture_cube_descriptor get_descriptor() const { return _descriptor; }
+
+	void fill(
+		gl_cube_face_index face_index,
+		std::int32_t mipmap_index,
+		std::int32_t x_offset, std::int32_t y_offset,
+		const void* data, std::int32_t width, std::int32_t height
+	)
+	{
+		glBindTexture(GL_TEXTURE_CUBE_MAP, _handle);
+		glTexSubImage2D(static_cast<GLenum>(face_index), mipmap_index, x_offset, y_offset, width, height, format, type, data);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+	}
+
+	void generate_mipmaps()
+	{
+		glBindTexture(GL_TEXTURE_CUBE_MAP, _handle);
+		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+	}
+
+	void set() {
+
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	}
+
+	void bind(std::uint32_t unit) {}
+
+	void unbind() {}
+};
+
+struct gl_texture_cube_array_descriptor
+{
+	std::int32_t elements_count;
+	std::int32_t width;
+	gl_texture_pixel_format pixel_format;
+	std::int32_t mipmaps_count;
+
+	gl_texture_cube_array_descriptor(std::int32_t _elements_count, std::int32_t _width, gl_texture_pixel_format _pixel_format, std::int32_t _mipmaps_count) :
+		elements_count(_elements_count),
+		width(_width),
+		pixel_format(_pixel_format),
+		mipmaps_count(_mipmaps_count)
+	{}
+
+	gl_texture_cube_array_descriptor(std::int32_t _elements_count, std::int32_t _width, gl_texture_pixel_format _pixel_format) :
+		elements_count(_elements_count),
+		width(_width),
+		pixel_format(_pixel_format),
+		mipmaps_count(1)
+	{}
+
+	gl_texture_cube_array_descriptor() = delete;
+	gl_texture_cube_array_descriptor(const gl_texture_cube_array_descriptor&) = default;
+	gl_texture_cube_array_descriptor& operator=(const gl_texture_cube_array_descriptor&) = default;
+
+	~gl_texture_cube_array_descriptor() = default;
+};
+
+class gl_texture_cube_array final : public gl_texture
+{
+public:
+
+	explicit gl_texture_cube_array(const gl_texture_cube_array_descriptor& descriptor) :
+		gl_texture(gl_texture_type::TEXTURE_CUBE_MAP_ARRAY),
+		_descriptor(descriptor)
+	{
+		glTextureStorage3D(
+			_handle,
+			_descriptor.mipmaps_count,
+			static_cast<GLenum>(_descriptor.pixel_format),
+			_descriptor.width, _descriptor.width,
+			_descriptor.elements_count * 6
+		);
+	}
+
+	gl_texture_cube_array() = delete;
+	gl_texture_cube_array(const gl_texture_cube_array&) = delete;
+	gl_texture_cube_array& operator=(const gl_texture_cube_array&) = delete;
+
+	~gl_texture_cube_array() override = default;
+
+private:
+
+	gl_texture_cube_array_descriptor _descriptor;
+
+public:
+
+	void fill(
+		std::int32_t element_index,
+		gl_cube_face_index face_index,
+		std::int32_t mipmap_index,
+		std::int32_t x_offset, std::int32_t y_offset,
+		const void* data, std::int32_t width, std::int32_t height
+	)
+	{
+		glTexSubImage3D(
+			static_cast<GLenum>(face_index),
+			mipmap_index, x_offset, y_offset, 0,
+			width, height, (element_index + 1) * 6 - 1, format, type, data
+		);
+	}
+
+	void bind(std::uint32_t unit) {}
+
+	void unbind() {}
+
+};
+
+
+
 
 #endif
