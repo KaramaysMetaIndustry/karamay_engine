@@ -515,30 +515,6 @@ add_executable(karamay_engine_graphics_unit
         karamay_engine_graphics_unit/source/graphics/sampler/gl_sampler.h
         karamay_engine_graphics_unit/source/graphics/shader/gl_shader.cpp
         karamay_engine_graphics_unit/source/graphics/shader/gl_shader.h
-        "karamay_engine_graphics_unit/source/graphics/texture/base/gl_texture.cpp"
-        "karamay_engine_graphics_unit/source/graphics/texture/base/gl_texture.h"
-        karamay_engine_graphics_unit/source/graphics/texture/texture_1d/gl_texture_1d.cpp
-        karamay_engine_graphics_unit/source/graphics/texture/texture_1d/gl_texture_1d.h
-        karamay_engine_graphics_unit/source/graphics/texture/texture_1d/gl_texture_1d_array.cpp
-        karamay_engine_graphics_unit/source/graphics/texture/texture_1d/gl_texture_1d_array.h
-        karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_2d.cpp
-        karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_2d.h
-        karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_2d_array.cpp
-        karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_2d_array.h
-        karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_2d_array_multisample.cpp
-        karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_2d_array_multisample.h
-        karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_2d_multisample.cpp
-        karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_2d_multisample.h
-        karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_rectangle.cpp
-        karamay_engine_graphics_unit/source/graphics/texture/texture_2d/gl_texture_rectangle.h
-        karamay_engine_graphics_unit/source/graphics/texture/texture_3d/gl_texture_3d.cpp
-        karamay_engine_graphics_unit/source/graphics/texture/texture_3d/gl_texture_3d.h
-        karamay_engine_graphics_unit/source/graphics/texture/texture_buffer/gl_texture_buffer.cpp
-        karamay_engine_graphics_unit/source/graphics/texture/texture_buffer/gl_texture_buffer.h
-        karamay_engine_graphics_unit/source/graphics/texture/texture_cube/gl_texture_cube.cpp
-        karamay_engine_graphics_unit/source/graphics/texture/texture_cube/gl_texture_cube.h
-        karamay_engine_graphics_unit/source/graphics/texture/texture_cube/gl_texture_cube_array.cpp
-        karamay_engine_graphics_unit/source/graphics/texture/texture_cube/gl_texture_cube_array.h
         karamay_engine_graphics_unit/source/graphics/texture/gl_texture.h
         karamay_engine_graphics_unit/source/graphics/transform_feedback/gl_transform_feedback.cpp
         karamay_engine_graphics_unit/source/graphics/transform_feedback/gl_transform_feedback.h
