@@ -289,9 +289,13 @@ DEFINE_RENDERER_CONSTRUCTOR(RENDERER_NAME)\
 };\
 
 
+
+
 #define CLASS_NAME(__CLASS__)  #__CLASS__
 
-CLASS_NAME(AAA);
+
+
+
 
 #endif
 

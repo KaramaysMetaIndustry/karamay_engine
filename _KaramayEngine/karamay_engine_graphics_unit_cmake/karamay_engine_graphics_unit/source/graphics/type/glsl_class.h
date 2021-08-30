@@ -12,7 +12,7 @@ class glsl_t {};
 class glsl_token
 {
 public:
-	virtual const std::string& generate_token() const = 0;
+	virtual const std::string& generate_token() const;
 };
 
 class glsl_transparent_t : public glsl_t
