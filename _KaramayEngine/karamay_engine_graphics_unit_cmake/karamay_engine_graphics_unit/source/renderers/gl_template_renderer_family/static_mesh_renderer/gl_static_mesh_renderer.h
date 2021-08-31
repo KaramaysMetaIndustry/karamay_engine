@@ -8,6 +8,9 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
     // define graphics pipeline parameters
     DEFINE_GRAPHICS_PIPELINE_PARAMETERS(vertex_processing)
     {
+		struct MatricesStruct {};
+		struct CachedStruct {};
+
         DEFINE_STREAM_INPUT()
 
         DEFINE_VERTEX_SHADER_PARAMETERS_BEGIN()
@@ -38,6 +41,7 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 			DEFINE_SHADER_PARAMETER_IMAGE(image2D, positionImage2D)
 			DEFINE_SHADER_PARAMETER_IMAGE_ARRAY(image2D, positionImage2D, 10)
 			DEFINE_SHADER_PARAMETER_SAMPLER(sampler2D, albedoMap)
+			DEFINE_SHADER_PARAMETER_SAMPLER_ARRAY(sampler2D, albedoMap)
 			DEFINE_SHADER_PARAMETER_ATOMIC_COUNTER(primitiveCounter)
 			DEFINE_SHADER_PARAMETER_UNIFORM_BLOCK(MatricesStruct, matrices)
 			DEFINE_SHADER_PARAMETER_UNIFORM_BLOCK_ARRAY(MatricesStruct, matrices, 10)
