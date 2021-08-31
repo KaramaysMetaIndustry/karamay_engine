@@ -2,7 +2,6 @@
 #define H_GL_VERTEX_ARRAY
 
 #include "graphics/glo/gl_object.h"
-#include "graphics/type/glsl.h"
 
 class gl_buffer;
 

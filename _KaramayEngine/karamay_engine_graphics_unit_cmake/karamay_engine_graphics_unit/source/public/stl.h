@@ -18,6 +18,7 @@
 #include <unordered_map>
 #include <stack>
 #include <queue>
+#include <bitset>
 
 #include <memory>
 #include <string>

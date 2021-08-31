@@ -2,7 +2,6 @@
 #define H_GL_BUFFER
 
 #include "graphics/glo/gl_object.h"
-#include "graphics/type/glsl.h"
 #include "graphics/buffers/buffer/gl_buffer_tools.h"
 
 

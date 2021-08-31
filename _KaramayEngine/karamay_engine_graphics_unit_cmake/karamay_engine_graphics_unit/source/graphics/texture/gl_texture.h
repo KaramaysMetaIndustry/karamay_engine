@@ -8,50 +8,68 @@ namespace gl_texture_enum
 {
 	enum class pixels_format : GLenum
 	{
-		RED = GL_RED,
-		RG = GL_RG,
-		RGB = GL_RGB,
-		BGR = GL_BGR,
-		RGBA = GL_RGBA,
-		BGRA = GL_BGRA,
-		RED_INTEGER = GL_RED_INTEGER,
-		RG_INTEGER = GL_RG_INTEGER,
-		RGB_INTEGER = GL_RGB_INTEGER,
-		BGR_INTEGER = GL_BGR_INTEGER,
-		RGBA_INTEGER = GL_RGBA_INTEGER,
-		BGRA_INTEGER = GL_BGRA_INTEGER,
-		STENCIL_INDEX = GL_STENCIL_INDEX,
-		DEPTH_COMPONENT = GL_DEPTH_COMPONENT,
-		DEPTH_STENCIL = GL_DEPTH_STENCIL
+		
 	};
+
+
+	/*
+	* 0~7
+	* 0~7
+	* 0~3
+	*/
+	std::uint8_t transfer_3_3_2(std::uint8_t r, std::uint8_t g, std::uint8_t b)
+	{
+		std::uint8_t _data = 0;
+		r << 5;
+		g << 2;
+		
+		_data |= r;
+		_data |= g;
+		_data |= b;
+		return _data;
+	}
+
+	/*
+	* 0~31
+	* 0~63
+	* 0~31
+	*/
+	std::uint16_t transfer_5_6_5(std::uint16_t r, std::uint16_t g, std::uint16_t b)
+	{
+		std::uint16_t _data = 0;
+		r << 11;
+		g << 5;
+
+		_data |= r;
+		_data |= g;
+		_data |= b;
+
+		return _data;
+	}
+
+	std::uint16_t transfer_4_4_4_4(std::uint16_t r, std::uint16_t g, std::uint16_t b, std::uint16_t a)
+	{
+
+	}
+
+	std::uint16_t transfer_5_5_5_1(std::uint16_t r, std::uint16_t g, std::uint16_t b, std::uint16_t a)
+	{
+
+	}
+
+	std::uint32_t transfer_8_8_8_8(std::uint32_t r, std::uint32_t g, std::uint32_t b, std::uint32_t a)
+	{
+
+	}
+
+	std::uint32_t transfer_10_10_10_2(std::uint32_t r, std::uint32_t g, std::uint32_t b, std::uint32_t a)
+	{
+
+	}
 
 	enum class pixels_type : GLenum
 	{
-		UNSIGNED_BYTE = GL_UNSIGNED_BYTE, // uint8
-		BYTE = GL_BYTE, // int8
-		UNSIGNED_SHORT = GL_UNSIGNED_SHORT, // uint16
-		SHORT = GL_SHORT, //int16
-		UNSIGNED_INT = GL_UNSIGNED_INT, //uint32
-		INT = GL_INT, //int32
-		HALF_FLOAT = GL_HALF_FLOAT, // float16
-		FLOAT = GL_FLOAT, // float32
-
-		UNSIGNED_BYTE_3_3_2 = GL_UNSIGNED_BYTE_3_3_2, // RGB 8bit
-		UNSIGNED_BYTE_2_3_3_REV = GL_UNSIGNED_BYTE_2_3_3_REV, // RGB
-		UNSIGNED_SHORT_5_6_5 = GL_UNSIGNED_SHORT_5_6_5, // RGB 16bit
-		UNSIGNED_SHORT_5_6_5_REV = GL_UNSIGNED_SHORT_5_6_5_REV, //RGB
-
-		UNSIGNED_SHORT_4_4_4_4 = GL_UNSIGNED_SHORT_4_4_4_4, // RGBA 16bit
-		UNSIGNED_SHORT_4_4_4_4_REV = GL_UNSIGNED_SHORT_4_4_4_4_REV, //RGBA
 		
-		UNSIGNED_SHORT_5_5_5_1 = GL_UNSIGNED_SHORT_5_5_5_1, //RGBA 16bit
-		UNSIGNED_SHORT_1_5_5_5_REV = GL_UNSIGNED_SHORT_1_5_5_5_REV, //RGBA
-
-		UNSIGNED_INT_8_8_8_8 = GL_UNSIGNED_INT_8_8_8_8, // RGBA 32bit
-		UNSIGNED_INT_8_8_8_8_REV = GL_UNSIGNED_INT_8_8_8_8_REV, //RGBA
-		
-		UNSIGNED_INT_10_10_10_2 = GL_UNSIGNED_INT_10_10_10_2, // RGBA 32bit
-		UNSIGNED_INT_2_10_10_10_REV = GL_UNSIGNED_INT_2_10_10_10_REV //RGBA
 	};
 
 	enum class internal_format : GLenum
@@ -401,87 +419,432 @@ enum class gl_image_format : GLenum
 	I_RGBA16 = GL_RGBA16I,
 	I_RGBA32 = GL_RGBA32I, // ivec4
 	
-	UI_R8 = GL_R8UI, // u8vec1 => uvec1
-	UI_R16= GL_R16UI, // u16vec1
-	UI_R32 = GL_R32UI, // u32vec1
-	
-	UI_RG8 = GL_RG8UI, // 
-	UI_RG16 = GL_RG16UI, //
-	UI_RG32 = GL_RG32UI, // uvec2
-	
-	UI_RGB8 = GL_RGB8UI,
-	UI_RGB16 = GL_RGB16UI,
-	UI_RGB32 = GL_RGB32UI, // uvec3
-	
-	UI_RGBA8 = GL_RGBA8UI, //8
-	UI_RGBA16 = GL_RGBA16UI, //16
-	UI_RGBA32 = GL_RGBA32UI //32  uvec4
-	
-	/// <summary>
-	/// /////////////////////////////////////
-	/// </summary>					
+	R8UI = GL_R8UI,
+	R16UI = GL_R16UI,
+	R32UI = GL_R32UI,
+	RG8UI = GL_RG8UI,
+	RG16UI = GL_RG16UI,
+	RG32UI = GL_RG32UI,
+	RGB8UI = GL_RGB8UI,
+	RGB16UI = GL_RGB16UI,
+	RGB32UI = GL_RGB32UI,
+	RGBA8UI = GL_RGBA8UI,
+	RGBA16UI = GL_RGBA16UI,
+	RGBA32UI = GL_RGBA32UI
+			
 	// compressed format
 
 };
 
-enum class gl_pixel_format {};
-enum class gl_pixel_type {};
-
-class gl_pixel_collection
+enum class gl_pixel_format : GLenum
 {
-public:
-	virtual std::uint32_t internal_format() const = 0;
-	virtual std::uint32_t data_format() const = 0;
-	virtual std::uint32_t data_type() const = 0;
-	virtual std::uint8_t* data() const = 0;
+	R = GL_RED,
+	RG = GL_RG,
+	RGB = GL_RGB,
+	BGR = GL_BGR,
+	RGBA = GL_RGBA,
+	BGRA = GL_BGRA,
+
+	R_INTEGER = GL_RED_INTEGER,
+	RG_INTEGER = GL_RG_INTEGER,
+	RGB_INTEGER = GL_RGB_INTEGER,
+	BGR_INTEGER = GL_BGR_INTEGER,
+	RGBA_INTEGER = GL_RGBA_INTEGER,
+	BGRA_INTEGER = GL_BGRA_INTEGER,
+
+	STENCIL_INDEX = GL_STENCIL_INDEX,
+	DEPTH_COMPONENT = GL_DEPTH_COMPONENT,
+	DEPTH_STENCIL = GL_DEPTH_STENCIL
 };
 
+enum class gl_pixel_type : GLenum 
+{
+	UNSIGNED_BYTE = GL_UNSIGNED_BYTE, // uint8
+	BYTE = GL_BYTE, // int8
+	UNSIGNED_SHORT = GL_UNSIGNED_SHORT, // uint16
+	SHORT = GL_SHORT, //int16
+	UNSIGNED_INT = GL_UNSIGNED_INT, //uint32
+	INT = GL_INT, //int32
+	HALF_FLOAT = GL_HALF_FLOAT, // float16
+	FLOAT = GL_FLOAT, // float32
 
-template<gl_image_format format>
-class gl_pixels : public gl_pixel_collection
+	UNSIGNED_BYTE_3_3_2 = GL_UNSIGNED_BYTE_3_3_2, // RGB 8bit
+	UNSIGNED_BYTE_2_3_3_REV = GL_UNSIGNED_BYTE_2_3_3_REV, // RGB
+
+	UNSIGNED_SHORT_5_6_5 = GL_UNSIGNED_SHORT_5_6_5, // RGB 16bit
+	UNSIGNED_SHORT_5_6_5_REV = GL_UNSIGNED_SHORT_5_6_5_REV, //RGB
+
+	UNSIGNED_SHORT_4_4_4_4 = GL_UNSIGNED_SHORT_4_4_4_4, // RGBA 16bit
+	UNSIGNED_SHORT_4_4_4_4_REV = GL_UNSIGNED_SHORT_4_4_4_4_REV, //RGBA
+
+	UNSIGNED_SHORT_5_5_5_1 = GL_UNSIGNED_SHORT_5_5_5_1, //RGBA 16bit
+	UNSIGNED_SHORT_1_5_5_5_REV = GL_UNSIGNED_SHORT_1_5_5_5_REV, //RGBA
+
+	UNSIGNED_INT_8_8_8_8 = GL_UNSIGNED_INT_8_8_8_8, // RGBA 32bit
+	UNSIGNED_INT_8_8_8_8_REV = GL_UNSIGNED_INT_8_8_8_8_REV, //RGBA
+
+	UNSIGNED_INT_10_10_10_2 = GL_UNSIGNED_INT_10_10_10_2, // RGBA 32bit
+	UNSIGNED_INT_2_10_10_10_REV = GL_UNSIGNED_INT_2_10_10_10_REV //RGBA
+};
+
+enum class gl_texture_type : GLenum
+{
+	TEXTURE_1D = GL_TEXTURE_1D,
+	TEXTURE_1D_ARRAY = GL_TEXTURE_1D_ARRAY,
+
+	TEXTURE_2D = GL_TEXTURE_2D,
+	TEXTURE_2D_ARRAY = GL_TEXTURE_2D_ARRAY,
+	TEXTURE_2D_MULTISAMPLE = GL_TEXTURE_2D_MULTISAMPLE,
+	TEXTURE_2D_MULTISAMPLE_ARRAY = GL_TEXTURE_2D_MULTISAMPLE_ARRAY,
+	TEXTURE_RECTANGLE = GL_TEXTURE_RECTANGLE,
+
+	TEXTURE_3D = GL_TEXTURE_3D,
+
+	TEXTURE_CUBE_MAP = GL_TEXTURE_CUBE_MAP,
+	TEXTURE_CUBE_MAP_ARRAY = GL_TEXTURE_CUBE_MAP_ARRAY,
+
+	TEXTURE_BUFFER = GL_TEXTURE_BUFFER
+};
+
+class gl_pixels
 {
 public:
-	virtual std::uint32_t internal_format() const { return static_cast<std::uint32_t>(format); };
-	virtual std::uint32_t data_format() const { return 0; };
-	virtual std::uint32_t data_type() const { return 0; };
-	virtual const std::uint8_t* data() const {return reinterpret_cast<const std::uint8_t*>(_pixels.data())}
+	virtual gl_pixel_format pixel_format() const = 0;
+	virtual gl_pixel_type pixel_type() const = 0;
+	virtual std::uint32_t pixel_size() const = 0;
+	virtual std::uint32_t pixels_count() const = 0;
+	virtual std::uint8_t* data() const = 0;
+	virtual bool valid_format(gl_image_format image_format) = 0;
+};
+class gl_pixels_r_u8 : public gl_pixels {
+	gl_pixel_format pixel_format() const override
+	{
+		return gl_pixel_format::R_INTEGER;
+	}
+	gl_pixel_type pixel_type() const override
+	{
+		return gl_pixel_type::UNSIGNED_BYTE;
+	}
+	bool valid_format(gl_image_format image_format) override
+	{
+		switch (image_format)
+		{
+		case gl_image_format::NOR_UI_R8: return true;
+		case gl_image_format::R8UI: return true;
+		}
+		return false;
+	}
+};
+class gl_pixels_rg_u8 : public gl_pixels 
+{
+	gl_pixel_format pixel_format() const override
+	{
+		return gl_pixel_format::RG_INTEGER;
+	}
+	gl_pixel_type pixel_type() const override
+	{
+		return gl_pixel_type::UNSIGNED_BYTE;
+	}
+};
+class gl_pixels_rgb_u8 : public gl_pixels 
+{
+	gl_pixel_format pixel_format() const override
+	{
+		return gl_pixel_format::RGB_INTEGER;
+	}
+	gl_pixel_type pixel_type() const override
+	{
+		return gl_pixel_type::UNSIGNED_BYTE;
+	}
+};
+class gl_pixels_rgba_u8 : public gl_pixels {
+	gl_pixel_format pixel_format() const override
+	{
+		return gl_pixel_format::RGBA_INTEGER;
+	}
+	gl_pixel_type pixel_type() const override
+	{
+		return gl_pixel_type::UNSIGNED_BYTE;
+	}
+	std::uint8_t* data() const override
+	{
+
+	}
+	std::uint32_t pixels_count() const override
+	{
+
+	}
+};
+class gl_pixels_bgr_u8 : public gl_pixels 
+{
+	gl_pixel_format pixel_format() const override
+	{
+		return gl_pixel_format::BGR_INTEGER;
+	}
+	gl_pixel_type pixel_type() const override
+	{
+		return gl_pixel_type::UNSIGNED_BYTE;
+	}
+};
+class gl_pixels_bgra_u8 : public gl_pixels 
+{
+	gl_pixel_format pixel_format() const override
+	{
+		return gl_pixel_format::BGRA_INTEGER;
+	}
+	gl_pixel_type pixel_type() const override
+	{
+		return gl_pixel_type::UNSIGNED_BYTE;
+	}
+};
+class gl_pixels_r_u16 : public gl_pixels 
+{
+	gl_pixel_format pixel_format() const override
+	{
+		return gl_pixel_format::R_INTEGER;
+	}
+	gl_pixel_type pixel_type() const override
+	{
+		return gl_pixel_type::UNSIGNED_SHORT;
+	}
+};
+class gl_pixels_rg_u16 : public gl_pixels 
+{
+	gl_pixel_format pixel_format() const override
+	{
+		return gl_pixel_format::RG_INTEGER;
+	}
+	gl_pixel_type pixel_type() const override
+	{
+		return gl_pixel_type::UNSIGNED_SHORT;
+	}
+};
+class gl_pixels_rgb_u16 : public gl_pixels 
+{
+	gl_pixel_format pixel_format() const override
+	{
+		return gl_pixel_format::RGB_INTEGER;
+	}
+	gl_pixel_type pixel_type() const override
+	{
+		return gl_pixel_type::UNSIGNED_SHORT;
+	}
+};
+class gl_pixels_rgba_u16 : public gl_pixels 
+{
+	gl_pixel_format pixel_format() const override
+	{
+		return gl_pixel_format::RGBA_INTEGER;
+	}
+	gl_pixel_type pixel_type() const override
+	{
+		return gl_pixel_type::UNSIGNED_SHORT;
+	}
+};
+class gl_pixels_bgr_u16 : public gl_pixels 
+{
+	gl_pixel_format pixel_format() const override
+	{
+		return gl_pixel_format::BGR_INTEGER;
+	}
+	gl_pixel_type pixel_type() const override
+	{
+		return gl_pixel_type::UNSIGNED_SHORT;
+	}
+};
+class gl_pixels_bgra_u16 : public gl_pixels 
+{
+	gl_pixel_format pixel_format() const override
+	{
+		return gl_pixel_format::BGRA_INTEGER;
+	}
+	gl_pixel_type pixel_type() const override
+	{
+		return gl_pixel_type::UNSIGNED_SHORT;
+	}
+};
+class gl_pixels_r_u32 : public gl_pixels 
+{
+	gl_pixel_format pixel_format() const override
+	{
+		return gl_pixel_format::R_INTEGER;
+	}
+	gl_pixel_type pixel_type() const override
+	{
+		return gl_pixel_type::UNSIGNED_INT;
+	}
+};
+class gl_pixels_rg_u32 : public gl_pixels 
+{
+	gl_pixel_format pixel_format() const override
+	{
+		return gl_pixel_format::RG_INTEGER;
+	}
+	gl_pixel_type pixel_type() const override
+	{
+		return gl_pixel_type::UNSIGNED_INT;
+	}
+};
+class gl_pixels_rgb_u32 : public gl_pixels 
+{
+	gl_pixel_format pixel_format() const override
+	{
+		return gl_pixel_format::RGB_INTEGER;
+	}
+	gl_pixel_type pixel_type() const override
+	{
+		return gl_pixel_type::UNSIGNED_INT;
+	}
+};
+class gl_pixels_rgba_u32 : public gl_pixels 
+{
+	gl_pixel_format pixel_format() const override
+	{
+		return gl_pixel_format::RGBA_INTEGER;
+	}
+	gl_pixel_type pixel_type() const override
+	{
+		return gl_pixel_type::UNSIGNED_INT;
+	}
+};
+class gl_pixels_bgr_u32 : public gl_pixels 
+{
+	gl_pixel_format pixel_format() const override
+	{
+		return gl_pixel_format::BGR_INTEGER;
+	}
+	gl_pixel_type pixel_type() const override
+	{
+		return gl_pixel_type::UNSIGNED_INT;
+	}
+};
+class gl_pixels_bgra_u32 : public gl_pixels 
+{
+	gl_pixel_format pixel_format() const override
+	{
+		return gl_pixel_format::BGRA_INTEGER;
+	}
+	gl_pixel_type pixel_type() const override
+	{
+		return gl_pixel_type::UNSIGNED_INT;
+	}
+};
+
+class gl_pixels_r_i8 : public gl_pixels {};
+class gl_pixels_rg_i8 : public gl_pixels {};
+class gl_pixels_rgb_i8 : public gl_pixels {};
+class gl_pixels_rgba_i8 : public gl_pixels {};
+class gl_pixels_bgr_i8 : public gl_pixels {};
+class gl_pixels_bgra_i8 : public gl_pixels {};
+class gl_pixels_r_i16 : public gl_pixels {};
+class gl_pixels_rg_i16 : public gl_pixels {};
+class gl_pixels_rgb_i16 : public gl_pixels {};
+class gl_pixels_rgba_i16 : public gl_pixels {};
+class gl_pixels_bgr_i16 : public gl_pixels {};
+class gl_pixels_bgra_i16 : public gl_pixels {};
+class gl_pixels_r_i32 : public gl_pixels {};
+class gl_pixels_rg_i32 : public gl_pixels {};
+class gl_pixels_rgb_i32 : public gl_pixels {};
+class gl_pixels_rgba_i32 : public gl_pixels {};
+class gl_pixels_bgr_i32 : public gl_pixels {};
+class gl_pixels_bgra_i32 : public gl_pixels {};
+
+class gl_pixels_r_f16 : public gl_pixels {};
+class gl_pixels_rg_f16 : public gl_pixels {};
+class gl_pixels_rgb_f16 : public gl_pixels {};
+class gl_pixels_rgba_f16 : public gl_pixels {};
+
+class gl_pixels_r_f32 : public gl_pixels {};
+class gl_pixels_rg_f32 : public gl_pixels {};
+class gl_pixels_rgb_f32 : public gl_pixels {};
+class gl_pixels_rgba_f32 : public gl_pixels {};
+
+
+class gl_pixels_rgb_u8_3_3_2 : public gl_pixels 
+{
+public:	
+	gl_pixel_format pixel_format() const override
+	{
+		return gl_pixel_format::RGB_INTEGER;
+	}
+	gl_pixel_type pixel_type() const override
+	{
+		return gl_pixel_type::UNSIGNED_BYTE_3_3_2;
+	}
+	std::uint8_t* data() const override
+	{
+		_pixels.data();
+	}
+	std::uint32_t pixels_count() const override
+	{
+		_pixels.size();
+	}
 
 private:
-
 	std::vector<std::uint8_t> _pixels;
 
 public:
-	
-	void add_pixel(const std::vector<std::uint8_t>& pixels)
+	void add(const glm::u8vec3& pixel)
 	{
-		_pixels.push_back(pixels);
+		std::uint8_t _data = 0;
+		pixel.r << 5;
+		pixel.g << 2;
+
+		_data |= pixel.r;
+		_data |= pixel.g;
+		_data |= pixel.b;
+		_pixels.push_back(_data);
 	}
 };
-
-template<>
-class gl_pixels<gl_image_format::UI_R8>: public gl_pixel_collection
+class gl_pixels_rgb_u8_2_3_3_rev : public gl_pixels 
+{};
+class gl_pixels_rgb_u16_5_6_5 : public gl_pixels 
 {
 public:
-	virtual std::uint32_t get_internal_format() const { return static_cast<std::uint32_t>(gl_image_format::UI_R8); };
-	virtual std::uint32_t get_data_format() const { return GL_RED; };
-	virtual std::uint32_t get_data_type() const { return GL_UNSIGNED_BYTE; };
+	gl_pixel_format pixel_format() const override
+	{
+		return gl_pixel_format::RGB_INTEGER;
+	}
+	gl_pixel_type pixel_type() const override
+	{
+		return gl_pixel_type::UNSIGNED_SHORT_5_6_5;
+	}
+	std::uint8_t* data() const override
+	{
+		_pixels.data();
+	}
+	std::uint32_t pixels_count() const override
+	{
+		_pixels.size();
+	}
 
 private:
-	std::vector<glm::u8vec1> _pixels;
+	std::vector<std::uint16_t> _pixels;
 
 public:
-	void add_pixel(const glm::u8vec1& pixel)
+	void add(const glm::u16vec3& pixel)
 	{
-		_pixels.push_back(pixel);
+		
 	}
-
 };
-
-
-std::pair<std::uint32_t, std::uint32_t> pixel_format_to_data_format(gl_texture_pixel_format format)
-{
-	return std::make_pair(0, 0);
-}
+class gl_pixels_rgb_u16_5_6_5_rev : public gl_pixels 
+{};
+class gl_pixels_rgba_u16_4_4_4_4 : public gl_pixels 
+{};
+class gl_pixels_rgba_u16_4_4_4_4_rev : public gl_pixels 
+{};
+class gl_pixels_rgba_u16_5_5_5_1 : public gl_pixels 
+{};
+class gl_pixels_rgba_u16_1_5_5_5_rev : public gl_pixels 
+{};
+class gl_pixels_rgba_u32_8_8_8_8 : public gl_pixels 
+{};
+class gl_pixels_rgba_u32_8_8_8_8_rev : public gl_pixels 
+{};
+class gl_pixels_rgba_u32_10_10_10_2 : public gl_pixels 
+{};
+class gl_pixels_rgba_u32_2_10_10_10_rev : public gl_pixels 
+{};
 
 struct gl_texture_descriptor
 {
@@ -531,33 +894,6 @@ struct gl_texture_descriptor
 
 };
 
-enum class gl_texture_type : GLenum
-{
-	TEXTURE_1D = GL_TEXTURE_1D,
-	TEXTURE_1D_ARRAY = GL_TEXTURE_1D_ARRAY,
-
-	TEXTURE_2D = GL_TEXTURE_2D,
-	TEXTURE_2D_ARRAY = GL_TEXTURE_2D_ARRAY,
-	TEXTURE_2D_MULTISAMPLE = GL_TEXTURE_2D_MULTISAMPLE,
-	TEXTURE_2D_MULTISAMPLE_ARRAY = GL_TEXTURE_2D_MULTISAMPLE_ARRAY,
-	TEXTURE_RECTANGLE = GL_TEXTURE_RECTANGLE,
-
-	TEXTURE_3D = GL_TEXTURE_3D,
-
-	TEXTURE_CUBE_MAP = GL_TEXTURE_CUBE_MAP,
-	TEXTURE_CUBE_MAP_ARRAY = GL_TEXTURE_CUBE_MAP_ARRAY,
-
-	TEXTURE_BUFFER = GL_TEXTURE_BUFFER
-};
-
-template<typename GLSL_TRANSPARENT_T>
-class gl_pixel_collection : public gl_pixels
-{
-public:
-	std::vector<GLSL_TRANSPARENT_T> pixels;
-
-
-};
 
 
 class gl_texture : public gl_object
@@ -582,189 +918,30 @@ protected:
 
 protected:
 
-	std::pair<GLenum, GLenum> _get_data_format_type(gl_texture_pixel_format pixel_format)
-	{
-		switch (pixel_format)
-		{
-		case gl_texture_pixel_format::r8_ui_nor:
-			break;
-		case gl_texture_pixel_format::r8_i_nor:
-			break;
-		case gl_texture_pixel_format::r16_ui_nor:
-			break;
-		case gl_texture_pixel_format::r16_i_nor:
-			break;
-		case gl_texture_pixel_format::rg8_ui_nor:
-			break;
-		case gl_texture_pixel_format::rg8_i_nor:
-			break;
-		case gl_texture_pixel_format::rg16_ui_nor:
-			break;
-		case gl_texture_pixel_format::rg16_i_nor:
-			break;
-		case gl_texture_pixel_format::r3_g3_b2_ui_nor:
-			break;
-		case gl_texture_pixel_format::rgb4_ui_nor:
-			break;
-		case gl_texture_pixel_format::rgb5_ui_nor:
-			break;
-		case gl_texture_pixel_format::rgb8_ui_nor:
-			break;
-		case gl_texture_pixel_format::rgb8_i_nor:
-			break;
-		case gl_texture_pixel_format::rgb10_ui_nor:
-			break;
-		case gl_texture_pixel_format::rgb12_ui_nor:
-			break;
-		case gl_texture_pixel_format::rgb16_i_nor:
-			break;
-		case gl_texture_pixel_format::rgba2_ui_nor:
-			break;
-		case gl_texture_pixel_format::rgba4_ui_nor:
-			break;
-		case gl_texture_pixel_format::rgb5_a1_ui_nor:
-			break;
-		case gl_texture_pixel_format::rgba8_ui_nor:
-			break;
-		case gl_texture_pixel_format::rgba8_i_nor:
-			break;
-		case gl_texture_pixel_format::rgb10_a2_ui_nor:
-			break;
-		case gl_texture_pixel_format::rgb10_a2_ui:
-			break;
-		case gl_texture_pixel_format::rgba12_ui_nor:
-			break;
-		case gl_texture_pixel_format::rgba16_ui_nor:
-			break;
-		case gl_texture_pixel_format::srgb8_ui_nor:
-			break;
-		case gl_texture_pixel_format::srgb8_a8_ui_nor:
-			break;
-		case gl_texture_pixel_format::r16_f:
-			break;
-		case gl_texture_pixel_format::rg16_f:
-			break;
-		case gl_texture_pixel_format::rgb16_f:
-			break;
-		case gl_texture_pixel_format::rgba16_f:
-			break;
-		case gl_texture_pixel_format::r32_f:
-			break;
-		case gl_texture_pixel_format::rg32_f:
-			break;
-		case gl_texture_pixel_format::rgb32_f:
-			break;
-		case gl_texture_pixel_format::rgba32_f:
-			break;
-		case gl_texture_pixel_format::r11_g11_b10_f:
-			break;
-		case gl_texture_pixel_format::rgb9_e5:
-			break;
-		case gl_texture_pixel_format::r8_i:
-			break;
-		case gl_texture_pixel_format::r8_ui:
-			break;
-		case gl_texture_pixel_format::r16_i:
-			break;
-		case gl_texture_pixel_format::r16_ui:
-			break;
-		case gl_texture_pixel_format::r32_i:
-			break;
-		case gl_texture_pixel_format::r32_ui:
-			break;
-		case gl_texture_pixel_format::rg8_i:
-			break;
-		case gl_texture_pixel_format::rg8_ui:
-			break;
-		case gl_texture_pixel_format::rg16_i:
-			break;
-		case gl_texture_pixel_format::rg16_ui:
-			break;
-		case gl_texture_pixel_format::rg32_i:
-			break;
-		case gl_texture_pixel_format::rg32_ui:
-			break;
-		case gl_texture_pixel_format::rgb8_i:
-			break;
-		case gl_texture_pixel_format::rgb8_ui:
-			break;
-		case gl_texture_pixel_format::rgb16_i:
-			break;
-		case gl_texture_pixel_format::rgb16_ui:
-			break;
-		case gl_texture_pixel_format::rgb32_i:
-			break;
-		case gl_texture_pixel_format::rgb32_ui:
-			break;
-		case gl_texture_pixel_format::rgba8_i:
-			break;
-		case gl_texture_pixel_format::rgba8_ui:
-			break;
-		case gl_texture_pixel_format::rgba16_i:
-			break;
-		case gl_texture_pixel_format::rgba16_ui:
-			break;
-		case gl_texture_pixel_format::rgba32_i:
-			break;
-		case gl_texture_pixel_format::rgba32_ui:
-			break;
-		case gl_texture_pixel_format::COMPRESSED_RED:
-			break;
-		case gl_texture_pixel_format::COMPRESSED_RG:
-			break;
-		case gl_texture_pixel_format::COMPRESSED_RGB:
-			break;
-		case gl_texture_pixel_format::COMPRESSED_RGBA:
-			break;
-		case gl_texture_pixel_format::COMPRESSED_SRGB:
-			break;
-		case gl_texture_pixel_format::COMPRESSED_SRGB_ALPHA:
-			break;
-		case gl_texture_pixel_format::COMPRESSED_RED_RGTC1:
-			break;
-		case gl_texture_pixel_format::COMPRESSED_SIGNED_RED_RGTC1:
-			break;
-		case gl_texture_pixel_format::COMPRESSED_RG_RGTC2:
-			break;
-		case gl_texture_pixel_format::COMPRESSED_SIGNED_RG_RGTC2:
-			break;
-		case gl_texture_pixel_format::COMPRESSED_RGBA_BPTC_UNORM:
-			break;
-		case gl_texture_pixel_format::COMPRESSED_SRGB_ALPHA_BPTC_UNORM:
-			break;
-		case gl_texture_pixel_format::COMPRESSED_RGB_BPTC_SIGNED_FLOAT:
-			break;
-		case gl_texture_pixel_format::COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT:
-			break;
-		default:
-			break;
-		}
-	}
-
 	std::uint32_t _unit;
 
 public:
 
-	virtual void bind() = 0;
+	virtual void bind(std::uint32_t unit) = 0;
 	virtual void unbind() = 0;
 
 };
 
 struct gl_texture_1d_descriptor
 {
-	gl_texture_pixel_format pixel_format;
+	gl_image_format image_format;
 	std::int32_t length;
 	std::int32_t mipmaps_count;
 
-	gl_texture_1d_descriptor(std::int32_t _length, std::int32_t _mipmaps_count, gl_texture_pixel_format _pixel_format) :
+	gl_texture_1d_descriptor(std::int32_t _length, std::int32_t _mipmaps_count, gl_image_format _image_format) :
 		length(_length),
 		mipmaps_count(_mipmaps_count),
-		pixel_format(_pixel_format)
+		image_format(_image_format)
 	{}
-	gl_texture_1d_descriptor(std::int32_t _length, gl_texture_pixel_format _pixel_format) :
+	gl_texture_1d_descriptor(std::int32_t _length, gl_image_format _image_format) :
 		length(_length),
 		mipmaps_count(1),
-		pixel_format(_pixel_format)
+		image_format(_image_format)
 	{}
 
 	gl_texture_1d_descriptor() = delete;
@@ -792,7 +969,7 @@ public:
 		glTextureStorage1D(
 			_handle,
 			descriptor.mipmaps_count,
-			static_cast<GLenum>(descriptor.pixel_format),
+			static_cast<GLenum>(descriptor.image_format),
 			descriptor.length
 		);
 
@@ -828,34 +1005,42 @@ public:
 
 public:
 
-	void fill(std::int32_t x_offset, gl_pixels* pixels)
+	/*
+	* fill the base mipmap without offset
+	*/
+	void fill(const std::shared_ptr<gl_pixels> pixels)
 	{
-		glTextureSubImage1D(_handle,
-			0,
-			x_offset, _mipmap_length,
-			pixels->get_data_format(), pixels->get_data_type(), pixels->get_data()
+		glTextureSubImage1D(_handle, 0, 0, descriptor.length, 
+			pixels->pixel_format(), pixels->pixel_type(), 
+			pixels->data()
 		);
 	}
 
-	void fill(std::int32_t x_offset, const void* data)
+	/*
+	* fill the base mipmap with offset
+	*/
+	void fill(std::int32_t offset, const std::shared_ptr<gl_pixels> pixels)
+	{
+		if (!pixels || offset < 0) return;
+
+		glTextureSubImage1D(_handle,
+			0,
+			offset, pixels->pixels_count(),
+			static_cast<GLenum>(pixels->pixel_format()), static_cast<GLenum>(pixels->pixel_type()), 
+			pixels->data()
+		);
+	}
+
+	/*
+	* fill the specified mipmap with offset
+	*/
+	void fill(std::int32_t mipmap_index, std::int32_t offset, const std::shared_ptr<gl_pixels> pixels)
 	{
 		std::int32_t _mipmap_length = get_mipmap_length(0);
-		if (!data || _mipmap_length < 0 || x_offset < 0 || x_offset > _mipmap_length) return;
+		if (!data || _mipmap_length < 0 || offset < 0 || offset > _mipmap_length) return;
 		glTextureSubImage1D(_handle,
 			0,
-			x_offset, _mipmap_length,
-			GL_RGBA, GL_UNSIGNED_BYTE, data
-		);
-	}
-
-	void fill(std::int32_t mipmap_index, std::int32_t x_offset, const void* data)
-	{
-		std::int32_t _mipmap_length = get_mipmap_length(mipmap_index);
-		if (!data || _mipmap_length < 0 || x_offset < 0 || x_offset > _mipmap_length) return;
-		
-		glTextureSubImage1D(_handle,
-			mipmap_index,
-			x_offset, descriptor.length,
+			offset, _mipmap_length,
 			GL_RGBA, GL_UNSIGNED_BYTE, data
 		);
 	}
@@ -880,12 +1065,16 @@ public:
 		);
 	}
 
+public:
+
 	void generate_mipmaps()
 	{
 		glBindTexture(GL_TEXTURE_1D, _handle);
 		glGenerateMipmap(GL_TEXTURE_1D);
 		glBindTexture(GL_TEXTURE_1D, 0);
 	}
+
+public:
 
 	std::uint8_t* fetch_pixels(GLuint mipmap_index, GLenum format, GLenum type)
 	{
@@ -918,19 +1107,19 @@ private:
 
 struct gl_texture_1d_array_descriptor
 {
-	gl_texture_pixel_format pixel_format;
+	gl_image_format pixel_format;
 	std::int32_t length;
 	std::int32_t mipmaps_count;
 	std::int32_t elements_count;
 
-	gl_texture_1d_array_descriptor(std::int32_t _elements_count, std::int32_t _length, gl_texture_pixel_format _pixel_format, std::int32_t _mipmaps_count) :
+	gl_texture_1d_array_descriptor(std::int32_t _elements_count, std::int32_t _length, gl_image_format _pixel_format, std::int32_t _mipmaps_count) :
 		elements_count(_elements_count),
 		length(_length),
 		pixel_format(_pixel_format),
 		mipmaps_count(_mipmaps_count)
 	{}
 
-	gl_texture_1d_array_descriptor(std::int32_t _elements_count, std::int32_t _length, gl_texture_pixel_format _pixel_format) :
+	gl_texture_1d_array_descriptor(std::int32_t _elements_count, std::int32_t _length, gl_image_format _pixel_format) :
 		elements_count(_elements_count),
 		length(_length),
 		pixel_format(_pixel_format),
@@ -959,8 +1148,8 @@ public:
 		glTextureStorage2D(
 			_handle,
 			_descriptor.mipmaps_count, static_cast<GLenum>(_descriptor.pixel_format),
-			_descriptor.length, // 2d width
-			_descriptor.elements_count // 2d height
+			_descriptor.length,
+			_descriptor.elements_count
 		);
 	}
 
@@ -980,6 +1169,21 @@ public:
 
 public:
 
+	void fill(std::int32_t element_index, std::int32_t mipmap_index, std::int32_t offset, const std::shared_ptr<gl_pixels> pixels)
+	{
+		if (!pixels || pixels->valid_format(_descriptor.pixel_format) ||
+			element_index < 0 || element_index >= _descriptor.elements_count ||
+			mipmap_index < 0 || mipmap_index >= _descriptor.mipmaps_count ||
+			offset < 0 || offset >= _descriptor.length
+			) return;
+
+		glTextureSubImage2D(_handle,
+			mipmap_index, offset, 0, pixels->pixels_count(), element_index,
+			static_cast<GLenum>(pixels->pixel_format()), static_cast<GLenum>(pixels->pixel_type()),
+			pixels->data()
+		);
+	}
+
 	void fill(std::int32_t element_index, std::int32_t mipmap_index, std::int32_t offset, const void* data)
 	{
 		if (nullptr ||
@@ -988,8 +1192,8 @@ public:
 			offset < 0 || offset >= _descriptor.length
 			) return;
 
-		glTexSubImage2D(
-			GL_TEXTURE_1D_ARRAY,
+		glTextureSubImage2D(
+			_handle,
 			mipmap_index, offset, 0, _descriptor.length,
 			element_index,
 			GL_RGBA, GL_UNSIGNED_BYTE,
@@ -1010,27 +1214,27 @@ public:
 
 struct gl_texture_2d_descriptor : public gl_texture_descriptor
 {
-	gl_texture_pixel_format pixel_format;
+	gl_image_format image_format;
 	std::int32_t width, height;
 	std::int32_t mipmaps_count;
 
 	explicit gl_texture_2d_descriptor(
 		std::int32_t _width, std::int32_t _height,
-		gl_texture_pixel_format _pixel_format,
+		gl_image_format _image_format,
 		std::int32_t _mipmaps_count
 	) :
 		width(_width), height(_height),
-		pixel_format(_pixel_format),
+		image_format(_image_format),
 		mipmaps_count(_mipmaps_count),
 		gl_texture_descriptor()
 	{}
 
 	explicit gl_texture_2d_descriptor(
 		std::int32_t _width, std::int32_t _height,
-		gl_texture_pixel_format _pixel_format
+		gl_image_format _pixel_format
 	) :
 		width(_width), height(_height),
-		pixel_format(_pixel_format),
+		image_format(_pixel_format),
 		mipmaps_count(1),
 		gl_texture_descriptor()
 	{}
@@ -1055,23 +1259,25 @@ public:
 	{
 		glTextureStorage2D(_handle,
 			_descriptor.mipmaps_count,
-			static_cast<std::uint32_t>(_descriptor.pixel_format),
+			static_cast<std::uint32_t>(_descriptor.image_format),
 			_descriptor.width, _descriptor.height
 		);
 	}
-
 
 	~gl_texture_2d() = default;
 
 public:
 
-	void bind() override
+	void bind(std::uint32_t unit) override
 	{
-		glActiveTexture(GL_TEXTURE0 + 0);
+		glActiveTexture(GL_TEXTURE0 + unit);
 		glBindTexture(GL_TEXTURE_2D, _handle);
 	}
 
-	void unbind() override {}
+	void unbind() override 
+	{
+
+	}
 
 private:
 
@@ -1081,57 +1287,71 @@ public:
 
 	const gl_texture_2d_descriptor& descriptor() const { return _descriptor; }
 
-	void fill(std::int32_t mipmap_index, std::int32_t x_offset, std::int32_t y_offset)
+	void fill(std::shared_ptr<gl_pixels> pixels)
 	{
-		if (
-			mipmap_index < 0 ||
-			mipmap_index >= _descriptor.mipmaps_count ||
-			x_offset < 0 || y_offset < 0 ||
-			x_offset >= _descriptor.width ||
-			y_offset >= _descriptor.height
-			) return;
-
-		auto data_format = pixel_format_to_data_format(_descriptor.pixel_format);
-		glTextureSubImage2D(_handle,
-			mipmap_index,
-			x_offset, y_offset, _descriptor.width, _descriptor.height,
-			static_cast<std::uint32_t>(data_format.first),
-			static_cast<std::uint32_t>(data_format.second),
-			pixels.get_data()
+		if (!pixels) return;
+		glTextureSubImage2D(_handle, 0,
+			0, 0, _descriptor.width, _descriptor.height, 
+			static_cast<GLenum>(pixels->pixel_format()), static_cast<GLenum>(pixels->pixel_type()), 
+			pixels->data()
 		);
+	}
+
+	void fill(std::int32_t x_offset, std::int32_t y_offset, std::shared_ptr<gl_pixels> pixels)
+	{
+		if (!pixels || x_offset < 0 || x_offset >= _descriptor.width) return;
+	}
+
+	void fill(std::int32_t mipmap_index, std::shared_ptr<gl_pixels> pixels)
+	{
 
 	}
 
+	void fill(std::int32_t mipmap_index, std::int32_t x_offset, std::int32_t y_offset, std::shared_ptr<gl_pixels> pixels)
+	{
+		if (!pixels || pixels->valid_format(_descriptor.image_format) ||
+			mipmap_index < 0 || mipmap_index >= _descriptor.mipmaps_count ||
+			x_offset < 0 || x_offset >= _descriptor.width ||
+			y_offset < 0 || y_offset >= _descriptor.height
+			)return;
+
+		glTextureSubImage2D(_handle,
+			mipmap_index, x_offset, y_offset,
+			0, 0, static_cast<GLenum>(pixels->pixel_format()), static_cast<GLenum>(pixels->pixel_type()),
+			pixels->data()
+		);
+	}
+
+	void fill_mask(std::int32_t mipmap_index, std::int32_t x_offset, std::int32_t y_offset)
+	{}
+
 	void fetch_pixels(std::int32_t mipmap_index)
 	{
-		glGetTextureImage(_handle, 0, );
+		glGetTextureImage(_handle, 0,);
 	}
 
 };
 
 struct gl_texture_2d_array_descriptor
 {
-	gl_texture_pixel_format pixel_format;
+	gl_image_format image_format;
 	std::int32_t width, height;
 	std::int32_t mipmaps_count;
 	std::int32_t elements_count;
 
-	gl_texture_2d_array_descriptor(std::int32_t _elements_count, std::int32_t _width, std::int32_t _height, gl_texture_pixel_format _pixel_format, std::int32_t _mipmaps_count) :
+	gl_texture_2d_array_descriptor() = delete;
+	gl_texture_2d_array_descriptor(std::int32_t _elements_count, std::int32_t _width, std::int32_t _height, gl_image_format _image_format, std::int32_t _mipmaps_count) :
 		elements_count(_elements_count),
 		width(_width), height(_height),
-		pixel_format(_pixel_format),
+		image_format(_image_format),
 		mipmaps_count(_mipmaps_count)
 	{}
-
-	gl_texture_2d_array_descriptor(std::int32_t _elements_count, std::int32_t _width, std::int32_t _height, gl_texture_pixel_format _pixel_format) :
+	gl_texture_2d_array_descriptor(std::int32_t _elements_count, std::int32_t _width, std::int32_t _height, gl_image_format _image_format) :
 		elements_count(_elements_count),
 		width(_width), height(_height),
-		pixel_format(_pixel_format),
+		image_format(_image_format),
 		mipmaps_count(1)
 	{}
-
-	gl_texture_2d_array_descriptor() = delete;
-
 	gl_texture_2d_array_descriptor(const gl_texture_2d_array_descriptor&) = default;
 
 	~gl_texture_2d_array_descriptor() = default;
@@ -1147,7 +1367,7 @@ public:
 		_descriptor(descriptor)
 	{
 		glTextureStorage3D(_handle,
-			_descriptor.mipmaps_count, static_cast<GLenum>(_descriptor.pixel_format),
+			_descriptor.mipmaps_count, static_cast<GLenum>(_descriptor.image_format),
 			_descriptor.width, _descriptor.height,
 			_descriptor.elements_count
 		);
@@ -1167,18 +1387,49 @@ public:
 
 	gl_texture_2d_array_descriptor get_descriptor() const { return _descriptor; }
 
-	void fill(std::int32_t element_index, std::int32_t mipmap_index, std::int32_t x_offset, std::int32_t y_offset, const void* data)
+public:
+
+	void fill(std::int32_t element_index, std::shared_ptr<gl_pixels> pixels)
 	{
-		std::int32_t _width = 0;
-		std::int32_t _height = 0;
+		glTexSubImage3D(
+			GL_TEXTURE_2D_ARRAY,
+			0, 0, 0,
+			element_index, _descriptor.width, _descriptor.height, 1,
+			static_cast<GLenum>(pixels->pixel_format()), static_cast<GLenum>(pixels->pixel_type()),
+			pixels->data()
+		);
+	}
+
+	void fill(std::int32_t element_index, std::int32_t x_offset, std::int32_t y_offset, std::shared_ptr<gl_pixels> pixels)
+	{
+		glTexSubImage3D(
+			GL_TEXTURE_2D_ARRAY,
+			0, x_offset, y_offset,
+			element_index, 2, 2, 1,
+			static_cast<GLenum>(pixels->pixel_format()), static_cast<GLenum>(pixels->pixel_type()),
+			pixels->data()
+		);
+	}
+
+	void fill(std::int32_t element_index, std::int32_t mipmap_index, std::int32_t x_offset, std::int32_t y_offset, std::shared_ptr<gl_pixels> pixels)
+	{
 		glTexSubImage3D(
 			GL_TEXTURE_2D_ARRAY,
 			mipmap_index, x_offset, y_offset,
-			element_index, _width, _height, 1,
-			static_cast<GLenum>(_descriptor.pixel_format), type,
-			data
+			element_index, 2, 2, 1,
+			static_cast<GLenum>(pixels->pixel_format()), static_cast<GLenum>(pixels->pixel_type()),
+			pixels->data()
 		);
 	}
+
+	void fill_mask(std::int32_t element_index)
+	{}
+
+	void fill_mask(std::int32_t element_index)
+	{
+	}
+
+public:
 
 	void generate_mipmaps()
 	{
@@ -1186,6 +1437,8 @@ public:
 		glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
 		glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
 	}
+
+public:
 
 	void bind(std::uint32_t unit)
 	{
@@ -1199,7 +1452,7 @@ public:
 
 struct gl_texture_rectangle_descriptor
 {
-	gl_texture_pixel_format pixel_format;
+	gl_image_format pixel_format;
 	std::int32_t width, height;
 	std::int32_t mipmaps_count;
 
@@ -1229,7 +1482,6 @@ public:
 			_descriptor.height
 		);
 	}
-
 
 	~gl_texture_rectangle() override = default;
 
@@ -1264,16 +1516,16 @@ public:
 struct gl_texture_cube_descriptor
 {
 	std::int32_t width;
-	gl_texture_pixel_format pixel_format;
+	gl_image_format pixel_format;
 	std::int32_t mipmaps_count;
 
-	gl_texture_cube_descriptor(std::int32_t _width, gl_texture_pixel_format _pixel_format, std::int32_t _mipmaps_count) :
+	gl_texture_cube_descriptor(std::int32_t _width, gl_image_format _pixel_format, std::int32_t _mipmaps_count) :
 		width(_width),
 		pixel_format(_pixel_format),
 		mipmaps_count(_mipmaps_count)
 	{}
 
-	gl_texture_cube_descriptor(std::int32_t _width, gl_texture_pixel_format _pixel_format) :
+	gl_texture_cube_descriptor(std::int32_t _width, gl_image_format _pixel_format) :
 		width(_width),
 		pixel_format(_pixel_format),
 		mipmaps_count(1)
@@ -1352,17 +1604,17 @@ struct gl_texture_cube_array_descriptor
 {
 	std::int32_t elements_count;
 	std::int32_t width;
-	gl_texture_pixel_format pixel_format;
+	gl_image_format pixel_format;
 	std::int32_t mipmaps_count;
 
-	gl_texture_cube_array_descriptor(std::int32_t _elements_count, std::int32_t _width, gl_texture_pixel_format _pixel_format, std::int32_t _mipmaps_count) :
+	gl_texture_cube_array_descriptor(std::int32_t _elements_count, std::int32_t _width, gl_image_format _pixel_format, std::int32_t _mipmaps_count) :
 		elements_count(_elements_count),
 		width(_width),
 		pixel_format(_pixel_format),
 		mipmaps_count(_mipmaps_count)
 	{}
 
-	gl_texture_cube_array_descriptor(std::int32_t _elements_count, std::int32_t _width, gl_texture_pixel_format _pixel_format) :
+	gl_texture_cube_array_descriptor(std::int32_t _elements_count, std::int32_t _width, gl_image_format _pixel_format) :
 		elements_count(_elements_count),
 		width(_width),
 		pixel_format(_pixel_format),
@@ -1443,16 +1695,16 @@ public:
 struct gl_texture_3d_descriptor
 {
 	std::int32_t width, height, depth;
-	gl_texture_pixel_format pixel_format;
+	gl_image_format pixel_format;
 	std::int32_t mipmaps_count;
 
-	gl_texture_3d_descriptor(std::int32_t _width, std::int32_t _height, std::int32_t _depth, gl_texture_pixel_format  _pixel_format, std::int32_t _mipmaps_count) :
+	gl_texture_3d_descriptor(std::int32_t _width, std::int32_t _height, std::int32_t _depth, gl_image_format  _pixel_format, std::int32_t _mipmaps_count) :
 		width(_width), height(_height), depth(_depth),
 		mipmaps_count(_mipmaps_count),
 		pixel_format(_pixel_format)
 	{}
 
-	gl_texture_3d_descriptor(std::int32_t _width, std::int32_t _height, std::int32_t _depth, gl_texture_pixel_format _pixel_format) :
+	gl_texture_3d_descriptor(std::int32_t _width, std::int32_t _height, std::int32_t _depth, gl_image_format _pixel_format) :
 		width(_width), height(_height), depth(_depth),
 		mipmaps_count(1),
 		pixel_format(_pixel_format)
@@ -1529,17 +1781,17 @@ struct gl_texture_2d_multisample_descriptor
 {
 	std::int32_t samples_count;
 	std::int32_t width, height;
-	gl_texture_pixel_format pixel_format;
+	gl_image_format pixel_format;
 	bool fixed_sample_location;
 
-	gl_texture_2d_multisample_descriptor(std::int32_t _samples_count, std::int32_t _width, std::int32_t _height, gl_texture_pixel_format _pixel_format, bool _fixed_sample_location) :
+	gl_texture_2d_multisample_descriptor(std::int32_t _samples_count, std::int32_t _width, std::int32_t _height, gl_image_format _pixel_format, bool _fixed_sample_location) :
 		samples_count(_samples_count),
 		width(_width), height(_height),
 		pixel_format(_pixel_format),
 		fixed_sample_location(_fixed_sample_location)
 	{}
 
-	gl_texture_2d_multisample_descriptor(std::int32_t _samples_count, std::int32_t _width, std::int32_t _height, gl_texture_pixel_format _pixel_format) :
+	gl_texture_2d_multisample_descriptor(std::int32_t _samples_count, std::int32_t _width, std::int32_t _height, gl_image_format _pixel_format) :
 		samples_count(_samples_count),
 		width(_width), height(_height),
 		pixel_format(_pixel_format),
@@ -1608,14 +1860,14 @@ struct gl_texture_2d_array_multisample_descriptor
 	std::int32_t elements_count;
 	std::int32_t samples_count;
 	std::int32_t width, height;
-	gl_texture_pixel_format pixel_format;
+	gl_image_format pixel_format;
 	bool fixed_sample_location;
 
 	gl_texture_2d_array_multisample_descriptor(
 		std::int32_t _elements_count,
 		std::int32_t _samples_count,
 		std::int32_t _width, std::int32_t _height,
-		gl_texture_pixel_format _pixel_format,
+		gl_image_format _pixel_format,
 		bool _fixed_sample_location
 	) :
 		elements_count(_elements_count),
@@ -1629,7 +1881,7 @@ struct gl_texture_2d_array_multisample_descriptor
 		std::int32_t _elements_count,
 		std::int32_t _samples_count,
 		std::int32_t _width, std::int32_t _height,
-		gl_texture_pixel_format _pixel_format
+		gl_image_format _pixel_format
 	) :
 		elements_count(_elements_count),
 		samples_count(_samples_count),
@@ -1687,7 +1939,7 @@ public:
 struct gl_texture_buffer_descriptor
 {
 	std::shared_ptr<gl_buffer> buffer;
-	gl_texture_pixel_format pixel_format;
+	gl_image_format pixel_format;
 	std::int32_t offset, length;
 
 	gl_texture_buffer_descriptor()
@@ -1783,7 +2035,7 @@ void test()
 	gl_texture_1d_descriptor _desc;
 	_desc.length = 1024;
 	_desc.mipmaps_count = 2;
-	_desc.pixel_format = gl_texture_pixel_format::rgb10_a2_ui;
+	_desc.pixel_format = gl_image_format::rgb10_a2_ui;
 	gl_texture_1d _texture_1d(_desc);
 	_texture_1d.fill(2, 0, nullptr);
 	_texture_1d.fill_mask(0, 1024, 0, 0, nullptr);
