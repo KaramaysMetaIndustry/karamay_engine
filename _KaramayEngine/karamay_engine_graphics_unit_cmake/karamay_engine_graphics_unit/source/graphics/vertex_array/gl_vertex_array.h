@@ -240,6 +240,10 @@ public:
 
         for(const auto& _item : list)
         {
+            _asm {
+                mov eax, [esp];
+                ret;
+            }
             auto _it = _instance_attribute_layout.find(std::get<0>(_item));
             if(_it == _instance_attribute_layout.cend()) return;
             std::int64_t _instance_attribute_list_offset = _it->second.offset;

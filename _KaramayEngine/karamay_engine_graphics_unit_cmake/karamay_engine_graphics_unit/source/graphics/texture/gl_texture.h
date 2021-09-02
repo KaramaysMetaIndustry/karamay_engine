@@ -243,7 +243,7 @@ enum class gl_texture_pixel_format : GLenum
 	r3_g3_b2_ui_nor, //
 	
 	rgb4_ui_nor,
-	rgb5_ui_nor,
+	rgb5_ui_nor = GL_RGB5,
 
 	rgb8_ui_nor, //
 	rgb8_i_nor,
@@ -295,18 +295,24 @@ enum class gl_texture_pixel_format : GLenum
 	rg32_i,
 	rg32_ui,
 
+	// ivec3
 	rgb8_i,
-	rgb8_ui,
 	rgb16_i,
-	rgb16_ui,
 	rgb32_i,
+
+	// uvec3
+	rgb8_ui,
+	rgb16_ui,
 	rgb32_ui,
 
+	// ivec4
 	rgba8_i,
-	rgba8_ui,
 	rgba16_i,
+	rgba32_i = 1 << 2,
+
+	// uvec4
+	rgba8_ui,
 	rgba16_ui,
-	rgba32_i,
 	rgba32_ui,
 
 	// compressed format
@@ -452,9 +458,9 @@ enum class gl_pixel_format : GLenum
 	RGBA_INTEGER = GL_RGBA_INTEGER,
 	BGRA_INTEGER = GL_BGRA_INTEGER,
 
-	STENCIL_INDEX = GL_STENCIL_INDEX,
-	DEPTH_COMPONENT = GL_DEPTH_COMPONENT,
-	DEPTH_STENCIL = GL_DEPTH_STENCIL
+	DEPTH_COMPONENT = GL_DEPTH_COMPONENT, // 1 comp
+	STENCIL_INDEX = GL_STENCIL_INDEX, // 1 comp
+	DEPTH_STENCIL = GL_DEPTH_STENCIL // 2comp
 };
 
 enum class gl_pixel_type : GLenum 
@@ -473,16 +479,13 @@ enum class gl_pixel_type : GLenum
 
 	UNSIGNED_SHORT_5_6_5 = GL_UNSIGNED_SHORT_5_6_5, // RGB 16bit
 	UNSIGNED_SHORT_5_6_5_REV = GL_UNSIGNED_SHORT_5_6_5_REV, //RGB
-
 	UNSIGNED_SHORT_4_4_4_4 = GL_UNSIGNED_SHORT_4_4_4_4, // RGBA 16bit
 	UNSIGNED_SHORT_4_4_4_4_REV = GL_UNSIGNED_SHORT_4_4_4_4_REV, //RGBA
-
 	UNSIGNED_SHORT_5_5_5_1 = GL_UNSIGNED_SHORT_5_5_5_1, //RGBA 16bit
 	UNSIGNED_SHORT_1_5_5_5_REV = GL_UNSIGNED_SHORT_1_5_5_5_REV, //RGBA
 
 	UNSIGNED_INT_8_8_8_8 = GL_UNSIGNED_INT_8_8_8_8, // RGBA 32bit
 	UNSIGNED_INT_8_8_8_8_REV = GL_UNSIGNED_INT_8_8_8_8_REV, //RGBA
-
 	UNSIGNED_INT_10_10_10_2 = GL_UNSIGNED_INT_10_10_10_2, // RGBA 32bit
 	UNSIGNED_INT_2_10_10_10_REV = GL_UNSIGNED_INT_2_10_10_10_REV //RGBA
 };
@@ -1454,11 +1457,9 @@ struct gl_texture_rectangle_descriptor
 {
 	gl_image_format pixel_format;
 	std::int32_t width, height;
-	std::int32_t mipmaps_count;
 
 	gl_texture_rectangle_descriptor()
 	{
-
 	}
 
 };
@@ -1476,7 +1477,7 @@ public:
 		_descriptor(descriptor)
 	{
 		glTextureStorage2D(_handle,
-			_descriptor.mipmaps_count,
+			1,
 			static_cast<GLenum>(_descriptor.pixel_format),
 			_descriptor.width,
 			_descriptor.height
@@ -1499,9 +1500,9 @@ public:
 
 public:
 
-	void bind() override
+	void bind(std::uint32_t unit) override
 	{
-		glActiveTexture(GL_TEXTURE0 + 0);
+		glActiveTexture(GL_TEXTURE0 + unit);
 		glBindTexture(GL_TEXTURE_2D, _handle);
 		glActiveTexture(GL_TEXTURE0);
 	}
