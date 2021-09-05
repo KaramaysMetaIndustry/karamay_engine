@@ -447,23 +447,25 @@ enum class gl_pixel_format : GLenum
 	R = GL_RED,
 	RG = GL_RG,
 	RGB = GL_RGB,
-	BGR = GL_BGR,
 	RGBA = GL_RGBA,
-	BGRA = GL_BGRA,
+
+	BGR = GL_BGR, //
+	BGRA = GL_BGRA, //
 
 	R_INTEGER = GL_RED_INTEGER,
 	RG_INTEGER = GL_RG_INTEGER,
 	RGB_INTEGER = GL_RGB_INTEGER,
-	BGR_INTEGER = GL_BGR_INTEGER,
 	RGBA_INTEGER = GL_RGBA_INTEGER,
-	BGRA_INTEGER = GL_BGRA_INTEGER,
+
+	BGR_INTEGER = GL_BGR_INTEGER, //
+	BGRA_INTEGER = GL_BGRA_INTEGER, //
 
 	DEPTH_COMPONENT = GL_DEPTH_COMPONENT, // 1 comp
 	STENCIL_INDEX = GL_STENCIL_INDEX, // 1 comp
 	DEPTH_STENCIL = GL_DEPTH_STENCIL // 2comp
 };
 
-enum class gl_pixel_type : GLenum 
+enum class gl_pixel_type : GLenum
 {
 	UNSIGNED_BYTE = GL_UNSIGNED_BYTE, // uint8
 	BYTE = GL_BYTE, // int8
@@ -474,20 +476,26 @@ enum class gl_pixel_type : GLenum
 	HALF_FLOAT = GL_HALF_FLOAT, // float16
 	FLOAT = GL_FLOAT, // float32
 
-	UNSIGNED_BYTE_3_3_2 = GL_UNSIGNED_BYTE_3_3_2, // RGB 8bit
+	UNSIGNED_BYTE_3_3_2 = GL_UNSIGNED_BYTE_3_3_2, // RGB
 	UNSIGNED_BYTE_2_3_3_REV = GL_UNSIGNED_BYTE_2_3_3_REV, // RGB
-
-	UNSIGNED_SHORT_5_6_5 = GL_UNSIGNED_SHORT_5_6_5, // RGB 16bit
+	UNSIGNED_SHORT_5_6_5 = GL_UNSIGNED_SHORT_5_6_5, // RGB
 	UNSIGNED_SHORT_5_6_5_REV = GL_UNSIGNED_SHORT_5_6_5_REV, //RGB
-	UNSIGNED_SHORT_4_4_4_4 = GL_UNSIGNED_SHORT_4_4_4_4, // RGBA 16bit
-	UNSIGNED_SHORT_4_4_4_4_REV = GL_UNSIGNED_SHORT_4_4_4_4_REV, //RGBA
-	UNSIGNED_SHORT_5_5_5_1 = GL_UNSIGNED_SHORT_5_5_5_1, //RGBA 16bit
-	UNSIGNED_SHORT_1_5_5_5_REV = GL_UNSIGNED_SHORT_1_5_5_5_REV, //RGBA
 
-	UNSIGNED_INT_8_8_8_8 = GL_UNSIGNED_INT_8_8_8_8, // RGBA 32bit
-	UNSIGNED_INT_8_8_8_8_REV = GL_UNSIGNED_INT_8_8_8_8_REV, //RGBA
-	UNSIGNED_INT_10_10_10_2 = GL_UNSIGNED_INT_10_10_10_2, // RGBA 32bit
-	UNSIGNED_INT_2_10_10_10_REV = GL_UNSIGNED_INT_2_10_10_10_REV //RGBA
+	UNSIGNED_SHORT_4_4_4_4 = GL_UNSIGNED_SHORT_4_4_4_4, // RGBA RGBA_INTEGER
+	UNSIGNED_SHORT_4_4_4_4_REV = GL_UNSIGNED_SHORT_4_4_4_4_REV, // RGBA RGBA_INTEGER
+	UNSIGNED_SHORT_5_5_5_1 = GL_UNSIGNED_SHORT_5_5_5_1, // RGBA RGBA_INTEGER
+	UNSIGNED_SHORT_1_5_5_5_REV = GL_UNSIGNED_SHORT_1_5_5_5_REV, // RGBA RGBA_INTEGER
+
+	UNSIGNED_INT_8_8_8_8 = GL_UNSIGNED_INT_8_8_8_8, // RGBA RGBA_INTEGER
+	UNSIGNED_INT_8_8_8_8_REV = GL_UNSIGNED_INT_8_8_8_8_REV, //RGBA RGBA_INTEGER
+	UNSIGNED_INT_10_10_10_2 = GL_UNSIGNED_INT_10_10_10_2, // RGBA RGBA_INTEGER
+	UNSIGNED_INT_2_10_10_10_REV = GL_UNSIGNED_INT_2_10_10_10_REV, //RGBA RGBA_INTEGER
+
+	UNSIGNED_INT_24_8 = GL_UNSIGNED_INT_24_8, // DEPTH_STENCIL
+
+	UNSIGNED_INT_10F_11F_11F_REV = GL_UNSIGNED_INT_10F_11F_11F_REV,
+	UNSIGNED_INT_5_9_9_9_REV = GL_UNSIGNED_INT_5_9_9_9_REV, // GL_RGB GL_RGB9_E5
+	FLOAT_32_UNSIGNED_INT_24_8_REV = GL_FLOAT_32_UNSIGNED_INT_24_8_REV //  GL_DEPTH32F_STENCIL8
 };
 
 enum class gl_texture_type : GLenum
@@ -515,9 +523,9 @@ public:
 	virtual gl_pixel_format pixel_format() const = 0;
 	virtual gl_pixel_type pixel_type() const = 0;
 	virtual std::uint32_t pixel_size() const = 0;
-	virtual std::uint32_t pixels_count() const = 0;
+	virtual gl_pixel_format internal_format() const = 0;
+	virtual std::uint32_t count() const = 0;
 	virtual std::uint8_t* data() const = 0;
-	virtual bool valid_format(gl_image_format image_format) = 0;
 };
 class gl_pixels_r_u8 : public gl_pixels {
 	gl_pixel_format pixel_format() const override
@@ -733,34 +741,6 @@ class gl_pixels_bgra_u32 : public gl_pixels
 	}
 };
 
-class gl_pixels_r_i8 : public gl_pixels {};
-class gl_pixels_rg_i8 : public gl_pixels {};
-class gl_pixels_rgb_i8 : public gl_pixels {};
-class gl_pixels_rgba_i8 : public gl_pixels {};
-class gl_pixels_bgr_i8 : public gl_pixels {};
-class gl_pixels_bgra_i8 : public gl_pixels {};
-class gl_pixels_r_i16 : public gl_pixels {};
-class gl_pixels_rg_i16 : public gl_pixels {};
-class gl_pixels_rgb_i16 : public gl_pixels {};
-class gl_pixels_rgba_i16 : public gl_pixels {};
-class gl_pixels_bgr_i16 : public gl_pixels {};
-class gl_pixels_bgra_i16 : public gl_pixels {};
-class gl_pixels_r_i32 : public gl_pixels {};
-class gl_pixels_rg_i32 : public gl_pixels {};
-class gl_pixels_rgb_i32 : public gl_pixels {};
-class gl_pixels_rgba_i32 : public gl_pixels {};
-class gl_pixels_bgr_i32 : public gl_pixels {};
-class gl_pixels_bgra_i32 : public gl_pixels {};
-
-class gl_pixels_r_f16 : public gl_pixels {};
-class gl_pixels_rg_f16 : public gl_pixels {};
-class gl_pixels_rgb_f16 : public gl_pixels {};
-class gl_pixels_rgba_f16 : public gl_pixels {};
-
-class gl_pixels_r_f32 : public gl_pixels {};
-class gl_pixels_rg_f32 : public gl_pixels {};
-class gl_pixels_rgb_f32 : public gl_pixels {};
-class gl_pixels_rgba_f32 : public gl_pixels {};
 
 
 class gl_pixels_rgb_u8_3_3_2 : public gl_pixels 
@@ -849,6 +829,295 @@ class gl_pixels_rgba_u32_10_10_10_2 : public gl_pixels
 class gl_pixels_rgba_u32_2_10_10_10_rev : public gl_pixels 
 {};
 
+
+class gl_pixels_r8 : public gl_pixels 
+{
+	virtual gl_pixel_format pixel_format() const = 0;
+	virtual gl_pixel_type pixel_type() const = 0;
+	virtual std::uint32_t pixel_size() const = 0;
+	virtual gl_pixel_format internal_format() const = 0;
+	virtual std::uint32_t count() const = 0;
+	virtual std::uint8_t* data() const = 0;
+
+public:
+
+	std::vector<std::uint8_t> _pixels;
+
+	void add(std::uint8_t r) 
+	{
+		_pixels.push_back(r);
+	}
+
+};
+class gl_pixels_r16 : public gl_pixels 
+{
+public:
+	std::vector<std::uint16_t> _pixels;
+
+	void add(std::uint16_t r)
+	{}
+};
+class gl_pixels_rg8 : public gl_pixels 
+{
+
+public:
+	std::vector<glm::u8vec2> _pixels;
+
+	void add(glm::u8vec2 rg) {}
+};
+class gl_pixels_rg16 : public gl_pixels 
+{
+	void add(glm::u16vec2 rg)
+	{}
+};
+class gl_pixels_r3g3b2 : public gl_pixels 
+{
+
+
+public:
+
+	std::vector<std::uint8_t> _pixels;
+
+	void add(std::uint8_t r, std::uint8_t g, std::uint8_t b)
+	{
+		if (r > 7 || g > 7 || b > 3) return;
+
+		std::uint8_t _pixel = 0;
+		_pixel |= (r << 5);
+		_pixel |= (g << 2);
+		_pixel |= b;
+		_pixels.push_back(_pixel);
+	}
+};
+//class gl_pixels_rgb4 : public gl_pixels {};
+//class gl_pixels_rgb5 : public gl_pixels {};
+class gl_pixels_rgb565 : public gl_pixels 
+{
+
+	std::vector<std::uint16_t> _pixels;
+
+	void add(std::uint16_t r, std::uint16_t g, std::uint16_t b)
+	{
+		if (r > 31 || g > 63 || b > 31) return;
+		std::uint16_t _pixel = 0;
+		_pixel |= (r << 11);
+		_pixel |= (g << 5);
+		_pixel |= b;
+		_pixels.push_back(_pixel);
+	}
+};
+class gl_pixels_rgb8 : public gl_pixels 
+{
+
+public:
+
+	void add(std::uint8_t r, std::uint8_t g, std::uint8_t b) {}
+};
+//class gl_pixels_rgb10 : public gl_pixels {};
+//class gl_pixels_rgb12 : public gl_pixels {};
+class gl_pixels_rgb16 : public gl_pixels 
+{
+
+	void add(std::uint16_t r, std::uint16_t g, std::uint16_t b) {}
+};
+
+class gl_pixels_r8snor : public gl_pixels 
+{
+	void add(std::int8_t r)
+	{}
+};
+class gl_pixels_r16snor : public gl_pixels 
+{
+	void add(std::int16_t r) {}
+};
+class gl_pixels_rg8snor : public gl_pixels 
+{
+	void add(std::int8_t r, std::int8_t g) {}
+};
+class gl_pixels_rg16snor : public gl_pixels 
+{
+	void add(std::int16_t r, std::int16_t g) {}
+};
+class gl_pixels_rgb8snor : public gl_pixels 
+{
+	void add(std::int8_t r, std::int8_t g, std::int8_t b) {}
+};
+class gl_pixels_rgb16snor : public gl_pixels 
+{
+	void add(std::int16_t r, std::int16_t g, std::int16_t b) {}
+};
+class gl_pixels_rgba8snor : public gl_pixels 
+{
+	void add(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a) {}
+};
+class gl_pixels_rgba16snor : public gl_pixels 
+{
+	void add(std::uint16_t r, std::uint16_t g, std::uint16_t b, std::uint16_t a) {}
+};
+
+//class gl_pixels_r16f : public gl_pixels {};
+class gl_pixels_r32f : public gl_pixels 
+{
+	void add(std::float_t r);
+};
+//class gl_pixels_rg16f : public gl_pixels {};
+class gl_pixels_rg32f : public gl_pixels 
+{
+	void add(std::float_t r, std::float_t g) {}
+};
+//class gl_pixels_rgb16f : public gl_pixels {};
+class gl_pixels_rgb32f : public gl_pixels 
+{
+	void add(std::float_t r, std::float_t g, std::float_t b) {}
+};
+//class gl_pixels_rgba16f : public gl_pixels {};
+class gl_pixels_rgba32f : public gl_pixels 
+{
+	void add(std::float_t r, std::float_t g, std::float_t b, std::float_t a) {}
+};
+
+class gl_pixels_r11fg11fb10f : public gl_pixels {};
+
+class gl_pixels_r8ui : public gl_pixels 
+{
+	void add(std::uint8_t r) {}
+};
+class gl_pixels_r16ui : public gl_pixels 
+{
+	void add(std::uint16_t r) {}
+};
+class gl_pixels_r32ui : public gl_pixels 
+{
+	void add(std::uint32_t r) {}
+};
+class gl_pixels_rg8ui : public gl_pixels 
+{
+	void add(std::uint8_t r, std::uint8_t g) {}
+};
+class gl_pixels_rg16ui : public gl_pixels 
+{
+	void add(std::uint16_t r, std::uint16_t g) {}
+};
+class gl_pixels_rg32ui : public gl_pixels 
+{
+	void add(std::uint32_t r, std::uint32_t g) {}
+};
+class gl_pixels_rgb8ui : public gl_pixels 
+{
+	void add(std::uint8_t r, std::uint8_t g, std::uint8_t b) {}
+};
+class gl_pixels_rgb16ui : public gl_pixels 
+{
+	void add(std::uint16_t r, std::uint16_t g, std::uint16_t b) {}
+};
+class gl_pixels_rgb32ui : public gl_pixels 
+{
+	void add(std::uint32_t r, std::uint32_t g, std::uint32_t b) {}
+};
+class gl_pixels_rgba8ui : public gl_pixels 
+{
+	void add(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a) {}
+};
+class gl_pixels_rgba16ui : public gl_pixels 
+{
+	void add(std::uint16_t r, std::uint16_t g, std::uint16_t b, std::uint16_t a) {}
+};
+class gl_pixels_rgba32ui : public gl_pixels 
+{
+	void add(std::uint32_t r, std::uint32_t g, std::uint32_t b, std::uint32_t a) {}
+};
+
+class gl_pixels_rgb10a2ui : public gl_pixels 
+{
+
+	std::vector<std::uint32_t> _pixels;
+	void add(std::uint32_t r, std::uint32_t g, std::uint32_t b, std::uint32_t a) 
+	{
+		if (r > 1023 || g > 1023 || b > 1023 || a > 3) return;
+		std::uint32_t _pixel = 0;
+		_pixel |= (r << 22);
+		_pixel |= (g << 12);
+		_pixel |= (b << 2);
+		_pixel |= a;
+		_pixels.push_back(_pixel);
+	}
+};
+
+class gl_pixels_r8i : public gl_pixels 
+{
+public:
+	void add(std::int8_t r) {}
+};
+class gl_pixels_r16i : public gl_pixels 
+{
+	void add(std::int16_t r) {}
+};
+class gl_pixels_r32i : public gl_pixels 
+{
+
+	void add(std::int32_t r) {}
+};
+class gl_pixels_rg8i : public gl_pixels 
+{
+public:
+	void add(std::int8_t r, std::int8_t g) {}
+};
+class gl_pixels_rg16i : public gl_pixels 
+{
+public:
+	void add(std::int16_t r, std::int16_t g) {}
+};
+class gl_pixels_rg32i : public gl_pixels 
+{
+public:
+	void add(std::int32_t r, std::int32_t g) {}
+};
+class gl_pixels_rgb8i : public gl_pixels 
+{
+public:
+	void add(std::int8_t r, std::int8_t g, std::int8_t b) {}
+};
+class gl_pixels_rgb16i : public gl_pixels 
+{
+public:
+	void add(std::int16_t r, std::int16_t g, std::int16_t b) {}
+};
+class gl_pixels_rgb32i : public gl_pixels 
+{
+public:
+	void add(std::int32_t r, std::int32_t g, std::int32_t b) {}
+};
+class gl_pixels_rgba8i : public gl_pixels 
+{
+public:
+	void add(std::int8_t r, std::int8_t g, std::int8_t b, std::int8_t a) {}
+};
+class gl_pixels_rgba16i : public gl_pixels 
+{
+public:
+	void add(std::int16_t r, std::int16_t g, std::int16_t b, std::int16_t a) {}
+};
+class gl_pixels_rgba32i : public gl_pixels 
+{
+public:
+	void add(std::int32_t r, std::int32_t g, std::int32_t b, std::int32_t a) {}
+};
+
+class gl_pixels_depth16 : public gl_pixels {};
+class gl_pixels_depth24 : public gl_pixels {};
+class gl_pixels_depth32 : public gl_pixels {};
+class gl_pixels_depth32f : public gl_pixels {};
+
+class gl_pixels_stencil1 : public gl_pixels {};
+class gl_pixels_stencil4 : public gl_pixels {};
+class gl_pixels_stencil8 : public gl_pixels {};
+class gl_pixels_stencil16 : public gl_pixels {};
+
+class gl_pixels_srgb8 : public gl_pixels {};
+class gl_pixels_srgb8alpha8 : public gl_pixels {};
+
+class gl_pixels_rgb9_e5 : public gl_pixels {};
+
 struct gl_texture_descriptor
 {
 	struct gl_texture_base_parameters
@@ -896,8 +1165,6 @@ struct gl_texture_descriptor
 	//{}
 
 };
-
-
 
 class gl_texture : public gl_object
 {
@@ -1011,12 +1278,22 @@ public:
 	/*
 	* fill the base mipmap without offset
 	*/
-	void fill(const std::shared_ptr<gl_pixels> pixels)
+	void fill(std::shared_ptr<gl_pixels> pixels)
 	{
 		glTextureSubImage1D(_handle, 0, 0, descriptor.length, 
-			pixels->pixel_format(), pixels->pixel_type(), 
+			static_cast<GLenum>(pixels->pixel_format()), static_cast<GLenum>(pixels->pixel_type()),
 			pixels->data()
 		);
+	}
+
+	void test()
+	{
+		auto _pixels = std::make_shared<gl_pixels_r3g3b2>();
+		for (int i = 0; i < 10; ++i)
+		{
+			_pixels->add(6, 6, 1);
+		}
+
 	}
 
 	/*

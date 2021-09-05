@@ -41,6 +41,9 @@ layout(shared) uniform Block2
 
 void main()
 {
-   FragColor = color0;
+
+	lowp float a = texture(container3, TexCoord).r;
+
+	FragColor = color0;
 }
 
