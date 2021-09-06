@@ -87,6 +87,12 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
     IMPLEMENTATION_FUNC_BUILD()
     {
 
+		gl_texture_cube_array_descriptor _desc(10, 1024, gl_image_format::rgba, 12);
+		auto _sky_boxes = std::make_shared<gl_texture_cube_array>(_desc);
+		_sky_boxes->fill(0, gl_cube_face_index::negative_x, 0, 0, 0, nullptr, 100, 100);
+
+
+
 
         _render_target = builder.create_texture_2d(1024, 1024, gl_texture_pixel_format::rgba12_ui_nor, 1);
         //builder.create_renderbuffer()

@@ -4,316 +4,99 @@
 #include "graphics/glo/gl_object.h"
 #include "graphics/sampler/gl_sampler.h"
 
-namespace gl_texture_enum
+enum class internal_format : GLenum
 {
-	enum class pixels_format : GLenum
-	{
-		
-	};
+	// base format
+	DEPTH_COMPONENT = GL_DEPTH_COMPONENT,
+	DEPTH_STENCI = GL_DEPTH_STENCIL,
 
+	RED = GL_RED,
+	RG = GL_RG,
+	RGB = GL_RGB,
+	RGBA = GL_RGBA,
 
-	/*
-	* 0~7
-	* 0~7
-	* 0~3
-	*/
-	std::uint8_t transfer_3_3_2(std::uint8_t r, std::uint8_t g, std::uint8_t b)
-	{
-		std::uint8_t _data = 0;
-		r << 5;
-		g << 2;
-		
-		_data |= r;
-		_data |= g;
-		_data |= b;
-		return _data;
-	}
+	R8 = GL_R8, //r-8bit-unsigned_normalized_integer [0, 2^8-1] maps [0.0, 1.0]
+	R8_SNORM = GL_R8_SNORM, //r-8bit signed normalized integer [-2^8, 2^8] maps [-1.0, 1.0]
+	R16 = GL_R16, //r-16bit unsigned normalized integer [0, 2^16-1] maps [0.0, 1.0]
+	R16_SNORM = GL_R16_SNORM, //r-16bit signed normalized integer [-2^16, 2^16] maps [-1.0, 1.0]
 
-	/*
-	* 0~31
-	* 0~63
-	* 0~31
-	*/
-	std::uint16_t transfer_5_6_5(std::uint16_t r, std::uint16_t g, std::uint16_t b)
-	{
-		std::uint16_t _data = 0;
-		r << 11;
-		g << 5;
+	// 2-components
+	RG8 = GL_RG8, // rg-8bit
+	RG8_SNORM = GL_RG8_SNORM, // rg-8bit
+	RG16 = GL_RG16,
+	RG16_SNORM = GL_RG16_SNORM,
 
-		_data |= r;
-		_data |= g;
-		_data |= b;
+	// 3-components
+	R3_G3_B2 = GL_R3_G3_B2,
+	RGB4 = GL_RGB4,
+	RGB5 = GL_RGB5,
+	RGB8 = GL_RGB8,
+	RGB8_SNORM = GL_RGB8_SNORM,
+	RGB10 = GL_RGB10,
+	RGB12 = GL_RGB12,
+	RGB16_SNORM = GL_RGB16_SNORM,
 
-		return _data;
-	}
+	// 4-components
+	RGBA2 = GL_RGBA2,
+	RGBA4 = GL_RGBA4,
+	RGB5_A1 = GL_RGB5_A1,
+	RGBA8 = GL_RGBA8,
+	RGBA8_SNORM = GL_RGBA8_SNORM,
+	RGB10_A2 = GL_RGB10_A2,
+	RGB10_A2UI = GL_RGB10_A2UI,
+	RGBA12 = GL_RGBA12,
+	RGBA16 = GL_RGBA16,
 
-	std::uint16_t transfer_4_4_4_4(std::uint16_t r, std::uint16_t g, std::uint16_t b, std::uint16_t a)
-	{
+	// sRGB
+	SRGB8 = GL_SRGB8,
+	SRGB8_ALPHA8 = GL_SRGB8_ALPHA8,
 
-	}
+	// per-float16
+	R16F = GL_R16F,
+	RG16F = GL_RG16F,
+	RGB16F = GL_RGB16F,
+	RGBA16F = GL_RGBA16F,
+	// per-float32
+	R32F = GL_R32F,
+	RG32F = GL_RG32F,
+	RGB32F = GL_RGB32F,
+	RGBA32F = GL_RGBA32F,
+	// 32bit per-float
+	R11F_G11F_B10F = GL_R11F_G11F_B10F,
+	// 32bit
+	RGB9_E5 = GL_RGB9_E5,
 
-	std::uint16_t transfer_5_5_5_1(std::uint16_t r, std::uint16_t g, std::uint16_t b, std::uint16_t a)
-	{
+	// 8 int
+	R8I = GL_R8I,
+	RG8I = GL_RG8I,
+	RGB8I = GL_RGB8I,
+	RGBA8I = GL_RGBA8I,
+	// 8 uint
+	R8UI = GL_R8UI,
+	RG8UI = GL_RG8UI,
+	RGB8UI = GL_RGB8UI,
+	RGBA8UI = GL_RGBA8UI,
+	// 16 int
+	R16I = GL_R16I,
+	RG16I = GL_RG16I,
+	RGB16I = GL_RGB16I,
+	RGBA16I = GL_RGBA16I,
+	// 16 uint
+	R16UI = GL_R16UI,
+	RG16UI = GL_RG16UI,
+	RGB16UI = GL_RGB16UI,
+	RGBA16UI = GL_RGBA16UI,
+	// 32 int
+	R32I = GL_R32I,
+	RG32I = GL_RG32I,
+	RGB32I = GL_RGB32I,
+	RGBA32I = GL_RGBA32I,
+	// 32 int
+	R32UI = GL_R32UI,
+	RG32UI = GL_RG32UI,
+	RGB32UI = GL_RGB32UI,
+	RGBA32UI = GL_RGBA32UI,
 
-	}
-
-	std::uint32_t transfer_8_8_8_8(std::uint32_t r, std::uint32_t g, std::uint32_t b, std::uint32_t a)
-	{
-
-	}
-
-	std::uint32_t transfer_10_10_10_2(std::uint32_t r, std::uint32_t g, std::uint32_t b, std::uint32_t a)
-	{
-
-	}
-
-	enum class pixels_type : GLenum
-	{
-		
-	};
-
-	enum class internal_format : GLenum
-	{
-		// base format
-		DEPTH_COMPONENT = GL_DEPTH_COMPONENT,
-		DEPTH_STENCI = GL_DEPTH_STENCIL,
-		
-		RED = GL_RED,
-		RG = GL_RG,
-		RGB = GL_RGB,
-		RGBA = GL_RGBA,
-
-		R8 = GL_R8, //r-8bit-unsigned_normalized_integer [0, 2^8-1] maps [0.0, 1.0]
-		R8_SNORM = GL_R8_SNORM, //r-8bit signed normalized integer [-2^8, 2^8] maps [-1.0, 1.0]
-		R16 = GL_R16, //r-16bit unsigned normalized integer [0, 2^16-1] maps [0.0, 1.0]
-		R16_SNORM = GL_R16_SNORM, //r-16bit signed normalized integer [-2^16, 2^16] maps [-1.0, 1.0]
-
-		// 2-components
-		RG8 = GL_RG8, // rg-8bit
-		RG8_SNORM = GL_RG8_SNORM, // rg-8bit
-		RG16 = GL_RG16,
-		RG16_SNORM = GL_RG16_SNORM,
-
-		// 3-components
-		R3_G3_B2 = GL_R3_G3_B2,
-		RGB4 = GL_RGB4,
-		RGB5 = GL_RGB5,
-		RGB8 = GL_RGB8,
-		RGB8_SNORM = GL_RGB8_SNORM,
-		RGB10 = GL_RGB10,
-		RGB12 = GL_RGB12,
-		RGB16_SNORM = GL_RGB16_SNORM,
-
-		// 4-components
-		RGBA2 = GL_RGBA2,
-		RGBA4 = GL_RGBA4,
-		RGB5_A1 = GL_RGB5_A1,
-		RGBA8 = GL_RGBA8,
-		RGBA8_SNORM = GL_RGBA8_SNORM,
-		RGB10_A2 = GL_RGB10_A2,
-		RGB10_A2UI = GL_RGB10_A2UI,
-		RGBA12 = GL_RGBA12,
-		RGBA16 = GL_RGBA16,
-
-		// sRGB
-		SRGB8 = GL_SRGB8,
-		SRGB8_ALPHA8 = GL_SRGB8_ALPHA8,
-
-		// per-float16
-		R16F = GL_R16F,
-		RG16F = GL_RG16F,
-		RGB16F = GL_RGB16F,
-		RGBA16F = GL_RGBA16F,
-		// per-float32
-		R32F = GL_R32F,
-		RG32F = GL_RG32F,
-		RGB32F = GL_RGB32F,
-		RGBA32F = GL_RGBA32F,
-		// 32bit per-float
-		R11F_G11F_B10F = GL_R11F_G11F_B10F,
-		// 32bit
-		RGB9_E5 = GL_RGB9_E5,
-
-		// 8 int
-		R8I = GL_R8I,
-		RG8I = GL_RG8I,
-		RGB8I = GL_RGB8I,
-		RGBA8I = GL_RGBA8I,
-		// 8 uint
-		R8UI = GL_R8UI,
-		RG8UI = GL_RG8UI,
-		RGB8UI = GL_RGB8UI,
-		RGBA8UI = GL_RGBA8UI,
-		// 16 int
-		R16I = GL_R16I,
-		RG16I = GL_RG16I,
-		RGB16I = GL_RGB16I,
-		RGBA16I = GL_RGBA16I,
-		// 16 uint
-		R16UI = GL_R16UI,
-		RG16UI = GL_RG16UI,
-		RGB16UI = GL_RGB16UI,
-		RGBA16UI = GL_RGBA16UI,
-		// 32 int
-		R32I = GL_R32I,
-		RG32I = GL_RG32I,
-		RGB32I = GL_RGB32I,
-		RGBA32I = GL_RGBA32I,
-		// 32 int
-		R32UI = GL_R32UI,
-		RG32UI = GL_RG32UI,
-		RGB32UI = GL_RGB32UI,
-		RGBA32UI = GL_RGBA32UI,
-
-
-		// compressed format
-		// generic formats
-		COMPRESSED_RED = GL_COMPRESSED_RED,
-		COMPRESSED_RG = GL_COMPRESSED_RG,
-		COMPRESSED_RGB = GL_COMPRESSED_RGB,
-		COMPRESSED_RGBA = GL_COMPRESSED_RGBA,
-		COMPRESSED_SRGB = GL_COMPRESSED_SRGB,
-		COMPRESSED_SRGB_ALPHA = GL_COMPRESSED_SRGB_ALPHA,
-
-		// specific formats
-		// https://zhuanlan.zhihu.com/p/144389736
-		COMPRESSED_RED_RGTC1 = GL_COMPRESSED_RED_RGTC1, // UNSIGNED NORMALIZED 1-COMPONENT ONLY
-		COMPRESSED_SIGNED_RED_RGTC1 = GL_COMPRESSED_SIGNED_RED_RGTC1, // SIGNED NORMALIZED 1-COMPONENT ONLY
-		COMPRESSED_RG_RGTC2 = GL_COMPRESSED_RG_RGTC2, // UNSIGNED NORMALIZED 2-COMPONENTS
-		COMPRESSED_SIGNED_RG_RGTC2 = GL_COMPRESSED_SIGNED_RG_RGTC2, // signed normalized 2-components
-	
-		COMPRESSED_RGBA_BPTC_UNORM = GL_COMPRESSED_RGBA_BPTC_UNORM, // UNSIGNED NORMALIZED 4-COMPONENTS
-		COMPRESSED_SRGB_ALPHA_BPTC_UNORM = GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM, // UNSIGNED NORMALIZED 4-COMPONENTS IN THE SRGB COLOR SPACE
-		COMPRESSED_RGB_BPTC_SIGNED_FLOAT = GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT, // SIGNED, FLOATING-POINT 3-COMPONENTS
-		COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT = GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT // unsigned, floating-point 3-components
-	};
-
-	enum class parameter : GLenum
-	{
-		DEPTH_STENCIL_TEXTURE_MODE = GL_DEPTH_STENCIL_TEXTURE_MODE,
-		TEXTURE_BASE_LEVEL = GL_TEXTURE_BASE_LEVEL,
-		TEXTURE_MAX_LEVEL = GL_TEXTURE_MAX_LEVEL,
-		TEXTURE_SWIZZLE_R = GL_TEXTURE_SWIZZLE_R,
-		TEXTURE_SWIZZLE_G = GL_TEXTURE_SWIZZLE_G,
-		TEXTURE_SWIZZLE_B = GL_TEXTURE_SWIZZLE_B,
-		TEXTURE_SWIZZLE_A = GL_TEXTURE_SWIZZLE_A,
-		TEXTURE_SWIZZLE_RGBA =  GL_TEXTURE_SWIZZLE_RGBA
-	};
-
-	enum class texture_swizzle_component : GLenum
-	{
-		RED = GL_RED,
-		GREEN = GL_GREEN,
-		BLUE = GL_BLUE,
-		ALPHA = GL_ALPHA,
-		ZERO = GL_ZERO,
-		ONE = GL_ONE
-	};
-
-	enum class depth_stencil_texture_mode : GLenum
-	{
-		STENCIL_INDEX = GL_STENCIL_INDEX,
-		DEPTH_COMPONENT = GL_DEPTH_COMPONENT
-	};
-}
-
-enum class gl_cube_face_index : GLenum {
-	positive_x = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
-	negative_x = GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
-	positive_y = GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
-	negative_y = GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
-	positive_z = GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
-	negative_z = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z,
-};
-
-enum class gl_texture_pixel_format : GLenum
-{
-	// normalized (i/ui)
-	// uint8 [0, 255] => [0, 1.0]
-	// NormalizedUI8R
-	r8_ui_nor = GL_R8, // £¨uint8, uint8, uint8£©
-	r8_i_nor = GL_R8_SNORM, //(int8, int8, int8)
-	r16_ui_nor = GL_R16, // (uint16, uint16, uint16)
-	r16_i_nor = GL_R16_SNORM, //(int16, int16, int16)
-	rg8_ui_nor = GL_RG8, //
-	rg8_i_nor = GL_RG8_SNORM,
-	rg16_ui_nor = GL_RG16,
-	rg16_i_nor = GL_RG16_SNORM,
-
-	r3_g3_b2_ui_nor, //
-	
-	rgb4_ui_nor,
-	rgb5_ui_nor = GL_RGB5,
-
-	rgb8_ui_nor, //
-	rgb8_i_nor,
-	
-	rgb10_ui_nor,
-	rgb12_ui_nor,
-
-	rgb16_i_nor, // (int16, int16, int16)
-	
-	rgba2_ui_nor,
-	rgba4_ui_nor,
-	rgb5_a1_ui_nor,
-	rgba8_ui_nor,
-	rgba8_i_nor,
-	rgb10_a2_ui_nor,
-	rgb10_a2_ui,
-	rgba12_ui_nor,
-
-	rgba16_ui_nor,
-	
-	srgb8_ui_nor,
-	srgb8_a8_ui_nor,
-
-	r16_f,
-	rg16_f,
-	rgb16_f,
-	rgba16_f,
-	
-	r32_f,
-	rg32_f,
-	rgb32_f,
-	rgba32_f,
-
-	r11_g11_b10_f,
-	
-	rgb9_e5,
-
-	r8_i,
-	r8_ui,
-	r16_i,
-	r16_ui,
-	r32_i,
-	r32_ui,
-
-	rg8_i,
-	rg8_ui,
-	rg16_i,
-	rg16_ui,
-	rg32_i,
-	rg32_ui,
-
-	// ivec3
-	rgb8_i,
-	rgb16_i,
-	rgb32_i,
-
-	// uvec3
-	rgb8_ui,
-	rgb16_ui,
-	rgb32_ui,
-
-	// ivec4
-	rgba8_i,
-	rgba16_i,
-	rgba32_i = 1 << 2,
-
-	// uvec4
-	rgba8_ui,
-	rgba16_ui,
-	rgba32_ui,
 
 	// compressed format
 	// generic formats
@@ -335,7 +118,54 @@ enum class gl_texture_pixel_format : GLenum
 	COMPRESSED_SRGB_ALPHA_BPTC_UNORM = GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM, // UNSIGNED NORMALIZED 4-COMPONENTS IN THE SRGB COLOR SPACE
 	COMPRESSED_RGB_BPTC_SIGNED_FLOAT = GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT, // SIGNED, FLOATING-POINT 3-COMPONENTS
 	COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT = GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT // unsigned, floating-point 3-components
+};
 
+enum class parameter : GLenum
+{
+	DEPTH_STENCIL_TEXTURE_MODE = GL_DEPTH_STENCIL_TEXTURE_MODE,
+	TEXTURE_BASE_LEVEL = GL_TEXTURE_BASE_LEVEL,
+	TEXTURE_MAX_LEVEL = GL_TEXTURE_MAX_LEVEL,
+	TEXTURE_SWIZZLE_R = GL_TEXTURE_SWIZZLE_R,
+	TEXTURE_SWIZZLE_G = GL_TEXTURE_SWIZZLE_G,
+	TEXTURE_SWIZZLE_B = GL_TEXTURE_SWIZZLE_B,
+	TEXTURE_SWIZZLE_A = GL_TEXTURE_SWIZZLE_A,
+	TEXTURE_SWIZZLE_RGBA = GL_TEXTURE_SWIZZLE_RGBA
+};
+
+enum class texture_swizzle_component : GLenum
+{
+	RED = GL_RED,
+	GREEN = GL_GREEN,
+	BLUE = GL_BLUE,
+	ALPHA = GL_ALPHA,
+	ZERO = GL_ZERO,
+	ONE = GL_ONE
+};
+
+enum class depth_stencil_texture_mode : GLenum
+{
+	STENCIL_INDEX = GL_STENCIL_INDEX,
+	DEPTH_COMPONENT = GL_DEPTH_COMPONENT
+};
+
+
+enum class gl_texture_type : GLenum
+{
+	TEXTURE_BUFFER = GL_TEXTURE_BUFFER,
+
+	TEXTURE_1D = GL_TEXTURE_1D,
+	TEXTURE_1D_ARRAY = GL_TEXTURE_1D_ARRAY,
+	
+	TEXTURE_2D = GL_TEXTURE_2D,
+	TEXTURE_2D_ARRAY = GL_TEXTURE_2D_ARRAY,
+	TEXTURE_2D_MULTISAMPLE = GL_TEXTURE_2D_MULTISAMPLE,
+	TEXTURE_2D_MULTISAMPLE_ARRAY = GL_TEXTURE_2D_MULTISAMPLE_ARRAY,
+	TEXTURE_RECTANGLE = GL_TEXTURE_RECTANGLE,
+
+	TEXTURE_3D = GL_TEXTURE_3D,
+
+	TEXTURE_CUBE_MAP = GL_TEXTURE_CUBE_MAP,
+	TEXTURE_CUBE_MAP_ARRAY = GL_TEXTURE_CUBE_MAP_ARRAY
 };
 
 enum class gl_image_format : GLenum
@@ -498,23 +328,13 @@ enum class gl_pixel_type : GLenum
 	FLOAT_32_UNSIGNED_INT_24_8_REV = GL_FLOAT_32_UNSIGNED_INT_24_8_REV //  GL_DEPTH32F_STENCIL8
 };
 
-enum class gl_texture_type : GLenum
-{
-	TEXTURE_1D = GL_TEXTURE_1D,
-	TEXTURE_1D_ARRAY = GL_TEXTURE_1D_ARRAY,
-
-	TEXTURE_2D = GL_TEXTURE_2D,
-	TEXTURE_2D_ARRAY = GL_TEXTURE_2D_ARRAY,
-	TEXTURE_2D_MULTISAMPLE = GL_TEXTURE_2D_MULTISAMPLE,
-	TEXTURE_2D_MULTISAMPLE_ARRAY = GL_TEXTURE_2D_MULTISAMPLE_ARRAY,
-	TEXTURE_RECTANGLE = GL_TEXTURE_RECTANGLE,
-
-	TEXTURE_3D = GL_TEXTURE_3D,
-
-	TEXTURE_CUBE_MAP = GL_TEXTURE_CUBE_MAP,
-	TEXTURE_CUBE_MAP_ARRAY = GL_TEXTURE_CUBE_MAP_ARRAY,
-
-	TEXTURE_BUFFER = GL_TEXTURE_BUFFER
+enum class gl_cube_face_index : GLenum {
+	POSITIVE_X = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+	NEGATIVE_X = GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+	POSITIVE_Y = GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
+	NEGATIVE_Y = GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+	POSITIVE_Z = GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
+	NEGATIVE_Z = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z,
 };
 
 class gl_pixels
@@ -523,7 +343,7 @@ public:
 	virtual gl_pixel_format pixel_format() const = 0;
 	virtual gl_pixel_type pixel_type() const = 0;
 	virtual std::uint32_t pixel_size() const = 0;
-	virtual gl_pixel_format internal_format() const = 0;
+	virtual gl_image_format internal_format() const = 0;
 	virtual std::uint32_t count() const = 0;
 	virtual std::uint8_t* data() const = 0;
 };
@@ -1176,7 +996,6 @@ protected:
 	{
 		glCreateTextures(static_cast<GLenum>(_type), 1, &_handle);
 	}
-
 	~gl_texture() override
 	{
 		glDeleteTextures(1, &_handle);
@@ -1186,14 +1005,21 @@ protected:
 
 	gl_texture_type _type;
 
-protected:
-
 	std::uint32_t _unit;
 
 public:
 
-	virtual void bind(std::uint32_t unit) = 0;
-	virtual void unbind() = 0;
+	void bind()
+	{
+		std::uint32_t unit = 0;
+		glBindTextureUnit(GL_TEXTURE0 + unit, _handle);
+		_unit = unit;
+	}
+
+	void unbind() 
+	{
+		glBindTextureUnit(GL_TEXTURE0 + _unit, 0);
+	}
 
 };
 
@@ -1224,7 +1050,6 @@ struct gl_texture_1d_descriptor
 /*
 * normalized coordinates, mipmapping
 * Images in this texture all are 1-dimensional. They have width, but no height or depth.
-* 
 */
 class gl_texture_1d final : 
 	public gl_texture
@@ -1367,17 +1192,8 @@ public:
 		return _pixels;
 	}
 
-public:
-
-	void bind(std::uint32_t unit)
-	{
-		glActiveTexture(GL_TEXTURE0 + unit);
-		glBindTexture(GL_TEXTURE_1D, _handle);
-	}
-
-	void unbind();
-
 private:
+
 	void invalidate_mipmap(std::int32_t mipmap_index, std::int32_t x_offset, std::int32_t width)
 	{
 		glInvalidateTexSubImage(_handle, mipmap_index, x_offset, 0, 0, width, 0, 0);
@@ -1442,10 +1258,6 @@ private:
 public:
 
 	gl_texture_1d_array_descriptor get_descriptor() const { return _descriptor; }
-
-	void bind(std::uint32_t unit) override;
-
-	void unbind() override;
 
 public:
 
@@ -1546,19 +1358,6 @@ public:
 
 	~gl_texture_2d() = default;
 
-public:
-
-	void bind(std::uint32_t unit) override
-	{
-		glActiveTexture(GL_TEXTURE0 + unit);
-		glBindTexture(GL_TEXTURE_2D, _handle);
-	}
-
-	void unbind() override 
-	{
-
-	}
-
 private:
 
 	gl_texture_2d_descriptor _descriptor;
@@ -1642,14 +1441,14 @@ class gl_texture_2d_array final : public gl_texture
 {
 public:
 
-	explicit gl_texture_2d_array(const gl_texture_2d_array_descriptor& descriptor) :
+	explicit gl_texture_2d_array(const gl_texture_2d_array_descriptor& _descriptor) :
 		gl_texture(gl_texture_type::TEXTURE_2D_ARRAY),
-		_descriptor(descriptor)
+		descriptor(_descriptor)
 	{
 		glTextureStorage3D(_handle,
-			_descriptor.mipmaps_count, static_cast<GLenum>(_descriptor.image_format),
-			_descriptor.width, _descriptor.height,
-			_descriptor.elements_count
+			descriptor.mipmaps_count, static_cast<GLenum>(descriptor.image_format),
+			descriptor.width, _descriptor.height,
+			descriptor.elements_count
 		);
 	}
 
@@ -1659,13 +1458,7 @@ public:
 
 	~gl_texture_2d_array() override = default;
 
-private:
-
-	gl_texture_2d_array_descriptor _descriptor;
-
-public:
-
-	gl_texture_2d_array_descriptor get_descriptor() const { return _descriptor; }
+	const gl_texture_2d_array_descriptor descriptor;
 
 public:
 
@@ -1674,7 +1467,7 @@ public:
 		glTexSubImage3D(
 			GL_TEXTURE_2D_ARRAY,
 			0, 0, 0,
-			element_index, _descriptor.width, _descriptor.height, 1,
+			element_index, descriptor.width, descriptor.height, 1,
 			static_cast<GLenum>(pixels->pixel_format()), static_cast<GLenum>(pixels->pixel_type()),
 			pixels->data()
 		);
@@ -1705,10 +1498,6 @@ public:
 	void fill_mask(std::int32_t element_index)
 	{}
 
-	void fill_mask(std::int32_t element_index)
-	{
-	}
-
 public:
 
 	void generate_mipmaps()
@@ -1718,27 +1507,23 @@ public:
 		glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
 	}
 
-public:
-
-	void bind(std::uint32_t unit)
-	{
-		glActiveTexture(GL_TEXTURE0 + unit);
-		glBindTexture(GL_TEXTURE_2D_ARRAY, _handle);
-	}
-
-	void unbind();
-
 };
 
 struct gl_texture_rectangle_descriptor
 {
-	gl_image_format pixel_format;
+	gl_image_format format;
 	std::int32_t width, height;
 
-	gl_texture_rectangle_descriptor()
-	{
-	}
+	gl_texture_rectangle_descriptor(gl_image_format _format, std::int32_t _width, std::int32_t _height) :
+		format(_format),
+		width(_width), height(_height)
+	{}
 
+	gl_texture_rectangle_descriptor() = delete;
+	gl_texture_rectangle_descriptor(const gl_texture_rectangle_descriptor&) = default;
+	gl_texture_rectangle_descriptor& operator=(const gl_texture_rectangle_descriptor&) = default;
+
+	~gl_texture_rectangle_descriptor() = default;
 };
 
 /*
@@ -1748,24 +1533,24 @@ struct gl_texture_rectangle_descriptor
 class gl_texture_rectangle final : public gl_texture
 {
 public:
+	
 	gl_texture_rectangle() = delete;
-	gl_texture_rectangle(const gl_texture_rectangle_descriptor& descriptor) :
+	
+	gl_texture_rectangle(const gl_texture_rectangle_descriptor& _descriptor) :
 		gl_texture(gl_texture_type::TEXTURE_RECTANGLE),
-		_descriptor(descriptor)
+		descriptor(_descriptor)
 	{
 		glTextureStorage2D(_handle,
 			1,
-			static_cast<GLenum>(_descriptor.pixel_format),
-			_descriptor.width,
-			_descriptor.height
+			static_cast<GLenum>(descriptor.format),
+			descriptor.width,
+			descriptor.height
 		);
 	}
 
 	~gl_texture_rectangle() override = default;
 
-private:
-
-	gl_texture_rectangle_descriptor _descriptor;
+	gl_texture_rectangle_descriptor descriptor;
 
 public:
 
@@ -1773,20 +1558,6 @@ public:
 	{
 		// GL_TEXTURE_RECTANGLE
 		glTextureSubImage2D(_handle, 0, x_offset, y_offset, width, height, format, type, pixels);
-	}
-
-public:
-
-	void bind(std::uint32_t unit) override
-	{
-		glActiveTexture(GL_TEXTURE0 + unit);
-		glBindTexture(GL_TEXTURE_2D, _handle);
-		glActiveTexture(GL_TEXTURE0);
-	}
-
-	void unbind() override
-	{
-
 	}
 
 };
@@ -1819,15 +1590,16 @@ struct gl_texture_cube_descriptor
 class gl_texture_cube final : public gl_texture
 {
 public:
+
 	gl_texture_cube() = delete;
-	explicit gl_texture_cube(const gl_texture_cube_descriptor& descriptor) :
+	explicit gl_texture_cube(const gl_texture_cube_descriptor& _descriptor) :
 		gl_texture(gl_texture_type::TEXTURE_CUBE_MAP),
-		_descriptor(descriptor)
+		descriptor(_descriptor)
 	{
 		glTextureStorage3D(_handle,
-			_descriptor.mipmaps_count,
-			static_cast<GLenum>(_descriptor.pixel_format),
-			_descriptor.width, _descriptor.width,
+			descriptor.mipmaps_count,
+			static_cast<GLenum>(descriptor.pixel_format),
+			descriptor.width, descriptor.width,
 			6
 		);
 	}
@@ -1837,13 +1609,10 @@ public:
 
 	~gl_texture_cube() override = default;
 
-private:
 
-	gl_texture_cube_descriptor _descriptor;
+	gl_texture_cube_descriptor descriptor;
 
 public:
-
-	gl_texture_cube_descriptor get_descriptor() const { return _descriptor; }
 
 	void fill(
 		gl_cube_face_index face_index,
@@ -1872,30 +1641,26 @@ public:
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	}
-
-	void bind(std::uint32_t unit) {}
-
-	void unbind() {}
 };
 
 struct gl_texture_cube_array_descriptor
 {
-	std::int32_t elements_count;
+	gl_image_format format;
 	std::int32_t width;
-	gl_image_format pixel_format;
 	std::int32_t mipmaps_count;
+	std::int32_t elements_count;
 
-	gl_texture_cube_array_descriptor(std::int32_t _elements_count, std::int32_t _width, gl_image_format _pixel_format, std::int32_t _mipmaps_count) :
+	gl_texture_cube_array_descriptor(std::int32_t _elements_count, std::int32_t _width, gl_image_format _format, std::int32_t _mipmaps_count) :
 		elements_count(_elements_count),
 		width(_width),
-		pixel_format(_pixel_format),
+		format(_format),
 		mipmaps_count(_mipmaps_count)
 	{}
 
-	gl_texture_cube_array_descriptor(std::int32_t _elements_count, std::int32_t _width, gl_image_format _pixel_format) :
+	gl_texture_cube_array_descriptor(std::int32_t _elements_count, std::int32_t _width, gl_image_format _format) :
 		elements_count(_elements_count),
 		width(_width),
-		pixel_format(_pixel_format),
+		format(_format),
 		mipmaps_count(1)
 	{}
 
@@ -1910,16 +1675,16 @@ class gl_texture_cube_array final : public gl_texture
 {
 public:
 
-	explicit gl_texture_cube_array(const gl_texture_cube_array_descriptor& descriptor) :
+	explicit gl_texture_cube_array(const gl_texture_cube_array_descriptor& _descriptor) :
 		gl_texture(gl_texture_type::TEXTURE_CUBE_MAP_ARRAY),
-		_descriptor(descriptor)
+		descriptor(_descriptor)
 	{
 		glTextureStorage3D(
 			_handle,
-			_descriptor.mipmaps_count,
-			static_cast<GLenum>(_descriptor.pixel_format),
-			_descriptor.width, _descriptor.width,
-			_descriptor.elements_count * 6
+			descriptor.mipmaps_count,
+			static_cast<GLenum>(descriptor.format),
+			descriptor.width, descriptor.width,
+			descriptor.elements_count * 6
 		);
 	}
 
@@ -1929,9 +1694,7 @@ public:
 
 	~gl_texture_cube_array() override = default;
 
-private:
-
-	gl_texture_cube_array_descriptor _descriptor;
+	gl_texture_cube_array_descriptor descriptor;
 
 public:
 
@@ -1946,34 +1709,26 @@ public:
 		glTexSubImage3D(
 			static_cast<GLenum>(face_index),
 			mipmap_index, x_offset, y_offset, 0,
-			width, height, (element_index + 1) * 6 - 1, format, type, data
+			width, height, (element_index + 1) * 6 - 1, 
+			static_cast<GLenum>(descriptor.format), type, data
 		);
 	}
 
-	void bind(std::uint32_t unit) override;
+	void generate_mipmaps()
 	{
-		glActiveTexture(GL_TEXTURE0 + unit);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, _handle);
-		glActiveTexture(GL_TEXTURE0);
-		_unit = unit;
-	}
-
-	void unbind() override;
-	{
-		glActiveTexture(GL_TEXTURE0 + _unit);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-		glActiveTexture(GL_TEXTURE0);
-		_unit = 0;
+		glBindTexture(GL_TEXTURE_CUBE_MAP_ARRAY, _handle);
+		glGenerateMipmap(GL_TEXTURE_CUBE_MAP_ARRAY);
+		glBindTexture(GL_TEXTURE_CUBE_MAP_ARRAY, 0);
 	}
 
 };
 
 /////////////////////////////////////////
-
+ 
 struct gl_texture_3d_descriptor
 {
-	std::int32_t width, height, depth;
 	gl_image_format pixel_format;
+	std::int32_t width, height, depth;
 	std::int32_t mipmaps_count;
 
 	gl_texture_3d_descriptor(std::int32_t _width, std::int32_t _height, std::int32_t _depth, gl_image_format  _pixel_format, std::int32_t _mipmaps_count) :
@@ -2038,28 +1793,14 @@ public:
 		);
 	}
 
-public:
-
-	void bind(std::uint32_t unit)
-	{
-		glActiveTexture(GL_TEXTURE0 + unit);
-		glBindTexture(GL_TEXTURE_3D, _handle);
-	}
-
-	void unbind(std::uint32_t unit)
-	{
-		glActiveTexture(GL_TEXTURE0 + unit);
-		glBindTexture(GL_TEXTURE_3D, 0);
-	}
-
 };
 
 
 struct gl_texture_2d_multisample_descriptor
 {
-	std::int32_t samples_count;
-	std::int32_t width, height;
 	gl_image_format pixel_format;
+	std::int32_t width, height;
+	std::int32_t samples_count;
 	bool fixed_sample_location;
 
 	gl_texture_2d_multisample_descriptor(std::int32_t _samples_count, std::int32_t _width, std::int32_t _height, gl_image_format _pixel_format, bool _fixed_sample_location) :
@@ -2119,27 +1860,15 @@ public:
 
 	const gl_texture_2d_multisample_descriptor& get_descriptor() const { return _descriptor; }
 
-	void bind() override
-	{
-		glActiveTexture(unit);
-		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _handle);
-	}
-
-	void unbind()
-	{
-		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _handle);
-		glActiveTexture(0);
-	}
-
 };
 
 struct gl_texture_2d_array_multisample_descriptor
 {
-	std::int32_t elements_count;
-	std::int32_t samples_count;
-	std::int32_t width, height;
 	gl_image_format pixel_format;
+	std::int32_t width, height;
+	std::int32_t samples_count;
 	bool fixed_sample_location;
+	std::int32_t elements_count;
 
 	gl_texture_2d_array_multisample_descriptor(
 		std::int32_t _elements_count,
@@ -2170,7 +1899,7 @@ struct gl_texture_2d_array_multisample_descriptor
 
 	gl_texture_2d_array_multisample_descriptor() = delete;
 	gl_texture_2d_array_multisample_descriptor(const gl_texture_2d_array_multisample_descriptor&) = default;
-	gl_texture_2d_array_multisample_descriptor& opeator = (const gl_texture_2d_array_multisample_descriptor&) = default;
+	gl_texture_2d_array_multisample_descriptor& operator=(const gl_texture_2d_array_multisample_descriptor&) = default;
 
 	~gl_texture_2d_array_multisample_descriptor() = default;
 };
@@ -2206,12 +1935,6 @@ private:
 
 	gl_texture_2d_array_multisample_descriptor _descriptor;
 
-public:
-
-	void bind(GLuint Unit);
-
-	void unbind();
-
 };
 
 struct gl_texture_buffer_descriptor
@@ -2222,6 +1945,12 @@ struct gl_texture_buffer_descriptor
 
 	gl_texture_buffer_descriptor()
 	{}
+
+	gl_texture_buffer_descriptor() = delete;
+	gl_texture_buffer_descriptor(const gl_texture_buffer_descriptor&) = default;
+	gl_texture_buffer_descriptor& operator=(const gl_texture_buffer_descriptor&) = default;
+
+	~gl_texture_buffer_descriptor() = default;
 };
 
 /*
@@ -2250,75 +1979,7 @@ private:
 
 	gl_texture_buffer_descriptor _descriptor;
 
-	std::uint32_t _unit;
-
-public:
-
-	void bind(std::uint32_t unit)
-	{
-		glActiveTexture(GL_TEXTURE0 + unit);
-		glBindTexture(GL_TEXTURE_BUFFER, _handle);
-		glActiveTexture(GL_TEXTURE0);
-		_unit = unit;
-	}
-
-	void unbind() 
-	{
-		glActiveTexture(GL_TEXTURE0 + _unit);
-		glBindTexture(GL_TEXTURE_BUFFER, 0);
-		glActiveTexture(GL_TEXTURE0);
-		_unit = 0;
-	}
-
 };
 
-class gl_float_pixel {};
-class gl_vec2_pixel {};
-class gl_vec3_pixel {};
-class gl_vec4_pixel {};
-
-class gl_nor_float_pixel {};
-class gl_nor_vec2_pixel {};
-class gl_nor_vec3_pixel {};
-class gl_nor_vec4_pixel {};
-
-class gl_snor_float_pixel {};
-class gl_snor_vec2_pixel {};
-class gl_snor_vec3_pixel {};
-class gl_snor_vec4_pixel {};
-
-class gl_uint_pixel {};
-class gl_uvec2_pixel {};
-class gl_uvec3_pixel {};
-
-template<gl_image_format format>
-class gl_uvec4_pixel {
-
-	std::vector<glm::u8vec4>;
-	std::vector<glm::u16vec4>;
-	std::vector<glm::u32vec4>;
-
-};
-
-// void* data -> 
-
-class gl_int_pixel {};
-class gl_ivec2_pixel {};
-class gl_ivec3_pixel {};
-class gl_ivec4_pixel {};
-
-
-void test()
-{
-	gl_texture_1d_descriptor _desc;
-	_desc.length = 1024;
-	_desc.mipmaps_count = 2;
-	_desc.pixel_format = gl_image_format::rgb10_a2_ui;
-	gl_texture_1d _texture_1d(_desc);
-	_texture_1d.fill(2, 0, nullptr);
-	_texture_1d.fill_mask(0, 1024, 0, 0, nullptr);
-	_texture_1d.fetch_pixels(0, 1, 2);
-	_texture_1d.generate_mipmaps();
-}
 
 #endif
