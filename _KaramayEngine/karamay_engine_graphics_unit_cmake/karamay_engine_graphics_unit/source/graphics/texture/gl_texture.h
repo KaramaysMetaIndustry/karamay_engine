@@ -1465,10 +1465,9 @@ public:
 	{
 		glTexSubImage3D(
 			GL_TEXTURE_2D_ARRAY,
-			0, x_offset, y_offset,
-			element_index, 2, 2, 1,
-			static_cast<GLenum>(pixels->pixel_format()), static_cast<GLenum>(pixels->pixel_type()),
-			pixels->data()
+			0, x_offset, y_offset, element_index, 
+			pixels->count(), pixels->count(), 1,
+			static_cast<GLenum>(pixels->pixel_format()), static_cast<GLenum>(pixels->pixel_type()), pixels->data()
 		);
 	}
 
@@ -1531,7 +1530,8 @@ public:
 			descriptor.height
 		);
 	}
-
+	gl_texture_rectangle(const gl_texture_rectangle_descriptor&) = delete;
+	gl_texture_rectangle& operator=(const gl_texture_rectangle&) = delete;
 	~gl_texture_rectangle() override = default;
 
 	const gl_texture_rectangle_descriptor descriptor;
@@ -1543,6 +1543,8 @@ public:
 		// GL_TEXTURE_RECTANGLE
 		glTextureSubImage2D(_handle, 0, x_offset, y_offset, width, height, format, type, pixels);
 	}
+
+	void fill_mask() {}
 
 };
 
