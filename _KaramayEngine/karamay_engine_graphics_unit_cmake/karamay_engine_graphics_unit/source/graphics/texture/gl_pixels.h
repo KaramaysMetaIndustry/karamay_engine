@@ -151,61 +151,95 @@ enum class gl_pixel_type : GLenum
 class gl_pixels_base
 {
 public:
+	virtual gl_image_format internal_format() const = 0;
 	virtual gl_pixel_format pixel_format() const = 0;
 	virtual gl_pixel_type pixel_type() const = 0;
 	virtual std::uint32_t pixel_size() const = 0;
-	virtual gl_image_format internal_format() const = 0;
-	virtual std::uint32_t count() const = 0;
+	virtual std::uint32_t size() const = 0;
+	virtual void resize(std::uint32_t new_size) = 0;
+	virtual std::uint8_t* data() = 0;
 	virtual const std::uint8_t* data() const = 0;
 };
 
 template<gl_image_format format>
 class gl_pixels : private gl_pixels_base
 {
-	virtual gl_pixel_format pixel_format() const override {};
-	virtual gl_pixel_type pixel_type() const override {};
-	virtual std::uint32_t pixel_size() const override {};
-	virtual gl_image_format internal_format() const override {};
-	virtual std::uint32_t count() const override {};
-	virtual const std::uint8_t* data() const override {};
-
+	gl_image_format internal_format() const override {};
+	gl_pixel_format pixel_format() const override {};
+	gl_pixel_type pixel_type() const override {};
+	std::uint32_t pixel_size() const override {};
+	std::uint32_t size() const override {};
+	void resize(std::uint32_t new_size) override {};
+	std::uint8_t* data() override {};
+	const std::uint8_t* data() const override {};
 };
 
 template<>
-class gl_pixels<gl_image_format::NOR_UI_R8> final : private gl_pixels_base
+class gl_pixels<gl_image_format::NOR_UI_R8> final : public gl_pixels_base
 {
-private:
+public:
+	using pixel_t = std::uint8_t;
+	using client_pixel_t = pixel_t;
+
+	gl_image_format internal_format() const override { return gl_image_format::NOR_UI_R8; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::R; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_BYTE; }
-	std::uint32_t pixel_size() const override { return sizeof(std::uint8_t); }
-	gl_image_format internal_format() const override { return gl_image_format::NOR_UI_R8; }
-	std::uint32_t count() const override { return _pixels.size(); }
-	const std::uint8_t* data() const override { return _pixels.data(); }
-
-	std::vector<std::uint8_t> _pixels;
+	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
+	std::uint32_t size() const override { return _pixels.size(); }
+	void resize(std::uint32_t new_size) override { _pixels.resize(new_size); }
+	std::uint8_t* data() override{ return _pixels.data(); }
+	const std::uint8_t* data()  const override{ return _pixels.data(); }
 
 public:
 
-	void add(std::uint8_t r) {}
+	void add(client_pixel_t pixel)
+	{
+		_pixels.push_back(pixel);
+	}
+
+	void set(std::uint32_t index, client_pixel_t new_pixel) 
+	{
+		_pixels.at(index) = new_pixel;
+	}
+
+	client_pixel_t get(std::uint32_t index) 
+	{
+		return _pixels.at(index);
+	}
+
+private:
+
+	std::vector<pixel_t> _pixels;
 
 };
 
 template<>
 class gl_pixels<gl_image_format::NOR_UI_R16> final : private gl_pixels_base
 {
-private:
+public:
+	using pixel_t = std::uint16_t;
+	using client_pixel_t = pixel_t;
+
+	gl_image_format internal_format() const override { return gl_image_format::NOR_UI_R16; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::R; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_SHORT; }
 	std::uint32_t pixel_size() const override { return sizeof(std::uint16_t); }
-	gl_image_format internal_format() const override { return gl_image_format::NOR_UI_R16; }
-	std::uint32_t count() const override { return _pixels.size(); }
+	std::uint32_t size() const override { return _pixels.size(); }
+	void resize(std::uint32_t new_size) override { _pixels.resize(new_size); }
+	std::uint8_t* data() override { return reinterpret_cast<std::uint8_t*>(_pixels.data()); }
 	const std::uint8_t* data() const override { return reinterpret_cast<const std::uint8_t*>(_pixels.data()); }
-
-	std::vector<std::uint16_t> _pixels;
 
 public:
 
 	void add(std::uint16_t r) {}
+
+	void set(std::uint32_t index, client_pixel_t) {}
+
+	client_pixel_t get(std::uint32_t index) {}
+
+private:
+
+	std::vector<std::uint16_t> _pixels;
 
 };
 
@@ -439,6 +473,8 @@ private:
 	gl_image_format internal_format() const override { return gl_image_format::NOR_I_R8; }
 	std::uint32_t count() const override { return _pixels.size(); }
 	const std::uint8_t* data() const override { return reinterpret_cast<const std::uint8_t*>(_pixels.data()); }
+	std::uint8_t* data() override { return reinterpret_cast<std::uint8_t*>(_pixels.data()); }
+	void resize(std::size_t new_size) override { _pixels.resize(new_size); }
 
 	std::vector<std::int8_t> _pixels;
 
