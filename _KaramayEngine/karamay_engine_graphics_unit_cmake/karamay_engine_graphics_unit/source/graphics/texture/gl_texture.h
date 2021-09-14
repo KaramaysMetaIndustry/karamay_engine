@@ -191,39 +191,38 @@ public:
 };
 
 template<
-	gl_image_format format, 
-	std::int32_t width, 
-	std::int32_t mipmaps_count = 1
+	gl_image_format _FORMAT, 
+	std::int32_t _WIDTH, 
+	std::int32_t _MIPMAPS_COUNT = 1
 >
-class gl_texture_1d : 
+class gl_texture_1d final : 
 	public gl_texture_1d_base
 {
 public:
-	
-	using texture_t = gl_texture_1d<format, width, mipmaps_count>;
-	using pixels_t = gl_pixels<format>;
+	static_assert(_WIDTH < 0, "_WIDTH must > 0");
+	static_assert(_MIPMAPS_COUNT < 1, "_MIPMAPS_COUNT must >= 1");
+
+	using texture_t = gl_texture_1d<_FORMAT, _WIDTH, _MIPMAPS_COUNT>;
+	using pixels_t = gl_pixels<_FORMAT>;
 
 public:
 
-	gl_texture_1d() :
-		gl_texture_1d_base()
+	gl_texture_1d()
 	{
-		glTextureStorage1D(
-			_handle,
-			mipmaps_count,
-			static_cast<GLenum>(format),
-			width
+		glTextureStorage1D(_handle,
+			_MIPMAPS_COUNT,
+			static_cast<GLenum>(_FORMAT),
+			_WIDTH
 		);
 
-		_mipmaps_width[0] = width;
-		for (std::int32_t _index = 1; _index < mipmaps_count; ++_index)
+		_mipmaps_width[0] = _WIDTH;
+		for (std::int32_t _index = 1; _index < _MIPMAPS_COUNT; ++_index)
 		{
 			_mipmaps_width[_index] = _mipmaps_width[_index - 1] / 2;
 		}
 	}
 
 	gl_texture_1d(const gl_texture_1d&) = default;
-	
 	~gl_texture_1d() = default;
 
 public:
@@ -236,13 +235,13 @@ public:
 	void fill(std::int32_t mipmap_index, const pixels_t& pixels) noexcept
 	{
 		// check mipmap_index
-		if (mipmap_index < 0 || mipmap_index >= mipmaps_count)
+		if (mipmap_index < 0 || mipmap_index >= _MIPMAPS_COUNT)
 		{
 			std::cerr << "mipmap_index is out of bound [0, mipmaps_count - 1]" << std::endl;
 			return;
 		}
 		// check pixels rangle
-		if (width(mipmap_index) != pixels.count())
+		if (mipmap_width(mipmap_index) != pixels.size())
 		{
 			std::cerr << "pixels count must equal to mipmap size" << std::endl;
 			return;
@@ -251,7 +250,7 @@ public:
 		glTextureSubImage1D(_handle,
 			mipmap_index, // level
 			0, // offset 
-			pixels.count(), // pixels count
+			pixels.size(), // pixels count
 			static_cast<GLenum>(pixels.pixel_format()), // pixels format 
 			static_cast<GLenum>(pixels.pixel_type()), // pixels type
 			pixels.data() // pixels data
@@ -265,18 +264,18 @@ public:
 	void fill(std::int32_t mipmap_index, std::int32_t offset, const pixels_t& pixels)
 	{
 		// check mipmap_index
-		if (mipmap_index < 0 || mipmap_index >= mipmaps_count)
+		if (mipmap_index < 0 || mipmap_index >= _MIPMAPS_COUNT)
 		{
 			std::cerr << "mipmap_index is out of bound [0, mipmaps_count - 1]" << std::endl;
 			return;
 		}
-		const _mipmap_width = width(mipmap_index);
+		const _mipmap_width = mipmap_width(mipmap_index);
 		if (offset < 0 || offset >= _mipmap_width)
 		{
 			std::cerr << "offset is out of bound [0, mipmaps_count - 1]" << std::endl;
 			return;
 		}
-		if (offset < 0 || offset + pixels.count() > _mipmap_width)
+		if (offset < 0 || offset + pixels.size() > _mipmap_width)
 		{
 			std::cerr << "pixels count does not fit with the specified range" << std::endl;
 			return;
@@ -285,7 +284,7 @@ public:
 		glTextureSubImage1D(_handle,
 			mipmap_index, // level
 			offset,
-			pixels.count(),
+			pixels.size(),
 			static_cast<GLenum>(pixels.pixel_format()), 
 			static_cast<GLenum>(pixels.pixel_type()), 
 			pixels.data()
@@ -299,13 +298,12 @@ public:
 	void fill_mask(std::int32_t mipmap_index, const pixels_t& pixels_mask)
 	{
 		// check mipmap_index
-		if (mipmap_index < 0 || mipmap_index >= mipmaps_count)
+		if (mipmap_index < 0 || mipmap_index >= _MIPMAPS_COUNT)
 		{
 			std::cerr << "mipmap_index is out of bound [0, mipmaps_count - 1]" << std::endl;
 			return;
 		}
-
-		if (width(mipmap_index) % pixels_mask.count() != 0)
+		if (mipmap_width(mipmap_index) % pixels_mask.size() != 0)
 		{
 			std::cerr << "mask pixels count must can be " << std::endl;
 			return;
@@ -325,17 +323,17 @@ public:
 	*/
 	void fill_mask(std::int32_t mipmap_index, std::int32_t offset, const pixels_t& pixels_mask)
 	{
-		if (mipmap_index < 0 || mipmap_index >= mipmaps_count)
+		if (mipmap_index < 0 || mipmap_index >= _MIPMAPS_COUNT)
 		{
 			std::cerr << "mipmap_index is out of bound [0, mipmaps_count - 1]" << std::endl;
 			return;
 		}
-		if (offset < 0 || offset >= mipmaps_count)
+		if (offset < 0 || offset >= mipmap_width(mipmap_index))
 		{
 			std::cerr << "offset is out of bound [0, mipmaps_count]" << std::endl;
 			return;
 		}
-		if ((width(mipmap_index) - offset) % pixels_mask.count() != 0)
+		if ((mipmap_width(mipmap_index) - offset) % pixels_mask.size() != 0)
 		{
 			return;
 		}
@@ -343,7 +341,7 @@ public:
 		glClearTexSubImage(_handle, // tex
 			mipmap_index, // level
 			offset, 0, 0, // x/y/z_offset
-			pixels_mask.count(), 1, 1, // w/h/d
+			pixels_mask.size(), 1, 1, // w/h/d
 			static_cast<GLenum>(pixels_mask.pixel_format()),
 			static_cast<GLenum>(pixels_mask.pixel_type()),
 			pixels_mask.data()
@@ -353,25 +351,25 @@ public:
 public:
 
 	/*
-	* 
+	* fetch all pixels from the image which specified by mipmap_index
 	* 
 	*/
 	std::shared_ptr<pixels_t> fetch(std::int32_t mipmap_index)
 	{
-		if (mipmap_index < 0 || mipmap_index >= mipmaps_count)
+		if (mipmap_index < 0 || mipmap_index >= _MIPMAPS_COUNT)
 		{
 			std::cerr << "mipmap_index is out of bound [0, mipmap_index - 1]" << std::endl;
 			return;
 		}
 
 		std::shared_ptr<gl_pixels_base> _pixels = std::make_shared<pixels_t>();
-		_pixels->resize(width(mipmap_index));
+		_pixels->resize(mipmap_width(mipmap_index));
 		
 		glGetTextureImage(_handle,
 			mipmap_index, 
 			static_cast<GLenum>(_pixels->pixel_format()),
 			static_cast<GLenum>(_pixels->pixel_type()),
-			_pixels->pixel_size() * _pixels->count(),
+			_pixels->pixel_size() * _pixels->size(),
 			_pixels->data()
 		);
 
@@ -379,18 +377,17 @@ public:
 	}
 	
 	/*
-	*
+	* fetch pixels from the range of image which specified by mipmap_index
 	*
 	*/
 	std::shared_ptr<pixels_t> fetch(std::int32_t mipmap_index, std::int32_t offset, std::int32_t width)
 	{
-		if (mipmap_index < 0 || mipmap_index >= mipmaps_count)
+		if (mipmap_index < 0 || mipmap_index >= _MIPMAPS_COUNT)
 		{
 			std::cerr << "mipmap index is out of bound [0, mipmaps_count - 1]" << std::endl;
 			return;
 		}
-
-		if (offset < 0 || offset + width > width(mipmap_index))
+		if (offset < 0 || offset + width > mipmap_width(mipmap_index))
 		{
 			std::cerr << "offset " << std::endl;
 			return;
@@ -403,51 +400,52 @@ public:
 			mipmap_index,
 			offset, 0, 0,
 			width, 1, 1,
-			_pixels->pixel_format(),
-			_pixels->pixel_type(),
-			_pixels->pixel_size() * _pixels->count(),
+			static_cast<GLenum>_pixels->pixel_format()),
+			static_cast<GLenum>_pixels->pixel_type()),
+			_pixels->pixel_size() * _pixels->size(),
 			_pixels->data()
 		);
 
 		return _pixels;
 	}
 	
-private:
-
-	void invalidate(std::int32_t mipmap_index) {}
-	
-	void invalidate(std::int32_t mipmap_index, std::int32_t offset, std::int32_t width)
-	{
-		if (mipmap_index < 0 || mipmap_index >= mipmaps_count)
-		{
-			std::cerr << "" << std::endl;
-			return;
-		}
-
-		if (offset < 0 || width < 0 || offset + width > width(mipmap_index))
-		{
-			std::cerr << "" << std::endl;
-			return;
-		}
-
-		glInvalidateTexSubImage(_handle,
-			mipmap_index, 
-			offset, 0, 0,
-			width, 1, 1
-		);
-	}
 
 public:
 
-	std::int32_t width(std::int32_t mipmap_index = 0)
+	std::int32_t mipmap_width(std::int32_t mipmap_index = 0)
 	{
-		if (mipmap_index < 0 || mipmap_index >= mipmaps_count) return -1;
+		if (mipmap_index < 0 || mipmap_index >= _MIPMAPS_COUNT) return -1;
 		return _mipmaps_width[mipmap_index];
 	}
 
 private:
 
-	std::array<std::int32_t, mipmaps_count> _mipmaps_width;
+	std::array<std::int32_t, _MIPMAPS_COUNT> _mipmaps_width;
+
+	private:
+
+		void invalidate(std::int32_t mipmap_index) {}
+
+		void invalidate(std::int32_t mipmap_index, std::int32_t offset, std::int32_t width)
+		{
+			if (mipmap_index < 0 || mipmap_index >= mipmaps_count)
+			{
+				std::cerr << "" << std::endl;
+				return;
+			}
+
+			if (offset < 0 || width < 0 || offset + width > mipmap_width(mipmap_index))
+			{
+				std::cerr << "" << std::endl;
+				return;
+			}
+
+			glInvalidateTexSubImage(_handle,
+				mipmap_index,
+				offset, 0, 0,
+				width, 1, 1
+			);
+		}
 
 };
 
@@ -456,14 +454,13 @@ void test()
 {
 	auto _texture_1d = std::make_shared<gl_texture_1d<gl_image_format::NOR_UI_R8, 1024>>();
 	gl_texture_1d<gl_image_format::NOR_UI_R8, 1024>::pixels_t _pixels;
-	_pixels.add(10);
+	_pixels.add(glm::u8vec1(10));
 	_pixels.size();
-	_pixels.set(0, 7);
+	_pixels.set(0, glm::u8vec1(7));
 	_texture_1d->fill(0, _pixels);
-	auto _fetch_pixels = _texture_1d->fetch(0);
 
-	_fetch_pixels->get(0);
-
+	auto _out_pixels = _texture_1d->fetch(0);
+	_out_pixels->get(0);
 
 
 	for (std::uint32_t _idx = 0; _idx < _pixels.size(); ++_idx)
@@ -498,24 +495,24 @@ public:
 };
 
 template<
-	gl_image_format format, 
-	std::int32_t width,
-	std::int32_t mipmaps_count,
-	std::int32_t elements_count 
+	gl_image_format _FORMAT, 
+	std::int32_t _WIDTH,
+	std::int32_t _MIPMAPS_COUNT,
+	std::int32_t _ELEMENTS_COUNT 
 >
 class gl_texture_1d_array final : 
 	public gl_texture_1d_array_base
 {
 public:
-	using texture_t = gl_texture_1d_array<format, width, mipmaps_count, elements_count>;
-	using pixels_t = gl_pixels<format>;
+	using texture_t = gl_texture_1d_array<_FORMAT, _WIDTH, _MIPMAPS_COUNT, _ELEMENTS_COUNT>;
+	using pixels_t = gl_pixels<_FORMAT>;
 
 	gl_texture_1d_array()
 	{
 		glTextureStorage2D(_handle,
-			mipmaps_count, static_cast<GLenum>(format),
-			width,
-			elements_count
+			_MIPMAPS_COUNT, static_cast<GLenum>(format),
+			_WIDTH,
+			_ELEMENTS_COUNT
 		);
 	}
 
@@ -525,29 +522,26 @@ public:
 	~gl_texture_1d_array() = default;
 
 public:
+
 	/* 
 	* element_index [0, elements_count-1]	
 	* mipmap_index [0, mipmaps_count-1]
 	* 
 	*/
-	void fill(
-		std::int32_t element_index, 
-		std::int32_t mipmap_index, 
-		const pixels_t& pixels
-	) noexcept
+	void fill(std::int32_t element_index, std::int32_t mipmap_index, const pixels_t& pixels) noexcept
 	{
-		if (element_index < 0 || element_index >= elements_count)
+		if (element_index < 0 || element_index >= _ELEMENTS_COUNT)
 		{
 			std::cerr << "element_index is out of bound [0, elements_count - 1]" << std::endl;
 			return;
 		}
-		if (mipmap_index < 0 || mipmap_index >= mipmaps_count)
+		if (mipmap_index < 0 || mipmap_index >= _MIPMAPS_COUNT)
 		{
 			std::cerr << "mipmap_index is out of bound [0, mipmaps_count - 1]" << std::endl;
 			return;
 		}
-		const _mipmap_index = width(mipmap_index);
-		if (_mipmap_index != pixels.count())
+		const _mipmap_index = mipmap_width(mipmap_index);
+		if (_mipmap_index != pixels.size())
 		{
 			std::cerr << "" << std::endl;
 			return;
@@ -569,19 +563,14 @@ public:
 	* offset [0, elements_count - 1]
 	* offset + pixels_count [0, elements_count]
 	*/
-	void fill(
-		std::int32_t element_index, 
-		std::int32_t mipmap_index, 
-		std::int32_t offset, 
-		const pixels_t& pixels
-	) noexcept
+	void fill(std::int32_t element_index, std::int32_t mipmap_index, std::int32_t offset, const pixels_t& pixels) noexcept
 	{
-		if (element_index < 0 || element_index >= elements_count)
+		if (element_index < 0 || element_index >= _ELEMENTS_COUNT)
 		{
 			std::cerr << "element_index is out of bound [0, elements_count - 1]" << std::endl;
 			return;
 		}
-		if (mipmap_index < 0 || mipmap_index >= mipmaps_count)
+		if (mipmap_index < 0 || mipmap_index >= _MIPMAPS_COUNT)
 		{
 			std::cerr << "mipmap_index is out of bound [0, mipmaps_count - 1]" << std::endl;
 			return;
@@ -591,7 +580,7 @@ public:
 			std::cerr << "offset is out of bound [0, size - 1]" << std::endl;
 			return;
 		}
-		if (width(mipmap_index) != pixels.count())
+		if (mipmap_width(mipmap_index) != pixels.size())
 		{
 			std::cerr << "" << std::endl;
 			return;
@@ -600,35 +589,30 @@ public:
 		glTextureSubImage2D(_handle,
 			mipmap_index, 
 			offset, element_index, // x_offset, y_offset
-			pixels.count(), 1, // width, height
+			pixels.size(), 1, // width, height
 			static_cast<GLenum>(pixels.pixel_format()), 
 			static_cast<GLenum>(pixels.pixel_type()),
 			pixels.data()
 		);
 	}
+	
 	/*
 	* size % pixels_mask.count() == 0
 	* 
 	*/
-	void fill_mask(
-		std::int32_t element_index, 
-		std::int32_t mipmap_index,
-		const pixels_t& pixels_mask
-	) noexcept
+	void fill_mask(std::int32_t element_index, std::int32_t mipmap_index,const pixels_t& pixels_mask) noexcept
 	{
-		if (element_index < 0 || element_index > elements_count - 1)
+		if (element_index < 0 || element_index > _ELEMENTS_COUNT - 1)
 		{
 			std::cerr << "element_index out of bounds[0, elements_count - 1]" << std::endl;
 			return;
 		}
-
-		if (mipmap_index < 0 || mipmap_index > mipmaps_count - 1)
+		if (mipmap_index < 0 || mipmap_index > _MIPMAPS_COUNT - 1)
 		{
 			std::cerr << "mipmap_index out of bounds[0, mipmaps_count - 1]" << std::endl;
 			return;
 		}
-
-		if (width(mipmap_index) % pixels_mask.count() != 0)
+		if (mipmap_width(mipmap_index) % pixels_mask.size() != 0)
 		{
 			std::cerr << "pixels count does not fit" << std::endl;
 			return;
@@ -637,7 +621,7 @@ public:
 		glClearTexSubImage(_handle,
 			mipmap_index,
 			0, element_index, 0,
-			pixels_mask.count(), 1, 1,
+			pixels_mask.size(), 1, 1,
 			static_cast<GLenum>(pixels_mask.pixel_format()),
 			static_cast<GLenum>(pixels_mask.pixel_type()),
 			pixels_mask.data()
@@ -648,17 +632,12 @@ public:
 	* (size - offset) % pixels_mask.count() == 0
 	*  
 	*/
-	void fill_mask(
-		std::int32_t element_index, 
-		std::int32_t mipmap_index, 
-		std::int32_t offset, 
-		const pixels_t& pixels_mask
-	) noexcept
+	void fill_mask(std::int32_t element_index, std::int32_t mipmap_index, std::int32_t offset, const pixels_t& pixels_mask) noexcept
 	{
 		glClearTexSubImage(_handle,
 			mipmap_index,
 			offset, element_index, 0,
-			pixels_mask.count(), 1, 1,
+			pixels_mask.size(), 1, 1,
 			static_cast<GLenum>(pixels_mask.pixel_format()),
 			static_cast<GLenum>(pixels_mask.pixel_type()),
 			pixels_mask.data()
@@ -667,28 +646,64 @@ public:
 
 public:
 
-	std::shared_ptr<pixels_t> fetch(
-		std::int32_t element_index, 
-		std::int32_t mipmap_index
-	) noexcept 
+	std::shared_ptr<pixels_t> fetch(std::int32_t element_index, std::int32_t mipmap_index) noexcept 
 	{
+		if (element_index < 0 || element_index >= _ELEMENTS_COUNT)
+		{
+			std::cerr << "" << std::endl;
+			return;
+		}
+		if(mipmap_index < 0 || mipmap_index > _MIPMAPS_COUNT)
+		{
+			std::cerr << "" << std::endl;
+			return;
+		}
+
+
 		auto _out_pixels = std::make_shared<pixels_t>();
 
 		glGetTextureSubImage(_handle,
 			mipmap_index,
 			0, element_index, 0,
-			width(mipmap_index), 1, 1,
+			mipmap_width(mipmap_index), 1, 1,
 			_out_pixels->pixel_format(),
 			_out_pixels->pixel_type(),
 			_out_pixels->data()
 		);
 	}
 
-	std::shared_ptr<pixels_t> fetch(
-		std::int32_t element_index, 
-		std::int32_t mipmap_index, 
-		std::int32_t offset, std::int32_t length
-	) noexcept {}
+	std::shared_ptr<pixels_t> fetch(std::int32_t element_index, std::int32_t mipmap_index, std::int32_t offset, std::int32_t width) noexcept 
+	{
+		if (element_index < 0 || element_index >= _ELEMENTS_COUNT)
+		{
+			std::cerr << "" << std::endl;
+			return;
+		}
+		if (mipmap_index < 0 || mipmap_index >= _MIPMAPS_COUNT)
+		{
+			std::cerr << "" << std::endl;
+			return;
+		}
+		if (offset < 0 || offset + width > mipmap_width(mipmap_index))
+		{
+			std::cerr << "" << std::endl;
+			return;
+		}
+
+		auto _pixels = std::make_shared<gl_pixels>();
+
+		glGetTextureSubImage(_handle,
+			mipmap_index,
+			offset, 0, 0,
+			width, 1, 1,
+			_pixels.pixel_format(),
+			_pixels.pixel_type,
+			_pixels.size() * _pixels.pixel_size(),
+			_pixels.data()
+		);
+
+		return _pixels;
+	}
 	
 	void invalidate(
 		std::int32_t element_index, 
@@ -704,7 +719,7 @@ public:
 	
 public:
 
-	std::int32_t width(std::int32_t mipmap_index)
+	std::int32_t mipmap_width(std::int32_t mipmap_index)
 	{
 		return 0;
 	}
