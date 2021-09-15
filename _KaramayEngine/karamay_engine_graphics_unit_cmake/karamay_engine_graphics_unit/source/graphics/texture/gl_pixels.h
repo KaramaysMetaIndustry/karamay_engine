@@ -541,7 +541,7 @@ private:
 template<>
 class gl_pixels<gl_image_format::NOR_UI_R5_G6_B5> final : private gl_pixels_base
 {
-	gl_image_format internal_format() const override { gl_image_format::NOR_UI_R5_G6_B5; }
+	gl_image_format internal_format() const override { return gl_image_format::NOR_UI_R5_G6_B5; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGB; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_SHORT_5_6_5; }
 	std::uint32_t pixel_size() const override { return sizeof(std::uint16_t); }

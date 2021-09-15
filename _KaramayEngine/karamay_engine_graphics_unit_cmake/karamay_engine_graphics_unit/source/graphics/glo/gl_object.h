@@ -107,13 +107,13 @@ public:
 
     void sync()
     {
-        GLsync _sync;
-        glClientWaitSync();
-        glWaitSync();
-        glFlush();
-        glFinish();
-        glFenceSync();
-        glMemoryBarrier(0);
+//        GLsync _sync;
+//        glClientWaitSync();
+//        glWaitSync();
+//        glFlush();
+//        glFinish();
+//        glFenceSync();
+//        glMemoryBarrier(0);
 
     }
 };

@@ -72,7 +72,7 @@ public:
 private:
 
     /*
-    * write byte stream into buffer, this operation will affect GPU memory immediatly
+    * write byte stream into buffer, this operation will affect GPU memory immediately
 	* 
     */
     inline void write(std::int64_t offset, const std::uint8_t* byte_stream, std::int64_t byte_stream_size)
@@ -187,19 +187,19 @@ public:
 
 	inline void copy_from(int64_t offset, gl_buffer_sptr& source_buffer, int64_t source_offset, int64_t byte_stream_size) 
 	{
-		if (source_buffer.get_capacity() == _capacity)
-		{
-			glCopyNamedBufferSubData(_handle, target_buffer.get_handle(), 0, 0, _capacity);
-			glMemoryBarrier(0);
-		}
+//		if (source_buffer.get_capacity() == _capacity)
+//		{
+//			glCopyNamedBufferSubData(_handle, target_buffer.get_handle(), 0, 0, _capacity);
+//			glMemoryBarrier(0);
+//		}
 	}
 
 	inline void copy_from(gl_buffer_sptr& source_buffer) 
 	{
-		if (self_offset + output_size <= _capacity && target_offset + output_size <= target.get_capacity())
-		{
-			glCopyNamedBufferSubData(_handle, target.get_handle(), self_offset, target_offset, output_size);
-		}
+//		if (self_offset + output_size <= _capacity && target_offset + output_size <= target.get_capacity())
+//		{
+//			glCopyNamedBufferSubData(_handle, target.get_handle(), self_offset, target_offset, output_size);
+//		}
 	}
 
 
