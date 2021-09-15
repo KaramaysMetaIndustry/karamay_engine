@@ -199,11 +199,11 @@ class gl_texture_1d final :
 	public gl_texture_1d_base
 {
 public:
+	using texture_t = gl_texture_1d<_FORMAT, _WIDTH, _MIPMAPS_COUNT>;
+	using pixels_t	= gl_pixels<_FORMAT>;
+
 	static_assert(_WIDTH < 0, "_WIDTH must > 0");
 	static_assert(_MIPMAPS_COUNT < 1, "_MIPMAPS_COUNT must >= 1");
-
-	using texture_t = gl_texture_1d<_FORMAT, _WIDTH, _MIPMAPS_COUNT>;
-	using pixels_t = gl_pixels<_FORMAT>;
 
 public:
 
@@ -422,11 +422,11 @@ private:
 
 	std::array<std::int32_t, _MIPMAPS_COUNT> _mipmaps_width;
 
-	private:
+private:
 
-		void invalidate(std::int32_t mipmap_index) {}
+	void invalidate(std::int32_t mipmap_index) {}
 
-		void invalidate(std::int32_t mipmap_index, std::int32_t offset, std::int32_t width)
+	void invalidate(std::int32_t mipmap_index, std::int32_t offset, std::int32_t width)
 		{
 			if (mipmap_index < 0 || mipmap_index >= mipmaps_count)
 			{
@@ -448,28 +448,6 @@ private:
 		}
 
 };
-
-
-void test()
-{
-	auto _texture_1d = std::make_shared<gl_texture_1d<gl_image_format::NOR_UI_R8, 1024>>();
-	gl_texture_1d<gl_image_format::NOR_UI_R8, 1024>::pixels_t _pixels;
-	_pixels.add(glm::u8vec1(10));
-	_pixels.size();
-	_pixels.set(0, glm::u8vec1(7));
-	_texture_1d->fill(0, _pixels);
-
-	auto _out_pixels = _texture_1d->fetch(0);
-	_out_pixels->get(0);
-
-
-	for (std::uint32_t _idx = 0; _idx < _pixels.size(); ++_idx)
-	{
-		auto _pixel = _pixels.get(_idx);
-	}
-
-	_texture_1d->fill(0, _pixels);
-}
 
 /*
 * normalized coordinates, mipmapping, array
@@ -495,16 +473,16 @@ public:
 };
 
 template<
+	std::int32_t _ELEMENTS_COUNT,
 	gl_image_format _FORMAT, 
 	std::int32_t _WIDTH,
-	std::int32_t _MIPMAPS_COUNT,
-	std::int32_t _ELEMENTS_COUNT 
+	std::int32_t _MIPMAPS_COUNT = 1
 >
 class gl_texture_1d_array final : 
 	public gl_texture_1d_array_base
 {
 public:
-	using texture_t = gl_texture_1d_array<_FORMAT, _WIDTH, _MIPMAPS_COUNT, _ELEMENTS_COUNT>;
+	using texture_t = gl_texture_1d_array<_ELEMENTS_COUNT, _FORMAT, _WIDTH, _MIPMAPS_COUNT>;
 	using pixels_t = gl_pixels<_FORMAT>;
 
 	gl_texture_1d_array()
@@ -522,7 +500,6 @@ public:
 	~gl_texture_1d_array() = default;
 
 public:
-
 	/* 
 	* element_index [0, elements_count-1]	
 	* mipmap_index [0, mipmaps_count-1]
@@ -734,10 +711,10 @@ class gl_texture_2d_base : public gl_texture_base
 {};
 
 template<
-	gl_image_format format, 
-	std::int32_t width, 
-	std::int32_t height, 
-	std::int32_t mipmaps_count
+	gl_image_format _FORMAT, 
+	std::int32_t _WIDTH, 
+	std::int32_t _HEIGHT, 
+	std::int32_t _MIPMAPS_COUNT = 1
 >
 class gl_texture_2d final : 
 	public gl_texture_2d_base
@@ -806,11 +783,11 @@ class gl_texture_2d_array_base : public gl_texture_base
 {};
 
 template<
-	gl_image_format format, 
-	std::int32_t width, 
-	std::int32_t height, 
-	std::int32_t mipmaps_count, 
-	std::int32_t elements_count
+	std::int32_t _ELEMENTS_COUNT,
+	gl_image_format _FORMAT, 
+	std::int32_t _WIDTH, 
+	std::int32_t _HEIGHT, 
+	std::int32_t _MIPMAPS_COUNT
 >
 class gl_texture_2d_array final : 
 	public gl_texture_2d_array_base
@@ -899,9 +876,9 @@ class gl_texture_rectangle_base : public gl_texture_base
 {};
 
 template<
-	gl_image_format format, 
-	std::int32_t width,
-	std::int32_t height
+	gl_image_format _FORMAT, 
+	std::int32_t _WIDTH,
+	std::int32_t _HEIGHT
 >
 class gl_texture_rectangle final : 
 	public gl_texture_rectangle_base
@@ -960,8 +937,12 @@ struct gl_texture_cube_descriptor
 	~gl_texture_cube_descriptor() = default;
 };
 
-class gl_texture_cube final : 
-	public gl_texture
+template<
+	gl_image_format _FORMAT,
+	std::int32_t _WIDTH,
+	std::int32_t _MIPMAPS_COUNT = 1
+>
+class gl_texture_cube final
 {
 public:
 
@@ -1044,8 +1025,13 @@ struct gl_texture_cube_array_descriptor
 	~gl_texture_cube_array_descriptor() = default;
 };
 
+template<
+	std::int32_t _ELEMENTS_COUNT,
+	gl_image_format _FORMAT,
+	std::int32_t _WIDTH,
+	std::int32_t _MIPMAPS_COUNT = 1
+>
 class gl_texture_cube_array final : 
-	public gl_texture
 {
 public:
 
@@ -1122,6 +1108,14 @@ struct gl_texture_3d_descriptor
 	~gl_texture_3d_descriptor() = default;
 };
 
+
+template<
+	gl_image_format _FORMAT,
+	std::int32_t _WIDTH,
+	std::int32_t _HEIGHT,
+	std::int32_t _DEPTH,
+	std::int32_t _MIPMAPS_COUNT
+>
 class gl_texture_3d final : 
 	public gl_texture
 {
@@ -1191,6 +1185,12 @@ struct gl_texture_2d_multisample_descriptor
 * Each pixel in these images contains multiple samples instead of just one value.
 * You can not transfer pixel from client to server, you can noly download pixels from server to client
 */
+template<
+	gl_image_format _FORMAT,
+	std::int32_t _WIDTH,
+	std::int32_t _HEIGHT,
+	std::int32_t _SAMPLES_COUNT
+>
 class gl_texture_2d_multisample : 
 	public gl_texture
 {
@@ -1263,8 +1263,14 @@ struct gl_texture_2d_array_multisample_descriptor
 * Combines 2D array and 2D multisample types. No mipmapping.
 * 
 */
-class gl_texture_2d_multisample_array final : 
-	public gl_texture
+template<
+	std::int32_t _ELEMENTS_COUNT,
+	gl_image_format _FORMAT,
+	std::int32_t _WIDTH,
+	std::int32_t _HEIGHT,
+	std::int32_t _SAMPLES_COUNT
+>
+class gl_texture_2d_multisample_array final
 {
 public:
 
@@ -1314,21 +1320,15 @@ struct gl_texture_buffer_descriptor
 *
 * No mipmapping
 */
-class gl_texture_buffer : 
-	public gl_texture
+template<gl_image_format _FORMAT>
+class gl_texture_buffer
 {
 public:
 
-	gl_texture_buffer() = delete;
-	gl_texture_buffer(const gl_texture_buffer_descriptor& _descriptor) :
-		gl_texture(gl_texture_type::TEXTURE_BUFFER),
-		descriptor(_descriptor)
+	gl_texture_buffer() :
+		gl_texture(gl_texture_type::TEXTURE_BUFFER)
 	{
-		glTextureBufferRange(_handle,
-			static_cast<GLenum>(descriptor.format),
-			descriptor.buffer->get_handle(),
-			descriptor.offset, descriptor.length
-		);
+		
 	}
 
 	gl_texture_buffer(const gl_texture_buffer&) = default;
@@ -1336,7 +1336,17 @@ public:
 
 	~gl_texture_buffer() override = default;
 
-	const gl_texture_buffer_descriptor descriptor;
+
+public:
+
+	void associate(std::shared_ptr<gl_buffer> buffer, std::int32_t offset, std::int32_t length)
+	{
+		glTextureBufferRange(_handle,
+			static_cast<GLenum>(_FORMAT),
+			buffer->get_handle(),
+			offset, length 
+		);
+	}
 
 };
 
