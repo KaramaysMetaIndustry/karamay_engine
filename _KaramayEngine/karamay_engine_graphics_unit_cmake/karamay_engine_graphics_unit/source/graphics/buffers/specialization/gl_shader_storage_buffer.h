@@ -109,7 +109,7 @@ private:
 
 	std::shared_ptr<gl_shader_storage_buffer_descriptor> _descriptor;
 
-	std::shared_ptr<gl_buffer> _buffer;
+	//std::shared_ptr<gl_buffer> _buffer;
 
 	std::uint32_t _binding;
 

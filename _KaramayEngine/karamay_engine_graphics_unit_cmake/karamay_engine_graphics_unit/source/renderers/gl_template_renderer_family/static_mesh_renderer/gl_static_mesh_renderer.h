@@ -11,11 +11,21 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		struct MatricesStruct {};
 		struct CachedStruct {};
 
+        DEFINE_PROGRAM_PARAMETER_IMAGE(image2D, positionImage2D)
+        DEFINE_PROGRAM_PARAMETER_IMAGE_ARRAY(image2D, positionImage2Ds, 10)
+        DEFINE_PROGRAM_PARAMETER_SAMPLER(sampler2D, albedoMap)
+        DEFINE_PROGRAM_PARAMETER_SAMPLER_ARRAY(sampler2D, albedoMaps, 2)
+        DEFINE_PROGRAM_PARAMETER_ATOMIC_COUNTER(primitiveCounter)
+        DEFINE_PROGRAM_PARAMETER_UNIFORM_BLOCK(MatricesStruct, matrices)
+        DEFINE_PROGRAM_PARAMETER_UNIFORM_BLOCK_ARRAY(MatricesStruct, matricesArray, 10)
+        DEFINE_PROGRAM_PARAMETER_SHADER_STORAGE_BLOCK(CachedStruct, swapCache)
+        DEFINE_PROGRAM_PARAMETER_SHADER_STORAGE_BLOCK_ARRAY(CachedStruct, swapCacheArray, 10)
+
+
         DEFINE_STREAM_INPUT()
 
         DEFINE_VERTEX_SHADER_PARAMETERS_BEGIN()
-            DEFINE_SHADER_PARAMETER_UNIFORM_BLOCK(MatricesStruct, matrices, [10])
-            DEFINE_SHADER_PARAMETER_SHADER_STORAGE_BLOCK(CachedStruct, swapCache)
+
         DEFINE_VERTEX_SHADER_PARAMETERS_END()
 
         DEFINE_VERTEX_TESC_STREAM()
@@ -38,15 +48,7 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
         DEFINE_GEOMETRY_FRAGMENT_STREAM()
 
         DEFINE_FRAGMENT_SHADER_PARAMETERS_BEGIN()
-			DEFINE_SHADER_PARAMETER_IMAGE(image2D, positionImage2D)
-			DEFINE_SHADER_PARAMETER_IMAGE_ARRAY(image2D, positionImage2D, 10)
-			DEFINE_SHADER_PARAMETER_SAMPLER(sampler2D, albedoMap)
-			DEFINE_SHADER_PARAMETER_SAMPLER_ARRAY(sampler2D, albedoMap, 2)
-			DEFINE_SHADER_PARAMETER_ATOMIC_COUNTER(primitiveCounter)
-			DEFINE_SHADER_PARAMETER_UNIFORM_BLOCK(MatricesStruct, matrices)
-			DEFINE_SHADER_PARAMETER_UNIFORM_BLOCK_ARRAY(MatricesStruct, matrices, 10)
-			DEFINE_SHADER_PARAMETER_SHADER_STORAGE_BLOCK(CachedStruct, swapCache)
-			DEFINE_SHADER_PARAMETER_SHADER_STORAGE_BLOCK_ARRAY(CachedStruct, swapCache, 10)
+
         DEFINE_FRAGMENT_SHADER_PARAMETERS_END()
 
         DEFINE_STREAM_OUTPUT()
@@ -87,14 +89,6 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
     IMPLEMENTATION_FUNC_BUILD()
     {
 
-		gl_texture_cube_array_descriptor _desc(10, 1024, gl_image_format::rgba, 12);
-		auto _sky_boxes = std::make_shared<gl_texture_cube_array>(_desc);
-		_sky_boxes->fill(0, gl_cube_face_index::negative_x, 0, 0, 0, nullptr, 100, 100);
-
-
-
-
-        _render_target = builder.create_texture_2d(1024, 1024, gl_texture_pixel_format::rgba12_ui_nor, 1);
         //builder.create_renderbuffer()
         _texture_composing_parameters->compute_shader_parameters._ublock0.memory[0].position0;
         _texture_composing_parameters->compute_shader_parameters._ublock0.memory[0].position1;
@@ -142,14 +136,11 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
         
     }
 
-private:
-
-    std::shared_ptr<gl_texture_2d> _render_target;
 
 
 public:
 
-    void calculate(); 
+    void calculate() {}
 
 
 DEFINE_RENDERER_END()

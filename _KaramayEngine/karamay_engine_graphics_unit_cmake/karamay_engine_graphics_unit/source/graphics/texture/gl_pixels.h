@@ -21,10 +21,10 @@ enum class gl_image_format : GLenum
 	NOR_I_RGBA8 = GL_RGBA8_SNORM,
 	NOR_I_RGBA16 = GL_RGBA16_SNORM,
 
-	F_R16 = GL_R16F,
-	F_RG16 = GL_RG16F,
-	F_RGB16 = GL_RGB16F,
-	F_RGBA16 = GL_RGBA16F,
+//	F_R16 = GL_R16F,
+//	F_RG16 = GL_RG16F,
+//	F_RGB16 = GL_RGB16F,
+//	F_RGBA16 = GL_RGBA16F,
 	F_R32 = GL_R32F,
 	F_RG32 = GL_RG32F,
 	F_RGB32 = GL_RGB32F,
@@ -151,7 +151,7 @@ enum class gl_pixel_type : GLenum
 class gl_pixels_base
 {
 public:
-	virtual gl_image_format internal_format() const = 0;
+	virtual gl_image_format image_format() const = 0;
 	virtual gl_pixel_format pixel_format() const = 0;
 	virtual gl_pixel_type pixel_type() const = 0;
 	virtual std::uint32_t pixel_size() const = 0;
@@ -164,7 +164,7 @@ public:
 template<gl_image_format format>
 class gl_pixels : private gl_pixels_base
 {
-	gl_image_format internal_format() const override {};
+	gl_image_format image_format() const override {};
 	gl_pixel_format pixel_format() const override {};
 	gl_pixel_type pixel_type() const override {};
 	std::uint32_t pixel_size() const override {};
@@ -175,13 +175,29 @@ class gl_pixels : private gl_pixels_base
 };
 
 template<>
+class gl_pixels<gl_image_format::STENCIL_INDEX> final : public gl_pixels_base
+{
+    gl_image_format image_format() const override {};
+    gl_pixel_format pixel_format() const override {};
+    gl_pixel_type pixel_type() const override {};
+    std::uint32_t pixel_size() const override {};
+    std::uint32_t size() const override {};
+    void resize(std::uint32_t new_size) override {};
+    std::uint8_t* data() override {};
+    const std::uint8_t* data() const override {};
+};
+
+
+
+
+template<>
 class gl_pixels<gl_image_format::NOR_UI_R8> final : public gl_pixels_base
 {
 public:
 	using pixel_t = glm::u8vec1;
 	using client_pixel_t = pixel_t;
 
-	gl_image_format internal_format() const override { return gl_image_format::NOR_UI_R8; }
+	gl_image_format image_format() const override { return gl_image_format::NOR_UI_R8; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::R; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_BYTE; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -218,7 +234,7 @@ public:
 	using pixel_t = std::uint16_t;
 	using client_pixel_t = pixel_t;
 
-	gl_image_format internal_format() const override { return gl_image_format::NOR_UI_R16; }
+	gl_image_format image_format() const override { return gl_image_format::NOR_UI_R16; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::R; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_SHORT; }
 	std::uint32_t pixel_size() const override { return sizeof(std::uint16_t); }
@@ -256,7 +272,7 @@ public:
 	using pixel_t = glm::u8vec2;
 	using client_pixel_t = pixel_t;
 
-	gl_image_format internal_format() const override { return gl_image_format::NOR_UI_RG8; }
+	gl_image_format image_format() const override { return gl_image_format::NOR_UI_RG8; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RG; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_BYTE; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -293,7 +309,7 @@ public:
 	using pixel_t = glm::u16vec2;
 	using client_pixel_t = pixel_t;
 
-	gl_image_format internal_format() const override { return gl_image_format::NOR_UI_RG16; }
+	gl_image_format image_format() const override { return gl_image_format::NOR_UI_RG16; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RG; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_SHORT; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -331,7 +347,7 @@ public:
 	using pixel_t = glm::u8vec3;
 	using client_pixel_t = pixel_t;
 	
-	gl_image_format internal_format() const override { return gl_image_format::NOR_UI_RGB8; }
+	gl_image_format image_format() const override { return gl_image_format::NOR_UI_RGB8; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGB; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_BYTE; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -369,7 +385,7 @@ public:
 	using pixel_t = glm::u16vec3;
 	using client_pixel_t = pixel_t;
 
-	gl_image_format internal_format() const override { return gl_image_format::NOR_UI_RGB16; }
+	gl_image_format image_format() const override { return gl_image_format::NOR_UI_RGB16; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGB; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_SHORT; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -406,7 +422,7 @@ public:
 	using pixel_t = glm::u8vec4;
 	using client_pixel_t = pixel_t;
 
-	gl_image_format internal_format() const override { return gl_image_format::NOR_UI_RGBA8; }
+	gl_image_format image_format() const override { return gl_image_format::NOR_UI_RGBA8; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGBA; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_BYTE; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -443,7 +459,7 @@ public:
 	using pixel_t = glm::u16vec4;
 	using client_pixel_t = pixel_t;
 
-	gl_image_format internal_format() const override { return gl_image_format::NOR_UI_RGBA16; }
+	gl_image_format image_format() const override { return gl_image_format::NOR_UI_RGBA16; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGBA; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_SHORT; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -482,7 +498,7 @@ private:
 template<>
 class gl_pixels<gl_image_format::NOR_UI_R3_G3_B2> final : public gl_pixels_base
 {
-	gl_image_format internal_format() const override { return gl_image_format::NOR_UI_R3_G3_B2; }
+	gl_image_format image_format() const override { return gl_image_format::NOR_UI_R3_G3_B2; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGB; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_BYTE_3_3_2; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -541,7 +557,7 @@ private:
 template<>
 class gl_pixels<gl_image_format::NOR_UI_R5_G6_B5> final : private gl_pixels_base
 {
-	gl_image_format internal_format() const override { return gl_image_format::NOR_UI_R5_G6_B5; }
+	gl_image_format image_format() const override { return gl_image_format::NOR_UI_R5_G6_B5; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGB; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_SHORT_5_6_5; }
 	std::uint32_t pixel_size() const override { return sizeof(std::uint16_t); }
@@ -571,7 +587,7 @@ public:
 template<>
 class gl_pixels<gl_image_format::NOR_UI_RGB5_A1> final : private gl_pixels_base
 {
-	gl_image_format internal_format() const override { return gl_image_format::NOR_UI_RGB5_A1; }
+	gl_image_format image_format() const override { return gl_image_format::NOR_UI_RGB5_A1; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGBA; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_SHORT_5_5_5_1; }
 	std::uint32_t pixel_size() const override { return sizeof(std::uint16_t); }
@@ -601,7 +617,7 @@ public:
 template<>
 class gl_pixels<gl_image_format::NOR_UI_RGB10_A2> final : private gl_pixels_base
 {
-	gl_image_format internal_format() const override { return gl_image_format::NOR_UI_RGB10_A2; }
+	gl_image_format image_format() const override { return gl_image_format::NOR_UI_RGB10_A2; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGBA; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_INT_10_10_10_2; }
 	std::uint32_t pixel_size() const override { return sizeof(std::uint32_t); }
@@ -640,7 +656,7 @@ public:
 template<>
 class gl_pixels<gl_image_format::NOR_UI_RGBA4> final : private gl_pixels_base
 {
-	gl_image_format internal_format() const override { return gl_image_format::NOR_UI_RGBA4; }
+	gl_image_format image_format() const override { return gl_image_format::NOR_UI_RGBA4; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGBA; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_SHORT_4_4_4_4; }
 	std::uint32_t pixel_size() const override { return sizeof(std::uint16_t); }
@@ -677,7 +693,7 @@ template<>
 class gl_pixels<gl_image_format::NOR_I_R8> final : private gl_pixels_base
 {
 private:
-	gl_image_format internal_format() const override { return gl_image_format::NOR_I_R8; }
+	gl_image_format image_format() const override { return gl_image_format::NOR_I_R8; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::R; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::BYTE; }
 	std::uint32_t pixel_size() const override { return sizeof(std::uint8_t); }
@@ -706,7 +722,7 @@ public:
 template<>
 class gl_pixels<gl_image_format::NOR_I_R16> final : private gl_pixels_base
 {
-	gl_image_format internal_format() const override { return gl_image_format::NOR_I_R16; }
+	gl_image_format image_format() const override { return gl_image_format::NOR_I_R16; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::R; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::SHORT; }
 	std::uint32_t pixel_size() const override { return sizeof(std::uint16_t); }
@@ -737,7 +753,7 @@ template<>
 class gl_pixels<gl_image_format::NOR_I_RG8> final : private gl_pixels_base
 {
 private:
-	gl_image_format internal_format() const override { return gl_image_format::NOR_I_RG8; }
+	gl_image_format image_format() const override { return gl_image_format::NOR_I_RG8; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RG; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::BYTE; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -767,7 +783,7 @@ public:
 template<>
 class gl_pixels<gl_image_format::NOR_I_RG16> final : private gl_pixels_base
 {
-	gl_image_format internal_format() const override { return gl_image_format::NOR_I_RG16; }
+	gl_image_format image_format() const override { return gl_image_format::NOR_I_RG16; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RG; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::SHORT; }
 	std::uint32_t pixel_size() const override { return sizeof(glm::u16vec2); }
@@ -796,7 +812,7 @@ public:
 template<>
 class gl_pixels<gl_image_format::NOR_I_RGB8> final : private gl_pixels_base
 {
-	gl_image_format internal_format() const override { return gl_image_format::NOR_I_RGB8; }
+	gl_image_format image_format() const override { return gl_image_format::NOR_I_RGB8; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGB; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::BYTE; }
 	std::uint32_t pixel_size() const override { return sizeof(glm::u8vec3); }
@@ -826,7 +842,7 @@ public:
 template<>
 class gl_pixels<gl_image_format::NOR_I_RGB16> final : private gl_pixels_base
 {
-	gl_image_format internal_format() const override { return gl_image_format::NOR_I_RGB16; }
+	gl_image_format image_format() const override { return gl_image_format::NOR_I_RGB16; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGB; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::SHORT; }
 	std::uint32_t pixel_size() const override { return sizeof(glm::u16vec3); }
@@ -857,7 +873,7 @@ template<>
 class gl_pixels<gl_image_format::NOR_I_RGBA8> final : private gl_pixels_base
 {
 private:
-	gl_image_format internal_format() const override { return gl_image_format::NOR_I_RGBA8; }
+	gl_image_format image_format() const override { return gl_image_format::NOR_I_RGBA8; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGBA; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::BYTE; }
 	std::uint32_t pixel_size() const override { return sizeof(glm::u8vec4); }
@@ -886,7 +902,7 @@ public:
 template<>
 class gl_pixels<gl_image_format::NOR_I_RGBA16> final : private gl_pixels_base
 {
-	gl_image_format internal_format() const override { return gl_image_format::NOR_I_RGBA16; }
+	gl_image_format image_format() const override { return gl_image_format::NOR_I_RGBA16; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGBA; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::SHORT; }
 	std::uint32_t pixel_size() const override { return sizeof(glm::u16vec4); }
@@ -972,7 +988,7 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { return gl_image_format::UI_R8; }
+	gl_image_format image_format() const override { return gl_image_format::UI_R8; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::R_INTEGER; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_BYTE; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -1006,7 +1022,7 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { return gl_image_format::UI_R16; }
+	gl_image_format image_format() const override { return gl_image_format::UI_R16; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::R_INTEGER; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_SHORT; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -1043,7 +1059,7 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { return gl_image_format::UI_R32; }
+	gl_image_format image_format() const override { return gl_image_format::UI_R32; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::R_INTEGER; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_INT; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -1080,7 +1096,7 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { return gl_image_format::UI_RG8; }
+	gl_image_format image_format() const override { return gl_image_format::UI_RG8; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RG_INTEGER; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_BYTE; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -1117,7 +1133,7 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { return gl_image_format::UI_RG16; }
+	gl_image_format image_format() const override { return gl_image_format::UI_RG16; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RG_INTEGER; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_SHORT; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -1153,7 +1169,7 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { return gl_image_format::UI_RG32; }
+	gl_image_format image_format() const override { return gl_image_format::UI_RG32; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RG_INTEGER; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_INT; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -1189,7 +1205,7 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { return gl_image_format::UI_RGB8; }
+	gl_image_format image_format() const override { return gl_image_format::UI_RGB8; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGB_INTEGER; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_BYTE; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -1226,7 +1242,7 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { return gl_image_format::UI_RGB16; }
+	gl_image_format image_format() const override { return gl_image_format::UI_RGB16; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGBA_INTEGER; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_SHORT; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -1262,7 +1278,7 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { return gl_image_format::UI_RGB32; }
+	gl_image_format image_format() const override { return gl_image_format::UI_RGB32; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGBA_INTEGER; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_INT; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -1298,7 +1314,7 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { return gl_image_format::UI_RGBA8; }
+	gl_image_format image_format() const override { return gl_image_format::UI_RGBA8; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGBA_INTEGER; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_BYTE; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -1335,10 +1351,10 @@ public:
 	}
 
 private:
+    gl_image_format image_format() const override { return gl_image_format::UI_RGBA16; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGBA_INTEGER; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_SHORT; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
-	gl_image_format internal_format() const override { return gl_image_format::UI_RGBA16; }
 	std::uint32_t size() const override { return _pixels.size(); }
 	void resize(std::uint32_t new_size) override { _pixels.resize(new_size); }
 	std::uint8_t* data() override { return reinterpret_cast<std::uint8_t*>(_pixels.data()); }
@@ -1372,7 +1388,7 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { return gl_image_format::UI_RGBA32; }
+	gl_image_format image_format() const override { return gl_image_format::UI_RGBA32; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGBA_INTEGER; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::UNSIGNED_INT; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -1411,7 +1427,7 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { return gl_image_format::I_R8; }
+	gl_image_format image_format() const override { return gl_image_format::I_R8; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::R_INTEGER; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::BYTE; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -1445,7 +1461,7 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { return gl_image_format::I_R16; }
+	gl_image_format image_format() const override { return gl_image_format::I_R16; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::R_INTEGER; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::SHORT; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -1482,7 +1498,7 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { return gl_image_format::I_R32; }
+	gl_image_format image_format() const override { return gl_image_format::I_R32; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::R_INTEGER; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::INT; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -1519,7 +1535,7 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { return gl_image_format::I_RG8; }
+	gl_image_format image_format() const override { return gl_image_format::I_RG8; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RG_INTEGER; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::BYTE; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -1556,7 +1572,7 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { return gl_image_format::I_RG16; }
+	gl_image_format image_format() const override { return gl_image_format::I_RG16; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RG_INTEGER; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::SHORT; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -1592,7 +1608,7 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { return gl_image_format::I_RG32; }
+	gl_image_format image_format() const override { return gl_image_format::I_RG32; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RG_INTEGER; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::INT; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -1628,7 +1644,7 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { return gl_image_format::I_RGB8; }
+	gl_image_format image_format() const override { return gl_image_format::I_RGB8; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGB_INTEGER; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::BYTE; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -1665,7 +1681,7 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { return gl_image_format::I_RGB16; }
+	gl_image_format image_format() const override { return gl_image_format::I_RGB16; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGBA_INTEGER; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::SHORT; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -1701,7 +1717,7 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { return gl_image_format::I_RGB32; }
+	gl_image_format image_format() const override { return gl_image_format::I_RGB32; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGBA_INTEGER; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::INT; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -1737,7 +1753,7 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { return gl_image_format::I_RGBA8; }
+	gl_image_format image_format() const override { return gl_image_format::I_RGBA8; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGBA_INTEGER; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::BYTE; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -1774,7 +1790,7 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { return gl_image_format::I_RGBA16; }
+	gl_image_format image_format() const override { return gl_image_format::I_RGBA16; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGBA_INTEGER; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::SHORT; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
@@ -1811,14 +1827,14 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { return gl_image_format::I_RGBA32; }
+	gl_image_format image_format() const override { return gl_image_format::I_RGBA32; }
 	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGBA_INTEGER; }
 	gl_pixel_type pixel_type() const override { return gl_pixel_type::INT; }
 	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
 	std::uint32_t size() const override { return _pixels.size(); }
 	void resize(std::uint32_t new_size) override { _pixels.resize(new_size); }
 	std::uint8_t* data() override { return reinterpret_cast<std::uint8_t*>(_pixels.data()); }
-	const std::uint8_t* data() const override { _pixels.data(); }
+	const std::uint8_t* data() const override { return reinterpret_cast<const std::uint8_t*>(_pixels.data()); }
 
 	std::vector<pixel_t> _pixels;
 
@@ -1851,10 +1867,10 @@ public:
 	}
 	
 private:
-	gl_image_format internal_format() const override { gl_image_format::F_R32; }
-	gl_pixel_format pixel_format() const override { gl_pixel_format::R; }
-	gl_pixel_type pixel_type() const override { gl_pixel_type::FLOAT; }
-	std::uint32_t pixel_size() const override { sizeof(pixel_t); }
+	gl_image_format image_format() const override { return gl_image_format::F_R32; }
+	gl_pixel_format pixel_format() const override { return gl_pixel_format::R; }
+	gl_pixel_type pixel_type() const override { return gl_pixel_type::FLOAT; }
+	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
 	std::uint32_t size() const override { return _pixels.size(); }
 	void resize(std::uint32_t new_size) override { _pixels.resize(new_size); }
 	std::uint8_t* data() override { return reinterpret_cast<std::uint8_t*>(_pixels.data()); }
@@ -1887,10 +1903,10 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { gl_image_format::F_RG32; }
-	gl_pixel_format pixel_format() const override { gl_pixel_format::RG; }
-	gl_pixel_type pixel_type() const override { gl_pixel_type::FLOAT; }
-	std::uint32_t pixel_size() const override { sizeof(pixel_t); }
+	gl_image_format image_format() const override { return gl_image_format::F_RG32; }
+	gl_pixel_format pixel_format() const override { return gl_pixel_format::RG; }
+	gl_pixel_type pixel_type() const override { return gl_pixel_type::FLOAT; }
+	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
 	std::uint32_t size() const override { return _pixels.size(); }
 	void resize(std::uint32_t new_size) override { _pixels.resize(new_size); }
 	std::uint8_t* data() override { return reinterpret_cast<std::uint8_t*>(_pixels.data()); }
@@ -1922,10 +1938,10 @@ public:
 	}
 
 private:
-	gl_image_format internal_format() const override { gl_image_format::F_RGB32; }
-	gl_pixel_format pixel_format() const override { gl_pixel_format::RGB; }
-	gl_pixel_type pixel_type() const override { gl_pixel_type::FLOAT; }
-	std::uint32_t pixel_size() const override { sizeof(pixel_t); }
+	gl_image_format image_format() const override { return gl_image_format::F_RGB32; }
+	gl_pixel_format pixel_format() const override { return gl_pixel_format::RGB; }
+	gl_pixel_type pixel_type() const override { return gl_pixel_type::FLOAT; }
+	std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
 	std::uint32_t size() const override { return _pixels.size(); }
 	void resize(std::uint32_t new_size) override { _pixels.resize(new_size); }
 	std::uint8_t* data() override { return reinterpret_cast<std::uint8_t*>(_pixels.data()); }
@@ -1941,30 +1957,38 @@ public:
 	using pixel_t = glm::vec4;
 	using client_pixel_t = pixel_t;
 
-	void add(client_pixel_t pixel)
+	void add(client_pixel_t pixel) noexcept
 	{
 		_pixels.push_back(pixel);
 	}
 
-	void set(std::uint32_t index, client_pixel_t pixel)
+	void set(std::uint32_t index, client_pixel_t pixel) noexcept
 	{
 		_pixels.at(index) = pixel;
 	}
 
-	client_pixel_t get(std::uint32_t index) const
+	[[nodiscard]] client_pixel_t get(std::uint32_t index) const noexcept
 	{
 		return _pixels.at(index);
 	}
 
 private:
-	gl_image_format internal_format() const override { gl_image_format::F_RGBA32; }
-	gl_pixel_format pixel_format() const override { gl_pixel_format::RGBA; }
-	gl_pixel_type pixel_type() const override { gl_pixel_type::FLOAT; }
-	std::uint32_t pixel_size() const override { sizeof(pixel_t); }
-	std::uint32_t size() const override { return _pixels.size(); }
+
+	[[nodiscard]] gl_image_format image_format() const override { return gl_image_format::F_RGBA32; }
+
+	[[nodiscard]] gl_pixel_format pixel_format() const override { return gl_pixel_format::RGBA; }
+
+	[[nodiscard]] gl_pixel_type pixel_type() const override { return gl_pixel_type::FLOAT; }
+
+	[[nodiscard]] std::uint32_t pixel_size() const override { return sizeof(pixel_t); }
+
+	[[nodiscard]] std::uint32_t size() const override { return _pixels.size(); }
+
 	void resize(std::uint32_t new_size) override { _pixels.resize(new_size); }
+
 	std::uint8_t* data() override { return reinterpret_cast<std::uint8_t*>(_pixels.data()); }
-	const std::uint8_t* data() const override { return reinterpret_cast<const std::uint8_t*>(_pixels.data()); }
+
+	[[nodiscard]] const std::uint8_t* data() const override { return reinterpret_cast<const std::uint8_t*>(_pixels.data()); }
 
 	std::vector<pixel_t> _pixels;
 

@@ -18,6 +18,7 @@ uniform mat4 view_matrix;
 uniform mat4 projection_matrix;
 
 
+
 layout(shared) uniform Block0
 {
 	vec4 color0;

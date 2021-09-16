@@ -1,5 +1,4 @@
 #include "gl_shader_storage_buffer.h"
-#include "graphics/buffer/gl_buffer.h"
 
 
 gl_shader_storage_buffer_descriptor::gl_shader_storage_buffer_descriptor() :
@@ -35,7 +34,7 @@ void gl_shader_storage_buffer::bind(std::uint32_t binding)
 		}
 	}
 
-	glBindBufferRange(GL_SHADER_STORAGE_BUFFER, binding, _buffer->get_handle(), 0, _buffer->get_capacity());
+	//glBindBufferRange(GL_SHADER_STORAGE_BUFFER, binding, _buffer->get_handle(), 0, _buffer->get_capacity());
 	//_binding = binding;
 }
 
