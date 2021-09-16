@@ -2,7 +2,6 @@
 #define H_RENDERER
 
 #include "graphics/pipeline/graphics/gl_graphics_pipeline.h"
-#include "graphics/pipeline/graphics/gl_vertex_processing_pipeline.h"
 #include "graphics/pipeline/compute/gl_compute_pipeline.h"
 #include "graphics/texture/gl_texture.h"
 
@@ -15,57 +14,6 @@ class gl_renderer_builder
 public:
 
     gl_renderer_builder() = default;
-
-public:
-
-    std::shared_ptr<gl_texture_1d> create_texture_1d(const gl_texture_1d_descriptor& descriptor) {}
-
-    std::shared_ptr<gl_texture_1d_array> create_texture_1d_array(const gl_texture_1d_array_descriptor& descriptor) {}
-
-    std::shared_ptr<gl_texture_rectangle> create_texture_rectangle(const gl_texture_rectangle_descriptor& descriptor) {}
-
-    std::shared_ptr<gl_texture_2d> create_texture_2d(
-        std::int32_t width, std::int32_t height, 
-        gl_texture_pixel_format pixel_format,
-        std::int32_t mipmaps_count
-    )
-    {
-        if (
-            width < 0 || width > GL_MAX_TEXTURE_SIZE || 
-            height < 0 || height > GL_MAX_TEXTURE_SIZE || 
-            mipmaps_count < 0
-            ) return;
-
-        gl_texture_2d_descriptor _desc{ width, height, pixel_format,mipmaps_count };
-        return std::make_shared<gl_texture_2d>(_desc);
-    }
-
-    std::shared_ptr<gl_texture_2d_array> create_texture_2d_array(
-        std::int32_t elements_count,
-        std::int32_t width, std::int32_t height,
-        gl_texture_pixel_format pixel_format,
-        std::int32_t mipmaps_count
-    ) 
-    {
-        if (
-            elements_count < 0 || width < 0 ||
-            width > GL_MAX_TEXTURE_SIZE ||
-            height < 0 || height > GL_MAX_TEXTURE_SIZE ||
-            mipmaps_count < 0
-            ) return;
-        gl_texture_2d_array_descriptor _desc(elements_count, width, height, pixel_format, mipmaps_count);
-        return std::make_shared<gl_texture_2d_array>(_desc);
-    }
-
-    std::shared_ptr<gl_texture_2d_multisample> create_texture_2d_multisample(const gl_texture_2d_multisample_descriptor& descriptor) {}
-
-    std::shared_ptr<gl_texture_2d_array_multisample> create_texture_2d_array_multisample(const gl_texture_2d_array_multisample& descriptor) {}
-
-    std::shared_ptr<gl_texture_3d> create_texture_3d(const gl_texture_3d_descriptor& descriptor) {}
-
-    std::shared_ptr<gl_texture_cube> create_texture_cube(const gl_texture_cube_descriptor& descriptor) {}
-
-    std::shared_ptr<gl_texture_cube_array> create_texture_cube_array(const gl_texture_cube_array_descriptor& descriptor) {}
 
 public:
 
@@ -138,10 +86,6 @@ public:
 
     ~gl_renderer() = default;
 
-
-
-
-
 public:
 
     void build(gl_renderer_builder& builder);
@@ -159,7 +103,7 @@ protected:
     void initialize()
     {
         // assembly all program resources
-        assembly(_renderer_builder); 
+        //assembly(_renderer_builder);
         // check shaders
             // if not, create template shaders
         // if true, complie shaders
@@ -255,7 +199,7 @@ private:
 
 
 #define DEFINE_RENDERER_CONSTRUCTOR(RENDERER_NAME)\
-private:\
+public:\
     static std::shared_ptr<RENDERER_NAME> _instance;\
     RENDERER_NAME() = default;\
     RENDERER_NAME(const gl_static_mesh_renderer&) = delete;\

@@ -118,11 +118,6 @@ struct gl_texture_descriptor
 
 };
 
-class gl_texture_mipmappable
-{
-	virtual void generate_mipmaps() = 0;
-};
-
 class gl_texture_base : public gl_object
 {
 protected:
@@ -163,7 +158,7 @@ protected:
 };
 
 /*
-* normalized coordinates, mipmapping
+* normalized coordinates, mipmap
 * Images in this texture all are 1-dimensional. They have width, but no height or depth.
 */
 
@@ -184,14 +179,14 @@ public:
 };
 
 template<
-	gl_image_format _FORMAT, 
-	std::int32_t _BASE_WIDTH,
-	std::int32_t _MIPMAPS_COUNT = 1
+	gl_image_format FORMAT,
+	std::int32_t BASE_WIDTH,
+	std::int32_t MIPMAPS_COUNT = 1
 >
 class gl_texture_1d final : public gl_texture_1d_base {
 public:
-	using texture_t = gl_texture_1d<_FORMAT, _BASE_WIDTH, _MIPMAPS_COUNT>;
-	using pixels_t	= gl_pixels<_FORMAT>;
+	using texture_t = gl_texture_1d<FORMAT, BASE_WIDTH, MIPMAPS_COUNT>;
+	using pixels_t	= gl_pixels<FORMAT>;
 
 	//static_assert(_WIDTH < 0, "_WIDTH must > 0");
 	//static_assert(_MIPMAPS_COUNT < 1, "_MIPMAPS_COUNT must >= 1");
@@ -200,9 +195,9 @@ public:
 	gl_texture_1d()
 	{
 		glTextureStorage1D(_handle,
-			_MIPMAPS_COUNT,
-			static_cast<GLenum>(_FORMAT),
-            _BASE_WIDTH
+			MIPMAPS_COUNT,
+			static_cast<GLenum>(FORMAT),
+            BASE_WIDTH
 		);
 
 		_generate_mipmaps();
@@ -223,12 +218,12 @@ public:
 	void fill(std::int32_t mipmap_index, const pixels_t& pixels) noexcept
 	{
 		// check mipmap_index
-		if (mipmap_index < 0 || mipmap_index >= _MIPMAPS_COUNT)
+		if (mipmap_index < 0 || mipmap_index >= MIPMAPS_COUNT)
 		{
 			std::cerr << "mipmap_index is out of bound [0, mipmaps_count - 1]" << std::endl;
 			return;
 		}
-		// check pixels rangle
+		// check pixels range
 		if (mipmap_size(mipmap_index) != pixels.size())
 		{
 			std::cerr << "pixels count must equal to mipmap size" << std::endl;
@@ -252,7 +247,7 @@ public:
 	void fill(std::int32_t mipmap_index, std::int32_t offset, const pixels_t& pixels)
 	{
 		// check mipmap_index
-		if (mipmap_index < 0 || mipmap_index >= _MIPMAPS_COUNT)
+		if (mipmap_index < 0 || mipmap_index >= MIPMAPS_COUNT)
 		{
 			std::cerr << "mipmap_index is out of bound [0, mipmaps_count - 1]" << std::endl;
 			return;
@@ -286,7 +281,7 @@ public:
 	void fill_mask(std::int32_t mipmap_index, const pixels_t& pixels_mask)
 	{
 		// check mipmap_index
-		if (mipmap_index < 0 || mipmap_index >= _MIPMAPS_COUNT)
+		if (mipmap_index < 0 || mipmap_index >= MIPMAPS_COUNT)
 		{
 			std::cerr << "mipmap_index is out of bound [0, mipmaps_count - 1]" << std::endl;
 			return;
@@ -311,7 +306,7 @@ public:
 	*/
 	void fill_mask(std::int32_t mipmap_index, std::int32_t offset, const pixels_t& pixels_mask)
 	{
-		if (mipmap_index < 0 || mipmap_index >= _MIPMAPS_COUNT)
+		if (mipmap_index < 0 || mipmap_index >= MIPMAPS_COUNT)
 		{
 			std::cerr << "mipmap_index is out of bound [0, mipmaps_count - 1]" << std::endl;
 			return;
@@ -344,7 +339,7 @@ public:
 	*/
 	std::shared_ptr<pixels_t> fetch(std::int32_t mipmap_index)
 	{
-		if (mipmap_index < 0 || mipmap_index >= _MIPMAPS_COUNT)
+		if (mipmap_index < 0 || mipmap_index >= MIPMAPS_COUNT)
 		{
 			std::cerr << "mipmap_index is out of bound [0, mipmap_index - 1]" << std::endl;
 			return nullptr;
@@ -370,7 +365,7 @@ public:
 	*/
 	std::shared_ptr<pixels_t> fetch(std::int32_t mipmap_index, std::int32_t offset, std::int32_t width)
 	{
-		if (mipmap_index < 0 || mipmap_index >= _MIPMAPS_COUNT)
+		if (mipmap_index < 0 || mipmap_index >= MIPMAPS_COUNT)
 		{
 			std::cerr << "mipmap index is out of bound [0, mipmaps_count - 1]" << std::endl;
 			return;
@@ -402,15 +397,15 @@ public:
 
 	std::int32_t mipmap_size(std::int32_t mipmap_index = 0)
 	{
-		if (mipmap_index < 0 || mipmap_index >= _MIPMAPS_COUNT) return -1;
+		if (mipmap_index < 0 || mipmap_index >= MIPMAPS_COUNT) return -1;
 		return _mipmaps_size[mipmap_index];
 	}
 
 private:
 
-	std::array<pixels_t, _MIPMAPS_COUNT> _mipmaps;
+	std::array<pixels_t, MIPMAPS_COUNT> _mipmaps;
 
-	std::array<std::int32_t, _MIPMAPS_COUNT> _mipmaps_size;
+	std::array<std::int32_t, MIPMAPS_COUNT> _mipmaps_size;
 
 private:
 
@@ -418,7 +413,7 @@ private:
 
 	void invalidate(std::int32_t mipmap_index, std::int32_t offset, std::int32_t width)
 		{
-			if (mipmap_index < 0 || mipmap_index >= _MIPMAPS_COUNT)
+			if (mipmap_index < 0 || mipmap_index >= MIPMAPS_COUNT)
 			{
 				std::cerr << "" << std::endl;
 				return;
@@ -439,8 +434,8 @@ private:
 
 	inline void _generate_mipmaps()
 	{
-		_mipmaps_size[0] = _BASE_WIDTH;
-		for (std::int32_t _index = 1; _index < _MIPMAPS_COUNT; ++_index)
+		_mipmaps_size[0] = BASE_WIDTH;
+		for (std::int32_t _index = 1; _index < MIPMAPS_COUNT; ++_index)
 		{
 			_mipmaps_size[_index] = _mipmaps_size[_index - 1] / 2;
 		}
@@ -467,22 +462,22 @@ public:
 };
 
 template<
-	std::int32_t _ELEMENTS_COUNT,
-	gl_image_format _FORMAT, 
-	std::int32_t _BASE_WIDTH,
-	std::int32_t _MIPMAPS_COUNT = 1
+	std::int32_t ELEMENTS_COUNT,
+	gl_image_format FORMAT,
+	std::int32_t BASE_WIDTH,
+	std::int32_t MIPMAPS_COUNT = 1
 >
 class gl_texture_1d_array final : public gl_texture_1d_array_base {
 public:
-	using texture_t = gl_texture_1d_array<_ELEMENTS_COUNT, _FORMAT, _BASE_WIDTH, _MIPMAPS_COUNT>;
-	using pixels_t = gl_pixels<_FORMAT>;
+	using texture_t = gl_texture_1d_array<ELEMENTS_COUNT, FORMAT, BASE_WIDTH, MIPMAPS_COUNT>;
+	using pixels_t = gl_pixels<FORMAT>;
 
 	gl_texture_1d_array()
 	{
 		glTextureStorage2D(_handle,
-			_MIPMAPS_COUNT, static_cast<GLenum>(_FORMAT),
-			_BASE_WIDTH,
-			_ELEMENTS_COUNT
+			MIPMAPS_COUNT, static_cast<GLenum>(FORMAT),
+			BASE_WIDTH,
+			ELEMENTS_COUNT
 		);
 	}
 
@@ -499,12 +494,12 @@ public:
 	*/
 	void fill(std::int32_t element_index, std::int32_t mipmap_index, const pixels_t& pixels) noexcept
 	{
-		if (element_index < 0 || element_index >= _ELEMENTS_COUNT)
+		if (element_index < 0 || element_index >= ELEMENTS_COUNT)
 		{
 			std::cerr << "element_index is out of bound [0, elements_count - 1]" << std::endl;
 			return;
 		}
-		if (mipmap_index < 0 || mipmap_index >= _MIPMAPS_COUNT)
+		if (mipmap_index < 0 || mipmap_index >= MIPMAPS_COUNT)
 		{
 			std::cerr << "mipmap_index is out of bound [0, mipmaps_count - 1]" << std::endl;
 			return;
@@ -534,12 +529,12 @@ public:
 	*/
 	void fill(std::int32_t element_index, std::int32_t mipmap_index, std::int32_t offset, const pixels_t& pixels) noexcept
 	{
-		if (element_index < 0 || element_index >= _ELEMENTS_COUNT)
+		if (element_index < 0 || element_index >= ELEMENTS_COUNT)
 		{
 			std::cerr << "element_index is out of bound [0, elements_count - 1]" << std::endl;
 			return;
 		}
-		if (mipmap_index < 0 || mipmap_index >= _MIPMAPS_COUNT)
+		if (mipmap_index < 0 || mipmap_index >= MIPMAPS_COUNT)
 		{
 			std::cerr << "mipmap_index is out of bound [0, mipmaps_count - 1]" << std::endl;
 			return;
@@ -571,12 +566,12 @@ public:
 	*/
 	void fill_mask(std::int32_t element_index, std::int32_t mipmap_index,const pixels_t& pixels_mask) noexcept
 	{
-		if (element_index < 0 || element_index > _ELEMENTS_COUNT - 1)
+		if (element_index < 0 || element_index > ELEMENTS_COUNT - 1)
 		{
 			std::cerr << "element_index out of bounds[0, elements_count - 1]" << std::endl;
 			return;
 		}
-		if (mipmap_index < 0 || mipmap_index > _MIPMAPS_COUNT - 1)
+		if (mipmap_index < 0 || mipmap_index > MIPMAPS_COUNT - 1)
 		{
 			std::cerr << "mipmap_index out of bounds[0, mipmaps_count - 1]" << std::endl;
 			return;
@@ -617,12 +612,12 @@ public:
 
 	std::shared_ptr<pixels_t> fetch(std::int32_t element_index, std::int32_t mipmap_index) noexcept 
 	{
-		if (element_index < 0 || element_index >= _ELEMENTS_COUNT)
+		if (element_index < 0 || element_index >= ELEMENTS_COUNT)
 		{
 			std::cerr << "" << std::endl;
 			return;
 		}
-		if(mipmap_index < 0 || mipmap_index > _MIPMAPS_COUNT)
+		if(mipmap_index < 0 || mipmap_index > MIPMAPS_COUNT)
 		{
 			std::cerr << "" << std::endl;
 			return;
@@ -643,12 +638,12 @@ public:
 
 	std::shared_ptr<pixels_t> fetch(std::int32_t element_index, std::int32_t mipmap_index, std::int32_t offset, std::int32_t width) noexcept 
 	{
-		if (element_index < 0 || element_index >= _ELEMENTS_COUNT)
+		if (element_index < 0 || element_index >= ELEMENTS_COUNT)
 		{
 			std::cerr << "element index out of bound " << std::endl;
 			return;
 		}
-		if (mipmap_index < 0 || mipmap_index >= _MIPMAPS_COUNT)
+		if (mipmap_index < 0 || mipmap_index >= MIPMAPS_COUNT)
 		{
 			std::cerr << "mipmap index out of bound " << std::endl;
 			return;
@@ -689,7 +684,7 @@ private:
 
     void _generate_mipmaps(){}
 
-    std::array<std::int32_t, _MIPMAPS_COUNT> _mipmaps_size;
+    std::array<std::int32_t, MIPMAPS_COUNT> _mipmaps_size;
 	
 
 };

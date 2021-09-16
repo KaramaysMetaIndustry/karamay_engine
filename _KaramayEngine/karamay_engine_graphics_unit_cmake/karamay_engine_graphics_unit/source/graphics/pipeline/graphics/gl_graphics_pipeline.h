@@ -83,7 +83,8 @@ enum gl_clip_control_depth_mode : GLenum
     zero_to_one = GL_ZERO_TO_ONE
 };
 
-// 顶点装配， 顶点处理，图元装配，光栅化，片段处理，输出FB
+class gl_graphics_pipeline_parameters{};
+
 struct gl_graphics_pipeline_descriptor
 {
     struct gl_vertex_assembly
@@ -95,7 +96,7 @@ struct gl_graphics_pipeline_descriptor
             bool use_fixed_restart_primitive_index;
             std::uint32_t restart_primitive_index;
         } primitive_restart;
-    } vertex_assembly; // organize vetex stream
+    } vertex_assembly; // organize vertex stream
     struct gl_vertex_processing
     {
         struct gl_vertex_shading
@@ -229,6 +230,7 @@ struct gl_graphics_pipeline_descriptor
     {
         std::shared_ptr<gl_framebuffer> framebuffer;
     } render_target;
+    std::shared_ptr<gl_graphics_pipeline_parameters> parameters;
 };
 
 class gl_graphics_pipeline : public gl_pipeline
@@ -436,47 +438,10 @@ public:
 
 };
 
-
 #define DEFINE_GRAPHICS_PIPELINE_PARAMETERS(PIPELINE_NAME)\
 std::shared_ptr<class gl_##PIPELINE_NAME##_graphics_pipeline_parameters> PIPELINE_NAME##_parameters;\
 struct gl_##PIPELINE_NAME##_graphics_pipeline_parameters : public gl_graphics_pipeline_parameters\
 
-
-#define DEFINE_VERTEX_SHADER_PARAMETERS_BEGIN()
-#define DEFINE_VERTEX_SHADER_PARAMETERS_END()
-
-#define DEFINE_TESC_SHADER_PARAMETERS_BEGIN()
-#define DEFINE_TESC_SHADER_PARAMETERS_END()
-
-#define DEFINE_TESE_SHADER_PARAMETERS_BEGIN()
-#define DEFINE_TESE_SHADER_PARAMETERS_END()
-
-#define DEFINE_GEOMETRY_SHADER_PARAMETERS_BEGIN()
-#define DEFINE_GEOMETRY_SHADER_PARAMETERS_END()
-
-#define DEFINE_FRAGMENT_SHADER_PARAMETERS_BEGIN()
-#define DEFINE_FRAGMENT_SHADER_PARAMETERS_END()
-
-
-
-#define DEFINE_STREAM_INPUT_BEGIN()
-#define DEFINE_STREAM_INPUT_END()
-#define DEFINE_VERTEX_FRAGMENT_STREAM_BEGIN()
-#define DEFINE_VERTEX_FRAGMENT_STREAM_END()
-#define DEFINE_VERTEX_TESC_STREAM_BEGIN()
-#define DEFINE_VERTEX_TESC_STREAM_END()
-#define DEFINE_VERTEX_GEOMETRY_STREAM_BEGIN()
-#define DEFINE_VERTEX_GEOMETRY_STREAM_END()
-#define DEFINE_TESC_TESE_STREAM_BEGIN()
-#define DEFINE_TESC_TESE_STREAM_END()
-#define DEFINE_TESE_GEOMETRY_STREAM_BEGIN()
-#define DEFINE_TESE_GEOMETRY_STREAM_END()
-#define DEFINE_TESE_FRAGMENT_STREAM_BEGIN()
-#define DEFINE_TESE_FRAGMENT_STREAM_END()
-#define DEFINE_GEOMETRY_FRAGMENT_STREAM_BEGIN()
-#define DEFINE_GEOMETRY_FRAGMENT_STREAM_END()
-#define DEFINE_STREAM_OUTPUT_BEGIN()
-#define DEFINE_STREAM_OUTPUT_END()
 
 
 #define DEFINE_PROGRAM_PARAMETER_IMAGE(GLSL_IMAGE_T, V_NAME)\
@@ -484,7 +449,6 @@ glsl_##GLSL_IMAGE_T V_NAME;\
 
 #define DEFINE_PROGRAM_PARAMETER_IMAGE_ARRAY(GLSL_IMAGE_T, V_NAME, ARRAY_SIZE)\
 glsl_##GLSL_IMAGE_T V_NAME[ARRAY_SIZE]; \
-
 
 #define DEFINE_PROGRAM_PARAMETER_SAMPLER(GLSL_SAMPLER_T, V_NAME)\
 glsl_##GLSL_SAMPLER_T V_NAME;\
@@ -511,6 +475,42 @@ GLSL_SHADER_STORAGE_BLOCK_T V_NAME; \
 GLSL_SHADER_STORAGE_BLOCK_T V_NAME[ARRAY_SIZE];\
 
 
+// Shader Parameters Definition
+#define DEFINE_VERTEX_SHADER_PARAMETERS_BEGIN()
+#define DEFINE_VERTEX_SHADER_PARAMETERS_END()
+
+#define DEFINE_TESC_SHADER_PARAMETERS_BEGIN()
+#define DEFINE_TESC_SHADER_PARAMETERS_END()
+
+#define DEFINE_TESE_SHADER_PARAMETERS_BEGIN()
+#define DEFINE_TESE_SHADER_PARAMETERS_END()
+
+#define DEFINE_GEOMETRY_SHADER_PARAMETERS_BEGIN()
+#define DEFINE_GEOMETRY_SHADER_PARAMETERS_END()
+
+#define DEFINE_FRAGMENT_SHADER_PARAMETERS_BEGIN()
+#define DEFINE_FRAGMENT_SHADER_PARAMETERS_END()
+
+
+// Shader Stream Definition
+#define DEFINE_STREAM_INPUT_BEGIN()
+#define DEFINE_STREAM_INPUT_END()
+#define DEFINE_VERTEX_FRAGMENT_STREAM_BEGIN()
+#define DEFINE_VERTEX_FRAGMENT_STREAM_END()
+#define DEFINE_VERTEX_TESC_STREAM_BEGIN()
+#define DEFINE_VERTEX_TESC_STREAM_END()
+#define DEFINE_VERTEX_GEOMETRY_STREAM_BEGIN()
+#define DEFINE_VERTEX_GEOMETRY_STREAM_END()
+#define DEFINE_TESC_TESE_STREAM_BEGIN()
+#define DEFINE_TESC_TESE_STREAM_END()
+#define DEFINE_TESE_GEOMETRY_STREAM_BEGIN()
+#define DEFINE_TESE_GEOMETRY_STREAM_END()
+#define DEFINE_TESE_FRAGMENT_STREAM_BEGIN()
+#define DEFINE_TESE_FRAGMENT_STREAM_END()
+#define DEFINE_GEOMETRY_FRAGMENT_STREAM_BEGIN()
+#define DEFINE_GEOMETRY_FRAGMENT_STREAM_END()
+#define DEFINE_STREAM_OUTPUT_BEGIN()
+#define DEFINE_STREAM_OUTPUT_END()
 
 #endif
 

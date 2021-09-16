@@ -14,6 +14,8 @@ struct gl_compute_pipeline_descriptor
 	{
 		std::shared_ptr<gl_compute_shader> shader;
 	} compute_shading;
+
+	std::shared_ptr<gl_compute_pipeline_parameters> parameters;
 };
 
 class gl_compute_pipeline final : public gl_pipeline
@@ -40,13 +42,13 @@ public:
 
 	bool ouput_pipeline_glsl_template(const std::string& renderer_dir) const override
 	{
-		const gl_compute_shader* _compute_shader = _descriptor.compute_shading.shader.get();
-		if (_compute_shader)
-		{
-			const std::string& _template = _compute_shader->get_shader_glsl_template();
-			std::fstream _compute_shader_glsl_file(renderer_dir + _pipeline_name + "\\" + _pipeline_name + ".comp");
-			_compute_shader_glsl_file.write(_template.c_str(), _template.size());
-		}
+//		const gl_compute_shader* _compute_shader = _descriptor.compute_shading.shader.get();
+//		if (_compute_shader)
+//		{
+//			const std::string& _template = _compute_shader->get_shader_glsl_template();
+//			std::fstream _compute_shader_glsl_file(renderer_dir + _pipeline_name + "\\" + _pipeline_name + ".comp");
+//			_compute_shader_glsl_file.write(_template.c_str(), _template.size());
+//		}
 		return false;
 	}
 
