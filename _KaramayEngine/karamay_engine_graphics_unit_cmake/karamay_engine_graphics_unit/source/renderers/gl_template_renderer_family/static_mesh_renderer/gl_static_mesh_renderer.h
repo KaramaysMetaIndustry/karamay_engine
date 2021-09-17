@@ -5,12 +5,12 @@
 
 DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 
+    struct MatricesStruct {};
+    struct CachedStruct {};
+
     // define graphics pipeline parameters
     DEFINE_GRAPHICS_PIPELINE_PARAMETERS(vertex_processing)
     {
-		struct MatricesStruct {};
-		struct CachedStruct {};
-
         DEFINE_PROGRAM_PARAMETER_IMAGE(image2D, positionImage2D)
         DEFINE_PROGRAM_PARAMETER_IMAGE_ARRAY(image2D, positionImage2Ds, 10)
         DEFINE_PROGRAM_PARAMETER_SAMPLER(sampler2D, albedoMap)
@@ -22,62 +22,39 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
         DEFINE_PROGRAM_PARAMETER_SHADER_STORAGE_BLOCK(CachedStruct, swapCache)
         DEFINE_PROGRAM_PARAMETER_SHADER_STORAGE_BLOCK_ARRAY(CachedStruct, swapCacheArray, 10)
 
-
-
         DEFINE_VERTEX_SHADER_PARAMETERS_BEGIN()
-
         DEFINE_VERTEX_SHADER_PARAMETERS_END()
-
 
         DEFINE_TESC_SHADER_PARAMETERS_BEGIN()
         DEFINE_TESC_SHADER_PARAMETERS_END()
 
-
         DEFINE_TESE_SHADER_PARAMETERS_BEGIN()
         DEFINE_TESE_SHADER_PARAMETERS_END()
-
 
         DEFINE_GEOMETRY_SHADER_PARAMETERS_BEGIN()
         DEFINE_GEOMETRY_SHADER_PARAMETERS_END()
 
-
         DEFINE_FRAGMENT_SHADER_PARAMETERS_BEGIN()
-
         DEFINE_FRAGMENT_SHADER_PARAMETERS_END()
     };
 
+    std::shared_ptr<gl_vertex_processing_graphics_pipeline_parameters> vertex_processing_parameters;
 
 
-    DEFINE_COMPUTE_PIPELINE_PARAMETERS_BEGIN(texture_composing)
-        class glsl_pp_uniform_block_t : public glsl_uniform_block_t
-        {
-        public:
-            glsl_pp_uniform_block_t() = delete;
-            glsl_pp_uniform_block_t(std::function<void(const glsl_uniform_block_t& uniform_block)> _register)
-            {}
 
-            const std::uint8_t* data() const override
-            {
-                return reinterpret_cast<const std::uint8_t*>(&memory);
-            }
-
-            std::int64_t size() const override
-            {
-                return sizeof(memory) * 10;
-            }
-
-            struct gl_struct
-            {
-                glsl_vec3 position0{ item_register };
-                glsl_vec3 position1{ item_register };
-                glsl_vec3 position2{ item_register };
-            } memory[10];
-
-
-        } _ublock0{ uniform_block_register };
-    DEFINE_COMPUTE_PIPELINE_PARAMETERS_END(texture_composing)
-
-
+    DEFINE_COMPUTE_PIPELINE_PARAMETERS(texture_composing)
+    {
+        DEFINE_PROGRAM_PARAMETER_IMAGE(image2D, positionImage2D)
+        DEFINE_PROGRAM_PARAMETER_IMAGE_ARRAY(image2D, positionImage2Ds, 10)
+        DEFINE_PROGRAM_PARAMETER_SAMPLER(sampler2D, albedoMap)
+        DEFINE_PROGRAM_PARAMETER_SAMPLER_ARRAY(sampler2D, albedoMaps, 2)
+        DEFINE_PROGRAM_PARAMETER_ATOMIC_COUNTER(primitiveCounter)
+        DEFINE_PROGRAM_PARAMETER_ATOMIC_COUNTER_ARRAY(primitiveCounters, 5)
+        DEFINE_PROGRAM_PARAMETER_UNIFORM_BLOCK(MatricesStruct, matrices)
+        DEFINE_PROGRAM_PARAMETER_UNIFORM_BLOCK_ARRAY(MatricesStruct, matricesArray, 10)
+        DEFINE_PROGRAM_PARAMETER_SHADER_STORAGE_BLOCK(CachedStruct, swapCache)
+        DEFINE_PROGRAM_PARAMETER_SHADER_STORAGE_BLOCK_ARRAY(CachedStruct, swapCacheArray, 10)
+    };
 
     std::shared_ptr<gl_graphics_pipeline> _vertex_processing_pipeline;
     std::shared_ptr<gl_compute_pipeline> _texture_composing_pipeline;
@@ -85,10 +62,6 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 
     IMPLEMENTATION_FUNC_BUILD()
     {
-
-        _texture_composing_parameters->compute_shader_parameters._ublock0.memory[0].position0;
-        _texture_composing_parameters->compute_shader_parameters._ublock0.memory[0].position1;
-        _texture_composing_parameters->compute_shader_parameters._ublock0.memory[0].position2;
         gl_vertex_shader_descriptor _vs_desc;
         gl_tessellation_control_shader_descriptor _tesc_desc;
         gl_tessellation_evaluation_shader_descriptor _tese_desc;
@@ -111,6 +84,9 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
         _graphics_pipeline_desc.fragment_processing.fragment_shading.shader = _fs;
         // parameters
         _graphics_pipeline_desc.parameters = vertex_processing_parameters;
+        vertex_processing_parameters->albedoMap.generate_token();
+        vertex_processing_parameters->albedoMaps[0].generate_token();
+        vertex_processing_parameters->positionImage2Ds[2].generate_token();
         // controls
         _graphics_pipeline_desc.vertex_processing.post_vertex_processing.coordinate_transformations.viewport_x = 0;
         _graphics_pipeline_desc.vertex_processing.post_vertex_processing.coordinate_transformations.viewport_y = 0;
@@ -133,33 +109,26 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
         gl_compute_pipeline_descriptor _compute_pipeline_desc;
         _compute_pipeline_desc.compute_shading.shader = _cs;
         // parameters
-        _compute_pipeline_desc.parameters;
+        _compute_pipeline_desc.parameters = texture_composing_parameters;
         _texture_composing_pipeline = builder.create_compute_pipeline(_compute_pipeline_desc);
         if(_texture_composing_pipeline)
         {
-            // ..
+            //
         }
-
-
-//        _graphics_pipeline->draw_triangles();
-//        _compute_pipeline->dispatch(2, 2, 2);
 
     }
 
     IMPLEMENTATION_FUNC_RENDER()
     {
-        if(_vertex_processing_pipeline && _texture_composing_pipeline)
+        while(delta_time > 0)
         {
-            _vertex_processing_pipeline->
+            if(_vertex_processing_pipeline && _texture_composing_pipeline)
+            {
+                _vertex_processing_pipeline->draw_lines();
+                _texture_composing_pipeline->dispatch(2, 2, 2);
+            }
         }
     }
-
-
-
-public:
-
-    void calculate() {}
-
 
 DEFINE_RENDERER_END()
 

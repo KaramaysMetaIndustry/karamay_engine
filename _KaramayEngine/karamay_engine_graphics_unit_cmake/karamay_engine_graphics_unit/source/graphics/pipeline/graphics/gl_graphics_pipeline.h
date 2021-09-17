@@ -439,12 +439,11 @@ public:
 };
 
 #define DEFINE_GRAPHICS_PIPELINE_PARAMETERS(PIPELINE_NAME)\
-std::shared_ptr<class gl_##PIPELINE_NAME##_graphics_pipeline_parameters> PIPELINE_NAME##_parameters;\
 struct gl_##PIPELINE_NAME##_graphics_pipeline_parameters : public gl_graphics_pipeline_parameters\
 
 
 
-#define DEFINE_PROGRAM_PARAMETER_IMAGE(GLSL_IMAGE_T, V_NAME)\
+#define DEFINE_PROGRAM_PARAMETER_IMAGE(GLSL_IMAGE_T, V_NAME) \
 glsl_##GLSL_IMAGE_T V_NAME;\
 
 #define DEFINE_PROGRAM_PARAMETER_IMAGE_ARRAY(GLSL_IMAGE_T, V_NAME, ARRAY_SIZE)\

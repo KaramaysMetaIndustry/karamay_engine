@@ -76,18 +76,9 @@ public:
 };
 
 
-#define DEFINE_COMPUTE_PIPELINE_PARAMETERS_BEGIN(PIPELINE_NAME)\
-struct gl_##PIPELINE_NAME##_graphics_pipeline_parameters\
-{\
-	class gl_##PIPELINE_NAME##_compute_shader_parameters : public gl_compute_shader_parameters\
-	{\
-	public:\
-
-#define DEFINE_COMPUTE_PIPELINE_PARAMETERS_END(PIPELINE_NAME)\
-	} compute_shader_parameters;\
-};\
-std::shared_ptr<class gl_##PIPELINE_NAME##_graphics_pipeline_parameters> _##PIPELINE_NAME##_parameters;\
-
+#define DEFINE_COMPUTE_PIPELINE_PARAMETERS(PIPELINE_NAME)\
+std::shared_ptr<class gl_##PIPELINE_NAME##_compute_pipeline_parameters> PIPELINE_NAME##_parameters;\
+struct gl_##PIPELINE_NAME##_compute_pipeline_parameters : public gl_compute_pipeline_parameters\
 
 class glsl_pp_uniform_block_t : public glsl_uniform_block_t
 {
