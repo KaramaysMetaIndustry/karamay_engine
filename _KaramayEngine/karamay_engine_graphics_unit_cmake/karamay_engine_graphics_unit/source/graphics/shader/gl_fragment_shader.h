@@ -1,5 +1,5 @@
-#ifndef GL_FRAGMENG_SHADER_H
-#define GL_FRAGMENG_SHADER_H
+#ifndef GL_FRAGMENT_SHADER_H
+#define GL_FRAGMENT_SHADER_H
 #include "gl_shader.h"
 
 struct gl_fragment_shader_descriptor

@@ -23,6 +23,10 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
         DEFINE_PROGRAM_PARAMETER_SHADER_STORAGE_BLOCK_ARRAY(CachedStruct, swapCacheArray, 10)
 
         DEFINE_VERTEX_SHADER_PARAMETERS_BEGIN()
+            SHADER_PARAMETER_REF(positionImage2D)
+            SHADER_PARAMETER_REF(positionImage2Ds)
+            SHADER_PARAMETER_REF(matrices)
+            SHADER_PARAMETER_REF(swapCacheArray)
         DEFINE_VERTEX_SHADER_PARAMETERS_END()
 
         DEFINE_TESC_SHADER_PARAMETERS_BEGIN()
@@ -35,12 +39,13 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
         DEFINE_GEOMETRY_SHADER_PARAMETERS_END()
 
         DEFINE_FRAGMENT_SHADER_PARAMETERS_BEGIN()
+            SHADER_PARAMETER_REF(matrices)
+            SHADER_PARAMETER_REF(matricesArray)
+            SHADER_PARAMETER_REF(swapCache)
+            SHADER_PARAMETER_REF(swapCacheArray)
         DEFINE_FRAGMENT_SHADER_PARAMETERS_END()
     };
-
     std::shared_ptr<gl_vertex_processing_graphics_pipeline_parameters> vertex_processing_parameters;
-
-
 
     DEFINE_COMPUTE_PIPELINE_PARAMETERS(texture_composing)
     {
@@ -59,35 +64,17 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
     std::shared_ptr<gl_graphics_pipeline> _vertex_processing_pipeline;
     std::shared_ptr<gl_compute_pipeline> _texture_composing_pipeline;
 
-
     IMPLEMENTATION_FUNC_BUILD()
     {
-        gl_vertex_shader_descriptor _vs_desc;
-        gl_tessellation_control_shader_descriptor _tesc_desc;
-        gl_tessellation_evaluation_shader_descriptor _tese_desc;
-        gl_geometry_shader_descriptor _gs_desc;
-        gl_fragment_shader_descriptor _fs_desc;
-
-        auto _vs = builder.create_vertex_shader(_vs_desc);
-        auto _tesc = builder.create_tessellation_control_shader(_tesc_desc);
-        auto _tese = builder.create_tessellation_evaluation_shader(_tese_desc);
-        auto _gs = builder.create_geometry_shader(_gs_desc);
-        auto _fs = builder.create_fragment_shader(_fs_desc);
-
-        // desc, create graphics pipeline
+        // graphics pipeline desc
         gl_graphics_pipeline_descriptor _graphics_pipeline_desc;
-        // shaders
-        _graphics_pipeline_desc.vertex_processing.vertex_shading.shader = _vs;
-        _graphics_pipeline_desc.vertex_processing.tessellation.control_shader = _tesc;
-        _graphics_pipeline_desc.vertex_processing.tessellation.evaluation_shader = _tese;
-        _graphics_pipeline_desc.vertex_processing.geometry_shading.shader = _gs;
-        _graphics_pipeline_desc.fragment_processing.fragment_shading.shader = _fs;
-        // parameters
-        _graphics_pipeline_desc.parameters = vertex_processing_parameters;
+        // fill parameters
         vertex_processing_parameters->albedoMap.generate_token();
         vertex_processing_parameters->albedoMaps[0].generate_token();
         vertex_processing_parameters->positionImage2Ds[2].generate_token();
-        // controls
+        // set program parameters
+        _graphics_pipeline_desc.parameters = vertex_processing_parameters;
+        // set pipeline state
         _graphics_pipeline_desc.vertex_processing.post_vertex_processing.coordinate_transformations.viewport_x = 0;
         _graphics_pipeline_desc.vertex_processing.post_vertex_processing.coordinate_transformations.viewport_y = 0;
         _graphics_pipeline_desc.vertex_processing.post_vertex_processing.coordinate_transformations.viewport_width = 1024;
@@ -95,26 +82,18 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
         _graphics_pipeline_desc.vertex_processing.post_vertex_processing.flatshading.provoke_mode = gl_provoke_mode::first_vertex_convention;
         _graphics_pipeline_desc.vertex_processing.post_vertex_processing.primitive_clipping.clip_plane_index = 0;
         _graphics_pipeline_desc.vertex_processing.post_vertex_processing.transform_feedback.semantic_name ="";
-
-        _vertex_processing_pipeline = builder.create_graphics_pipeline(_graphics_pipeline_desc);
-        if(_vertex_processing_pipeline)
-        {
-            _vertex_processing_pipeline->initialize();
-        }
-
+        // build graphics pipeline
+        _vertex_processing_pipeline = builder.build_graphics_pipeline(_graphics_pipeline_desc);
 
         gl_compute_shader_descriptor _cs_desc;
         auto _cs = builder.create_compute_shader(_cs_desc);
-        // desc, create compute pipeline
+        // compute pipeline desc
         gl_compute_pipeline_descriptor _compute_pipeline_desc;
-        _compute_pipeline_desc.compute_shading.shader = _cs;
-        // parameters
+        // set program parameters
         _compute_pipeline_desc.parameters = texture_composing_parameters;
-        _texture_composing_pipeline = builder.create_compute_pipeline(_compute_pipeline_desc);
-        if(_texture_composing_pipeline)
-        {
-            //
-        }
+        // set pipeline state
+        // build compute pipeline
+        _texture_composing_pipeline = builder.build_compute_pipeline(_compute_pipeline_desc);
 
     }
 

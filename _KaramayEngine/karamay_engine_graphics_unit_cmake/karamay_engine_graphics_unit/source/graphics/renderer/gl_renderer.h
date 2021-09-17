@@ -61,12 +61,12 @@ public:
 
 public:
 
-    std::shared_ptr<gl_graphics_pipeline> create_graphics_pipeline(const gl_graphics_pipeline_descriptor& descriptor)
+    std::shared_ptr<gl_graphics_pipeline> build_graphics_pipeline(const gl_graphics_pipeline_descriptor& descriptor)
     {
         return std::make_shared<gl_graphics_pipeline>(descriptor);
     }
 
-    std::shared_ptr<gl_compute_pipeline> create_compute_pipeline(const gl_compute_pipeline_descriptor& descriptor)
+    std::shared_ptr<gl_compute_pipeline> build_compute_pipeline(const gl_compute_pipeline_descriptor& descriptor)
     {
         return std::make_shared<gl_compute_pipeline>(descriptor);
     }
