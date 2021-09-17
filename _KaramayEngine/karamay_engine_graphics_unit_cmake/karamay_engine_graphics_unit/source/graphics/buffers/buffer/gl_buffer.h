@@ -5,9 +5,6 @@
 #include "graphics/buffers/buffer/gl_buffer_tools.h"
 
 
-
-using gl_buffer_sptr = std::shared_ptr<class gl_buffer>;
-
 /*
 * 目前认为将填充逻辑优化完全下放给特化buffer是较好的选择，在buffer层面无法做到较全面的具化（或控制粒度不够）
 * 并且我认为buffer层仅需要保证好性能与基础同步即可，前几个版本的迭代中发现如果在buffer中做填充逻辑，会导致难以权衡性能
@@ -28,27 +25,14 @@ private:
 
 public:
 
-    static std::shared_ptr<gl_buffer> new_buffer(std::int64_t capacity, gl_buffer_storage_options storage_options)
-    {
-        return std::make_shared<gl_buffer>(capacity, storage_options);
-    }
-
-    static std::shared_ptr<gl_buffer> new_buffer(std::int64_t capacity)
-    {
-        return std::make_shared<gl_buffer>(capacity, gl_buffer_storage_options());
-    }
-
-public:
-
 	/*
 	* GL_MAP_READ_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT
 	* GL_DYNAMIC_STORAGE_BIT | GL_CLIENT_STORAGE_BIT
 	*/
-    explicit gl_buffer(std::int64_t capacity, gl_buffer_storage_options storage_options) : 
+    explicit gl_buffer(std::int32_t capacity, gl_buffer_storage_options storage_options) :
 		_capacity(capacity),
 		_storage_options(storage_options)
     {
-        //_allocate_buffer();
 		glCreateBuffers(1, &_handle);
 		if (_handle != 0)
 		{
@@ -75,27 +59,32 @@ private:
     * write byte stream into buffer, this operation will affect GPU memory immediately
 	* 
     */
-    inline void write(std::int64_t offset, const std::uint8_t* byte_stream, std::int64_t byte_stream_size)
+
+    inline void write(const std::vector<std::uint8_t>& bytes)
     {
-        if(!_check_object_validation() || !_storage_options.is_dynamic_storage || !byte_stream || offset < 0 || offset + byte_stream_size > _capacity) return;
-        glNamedBufferSubData(_handle, offset, byte_stream_size, byte_stream);
-		glMemoryBarrier(0);
+		glNamedBufferSubData(_handle, 0, bytes.size(), bytes.data());
+    }
+
+    inline void write(std::int32_t offset, const std::vector<std::uint8_t>& bytes)
+    {
+        if(offset < 0 || offset >= _capacity || offset + bytes.size() > _capacity) return;
+        glNamedBufferSubData(_handle, offset, static_cast<std::int32_t>(bytes.size()), bytes.data());
     }
 
 public:
 
-	using mapped_memory_handler = std::function<void(std::uint8_t*, std::int64_t)>;
+	using mapped_memory_handler = std::function<void(std::uint8_t*, std::int32_t)>;
 
-	using mapped_memory_writer = std::function<void(std::uint8_t*, std::int64_t)>;
+	using mapped_memory_writer = std::function<void(std::uint8_t*, std::int32_t)>;
 	
-	using mapped_memory_reader = std::function<void(const std::uint8_t*, std::int64_t)>;
+	using mapped_memory_reader = std::function<void(const std::uint8_t*, std::int32_t)>;
 
 	/*
 	 * execute a handler(which can read/write) on mapped memory (specified by offset and size)
 	 * mapped memory has valid content which come from GPU memory
 	 * also your bytes write into mapped memory can affect GPU memory
 	 * */
-	void execute_mapped_memory_handler(std::int64_t offset, std::int64_t size, const mapped_memory_handler& handler, std::uint8_t should_async = false) 
+	void execute_mapped_memory_handler(std::int32_t offset, std::int32_t size, const mapped_memory_handler& handler, std::uint8_t should_async = false)
 	{
 		if (offset < 0 || size < 0 || offset + size > _capacity) return;
 		auto* _mapped_memory = reinterpret_cast<std::uint8_t*>(
@@ -113,7 +102,7 @@ public:
 	 * @writer : void(mapped_memory_block, mapped_memory_block_size)
 	 * @should_async : if true, this func will not ensure the operation to buffer will work when it end, if false ..
 	 * */
-	void execute_mapped_memory_writer(std::int64_t offset, std::int64_t size, const mapped_memory_writer& writer, std::uint8_t should_async = false)
+	void execute_mapped_memory_writer(std::int32_t offset, std::int32_t size, const mapped_memory_writer& writer, bool should_async = false)
 	{
 		if (offset <0 || size < 0 || offset + size > _capacity) return;
 
@@ -136,7 +125,7 @@ public:
 	 * then execute a handler you specified (can not do any modification)
 	 * @ task void(mapped_memory_block, mapped_memory_block_size)
 	 * */
-	void execute_mapped_memory_reader(std::int64_t offset, std::int64_t size, const mapped_memory_reader& reader, std::uint8_t should_async = false) const {
+	void execute_mapped_memory_reader(std::int32_t offset, std::int32_t size, const mapped_memory_reader& reader, std::uint8_t should_async = false) const {
 		if (offset < 0 || size < 0 || offset + size > _capacity) return;
 
 		const auto* _mapped_memory = reinterpret_cast<const std::uint8_t*>(
@@ -315,7 +304,7 @@ private:
 
 private:
 
-    std::int64_t _capacity;
+    std::int32_t _size;
 
     gl_buffer_storage_options _storage_options;
 };

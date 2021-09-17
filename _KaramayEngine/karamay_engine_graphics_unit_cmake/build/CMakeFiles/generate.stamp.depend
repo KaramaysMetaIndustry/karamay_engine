@@ -1,0 +1,23 @@
+# CMake generation dependency list for this directory.
+G:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/CMakeLists.txt
+G:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/build/CMakeFiles/3.20.1/CMakeCCompiler.cmake
+G:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/build/CMakeFiles/3.20.1/CMakeCXXCompiler.cmake
+G:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/build/CMakeFiles/3.20.1/CMakeRCCompiler.cmake
+G:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/build/CMakeFiles/3.20.1/CMakeSystem.cmake
+G:/Program Files/CMake/share/cmake-3.20/Modules/CMakeCInformation.cmake
+G:/Program Files/CMake/share/cmake-3.20/Modules/CMakeCXXInformation.cmake
+G:/Program Files/CMake/share/cmake-3.20/Modules/CMakeCommonLanguageInclude.cmake
+G:/Program Files/CMake/share/cmake-3.20/Modules/CMakeGenericSystem.cmake
+G:/Program Files/CMake/share/cmake-3.20/Modules/CMakeInitializeConfigs.cmake
+G:/Program Files/CMake/share/cmake-3.20/Modules/CMakeLanguageInformation.cmake
+G:/Program Files/CMake/share/cmake-3.20/Modules/CMakeRCInformation.cmake
+G:/Program Files/CMake/share/cmake-3.20/Modules/CMakeSystemSpecificInformation.cmake
+G:/Program Files/CMake/share/cmake-3.20/Modules/CMakeSystemSpecificInitialize.cmake
+G:/Program Files/CMake/share/cmake-3.20/Modules/Compiler/CMakeCommonCompilerMacros.cmake
+G:/Program Files/CMake/share/cmake-3.20/Modules/Compiler/MSVC-C.cmake
+G:/Program Files/CMake/share/cmake-3.20/Modules/Compiler/MSVC-CXX.cmake
+G:/Program Files/CMake/share/cmake-3.20/Modules/Platform/Windows-MSVC-C.cmake
+G:/Program Files/CMake/share/cmake-3.20/Modules/Platform/Windows-MSVC-CXX.cmake
+G:/Program Files/CMake/share/cmake-3.20/Modules/Platform/Windows-MSVC.cmake
+G:/Program Files/CMake/share/cmake-3.20/Modules/Platform/Windows.cmake
+G:/Program Files/CMake/share/cmake-3.20/Modules/Platform/WindowsPaths.cmake
