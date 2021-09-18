@@ -29,8 +29,7 @@ public:
 	* GL_MAP_READ_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT
 	* GL_DYNAMIC_STORAGE_BIT | GL_CLIENT_STORAGE_BIT
 	*/
-    explicit gl_buffer(std::int32_t capacity, gl_buffer_storage_options storage_options) :
-		_capacity(capacity),
+    explicit gl_buffer(std::int64_t capacity, gl_buffer_storage_options storage_options) :
 		_storage_options(storage_options)
     {
 		glCreateBuffers(1, &_handle);
