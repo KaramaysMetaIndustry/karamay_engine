@@ -134,311 +134,33 @@ const glsl_transparent_t_meta glsl_dvec3::_meta(glm::dvec3::length(), sizeof(glm
 
 
 
-class glsl_opaque_t : public glsl_t , public glsl_token
+class glsl_opaque_t : public glsl_t
 {
 protected:
 	glsl_opaque_t() = default;
 	~glsl_opaque_t() = default;
+
+public:
+
+    virtual std::string token() = 0;
+
 };
 
-class glsl_sampler_t : public glsl_opaque_t 
-{
-protected:
-	glsl_sampler_t() = default;
-	~glsl_sampler_t() = default;
-};
+
 
 /*
 * definitions of sampler_ts
 * 
 */
-class glsl_sampler2D : public glsl_sampler_t
-{
-public:
-
-	glsl_sampler2D() = default;
-
-public:
-
-	const std::string& generate_token() const override {}
-
-};
-
-class glsl_sampler2DArray : public glsl_sampler_t
-{
-public: /** constructor / desctructor  */
-
-	explicit glsl_sampler2DArray(
-		const gl_texture_2d_array_descriptor& texture_2d_array_descriptor,
-		const gl_sampler_descriptor& sampler_descriptor
-	) : _texture_2d_array(std::make_unique<gl_texture_2d_array>(texture_2d_array_descriptor)),
-		_sampler(std::make_shared<gl_sampler>(sampler_descriptor))
-	{}
-
-	explicit glsl_sampler2DArray(
-		const gl_texture_2d_array_descriptor& texture_2d_array_descriptor
-	) : _texture_2d_array(std::make_unique<gl_texture_2d_array>(texture_2d_array_descriptor)),
-		_sampler(nullptr)
-	{}
-
-	explicit glsl_sampler2DArray(std::shared_ptr<gl_texture_2d_array> texture, std::shared_ptr<gl_sampler> sampler)
-	{}
-
-	glsl_sampler2DArray() = delete;
-
-	virtual ~glsl_sampler2DArray() = default;
-
-public: /** implement functions */
-
-private:
-
-	std::unique_ptr<gl_texture_2d_array> _texture_2d_array;
-
-	std::shared_ptr<gl_sampler> _sampler;
-
-public:
-
-	gl_texture_2d_array& texture() { return *_texture_2d_array; }
-
-};
-
-#define DEFINE_GLSL_SAMPLER_T(GLSL_SAMPLER_T_SEMANTIC_NAME)\
-class glsl_##GLSL_SAMPLER_T_SEMANTIC_NAME : public glsl_sampler_t\
-{\
-\
-};\
-
-enum class glsl_image_format_layout_qualifier
-{
-	// r16f, r32f
-	// rg16f, rg32f
-	// rgb16f, rgb32f
-	// rgba16f, rgba32f
-
-	// rgba8, rgba16
-	// r11f_g11f_b10f
-	// rgb10_a2, rgb10_a2ui
-	// rg8, rg16
-	// r8, r16
-
-	// rgba{8,16,32}i
-	// rg{8,16,32}i
-	// r{8,16,32}
-	// rgba{32,16,8}ui
-	// rg{32,16,8} ui
-	// r{32,16,8} ui
-	// rgba{16,8}_snorm
-	// rg{16,8}_snorm
-	// r{16,8}_snorm
-};
-
-enum class gl_image_access_mode : GLenum
-{
-	READ_ONLY = GL_READ_ONLY,
-	WRITE_ONLY = GL_WRITE_ONLY,
-	READ_WRITE = GL_READ_WRITE
-};
-
-enum class gl_image_format : GLenum
-{
-	R32F = GL_R32F, // [std::float_t] x 1
-	RG32F = GL_RG32F, // [std::float_t] x 2
-	RGBA32F = GL_RGBA32F,// [std::float_t] x 4
-	R32UI = GL_R32UI,
-	RG32UI = GL_RG32UI,
-	RGBA32UI = GL_RGBA32UI,
-	R32I = GL_R32I,
-	RG32I = GL_RG32I,
-	RGBA32I = GL_RGBA32I,
-	
-#ifdef GENERAL
-	R11F_G11F_B10F = GL_R11F_G11F_B10F,
-
-	RGBA16F = GL_RGBA16F,
-	RG16F = GL_RG16F,
-	R16F	 = GL_R16F,
-	RGBA16UI = GL_RGBA16UI,
-	RGB10_A2UI = GL_RGB10_A2UI,
-	RGBA8UI = GL_RGBA8UI,
-	RG16UI = GL_RG16UI,
-	RG8UI = GL_RG8UI,
-	R16UI = GL_R16UI,
-	R8UI = GL_R8UI,
-	RGBA16I = GL_RGBA16I,
-	RGBA8I = GL_RGBA8I,
-	RG16I = GL_RG16I,
-	RG8I = GL_RG8I,
-	R16I	= GL_R16I,
-	R8I = GL_R8I,
-	RGBA16 = GL_RGBA16,
-	RGB10_A2 = GL_RGB10_A2,
-	RGBA8	= GL_RGBA8,
-	RG16 = GL_RG16,
-	RG8 = GL_RG8,
-	R16 = GL_R16,
-	R8 = GL_R8,
-	RGBA16_SNORM	= GL_RGBA16_SNORM,
-	RGBA8_SNORM = GL_RGBA8_SNORM,
-	RG16_SNORM	= GL_RG16_SNORM,
-	RG8_SNORM = GL_RG8_SNORM,
-	R16_SNORM = GL_R16_SNORM,
-	R8_SNORM = GL_R8_SNORM
-#endif
-};
-
-std::string transfer_to_image_format_token(gl_image_format format)
-{
-	switch (format)
-	{
-	case gl_image_format::stencil_index:
-		break;
-	case gl_image_format::depth_component:
-		break;
-	case gl_image_format::depth_stencil:
-		break;
-	case gl_image_format::r:
-		break;
-	case gl_image_format::rg:
-		break;
-	case gl_image_format::rgb:
-		break;
-	case gl_image_format::rgba:
-		break;
-	case gl_image_format::compressed_r:
-		break;
-	case gl_image_format::compressed_rg:
-		break;
-	case gl_image_format::compressed_rgb:
-		break;
-	case gl_image_format::compressed_rgba:
-		break;
-	case gl_image_format::compressed_srgb:
-		break;
-	case gl_image_format::compressed_srgb_alpha:
-		break;
-	case gl_image_format::NOR_UI_R8:
-		break;
-	case gl_image_format::NOR_I_R8:
-		break;
-	case gl_image_format::NOR_UI_R16:
-		break;
-	case gl_image_format::NOR_I_R16:
-		break;
-	case gl_image_format::NOR_UI_RG8:
-		break;
-	case gl_image_format::NOR_I_RG8:
-		break;
-	case gl_image_format::NOR_UI_RG16:
-		break;
-	case gl_image_format::NOR_I_RG16:
-		break;
-	case gl_image_format::NOR_UI_R3_G3_B2:
-		break;
-	case gl_image_format::NOR_UI_RGB4:
-		break;
-	case gl_image_format::NOR_UI_RGB5:
-		break;
-	case gl_image_format::NOR_UI_R5_G6_B5:
-		break;
-	case gl_image_format::NOR_UI_RGB8:
-		break;
-	case gl_image_format::NOR_I_RGB8:
-		break;
-	case gl_image_format::NOR_UI_RGB10:
-		break;
-	case gl_image_format::NOR_UI_RGB12:
-		break;
-	case gl_image_format::NOR_UI_RGB16:
-		break;
-	case gl_image_format::NOR_I_RGB16:
-		break;
-	case gl_image_format::NOR_UI_RGBA2:
-		break;
-	case gl_image_format::NOR_UI_RGBA4:
-		break;
-	case gl_image_format::NOR_UI_RGB5_A1:
-		break;
-	case gl_image_format::NOR_UI_RGBA8:
-		break;
-	case gl_image_format::NOR_I_RGBA8:
-		break;
-	case gl_image_format::NOR_UI_RGB10_A2:
-		break;
-	case gl_image_format::UI_RGB10_A2:
-		break;
-	case gl_image_format::NOR_UI_RGBA12:
-		break;
-	case gl_image_format::NOR_UI_RGBA16:
-		break;
-	case gl_image_format::NOR_I_RGBA16:
-		break;
-	case gl_image_format::NOR_UI_SRGB8:
-		break;
-	case gl_image_format::NOR_UI_SRGB8_ALPHA8:
-		break;
-	case gl_image_format::F_R32:
-		break;
-	case gl_image_format::F_RG32:
-		break;
-	case gl_image_format::F_RGB32:
-		break;
-	case gl_image_format::F_RGBA32:
-		break;
-	case gl_image_format::F_R11_G11_B10:
-		break;
-	case gl_image_format::rgb9_e5:
-		break;
-	case gl_image_format::I_R32:
-		break;
-	case gl_image_format::I_RG32:
-		break;
-	case gl_image_format::I_RGB32:
-		break;
-	case gl_image_format::I_RGBA32:
-		break;
-	case gl_image_format::UI_R32:
-		break;
-	case gl_image_format::UI_RG32:
-		break;
-	case gl_image_format::UI_RGB32:
-		break;
-	case gl_image_format::UI_RGBA32:
-		break;
-	default:
-		break;
-	}
-}
-
-struct glsl_image_layout_qualifier
-{
 
 
-};
 
-enum glsl_image_memory_qualifier
-{
-	COHERENT,
-	VOLATILE,
-	RESTRICT,
-	READONLY,
-	WRITEONLY
-};
 
-class glsl_image_t : public glsl_opaque_t
-{
 
-protected:
 
-	glsl_image_t() = default;
-	~glsl_image_t() = default;
 
-};
 
-#define DEFINE_GLSL_IMAGE_T(GLSL_IMAGE_T_SEMANTIC_NAME)\
-class glsl_##GLSL_IMAGE_T_SEMANTIC_NAME : public glsl_image_t\
-{\
-\
-};\
+
 
 
 
@@ -448,10 +170,7 @@ class glsl_##GLSL_IMAGE_T_SEMANTIC_NAME : public glsl_image_t\
 * glsl_vector
 * glsl_matrix
 */
-#define DEFINE_UNIFORM_INTERFACE_BLOCK
-#define DEFINE_IN_INTERFACE_BLOCK
-#define DEFINE_OUT_INTERFACE_BLOCK
-#define DEFINE_BUFFER_INTERFACE_BLOCK 
+
 
 class glsl_interface_block_t
 {
@@ -464,20 +183,7 @@ private:
 	std::vector<std::pair<const glsl_transparent_t*, std::string>> _cached_items;
 
 };
-class glsl_in_block_t
-{};
-class glsl_out_block_t
-{};
-//class glsl_vertex_shader_in_block_t {};
-//class glsl_vertex_shader_out_block_t {};
-//class glsl_tesc_shader_in_block_t {};
-//class glsl_tesc_shader_out_block_t {};
-//class glsl_tese_shader_in_block_t {};
-//class glsl_tese_shader_out_block_t {};
-//class glsl_geometry_shader_in_block_t {};
-//class glsl_geometry_shader_out_block_t {};
-//class glsl_fragment_shader_in_block_t {};
-//class glsl_fragment_shader_out_block_t {};
+
 class glsl_uniform_block_t : 
 	public glsl_interface_block_t, 
 	public glsl_token
@@ -511,178 +217,7 @@ public:
 };
 
 
-#define GLSL_UNIFORM_LAYOUT_STD140 alignas(16)
-#define GLSL_UNIFORM_LAYOUT_SHARED
-#define GLSL_UNIFORM_LAYOUT_PACKED
-#define GLSL_SHADER_STORAGE_LAYOUT_STD140 alignas(16)
-#define GLSL_SHADER_STORAGE_LAYOUT_STD430
 
-#define DEFINE_PIPELINE_PARAMETERS_BEGIN()\
-struct gl_pipeline_parameters_struct {\
-
-#define DEFINE_PIPELINE_PARAMETERS_END()\
-} parameters;\
-
-
-#define DEFINE_UNIFORM_INTERFACE_BEGIN(UNIFORM_INTERFACE_BLOCK_NAME)\
-struct UNIFORM_INTERFACE_BLOCK_NAME {\
-
-#define DEFINE_UNIFORM_INTERFACE_END(UNIFORM_INTERFACE_BLOCK_INSTANCE_NAME)\
-} UNIFORM_INTERFACE_BLOCK_INSTANCE_NAME;\
-const std::uint8_t* block_ptr()\
-{\
-	return reinterpret_cast<const std::uint8_t*>(&UNIFORM_INTERFACE_BLOCK_INSTANCE_NAME);\
-}\
-const std::uint64_t block_size()\
-{\
-	return sizeof UNIFORM_INTERFACE_BLOCK_INSTANCE_NAME;\
-}\
-
-#define DEFINE_UNIFORM_INTERFACE_ARRAY_END(UNIFORM_INTERFACE_BLOCK_INSTANCE_NAME, ARRAY_SIZE)\
-} UNIFORM_INTERFACE_BLOCK_INSTANCE_NAME[ARRAY_SIZE];\
-const std::uint8_t* block_ptr()\
-{\
-	return reinterpret_cast<const std::uint8_t*>(&UNIFORM_INTERFACE_BLOCK_INSTANCE_NAME);\
-}\
-const std::uint64_t block_size()\
-{\
-	return sizeof UNIFORM_INTERFACE_BLOCK_INSTANCE_NAME * ARRAY_SIZE;\
-}\
-
-#define DEFINE_UNIFORM_INTERFACE_ITEM(GLSL_TRANSPARENT_T, ITEM_NAME)\
-glsl_##GLSL_TRANSPARENT_T ITEM_NAME\
-
-#define DEFINE_UNIFORM_INTERFACE_ITEM_ARRAY(GLSL_TRANSPARENT_T, ITEM_NAME, ARRAY_SIZE)\
-glsl_##GLSL_TRANSPARENT_T ITEM_NAME[ARRAY_SIZE] \
-
-class PPUniformBlock : public glsl_uniform_block_t
-{
-
-public:
-	void test()
-	{
-		matrices[0].postion;
-		
-	}
-
-public:
-
-	DEFINE_UNIFORM_INTERFACE_BEGIN(Matrix)
-	DEFINE_UNIFORM_INTERFACE_ITEM_ARRAY(vec4, color, 10);
-	DEFINE_UNIFORM_INTERFACE_ITEM(vec4, postion);
-	DEFINE_UNIFORM_INTERFACE_ITEM(mat4x3, matrix, 2);
-	DEFINE_UNIFORM_INTERFACE_ARRAY_END(matrices, 10)
-
-};
-
-
-#define PIPELINE_PARAMETERS_BEGIN()
-#define PIPELINE_PARAMETERS_END()
-#define UNIFORM_BLOCK_BEGIN()
-#define UNIFORM_BLOCK_END()
-#define UNIFORM_BLOCK_ITEM()
-#define SHADER_STRORAGE_BLOCK_BEGIN()
-#define SHADER_STRORAGE_BLOCK_END()
-#define SHADER_STRORAGE_BLOCK_ITEM()
-
-#define IMAGE_ITEM(SEMANTIC_T_NAME, SEMANTIC_V_NAME, REFERRED_BY)\
-glsl_##SEMANTIC_T_NAME SEMANTIC_V_NAME;\
-
-#define SAMPLER_ITEM(SEMANTIC_T_NAME, SEMANTIC_V_NAME, REFERRED_BY)\
-glsl_##SEMANTIC_T_NAME SEMANTIC_V_NAME;\
-
-#define ATOMIC_COUNTER(SEMANTIC_V_NAME, REFERRED_BY)\
-glsl_atomic_uint SEMANTIC_V_NAME;\
-
-
-DEFINE_GLSL_SAMPLER_T(sampler1D)
-DEFINE_GLSL_SAMPLER_T(sampler1DArray)
-DEFINE_GLSL_SAMPLER_T(sampler2D)
-DEFINE_GLSL_SAMPLER_T(sampler2DArray)
-DEFINE_GLSL_SAMPLER_T(sampler2DRect)
-DEFINE_GLSL_SAMPLER_T(sampler2DMS)
-DEFINE_GLSL_SAMPLER_T(sampler2DMSArray)
-DEFINE_GLSL_SAMPLER_T(sampler3D)
-DEFINE_GLSL_SAMPLER_T(samplerCube)
-DEFINE_GLSL_SAMPLER_T(samplerCubeArray)
-DEFINE_GLSL_SAMPLER_T(samplerBuffer)
-DEFINE_GLSL_SAMPLER_T(sampler1DShadow)
-DEFINE_GLSL_SAMPLER_T(sampler2DShadow)
-DEFINE_GLSL_SAMPLER_T(sampler2DRectShadow)
-DEFINE_GLSL_SAMPLER_T(sampler1DArrayShadow)
-DEFINE_GLSL_SAMPLER_T(sampler2DArrayShadow)
-DEFINE_GLSL_SAMPLER_T(samplerCubeShadow)
-DEFINE_GLSL_SAMPLER_T(samplerCubeArrayShadow)
-DEFINE_GLSL_SAMPLER_T(isampler1D)
-DEFINE_GLSL_SAMPLER_T(isampler1DArray)
-DEFINE_GLSL_SAMPLER_T(isampler2D)
-DEFINE_GLSL_SAMPLER_T(isampler2DArray)
-DEFINE_GLSL_SAMPLER_T(isampler2DRect)
-DEFINE_GLSL_SAMPLER_T(isampler2DMS)
-DEFINE_GLSL_SAMPLER_T(isampler2DMSArray)
-DEFINE_GLSL_SAMPLER_T(isampler3D)
-DEFINE_GLSL_SAMPLER_T(isamplerCube)
-DEFINE_GLSL_SAMPLER_T(isamplerCubeArray)
-DEFINE_GLSL_SAMPLER_T(isamplerBuffer)
-DEFINE_GLSL_SAMPLER_T(isampler1DShadow)
-DEFINE_GLSL_SAMPLER_T(isampler2DShadow)
-DEFINE_GLSL_SAMPLER_T(isampler2DRectShadow)
-DEFINE_GLSL_SAMPLER_T(isampler1DArrayShadow)
-DEFINE_GLSL_SAMPLER_T(isampler2DArrayShadow)
-DEFINE_GLSL_SAMPLER_T(isamplerCubeShadow)
-DEFINE_GLSL_SAMPLER_T(isamplerCubeArrayShadow)
-DEFINE_GLSL_SAMPLER_T(usampler1D)
-DEFINE_GLSL_SAMPLER_T(usampler1DArray)
-DEFINE_GLSL_SAMPLER_T(usampler2D)
-DEFINE_GLSL_SAMPLER_T(usampler2DArray)
-DEFINE_GLSL_SAMPLER_T(usampler2DRect)
-DEFINE_GLSL_SAMPLER_T(usampler2DMS)
-DEFINE_GLSL_SAMPLER_T(usampler2DMSArray)
-DEFINE_GLSL_SAMPLER_T(usampler3D)
-DEFINE_GLSL_SAMPLER_T(usamplerCube)
-DEFINE_GLSL_SAMPLER_T(usamplerCubeArray)
-DEFINE_GLSL_SAMPLER_T(usamplerBuffer)
-DEFINE_GLSL_SAMPLER_T(usampler1DShadow)
-DEFINE_GLSL_SAMPLER_T(usampler2DShadow)
-DEFINE_GLSL_SAMPLER_T(usampler2DRectShadow)
-DEFINE_GLSL_SAMPLER_T(usampler1DArrayShadow)
-DEFINE_GLSL_SAMPLER_T(usampler2DArrayShadow)
-DEFINE_GLSL_SAMPLER_T(usamplerCubeShadow)
-DEFINE_GLSL_SAMPLER_T(usamplerCubeArrayShadow)
-
-DEFINE_GLSL_IMAGE_T(image1D)
-DEFINE_GLSL_IMAGE_T(image1DArray)
-DEFINE_GLSL_IMAGE_T(image2D)
-DEFINE_GLSL_IMAGE_T(image2DArray)
-DEFINE_GLSL_IMAGE_T(image2DRect)
-DEFINE_GLSL_IMAGE_T(image2DMS)
-DEFINE_GLSL_IMAGE_T(image2DMSArray)
-DEFINE_GLSL_IMAGE_T(image3D)
-DEFINE_GLSL_IMAGE_T(imageCube)
-DEFINE_GLSL_IMAGE_T(imageCubeArray)
-DEFINE_GLSL_IMAGE_T(imageBuffer)
-DEFINE_GLSL_IMAGE_T(iimage1D)
-DEFINE_GLSL_IMAGE_T(iimage1DArray)
-DEFINE_GLSL_IMAGE_T(iimage2D)
-DEFINE_GLSL_IMAGE_T(iimage2DArray)
-DEFINE_GLSL_IMAGE_T(iimage2DRect)
-DEFINE_GLSL_IMAGE_T(iimage2DMS)
-DEFINE_GLSL_IMAGE_T(iimage2DMSArray)
-DEFINE_GLSL_IMAGE_T(iimage3D)
-DEFINE_GLSL_IMAGE_T(iimageCube)
-DEFINE_GLSL_IMAGE_T(iimageCubeArray)
-DEFINE_GLSL_IMAGE_T(iimageBuffer)
-DEFINE_GLSL_IMAGE_T(uimage1D)
-DEFINE_GLSL_IMAGE_T(uimage1DArray)
-DEFINE_GLSL_IMAGE_T(uimage2D)
-DEFINE_GLSL_IMAGE_T(uimage2DArray)
-DEFINE_GLSL_IMAGE_T(uimage2DRect)
-DEFINE_GLSL_IMAGE_T(uimage2DMS)
-DEFINE_GLSL_IMAGE_T(uimage2DMSArray)
-DEFINE_GLSL_IMAGE_T(uimage3D)
-DEFINE_GLSL_IMAGE_T(uimageCube)
-DEFINE_GLSL_IMAGE_T(uimageCubeArray)
-DEFINE_GLSL_IMAGE_T(uimageBuffer)
 
 class glsl_atomic_uint : public glsl_opaque_t
 {

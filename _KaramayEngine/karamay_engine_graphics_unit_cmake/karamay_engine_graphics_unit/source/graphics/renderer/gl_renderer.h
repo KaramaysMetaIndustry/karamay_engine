@@ -4,7 +4,7 @@
 #include "graphics/pipeline/graphics/gl_graphics_pipeline.h"
 #include "graphics/pipeline/compute/gl_compute_pipeline.h"
 #include "graphics/texture/gl_texture.h"
-
+#include "public/_lua.h"
 class gl_graphics_pipeline;
 class gl_vertex_processing_pipeline;
 class gl_compute_pipeline;
@@ -14,50 +14,6 @@ class gl_renderer_builder
 public:
 
     gl_renderer_builder() = default;
-
-public:
-
-    std::shared_ptr<gl_renderbuffer> create_renderbuffer(const gl_renderbuffer_descriptor& descriptor)
-    {
-
-    }
-
-    std::shared_ptr<gl_renderbuffer_multisample> create_renderbuffer_multisample(const gl_renderbuffer_multisample_descriptor& descriptor)
-    {
-
-    }
-
-public:
-
-    std::shared_ptr<gl_vertex_shader> create_vertex_shader(const gl_vertex_shader_descriptor& descriptor) 
-    {
-        return std::make_shared<gl_vertex_shader>(descriptor);
-    }
-    
-    std::shared_ptr<gl_tessellation_control_shader> create_tessellation_control_shader(const gl_tessellation_control_shader_descriptor& descriptor) 
-    {
-        return std::make_shared<gl_tessellation_control_shader>(descriptor);
-    }
-    
-    std::shared_ptr<gl_tessellation_evaluation_shader> create_tessellation_evaluation_shader(const gl_tessellation_evaluation_shader_descriptor& descriptor)
-    {
-        return std::make_shared<gl_tessellation_evaluation_shader>(descriptor);
-    }
-    
-    std::shared_ptr<gl_geometry_shader> create_geometry_shader(const gl_geometry_shader_descriptor& descriptor)
-    {
-        return std::make_shared<gl_geometry_shader>(descriptor);
-    }
-    
-    std::shared_ptr<gl_fragment_shader> create_fragment_shader(const gl_fragment_shader_descriptor& descriptor)
-    {
-        return std::make_shared<gl_fragment_shader>(descriptor);
-    }
-
-    std::shared_ptr<gl_compute_shader> create_compute_shader(const gl_compute_shader_descriptor& descriptor)
-    {
-
-    }
 
 public:
 
@@ -235,7 +191,7 @@ DEFINE_RENDERER_CONSTRUCTOR(RENDERER_NAME)\
 
 
 
-#define CLASS_NAME(__CLASS__)  #__CLASS__
+
 
 
 

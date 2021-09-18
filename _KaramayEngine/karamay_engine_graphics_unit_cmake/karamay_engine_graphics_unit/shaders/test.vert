@@ -24,10 +24,11 @@ layout(std430) buffer stt
 	vec2 assx;
 } ast;
 
-uniform sampler2D texturex[10];
 layout(binding = 0, r32f, location = 1) writeonly uniform image1D positionImage1D;
-layout(binding = 0, r32f, location = 2) coherent uniform image1D normalImage1D;
+layout(binding = 0, r32f, location = 2) coherent restrict uniform image1DArray normalImage1Ds;
 layout(binding = 0, offset = 4) uniform atomic_uint counter;
+layout(binding = 0, offset = 8) uniform atomic_uint counter1;
+
 #define GLOBAL_PARAMETERS_END
 
 #define GLOBAL_FUNCTIONS_BEGIN
@@ -37,6 +38,6 @@ layout(binding = 0, offset = 4) uniform atomic_uint counter;
 #define MAIN_BEGIN
 void main()
 {
-	
+	imageLoad(normalImage1Ds, ivec2(0, 0));
 }
 #define MAIN_END

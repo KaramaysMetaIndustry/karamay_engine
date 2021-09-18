@@ -1,6 +1,8 @@
 #ifndef H_GRAPHICS_PIPELINE
 #define H_GRAPHICS_PIPELINE
 
+#include <utility>
+
 #include "graphics/pipeline/base/gl_pipeline.h"
 #include "graphics/shader/gl_vertex_shader.h"
 #include "graphics/shader/gl_tessellation_control_shader.h"
@@ -8,6 +10,8 @@
 #include "graphics/shader/gl_geometry_shader.h"
 #include "graphics/shader/gl_fragment_shader.h"
 #include "graphics/type/glsl_class.h"
+#include "graphics/type/glsl_sampler_t.h"
+#include "graphics/type/glsl_image_t.h"
 
 enum gl_stencil_op : GLenum
 {
@@ -35,22 +39,22 @@ enum gl_stencil_func : GLenum
 
 enum class gl_logic_op : GLenum
 {
-    clear = GL_CLEAR,
-    set = GL_SET,
-    copy = GL_COPY,
-    copy_inverted = GL_COPY_INVERTED,
-    noop = GL_NOOP,
-    invert = GL_INVERT,
-    and = GL_AND,
-    nand = GL_NAND,
-    or = GL_OR,
-    nor = GL_NOR,
-    xor = GL_XOR,
-    equiv = GL_EQUIV,
-    and_reverse = GL_AND_REVERSE,
-    and_inverted = GL_AND_INVERTED,
-    or_reverse = GL_OR_REVERSE,
-    or_inverted = GL_OR_INVERTED
+    CLEAR = GL_CLEAR,
+    SET = GL_SET,
+    COPY = GL_COPY,
+    COPY_INVERTED = GL_COPY_INVERTED,
+    NOOP = GL_NOOP,
+    INVERT = GL_INVERT,
+    AND = GL_AND,
+    NAND = GL_NAND,
+    OR = GL_OR,
+    NOR = GL_NOR,
+    XOR = GL_XOR,
+    EQUIV = GL_EQUIV,
+    AND_REVERSE = GL_AND_REVERSE,
+    AND_INVERTED = GL_AND_INVERTED,
+    OR_REVERSE = GL_OR_REVERSE,
+    OR_INVERTED = GL_OR_INVERTED
 };
 
 enum gl_depth_func : GLenum
@@ -85,12 +89,15 @@ enum gl_clip_control_depth_mode : GLenum
 
 class gl_graphics_pipeline_parameters{};
 
-struct gl_graphics_pipeline_descriptor
+/*
+ * for dynamical modifying
+ * */
+struct gl_graphics_pipeline_state
 {
     struct gl_vertex_assembly
     {
-       struct gl_vertex_specification{} specification;
-       struct gl_primitive_restart
+        struct gl_vertex_specification{} specification;
+        struct gl_primitive_restart
         {
             bool enabled;
             bool use_fixed_restart_primitive_index;
@@ -112,39 +119,39 @@ struct gl_graphics_pipeline_descriptor
         {
             std::shared_ptr<gl_geometry_shader> shader;
         } geometry_shading;
-		struct gl_post_vertex_processing
-		{
-			struct gl_transform_feedback
-			{
-				
-				std::string semantic_name;
-			} transform_feedback;
+        struct gl_post_vertex_processing
+        {
+            struct gl_transform_feedback
+            {
+
+                std::string semantic_name;
+            } transform_feedback;
             struct gl_flatshading
             {
                 gl_provoke_mode provoke_mode;
             } flatshading;
-			struct gl_primitive_clipping
-			{
+            struct gl_primitive_clipping
+            {
                 std::uint32_t clip_plane_index{0};
                 gl_clip_control_origin clip_control_origin{ gl_clip_control_origin::lower_left };
                 gl_clip_control_depth_mode clip_control_depth_mode{};
                 // 0, 1
                 std::double_t near_clipping_distance, far_clipping_distance;
-			} primitive_clipping;
-			struct gl_coordinate_transformations
-			{
+            } primitive_clipping;
+            struct gl_coordinate_transformations
+            {
                 std::int32_t viewport_x, viewport_y;
                 std::uint32_t viewport_width, viewport_height; // glViewport
-			} coordinate_transformations;
-		} post_vertex_processing;
+            } coordinate_transformations;
+        } post_vertex_processing;
     } vertex_processing; // vertex shading, tessellation, geometry shading, transform feedback, clipping, coordinates transformation
-    struct gl_primitive_assembly 
+    struct gl_primitive_assembly
     {
         bool discard_all_primitives; // discard all primitives, if true the pipeline wont go head
     } primitive_assembly; // collect primitives or discard all of them
     struct gl_rasterization
     {
-        
+
     } rasterization; // the stage generate fragments from primitives (points, lines, polygons)
     struct gl_fragment_processing
     {
@@ -230,25 +237,58 @@ struct gl_graphics_pipeline_descriptor
     {
         std::shared_ptr<gl_framebuffer> framebuffer;
     } render_target;
-    std::shared_ptr<gl_graphics_pipeline_parameters> parameters;
 };
+
+/*
+ * for building graphics pipe
+ * */
+struct gl_graphics_pipeline_descriptor
+{
+    std::shared_ptr<gl_graphics_pipeline_parameters> parameters;
+    gl_graphics_pipeline_state state;
+
+};
+
 
 class gl_graphics_pipeline : public gl_pipeline
 {
 public:
 
     gl_graphics_pipeline() = delete;
-    gl_graphics_pipeline(const gl_graphics_pipeline_descriptor& descriptor) :
-        _descriptor(descriptor)
-    {}
+    explicit gl_graphics_pipeline(gl_graphics_pipeline_descriptor&& descriptor) :
+        _descriptor(std::move(descriptor))
+    {
+        _initialize();
+    }
     gl_graphics_pipeline(const gl_graphics_pipeline&) = delete;
     gl_graphics_pipeline& operator=(const gl_graphics_pipeline&) = delete;
 
     ~gl_graphics_pipeline() = default;
 
+public:
+
+    void draw_arrays(std::int32_t first, std::int32_t count)
+    {
+        _bind();
+        glDrawArrays(GL_POINTS, first, count);
+        _unbind();
+    }
+
+    void draw_indices()
+    {}
+
+public:
+
+   gl_graphics_pipeline_state& state(){
+        return _descriptor.state;
+    }
+
+
 private:
     
-    const gl_graphics_pipeline_descriptor _descriptor;
+    gl_graphics_pipeline_descriptor _descriptor;
+
+    std::shared_ptr<gl_program> _program;
 
 public:
 
@@ -361,99 +401,243 @@ public:
         // load source code and compile  
     }
 
-    bool ouput_pipeline_glsl_template(const std::string& renderer_dir) const override
+    bool output_pipeline_glsl_template(const std::string& renderer_dir) const
     {
         const std::string _pipeline_dir = renderer_dir + _name + "\\";
         if (std::filesystem::create_directory(_pipeline_dir))
         {
-
+            return true;
         }
+        return false;
     }
 
-    std::vector<std::shared_ptr<gl_shader>> _shaders;
-
-    void generate_pipeline_dir(const std::string& renderer_dir)
-    {
-        if (std::filesystem::exists(renderer_dir)) // check the renderer dir
-        {
-            std::string _pipeline_dir = renderer_dir + _name + "\\";
-            if (std::filesystem::create_directory(_pipeline_dir))
-            {
-                for (const auto& _shader : _shaders)
-                {
-                    std::ofstream _file(_pipeline_dir + _name + ".ext");
-                    _file.open(_pipeline_dir + _name + ".ext", 1, 2);
-                    _file.write(_shader->get_shader_glsl_template().c_str(), _shader->get_shader_glsl_template().length());
-                    _file.close();
-                }
-                //std::ofstream _xml_file;
-                //_xml_file.open(_pipeline_dir + _name + ".xml");
-                //_xml_file.write();
-                //_xml_file.close();
-            }
-        }
-    }
-
-public:
-
-    void set_primitive_clipping(gl_clip_control_origin origin, gl_clip_control_depth_mode depth_mode)
-    {
-        /*_descriptor.vertex_processing.post_vertex_processing.primitive_clipping.clip_control_origin = origin;
-        _descriptor.vertex_processing.post_vertex_processing.primitive_clipping.clip_control_depth_mode = depth_mode;*/
-    }
-
-    void set_viewport(std::int32_t x, std::int32_t y, std::uint32_t width, std::uint32_t height)
-    {
-        /*_descriptor.vertex_processing.post_vertex_processing.coordinate_transformations.viewport_x = x;
-        _descriptor.vertex_processing.post_vertex_processing.coordinate_transformations.viewport_y = y;
-        _descriptor.vertex_processing.post_vertex_processing.coordinate_transformations.viewport_width = width;
-        _descriptor.vertex_processing.post_vertex_processing.coordinate_transformations.viewport_height = height;*/
-    }
 
 private:
+
+    void _initialize()
+    {
+    }
+
+    void _bind()
+    {
+        _update_pipeline_state();
+        _program->render(0.0f);
+    }
+
+    void _unbind()
+    {
+
+    }
+
+
+
+    void _update_pipeline_state()
+    {
+        // vertex specification
+        {
+            glEnable(GL_PRIMITIVE_RESTART);
+            glPrimitiveRestartIndex(0);
+            // or
+            glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);// 2^N - 1
+        }
+
+        // vertex process
+        {
+            //shading
+
+            // flatshading
+            glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);
+
+            // clipping
+            glEnable(GL_CLIP_DISTANCE0); // [0, GL_MAX_CLIP_DISTANCES-1]
+            glClipControl(GL_LOWER_LEFT, GL_NEGATIVE_ONE_TO_ONE);
+            // glEnable(GL_DEPTH_CLAMP);
+            glDepthRange(1.0l, 1.1l);
+            //glDepthRangeArrayv();
+            //glDepthRangef();
+            glViewport();
+            glDepthRangeIndexed();
+            glViewportArrayv();
+            glViewportIndexedf();
+            glViewportIndexedfv();
+
+
+        }
+
+        // primitive assmebly
+        {
+
+        }
+        // rasterization
+        {
+            // 到达光栅化之前抛弃所有图元, 使得光栅化包括光栅化之后的阶段全部失效
+            if (true)
+                glEnable(GL_RASTERIZER_DISCARD);
+            else
+                glDisable(GL_RASTERIZER_DISCARD);
+
+            // multisampling
+            glEnable(GL_MULTISAMPLE);
+            glEnable(GL_SAMPLE_SHADING);
+            glMinSampleShading();
+            glGetMultisamplefv();
+
+            // points
+            glEnable(GL_PROGRAM_POINT_SIZE);
+            glDisable(GL_PROGRAM_POINT_SIZE);
+            glPointSize(0);
+            glPointParameteri();
+            glPointParameteriv();
+            glPointParameterf();
+            glPointParameterfv();
+
+            // line segments
+            glEnable(GL_LINE_SMOOTH);
+            glLineWidth(1.0f);
+
+            // polygons
+            glEnable(GL_POLYGON_SMOOTH);
+
+            glEnable(GL_CULL_FACE);
+            glFrontFace(GL_CCW);
+            glCullFace(GL_FRONT_AND_BACK);
+
+            // polygon rast & depth offset
+            glEnable(GL_POLYGON_OFFSET_FILL);
+            glEnable(GL_POLYGON_OFFSET_LINE);
+            glEnable(GL_POLYGON_OFFSET_POINT);
+            glEnable(GL_POLYGON_SMOOTH);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+            glPolygonOffsetClamp();
+            glPolygonOffset(1.2f, 0);
+
+        }
+
+        // pre frag operations
+        {
+
+            // scissor test
+            glEnable(GL_SCISSOR_TEST);
+            glDisable(GL_SCISSOR_TEST);
+
+            glEnablei(GL_SCISSOR_TEST, 0);
+            glDisablei(GL_SCISSOR_TEST, 0);
+            glScissor(0, 0, 0, 0);
+            glScissorArrayv(0, 100, nullptr);
+            glScissorIndexed();
+            glScissorIndexedv();
+
+            // multisample fragment ops
+
+        }
+
+        // fragment shading
+        {
+
+        }
+
+        glEnable(GL_SAMPLE_COVERAGE);
+
+        // alpha to coverage
+        {
+            glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+            glEnable(GL_SAMPLE_ALPHA_TO_ONE); // or
+        }
+        // Stencil test
+        {
+            // do stencil test and update the stencil buffer
+            glEnable(GL_STENCIL_TEST);
+            gl_stencil_func _stencil_func;
+            glStencilFunc(_stencil_func, 0, 1); // set front-face and back-face function and
+            glStencilFuncSeparate(static_cast<GLenum>(_stencil_func), static_cast<GLenum>(_stencil_func), 0, 1);
+
+            gl_stencil_op _stencil_op;
+            // stencil test fail , stencil stencil test pass but depth test fail, both pass
+            glStencilOpSeparate(GL_FRONT, _stencil_op, _stencil_op, _stencil_op);
+            glStencilOpSeparate(GL_BACK, _stencil_op, _stencil_op, _stencil_op);
+            glStencilOpSeparate(GL_FRONT_AND_BACK, _stencil_op, _stencil_op, _stencil_op);
+            //glStencilOp(_stencil_op, _stencil_op, _stencil_op);
+            glStencilMaskSeparate(GL_FRONT, 1);
+            glStencilMaskSeparate(GL_BACK, 1);
+            glStencilMaskSeparate(GL_FRONT_AND_BACK, 1);
+            //glStencilMask(1);
+        }
+        // Depth test
+        {
+            glEnable(GL_DEPTH_TEST);
+            glDepthFunc(df_never);
+        }
+        // occlusion queries
+        {
+
+        }
+        // blending
+        {
+            glEnable(GL_BLEND);
+            glBlendColor(1.0f, 1.0f, 1.0f, 1.0f);
+            glBlendFunc();
+            glBlendFuncSeparate();
+            glBlendFunci();
+            glBlendFuncSeparatei();
+            glBlendEquation();
+            glBlendEquationi();
+            glBlendEquationSeparate();
+            glBlendEquationSeparatei();
+        }
+        // sRGB Conversion
+        {
+            glEnable(GL_FRAMEBUFFER_SRGB);
+
+        }
+        //Dithering
+        {
+            glEnable(GL_DITHER);
+        }
+        // color logic operations
+        {
+
+            gl_logic_op _logic_op;
+            glEnable(GL_COLOR_LOGIC_OP);
+            glDisable(GL_COLOR_LOGIC_OP);
+            glLogicOp(static_cast<GLenum>(_logic_op));
+        }
+        // additional multisample fragment operations
+        {
+            glEnable(GL_MULTISAMPLE);
+            glSampleCoverage();
+        }
+
+        glEnable(GL_SAMPLE_MASK);
+        glSampleMaski();
+
+        glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+
+    }
 
     bool _check_shader_ext(const std::string& path, const std::string& ext)
     {
         return path.substr(path.find_first_of('.')) == ext;
     }
 
-    void _install();
 
-    void _uninstall();
 
-public:
 
-    inline void draw_points(std::int32_t first, std::uint32_t count)
-    {
-        glDrawArrays(GL_POINTS, 0, 100);
-    }
-
-    inline void draw_lines() {}
-
-    inline void draw_triangles() {}
-
-    inline void draw_triangle_strips() {}
-
-    inline void draw_rectangles() {}
 
 };
 
 #define DEFINE_GRAPHICS_PIPELINE_PARAMETERS(PIPELINE_NAME)\
 struct gl_##PIPELINE_NAME##_graphics_pipeline_parameters : public gl_graphics_pipeline_parameters\
 
+#define CLASS_NAME(__CLASS__)  #__CLASS__
+
 
 
 #define DEFINE_PROGRAM_PARAMETER_IMAGE(GLSL_IMAGE_T, V_NAME) \
-glsl_##GLSL_IMAGE_T V_NAME;\
-
-#define DEFINE_PROGRAM_PARAMETER_IMAGE_ARRAY(GLSL_IMAGE_T, V_NAME, ARRAY_SIZE)\
-glsl_##GLSL_IMAGE_T V_NAME[ARRAY_SIZE]; \
+glsl_##GLSL_IMAGE_T V_NAME{CLASS_NAME(V_NAME)};\
 
 #define DEFINE_PROGRAM_PARAMETER_SAMPLER(GLSL_SAMPLER_T, V_NAME)\
 glsl_##GLSL_SAMPLER_T V_NAME;\
 
-#define DEFINE_PROGRAM_PARAMETER_SAMPLER_ARRAY(GLSL_SAMPLER_T, V_NAME, ARRAY_SIZE)\
-glsl_##GLSL_SAMPLER_T V_NAME[ARRAY_SIZE]; \
 
 #define DEFINE_PROGRAM_PARAMETER_ATOMIC_COUNTER(V_NAME)\
 glsl_atomic_uint V_NAME;\

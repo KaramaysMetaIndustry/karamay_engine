@@ -135,6 +135,8 @@ protected:
 
 public:
 
+    virtual gl_image_format format() const = 0;
+
 	inline void bind()
 	{
 		std::uint32_t unit = 0;
@@ -695,7 +697,11 @@ private:
 *  Images in this texture all are 2-dimensional. They have width and height, but no depth.
 */
 class gl_texture_2d_base : public gl_texture_base
-{};
+{
+public:
+    virtual std::int32_t mipmaps_count() const = 0;
+
+};
 
 template<
 	gl_image_format _FORMAT, 
@@ -720,6 +726,14 @@ public:
 	}
 
 	~gl_texture_2d() override = default;
+
+public:
+
+    virtual std::int32_t mipmaps_count() const override
+    {
+        return _MIPMAPS_COUNT;
+    }
+
 
 public:
 
@@ -775,7 +789,13 @@ private:
 };
 
 class gl_texture_2d_array_base : public gl_texture_base
-{};
+{
+
+public:
+    virtual std::int32_t mipmaps_count() const = 0;
+    virtual std::int32_t elements_count() const = 0;
+
+};
 
 template<
 	std::int32_t _ELEMENTS_COUNT,

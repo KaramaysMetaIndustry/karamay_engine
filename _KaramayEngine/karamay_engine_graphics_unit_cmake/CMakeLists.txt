@@ -497,8 +497,6 @@ add_executable(karamay_engine_graphics_unit
         karamay_engine_graphics_unit/source/graphics/glo/gl_object.h
         karamay_engine_graphics_unit/source/graphics/mesh/material/gl_material.cpp
         karamay_engine_graphics_unit/source/graphics/mesh/material/gl_material.h
-        karamay_engine_graphics_unit/source/graphics/mesh/gl_mesh.cpp
-        karamay_engine_graphics_unit/source/graphics/mesh/gl_mesh.h
         "karamay_engine_graphics_unit/source/graphics/pipeline/compute/gl_compute_pipeline.cpp"
         "karamay_engine_graphics_unit/source/graphics/pipeline/compute/gl_compute_pipeline.h"
         "karamay_engine_graphics_unit/source/graphics/pipeline/graphics/gl_graphics_pipeline.cpp"
@@ -564,7 +562,8 @@ karamay_engine_graphics_unit/source/graphics/buffers/gl_buffers.h
 "karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer_dispatcher.h" 
 "karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer_dispatcher.cpp" 
 "karamay_engine_graphics_unit/source/graphics/shader/gl_compute_shader.h" 
-"karamay_engine_graphics_unit/source/graphics/shader/gl_compute_shader.cpp")
+"karamay_engine_graphics_unit/source/graphics/shader/gl_compute_shader.cpp"
+        karamay_engine_graphics_unit/source/public/_lua.h karamay_engine_graphics_unit/source/graphics/type/glsl_sampler_t.h karamay_engine_graphics_unit/source/graphics/type/glsl_image_t.h)
 
 target_link_libraries(karamay_engine_graphics_unit glew32s.lib glfw3.lib)
 
