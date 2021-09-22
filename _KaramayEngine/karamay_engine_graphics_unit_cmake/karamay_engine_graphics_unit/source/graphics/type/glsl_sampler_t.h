@@ -6,18 +6,15 @@
 class glsl_sampler_t : public glsl_opaque_t
 {
 public:
-    std::shared_ptr<gl_sampler> sampler;
-
-protected:
     glsl_sampler_t() = delete;
-    explicit glsl_sampler_t(std::string& value_name) :
-        _value_name(std::move(value_name))
+    glsl_sampler_t(const std::string& type_name, const std::string& value_name)
     {
-
+        _token = "layout(binding={0}) uniform {1} {2};";
     }
-    ~glsl_sampler_t() = default;
+    glsl_sampler_t(const glsl_sampler_t&) = delete;
+    glsl_sampler_t& operator=(const glsl_sampler_t&) = delete;
 
-    std::string _value_name;
+    ~glsl_sampler_t() = default;
 
 };
 
@@ -29,16 +26,22 @@ public:
         std::shared_ptr<gl_sampler> sampler;
     } resource;
 
-public:
-    glsl_sampler1D(std::string value_name) :
-            glsl_sampler_t(value_name)
+    glsl_sampler1D() = delete;
+    explicit glsl_sampler1D(const std::string& value_name) :
+            glsl_sampler_t("sampler1D", value_name)
     {}
-
+    glsl_sampler1D(const glsl_sampler1D&) = delete;
+    glsl_sampler1D& operator=(const glsl_sampler1D&) = delete;
 
     void bind() override
     {
-        if(!resource.texture_1d) return;
-        glBindTextureUnit(GL_TEXTURE0 + 1, resource.texture_1d->get_handle());
+        if(!resource.texture_1d)
+        {
+            std::cerr<<"warning, sampler1D do not have resource bound."<<std::endl;
+            return;
+        }
+
+        glBindTextureUnit(0, resource.texture_1d->get_handle());
         if(resource.sampler)
         {
             resource.sampler->bind(0);
@@ -48,14 +51,12 @@ public:
     void unbind() override
     {
         if(!resource.texture_1d) return;
-        glBindTextureUnit(GL_TEXTURE0 + 1, 0);
+        glBindTextureUnit(0, 0);
         if(resource.sampler)
         {
             resource.sampler->unbind();
         }
     }
-
-
 
 };
 
@@ -67,21 +68,22 @@ public:
         std::shared_ptr<gl_sampler> sampler;
     } resource;
 
-public:
     glsl_sampler1DArray() = delete;
-    glsl_sampler1DArray(std::string value_name) :
-        glsl_sampler_t(value_name)
-    {
+    explicit glsl_sampler1DArray(const std::string& value_name) :
+            glsl_sampler_t("sampler1DArray", value_name)
+    {}
+    glsl_sampler1DArray(const glsl_sampler1DArray&) = delete;
+    glsl_sampler1DArray& operator=(const glsl_sampler1DArray&) = delete;
 
-    }
-
-
-
+    ~glsl_sampler1DArray() = default;
 
     void bind() override
     {
 
     }
+
+    void unbind() override
+    {}
 
 };
 

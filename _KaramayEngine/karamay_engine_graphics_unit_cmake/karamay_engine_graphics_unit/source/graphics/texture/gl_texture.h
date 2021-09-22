@@ -171,6 +171,11 @@ public:
 
 public:
 
+    bool exists(std::int32_t mipmap_index)
+    {
+
+    }
+
 	void generate_mipmaps()
 	{
 		glBindTexture(GL_TEXTURE_1D, _handle);

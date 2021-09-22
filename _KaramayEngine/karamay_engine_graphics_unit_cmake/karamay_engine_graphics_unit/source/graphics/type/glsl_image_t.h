@@ -7,6 +7,12 @@
 
 #include "glsl_class.h"
 
+#define check_and_log(expr, fatal) \
+if(expr){\
+std::cerr<<fatal<<std::endl;\
+return;\
+}\
+
 std::string transfer_to_image_format_token(gl_image_format format)
 {
     switch (format)
@@ -156,64 +162,100 @@ gl_image_access_mode transfer(glsl_image_memory_qualifier qualifier)
 
 
 class glsl_image_t : public glsl_opaque_t {
-protected:
-    glsl_image_t() = default;
+public:
+    glsl_image_t() = delete;
+    glsl_image_t(gl_image_format format, gl_image_access_mode access_mode, const std::string& type_name, const std::string& value_name) :
+        _format(format),
+        _access_mode(access_mode)
+    {
+        _token = "layout(binding={0},{1}) uniform {2} {3} {4};";
+    }
     ~glsl_image_t() = default;
 
-    std::string _value_name;
+protected:
 
-public:
-    virtual void bind() = 0;
-    virtual void unbind() = 0;
+    gl_image_access_mode _access_mode;
+    gl_image_format _format;
+
 };
 
-class glsl_image1D : public glsl_image_t
-{
+class glsl_image1D : public glsl_image_t{
 public:
-    glsl_image1D()
-    {}
-
-    struct glsl_image1DResource
-    {
+    struct glsl_image1DResource{
         std::shared_ptr<gl_texture_1d_base> texture_1d;
         std::int32_t mipmap_index;
-        glsl_image1DResource() : texture_1d(nullptr), mipmap_index(0) {}
-    } resource;
+        glsl_image1DResource() : texture_1d(nullptr), mipmap_index(0){}
+    }resource;
 
-    std::string token() override
-    {
-        return t_name;
-    }
+    glsl_image1D() = delete;
+    glsl_image1D(gl_image_format format, gl_image_access_mode access_mode, const std::string& value_name) :
+            glsl_image_t(format, access_mode, "image1D", value_name)
+    {}
 
+    glsl_image1D(const glsl_image1D&) = delete;
+    glsl_image1D& operator=(const glsl_image1D&) = delete;
+
+    ~glsl_image1D() = default;
+
+public:
     void bind() override
     {
-        if(!resource.texture_1d) return;
-        glBindTextureUnit(GL_TEXTURE0 + 0, resource.texture_1d->get_handle());
+        auto& texture_1d = resource.texture_1d;
+        check_and_log(texture_1d, "do not have texture resource.")
+        check_and_log(texture_1d->exists(resource.mipmap_index), "the specified mipmap_index does not exist.")
+        check_and_log(texture_1d->format() != _format,"the texture format does not fit to image.")
+
+        glBindImageTexture(0, // unit
+                           resource.texture_1d->get_handle(), resource.mipmap_index, // mipmap
+                           GL_TRUE, 0, // not an array or whole array
+                           static_cast<GLenum>(_access_mode), // access
+                           static_cast<GLenum>(resource.texture_1d->format()) // format
+                           );
     }
 
     void unbind() override
     {
         if(!resource.texture_1d) return;
-        glBindTextureUnit(GL_TEXTURE0 + 0, 0);
+        //glBindImageTexture(0, )
     }
-
-private:
-
-    static std::string t_name;
 
 };
 
 class glsl_image1DArray : private glsl_image_t
 {
 public:
-    glsl_image1DArray(){}
-
-    struct glsl_image1DArrayResource
-    {
+    struct glsl_image1DArrayResource{
         std::shared_ptr<gl_texture_1d_array_base> texture_1d_array;
         std::int32_t mipmap_index;
         glsl_image1DArrayResource() : texture_1d_array(nullptr), mipmap_index(0){}
-    } resource;
+    }resource;
+
+    glsl_image1DArray() = delete;
+    glsl_image1DArray(gl_image_format format, gl_image_access_mode access_mode, const std::string& value_name) :
+            glsl_image_t(format, access_mode, "image1DArray", value_name)
+    {}
+
+    glsl_image1DArray(const glsl_image1DArray&) = delete;
+    glsl_image1DArray& operator=(const glsl_image1DArray&) = delete;
+
+    ~glsl_image1DArray() = default;
+
+public:
+    void bind() override
+    {
+        if(!resource.texture_1d_array) return;
+        glBindImageTexture(0,
+                           resource.texture_1d_array->get_handle(), resource.mipmap_index,
+                           GL_TRUE, 0,
+                           static_cast<GLenum>(_access_mode),
+                           static_cast<GLenum>(resource.texture_1d_array->format())
+                           );
+    }
+
+    void unbind() override
+    {
+        if(!resource.texture_1d_array) return;
+    }
 
 };
 
@@ -361,7 +403,7 @@ class glsl_image3D : private glsl_image_t
 
 class glsl_imageBuffer : private glsl_image_t
 {
-  
+
     struct glsl_imageBufferResource
     {
         std::shared_ptr<gl_texture_buffer_base> texture_buffer;

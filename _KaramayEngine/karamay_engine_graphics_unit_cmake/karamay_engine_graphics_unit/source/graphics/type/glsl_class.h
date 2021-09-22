@@ -7,12 +7,12 @@
 #include "graphics/sampler/gl_sampler.h"
 #include "graphics/texture/gl_texture.h"
 
-class glsl_t {};
-
-class glsl_token
-{
+class glsl_t {
 public:
-	virtual const std::string& generate_token() const;
+    [[nodiscard]] const std::string& token() const {return _token;}
+
+protected:
+    std::string _token;
 };
 
 class glsl_transparent_t : public glsl_t
