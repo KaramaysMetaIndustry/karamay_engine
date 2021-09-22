@@ -167,7 +167,6 @@ public:
     virtual void unbind() = 0;
 };
 
-
 class glsl_image1D : public glsl_image_t
 {
 public:

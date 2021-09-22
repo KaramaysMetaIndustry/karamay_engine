@@ -1,10 +1,13 @@
-#ifndef KARAMAY_ENGINE_GRAPHICS_UNIT_GLSL_SAMPLER_T_H
-#define KARAMAY_ENGINE_GRAPHICS_UNIT_GLSL_SAMPLER_T_H
+#ifndef GLSL_SAMPLER_T_H
+#define GLSL_SAMPLER_T_H
 
 #include "glsl_class.h"
 
 class glsl_sampler_t : public glsl_opaque_t
 {
+public:
+    std::shared_ptr<gl_sampler> sampler;
+
 protected:
     glsl_sampler_t() = delete;
     explicit glsl_sampler_t(std::string& value_name) :
@@ -16,40 +19,54 @@ protected:
 
     std::string _value_name;
 
-public:
-    virtual void bind() = 0;
-    virtual void unbind() = 0;
 };
 
-
 class glsl_sampler1D : public glsl_sampler_t {
+public:
+    struct glsl_sampler1DResource
+    {
+        std::shared_ptr<gl_texture_1d_base> texture_1d;
+        std::shared_ptr<gl_sampler> sampler;
+    } resource;
+
 public:
     glsl_sampler1D(std::string value_name) :
             glsl_sampler_t(value_name)
     {}
 
-    struct glsl_sampler1DResource
-    {
-        std::shared_ptr<gl_texture_1d_base> texture_1d;
-    } resource;
 
     void bind() override
     {
         if(!resource.texture_1d) return;
         glBindTextureUnit(GL_TEXTURE0 + 1, resource.texture_1d->get_handle());
+        if(resource.sampler)
+        {
+            resource.sampler->bind(0);
+        }
     }
 
     void unbind() override
     {
         if(!resource.texture_1d) return;
         glBindTextureUnit(GL_TEXTURE0 + 1, 0);
+        if(resource.sampler)
+        {
+            resource.sampler->unbind();
+        }
     }
 
-private:
+
 
 };
 
 class glsl_sampler1DArray : public glsl_sampler_t {
+public:
+    struct glsl_sampler1DArrayResource
+    {
+        std::shared_ptr<gl_texture_1d_array_base> texture_array;
+        std::shared_ptr<gl_sampler> sampler;
+    } resource;
+
 public:
     glsl_sampler1DArray() = delete;
     glsl_sampler1DArray(std::string value_name) :
@@ -58,10 +75,7 @@ public:
 
     }
 
-    struct glsl_sampler1DArrayResource
-    {
-        std::shared_ptr<gl_texture_1d_array_base> texture_array;
-    } resource;
+
 
 
     void bind() override

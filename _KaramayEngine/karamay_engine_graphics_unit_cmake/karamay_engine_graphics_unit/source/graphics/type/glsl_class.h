@@ -142,8 +142,8 @@ protected:
 
 public:
 
-    virtual std::string token() = 0;
-
+    virtual void bind() = 0;
+    virtual void unbind() = 0;
 };
 
 

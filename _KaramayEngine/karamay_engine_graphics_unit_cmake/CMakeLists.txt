@@ -563,7 +563,7 @@ karamay_engine_graphics_unit/source/graphics/buffers/gl_buffers.h
 "karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer_dispatcher.cpp" 
 "karamay_engine_graphics_unit/source/graphics/shader/gl_compute_shader.h" 
 "karamay_engine_graphics_unit/source/graphics/shader/gl_compute_shader.cpp"
-        karamay_engine_graphics_unit/source/public/_lua.h karamay_engine_graphics_unit/source/graphics/type/glsl_sampler_t.h karamay_engine_graphics_unit/source/graphics/type/glsl_image_t.h)
+        karamay_engine_graphics_unit/source/public/_lua.h karamay_engine_graphics_unit/source/graphics/type/glsl_sampler_t.h karamay_engine_graphics_unit/source/graphics/type/glsl_image_t.h karamay_engine_graphics_unit/source/graphics/type/glsl_interface_block_t.h)
 
 target_link_libraries(karamay_engine_graphics_unit glew32s.lib glfw3.lib)
 
