@@ -1,9 +1,5 @@
-//
-// Created by jichengcheng on 2021/9/18.
-//
-
-#ifndef KARAMAY_ENGINE_GRAPHICS_UNIT_GLSL_IMAGE_T_H
-#define KARAMAY_ENGINE_GRAPHICS_UNIT_GLSL_IMAGE_T_H
+#ifndef GLSL_IMAGE_T_H
+#define GLSL_IMAGE_T_H
 
 #include "glsl_class.h"
 
@@ -13,131 +9,39 @@ std::cerr<<fatal<<std::endl;\
 return;\
 }\
 
-std::string transfer_to_image_format_token(gl_image_format format)
-{
-    switch (format)
-    {
-        case gl_image_format::NOR_UI_R8:
-            break;
-        case gl_image_format::NOR_I_R8:
-            break;
-        case gl_image_format::NOR_UI_R16:
-            break;
-        case gl_image_format::NOR_I_R16:
-            break;
-        case gl_image_format::NOR_UI_RG8:
-            break;
-        case gl_image_format::NOR_I_RG8:
-            break;
-        case gl_image_format::NOR_UI_RG16:
-            break;
-        case gl_image_format::NOR_I_RG16:
-            break;
-        case gl_image_format::NOR_UI_R3_G3_B2:
-            break;
-        case gl_image_format::NOR_UI_R5_G6_B5:
-            break;
-        case gl_image_format::NOR_UI_RGB8:
-            break;
-        case gl_image_format::NOR_I_RGB8:
-            break;
-        case gl_image_format::NOR_UI_RGB16:
-            break;
-        case gl_image_format::NOR_I_RGB16:
-            break;
-        case gl_image_format::NOR_UI_RGBA2:
-            break;
-        case gl_image_format::NOR_UI_RGBA4:
-            break;
-        case gl_image_format::NOR_UI_RGB5_A1:
-            break;
-        case gl_image_format::NOR_UI_RGBA8:
-            break;
-        case gl_image_format::NOR_I_RGBA8:
-            break;
-        case gl_image_format::NOR_UI_RGB10_A2:
-            break;
-        case gl_image_format::UI_RGB10_A2:
-            break;
-        case gl_image_format::NOR_UI_RGBA16:
-            break;
-        case gl_image_format::NOR_I_RGBA16:
-            break;
-        case gl_image_format::NOR_UI_SRGB8:
-            break;
-        case gl_image_format::NOR_UI_SRGB8_ALPHA8:
-            break;
-        case gl_image_format::F_R32:
-            break;
-        case gl_image_format::F_RG32:
-            break;
-        case gl_image_format::F_RGB32:
-            break;
-        case gl_image_format::F_RGBA32:
-            break;
-        case gl_image_format::F_R11_G11_B10:
-            break;
-        case gl_image_format::I_R32:
-            break;
-        case gl_image_format::I_RG32:
-            break;
-        case gl_image_format::I_RGB32:
-            break;
-        case gl_image_format::I_RGBA32:
-            break;
-        case gl_image_format::UI_R32:
-            break;
-        case gl_image_format::UI_RG32:
-            break;
-        case gl_image_format::UI_RGB32:
-            break;
-        case gl_image_format::UI_RGBA32:
-            break;
-        default:
-            break;
-    }
-}
 enum class glsl_image_format_layout_qualifier
 {
-    // r16f, r32f
-    // rg16f, rg32f
-    // rgb16f, rgb32f
-    // rgba16f, rgba32f
+    R16F,RG16F,RGBA16F,
+    R32F,RG32F,RGBA32F,
+    R11F_G11F_B10F,
 
-    // rgba8, rgba16
-    // r11f_g11f_b10f
-    // rgb10_a2, rgb10_a2ui
-    // rg8, rg16
-    // r8, r16
+    R8,R16,
+    RG8,RG16,
+    RGB8,RGB16,
+    RGB10_A2,
 
-    // rgba{8,16,32}i
-    // rg{8,16,32}i
-    // r{8,16,32}
-    // rgba{32,16,8}ui
-    // rg{32,16,8} ui
-    // r{32,16,8} ui
-    // rgba{16,8}_snorm
-    // rg{16,8}_snorm
-    // r{16,8}_snorm
+    R8_SNORM,R16_SNORM,
+    RG8_SNORM,RG16_SNORM,
+    RGBA8_SNORM,RGBA16_SNORM,
+
+    R8I,R16I,R32I,
+    RG8I,RG16I,RG32I,
+    RGBA8I,RGBA16I,RGBA32I,
+
+    R8UI,R16UI,R32UI,
+    RG8UI,RG16UI,RG32UI,
+    RGBA8UI,RGBA16UI,RGBA32UI,
+    RGB10_A2UI,
 };
-
-
-struct glsl_image_layout_qualifier
-{
-};
-
-enum class glsl_image_layout_format_qualifier
-{};
 
 enum class glsl_image_memory_qualifier
 {
-    _coherent,
-    _volatile,
-    _restrict,
-    _readonly,
-    _writeonly
+    COHERENT,
+    VOLATILE,
+    RESTRICT,
+    READONLY,
+    WRITEONLY
 };
-
 
 enum class gl_image_access_mode : GLenum
 {
@@ -146,41 +50,137 @@ enum class gl_image_access_mode : GLenum
     READ_WRITE = GL_READ_WRITE
 };
 
-
-gl_image_access_mode transfer(glsl_image_memory_qualifier qualifier)
-{
-    switch (qualifier) {
-        case glsl_image_memory_qualifier::_coherent: return gl_image_access_mode::READ_WRITE;
-        case glsl_image_memory_qualifier::_volatile: return gl_image_access_mode::READ_WRITE;
-        case glsl_image_memory_qualifier::_restrict: return gl_image_access_mode::READ_WRITE;
-        case glsl_image_memory_qualifier::_readonly: return gl_image_access_mode::READ_ONLY;
-        case glsl_image_memory_qualifier::_writeonly: return gl_image_access_mode::WRITE_ONLY;
-        default: return gl_image_access_mode::READ_WRITE;
-    }
-}
-
 /*
  * layout(FormatLayoutQualifier) uniform [MemoryQualifier] image IMAGE_NAME[10];
  *
  * Image variables refer to an image, of a particular type, stored within a texture.
  * These are used for arbitrary loading/storing of values within shaders. [Ëæ»ú·ÃÎÊ]
- *
+ * these type have array semantics
  * */
 class glsl_image_t : public glsl_opaque_t {
 public:
     glsl_image_t() = delete;
-    glsl_image_t(gl_image_format format, gl_image_access_mode access_mode, const std::string& type_name, const std::string& value_name) :
-        _format(format),
-        _access_mode(access_mode)
+    glsl_image_t(glsl_image_format_layout_qualifier format_layout_qualifier, glsl_image_memory_qualifier memory_qualifier, const char* type_name, const char* value_name) :
+            _type_name(type_name),
+            _value_name(value_name),
+            _format_layout_qualifier(format_layout_qualifier),
+            _memory_qualifier(memory_qualifier),
+            _image_format(transfer_format_layout_qualifier(format_layout_qualifier)),
+            _access_mode(transfer_memory_qualifier(memory_qualifier))
     {
-        _token = "layout(binding={0},{1}) uniform {2} {3} {4};";
+        //std::sprintf(_token.c_str(),"layout(binding=s%,s%) uniform s% s% s%;","0", "r32f", "image1D", "restrict", "pos");
+
     }
+
+    glsl_image_t(const glsl_image_t&) = delete;
+    glsl_image_t& operator=(const glsl_image_t&) = delete;
     ~glsl_image_t() = default;
 
 protected:
+    const std::string _type_name;
+    const std::string _value_name;
+    const glsl_image_format_layout_qualifier _format_layout_qualifier;
+    const glsl_image_memory_qualifier _memory_qualifier;
+    const gl_image_format _image_format;
+    const gl_image_access_mode _access_mode;
 
-    gl_image_access_mode _access_mode;
-    gl_image_format _format;
+private:
+
+    static gl_image_access_mode transfer_memory_qualifier(glsl_image_memory_qualifier memory_qualifier)
+    {
+        switch (memory_qualifier) {
+            case glsl_image_memory_qualifier::COHERENT:return gl_image_access_mode::READ_WRITE;
+            case glsl_image_memory_qualifier::VOLATILE:return gl_image_access_mode::READ_WRITE;
+            case glsl_image_memory_qualifier::RESTRICT:return gl_image_access_mode::READ_WRITE;
+            case glsl_image_memory_qualifier::READONLY:return gl_image_access_mode::READ_ONLY;
+            case glsl_image_memory_qualifier::WRITEONLY:return gl_image_access_mode::WRITE_ONLY;
+        }
+    }
+
+    static gl_image_format transfer_format_layout_qualifier(glsl_image_format_layout_qualifier format_layout_qualifier)
+    {
+        switch (format_layout_qualifier) {
+
+            case glsl_image_format_layout_qualifier::R16F:
+                break;
+            case glsl_image_format_layout_qualifier::RG16F:
+                break;
+            case glsl_image_format_layout_qualifier::RGBA16F:
+                break;
+            case glsl_image_format_layout_qualifier::R32F:
+                break;
+            case glsl_image_format_layout_qualifier::RG32F:
+                break;
+            case glsl_image_format_layout_qualifier::RGBA32F:
+                break;
+            case glsl_image_format_layout_qualifier::R11F_G11F_B10F:
+                break;
+            case glsl_image_format_layout_qualifier::R8:
+                break;
+            case glsl_image_format_layout_qualifier::R16:
+                break;
+            case glsl_image_format_layout_qualifier::RG8:
+                break;
+            case glsl_image_format_layout_qualifier::RG16:
+                break;
+            case glsl_image_format_layout_qualifier::RGB8:
+                break;
+            case glsl_image_format_layout_qualifier::RGB16:
+                break;
+            case glsl_image_format_layout_qualifier::RGB10_A2:
+                break;
+            case glsl_image_format_layout_qualifier::R8_SNORM:
+                break;
+            case glsl_image_format_layout_qualifier::R16_SNORM:
+                break;
+            case glsl_image_format_layout_qualifier::RG8_SNORM:
+                break;
+            case glsl_image_format_layout_qualifier::RG16_SNORM:
+                break;
+            case glsl_image_format_layout_qualifier::RGBA8_SNORM:
+                break;
+            case glsl_image_format_layout_qualifier::RGBA16_SNORM:
+                break;
+            case glsl_image_format_layout_qualifier::R8I:
+                break;
+            case glsl_image_format_layout_qualifier::R16I:
+                break;
+            case glsl_image_format_layout_qualifier::R32I:
+                break;
+            case glsl_image_format_layout_qualifier::RG8I:
+                break;
+            case glsl_image_format_layout_qualifier::RG16I:
+                break;
+            case glsl_image_format_layout_qualifier::RG32I:
+                break;
+            case glsl_image_format_layout_qualifier::RGBA8I:
+                break;
+            case glsl_image_format_layout_qualifier::RGBA16I:
+                break;
+            case glsl_image_format_layout_qualifier::RGBA32I:
+                break;
+            case glsl_image_format_layout_qualifier::R8UI:
+                break;
+            case glsl_image_format_layout_qualifier::R16UI:
+                break;
+            case glsl_image_format_layout_qualifier::R32UI:
+                break;
+            case glsl_image_format_layout_qualifier::RG8UI:
+                break;
+            case glsl_image_format_layout_qualifier::RG16UI:
+                break;
+            case glsl_image_format_layout_qualifier::RG32UI:
+                break;
+            case glsl_image_format_layout_qualifier::RGBA8UI:
+                break;
+            case glsl_image_format_layout_qualifier::RGBA16UI:
+                break;
+            case glsl_image_format_layout_qualifier::RGBA32UI:
+                break;
+            case glsl_image_format_layout_qualifier::RGB10_A2UI:
+                break;
+        }
+    }
 
 };
 
@@ -193,8 +193,8 @@ public:
     }resource;
 
     glsl_image1D() = delete;
-    glsl_image1D(gl_image_format format, gl_image_access_mode access_mode, const std::string& value_name) :
-            glsl_image_t(format, access_mode, "image1D", value_name)
+    glsl_image1D(glsl_image_format_layout_qualifier format_layout_qualifier, glsl_image_memory_qualifier memory_qualifier, const char* value_name) :
+            glsl_image_t(format_layout_qualifier, memory_qualifier, "image1D", value_name)
     {}
 
     glsl_image1D(const glsl_image1D&) = delete;
@@ -207,8 +207,8 @@ public:
     {
         auto& texture_1d = resource.texture_1d;
         check_and_log(texture_1d, "do not have texture resource.")
-        check_and_log(texture_1d->exists(resource.mipmap_index), "the specified mipmap_index does not exist.")
-        check_and_log(texture_1d->format() != _format,"the texture format does not fit to image.")
+        check_and_log(texture_1d->exists(resource.mipmap_index), "the mipmap_index specified  does not exist.")
+        check_and_log(texture_1d->format() != _image_format,"the texture format does not fit to image format specified.")
 
         glBindImageTexture(0, // unit
                            resource.texture_1d->get_handle(), resource.mipmap_index, // mipmap
@@ -226,8 +226,7 @@ public:
 
 };
 
-class glsl_image1DArray : private glsl_image_t
-{
+class glsl_image1DArray : private glsl_image_t{
 public:
     struct glsl_image1DArrayResource{
         std::shared_ptr<gl_texture_1d_array_base> texture_1d_array;
@@ -235,9 +234,10 @@ public:
         glsl_image1DArrayResource() : texture_1d_array(nullptr), mipmap_index(0){}
     }resource;
 
+public:
     glsl_image1DArray() = delete;
-    glsl_image1DArray(gl_image_format format, gl_image_access_mode access_mode, const std::string& value_name) :
-            glsl_image_t(format, access_mode, "image1DArray", value_name)
+    glsl_image1DArray(glsl_image_format_layout_qualifier format_layout_qualifier, glsl_image_memory_qualifier memory_qualifier, const char* value_name) :
+            glsl_image_t(format_layout_qualifier, memory_qualifier, "image1DArray", value_name)
     {}
 
     glsl_image1DArray(const glsl_image1DArray&) = delete;
@@ -264,162 +264,172 @@ public:
 
 };
 
-class glsl_image2D : private glsl_image_t {
-public:
-    glsl_image2D(glsl_image_memory_qualifier memory_qualifier, std::string&& value_name) :
-        _value_name(std::move(value_name))
-    {
-    }
-
-public:
-
-    struct glsl_image2DResource
-    {
-        std::shared_ptr<gl_texture_2d_base> texture_2d;
-
-        std::int32_t mipmap_index;
-
-        glsl_image2DResource() : texture_2d(nullptr), mipmap_index(0){}
-
-    } resource;
-
-private:
-
-    void bind() override
-    {
-        std::uint32_t _unit = 0;
-        glBindImageTexture(GL_TEXTURE0 + _unit,
-                           resource.texture_2d->get_handle(),
-                           resource.mipmap_index, false, 0,
-                           static_cast<GLenum>(transfer(_memory_qualifier)),
-                           static_cast<GLenum>(resource.texture_2d->format())
-                           );
-    }
-
-    void unbind() override
-    {
-        glBindImageTexture(GL_TEXTURE0, 0, resource.mipmap_index, false, 0, 1, 1);
-    }
-
-private:
-
-    std::string _value_name;
-
-    glsl_image_memory_qualifier _memory_qualifier;
-
-};
-
-class glsl_image2DArray : public glsl_image_t{
-public:
-    glsl_image2DArray(glsl_image_layout_format_qualifier layout_format, glsl_image_memory_qualifier memory, std::string&& value_name)
-    {}
-
-    struct glsl_image2DArrayResource
-    {
-        std::shared_ptr<gl_texture_2d_array_base> texture_2d_array;
-        std::int32_t mipmap_index;
-
-        glsl_image2DArrayResource() :
-            texture_2d_array(nullptr), mipmap_index(0) {}
-
-        bool check()
-        {
-            if(texture_2d_array && mipmap_index >= 0 && mipmap_index < texture_2d_array->mipmaps_count())
-                return true;
-            return false;
-        }
-    } resource;
-
-private:
-
-    void bind() override
-    {
-        if(!resource.check()) return;
-        for(std::int32_t _idx = 0; _idx < resource.texture_2d_array->elements_count(); ++_idx)
-        {
-            glBindImageTexture(GL_TEXTURE0, resource.texture_2d_array->get_handle(), resource.mipmap_index, true, _idx, 1, 1);
-        }
-    }
-
-    void unbind() override {}
-
-};
-
-class glsl_imageCube : private glsl_image_t{
-public:
-    glsl_imageCube()
-    {}
-
-    struct glsl_imageCubeResource
-    {
-        std::shared_ptr<gl_texture_cube_base> texture_cube;
-        std::int32_t mipmap_index;
-        glsl_imageCubeResource() : texture_cube(nullptr), mipmap_index(0) {}
-    } resource;
-
-};
-
-class glsl_imageCubeArray : private glsl_image_t {
-public:
-    glsl_imageCubeArray()
-    {}
-
-    struct glsl_imageCubeArrayResource
-    {
-        std::shared_ptr<gl_texture_cube_array_base> texture_cube_array;
-        std::int32_t mipmap_index;
-    } resource;
-};
-
-class glsl_image2DMS : private glsl_image_t
-{
-
-    struct glsl_image2DMSResource
-    {
-        std::shared_ptr<gl_texture_2d_multisample_base> texture_2d_multisample;
-    } resource;
-
-};
-
-class glsl_image2DMSArray : private glsl_image_t
-{
-    struct glsl_image2DMSArrayResource
-    {
-        std::shared_ptr<gl_texture_2d_multisample_array_base> texture_2d_multisample_array;
-    } resource;
-};
-
-class glsl_image2DRect : private glsl_image_t
-{
-    struct glsl_image2DRectResource
-    {
-        std::shared_ptr<gl_texture_rectangle_base> texture_rectangle;
-    } resource;
-};
-
-class glsl_image3D : private glsl_image_t
-{
-    struct glsl_image3DResource
-    {
-        std::shared_ptr<gl_texture_3d_base> texture_3d;
-        std::int32_t mipmap_index;
-    } resource;
-};
-
-class glsl_imageBuffer : private glsl_image_t
-{
-
-    struct glsl_imageBufferResource
-    {
-        std::shared_ptr<gl_texture_buffer_base> texture_buffer;
-    } resource;
-};
-
 
 void test()
 {
+    glsl_image1D pos{glsl_image_format_layout_qualifier::R11F_G11F_B10F, glsl_image_memory_qualifier::RESTRICT, "pos"};
+    glsl_image1DArray posArray{glsl_image_format_layout_qualifier::R16, glsl_image_memory_qualifier::RESTRICT, "posArray"};
+
+    pos.resource.texture_1d;
+    pos.resource.mipmap_index = 0;
+
+    posArray.resource.texture_1d_array;
+    posArray.resource.mipmap_index = 0;
 
 }
+
+//
+//class glsl_image2D : private glsl_image_t {
+//public:
+//    glsl_image2D(glsl_image_memory_qualifier memory_qualifier, std::string&& value_name) :
+//        _value_name(std::move(value_name))
+//    {
+//    }
+//
+//public:
+//
+//    struct glsl_image2DResource
+//    {
+//        std::shared_ptr<gl_texture_2d_base> texture_2d;
+//
+//        std::int32_t mipmap_index;
+//
+//        glsl_image2DResource() : texture_2d(nullptr), mipmap_index(0){}
+//
+//    } resource;
+//
+//private:
+//
+//    void bind() override
+//    {
+//        std::uint32_t _unit = 0;
+//        glBindImageTexture(GL_TEXTURE0 + _unit,
+//                           resource.texture_2d->get_handle(),
+//                           resource.mipmap_index, false, 0,
+//                           static_cast<GLenum>(transfer(_memory_qualifier)),
+//                           static_cast<GLenum>(resource.texture_2d->format())
+//                           );
+//    }
+//
+//    void unbind() override
+//    {
+//        glBindImageTexture(GL_TEXTURE0, 0, resource.mipmap_index, false, 0, 1, 1);
+//    }
+//
+//private:
+//
+//    std::string _value_name;
+//
+//    glsl_image_memory_qualifier _memory_qualifier;
+//
+//};
+//
+//class glsl_image2DArray : public glsl_image_t{
+//public:
+//    glsl_image2DArray(glsl_image_layout_format_qualifier layout_format, glsl_image_memory_qualifier memory, std::string&& value_name)
+//    {}
+//
+//    struct glsl_image2DArrayResource
+//    {
+//        std::shared_ptr<gl_texture_2d_array_base> texture_2d_array;
+//        std::int32_t mipmap_index;
+//
+//        glsl_image2DArrayResource() :
+//            texture_2d_array(nullptr), mipmap_index(0) {}
+//
+//        bool check()
+//        {
+//            if(texture_2d_array && mipmap_index >= 0 && mipmap_index < texture_2d_array->mipmaps_count())
+//                return true;
+//            return false;
+//        }
+//    } resource;
+//
+//private:
+//
+//    void bind() override
+//    {
+//        if(!resource.check()) return;
+//        for(std::int32_t _idx = 0; _idx < resource.texture_2d_array->elements_count(); ++_idx)
+//        {
+//            glBindImageTexture(GL_TEXTURE0, resource.texture_2d_array->get_handle(), resource.mipmap_index, true, _idx, 1, 1);
+//        }
+//    }
+//
+//    void unbind() override {}
+//
+//};
+//
+//class glsl_imageCube : private glsl_image_t{
+//public:
+//    glsl_imageCube()
+//    {}
+//
+//    struct glsl_imageCubeResource
+//    {
+//        std::shared_ptr<gl_texture_cube_base> texture_cube;
+//        std::int32_t mipmap_index;
+//        glsl_imageCubeResource() : texture_cube(nullptr), mipmap_index(0) {}
+//    } resource;
+//
+//};
+//
+//class glsl_imageCubeArray : private glsl_image_t {
+//public:
+//    glsl_imageCubeArray()
+//    {}
+//
+//    struct glsl_imageCubeArrayResource
+//    {
+//        std::shared_ptr<gl_texture_cube_array_base> texture_cube_array;
+//        std::int32_t mipmap_index;
+//    } resource;
+//};
+//
+//class glsl_image2DMS : private glsl_image_t
+//{
+//
+//    struct glsl_image2DMSResource
+//    {
+//        std::shared_ptr<gl_texture_2d_multisample_base> texture_2d_multisample;
+//    } resource;
+//
+//};
+//
+//class glsl_image2DMSArray : private glsl_image_t
+//{
+//    struct glsl_image2DMSArrayResource
+//    {
+//        std::shared_ptr<gl_texture_2d_multisample_array_base> texture_2d_multisample_array;
+//    } resource;
+//};
+//
+//class glsl_image2DRect : private glsl_image_t
+//{
+//    struct glsl_image2DRectResource
+//    {
+//        std::shared_ptr<gl_texture_rectangle_base> texture_rectangle;
+//    } resource;
+//};
+//
+//class glsl_image3D : private glsl_image_t
+//{
+//    struct glsl_image3DResource
+//    {
+//        std::shared_ptr<gl_texture_3d_base> texture_3d;
+//        std::int32_t mipmap_index;
+//    } resource;
+//};
+//
+//class glsl_imageBuffer : private glsl_image_t
+//{
+//
+//    struct glsl_imageBufferResource
+//    {
+//        std::shared_ptr<gl_texture_buffer_base> texture_buffer;
+//    } resource;
+//};
+
 
 
 

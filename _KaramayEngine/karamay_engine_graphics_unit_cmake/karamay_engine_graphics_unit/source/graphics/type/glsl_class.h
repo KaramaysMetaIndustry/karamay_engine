@@ -133,7 +133,12 @@ public:
 const glsl_transparent_t_meta glsl_dvec3::_meta(glm::dvec3::length(), sizeof(glm::dvec3::value_type), to_enum<glm::dvec3::value_type>(), sizeof(glm::dvec3), "dvec3");
 
 
-
+/*
+ * 自带数组语义，当前设计摒弃通用数组语义
+ * sampler和image <= texture
+ * 需要绑定 texture 资源
+ * texture 可以同时被绑定到不同的单元
+ * */
 class glsl_opaque_t : public glsl_t
 {
 protected:
