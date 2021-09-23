@@ -159,8 +159,13 @@ gl_image_access_mode transfer(glsl_image_memory_qualifier qualifier)
     }
 }
 
-
-
+/*
+ * layout(FormatLayoutQualifier) uniform [MemoryQualifier] image IMAGE_NAME[10];
+ *
+ * Image variables refer to an image, of a particular type, stored within a texture.
+ * These are used for arbitrary loading/storing of values within shaders. [Ëæ»ú·ÃÎÊ]
+ *
+ * */
 class glsl_image_t : public glsl_opaque_t {
 public:
     glsl_image_t() = delete;
