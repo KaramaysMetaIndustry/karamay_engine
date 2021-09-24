@@ -87,6 +87,17 @@ public:
 
 };
 
+#define transfer_to_str(__CLASS__)  #__CLASS__
+
+#define def_sampler(sampler_t, value_name)\
+glsl_##sampler_t value_name{transfer_to_str(value_name)}\
+
+void test()
+{
+    def_sampler(sampler1DArray, textureArray);
+}
+
+
 class glsl_sampler2D : public glsl_sampler_t
 {
 public:

@@ -495,8 +495,6 @@ add_executable(karamay_engine_graphics_unit
         karamay_engine_graphics_unit/source/graphics/framebuffer/gl_framebuffer.h
         karamay_engine_graphics_unit/source/graphics/glo/gl_object.cpp
         karamay_engine_graphics_unit/source/graphics/glo/gl_object.h
-        karamay_engine_graphics_unit/source/graphics/mesh/material/gl_material.cpp
-        karamay_engine_graphics_unit/source/graphics/mesh/material/gl_material.h
         "karamay_engine_graphics_unit/source/graphics/pipeline/compute/gl_compute_pipeline.cpp"
         "karamay_engine_graphics_unit/source/graphics/pipeline/compute/gl_compute_pipeline.h"
         "karamay_engine_graphics_unit/source/graphics/pipeline/graphics/gl_graphics_pipeline.cpp"
