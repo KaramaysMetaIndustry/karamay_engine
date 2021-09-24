@@ -11,27 +11,27 @@ return;\
 
 enum class glsl_image_format_layout_qualifier
 {
-    r16f,rg16f,rgba16f,
-    r32f,rg32f,rgba32f,
-    r11f_g11f_b10f,
+    _r16f,_rg16f,_rgba16f,
+    _r32f,_rg32f,_rgba32f,
+    _r11f_g11f_b10f,
 
-    r8,r16,
-    rg8,rg16,
-    rgb8,rgb16,
-    rgb10_a2,
+    _r8,_r16,
+    _rg8,_rg16,
+    _rgb8,_rgb16,
+    _rgb10_a2,
 
-    r8_snorm,r16_snorm,
-    rg8_snorm,rg16_snorm,
-    rgba8_snorm,rgba16_snorm,
+    _r8_snorm,_r16_snorm,
+    _rg8_snorm,_rg16_snorm,
+    _rgba8_snorm,_rgba16_snorm,
 
-    r8i,r16i,r32i,
-    rg8i,rg16i,rg32i,
-    rgba8i,rgba16i,rgba32i,
+    _r8i,_r16i,_r32i,
+    _rg8i,_rg16i,_rg32i,
+    _rgba8i,_rgba16i,_rgba32i,
 
-    r8ui,r16ui,r32ui,
-    rg8ui,rg16ui,rg32ui,
-    rgba8ui,rgba16ui,rgba32ui,
-    rgb10_a2ui,
+    _r8ui,_r16ui,_r32ui,
+    _rg8ui,_rg16ui,_rg32ui,
+    _rgba8ui,_rgba16ui,_rgba32ui,
+    _rgb10_a2ui,
 };
 
 enum class glsl_image_memory_qualifier
@@ -268,17 +268,24 @@ public:
 #define transfer_to_str(__CLASS__)  #__CLASS__
 
 #define def_image(format, memory, image_name, value_name)\
-glsl_##image_name value_name{glsl_image_format_layout_qualifier::format, glsl_image_memory_qualifier::_##memory, transfer_to_str(value_name)} \
+glsl_##image_name value_name{glsl_image_format_layout_qualifier::_##format, glsl_image_memory_qualifier::_##memory, transfer_to_str(value_name)} \
+
+#define def_image_array(format, memory, image_name, value_name, array_size)\
+glsl_##image_name value_name{glsl_image_format_layout_qualifier::_##format, glsl_image_memory_qualifier::_##memory, transfer_to_str(value_name)} \
+
 
 void test0()
 {
-    glsl_image1D pos{glsl_image_format_layout_qualifier::r16, glsl_image_memory_qualifier::_coherent, "pos"};
+    glsl_image1D posArrays[2]{
+        {glsl_image_format_layout_qualifier::_r16, glsl_image_memory_qualifier::_coherent, "aa"}
+    };
+
+    posArrays[0].resource.texture_1d;
 
     def_image(r16, coherent, image1DArray, posArray);
     def_image(r11f_g11f_b10f, coherent, image1DArray, posArray0);
-
-    pos.resource.texture_1d;
-    pos.resource.mipmap_index = 0;
+    posArray.resource.texture_1d_array = nullptr;
+    posArray.resource.mipmap_index = 1;
 
 }
 
