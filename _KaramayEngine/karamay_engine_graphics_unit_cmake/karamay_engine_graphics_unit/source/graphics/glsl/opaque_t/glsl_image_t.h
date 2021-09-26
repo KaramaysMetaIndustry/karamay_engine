@@ -1,7 +1,7 @@
 #ifndef GLSL_IMAGE_T_H
 #define GLSL_IMAGE_T_H
 
-#include "glsl_class.h"
+#include "graphics/glsl/glsl_class.h"
 
 #define check_and_log(expr, fatal) \
 if(expr){\
@@ -11,23 +11,24 @@ return;\
 
 enum class glsl_image_format_layout_qualifier
 {
+    // float
     _r16f,_rg16f,_rgba16f,
     _r32f,_rg32f,_rgba32f,
     _r11f_g11f_b10f,
-
+    // norm float
     _r8,_r16,
     _rg8,_rg16,
     _rgb8,_rgb16,
     _rgb10_a2,
-
+    // snorm float
     _r8_snorm,_r16_snorm,
     _rg8_snorm,_rg16_snorm,
     _rgba8_snorm,_rgba16_snorm,
-
+    // int
     _r8i,_r16i,_r32i,
     _rg8i,_rg16i,_rg32i,
     _rgba8i,_rgba16i,_rgba32i,
-
+    // uint
     _r8ui,_r16ui,_r32ui,
     _rg8ui,_rg16ui,_rg32ui,
     _rgba8ui,_rgba16ui,_rgba32ui,
@@ -67,10 +68,7 @@ public:
             _memory_qualifier(memory_qualifier),
             _image_format(transfer_format_layout_qualifier(format_layout_qualifier)),
             _access_mode(transfer_memory_qualifier(memory_qualifier))
-    {
-        //std::sprintf(_token.c_str(),"layout(binding=s%,s%) uniform s% s% s%;","0", "r32f", "image1D", "restrict", "pos");
-
-    }
+    {}
 
     glsl_image_t(const glsl_image_t&) = delete;
     glsl_image_t& operator=(const glsl_image_t&) = delete;
@@ -88,101 +86,15 @@ private:
 
     static gl_image_access_mode transfer_memory_qualifier(glsl_image_memory_qualifier memory_qualifier)
     {
-        switch (memory_qualifier) {
-            case glsl_image_memory_qualifier::COHERENT:return gl_image_access_mode::READ_WRITE;
-            case glsl_image_memory_qualifier::VOLATILE:return gl_image_access_mode::READ_WRITE;
-            case glsl_image_memory_qualifier::RESTRICT:return gl_image_access_mode::READ_WRITE;
-            case glsl_image_memory_qualifier::READONLY:return gl_image_access_mode::READ_ONLY;
-            case glsl_image_memory_qualifier::WRITEONLY:return gl_image_access_mode::WRITE_ONLY;
-        }
     }
 
     static gl_image_format transfer_format_layout_qualifier(glsl_image_format_layout_qualifier format_layout_qualifier)
     {
-        switch (format_layout_qualifier) {
-
-            case glsl_image_format_layout_qualifier::R16F:
-                break;
-            case glsl_image_format_layout_qualifier::RG16F:
-                break;
-            case glsl_image_format_layout_qualifier::RGBA16F:
-                break;
-            case glsl_image_format_layout_qualifier::R32F:
-                break;
-            case glsl_image_format_layout_qualifier::RG32F:
-                break;
-            case glsl_image_format_layout_qualifier::RGBA32F:
-                break;
-            case glsl_image_format_layout_qualifier::R11F_G11F_B10F:
-                break;
-            case glsl_image_format_layout_qualifier::R8:
-                break;
-            case glsl_image_format_layout_qualifier::R16:
-                break;
-            case glsl_image_format_layout_qualifier::RG8:
-                break;
-            case glsl_image_format_layout_qualifier::RG16:
-                break;
-            case glsl_image_format_layout_qualifier::RGB8:
-                break;
-            case glsl_image_format_layout_qualifier::RGB16:
-                break;
-            case glsl_image_format_layout_qualifier::RGB10_A2:
-                break;
-            case glsl_image_format_layout_qualifier::R8_SNORM:
-                break;
-            case glsl_image_format_layout_qualifier::R16_SNORM:
-                break;
-            case glsl_image_format_layout_qualifier::RG8_SNORM:
-                break;
-            case glsl_image_format_layout_qualifier::RG16_SNORM:
-                break;
-            case glsl_image_format_layout_qualifier::RGBA8_SNORM:
-                break;
-            case glsl_image_format_layout_qualifier::RGBA16_SNORM:
-                break;
-            case glsl_image_format_layout_qualifier::R8I:
-                break;
-            case glsl_image_format_layout_qualifier::R16I:
-                break;
-            case glsl_image_format_layout_qualifier::R32I:
-                break;
-            case glsl_image_format_layout_qualifier::RG8I:
-                break;
-            case glsl_image_format_layout_qualifier::RG16I:
-                break;
-            case glsl_image_format_layout_qualifier::RG32I:
-                break;
-            case glsl_image_format_layout_qualifier::RGBA8I:
-                break;
-            case glsl_image_format_layout_qualifier::RGBA16I:
-                break;
-            case glsl_image_format_layout_qualifier::RGBA32I:
-                break;
-            case glsl_image_format_layout_qualifier::R8UI:
-                break;
-            case glsl_image_format_layout_qualifier::R16UI:
-                break;
-            case glsl_image_format_layout_qualifier::R32UI:
-                break;
-            case glsl_image_format_layout_qualifier::RG8UI:
-                break;
-            case glsl_image_format_layout_qualifier::RG16UI:
-                break;
-            case glsl_image_format_layout_qualifier::RG32UI:
-                break;
-            case glsl_image_format_layout_qualifier::RGBA8UI:
-                break;
-            case glsl_image_format_layout_qualifier::RGBA16UI:
-                break;
-            case glsl_image_format_layout_qualifier::RGBA32UI:
-                break;
-            case glsl_image_format_layout_qualifier::RGB10_A2UI:
-                break;
-        }
     }
 
 };
+
+
 
 class glsl_image1D : public glsl_image_t{
 public:
@@ -264,30 +176,6 @@ public:
 
 };
 
-
-#define transfer_to_str(__CLASS__)  #__CLASS__
-
-#define def_image(format, memory, image_name, value_name)\
-glsl_##image_name value_name{glsl_image_format_layout_qualifier::_##format, glsl_image_memory_qualifier::_##memory, transfer_to_str(value_name)} \
-
-#define def_image_array(format, memory, image_name, value_name, array_size)\
-glsl_##image_name value_name{glsl_image_format_layout_qualifier::_##format, glsl_image_memory_qualifier::_##memory, transfer_to_str(value_name)} \
-
-
-void test0()
-{
-    glsl_image1D posArrays[2]{
-        {glsl_image_format_layout_qualifier::_r16, glsl_image_memory_qualifier::_coherent, "aa"}
-    };
-
-    posArrays[0].resource.texture_1d;
-
-    def_image(r16, coherent, image1DArray, posArray);
-    def_image(r11f_g11f_b10f, coherent, image1DArray, posArray0);
-    posArray.resource.texture_1d_array = nullptr;
-    posArray.resource.mipmap_index = 1;
-
-}
 
 //
 //class glsl_image2D : private glsl_image_t {
@@ -442,21 +330,6 @@ void test0()
 //};
 
 
-
-
-//
-//
-//DEFINE_GLSL_IMAGE_T(image1D)
-//DEFINE_GLSL_IMAGE_T(image1DArray)
-//DEFINE_GLSL_IMAGE_T(image2D)
-//DEFINE_GLSL_IMAGE_T(image2DArray)
-//DEFINE_GLSL_IMAGE_T(imageCube)
-//DEFINE_GLSL_IMAGE_T(imageCubeArray)
-//DEFINE_GLSL_IMAGE_T(image2DMS)
-//DEFINE_GLSL_IMAGE_T(image2DMSArray)
-//DEFINE_GLSL_IMAGE_T(image2DRect)
-//DEFINE_GLSL_IMAGE_T(image3D)
-//DEFINE_GLSL_IMAGE_T(imageBuffer)
 
 //DEFINE_GLSL_IMAGE_T(iimage1D)
 //DEFINE_GLSL_IMAGE_T(iimage1DArray)

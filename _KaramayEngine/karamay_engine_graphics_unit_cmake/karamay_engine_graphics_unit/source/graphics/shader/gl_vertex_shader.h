@@ -1,6 +1,6 @@
 
 #include "gl_shader.h"
-#include "graphics/type/glsl_class.h"
+#include "graphics/glsl/glsl_class.h"
 
 struct gl_vertex_shader_descriptor
 {

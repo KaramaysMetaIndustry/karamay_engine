@@ -9,9 +9,9 @@
 #include "graphics/shader/gl_tessellation_evaluation_shader.h"
 #include "graphics/shader/gl_geometry_shader.h"
 #include "graphics/shader/gl_fragment_shader.h"
-#include "graphics/type/glsl_class.h"
-#include "graphics/type/glsl_sampler_t.h"
-#include "graphics/type/glsl_image_t.h"
+#include "graphics/glsl/glsl_class.h"
+#include "graphics/glsl/opaque_t/glsl_sampler_t.h"
+#include "graphics/glsl/opaque_t/glsl_image_t.h"
 
 enum gl_stencil_op : GLenum
 {

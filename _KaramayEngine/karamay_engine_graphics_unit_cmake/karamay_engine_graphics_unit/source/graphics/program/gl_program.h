@@ -2,7 +2,7 @@
 #define H_GL_PROGRAM
 
 #include "graphics/glo/gl_object.h"
-#include "graphics/variable/gl_variable.h"
+#include "graphics/glsl/glsl_class.h"
 #include "graphics/buffers/buffer/gl_buffer.h"
 #include "graphics/buffers/specialization/gl_element_array_buffer.h"
 #include "graphics/buffers/specialization/gl_uniform_buffer.h"
@@ -137,7 +137,6 @@ struct gl_uniform_buffer_descriptor {
     std::vector<std::pair<std::string, std::string>> rows;
 };
 
-
 /**
  * [Fixed] you must call this func at some time
  * [Optional] you call choose to call this func and remember to call all associated funcs
@@ -189,12 +188,6 @@ public:
 //            );
         }
 
-    }
-
-    auto find_uniform_buffer(const std::string& uniform_buffer_name)
-    {
-
-	    return std::shared_ptr<gl_uniform_buffer>(nullptr);
     }
 
 	void add_shader_storage_buffers(const std::vector<std::shared_ptr<class gl_shader_storage_buffer>>& shader_storage_buffers);

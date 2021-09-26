@@ -514,10 +514,6 @@ add_executable(karamay_engine_graphics_unit
         karamay_engine_graphics_unit/source/graphics/texture/gl_texture.h
         karamay_engine_graphics_unit/source/graphics/transform_feedback/gl_transform_feedback.cpp
         karamay_engine_graphics_unit/source/graphics/transform_feedback/gl_transform_feedback.h
-        karamay_engine_graphics_unit/source/graphics/variable/gl_variable.cpp
-        karamay_engine_graphics_unit/source/graphics/variable/gl_variable.h
-        karamay_engine_graphics_unit/source/graphics/variable/glu_types.h
-        karamay_engine_graphics_unit/source/graphics/variable/glv_types.h
         karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.cpp
         karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.h
         karamay_engine_graphics_unit/source/public/_glfw.h
@@ -561,7 +557,7 @@ karamay_engine_graphics_unit/source/graphics/buffers/gl_buffers.h
 "karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer_dispatcher.cpp" 
 "karamay_engine_graphics_unit/source/graphics/shader/gl_compute_shader.h" 
 "karamay_engine_graphics_unit/source/graphics/shader/gl_compute_shader.cpp"
-        karamay_engine_graphics_unit/source/public/_lua.h karamay_engine_graphics_unit/source/graphics/type/glsl_sampler_t.h karamay_engine_graphics_unit/source/graphics/type/glsl_image_t.h karamay_engine_graphics_unit/source/graphics/type/glsl_interface_block_t.h)
+        karamay_engine_graphics_unit/source/public/_lua.h karamay_engine_graphics_unit/source/graphics/glsl/opaque_t/glsl_sampler_t.h karamay_engine_graphics_unit/source/graphics/glsl/opaque_t/glsl_image_t.h karamay_engine_graphics_unit/source/graphics/glsl/transparent_t/interface_block_t/glsl_interface_block_t.h karamay_engine_graphics_unit/source/graphics/glsl/opaque_t/glsl_atomic_counter_t.h karamay_engine_graphics_unit/source/graphics/glsl/transparent_t/glsl_transparent_t.h karamay_engine_graphics_unit/source/graphics/glsl/glsl_vertex_stream.h)
 
 target_link_libraries(karamay_engine_graphics_unit glew32s.lib glfw3.lib)
 

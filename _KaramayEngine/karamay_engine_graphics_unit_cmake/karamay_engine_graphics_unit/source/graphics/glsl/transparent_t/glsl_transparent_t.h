@@ -1,49 +1,8 @@
-#ifndef H_GLSL_CLASS
-#define H_GLSL_CLASS
 
-#include "public/_glew.h"
-#include "public/glm.h"
-#include "public/stl.h"
-#include "graphics/sampler/gl_sampler.h"
-#include "graphics/texture/gl_texture.h"
+#ifndef GLSL_TRANSPARENT_T_H
+#define GLSL_TRANSPARENT_T_H
 
-class glsl_t {
-public:
-    [[nodiscard]] const std::string& token() const {return _token;}
 
-protected:
-    std::string _token;
-};
-
-class glsl_transparent_t : public glsl_t
-{
-public:
-	virtual const glsl_transparent_t_meta& meta() const = 0;
-	virtual const std::uint8_t* data() const = 0;
-};
-
-struct glsl_transparent_t_meta
-{
-	std::uint32_t components_count;
-	std::uint32_t component_type_size;
-	std::string component_type_name;
-	std::uint32_t component_type_gl_enum;
-	std::uint32_t type_size;
-	std::string semantic_name;
-
-	glsl_transparent_t_meta(
-		std::uint32_t _components_count, 
-		std::uint32_t _component_type_size,
-		std::uint32_t _component_type_gl_enum,
-		std::uint32_t _type_size,
-		std::string _semantic_name) :
-		components_count(_components_count),
-		component_type_size(_component_type_size),
-		component_type_gl_enum(_component_type_gl_enum),
-		type_size(_type_size),
-		semantic_name(_semantic_name)
-	{}
-};
 
 #define DEFINE_GLSL_TRANSPARENT_T(GLSL_T_NAME, GLSL_T_SEMANTIC_NAME, GLSL_T_SEMANTIC_NAME_STR)\
 class glsl_##GLSL_T_NAME final : public glsl_transparent_t\
@@ -119,128 +78,18 @@ DEFINE_GLSL_TRANSPARENT_T(uvec4, uvec4, "uvec4")
 class glsl_dvec3 final : public glsl_transparent_t
 {
 public:
-	glsl_dvec3() = delete;
-	explicit glsl_dvec3(const glm::dvec3& value) {}
-	~glsl_dvec3() = default;
+    glsl_dvec3() = delete;
+    explicit glsl_dvec3(const glm::dvec3& value) {}
+    ~glsl_dvec3() = default;
 public:
-	glm::dvec3 client_value;
+    glm::dvec3 client_value;
 private:
-	static const glsl_transparent_t_meta _meta;
+    static const glsl_transparent_t_meta _meta;
 public:
-	const glsl_transparent_t_meta& meta() const override { return _meta; };
-	const std::uint8_t* data() const override { return reinterpret_cast<const std::uint8_t*>(&client_value); };
+    const glsl_transparent_t_meta& meta() const override { return _meta; };
+    const std::uint8_t* data() const override { return reinterpret_cast<const std::uint8_t*>(&client_value); };
 };
 const glsl_transparent_t_meta glsl_dvec3::_meta(glm::dvec3::length(), sizeof(glm::dvec3::value_type), to_enum<glm::dvec3::value_type>(), sizeof(glm::dvec3), "dvec3");
 
-
-/*
- * 自带数组语义，当前设计摒弃通用数组语义
- * sampler和image <= texture
- * 需要绑定 texture 资源
- * texture 可以同时被绑定到不同的单元
- * */
-class glsl_opaque_t : public glsl_t
-{
-protected:
-	glsl_opaque_t() = default;
-	~glsl_opaque_t() = default;
-
-public:
-
-    virtual void bind() = 0;
-    virtual void unbind() = 0;
-};
-
-
-
-/*
-* definitions of sampler_ts
-* 
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-* All of interface blocks can not include any opaque types(only transparent types)
-* glsl_scalar
-* glsl_vector
-* glsl_matrix
-*/
-
-
-class glsl_interface_block_t
-{
-public:
-
-	glsl_interface_block_t() = default;
-
-private:
-	// declaration spec + var name
-	std::vector<std::pair<const glsl_transparent_t*, std::string>> _cached_items;
-
-};
-
-class glsl_uniform_block_t : 
-	public glsl_interface_block_t, 
-	public glsl_token
-{
-public:
-	
-	glsl_uniform_block_t() = default;
-
-	 static std::function<void(glsl_transparent_t*)> item_register;
-
-public:
-	
-	const std::string& generate_token() const override {}
-
-public:
-	virtual const std::uint8_t* data() const = 0;
-	virtual std::int64_t size() const = 0;
-
-};
-class glsl_shader_storage_block_t : 
-	public glsl_interface_block_t,
-	public glsl_token
-{
-public:
-	glsl_shader_storage_block_t() = default;
-
-public:
-	
-	virtual const std::uint8_t* data() const = 0;
-	virtual std::int64_t size() const = 0;
-};
-
-
-
-
-class glsl_atomic_uint : public glsl_opaque_t
-{
-public:
-
-	glsl_atomic_uint() = default;
-
-	glsl_atomic_uint(std::uint32_t value) {}
-
-	~glsl_atomic_uint() = default;
-
-private:
-
-	std::uint32_t value;
-
-public: // overriden funcs
-
-	const std::string& generate_token() const override {}
-};
 
 #endif

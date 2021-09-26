@@ -2,7 +2,7 @@
 #define H_GL_UNIFORM_BUFFER
 
 #include "graphics/buffers/buffer/gl_buffer.h"
-#include "graphics/type/glsl_class.h"
+#include "graphics/glsl/glsl_class.h"
 
 class gl_program;
 class gl_buffer;

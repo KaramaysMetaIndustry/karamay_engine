@@ -1,7 +1,7 @@
 #pragma once
 #include "graphics/pipeline/base/gl_pipeline.h"
 #include "graphics/shader/gl_compute_shader.h"
-#include "graphics/type/glsl_class.h"
+#include "graphics/glsl/glsl_class.h"
 
 class gl_compute_pipeline_parameters
 {
@@ -34,11 +34,6 @@ public:
 
 
 public:
-
-	void register_parameters()
-	{
-
-	}
 
 	bool ouput_pipeline_glsl_template(const std::string& renderer_dir) const override
 	{
@@ -74,35 +69,3 @@ public:
 	}
 
 };
-
-
-#define DEFINE_COMPUTE_PIPELINE_PARAMETERS(PIPELINE_NAME)\
-std::shared_ptr<class gl_##PIPELINE_NAME##_compute_pipeline_parameters> PIPELINE_NAME##_parameters;\
-struct gl_##PIPELINE_NAME##_compute_pipeline_parameters : public gl_compute_pipeline_parameters\
-
-class glsl_pp_uniform_block_t : public glsl_uniform_block_t
-{
-public:
-	glsl_pp_uniform_block_t() = delete;
-	glsl_pp_uniform_block_t(std::function<void(const glsl_uniform_block_t& uniform_block)> _register)
-	{}
-
-	const std::uint8_t* data() const override
-	{
-		return reinterpret_cast<const std::uint8_t*>(&memory);
-	}
-
-	std::int64_t size() const override
-	{
-		return sizeof(memory) * 10;
-	}
-
-	struct gl_struct
-	{
-		glsl_vec3 position0{ item_register };
-		glsl_vec3 position1{ item_register };
-		glsl_vec3 position2{ item_register };
-	} memory[10];
-
-
-} _ublock0{ uniform_block_register };
