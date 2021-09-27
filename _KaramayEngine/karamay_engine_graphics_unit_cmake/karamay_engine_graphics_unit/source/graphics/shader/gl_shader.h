@@ -49,27 +49,6 @@ namespace gl_shader_enum
 //    }
 }
 
-class gl_shader_parameters
-{
-public:
-	gl_shader_parameters() = default;
-
-private:
-
-	std::vector<std::shared_ptr<glsl_image_t>> images;
-	std::vector<std::shared_ptr<glsl_sampler_t>> samplers;
-	std::vector<std::shared_ptr<glsl_atomic_uint>> atomic_counters;
-	std::vector<std::shared_ptr<glsl_uniform_block_t>> uniform_blocks;
-	std::vector<std::shared_ptr<glsl_shader_storage_block_t>> shader_storage_blocks;
-
-protected:
-	std::function<void(glsl_image_t*)> _image_registerer;
-	std::function<void(glsl_sampler_t*)> _sampler_registerer;
-	std::function<void(glsl_atomic_uint*)> _atomic_counter_registerer;
-	std::function<void(glsl_uniform_block_t*)> _uniform_block_registerer;
-	std::function<void(glsl_shader_storage_block_t*)> _shader_storage_block_registerer;
-};
-
 class gl_shader : public gl_object
 {
 public:

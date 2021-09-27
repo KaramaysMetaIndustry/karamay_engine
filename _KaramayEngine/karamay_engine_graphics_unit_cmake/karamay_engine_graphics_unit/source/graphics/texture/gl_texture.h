@@ -3,6 +3,7 @@
 
 #include "graphics/glo/gl_object.h"
 #include "graphics/sampler/gl_sampler.h"
+#include "graphics/buffers/gl_buffers.h"
 #include "gl_pixels.h"
 
 enum class parameter : GLenum
@@ -27,8 +28,7 @@ enum class texture_swizzle_component : GLenum
 	ONE = GL_ONE
 };
 
-enum class depth_stencil_texture_mode : GLenum
-{
+enum class depth_stencil_texture_mode : GLenum{
 	STENCIL_INDEX = GL_STENCIL_INDEX,
 	DEPTH_COMPONENT = GL_DEPTH_COMPONENT
 };
@@ -44,91 +44,59 @@ enum class gl_cube_face_index : GLenum {
 
 enum class gl_texture_type : GLenum
 {
+    // no mipmap, buffer data
 	TEXTURE_BUFFER = GL_TEXTURE_BUFFER,
-
+	// have mipmaps
 	TEXTURE_1D = GL_TEXTURE_1D,
 	TEXTURE_1D_ARRAY = GL_TEXTURE_1D_ARRAY,
-
 	TEXTURE_2D = GL_TEXTURE_2D,
 	TEXTURE_2D_ARRAY = GL_TEXTURE_2D_ARRAY,
+    TEXTURE_3D = GL_TEXTURE_3D,
+    TEXTURE_CUBE_MAP = GL_TEXTURE_CUBE_MAP,
+    TEXTURE_CUBE_MAP_ARRAY = GL_TEXTURE_CUBE_MAP_ARRAY,
+    // one mipmap
 	TEXTURE_2D_MULTISAMPLE = GL_TEXTURE_2D_MULTISAMPLE,
 	TEXTURE_2D_MULTISAMPLE_ARRAY = GL_TEXTURE_2D_MULTISAMPLE_ARRAY,
 	TEXTURE_RECTANGLE = GL_TEXTURE_RECTANGLE,
 
-	TEXTURE_3D = GL_TEXTURE_3D,
-
-	TEXTURE_CUBE_MAP = GL_TEXTURE_CUBE_MAP,
-	TEXTURE_CUBE_MAP_ARRAY = GL_TEXTURE_CUBE_MAP_ARRAY
 };
 
+/*
+ * texture parameters
+ * */
+struct gl_texture_parameters{
 
-#define check_mipmap_index()\
-if (mipmap_index < 0 || mipmap_index > mipmaps_count - 1)\
-{\
-	std::cerr << "mipmap_index out of bound [0, mipmaps_count - 1]" << std::endl;\
-	return;\
-}\
+    gl_depth_stencil_texture_mode depth_stencil_texture_mode;
+    std::int32_t texture_base_level;
+    std::int32_t texture_max_level;
+    gl_texture_swizzle_component texture_swizzle_r;
+    gl_texture_swizzle_component texture_swizzle_g;
+    gl_texture_swizzle_component texture_swizzle_b;
+    gl_texture_swizzle_component texture_swizzle_a;
+    std::float_t texture_lod_bias;
 
-
-struct gl_texture_descriptor
-{
-	struct gl_texture_base_parameters
-	{
-		gl_depth_stencil_texture_mode  depth_stencil_texture_mode;
-		std::int32_t texture_base_level;
-		std::int32_t texture_max_level;
-		gl_texture_swizzle_component texture_swizzle_r;
-		gl_texture_swizzle_component texture_swizzle_g;
-		gl_texture_swizzle_component texture_swizzle_b;
-		gl_texture_swizzle_component texture_swizzle_a;
-		std::float_t texture_lod_bias;
-
-		gl_texture_base_parameters() :
-			depth_stencil_texture_mode(),
-			texture_base_level(0),
-			texture_max_level(1000),
-			texture_swizzle_r(gl_texture_swizzle_component::RED),
-			texture_swizzle_g(gl_texture_swizzle_component::GREEN),
-			texture_swizzle_b(gl_texture_swizzle_component::BLUE),
-			texture_swizzle_a(gl_texture_swizzle_component::ALPHA),
-			texture_lod_bias(0.0f)
-		{}
-	} base_parameters;
-	
-
-	//explicit gl_texture_descriptor(
-	//	gl_depth_stencil_texture_mode _depth_stencil_texture_mode, 
-	//	std::int32_t _texture_base_level, 
-	//	std::int32_t _texture_max_level, 
-	//	gl_texture_swizzle_component _texture_swizzle_r,
-	//	gl_texture_swizzle_component _texture_swizzle_g,
-	//	gl_texture_swizzle_component _texture_swizzle_b,
-	//	gl_texture_swizzle_component _texture_swizzle_a,
-	//	std::float_t _texture_lod_bias
-	//) :
-	//	depth_stencil_texture_mode(_depth_stencil_texture_mode),
-	//	texture_base_level(_texture_base_level),
-	//	texture_max_level(_texture_max_level),
-	//	texture_swizzle_r(_texture_swizzle_r),
-	//	texture_swizzle_g(_texture_swizzle_g),
-	//	texture_swizzle_b(_texture_swizzle_b),
-	//	texture_swizzle_a(_texture_swizzle_a),
-	//	texture_lod_bias(_texture_lod_bias)
-	//{}
-
+    gl_texture_parameters()
+    {}
 };
 
-class gl_texture_base : public gl_object
-{
+/*
+ * a texture combined with storage, texture parameters, sampler parameters
+ * and sampler parameters can bind a sampler object to overwrite
+ * */
+class gl_texture_t : public gl_object{
+public:
+    gl_texture_t() = delete;
 protected:
 
-	gl_texture_base() = delete;
-	gl_texture_base(gl_texture_type type):
-		_type(type)
+    gl_texture_t(gl_texture_type type, const gl_texture_parameters& parameters):
+		_type(type),
+		_unit(0),
+        _parameters(parameters)
 	{
 		glCreateTextures(static_cast<GLenum>(_type), 1, &_handle);
 	}
-	~gl_texture_base() override
+
+	~gl_texture_t() override
 	{
 		glDeleteTextures(1, &_handle);
 	}
@@ -144,38 +112,31 @@ public:
 		_unit = unit;
 	}
 
-	inline void unbind()
+	inline void unbind() const
 	{
 		glBindTextureUnit(GL_TEXTURE0 + _unit, 0);
 	}
 
 protected:
-
 	gl_texture_type _type;
-
 	std::uint32_t _unit;
+    gl_texture_parameters _parameters;
 
 	static std::unordered_map<gl_texture_type, std::queue<std::uint32_t>> _texture_units;
 
 };
 
-/*
-* normalized coordinates, mipmap
-* Images in this texture all are 1-dimensional. They have width, but no height or depth.
-*/
-
-class gl_texture_1d_base : public gl_texture_base {
-public:
-
-	gl_texture_1d_base() : gl_texture_base(gl_texture_type::TEXTURE_1D) {}
+class gl_texture_1d_t : public gl_texture_t{
+protected:
+    explicit gl_texture_1d_t(const gl_texture_parameters& parameters) :
+        gl_texture_t(gl_texture_type::TEXTURE_1D, parameters)
+    {}
 
 public:
-
     bool exists(std::int32_t mipmap_index)
     {
 
     }
-
 	void generate_mipmaps()
 	{
 		glBindTexture(GL_TEXTURE_1D, _handle);
@@ -184,22 +145,116 @@ public:
 	}
 
 };
+class gl_texture_1d_array_t : public gl_texture_t{
+protected:
+    explicit gl_texture_1d_array_t(const gl_texture_parameters& parameters) :
+        gl_texture_t(gl_texture_type::TEXTURE_1D_ARRAY, parameters)
+    {}
+
+public:
+    void generate_mipmaps(std::uint32_t target)
+    {
+        glBindTexture(GL_TEXTURE_1D_ARRAY, _handle);
+        glGenerateMipmap(GL_TEXTURE_1D_ARRAY);
+        glBindTexture(GL_TEXTURE_1D_ARRAY, 0);
+    }
+
+};
+class gl_texture_2d_t : public gl_texture_t{
+protected:
+    explicit gl_texture_2d_t(const gl_texture_parameters& parameters) :
+        gl_texture_t(gl_texture_type::TEXTURE_2D, parameters)
+    {}
+
+public:
+    [[nodiscard]] virtual std::int32_t mipmaps_count() const = 0;
+
+};
+class gl_texture_2d_array_t : public gl_texture_t{
+protected:
+    explicit gl_texture_2d_array_t(const gl_texture_parameters& parameters) :
+        gl_texture_t(gl_texture_type::TEXTURE_2D_ARRAY,parameters)
+    {}
+
+    [[nodiscard]] virtual std::int32_t mipmaps_count() const = 0;
+    [[nodiscard]] virtual std::int32_t elements_count() const = 0;
+};
+class gl_texture_rectangle_t : public gl_texture_t{
+protected:
+    explicit gl_texture_rectangle_t(const gl_texture_parameters& parameters) :
+        gl_texture_t(gl_texture_type::TEXTURE_RECTANGLE, parameters)
+    {}
+
+};
+class gl_texture_cube_t : public gl_texture_t{
+protected:
+    explicit gl_texture_cube_t(const gl_texture_parameters& parameters) :
+        gl_texture_t(gl_texture_type::TEXTURE_CUBE_MAP, parameters)
+    {}
+
+};
+class gl_texture_cube_array_t : public gl_texture_t{
+protected:
+    explicit gl_texture_cube_array_t(const gl_texture_parameters& parameters) :
+        gl_texture_t(gl_texture_type::TEXTURE_CUBE_MAP_ARRAY, parameters)
+    {}
+
+};
+class gl_texture_3d_t : public gl_texture_t{
+protected:
+    explicit gl_texture_3d_t(const gl_texture_parameters& parameters) :
+        gl_texture_t(gl_texture_type::TEXTURE_3D, parameters)
+    {}
+
+};
+class gl_texture_2d_multisample_t : public gl_texture_t{
+protected:
+    explicit gl_texture_2d_multisample_t(const gl_texture_parameters& parameters) :
+        gl_texture_t(gl_texture_type::TEXTURE_2D_MULTISAMPLE, parameters)
+    {}
+
+};
+class gl_texture_2d_multisample_array_t : public gl_texture_t{
+protected:
+    explicit gl_texture_2d_multisample_array_t(const gl_texture_parameters& parameters) :
+        gl_texture_t(gl_texture_type::TEXTURE_2D_MULTISAMPLE_ARRAY, parameters)
+    {}
+
+};
+class gl_texture_buffer_t : public gl_texture_t{
+protected:
+    explicit gl_texture_buffer_t(const gl_texture_parameters& parameters) :
+        gl_texture_t(gl_texture_type::TEXTURE_BUFFER, parameters)
+    {}
+};
+
+#define define_texture_ref(name)\
+using gl_##name##_ref = std::shared_ptr<gl_##name##_t>\
+
+define_texture_ref(texture_1d);
+define_texture_ref(texture_1d_array);
+define_texture_ref(texture_2d);
+define_texture_ref(texture_2d_array);
+define_texture_ref(texture_rectangle);
+define_texture_ref(texture_cube);
+define_texture_ref(texture_cube_array);
+define_texture_ref(texture_3d);
+define_texture_ref(texture_2d_multisample);
+define_texture_ref(texture_2d_multisample_array);
+define_texture_ref(texture_buffer);
 
 template<
 	gl_image_format FORMAT,
 	std::int32_t BASE_WIDTH,
 	std::int32_t MIPMAPS_COUNT = 1
 >
-class gl_texture_1d final : public gl_texture_1d_base {
+class gl_texture_1d final : public gl_texture_1d_t {
 public:
 	using texture_t = gl_texture_1d<FORMAT, BASE_WIDTH, MIPMAPS_COUNT>;
 	using pixels_t	= gl_pixels<FORMAT>;
-
-	//static_assert(_WIDTH < 0, "_WIDTH must > 0");
-	//static_assert(_MIPMAPS_COUNT < 1, "_MIPMAPS_COUNT must >= 1");
-
 public:
-	gl_texture_1d()
+    gl_texture_1d() = delete;
+	explicit gl_texture_1d(const gl_texture_parameters& parameters) : gl_texture_1d_t(parameters)
 	{
 		glTextureStorage1D(_handle,
 			MIPMAPS_COUNT,
@@ -448,38 +503,19 @@ private:
 		}
 	}
 };
-
-/*
-* normalized coordinates, mipmapping, array
-*
-*/
-class gl_texture_1d_array_base : public gl_texture_base {
-public:
-	gl_texture_1d_array_base() : gl_texture_base(gl_texture_type::TEXTURE_1D_ARRAY) {}
-
-public:
-
-	void generate_mipmaps(std::uint32_t target)
-	{
-		glBindTexture(GL_TEXTURE_1D_ARRAY, _handle);
-		glGenerateMipmap(GL_TEXTURE_1D_ARRAY);
-		glBindTexture(GL_TEXTURE_1D_ARRAY, 0);
-	}
-
-};
-
 template<
 	std::int32_t ELEMENTS_COUNT,
 	gl_image_format FORMAT,
 	std::int32_t BASE_WIDTH,
 	std::int32_t MIPMAPS_COUNT = 1
 >
-class gl_texture_1d_array final : public gl_texture_1d_array_base {
+class gl_texture_1d_array final : public gl_texture_1d_array_t {
 public:
 	using texture_t = gl_texture_1d_array<ELEMENTS_COUNT, FORMAT, BASE_WIDTH, MIPMAPS_COUNT>;
 	using pixels_t = gl_pixels<FORMAT>;
-
-	gl_texture_1d_array()
+public:
+    gl_texture_1d_array() = delete;
+	explicit gl_texture_1d_array(const gl_texture_parameters& parameters) : gl_texture_1d_array_t(parameters)
 	{
 		glTextureStorage2D(_handle,
 			MIPMAPS_COUNT, static_cast<GLenum>(FORMAT),
@@ -487,7 +523,6 @@ public:
 			ELEMENTS_COUNT
 		);
 	}
-
 	gl_texture_1d_array(const gl_texture_1d_array&) = default;
 	gl_texture_1d_array& operator=(const gl_texture_1d_array&) = default;
 	
@@ -695,38 +730,23 @@ private:
 	
 
 };
-
-////////////////////////////////////////////////////////
-
-/*
-*  Images in this texture all are 2-dimensional. They have width and height, but no depth.
-*/
-class gl_texture_2d_base : public gl_texture_base
-{
-public:
-    virtual std::int32_t mipmaps_count() const = 0;
-
-};
-
 template<
-	gl_image_format _FORMAT, 
-	std::int32_t _WIDTH, 
-	std::int32_t _HEIGHT, 
-	std::int32_t _MIPMAPS_COUNT = 1
+	gl_image_format FORMAT,
+	std::int32_t BASE_WIDTH,
+	std::int32_t BASE_HEIGHT,
+	std::int32_t MIPMAPS_COUNT = 1
 >
-class gl_texture_2d final : 
-	public gl_texture_2d_base
-{
+class gl_texture_2d final : public gl_texture_2d_t{
 public:
-	using texture_t = gl_texture_2d<_FORMAT, _WIDTH, _HEIGHT, _MIPMAPS_COUNT>;
-	using pixels_t = gl_pixels<_FORMAT>;
-
-	gl_texture_2d()
+	using texture_t = gl_texture_2d<FORMAT, BASE_WIDTH, BASE_HEIGHT, MIPMAPS_COUNT>;
+	using pixels_t = gl_pixels<FORMAT>;
+public:
+	explicit gl_texture_2d(const gl_texture_parameters& parameters) : gl_texture_2d_t(parameters)
 	{
 		glTextureStorage2D(_handle,
-			_MIPMAPS_COUNT,
-			static_cast<std::uint32_t>(_FORMAT),
-			_WIDTH, _HEIGHT
+			MIPMAPS_COUNT,
+			static_cast<std::uint32_t>(FORMAT),
+            BASE_WIDTH, BASE_HEIGHT
 		);
 	}
 
@@ -734,17 +754,16 @@ public:
 
 public:
 
-    virtual std::int32_t mipmaps_count() const override
+    [[nodiscard]] std::int32_t mipmaps_count() const override
     {
-        return _MIPMAPS_COUNT;
+        return MIPMAPS_COUNT;
     }
-
 
 public:
 
 	void fill(std::int32_t mipmap_index, const pixels_t& pixels)
 	{
-		if (mipmap_index < 0 || mipmap_index >= _MIPMAPS_COUNT)
+		if (mipmap_index < 0 || mipmap_index >= MIPMAPS_COUNT)
 		{
 			return;
 		}
@@ -752,7 +771,7 @@ public:
 		glTextureSubImage2D(_handle, 
 			0, 
 			0, 0,
-			_WIDTH, _HEIGHT, 
+            BASE_WIDTH, BASE_HEIGHT,
 			static_cast<GLenum>(pixels->pixel_format()), 
 			static_cast<GLenum>(pixels->pixel_type()), 
 			pixels->data()
@@ -789,37 +808,26 @@ public:
 
 private:
 
-	std::array<std::pair<std::int32_t, std::int32_t>, _MIPMAPS_COUNT> _mipmaps_size;
+	std::array<std::pair<std::int32_t, std::int32_t>, MIPMAPS_COUNT> _mipmaps_size;
 
 };
-
-class gl_texture_2d_array_base : public gl_texture_base
-{
-
-public:
-    virtual std::int32_t mipmaps_count() const = 0;
-    virtual std::int32_t elements_count() const = 0;
-
-};
-
 template<
-	std::int32_t _ELEMENTS_COUNT,
-	gl_image_format _FORMAT, 
-	std::int32_t _WIDTH, 
-	std::int32_t _HEIGHT, 
-	std::int32_t _MIPMAPS_COUNT
+	std::int32_t ELEMENTS_COUNT,
+	gl_image_format FORMAT,
+	std::int32_t BASE_WIDTH,
+	std::int32_t BASE_HEIGHT,
+	std::int32_t MIPMAPS_COUNT = 1
 >
-class gl_texture_2d_array final : public gl_texture_2d_array_base
-{
+class gl_texture_2d_array final : public gl_texture_2d_array_t{
 public:
-    using pixels_t = gl_pixels<_FORMAT>;
-
-	gl_texture_2d_array()
+    using pixels_t = gl_pixels<FORMAT>;
+public:
+	explicit gl_texture_2d_array(const gl_texture_parameters& parameters) : gl_texture_2d_array_t(parameters)
 	{
 		glTextureStorage3D(_handle,
-			_MIPMAPS_COUNT, static_cast<GLenum>(_FORMAT),
-			_WIDTH, _HEIGHT,
-			_ELEMENTS_COUNT
+			MIPMAPS_COUNT, static_cast<GLenum>(FORMAT),
+            BASE_WIDTH, BASE_HEIGHT,
+			ELEMENTS_COUNT
 		);
 	}
 	gl_texture_2d_array(const gl_texture_2d_array&) = delete;
@@ -828,9 +836,7 @@ public:
 	~gl_texture_2d_array() override = default;
 
 public:
-
-	void fill(std::int32_t element_index, const pixels_t& pixels)
-	{
+	void fill(std::int32_t element_index, const pixels_t& pixels){
 		glTextureSubImage3D(_handle,
 			0,
 			0, 0, element_index,
@@ -873,26 +879,21 @@ public:
 	}
 
 };
-
-class gl_texture_rectangle_base : public gl_texture_base
-{};
-
 template<
-	gl_image_format _FORMAT, 
-	std::int32_t _WIDTH,
-	std::int32_t _HEIGHT
+	gl_image_format FORMAT,
+	std::int32_t BASE_WIDTH,
+	std::int32_t BASE_HEIGHT
 >
-class gl_texture_rectangle final : public gl_texture_rectangle_base
-{
+class gl_texture_rectangle final : public gl_texture_rectangle_t{
 public:
-	using pixels_t = gl_pixels<_FORMAT>;
-
-	gl_texture_rectangle()
+	using pixels_t = gl_pixels<FORMAT>;
+public:
+	explicit gl_texture_rectangle(const gl_texture_parameters& parameters) : gl_texture_rectangle_t(parameters)
 	{
 		glTextureStorage2D(_handle,
 			1,
-			static_cast<GLenum>(_FORMAT),
-			_WIDTH, _HEIGHT
+			static_cast<GLenum>(FORMAT),
+			BASE_WIDTH, BASE_HEIGHT
 		);
 	}
 	gl_texture_rectangle& operator=(const gl_texture_rectangle&) = delete;
@@ -901,7 +902,6 @@ public:
 public:
 
 	void fill(const pixels_t& pixels) {}
-
 	void fill(std::int32_t x_offset, std::int32_t y_offset, const pixels_t& pixels)
 	{
 		glTextureSubImage2D(_handle, 
@@ -912,9 +912,7 @@ public:
 			pixels.data()
 		);
 	}
-
 	void fill_mask(const pixels_t& pixels_mask) {}
-
 	void fill_mask(std::int32_t x_offset, std::int32_t y_offset, const pixels_t& pixels) {}
 
 public:
@@ -924,61 +922,45 @@ public:
 	std::shared_ptr<pixels_t> fetch(std::int32_t x_offset, std::int32_t y_offset, std::int32_t length) {}
 
 };
-
-class gl_texture_cube_base : public gl_texture_base {
-public:
-    gl_texture_cube_base() : gl_texture_base(gl_texture_type::TEXTURE_CUBE_MAP){}
-};
-
 template<
-	gl_image_format _FORMAT,
-	std::int32_t _WIDTH,
-	std::int32_t _MIPMAPS_COUNT = 1
+	gl_image_format FORMAT,
+	std::int32_t BASE_WIDTH,
+	std::int32_t MIPMAPS_COUNT = 1
 >
-class gl_texture_cube final : public gl_texture_cube_base
-{
+class gl_texture_cube final : public gl_texture_cube_t{
 public:
-	using pixels_t = gl_pixels<_FORMAT>;
-
-	gl_texture_cube()
+	using pixels_t = gl_pixels<FORMAT>;
+public:
+	gl_texture_cube(const gl_texture_parameters& parameters) : gl_texture_cube_t(parameters)
 	{
 		glTextureStorage3D(_handle,
-			_MIPMAPS_COUNT,
-			static_cast<GLenum>(_FORMAT),
-			_WIDTH, _WIDTH, 6
+			MIPMAPS_COUNT,
+			static_cast<GLenum>(FORMAT),
+			BASE_WIDTH, BASE_WIDTH, 6
 		);
 	}
-
 	gl_texture_cube(const gl_texture_cube&) = delete;
 	gl_texture_cube& operator=(const gl_texture_cube&) = delete;
-
 	~gl_texture_cube() override = default;
 
 public:
-
 	void fill(gl_cube_face_index face_index, std::int32_t mipmap_index, const pixels_t& pixels)
 	{}
-
 	void fill(gl_cube_face_index face_index, std::int32_t mipmap_index, std::int32_t x_offset, std::int32_t y_offset, const pixels_t& pixels)
 	{
 		glBindTexture(GL_TEXTURE_CUBE_MAP, _handle);
-		glTexSubImage2D(static_cast<GLenum>(face_index), mipmap_index, x_offset, y_offset, width, height, format, type, data);
+		//glTexSubImage2D(static_cast<GLenum>(face_index), mipmap_index, x_offset, y_offset, width, height, format, type, data);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	}
-
 	void fill_mask(gl_cube_face_index face_index, std::int32_t mipmap_index, const pixels_t& pixels_mask) {}
-
 	void fill_mask(gl_cube_face_index face_index, std::int32_t mipmap_index, std::int32_t x_offset, std::int32_t y_offset, const pixels_t& pixels_mask) {}
 
 public:
-
     std::shared_ptr<pixels_t> fetch(gl_cube_face_index face_index, std::int32_t mipmap_index){}
-
     std::shared_ptr<pixels_t> fetch(gl_cube_face_index face_index, std::int32_t mipmap_index, std::int32_t x_offset, std::int32_t y_offset, std::int32_t length)
     {}
 
 public:
-
 	const std::pair<std::int32_t, std::int32_t>& mipmap_size(std::int32_t mipmap_index)
 	{
 		return _mipmaps_size[mipmap_index];
@@ -986,7 +968,7 @@ public:
 
 private:
 
-	std::array<std::pair<std::int32_t, std::int32_t>, _MIPMAPS_COUNT> _mipmaps_size;
+	std::array<std::pair<std::int32_t, std::int32_t>, MIPMAPS_COUNT> _mipmaps_size;
 
 	void generate_mipmaps()
 	{
@@ -1004,41 +986,24 @@ private:
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	}
 };
-
-void test1()
-{
-    gl_texture_cube<gl_image_format::F_RGBA32, 1024> _skybox;
-    decltype(_skybox)::pixels_t _pixels;
-    _pixels.add({1.0f, 16.0f, 17.998f, 0.982f});
-    _skybox.fill(gl_cube_face_index::NEGATIVE_X, 0, 0, 0, _pixels);
-    _skybox.fill(gl_cube_face_index::POSITIVE_X, 0, _pixels);
-
-}
-
-class gl_texture_cube_array_base : public gl_texture_base {
-public:
-    gl_texture_cube_array_base() : gl_texture_base(gl_texture_type::TEXTURE_CUBE_MAP_ARRAY){}
-};
-
 template<
-	std::int32_t _ELEMENTS_COUNT,
-	gl_image_format _FORMAT,
-	std::int32_t _WIDTH,
-	std::int32_t _MIPMAPS_COUNT = 1
+	std::int32_t ELEMENTS_COUNT,
+	gl_image_format FORMAT,
+	std::int32_t BASE_WIDTH,
+	std::int32_t MIPMAPS_COUNT = 1
 >
-class gl_texture_cube_array final : gl_texture_cube_array_base
-{
+class gl_texture_cube_array final : gl_texture_cube_array_t{
 public:
-	using pixels_t = gl_pixels<_FORMAT>;
-
-	gl_texture_cube_array()
+	using pixels_t = gl_pixels<FORMAT>;
+public:
+	gl_texture_cube_array(const gl_texture_parameters& parameters) : gl_texture_cube_array_t(parameters)
 	{
 		glTextureStorage3D(
 			_handle,
-			_MIPMAPS_COUNT,
-			static_cast<GLenum>(_FORMAT),
-			_WIDTH, _WIDTH,
-			_ELEMENTS_COUNT * 6
+			MIPMAPS_COUNT,
+			static_cast<GLenum>(FORMAT),
+            BASE_WIDTH, BASE_WIDTH,
+			ELEMENTS_COUNT * 6
 		);
 	}
 	gl_texture_cube_array(const gl_texture_cube_array&) = delete;
@@ -1083,7 +1048,7 @@ public:
 
 private:
 
-	std::array<std::pair<std::int32_t, std::int32_t>, _MIPMAPS_COUNT> _mipmaps_size;
+	std::array<std::pair<std::int32_t, std::int32_t>, MIPMAPS_COUNT> _mipmaps_size;
 
 	void generate_mipmaps()
 	{
@@ -1093,27 +1058,23 @@ private:
 	}
 
 };
-
-class gl_texture_3d_base : public gl_texture_base {};
-
 template<
-	gl_image_format _FORMAT,
-	std::int32_t _WIDTH,
-	std::int32_t _HEIGHT,
-	std::int32_t _DEPTH,
-	std::int32_t _MIPMAPS_COUNT
+	gl_image_format FORMAT,
+	std::int32_t BASE_WIDTH,
+	std::int32_t BASE_HEIGHT,
+	std::int32_t BASE_DEPTH,
+	std::int32_t MIPMAPS_COUNT = 1
 >
-class gl_texture_3d final : public gl_texture_3d_base
-{
+class gl_texture_3d final : public gl_texture_3d_t{
 public:
-	using pixels_t = gl_pixels<_FORMAT>;
-
-	gl_texture_3d()
+	using pixels_t = gl_pixels<FORMAT>;
+public:
+	gl_texture_3d(const gl_texture_parameters& parameters) : gl_texture_3d_t(parameters)
 	{
 		glTextureStorage3D(_handle,
-			_MIPMAPS_COUNT,
-			static_cast<GLenum>(_FORMAT),
-			_WIDTH, _HEIGHT, _DEPTH
+			MIPMAPS_COUNT,
+			static_cast<GLenum>(FORMAT),
+			BASE_WIDTH, BASE_HEIGHT, BASE_DEPTH
 		);
 	}
 	~gl_texture_3d() override = default;
@@ -1122,7 +1083,7 @@ public:
 
 	void fill(std::int32_t mipmap_index, const pixels_t& pixels)
 	{
-	    if(mipmap_index < 0 || mipmap_index >= _MIPMAPS_COUNT) {}
+	    if(mipmap_index < 0 || mipmap_index >= MIPMAPS_COUNT) {}
 
 	    glTextureSubImage3D(_handle,
                             mipmap_index,
@@ -1166,40 +1127,27 @@ public:
 
 private:
 
-	std::array<std::tuple<std::int32_t, std::int32_t, std::int32_t>, _MIPMAPS_COUNT> _mipmaps_size;
+	std::array<std::tuple<std::int32_t, std::int32_t, std::int32_t>, MIPMAPS_COUNT> _mipmaps_size;
 
 };
-
-class gl_texture_2d_multisample_base : public gl_texture_base {
-public:
-    gl_texture_2d_multisample_base() : gl_texture_base(gl_texture_type::TEXTURE_2D_MULTISAMPLE)
-    {}
-};
-
-/*
-* The image in this texture (No mipmapping) is 2-dimensional. 
-* Each pixel in these images contains multiple samples instead of just one value.
-* You can not transfer pixel from client to server, you can noly download pixels from server to client
-*/
 template<
-	gl_image_format _FORMAT,
-	std::int32_t _WIDTH,
-	std::int32_t _HEIGHT,
-	std::int32_t _SAMPLES_COUNT,
-	bool _FIXED_SAMPLE_LOCATION
+	gl_image_format FORMAT,
+	std::int32_t BASE_WIDTH,
+	std::int32_t BASE_HEIGHT,
+	std::int32_t SAMPLES_COUNT,
+	bool FIXED_SAMPLE_LOCATION
 >
-class gl_texture_2d_multisample final: public gl_texture_2d_multisample_base
-{
+class gl_texture_2d_multisample final: public gl_texture_2d_multisample_t{
 public:
-	using pixels_t = gl_pixels<_FORMAT>;
-
-	gl_texture_2d_multisample()
+	using pixels_t = gl_pixels<FORMAT>;
+public:
+	gl_texture_2d_multisample(const gl_texture_parameters& parameters) : gl_texture_2d_multisample_t(parameters)
 	{
 		glTextureStorage2DMultisample(_handle,
-			_SAMPLES_COUNT,
-			static_cast<GLenum>(_FORMAT),
-			_WIDTH, _HEIGHT,
-			_FIXED_SAMPLE_LOCATION
+			SAMPLES_COUNT,
+			static_cast<GLenum>(FORMAT),
+			BASE_WIDTH, BASE_HEIGHT,
+			FIXED_SAMPLE_LOCATION
 		);
 	}
 
@@ -1227,7 +1175,7 @@ public:
 
 		if (_pixels_ptr)
 		{
-            _pixels_ptr->resize(_WIDTH * _HEIGHT);
+            _pixels_ptr->resize(BASE_WIDTH * BASE_HEIGHT);
 
             glGetTextureImage(_handle,
 				0,
@@ -1262,38 +1210,26 @@ public:
 		return _pixels;
 	}
 };
-
-/*
-* Combines 2D array and 2D multisample types. No mipmapping.
-* 
-*/
-
-class gl_texture_2d_multisample_array_base : public gl_texture_base {
-public:
-    gl_texture_2d_multisample_array_base() : gl_texture_base(gl_texture_type::TEXTURE_2D_MULTISAMPLE_ARRAY) {}
-
-};
-
 template<
-	std::int32_t _ELEMENTS_COUNT,
-	gl_image_format _FORMAT,
-	std::int32_t _WIDTH,
-	std::int32_t _HEIGHT,
-	std::int32_t _SAMPLES_COUNT,
-	bool _FIXED_SAMPLE_LOCATION
+	std::int32_t ELEMENTS_COUNT,
+	gl_image_format FORMAT,
+	std::int32_t BASE_WIDTH,
+	std::int32_t BASE_HEIGHT,
+	std::int32_t SAMPLES_COUNT,
+	bool FIXED_SAMPLE_LOCATION
 >
-class gl_texture_2d_multisample_array final : public gl_texture_2d_multisample_array_base {
+class gl_texture_2d_multisample_array final : public gl_texture_2d_multisample_array_t {
 public:
-	using pixels_t = gl_pixels<_FORMAT>;
-
-	gl_texture_2d_multisample_array()
+	using pixels_t = gl_pixels<FORMAT>;
+public:
+	gl_texture_2d_multisample_array(const gl_texture_parameters& parameters) : gl_texture_2d_multisample_array_t(parameters)
 	{
 		glTextureStorage3DMultisample(_handle,
-			_SAMPLES_COUNT,
-			static_cast<GLenum>(_FORMAT),
-			_WIDTH, _HEIGHT,
-			_ELEMENTS_COUNT,
-			_FIXED_SAMPLE_LOCATION
+			SAMPLES_COUNT,
+			static_cast<GLenum>(FORMAT),
+			BASE_WIDTH, BASE_HEIGHT,
+			ELEMENTS_COUNT,
+			FIXED_SAMPLE_LOCATION
 		);
 	}
 
@@ -1330,7 +1266,7 @@ public:
 
 	void fill_mask(std::int32_t element_index, const pixels_t& pixels_mask)
 	{
-	    if(element_index < 0 || element_index >= _ELEMENTS_COUNT) return;
+	    if(element_index < 0 || element_index >= ELEMENTS_COUNT) return;
 
 	}
 
@@ -1344,44 +1280,26 @@ public:
 
 
 };
-
-
-class gl_texture_buffer_base : public gl_texture_base{
+template<
+    gl_image_format FORMAT
+>
+class gl_texture_buffer final: public gl_texture_buffer_t{
 public:
-    gl_texture_buffer_base() : gl_texture_base(gl_texture_type::TEXTURE_BUFFER)
-    {}
-};
-
-/*
- *
- * No more mipmaps
- *
- *
- */
-template<gl_image_format _FORMAT>
-class gl_texture_buffer final: public gl_texture_buffer_base{
+    using pixels_t = gl_pixels<FORMAT>;
 public:
-
 	gl_texture_buffer() = default;
-
 	gl_texture_buffer(const gl_texture_buffer&) = default;
-
 	gl_texture_buffer& operator=(const gl_texture_buffer&) = default;
 
 	~gl_texture_buffer() override = default;
 
 public:
-
-    /*
-     * try to associate with a buffer
-     *
-     */
 	void associate(const std::shared_ptr<gl_buffer>& buffer) noexcept
 	{
 		if (!buffer) return;
 
         glTextureBuffer(_handle,
-                        static_cast<GLenum>(_FORMAT),
+                        static_cast<GLenum>(FORMAT),
                         buffer->get_handle()
         );
 
@@ -1398,7 +1316,7 @@ public:
 		if (offset < 0 || offset >= buffer->get_capacity() || length < 0 || offset + length > buffer->get_capacity()) return;
 
         glTextureBufferRange(_handle,
-                             static_cast<GLenum>(_FORMAT),
+                             static_cast<GLenum>(FORMAT),
                              buffer->get_handle(),
                              offset, length
                              );
@@ -1417,10 +1335,18 @@ public:
 	    return _associated_buffer;
     }
 
+public:
+    void fill(const pixels_t& pixels)
+    {
+
+    }
+
 private:
 
 	std::shared_ptr<gl_buffer> _associated_buffer;
 
 };
+
+
 
 #endif

@@ -23,6 +23,7 @@ private:
 
     const static std::int64_t BUFFER_AVAILABLE_MAX_CAPACITY;
 
+    std::uint64_t _capacity;
 public:
 
 	/*

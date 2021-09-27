@@ -4,8 +4,6 @@ project(karamay_engine_graphics_unit)
 set(CMAKE_CXX_STANDARD 17)
 set(BUILD_ARCH "-m64") 
 
-
-
 link_libraries(opengl32.lib)
 #
 link_libraries(glew32s.lib)
