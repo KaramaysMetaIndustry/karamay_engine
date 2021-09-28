@@ -13,6 +13,7 @@ public:
     std::vector<std::shared_ptr<glsl_atomic_uint>> atomic_counters;
     std::vector<std::shared_ptr<glsl_uniform_block_t>> uniform_blocks;
     std::vector<std::shared_ptr<glsl_buffer_block_t>> buffer_blocks;
+
 };
 
 struct gl_compute_pipeline_descriptor
@@ -32,7 +33,7 @@ public:
 
 public:
 
-    std::shared_ptr<gl_compute_pipeline_parameters> parameters;
+    const std::shared_ptr<gl_compute_pipeline_parameters> parameters;
 
 public:
 	/*
@@ -47,36 +48,24 @@ public:
     {
 	    if(parameters)
         {
-	        const auto& samplers = parameters->samplers;
-	        for(const auto& sampler : samplers)
-            {
-	            if(sampler)
-                {
-	                sampler->bind();
-                }
-            }
-
-	        const auto& images = parameters->images;
-	        for(const auto& image : images)
-            {
-	            if(image)
-                {
-	                image->bind();
-                }
-            }
+	        for(const auto& sampler : parameters->samplers) if(sampler) sampler->bind();
+	        for(const auto& image : parameters->images) if(image) image->bind();
 
 	        const auto& atomic_counters = parameters->atomic_counters;
-
-
 	        const auto& uniform_blocks = parameters->uniform_blocks;
-
 	        const auto& buffer_blocks = parameters->buffer_blocks;
-
-
         }
     }
 
-	void unbind();
+	void unbind()
+    {
+	    if(parameters)
+        {
+	        for(const auto& sampler : parameters->samplers) if(sampler) sampler->unbind();
+	        for(const auto& image : parameters->images) if(image) image->unbind();
+
+        }
+    }
 
 private:
 

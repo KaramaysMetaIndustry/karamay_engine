@@ -105,11 +105,6 @@ public:
 
 private:
 
-    bool _check_uniform_validation()
-    {
-        return false;
-    }
-
     void _generate_memory_layout(gl_uniform_buffer_layout layout, const std::vector<std::pair<std::string, std::string>>& rows)
     {
         switch (layout) {

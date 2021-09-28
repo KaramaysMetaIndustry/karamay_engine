@@ -75,8 +75,6 @@ struct gl_texture_parameters{
     gl_texture_swizzle_component texture_swizzle_a;
     std::float_t texture_lod_bias;
 
-    gl_texture_parameters()
-    {}
 };
 
 /*
@@ -1346,7 +1344,5 @@ private:
 	std::shared_ptr<gl_buffer> _associated_buffer;
 
 };
-
-
 
 #endif
