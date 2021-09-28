@@ -1,5 +1,4 @@
 #include "gl_transform_feedback.h"
-#include "graphics/buffer/gl_buffer.h"
 
 gl_transform_feedback::~gl_transform_feedback()
 {
@@ -10,7 +9,7 @@ void gl_transform_feedback::associate_buffer(std::uint32_t index, const std::sha
 {
 	if (index < GL_MAX_TRANSFORM_FEEDBACK_BUFFERS && buffer)
 	{
-		glTransformFeedbackBufferBase(_handle, static_cast<GLuint>(index), buffer->get_handle());
+		//glTransformFeedbackBufferBase(_handle, static_cast<GLuint>(index), buffer->get_handle());
 	}
 }
 
@@ -18,7 +17,7 @@ void gl_transform_feedback::associate_buffer(std::uint32_t index, const std::sha
 {
 	if (index < GL_MAX_TRANSFORM_FEEDBACK_BUFFERS && buffer)
 	{
-		glTransformFeedbackBufferRange(_handle, index, buffer->get_handle(), offset, size);
+		//glTransformFeedbackBufferRange(_handle, index, buffer->get_handle(), offset, size);
 	}
 }
 

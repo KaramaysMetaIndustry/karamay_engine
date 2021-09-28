@@ -230,7 +230,7 @@ struct gl_graphics_pipeline_state
                 bool enabled;
                 std::float_t sample_coverage_value;
                 bool inverted;
-            } addtional_multisample_fragment_operations;
+            } additional_multisample_fragment_operations;
         } post_fragment_operations;
     } fragment_processing; // process fragments
     struct gl_render_target
@@ -249,13 +249,10 @@ struct gl_graphics_pipeline_descriptor
 
 };
 
-
-class gl_graphics_pipeline : public gl_pipeline
-{
+class gl_graphics_pipeline : public gl_pipeline{
 public:
-
     gl_graphics_pipeline() = delete;
-    explicit gl_graphics_pipeline(gl_graphics_pipeline_descriptor&& descriptor) :
+    explicit gl_graphics_pipeline(const gl_graphics_pipeline_descriptor& descriptor) :
         _descriptor(std::move(descriptor))
     {
         _initialize();
@@ -307,88 +304,66 @@ public:
 
     void initialize()
     {
-        auto& _vs = _descriptor.vertex_processing.vertex_shading.shader;
-        auto& _tescs = _descriptor.vertex_processing.tessellation.control_shader;
-        auto& _teses = _descriptor.vertex_processing.tessellation.evaluation_shader;
-        auto& _gs = _descriptor.vertex_processing.geometry_shading.shader;
-        auto& _fs = _descriptor.fragment_processing.fragment_shading.shader;
 
         shader_combination_flag _combination_flag;
         std::uint8_t _flag = 0;
 
-        if (_vs)
-        {
-            _flag |= 0;
-        }
-        if (_tescs)
-        {
-
-        }
-
         // check the shaders combination invalidation
-        switch (_combination_flag)
-        {
-        case gl_graphics_pipeline::shader_combination_flag::_vs:
-        {
-            if (!_descriptor.primitive_assembly.discard_all_primitives)
-            {
-                std::cout << "You must specify a fragment shader otherwise enable the option 'discard_all_primitives'" << std::endl;
-                return;
-            }
-
-            // generate pipeline shaders template
-            const auto& _vs_template = _vs->get_shader_glsl_template();
-
-            //_program->construct();
-
-        }
-            break;
-        case gl_graphics_pipeline::shader_combination_flag::_vs_tescs_teses:
-        {
-            if (!_descriptor.primitive_assembly.discard_all_primitives)
-            {
-                std::cout << "You must specify a fragment shader otherwise enable the option 'discard_all_primitives'" << std::endl;
-                return;
-            }
-        }
-            break;
-        case gl_graphics_pipeline::shader_combination_flag::_vs_tescs_teses_gs:
-        {
-            if (!_descriptor.primitive_assembly.discard_all_primitives)
-            {
-                std::cout << "You must specify a fragment shader otherwise enable the option 'discard_all_primitives'" << std::endl;
-                return;
-            }
-
-
-        }
-            break;
-        case gl_graphics_pipeline::shader_combination_flag::_vs_fs:
-            break;
-        case gl_graphics_pipeline::shader_combination_flag::_vs_gs_fs:
-            break;
-        case gl_graphics_pipeline::shader_combination_flag::_vs_tescs_teses_fs:
-            break;
-        case gl_graphics_pipeline::shader_combination_flag::_vs_tescs_teses_gs_fs:
-            break;
-        default:
-            break;
-        }
-
+//        switch (_combination_flag)
+//        {
+//        case gl_graphics_pipeline::shader_combination_flag::_vs:
+//        {
+//            if (!_descriptor.primitive_assembly.discard_all_primitives)
+//            {
+//                std::cout << "You must specify a fragment shader otherwise enable the option 'discard_all_primitives'" << std::endl;
+//                return;
+//            }
+//
+//            // generate pipeline shaders template
+//            const auto& _vs_template = _vs->get_shader_glsl_template();
+//
+//            //_program->construct();
+//
+//        }
+//            break;
+//        case gl_graphics_pipeline::shader_combination_flag::_vs_tescs_teses:
+//        {
+//            if (!_descriptor.primitive_assembly.discard_all_primitives)
+//            {
+//                std::cout << "You must specify a fragment shader otherwise enable the option 'discard_all_primitives'" << std::endl;
+//                return;
+//            }
+//        }
+//            break;
+//        case gl_graphics_pipeline::shader_combination_flag::_vs_tescs_teses_gs:
+//        {
+//            if (!_descriptor.primitive_assembly.discard_all_primitives)
+//            {
+//                std::cout << "You must specify a fragment shader otherwise enable the option 'discard_all_primitives'" << std::endl;
+//                return;
+//            }
+//
+//
+//        }
+//            break;
+//        case gl_graphics_pipeline::shader_combination_flag::_vs_fs:
+//            break;
+//        case gl_graphics_pipeline::shader_combination_flag::_vs_gs_fs:
+//            break;
+//        case gl_graphics_pipeline::shader_combination_flag::_vs_tescs_teses_fs:
+//            break;
+//        case gl_graphics_pipeline::shader_combination_flag::_vs_tescs_teses_gs_fs:
+//            break;
+//        default:
+//            break;
+//        }
+//
 
 
 
 
 
         std::vector<std::shared_ptr<gl_shader>> _shaders;
-        if (const auto& _vs = _descriptor.vertex_processing.vertex_shading.shader)
-        {
-            _shaders.push_back(_vs);
-        }
-        if (const auto& _gs = _descriptor.vertex_processing.geometry_shading.shader)
-        {
-            _shaders.push_back(_gs);
-        }
 
         // check dir
 
@@ -399,16 +374,6 @@ public:
         }
 
         // load source code and compile  
-    }
-
-    bool output_pipeline_glsl_template(const std::string& renderer_dir) const
-    {
-        const std::string _pipeline_dir = renderer_dir + _name + "\\";
-        if (std::filesystem::create_directory(_pipeline_dir))
-        {
-            return true;
-        }
-        return false;
     }
 
 
@@ -455,11 +420,11 @@ private:
             glDepthRange(1.0l, 1.1l);
             //glDepthRangeArrayv();
             //glDepthRangef();
-            glViewport();
-            glDepthRangeIndexed();
-            glViewportArrayv();
-            glViewportIndexedf();
-            glViewportIndexedfv();
+//            glViewport();
+//            glDepthRangeIndexed();
+//            glViewportArrayv();
+//            glViewportIndexedf();
+//            glViewportIndexedfv();
 
 
         }
@@ -479,17 +444,17 @@ private:
             // multisampling
             glEnable(GL_MULTISAMPLE);
             glEnable(GL_SAMPLE_SHADING);
-            glMinSampleShading();
-            glGetMultisamplefv();
+//            glMinSampleShading();
+//            glGetMultisamplefv();
 
             // points
             glEnable(GL_PROGRAM_POINT_SIZE);
             glDisable(GL_PROGRAM_POINT_SIZE);
             glPointSize(0);
-            glPointParameteri();
-            glPointParameteriv();
-            glPointParameterf();
-            glPointParameterfv();
+//            glPointParameteri();
+//            glPointParameteriv();
+//            glPointParameterf();
+//            glPointParameterfv();
 
             // line segments
             glEnable(GL_LINE_SMOOTH);
@@ -508,7 +473,7 @@ private:
             glEnable(GL_POLYGON_OFFSET_POINT);
             glEnable(GL_POLYGON_SMOOTH);
             glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-            glPolygonOffsetClamp();
+            //glPolygonOffsetClamp();
             glPolygonOffset(1.2f, 0);
 
         }
@@ -524,8 +489,8 @@ private:
             glDisablei(GL_SCISSOR_TEST, 0);
             glScissor(0, 0, 0, 0);
             glScissorArrayv(0, 100, nullptr);
-            glScissorIndexed();
-            glScissorIndexedv();
+            //glScissorIndexed();
+            //glScissorIndexedv();
 
             // multisample fragment ops
 
@@ -574,15 +539,15 @@ private:
         // blending
         {
             glEnable(GL_BLEND);
-            glBlendColor(1.0f, 1.0f, 1.0f, 1.0f);
-            glBlendFunc();
-            glBlendFuncSeparate();
-            glBlendFunci();
-            glBlendFuncSeparatei();
-            glBlendEquation();
-            glBlendEquationi();
-            glBlendEquationSeparate();
-            glBlendEquationSeparatei();
+//            glBlendColor(1.0f, 1.0f, 1.0f, 1.0f);
+//            glBlendFunc();
+//            glBlendFuncSeparate();
+//            glBlendFunci();
+//            glBlendFuncSeparatei();
+//            glBlendEquation();
+//            glBlendEquationi();
+//            glBlendEquationSeparate();
+//            glBlendEquationSeparatei();
         }
         // sRGB Conversion
         {
@@ -604,11 +569,11 @@ private:
         // additional multisample fragment operations
         {
             glEnable(GL_MULTISAMPLE);
-            glSampleCoverage();
+            //glSampleCoverage();
         }
 
         glEnable(GL_SAMPLE_MASK);
-        glSampleMaski();
+        //glSampleMaski();
 
         glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 

@@ -1,5 +1,4 @@
 #include "gl_vertex_array.h"
-#include "graphics/buffer/gl_buffer.h"
 
 bool gl_vertex_array::is_pointer_enabled(std::uint32_t index)
 {
@@ -47,7 +46,7 @@ void* gl_vertex_array::get_mapped_data()
 
 const std::int32_t gl_vertex_array::get_size() const
 {
-	return _buffer->get_size();
+	return 0;
 }
 
 gl_vertex_array::~gl_vertex_array()

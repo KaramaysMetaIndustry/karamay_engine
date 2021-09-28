@@ -1,18 +1,17 @@
 #ifndef H_RENDERER
 #define H_RENDERER
 
+#include "public/stl.h"
 #include "graphics/pipeline/graphics/gl_graphics_pipeline.h"
 #include "graphics/pipeline/compute/gl_compute_pipeline.h"
 #include "graphics/texture/gl_texture.h"
-#include "public/_lua.h"
+
 class gl_graphics_pipeline;
 class gl_vertex_processing_pipeline;
 class gl_compute_pipeline;
 
-class gl_renderer_builder
-{
+class gl_renderer_builder{
 public:
-
     gl_renderer_builder() = default;
 
 public:
@@ -92,64 +91,6 @@ private:
 
     static std::string _global_renderers_dir;
 
-    bool generate_renderer_glsl_template()
-    {
-        const std::string _renderer_dir = _global_renderers_dir + _renderer_name + "\\";
-        bool _generation_result = false;
-        if (std::filesystem::create_directory(_renderer_dir))
-        {
-            for (const auto& _pipeline : _pipelines)
-            {
-                if (!_pipeline || !_pipeline->ouput_pipeline_glsl_template(_renderer_dir)) 
-                    return _generation_result;
-            }
-            _generation_result = true;
-        }
-        return _generation_result;
-    }
-
-    struct gl_PIP_NAME_graphics_pipeline_parameters : public gl_graphics_pipeline_parameters
-    {
-
-        class gl_pp_compute_shader_parameters : public gl_compute_shader_parameters
-        {
-        public:
-            class glsl_pp_uniform_block_t : public glsl_uniform_block_t
-            {
-            public:
-                glsl_pp_uniform_block_t() = delete;
-                glsl_pp_uniform_block_t(std::function<void(const glsl_uniform_block_t& uniform_block)> _register)
-                {}
-
-                const std::uint8_t* data() const override
-                {
-                    return reinterpret_cast<const std::uint8_t*>(&memory);
-                }
-
-                std::int64_t size() const override
-                {
-                    return sizeof(memory) * 10;
-                }
-                
-                struct gl_struct
-                {
-                    glsl_vec3 position0{item_register};
-                    glsl_vec3 position1{item_register};
-                    glsl_vec3 position2{item_register};
-                } memory[10];
-
-
-            } _ublock0{uniform_block_register};
-        } compute_parameters;
-
-
-    };
-    std::shared_ptr<class gl_PIP_NAME_graphics_pipeline_parameters> _parameters;
-
-    void test()
-    {
-        _parameters->compute_parameters._ublock0.memory[0].position0.client_value = glm::vec3(0.0f);
-    }
 
 };
 

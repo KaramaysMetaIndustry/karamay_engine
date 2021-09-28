@@ -3,6 +3,8 @@
 
 enum class gl_image_format : GLenum
 {
+    NONE,
+
 	NOR_UI_R8 = GL_R8,
 	NOR_UI_R16 = GL_R16,
 	NOR_UI_RG8 = GL_RG8,
@@ -93,6 +95,8 @@ enum class gl_image_format : GLenum
 
 enum class gl_pixel_format : GLenum
 {
+    NONE,
+
 	R = GL_RED,
 	RG = GL_RG,
 	RGB = GL_RGB,
@@ -114,6 +118,8 @@ enum class gl_pixel_format : GLenum
 
 enum class gl_pixel_type : GLenum
 {
+    NONE,
+
 	UNSIGNED_BYTE = GL_UNSIGNED_BYTE,
 	UNSIGNED_SHORT = GL_UNSIGNED_SHORT,
 	UNSIGNED_INT = GL_UNSIGNED_INT,
@@ -164,14 +170,14 @@ public:
 template<gl_image_format format>
 class gl_pixels : private gl_pixels_base
 {
-	gl_image_format image_format() const override {};
-	gl_pixel_format pixel_format() const override {};
-	gl_pixel_type pixel_type() const override {};
-	std::uint32_t pixel_size() const override {};
-	std::uint32_t size() const override {};
+    gl_image_format image_format() const override { return gl_image_format::NONE;};
+	gl_pixel_format pixel_format() const override { return gl_pixel_format::NONE;};
+	gl_pixel_type pixel_type() const override {return gl_pixel_type::NONE;};
+	std::uint32_t pixel_size() const override {return 0;};
+	std::uint32_t size() const override {return 0;};
 	void resize(std::uint32_t new_size) override {};
-	std::uint8_t* data() override {};
-	const std::uint8_t* data() const override {};
+	std::uint8_t* data() override {return nullptr;};
+	const std::uint8_t* data() const override {return nullptr;};
 };
 
 template<>

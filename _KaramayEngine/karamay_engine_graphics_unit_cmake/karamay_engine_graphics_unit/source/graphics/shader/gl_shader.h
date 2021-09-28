@@ -49,39 +49,35 @@ namespace gl_shader_enum
 //    }
 }
 
-class gl_shader : public gl_object
-{
+class gl_shader : public gl_object{
 public:
-	gl_shader() = default;
+	gl_shader() = delete;
+	explicit gl_shader(const std::string& path)
+    {
+        load(path);
 
-	explicit gl_shader(gl_shader_enum::type shader_type, const std::vector<std::uint8_t>& source_stream);
+        glCompileShader(_handle);
 
-	explicit gl_shader(const std::string& path);
+        GLint _result = GL_FALSE;
+        char info[512];
+        glGetShaderiv(_handle, GL_COMPILE_STATUS, &_result);
+        if (_result != GL_TRUE) {
+            glGetShaderInfoLog(_handle, 512, nullptr, info);
+            std::cout << "shader compile fail : " << info << std::endl;
+        }
+    }
 
 	~gl_shader() override;
-
-public:
-
-	virtual const std::string& get_shader_glsl_template() const = 0;
-
 
 private:
 
     gl_shader_enum::type _shader_type;
 
     std::vector<std::uint8_t> _source_stream;
-	
-	std::weak_ptr<gl_pipeline> _owner;
 
 public:
 
     [[nodiscard]] gl_shader_enum::type get_shader_type() const { return _shader_type; }
-
-
-	void set_onwer(const std::shared_ptr<gl_pipeline>& owner)
-	{
-		_owner = owner;
-	}
 
 	void load(const std::string& path)
 	{

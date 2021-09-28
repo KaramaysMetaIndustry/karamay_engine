@@ -1,8 +1,7 @@
 #ifndef H_GL_SHADER_STORAGE_BUFFER
 #define H_GL_SHADER_STORAGE_BUFFER
 
-#include "graphics/variable/gl_variable.h"
-
+#include "public/stl.h"
 class gl_program;
 class gl_buffer;
 
@@ -29,29 +28,12 @@ public:
 
 public:
 
-	void add_variable(const std::shared_ptr<gl_variable>& variable);
-
-	void add_variables(const std::vector<std::shared_ptr<gl_variable>>& items)
-	{
-		_items.insert(_items.cend(), items.cbegin(), items.cend());
-	}
-
-	void clear_variables()
-	{
-		_items.clear();
-	}
-
 private:
 	
 	gl_shader_storage_buffer_enum::layout _memory_layout;
 	
 	gl_shader_storage_buffer_enum::matrix_layout _matrix_memory_layout;
 
-	std::string _block_name;
-
-	std::vector<std::shared_ptr<gl_variable>> _items;
-
-	std::uint8_t _is_dirty;
 
 public:
 
@@ -59,40 +41,6 @@ public:
 
 	auto get_matrix_memory_layout() const { return _matrix_memory_layout; }
 
-	const std::string& get_block_name() const
-	{
-		return _block_name;
-	}
-
-	const std::size_t get_block_size() const
-	{
-		std::size_t _block_size = 0;
-		for (const auto& _item : _items)
-		{
-			_block_size += _item->get_value().size();
-		}
-		return _block_size;
-	}
-
-	void set_block_name(const std::string& block_name)
-	{
-		_block_name = block_name;
-	}
-
-	const auto& get_items() const
-	{
-		return _items;
-	}
-
-	const std::uint8_t is_dirty() const
-	{
-		return _is_dirty;
-	}
-
-	void set_dirty(std::uint8_t is_dirty)
-	{
-		_is_dirty = is_dirty;
-	}
 };
 
 
@@ -100,29 +48,6 @@ class gl_shader_storage_buffer final
 {
 public:
 
-	gl_shader_storage_buffer(std::shared_ptr<gl_shader_storage_buffer_descriptor> descriptor)
-	{
-		_descriptor = descriptor;
-	}
-
-private:
-
-	std::shared_ptr<gl_shader_storage_buffer_descriptor> _descriptor;
-
-	//std::shared_ptr<gl_buffer> _buffer;
-
-	std::uint32_t _binding;
-
-public:
-
-	std::shared_ptr<gl_shader_storage_buffer_descriptor> get_descriptor();
-
-	void bind(std::uint32_t binding);
-
-	void unbind()
-	{
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-	}
 
 private:
 

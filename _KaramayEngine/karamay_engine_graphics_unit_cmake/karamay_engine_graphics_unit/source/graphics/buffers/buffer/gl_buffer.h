@@ -234,7 +234,7 @@ private:
     void _allocate_buffer()
     {
         glCreateBuffers(1, &_handle);
-        if(_handle == 0) throw std::exception("can not allocate a new buffer");
+        if(_handle == 0) return;
         std::uint32_t _storage_flags = 0;
         glNamedBufferStorage(_handle, _capacity, nullptr, _storage_flags);
     }
@@ -249,17 +249,17 @@ public:
     template<typename T>
     void print()
     {
-        execute_immutable_memory_handler(0, _required_capacity, [](const std::uint8_t* data, std::int64_t size){
-            const auto _data = reinterpret_cast<const T*>(data);
-            if(_data)
-            {
-                for(std::int32_t _index = 0; _index < size/ sizeof(T); ++_index)
-                {
-                    std::cout<<": "<<_data[_index] <<std::endl;
-
-                }
-            }
-        });
+//        execute_immutable_memory_handler(0, _required_capacity, [](const std::uint8_t* data, std::int64_t size){
+//            const auto _data = reinterpret_cast<const T*>(data);
+//            if(_data)
+//            {
+//                for(std::int32_t _index = 0; _index < size/ sizeof(T); ++_index)
+//                {
+//                    std::cout<<": "<<_data[_index] <<std::endl;
+//
+//                }
+//            }
+//        });
     }
 
 private:
