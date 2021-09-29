@@ -146,13 +146,11 @@ struct gl_uniform_buffer_descriptor {
  * 
  * 
  */
-class gl_program final : public gl_object, public std::enable_shared_from_this<gl_program>
-{
+class gl_program final : public gl_object, public std::enable_shared_from_this<gl_program>{
 public:
-
 	gl_program();
 
-	virtual ~gl_program();
+	~gl_program() override;
 
 public:
 
@@ -164,39 +162,32 @@ public:
 
 public:
 
+    std::int32_t query_uniform_item(const char* item_name)
+    {
+        return glGetUniformLocation(_handle, item_name);
+    }
+
+    std::int32_t query_uniform_block_item(const char* block_item_name)
+    {
+        return glGetUniformBlockIndex(_handle, block_item_name);
+    }
+
+
 	void set_vertex_array(std::shared_ptr<class gl_vertex_array> vertex_array);
 
 	void set_element_array_buffer(std::shared_ptr<class gl_element_array_buffer> element_array_buffer);
 
 	void set_transform_feedback(std::shared_ptr<class gl_transform_feedback> transform_feedback);
 
-	void add_uniform_buffers(const std::vector<std::shared_ptr<class gl_uniform_buffer>>& uniform_buffers);
+
 
 	void add_uniform_buffer(std::shared_ptr<class gl_uniform_buffer> uniform_buffer);
 
-	void add_uniform_buffers(const std::vector<gl_uniform_buffer_descriptor>& descriptors) {
-        auto _owner = shared_from_this();
-        gl_buffer_storage_options _storage_options{
-            true, true, true, true,
-            false, false};
-
-        auto _public_uniform_buffer = std::make_shared<gl_buffer>(12, _storage_options);
-
-        for(const auto& descriptor : descriptors) {
-//            _uniform_buffers.push_back(
-//                    std::make_shared<gl_uniform_buffer>(descriptor.block_name, descriptor.layout, descriptor.rows,_public_uniform_buffer, _owner)
-//            );
-        }
-
-    }
-
-	void add_shader_storage_buffers(const std::vector<std::shared_ptr<class gl_shader_storage_buffer>>& shader_storage_buffers);
-
 	void add_shader_storage_buffer(std::shared_ptr<class gl_shader_storage_buffer> shader_storage_buffer);
 
-	void add_atomic_counter_buffers(const std::vector<std::shared_ptr<class gl_atomic_counter_buffer>>& atomic_counter_buffers);
-
 	void add_atomic_counter_buffer(std::shared_ptr<class gl_atomic_counter_buffer> atomic_counter_buffer);
+
+
 
 	void set_framebuffer(std::shared_ptr<class gl_framebuffer> framebuffer = nullptr);
 
@@ -271,8 +262,6 @@ public:
 	}
 	
 public:
-	
-	void assembly() {}
 
 	/**
 	 * start render processing
@@ -342,7 +331,7 @@ private:
 	}
 	void _unbind_uniform_buffers()
 	{
-		// clear all unifrom buffers binding is too expensive
+		// clear all uniform buffers binding is too expensive
 		// use the stored ids
 		for (std::int32_t i = 0; i < _uniform_buffers.size(); ++i)
 		{

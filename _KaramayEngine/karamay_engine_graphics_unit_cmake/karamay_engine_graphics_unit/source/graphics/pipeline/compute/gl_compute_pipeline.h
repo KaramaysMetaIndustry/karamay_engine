@@ -25,17 +25,43 @@ public:
     gl_compute_pipeline() = delete;
 	explicit gl_compute_pipeline(const gl_compute_pipeline_descriptor& descriptor)
 	{
+	    // ... generate shader code file
+
+	    // ... initialize program
+	    _program = std::make_unique<gl_program>();
+	    _program->construct({});
+	    // ... initialize parameters
+
 	}
 	gl_compute_pipeline(const gl_compute_pipeline&) = delete;
 	gl_compute_pipeline& operator=(const gl_compute_pipeline&) = delete;
 
 	~gl_compute_pipeline() = default;
-
 public:
 
-    const std::shared_ptr<gl_compute_pipeline_parameters> parameters;
+    void bind()
+    {
+        if(parameters)
+        {
+            for(const auto& sampler : parameters->samplers) if(sampler) sampler->bind();
+            for(const auto& image : parameters->images) if(image) image->bind();
 
-public:
+            const auto& atomic_counters = parameters->atomic_counters;
+            const auto& uniform_blocks = parameters->uniform_blocks;
+            const auto& buffer_blocks = parameters->buffer_blocks;
+        }
+    }
+
+    void unbind()
+    {
+        if(parameters)
+        {
+            for(const auto& sampler : parameters->samplers) if(sampler) sampler->unbind();
+            for(const auto& image : parameters->images) if(image) image->unbind();
+
+        }
+    }
+
 	/*
 	* Dispatch compute
 	*/
@@ -44,31 +70,18 @@ public:
 		glDispatchCompute(group_size_x, group_size_y, group_size_z);
 	}
 
-	void bind()
-    {
-	    if(parameters)
-        {
-	        for(const auto& sampler : parameters->samplers) if(sampler) sampler->bind();
-	        for(const auto& image : parameters->images) if(image) image->bind();
-
-	        const auto& atomic_counters = parameters->atomic_counters;
-	        const auto& uniform_blocks = parameters->uniform_blocks;
-	        const auto& buffer_blocks = parameters->buffer_blocks;
-        }
-    }
-
-	void unbind()
-    {
-	    if(parameters)
-        {
-	        for(const auto& sampler : parameters->samplers) if(sampler) sampler->unbind();
-	        for(const auto& image : parameters->images) if(image) image->unbind();
-
-        }
-    }
-
 private:
 
     std::unique_ptr<gl_program> _program;
+
+	std::unordered_map<std::string, std::int32_t> _binding_cache;
+
+	void _generate_binding_cache()
+    {}
+
+public:
+
+    const std::shared_ptr<gl_compute_pipeline_parameters> parameters;
+
 
 };
