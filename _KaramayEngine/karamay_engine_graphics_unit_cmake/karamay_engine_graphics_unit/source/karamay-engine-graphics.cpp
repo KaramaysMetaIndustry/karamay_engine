@@ -1,7 +1,7 @@
 #include "window/window.h"
-#include "graphics/variable/glv_types.h"
 #include "graphics/vertex_array/gl_vertex_array.h"
 #include "graphics/program/gl_program.h"
+#include "public/_glew.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../dependencies/stb/stb_image.h"
@@ -54,150 +54,150 @@ std::uint32_t indices[] = {
 	1, 2, 2, 3, 4, 5, 6
 };
 
-std::vector<glv::f32vec3> offset_positions{
-	glv::f32vec3(0.0f,  0.0f,  0.0f),
-	glv::f32vec3(2.0f,  5.0f, -15.0f),
-	glv::f32vec3(-1.5f, -2.2f, -2.5f),
-	glv::f32vec3(-3.8f, -2.0f, -12.3f),
-	glv::f32vec3(2.4f, -0.4f, -3.5f),
-	glv::f32vec3(-1.7f,  3.0f, -7.5f),
-	glv::f32vec3(1.3f, -2.0f, -2.5f),
-	glv::f32vec3(1.5f,  2.0f, -2.5f),
-	glv::f32vec3(1.5f,  0.2f, -1.5f),
-	glv::f32vec3(-1.3f,  1.0f, -1.5f)
-};
-
-std::vector<glv::f32vec3> normals{
-		glv::f32vec3(0.0f, 0.0f, -1.0f),
-		glv::f32vec3(0.0f, 0.0f, -1.0f),
-		glv::f32vec3(0.0f, 0.0f, -1.0f),
-		glv::f32vec3(0.0f, 0.0f, -1.0f),
-		glv::f32vec3(0.0f, 0.0f, -1.0f),
-		glv::f32vec3(0.0f, 0.0f, -1.0f),
-
-		glv::f32vec3(0.0f, 0.0f, 1.0f),
-		glv::f32vec3(0.0f, 0.0f, 1.0f),
-		glv::f32vec3(0.0f, 0.0f, 1.0f),
-		glv::f32vec3(0.0f, 0.0f, 1.0f),
-		glv::f32vec3(0.0f, 0.0f, 1.0f),
-		glv::f32vec3(0.0f, 0.0f, 1.0f),
-
-		glv::f32vec3(-1.0f, 0.0f, 0.0f),
-		glv::f32vec3(-1.0f, 0.0f, 0.0f),
-		glv::f32vec3(-1.0f, 0.0f, 0.0f),
-		glv::f32vec3(-1.0f, 0.0f, 0.0f),
-		glv::f32vec3(-1.0f, 0.0f, 0.0f),
-		glv::f32vec3(-1.0f, 0.0f, 0.0f),
-
-		glv::f32vec3(1.0f, 0.0f, 0.0f),
-		glv::f32vec3(1.0f, 0.0f, 0.0f),
-		glv::f32vec3(1.0f, 0.0f, 0.0f),
-		glv::f32vec3(1.0f, 0.0f, 0.0f),
-		glv::f32vec3(1.0f, 0.0f, 0.0f),
-		glv::f32vec3(1.0f, 0.0f, 0.0f),
-
-		glv::f32vec3(0.0f, -1.0f, 0.0f),
-		glv::f32vec3(0.0f, -1.0f, 0.0f),
-		glv::f32vec3(0.0f, -1.0f, 0.0f),
-		glv::f32vec3(0.0f, -1.0f, 0.0f),
-		glv::f32vec3(0.0f, -1.0f, 0.0f),
-		glv::f32vec3(0.0f, -1.0f, 0.0f),
-
-		glv::f32vec3(0.0f, 1.0f, 0.0f),
-		glv::f32vec3(0.0f, 1.0f, 0.0f),
-		glv::f32vec3(0.0f, 1.0f, 0.0f),
-		glv::f32vec3(0.0f, 1.0f, 0.0f),
-		glv::f32vec3(0.0f, 1.0f, 0.0f),
-		glv::f32vec3(0.0f, 1.0f, 0.0f),
-};
-
-std::vector<glv::f32vec2> uvs{
-		glv::f32vec2(0.0f, 0.0f),
-		glv::f32vec2(1.0f,  0.0f),
-		glv::f32vec2(1.0f,  1.0f),
-		glv::f32vec2(1.0f,  1.0f),
-		glv::f32vec2(0.0f,  1.0f),
-		glv::f32vec2(0.0f,  0.0f),
-
-		glv::f32vec2(0.0f,  0.0f),
-		glv::f32vec2(1.0f,  0.0f),
-		glv::f32vec2(1.0f,  1.0f),
-		glv::f32vec2(1.0f,  1.0f),
-		glv::f32vec2(0.0f,  1.0f),
-		glv::f32vec2(0.0f,  0.0f),
-
-		glv::f32vec2(1.0f,  0.0f),
-		glv::f32vec2(1.0f,  1.0f),
-		glv::f32vec2(0.0f,  1.0f),
-		glv::f32vec2(0.0f,  1.0f),
-		glv::f32vec2(0.0f,  0.0f),
-		glv::f32vec2(1.0f,  0.0f),
-
-		glv::f32vec2(1.0f,  0.0f),
-		glv::f32vec2(1.0f,  1.0f),
-		glv::f32vec2(0.0f,  1.0f),
-		glv::f32vec2(0.0f,  1.0f),
-		glv::f32vec2(0.0f,  0.0f),
-		glv::f32vec2(1.0f,  0.0f),
-
-		glv::f32vec2(0.0f,  1.0f),
-		glv::f32vec2(1.0f,  1.0f),
-		glv::f32vec2(1.0f,  0.0f),
-		glv::f32vec2(1.0f,  0.0f),
-		glv::f32vec2(0.0f,  0.0f),
-		glv::f32vec2(0.0f,  1.0f),
-
-		glv::f32vec2(0.0f,  1.0f),
-		glv::f32vec2(1.0f,  1.0f),
-		glv::f32vec2(1.0f,  0.0f),
-		glv::f32vec2(1.0f,  0.0f),
-		glv::f32vec2(0.0f,  0.0f),
-		glv::f32vec2(0.0f,  1.0f)
-};
-
-std::vector<glv::f32vec3> positions{
-		glv::f32vec3(-0.5f, -0.5f, -0.5f),
-		glv::f32vec3( 0.5f, -0.5f, -0.5f),
-		glv::f32vec3( 0.5f,  0.5f, -0.5f),
-		glv::f32vec3( 0.5f,  0.5f, -0.5f),
-		glv::f32vec3(-0.5f,  0.5f, -0.5f),
-		glv::f32vec3(-0.5f, -0.5f, -0.5f),
-
-		glv::f32vec3(-0.5f, -0.5f,  0.5f),
-		glv::f32vec3( 0.5f, -0.5f,  0.5f),
-		glv::f32vec3( 0.5f,  0.5f,  0.5f),
-		glv::f32vec3( 0.5f,  0.5f,  0.5f),
-		glv::f32vec3(-0.5f,  0.5f,  0.5f),
-		glv::f32vec3(-0.5f, -0.5f,  0.5f),
-
-		glv::f32vec3(-0.5f,  0.5f,  0.5f),
-		glv::f32vec3(-0.5f,  0.5f, -0.5f),
-		glv::f32vec3(-0.5f, -0.5f, -0.5f),
-		glv::f32vec3(-0.5f, -0.5f, -0.5f),
-		glv::f32vec3(-0.5f, -0.5f,  0.5f),
-		glv::f32vec3(-0.5f,  0.5f,  0.5f),
-
-		glv::f32vec3( 0.5f,  0.5f,  0.5f),
-		glv::f32vec3( 0.5f,  0.5f, -0.5f),
-		glv::f32vec3( 0.5f, -0.5f, -0.5f),
-		glv::f32vec3( 0.5f, -0.5f, -0.5f),
-		glv::f32vec3( 0.5f, -0.5f,  0.5f),
-		glv::f32vec3( 0.5f,  0.5f,  0.5f),
-
-		glv::f32vec3(-0.5f, -0.5f, -0.5f),
-		glv::f32vec3( 0.5f, -0.5f, -0.5f),
-		glv::f32vec3( 0.5f, -0.5f,  0.5f),
-		glv::f32vec3( 0.5f, -0.5f,  0.5f),
-		glv::f32vec3(-0.5f, -0.5f,  0.5f),
-		glv::f32vec3(-0.5f, -0.5f, -0.5f),
-
-		glv::f32vec3(-0.5f,  0.5f, -0.5f),
-		glv::f32vec3( 0.5f,  0.5f, -0.5f),
-		glv::f32vec3( 0.5f,  0.5f,  0.5f),
-		glv::f32vec3( 0.5f,  0.5f,  0.5f),
-		glv::f32vec3(-0.5f,  0.5f,  0.5f),
-		glv::f32vec3(-0.5f,  0.5f, -0.5f)
-};
+//std::vector<glv::f32vec3> offset_positions{
+//	glv::f32vec3(0.0f,  0.0f,  0.0f),
+//	glv::f32vec3(2.0f,  5.0f, -15.0f),
+//	glv::f32vec3(-1.5f, -2.2f, -2.5f),
+//	glv::f32vec3(-3.8f, -2.0f, -12.3f),
+//	glv::f32vec3(2.4f, -0.4f, -3.5f),
+//	glv::f32vec3(-1.7f,  3.0f, -7.5f),
+//	glv::f32vec3(1.3f, -2.0f, -2.5f),
+//	glv::f32vec3(1.5f,  2.0f, -2.5f),
+//	glv::f32vec3(1.5f,  0.2f, -1.5f),
+//	glv::f32vec3(-1.3f,  1.0f, -1.5f)
+//};
+//
+//std::vector<glv::f32vec3> normals{
+//		glv::f32vec3(0.0f, 0.0f, -1.0f),
+//		glv::f32vec3(0.0f, 0.0f, -1.0f),
+//		glv::f32vec3(0.0f, 0.0f, -1.0f),
+//		glv::f32vec3(0.0f, 0.0f, -1.0f),
+//		glv::f32vec3(0.0f, 0.0f, -1.0f),
+//		glv::f32vec3(0.0f, 0.0f, -1.0f),
+//
+//		glv::f32vec3(0.0f, 0.0f, 1.0f),
+//		glv::f32vec3(0.0f, 0.0f, 1.0f),
+//		glv::f32vec3(0.0f, 0.0f, 1.0f),
+//		glv::f32vec3(0.0f, 0.0f, 1.0f),
+//		glv::f32vec3(0.0f, 0.0f, 1.0f),
+//		glv::f32vec3(0.0f, 0.0f, 1.0f),
+//
+//		glv::f32vec3(-1.0f, 0.0f, 0.0f),
+//		glv::f32vec3(-1.0f, 0.0f, 0.0f),
+//		glv::f32vec3(-1.0f, 0.0f, 0.0f),
+//		glv::f32vec3(-1.0f, 0.0f, 0.0f),
+//		glv::f32vec3(-1.0f, 0.0f, 0.0f),
+//		glv::f32vec3(-1.0f, 0.0f, 0.0f),
+//
+//		glv::f32vec3(1.0f, 0.0f, 0.0f),
+//		glv::f32vec3(1.0f, 0.0f, 0.0f),
+//		glv::f32vec3(1.0f, 0.0f, 0.0f),
+//		glv::f32vec3(1.0f, 0.0f, 0.0f),
+//		glv::f32vec3(1.0f, 0.0f, 0.0f),
+//		glv::f32vec3(1.0f, 0.0f, 0.0f),
+//
+//		glv::f32vec3(0.0f, -1.0f, 0.0f),
+//		glv::f32vec3(0.0f, -1.0f, 0.0f),
+//		glv::f32vec3(0.0f, -1.0f, 0.0f),
+//		glv::f32vec3(0.0f, -1.0f, 0.0f),
+//		glv::f32vec3(0.0f, -1.0f, 0.0f),
+//		glv::f32vec3(0.0f, -1.0f, 0.0f),
+//
+//		glv::f32vec3(0.0f, 1.0f, 0.0f),
+//		glv::f32vec3(0.0f, 1.0f, 0.0f),
+//		glv::f32vec3(0.0f, 1.0f, 0.0f),
+//		glv::f32vec3(0.0f, 1.0f, 0.0f),
+//		glv::f32vec3(0.0f, 1.0f, 0.0f),
+//		glv::f32vec3(0.0f, 1.0f, 0.0f),
+//};
+//
+//std::vector<glv::f32vec2> uvs{
+//		glv::f32vec2(0.0f, 0.0f),
+//		glv::f32vec2(1.0f,  0.0f),
+//		glv::f32vec2(1.0f,  1.0f),
+//		glv::f32vec2(1.0f,  1.0f),
+//		glv::f32vec2(0.0f,  1.0f),
+//		glv::f32vec2(0.0f,  0.0f),
+//
+//		glv::f32vec2(0.0f,  0.0f),
+//		glv::f32vec2(1.0f,  0.0f),
+//		glv::f32vec2(1.0f,  1.0f),
+//		glv::f32vec2(1.0f,  1.0f),
+//		glv::f32vec2(0.0f,  1.0f),
+//		glv::f32vec2(0.0f,  0.0f),
+//
+//		glv::f32vec2(1.0f,  0.0f),
+//		glv::f32vec2(1.0f,  1.0f),
+//		glv::f32vec2(0.0f,  1.0f),
+//		glv::f32vec2(0.0f,  1.0f),
+//		glv::f32vec2(0.0f,  0.0f),
+//		glv::f32vec2(1.0f,  0.0f),
+//
+//		glv::f32vec2(1.0f,  0.0f),
+//		glv::f32vec2(1.0f,  1.0f),
+//		glv::f32vec2(0.0f,  1.0f),
+//		glv::f32vec2(0.0f,  1.0f),
+//		glv::f32vec2(0.0f,  0.0f),
+//		glv::f32vec2(1.0f,  0.0f),
+//
+//		glv::f32vec2(0.0f,  1.0f),
+//		glv::f32vec2(1.0f,  1.0f),
+//		glv::f32vec2(1.0f,  0.0f),
+//		glv::f32vec2(1.0f,  0.0f),
+//		glv::f32vec2(0.0f,  0.0f),
+//		glv::f32vec2(0.0f,  1.0f),
+//
+//		glv::f32vec2(0.0f,  1.0f),
+//		glv::f32vec2(1.0f,  1.0f),
+//		glv::f32vec2(1.0f,  0.0f),
+//		glv::f32vec2(1.0f,  0.0f),
+//		glv::f32vec2(0.0f,  0.0f),
+//		glv::f32vec2(0.0f,  1.0f)
+//};
+//
+//std::vector<glv::f32vec3> positions{
+//		glv::f32vec3(-0.5f, -0.5f, -0.5f),
+//		glv::f32vec3( 0.5f, -0.5f, -0.5f),
+//		glv::f32vec3( 0.5f,  0.5f, -0.5f),
+//		glv::f32vec3( 0.5f,  0.5f, -0.5f),
+//		glv::f32vec3(-0.5f,  0.5f, -0.5f),
+//		glv::f32vec3(-0.5f, -0.5f, -0.5f),
+//
+//		glv::f32vec3(-0.5f, -0.5f,  0.5f),
+//		glv::f32vec3( 0.5f, -0.5f,  0.5f),
+//		glv::f32vec3( 0.5f,  0.5f,  0.5f),
+//		glv::f32vec3( 0.5f,  0.5f,  0.5f),
+//		glv::f32vec3(-0.5f,  0.5f,  0.5f),
+//		glv::f32vec3(-0.5f, -0.5f,  0.5f),
+//
+//		glv::f32vec3(-0.5f,  0.5f,  0.5f),
+//		glv::f32vec3(-0.5f,  0.5f, -0.5f),
+//		glv::f32vec3(-0.5f, -0.5f, -0.5f),
+//		glv::f32vec3(-0.5f, -0.5f, -0.5f),
+//		glv::f32vec3(-0.5f, -0.5f,  0.5f),
+//		glv::f32vec3(-0.5f,  0.5f,  0.5f),
+//
+//		glv::f32vec3( 0.5f,  0.5f,  0.5f),
+//		glv::f32vec3( 0.5f,  0.5f, -0.5f),
+//		glv::f32vec3( 0.5f, -0.5f, -0.5f),
+//		glv::f32vec3( 0.5f, -0.5f, -0.5f),
+//		glv::f32vec3( 0.5f, -0.5f,  0.5f),
+//		glv::f32vec3( 0.5f,  0.5f,  0.5f),
+//
+//		glv::f32vec3(-0.5f, -0.5f, -0.5f),
+//		glv::f32vec3( 0.5f, -0.5f, -0.5f),
+//		glv::f32vec3( 0.5f, -0.5f,  0.5f),
+//		glv::f32vec3( 0.5f, -0.5f,  0.5f),
+//		glv::f32vec3(-0.5f, -0.5f,  0.5f),
+//		glv::f32vec3(-0.5f, -0.5f, -0.5f),
+//
+//		glv::f32vec3(-0.5f,  0.5f, -0.5f),
+//		glv::f32vec3( 0.5f,  0.5f, -0.5f),
+//		glv::f32vec3( 0.5f,  0.5f,  0.5f),
+//		glv::f32vec3( 0.5f,  0.5f,  0.5f),
+//		glv::f32vec3(-0.5f,  0.5f,  0.5f),
+//		glv::f32vec3(-0.5f,  0.5f, -0.5f)
+//};
 
 #define sptr(T)\
 std::make_shared<T##>()\
@@ -253,54 +253,6 @@ int main()
 {
 
 	test0();
-}
-
-
-template<typename T>
-std::string get_uniform_type_str()
-{
-	return "";
-}
-
-template<>
-std::string get_uniform_type_str<glu_f32vec1::value_type>()
-{
-	return "float";
-}
-
-template<>
-std::string get_uniform_type_str<glu_f64vec1::value_type>()
-{
-	return "double";
-}
-
-template<>
-std::string get_uniform_type_str<glu_i32vec1::value_type>()
-{
-	return "int";
-}
-
-template<>
-std::string get_uniform_type_str<glu_ui32vec1::value_type>()
-{
-	return "uint";
-}
-
-template<typename T>
-auto create_uniform(const std::string& name, const T& value)
-{
-	const auto* _value_ptr = reinterpret_cast<const std::uint8_t*>(&value);
-	std::vector<std::uint8_t> _stream(_value_ptr, _value_ptr + sizeof(T));
-	const std::string type = get_uniform_type_str<typename T::value_type>();
-	return std::make_shared<gl_variable>(type, name, _stream);
-}
-
-
-auto string_to_stream(const std::string& type, const std::string& name, const std::string& value)
-{
-
-	std::vector<std::uint8_t> stream;
-	return std::make_shared<gl_variable>(type, name, stream);
 }
 
 
@@ -450,159 +402,44 @@ void test0()
     glEnable              ( GL_DEBUG_OUTPUT );
     glDebugMessageCallback( MessageCallback, 0 );
 
-	std::vector<glv::f32vec3> positions{
-		glv::f32vec3(0.5f, 0.5f, 0.0f), //0
-		glv::f32vec3(0.5f, -0.5f, 0.0f), //1
-		glv::f32vec3(-0.5f, -0.5f, 0.0f), //2
-		glv::f32vec3(-0.5f, 0.5f, 0.0f) //3
-	};
-
-	std::vector<glv::f32vec2> uvs{
-		glv::f32vec2(1.0f, 1.0f),
-		glv::f32vec2(1.0f, 0.0f),
-		glv::f32vec2(0.0f, 0.0f),
-		glv::f32vec2(0.0f, 1.0f)
-	};
-
-	std::vector<glm::i16vec4> tests{
-		glm::i16vec4(1, 0, 0, 1),
-		glm::i16vec4(0, 1, 0, 1),
-		glm::i16vec4(0, 0, 1, 1),
-		glm::i16vec4(0, 1, 0, 1)
-	};
+//	std::vector<glv::f32vec3> positions{
+//		glv::f32vec3(0.5f, 0.5f, 0.0f), //0
+//		glv::f32vec3(0.5f, -0.5f, 0.0f), //1
+//		glv::f32vec3(-0.5f, -0.5f, 0.0f), //2
+//		glv::f32vec3(-0.5f, 0.5f, 0.0f) //3
+//	};
+//
+//	std::vector<glv::f32vec2> uvs{
+//		glv::f32vec2(1.0f, 1.0f),
+//		glv::f32vec2(1.0f, 0.0f),
+//		glv::f32vec2(0.0f, 0.0f),
+//		glv::f32vec2(0.0f, 1.0f)
+//	};
+//
+//	std::vector<glm::i16vec4> tests{
+//		glm::i16vec4(1, 0, 0, 1),
+//		glm::i16vec4(0, 1, 0, 1),
+//		glm::i16vec4(0, 0, 1, 1),
+//		glm::i16vec4(0, 1, 0, 1)
+//	};
 
 	std::vector<glm::uint32> indices{
 		0, 1, 3, // polygon0
 		1, 2, 3 // polygon1
 	};
 
-	// Ĭ�ϰ�column��
-// ���˵����ȸ��������������Ͷ���������frag������ʱ������ʹ��flat��ʶ��
-// ��������Ƭ���õ��ĸĶ���ֵ�������һ�������ֵ
-//std::vector<glv_dmat4> tests{
-//	glv_dmat4(
-//	0, 1, 1, 0, // column
-//	1, 0, 0, 0,// column
-//	0, 1, 1, 0,// column
-//	0, 0, 0, 1),// column
-//	glv_dmat4(
-//	0, 1, 1, 0,
-//	1, 0, 0, 0,
-//	0, 1, 1, 0,
-//	0, 0, 0, 1),
-//	glv_dmat4(
-//	0, 1, 1, 0,
-//	1, 0, 0, 0,
-//	0, 1, 1, 0,
-//	0, 0, 0, 1),
-//	glv_dmat4(
-//	0, 1, 0, 0,
-//	1, 0, 1, 0,
-//	1, 0, 1, 0,
-//	0, 0, 0, 1)
-//};
 
 	// uniforms
-	auto camera_position = create_uniform("camera_position", glv::f32vec3(1.0f, 0.0f, 0.0f));
-	auto spe_color = create_uniform("spe_color", glv::f32vec4(1.0f, 1.0f, 0.5f, 1.0f));
-
 	// textures
-	auto container2 = std::make_shared<gl_texture_2d>();
-	gl_texture_pixels container2_pixels("assets/Textures/container2.png");
-	container2->fill(container2_pixels.width, container2_pixels.height, container2_pixels.format, (const void*)container2_pixels.pixels);
-	container2->set_name("container2");
 
-	auto albedo_map = std::make_shared<gl_texture_2d>();
-	gl_texture_pixels albedo_pixels("assets/Materials/Rock030_2k-JPG/Rock030_2K_Color.jpg");
-	albedo_map->fill(albedo_pixels.width, albedo_pixels.height, albedo_pixels.format, (const void*)albedo_pixels.pixels);
-	albedo_map->set_name("container3");
-
-
-	gl_vertex_array _va(
-	        {
-	            {"vec3", "position"},
-	            {"vec4", "color"},
-                {"vec2", "uv"}
-	        },
-            {
-	            {"vec3", "offset_position", 3},
-                {"vec2", "offset_uv", 3}
-            });
-
-	std::uint32_t _index = 0;
-	for(const auto& position : positions)
-    {
-        _va->update_attribute("position", _index, position);
-        ++_index;
-    }
-
-	// you can change these items which will not affect the shaders compilation result
-	// optional
-//    {
-//        _va->set_vertices_count(145000000);
-//        _va->set_instances_count(1200);
-//        _va->set_instance_attribute_divisor("instance_offset_position", 1);
-//        _va->set_instance_attribute_divisor("instance_offset_spec", 3);
-//
-//    }
-//
-//	// update the value
-//	_va->update_attribute("position", 98, glv::f32vec3(0.0f, 0.3f, 0.1f));
-//	_va->update_attribute("position", 98, glv::f32vec3(0.0f, 0.3f, 0.1f));
-//	_va->update_attribute("instance_offset_spec", 3, glv::i32vec4(1, 10, 2, 5));
-
-
-
-	// element array
-	auto ebod = std::make_shared<gl_element_array_buffer_descriptor>();
 	auto ebo = std::make_shared<gl_element_array_buffer>();
-	ebod->set_indices(indices);
-	ebo->fill(ebod);
 
-	// ubo
     std::shared_ptr<gl_program> program = std::make_shared<gl_program>();
-
-	// ssbo
-	auto ssbod = std::make_shared<gl_shader_storage_buffer_descriptor>();
-	ssbod->set_block_name("genda");
-	ssbod->add_variables({
-			create_uniform("st", glu_f32vec4(1.0f, 0.0f, 0.0f, 1.0f)),
-			create_uniform("ps", glu_f32vec4(0.0f, 1.0f, 0.0f, 1.0f)),
-			create_uniform("txt", glu_f32vec4(0.0f, 0.0f, 1.0f, 1.0f))
-		});
-	auto ssbo = std::make_shared<gl_shader_storage_buffer>(ssbod);
-
-	// program
 
 	program->construct({
 		"shaders/test.vert",
 		"shaders/test.frag" });
-	program->set_vertex_array(_va);
-	program->set_element_array_buffer(ebo);
-	
-	program->add_texture(container2);
-	program->add_texture(albedo_map);
-	
-	program->add_uniform(camera_position);
-	program->add_uniform(spe_color);
 
-	program->add_uniform_buffers({
-    {"Block0", gl_uniform_buffer_layout::shared, {{"vec4", "color0"}, {"vec4", "position0"}}},
-    {"Block1", gl_uniform_buffer_layout::shared, {{"vec4", "color1"}, {"vec4", "position1"}}},
-    {"Block2", gl_uniform_buffer_layout::shared, {{"vec4", "color2"}, {"vec4", "position2"}}}
-	});
-
-
-
-
-
-    auto _ubBlock2 = program->find_uniform_buffer("Block0");
-	_ubBlock2->update_uniform("color0", glsl_vec4(0.0f, 1.0f, 0.0f, 1.0f));
-
-	_ubBlock2->get_public_buffer()->print<std::float_t>();
-	program->add_shader_storage_buffer(ssbo);
-	
-	
 	program->set_framebuffer();
 	program->set_commands([] {
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
@@ -634,8 +471,6 @@ void test0()
 
 	int i = 10;
 
-    auto v0 = glv::f32vec3(0.5f, 0.5f, 0.0f); //0
-    auto v2 = glv::f32vec3(-0.5f, -0.5f, 0.0f); //2
 	while (i--)
 	{
 		

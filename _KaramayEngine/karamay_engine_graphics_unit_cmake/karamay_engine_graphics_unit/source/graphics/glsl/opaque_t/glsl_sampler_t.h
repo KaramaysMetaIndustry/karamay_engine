@@ -1,13 +1,14 @@
 #ifndef GLSL_SAMPLER_T_H
 #define GLSL_SAMPLER_T_H
-
 #include "graphics/glsl/glsl_class.h"
 
+class glsl_sampler_item{
+    std::string code;
+    std::string query_item;
+    std::int32_t update_index;
+};
 
-/*
- *
- *
- * */
+
 class glsl_sampler_t : public glsl_opaque_t
 {
 public:
@@ -29,7 +30,7 @@ class glsl_sampler1D : public glsl_sampler_t{
 public:
     struct glsl_sampler1DResource
     {
-        std::shared_ptr<gl_texture_1d_base> texture_1d;
+        std::shared_ptr<gl_texture_1d_t> texture_1d;
         std::shared_ptr<gl_sampler> sampler;
     } resource;
 
@@ -61,7 +62,7 @@ public:
         glBindTextureUnit(0, 0);
         if(resource.sampler)
         {
-            resource.sampler->unbind();
+            //.sampler->unbind();
         }
     }
 
@@ -71,7 +72,7 @@ class glsl_sampler1DArray : public glsl_sampler_t{
 public:
     struct glsl_sampler1DArrayResource
     {
-        std::shared_ptr<gl_texture_1d_array_base> texture_1d_array;
+        std::shared_ptr<gl_texture_1d_array_t> texture_1d_array;
         std::shared_ptr<gl_sampler> sampler;
     } resource;
 
@@ -98,7 +99,7 @@ class glsl_sampler2D : public glsl_sampler_t{
 public:
     struct glsl_sampler2DResource
     {
-        std::shared_ptr<gl_texture_2d_base> texture_2d;
+        std::shared_ptr<gl_texture_2d_t> texture_2d;
         std::int32_t mipmap_index;
     } resource;
 
@@ -124,7 +125,7 @@ class glsl_sampler2DArray : public glsl_sampler_t{
 public:
     struct glsl_sampler2DArrayResource
     {
-        std::shared_ptr<gl_texture_2d_array_base> texture_2d_array;
+        std::shared_ptr<gl_texture_2d_array_t> texture_2d_array;
         std::int32_t mipmap_index;
     } resource;
 
@@ -148,7 +149,7 @@ class glsl_sampler2DMS : public glsl_sampler_t{
 public:
     struct glsl_sampler2DMSResource
     {
-        std::shared_ptr<gl_texture_2d_multisample_base> texture_2d_multisample;
+        std::shared_ptr<gl_texture_2d_multisample_t> texture_2d_multisample;
     } resource;
 
     void bind()
@@ -169,7 +170,7 @@ public:
 
     struct glsl_sampler2DMSArrayResource
     {
-        std::shared_ptr<gl_texture_2d_multisample_array_base> texture_2d_multisample_array;
+        std::shared_ptr<gl_texture_2d_multisample_array_t> texture_2d_multisample_array;
     } resource;
 
 public:
@@ -194,7 +195,7 @@ class glsl_samplerCube : public glsl_sampler_t {
 public:
     struct glsl_samplerCubeResource
     {
-        std::shared_ptr<gl_texture_cube_base> texture_cube;
+        std::shared_ptr<gl_texture_cube_t> texture_cube;
         std::int32_t mipmap_index;
     } resource;
 };
@@ -203,7 +204,7 @@ class glsl_samplerCubeArray : public glsl_sampler_t {
 public:
     struct glsl_samplerCubeArrayResource
     {
-        std::shared_ptr<gl_texture_cube_array_base> texture_cube_array;
+        std::shared_ptr<gl_texture_cube_array_t> texture_cube_array;
         std::int32_t mipmap_index;
     } resource;
 };
@@ -212,7 +213,7 @@ class glsl_sampler2DRect : public glsl_sampler_t{
 public:
     struct glsl_sampler2DRectResource
     {
-        std::shared_ptr<gl_texture_rectangle_base> texture_rectangle;
+        std::shared_ptr<gl_texture_rectangle_t> texture_rectangle;
     } resource;
 };
 
@@ -220,7 +221,7 @@ class glsl_sampler3D : public glsl_sampler_t {
 public:
     struct glsl_sampler3DResource
     {
-        std::shared_ptr<gl_texture_3d_base> texture_3d;
+        std::shared_ptr<gl_texture_3d_t> texture_3d;
         std::int32_t mipmap_index;
     } resource;
 };
@@ -229,7 +230,7 @@ class glsl_samplerBuffer : public glsl_sampler_t{
 public:
     struct glsl_samplerBufferResource
     {
-        std::shared_ptr<gl_texture_buffer_base> texture_buffer;
+        std::shared_ptr<gl_texture_buffer_t> texture_buffer;
     } resource;
 };
 

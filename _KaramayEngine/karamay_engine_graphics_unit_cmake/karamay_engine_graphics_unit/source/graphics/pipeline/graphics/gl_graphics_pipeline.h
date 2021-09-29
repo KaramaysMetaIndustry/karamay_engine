@@ -4,11 +4,6 @@
 #include <utility>
 
 #include "graphics/pipeline/base/gl_pipeline.h"
-#include "graphics/shader/gl_vertex_shader.h"
-#include "graphics/shader/gl_tessellation_control_shader.h"
-#include "graphics/shader/gl_tessellation_evaluation_shader.h"
-#include "graphics/shader/gl_geometry_shader.h"
-#include "graphics/shader/gl_fragment_shader.h"
 #include "graphics/glsl/glsl_class.h"
 #include "graphics/glsl/opaque_t/glsl_sampler_t.h"
 #include "graphics/glsl/opaque_t/glsl_image_t.h"

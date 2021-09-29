@@ -24,7 +24,7 @@ enum class gl_uniform_buffer_matrix_layout
 class gl_uniform_buffer final
 {
 public:
-	
+	gl_uniform_buffer() = default;
 	gl_uniform_buffer(std::shared_ptr<gl_program>& owner,
 		gl_uniform_buffer_layout layout, std::string block_name, const std::vector<std::pair<std::string, std::string>>& rows,
 		std::uint32_t instances_count) :
@@ -34,6 +34,7 @@ public:
 	        _uniform_buffer_size(0)
     {
 	    if(_check_uniform_validation()) _generate_memory_layout(layout, rows);
+
     }
 
     ~gl_uniform_buffer() = default;
@@ -68,6 +69,7 @@ public:
                 {
                     _buffer->write(_attribute_anchor.second, value.stream(), _clazz->class_size);
                     break;
+
                 }
             }
         }

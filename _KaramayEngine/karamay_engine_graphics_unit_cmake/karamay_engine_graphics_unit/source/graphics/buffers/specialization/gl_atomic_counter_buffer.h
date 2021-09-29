@@ -2,6 +2,7 @@
 #define H_GL_ATOMIC_COUNTER_BUFFER
 
 #include "graphics/buffers/buffer/gl_buffer.h"
+#include "graphics/glsl/opaque_t/glsl_atomic_counter_t.h"
 
 struct gl_atomic_counter_buffer_binding_info
 {
@@ -20,28 +21,17 @@ class gl_atomic_counter_buffer_descriptor
 };
 
 
-class gl_atomic_counter_buffer final
-{
+class gl_atomic_counter_buffer final{
 public:
-
-	gl_atomic_counter_buffer(const std::shared_ptr<gl_atomic_counter_buffer_descriptor>& acbo_desc)
-	{
-		_desc = acbo_desc;
-	}
-	
+	gl_atomic_counter_buffer() = default;
 	~gl_atomic_counter_buffer() {}
 
 private:
 
 	std::shared_ptr<gl_atomic_counter_buffer_descriptor> _desc;
-
 	std::shared_ptr<gl_buffer> _ref_buffer;
-
 	std::size_t _offset;
-
 	std::size_t _size;
-
-	std::string _template_code;
 
 public:
 

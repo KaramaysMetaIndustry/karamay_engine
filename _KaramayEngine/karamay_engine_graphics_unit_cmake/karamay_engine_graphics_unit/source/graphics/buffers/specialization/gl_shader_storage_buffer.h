@@ -2,8 +2,8 @@
 #define H_GL_SHADER_STORAGE_BUFFER
 
 #include "public/stl.h"
-class gl_program;
-class gl_buffer;
+#include "graphics/buffers/specialization/gl_shader_storage_buffer.h"
+#include "graphics/buffers/specialization/gl_uniform_buffer.h"
 
 namespace gl_shader_storage_buffer_enum
 {
@@ -34,33 +34,15 @@ private:
 	
 	gl_shader_storage_buffer_enum::matrix_layout _matrix_memory_layout;
 
-
-public:
-
-	auto get_memory_layout() const { return _memory_layout; }
-
-	auto get_matrix_memory_layout() const { return _matrix_memory_layout; }
-
 };
 
 
-class gl_shader_storage_buffer final
-{
+class gl_shader_storage_buffer final{
 public:
-
+    gl_shader_storage_buffer() = default;
 
 private:
-
-	void _fill_std140() 
-	{
-		
-	}
-
-	void _fill_std430();
-
-public:
-
-	~gl_shader_storage_buffer();
+    std::vector<std::shared_ptr<glsl_shader_storage_block_t>> blocks;
 
 };
 
