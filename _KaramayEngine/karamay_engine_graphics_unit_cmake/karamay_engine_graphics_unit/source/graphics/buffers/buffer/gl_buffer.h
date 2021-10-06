@@ -309,6 +309,12 @@ private:
     gl_buffer_storage_options _storage_options;
 };
 
+class gl_dynamic_buffer{
+public:
+    gl_dynamic_buffer();
+
+};
+
 
 
 

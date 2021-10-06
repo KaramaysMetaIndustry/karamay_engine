@@ -1,12 +1,11 @@
-#ifndef H_GL_UNIFORM_BUFFER
+ #ifndef H_GL_UNIFORM_BUFFER
 #define H_GL_UNIFORM_BUFFER
 
-#include "graphics/buffers/buffer/gl_buffer.h"
 #include "graphics/glsl/glsl_class.h"
+#include "graphics/buffers/buffer/gl_buffer.h"
 
 class gl_program;
 class gl_buffer;
-
 
 enum class gl_uniform_buffer_layout
 {
@@ -21,8 +20,7 @@ enum class gl_uniform_buffer_matrix_layout
     column_major
 };
 
-class gl_uniform_buffer final
-{
+class gl_uniform_buffer final{
 public:
 	gl_uniform_buffer() = default;
 	gl_uniform_buffer(std::shared_ptr<gl_program>& owner,
@@ -41,19 +39,9 @@ public:
 
 private:
 
-    std::weak_ptr<gl_program> _owner;
-
     std::shared_ptr<gl_buffer> _buffer;
 
-    std::uint32_t _instances_count;
-
-    std::string _block_name;
-
-    std::int64_t _uniform_buffer_size;
-
     std::vector<std::tuple<std::string, const glsl_transparent_clazz*, std::int64_t>> _attribute_layout;
-
-    std::uint32_t _context_binding{};
 
 public:
 
