@@ -123,55 +123,7 @@ enum class data_type : GLenum
     UNSIGNED_INT_2_10_10_10_REV = GL_UNSIGNED_INT_2_10_10_10_REV
 };
 
-enum class access : GLenum
-{
-    READ_WRITE = GL_READ_WRITE,
-    READ_ONLY = GL_READ_ONLY,
-    WRITE_ONLY = GL_WRITE_ONLY
-};
 
-enum class gl_buffer_storage_flag : GLenum
-{
-    MAP_READ_BIT = GL_MAP_READ_BIT,
-    MAP_WRITE_BIT = GL_MAP_WRITE_BIT,
-    DYNAMIC_STORAGE_BIT = GL_DYNAMIC_STORAGE_BIT,
-    CLIENT_STORAGE_BIT = GL_CLIENT_STORAGE_BIT,
-    MAP_PERSISTENT_BIT = GL_MAP_PERSISTENT_BIT,
-    MAP_COHERENT_BIT = GL_MAP_COHERENT_BIT
-};
-
-struct gl_buffer_storage_options
-{
-    std::uint8_t is_map_read;
-    std::uint8_t is_map_write;
-    std::uint8_t is_dynamic_storage;
-    std::uint8_t is_client_storage;
-    std::uint8_t is_map_persistent;
-    std::uint8_t is_map_coherent;
-
-    bool operator==(const gl_buffer_storage_options& other) const
-    {
-        return other.is_map_read == is_map_read &&
-        other.is_map_write == is_map_write &&
-        other.is_map_coherent == is_map_coherent &&
-        other.is_map_persistent == is_map_persistent &&
-        other.is_dynamic_storage == is_dynamic_storage &&
-        other.is_client_storage == is_client_storage;
-    }
-};
-
-enum class gl_buffer_map_access_flag : GLenum
-{
-    MAP_READ_BIT = GL_MAP_READ_BIT,
-    MAP_WRITE_BIT = GL_MAP_WRITE_BIT,
-    MAP_PERSISTENT = GL_MAP_PERSISTENT_BIT,
-    MAP_COHERENT_BIT = GL_MAP_COHERENT_BIT,
-
-    MAP_INVALIDATE_RANGE_BIT = GL_MAP_INVALIDATE_RANGE_BIT,
-    MAP_INVALIDATE_BUFFER_BIT = GL_MAP_INVALIDATE_BUFFER_BIT,
-    MAP_FLUSH_EXPLICIT_BIT = GL_MAP_FLUSH_EXPLICIT_BIT,
-    MAP_UNSYNCHRONIZED_BIT = GL_MAP_UNSYNCHRONIZED_BIT
-};
 
 enum class gl_buffer_type
 {

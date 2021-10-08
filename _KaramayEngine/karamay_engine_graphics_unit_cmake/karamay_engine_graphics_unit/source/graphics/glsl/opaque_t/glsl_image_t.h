@@ -86,6 +86,8 @@ private:
 
     static gl_image_access_mode transfer_memory_qualifier(glsl_image_memory_qualifier memory_qualifier)
     {
+        std::uint32_t * b;
+        reinterpret_cast
     }
 
     static gl_image_format transfer_format_layout_qualifier(glsl_image_format_layout_qualifier format_layout_qualifier)

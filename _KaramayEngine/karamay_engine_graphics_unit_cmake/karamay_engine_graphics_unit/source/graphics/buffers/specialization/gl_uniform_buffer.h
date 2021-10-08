@@ -1,4 +1,4 @@
- #ifndef H_GL_UNIFORM_BUFFER
+#ifndef H_GL_UNIFORM_BUFFER
 #define H_GL_UNIFORM_BUFFER
 
 #include "graphics/glsl/glsl_class.h"
