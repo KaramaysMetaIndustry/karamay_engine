@@ -68,13 +68,6 @@ public:
     }
 
 	~gl_shader() override;
-
-private:
-
-    gl_shader_enum::type _shader_type;
-
-    std::vector<std::uint8_t> _source_stream;
-
 public:
 
     [[nodiscard]] gl_shader_enum::type get_shader_type() const { return _shader_type; }
@@ -128,6 +121,8 @@ public:
 		glShaderSource(_handle, 1, &source, NULL);
 	}
 
+    [[nodiscard]] virtual const std::string& code_template() const = 0;
+
 public:
 
 	gl_shader_enum::type get_type()
@@ -170,6 +165,43 @@ public:
 	{
 		glGetShaderiv(_handle, param, value);
 	}
+
+private:
+
+    gl_shader_enum::type _shader_type;
+
+    std::vector<std::uint8_t> _source_stream;
+
+};
+
+class gl_compute_shader : public gl_shader{
+public:
+    gl_compute_shader() = default;
+
+public:
+
+    [[nodiscard]] const std::string& code_template() const override
+    {
+
+    }
+
+
+};
+
+class gl_vertex_shader : public gl_shader{
+
+};
+class gl_tessellation_control_shader : public gl_shader{
+
+};
+class gl_tessellation_evaluation_shader : public gl_shader{
+
+};
+class gl_geometry_shader : public gl_shader{
+
+};
+class gl_fragment_shader : public gl_shader{
+
 };
 
 #endif

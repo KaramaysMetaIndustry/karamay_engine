@@ -159,6 +159,225 @@ public:
 	 */
 	void construct(const std::vector<std::string>& shader_paths);
 
+	inline void enable()
+    {
+	    if(glIsProgram(_handle))
+        {
+            glUseProgram(_handle);
+        }
+    }
+
+	inline void disable()
+    {
+	    if(glIsProgram(_handle))
+	        glUseProgram(0);
+
+        glValidateProgram(_handle);
+    }
+
+    enum class gl_active_atomic_counter_buffer_parameter
+    {
+        ATOMIC_COUNTER_BUFFER_BINDING = GL_ATOMIC_COUNTER_BUFFER_BINDING,
+        ATOMIC_COUNTER_BUFFER_DATA_SIZE = GL_ATOMIC_COUNTER_BUFFER_DATA_SIZE,
+        ATOMIC_COUNTER_BUFFER_ACTIVE_ATOMIC_COUNTERS = GL_ATOMIC_COUNTER_BUFFER_ACTIVE_ATOMIC_COUNTERS,
+        ATOMIC_COUNTER_BUFFER_ACTIVE_ATOMIC_COUNTER_INDICES = GL_ATOMIC_COUNTER_BUFFER_ACTIVE_ATOMIC_COUNTER_INDICES,
+
+        ATOMIC_COUNTER_BUFFER_REFERENCED_BY_VERTEX_SHADER = GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_VERTEX_SHADER,
+        ATOMIC_COUNTER_BUFFER_REFERENCED_BY_TESS_CONTROL_SHADER = GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_TESS_CONTROL_SHADER,
+        ATOMIC_COUNTER_BUFFER_REFERENCED_BY_TESS_EVALUATION_SHADER = GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_TESS_EVALUATION_SHADER,
+        ATOMIC_COUNTER_BUFFER_REFERENCED_BY_GEOMETRY_SHADER = GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_GEOMETRY_SHADER,
+        ATOMIC_COUNTER_BUFFER_REFERENCED_BY_FRAGMENT_SHADER = GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_FRAGMENT_SHADER,
+        ATOMIC_COUNTER_BUFFER_REFERENCED_BY_COMPUTE_SHADER = GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_COMPUTE_SHADER
+    };
+
+	bool is_atomic_counter_buffer_referenced_by_vertex_shader(const char* name)
+    {
+
+    }
+
+    void query_active_atomic_counter_buffer()
+    {
+
+        GLuint _buffer_index; // 0 - GL_ACTIVE_ATOMIC_COUNTER_BUFFERS - 1
+        if(_buffer_index < 0 || _buffer_index >= GL_ACTIVE_ATOMIC_COUNTER_BUFFERS) return;
+
+        GLint* params;
+        glGetActiveAtomicCounterBufferiv(_handle, _buffer_index, GL_ATOMIC_COUNTER_BUFFER_BINDING, params);
+    }
+
+    std::int32_t query_attribute_location(const char* name)
+    {
+        return glGetAttribLocation(_handle, name);
+    }
+
+
+    inline bool is_deleted() const noexcept
+    {
+        GLint param;
+        glGetProgramiv(_handle, GL_DELETE_STATUS, &param);
+        return param == GL_TRUE;
+	}
+	inline bool is_linked() const noexcept
+    {
+        GLint param;
+        glGetProgramiv(_handle, GL_LINK_STATUS, &param);
+        return param == GL_TRUE;
+    }
+    inline bool is_valid() const noexcept
+    {
+        GLint param;
+        glGetProgramiv(_handle, GL_VALIDATE_STATUS, &param);
+        return param == GL_TRUE;
+    }
+    inline std::int32_t info_log_length() const noexcept
+    {
+        GLint param;
+        glGetProgramiv(_handle, GL_INFO_LOG_LENGTH, &param);
+        return param;
+    }
+    inline std::int32_t attached_shaders_num() const noexcept
+    {
+        GLint param;
+        glGetProgramiv(_handle, GL_ATTACHED_SHADERS, &param);
+        return param;
+    }
+    inline std::int32_t active_atomic_counter_buffers_num() const noexcept
+    {
+        GLint param;
+        glGetProgramiv(_handle, GL_ACTIVE_ATOMIC_COUNTER_BUFFERS, &param);
+        return param;
+    }
+    inline std::int32_t active_attributes_num() const noexcept
+    {
+        GLint param;
+        glGetProgramiv(_handle, GL_ACTIVE_ATTRIBUTES, &param);
+        return param;
+    }
+    inline std::int32_t active_attribute_name_max_length() const noexcept
+    {
+        GLint param;
+        glGetProgramiv(_handle, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &param);
+        return param;
+    }
+    inline std::int32_t active_uniforms_num() const noexcept
+    {
+        GLint param;
+        glGetProgramiv(_handle, GL_ACTIVE_UNIFORMS, &param);
+        return param;
+    }
+    inline std::int32_t active_uniform_blocks_num() const noexcept
+    {
+        GLint param;
+        glGetProgramiv(_handle, GL_ACTIVE_UNIFORM_BLOCKS, &param);
+        return param;
+    }
+    inline std::int32_t active_uniform_block_name_max_length() const noexcept
+    {
+        GLint param;
+        glGetProgramiv(_handle, GL_ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH, &param);
+        return param;
+    }
+    inline std::int32_t active_uniform_name_max_length() const noexcept
+    {
+        GLint param;
+        glGetProgramiv(_handle, GL_ACTIVE_UNIFORM_MAX_LENGTH, &param);
+        return param;
+    }
+    inline std::int32_t compute_work_group_size() const noexcept
+    {
+        GLint param;
+        glGetProgramiv(_handle, GL_COMPUTE_WORK_GROUP_SIZE, &param);
+        return param;
+    }
+    inline std::int32_t program_binary_length() const noexcept
+    {
+        GLint param;
+        glGetProgramiv(_handle, GL_PROGRAM_BINARY_LENGTH, &param);
+        return param;
+    }
+    inline void transform_feedback_buffer_mode() const noexcept{}
+    inline std::int32_t transform_feedback_varyings_num() const noexcept
+    {
+        GLint param;
+        glGetProgramiv(_handle, GL_TRANSFORM_FEEDBACK_VARYINGS, &param);
+        return param;
+    }
+    inline std::int32_t transform_feedback_varying_name_max_length() const noexcept
+    {
+        GLint param;
+        glGetProgramiv(_handle, GL_TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH, &param);
+        return param;
+    }
+    inline std::int32_t geometry_vertices_max_num() const noexcept
+    {}
+    
+
+
+    void query()
+    {
+	    GLint param;
+
+        GL_TRANSFORM_FEEDBACK_BUFFER_MODE,
+
+        GL_GEOMETRY_VERTICES_OUT,
+        GL_GEOMETRY_INPUT_TYPE,
+        GL_GEOMETRY_OUTPUT_TYPE
+
+
+
+	    glGetActiveAttrib(_handle, -1, , );
+
+
+	    glGetActiveSubroutineName();
+	    glGetActiveSubroutineUniformiv();
+	    glGetActiveSubroutineUniformName();
+
+	    glGetActiveUniform();
+	    glGetActiveUniformBlockName();
+	    glGetActiveUniformName();
+
+        glGetActiveUniformsiv();
+        //glGetAttribLocation();
+        glGetFragDataIndex();
+        glGetFragDataLocation();
+
+        glGetProgramInterfaceiv();
+        glGetProgramResourceiv();
+        glGetProgramResourceLocation();
+        glGetProgramResourceLocationIndex();
+        glGetProgramResourceIndex();
+        glGetProgramResourceName();
+
+        glGetProgramStageiv();
+        glGetShaderPrecisionFormat();
+
+        glGetSubroutineIndex();
+        glGetSubroutineUniformLocation();
+
+        glGetTransformFeedbackVarying();
+        glGetUniformdv();
+        // etc
+        glGetUniformBlockIndex();
+        glGetUniformIndices();
+        glGetUniformLocation();
+        glGetUniformSubroutineuiv();
+
+    }
+
+    void set()
+    {
+	    glActiveShaderProgram();
+	    glBindProgramPipeline();
+	    glProgramUniform1d();
+	    glProgramUniformMatrix2dv();
+	    glShaderStorageBlockBinding();
+	    glUniform1d();
+	    glUniformBlockBinding();
+	    glUniformMatrix2dv();
+	    glUniformSubroutinesuiv();
+	    glUseProgram();
+    }
+
 public:
 
     std::int32_t query_uniform_item(const char* item_name)
@@ -171,22 +390,17 @@ public:
         return glGetUniformBlockIndex(_handle, block_item_name);
     }
 
-
 	void set_vertex_array(std::shared_ptr<class gl_vertex_array> vertex_array);
 
 	void set_element_array_buffer(std::shared_ptr<class gl_element_array_buffer> element_array_buffer);
 
 	void set_transform_feedback(std::shared_ptr<class gl_transform_feedback> transform_feedback);
 
-
-
 	void add_uniform_buffer(std::shared_ptr<class gl_uniform_buffer> uniform_buffer);
 
 	void add_shader_storage_buffer(std::shared_ptr<class gl_shader_storage_buffer> shader_storage_buffer);
 
 	void add_atomic_counter_buffer(std::shared_ptr<class gl_atomic_counter_buffer> atomic_counter_buffer);
-
-
 
 	void set_framebuffer(std::shared_ptr<class gl_framebuffer> framebuffer = nullptr);
 
@@ -252,7 +466,6 @@ public:
 	void enable_alpha_test()
 	{
 		glEnable(GL_ALPHA_TEST);
-		
 	}
 
 	void disable_alpha_test()

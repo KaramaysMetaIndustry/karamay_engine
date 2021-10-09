@@ -6,44 +6,6 @@
 gl_program::gl_program()
 {
 	_handle = glCreateProgram();
-
-	_update_uniform_funcs_map.emplace("float", &gl_program::_update_uniform_float);
-	_update_uniform_funcs_map.emplace("vec2", &gl_program::_update_uniform_vec2);
-	_update_uniform_funcs_map.emplace("vec3", &gl_program::_update_uniform_vec3);
-	_update_uniform_funcs_map.emplace("vec4", &gl_program::_update_uniform_vec4);
-	_update_uniform_funcs_map.emplace("double", &gl_program::_update_uniform_double);
-	_update_uniform_funcs_map.emplace("dvec2", &gl_program::_update_uniform_dvec2);
-	_update_uniform_funcs_map.emplace("dvec3", &gl_program::_update_uniform_dvec3);
-	_update_uniform_funcs_map.emplace("dvec4", &gl_program::_update_uniform_dvec4);
-	_update_uniform_funcs_map.emplace("int", &gl_program::_update_uniform_int);
-	_update_uniform_funcs_map.emplace("ivec2", &gl_program::_update_uniform_ivec2);
-	_update_uniform_funcs_map.emplace("ivec3", &gl_program::_update_uniform_ivec3);
-	_update_uniform_funcs_map.emplace("ivec4", &gl_program::_update_uniform_ivec4);
-	_update_uniform_funcs_map.emplace("uint", &gl_program::_update_uniform_uint);
-	_update_uniform_funcs_map.emplace("uvec2", &gl_program::_update_uniform_uvec2);
-	_update_uniform_funcs_map.emplace("uvec3", &gl_program::_update_uniform_uvec3);
-	_update_uniform_funcs_map.emplace("uvec4", &gl_program::_update_uniform_uvec4);
-												
-	_update_uniform_funcs_map.emplace("mat2", &gl_program::_update_uniform_mat2);
-	_update_uniform_funcs_map.emplace("mat3", &gl_program::_update_uniform_mat3);
-	_update_uniform_funcs_map.emplace("mat4", &gl_program::_update_uniform_mat4);
-	_update_uniform_funcs_map.emplace("mat2x3", &gl_program::_update_uniform_mat2x3);
-	_update_uniform_funcs_map.emplace("mat2x4", &gl_program::_update_uniform_mat2x4);
-	_update_uniform_funcs_map.emplace("mat3x2", &gl_program::_update_uniform_mat3x2);
-	_update_uniform_funcs_map.emplace("mat3x4", &gl_program::_update_uniform_mat3x4);
-	_update_uniform_funcs_map.emplace("mat4x2", &gl_program::_update_uniform_mat4x2);
-	_update_uniform_funcs_map.emplace("mat4x3", &gl_program::_update_uniform_mat4x3);
-
-	_update_uniform_funcs_map.emplace("dmat2", &gl_program::_update_uniform_dmat2);
-	_update_uniform_funcs_map.emplace("dmat3", &gl_program::_update_uniform_dmat3);
-	_update_uniform_funcs_map.emplace("dmat4", &gl_program::_update_uniform_dmat4);
-	_update_uniform_funcs_map.emplace("dmat2x3", &gl_program::_update_uniform_dmat2x3);
-	_update_uniform_funcs_map.emplace("dmat2x4", &gl_program::_update_uniform_dmat2x4);
-	_update_uniform_funcs_map.emplace("dmat3x2", &gl_program::_update_uniform_dmat3x2);
-	_update_uniform_funcs_map.emplace("dmat3x4", &gl_program::_update_uniform_dmat3x4);
-	_update_uniform_funcs_map.emplace("dmat4x2", &gl_program::_update_uniform_dmat4x2);
-	_update_uniform_funcs_map.emplace("dmat4x3", &gl_program::_update_uniform_dmat4x3);
-												  
 }
 
 gl_program::~gl_program()
@@ -93,103 +55,6 @@ void gl_program::construct(const std::vector<std::string>& shader_paths)
 	}
 }
 
-void gl_program::set_vertex_array(std::shared_ptr<gl_vertex_array> vertex_array)
-{
-	_vertex_array = vertex_array;
-}
-
-void gl_program::set_element_array_buffer(std::shared_ptr<gl_element_array_buffer> element_array_buffer)
-{
-	_element_array_buffer = element_array_buffer;
-}
-
-void gl_program::set_transform_feedback(std::shared_ptr<gl_transform_feedback> transform_feedback)
-{
-	_transform_feedback = transform_feedback;
-	_set_transform_feedback_varyings();
-}
-
-void gl_program::add_uniform_buffers(const std::vector<std::shared_ptr<gl_uniform_buffer>>& uniform_buffers)
-{
-	if (uniform_buffers.size() < 1) return;
-	_uniform_buffers.insert(_uniform_buffers.cend(), uniform_buffers.cbegin(), uniform_buffers.cend());
-}
-
-void gl_program::add_uniform_buffer(std::shared_ptr<gl_uniform_buffer> uniform_buffer)
-{
-	if (uniform_buffer)
-		_uniform_buffers.push_back(uniform_buffer);
-}
-
-void gl_program::add_shader_storage_buffers(const std::vector<std::shared_ptr<gl_shader_storage_buffer>>& shader_storage_buffers)
-{
-	if (shader_storage_buffers.size() < 1) return;
-	_shader_storage_buffers.insert(_shader_storage_buffers.cend(), shader_storage_buffers.cbegin(), shader_storage_buffers.cend());
-}
-
-void gl_program::add_shader_storage_buffer(std::shared_ptr<gl_shader_storage_buffer> shader_storage_buffer)
-{
-	if (shader_storage_buffer)
-		_shader_storage_buffers.push_back(shader_storage_buffer);
-}
-
-void gl_program::add_atomic_counter_buffers(const std::vector<std::shared_ptr<gl_atomic_counter_buffer>>& atomic_counter_buffers)
-{
-	if (atomic_counter_buffers.size() < 1) return;
-	_atomic_counter_buffers.insert(_atomic_counter_buffers.cend(), atomic_counter_buffers.cbegin(), atomic_counter_buffers.cend());
-}
-
-void gl_program::add_atomic_counter_buffer(std::shared_ptr<gl_atomic_counter_buffer> atomic_counter_buffer)
-{
-	if (atomic_counter_buffer)
-		_atomic_counter_buffers.push_back(atomic_counter_buffer);
-}
-
-void gl_program::set_framebuffer(std::shared_ptr<gl_framebuffer> framebuffer)
-{
-	_framebuffer = framebuffer;
-}
-
-void gl_program::set_commands(std::function<void(void)> commands_lambda)
-{
-	_commands_lambda = commands_lambda;
-}
-
-std::shared_ptr<gl_vertex_array> gl_program::get_vertex_array()
-{
-	return _vertex_array;
-}
-
-std::shared_ptr<gl_element_array_buffer> gl_program::get_element_array_buffer()
-{
-	return _element_array_buffer;
-}
-
-std::shared_ptr<gl_transform_feedback> gl_program::get_transform_feedback()
-{
-	return _transform_feedback;
-}
-
-std::shared_ptr<gl_uniform_buffer> gl_program::get_uniform_buffer(std::uint32_t index)
-{
-	return index < _uniform_buffers.size() ? _uniform_buffers.at(index) : nullptr;
-}
-
-std::shared_ptr<gl_shader_storage_buffer> gl_program::get_shader_storage_buffer(std::uint32_t index)
-{
-	return index < _shader_storage_buffers.size() ? _shader_storage_buffers.at(index) : nullptr;
-}
-
-std::shared_ptr<gl_atomic_counter_buffer> gl_program::get_atomic_counter_buffer(std::uint32_t index)
-{
-	return index < _atomic_counter_buffers.size() ? _atomic_counter_buffers.at(index) : nullptr;
-}
-
-std::shared_ptr<gl_framebuffer> gl_program::get_framebuffer()
-{
-	return _framebuffer;
-}
-
 void gl_program::render(std::float_t delta_time)
 {
 	_install();
@@ -202,10 +67,6 @@ void gl_program::render(std::float_t delta_time)
         _disable();
     }
 	_uninstall();
-}
-
-void gl_program::_tick_objects()
-{
 }
 
 void gl_program::_install()

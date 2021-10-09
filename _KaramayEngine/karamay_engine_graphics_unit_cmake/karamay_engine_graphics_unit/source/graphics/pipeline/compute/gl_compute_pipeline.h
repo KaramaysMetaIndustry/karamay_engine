@@ -1,10 +1,15 @@
-#include "graphics/pipeline/base/gl_pipeline.h"
+#ifndef _GL_COMPUTE_PIPELINE_H_
+#define _GL_COMPUTE_PIPELINE_H_
+
 #include "graphics/glsl/glsl_class.h"
 #include "graphics/glsl/opaque_t/glsl_sampler_t.h"
 #include "graphics/glsl/opaque_t/glsl_image_t.h"
 #include "graphics/glsl/opaque_t/glsl_atomic_counter_t.h"
 #include "graphics/glsl/transparent_t/interface_block_t/glsl_interface_block_t.h"
+#include "graphics/pipeline/base/gl_pipeline.h"
 #include "graphics/program/gl_program.h"
+#include "graphics/shader/gl_shader.h"
+
 
 #define DEFINE_STD140_UNIFORM_BLOCK() \
 
@@ -56,6 +61,7 @@ public:
 struct gl_compute_pipeline_descriptor{
     std::string name;
     std::string owner_renderer_path;
+    std::shared_ptr<gl_compute_shader> compute_shader;
     std::shared_ptr<gl_compute_pipeline_parameters> parameters;
 };
 
@@ -66,12 +72,20 @@ public:
 	    parameters(descriptor.parameters)
 	{
 	    // ... generate shader code file
-	    if(std::filesystem::exists(descriptor.owner_renderer_path))
+	    if(std::filesystem::exists(descriptor.owner_renderer_path) && descriptor.compute_shader)
         {
-	        std::string pipeline_path = descriptor.owner_renderer_path + "/"+ descriptor.name + "/";
-	        std::filesystem::create_directories(pipeline_path);
-	        std::fstream file;
-	        
+	        std::string _pipeline_path = descriptor.owner_renderer_path + "/"+ descriptor.name + "/";
+	        std::filesystem::create_directories(_pipeline_path);
+            {
+                std::fstream _cs(_pipeline_path + descriptor.name + ".cs");
+                if(_cs.is_open())
+                {
+                    _cs.write(
+                            descriptor.compute_shader->code_template().c_str(),
+                            descriptor.compute_shader->code_template().size()
+                    );
+                }
+            }
         }
 	    // ... initialize program (load and compile shaders)
 	    _program = std::make_unique<gl_program>();
@@ -95,23 +109,33 @@ public:
 
     void enable()
     {
-        if(_check_memory_pool())
+        if(_program && _check_memory_pool())
         {
-            const auto& shader_storage_buffers = _memory_pool->shader_storage_buffers;
-            for(const auto& shader_storage_buffer : shader_storage_buffers)
+            // enable the program, otherwise all resource binding will not work
+            _program->enable();
+            // bind resource
+            for(const auto& shader_storage_buffer : _memory_pool->shader_storage_buffers)
             {
             }
         }
     }
 
     void disable()
-    {}
+    {
+        if(_program && _check_memory_pool())
+        {
+
+
+            // disable the program, good habit, good boy!
+            _program->disable();
+        }
+    }
 
 public: // commands
 
 	void dispatch(std::uint32_t group_size_x, std::uint32_t group_size_y, std::uint32_t group_size_z)
 	{
-	    if(_program)
+	    if(_program && _check_memory_pool())
         {
             glDispatchCompute(group_size_x, group_size_y, group_size_z);
         }
@@ -147,6 +171,10 @@ private:
         return true;
     }
 
+    bool _check_program_state() {}
+
+    bool _check_resource_state() {}
+
     void _generate_parameters_memory_pool()
     {
     }
@@ -156,3 +184,5 @@ public:
     const std::shared_ptr<gl_compute_pipeline_parameters> parameters;
 
 };
+
+#endif
