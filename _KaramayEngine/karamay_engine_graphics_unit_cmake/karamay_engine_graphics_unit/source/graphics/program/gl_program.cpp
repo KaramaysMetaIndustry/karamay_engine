@@ -13,48 +13,6 @@ gl_program::~gl_program()
 	glDeleteProgram(_handle);
 }
 
-void gl_program::construct(const std::vector<std::string>& shader_paths)
-{
-	for (const auto& path : shader_paths)
-	{
-		auto shader = std::make_shared<gl_shader>(path);
-		if (shader)
-		{
-			glAttachShader(_handle, shader->get_handle());
-			_shaders.push_back(shader);
-		}
-	}
-
-	/*if (is_separable)
-		glProgramParameteri(_handle, GL_PROGRAM_SEPARABLE, GL_TRUE);*/
-
-		/*glBindAttribLocation(_handle, 0, "Position");
-		glBindFragDataLocation(_handle, 0, "FragColor");*/
-
-	glLinkProgram(_handle);
-
-	GLint logLength = 0;
-	GLint success;
-	char infoLog[512];
-	glGetProgramiv(_handle, GL_LINK_STATUS, &success);
-	if (!success)
-	{
-		glGetProgramInfoLog(_handle, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-	}
-	else {
-		std::cout << "[program is linked.]" << std::endl;
-	}
-
-	glGetProgramiv(_handle, GL_INFO_LOG_LENGTH, &logLength);
-	if (logLength > 0) {
-		char* log = (char*)malloc(logLength);
-		glGetProgramInfoLog(_handle, NULL, &logLength, log);
-		printf("============log: %s\n", log);
-		free(log);
-	}
-}
-
 void gl_program::render(std::float_t delta_time)
 {
 	_install();

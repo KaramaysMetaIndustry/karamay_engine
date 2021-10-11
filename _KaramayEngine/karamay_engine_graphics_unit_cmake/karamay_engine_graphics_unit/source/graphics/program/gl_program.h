@@ -16,10 +16,172 @@ class gl_shader;
 class gl_vertex_array;
 class gl_transform_feedback;
 
-enum class gl_buffer_mode
+enum class gl_transform_feedback_buffer_mode
 {
-	INTERLEAVED = GL_INTERLEAVED_ATTRIBS,
-	SEPARATE_ATTRIBS = GL_SEPARATE_ATTRIBS
+    SEPARATE_ATTRIBS = GL_SEPARATE_ATTRIBS,
+    INTERLEAVED = GL_INTERLEAVED_ATTRIBS,
+    UNKNOWN
+};
+
+enum class gl_primitive_type
+{
+
+    UNKNOWN
+};
+
+enum class gl_shader_type : GLenum
+{
+    UNKNOWN = 0,
+
+    VERTEX_SHADER = GL_VERTEX_SHADER,
+    TESS_CONTROL_SHADER = GL_TESS_CONTROL_SHADER,
+    TESS_EVALUATION_SHADER = GL_TESS_EVALUATION_SHADER,
+    GEOMETRY_SHADER = GL_GEOMETRY_SHADER,
+    FRAGMENT_SHADER = GL_FRAGMENT_SHADER,
+
+    COMPUTE_SHADER = GL_COMPUTE_SHADER
+};
+
+enum class gl_program_interface
+{
+    PROGRAM_INPUT = GL_PROGRAM_INPUT, // vertex input
+    PROGRAM_OUTPUT = GL_PROGRAM_OUTPUT, // fragment output
+    UNIFORM = GL_UNIFORM, // uniform item
+    UNIFORM_BLOCK = GL_UNIFORM_BLOCK, // uniform block
+    SHADER_STORAGE_BLOCK = GL_SHADER_STORAGE_BLOCK, // buffer block
+    BUFFER_VARIABLE = GL_BUFFER_VARIABLE, //
+    TRANSFORM_FEEDBACK_VARYING = GL_TRANSFORM_FEEDBACK_VARYING, // transform feedback varyings
+    TRANSFORM_FEEDBACK_BUFFER = GL_TRANSFORM_FEEDBACK_BUFFER,
+    ATOMIC_COUNTER_BUFFER = GL_ATOMIC_COUNTER_BUFFER,
+
+    VERTEX_SUBROUTINE = GL_VERTEX_SUBROUTINE,
+    VERTEX_SUBROUTINE_UNIFORM = GL_VERTEX_SUBROUTINE_UNIFORM,
+    TESS_CONTROL_SUBROUTINE = GL_TESS_CONTROL_SUBROUTINE,
+    TESS_CONTROL_SUBROUTINE_UNIFORM = GL_TESS_CONTROL_SUBROUTINE_UNIFORM,
+    TESS_EVALUATION_SUBROUTINE = GL_TESS_EVALUATION_SUBROUTINE,
+    TESS_EVALUATION_SUBROUTINE_UNIFORM = GL_TESS_EVALUATION_SUBROUTINE_UNIFORM,
+    GEOMETRY_SUBROUTINE = GL_GEOMETRY_SUBROUTINE,
+    GEOMETRY_SUBROUTINE_UNIFORM = GL_GEOMETRY_SUBROUTINE_UNIFORM,
+    FRAGMENT_SUBROUTINE = GL_FRAGMENT_SUBROUTINE,
+    FRAGMENT_SUBROUTINE_UNIFORM = GL_FRAGMENT_SUBROUTINE_UNIFORM,
+    COMPUTE_SUBROUTINE = GL_COMPUTE_SUBROUTINE,
+    COMPUTE_SUBROUTINE_UNIFORM = GL_COMPUTE_SUBROUTINE_UNIFORM,
+};
+
+enum class glsl_type_enum
+{
+    FLOAT = GL_FLOAT,
+    FLOAT_VEC2 = GL_FLOAT_VEC2,
+    FLOAT_VEC3 = GL_FLOAT_VEC3,
+    FLOAT_VEC4 = GL_FLOAT_VEC4,
+    DOUBLE = GL_DOUBLE,
+    DOUBLE_VEC2 = GL_DOUBLE_VEC2,
+    DOUBLE_VEC3 = GL_DOUBLE_VEC3,
+    DOUBLE_VEC4 = GL_DOUBLE_VEC4,
+    INT = GL_INT,
+    INT_VEC2 = GL_INT_VEC2,
+    INT_VEC3 = GL_INT_VEC3,
+    INT_VEC4 = GL_INT_VEC4,
+    UNSIGNED_INT = GL_UNSIGNED_INT,
+    UNSIGNED_INT_VEC2 = GL_UNSIGNED_INT_VEC2,
+    UNSIGNED_INT_VEC3 = GL_UNSIGNED_INT_VEC3,
+    UNSIGNED_INT_VEC4 = GL_UNSIGNED_INT_VEC4,
+    BOOL = GL_BOOL,
+    BOOL_VEC2 = GL_BOOL_VEC2,
+    BOOL_VEC3 = GL_BOOL_VEC3,
+    BOOL_VEC4 = GL_BOOL_VEC4,
+    FLOAT_MAT2 = GL_FLOAT_MAT2,
+    FLOAT_MAT3 = GL_FLOAT_MAT3,
+    FLOAT_MAT4 = GL_FLOAT_MAT4,
+    FLOAT_MAT2x3 = GL_FLOAT_MAT2x3,
+    FLOAT_MAT2x4 = GL_FLOAT_MAT2x4,
+    FLOAT_MAT3x2 = GL_FLOAT_MAT3x2,
+    FLOAT_MAT3x4 = GL_FLOAT_MAT3x4,
+    FLOAT_MAT4x2 = GL_FLOAT_MAT4x2,
+    FLOAT_MAT4x3 = GL_FLOAT_MAT4x3,
+    DOUBLE_MAT2 = GL_DOUBLE_MAT2,
+    DOUBLE_MAT3 = GL_DOUBLE_MAT3,
+    DOUBLE_MAT4 = GL_DOUBLE_MAT4,
+    DOUBLE_MAT2x3 = GL_DOUBLE_MAT2x3,
+    DOUBLE_MAT2x4 = GL_DOUBLE_MAT2x4,
+    DOUBLE_MAT3x2 = GL_DOUBLE_MAT3x2,
+    DOUBLE_MAT3x4 = GL_DOUBLE_MAT3x4,
+    DOUBLE_MAT4x2 = GL_DOUBLE_MAT4x2,
+    DOUBLE_MAT4x3 = GL_DOUBLE_MAT4x3,
+    SAMPLER_1D = GL_SAMPLER_1D,
+    SAMPLER_2D = GL_SAMPLER_2D,
+    SAMPLER_3D = GL_SAMPLER_3D,
+    SAMPLER_CUBE = GL_SAMPLER_CUBE,
+    SAMPLER_1D_SHADOW = GL_SAMPLER_1D_SHADOW,
+    SAMPLER_2D_SHADOW = GL_SAMPLER_2D_SHADOW,
+    SAMPLER_1D_ARRAY = GL_SAMPLER_1D_ARRAY,
+    SAMPLER_2D_ARRAY = GL_SAMPLER_2D_ARRAY,
+    SAMPLER_CUBE_MAP_ARRAY = GL_SAMPLER_CUBE_MAP_ARRAY,
+    SAMPLER_1D_ARRAY_SHADOW = GL_SAMPLER_1D_ARRAY_SHADOW,
+    SAMPLER_2D_ARRAY_SHADOW = GL_SAMPLER_2D_ARRAY_SHADOW,
+    SAMPLER_2D_MULTISAMPLE = GL_SAMPLER_2D_MULTISAMPLE,
+    SAMPLER_2D_MULTISAMPLE_ARRAY = GL_SAMPLER_2D_MULTISAMPLE_ARRAY,
+    SAMPLER_CUBE_SHADOW = GL_SAMPLER_CUBE_SHADOW,
+    SAMPLER_CUBE_MAP_ARRAY_SHADOW = GL_SAMPLER_CUBE_MAP_ARRAY_SHADOW,
+    SAMPLER_BUFFER = GL_SAMPLER_BUFFER,
+    SAMPLER_2D_RECT = GL_SAMPLER_2D_RECT,
+    SAMPLER_2D_RECT_SHADOW = GL_SAMPLER_2D_RECT_SHADOW,
+    INT_SAMPLER_1D = GL_INT_SAMPLER_1D,
+    INT_SAMPLER_2D = GL_INT_SAMPLER_2D,
+    INT_SAMPLER_3D = GL_INT_SAMPLER_3D,
+    INT_SAMPLER_CUBE = GL_INT_SAMPLER_CUBE,
+    INT_SAMPLER_1D_ARRAY = GL_INT_SAMPLER_1D_ARRAY,
+    INT_SAMPLER_2D_ARRAY = GL_INT_SAMPLER_2D_ARRAY,
+    INT_SAMPLER_CUBE_MAP_ARRAY = GL_INT_SAMPLER_CUBE_MAP_ARRAY,
+    INT_SAMPLER_2D_MULTISAMPLE = GL_INT_SAMPLER_2D_MULTISAMPLE,
+    INT_SAMPLER_2D_MULTISAMPLE_ARRAY = GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY,
+    INT_SAMPLER_BUFFER = GL_INT_SAMPLER_BUFFER,
+    INT_SAMPLER_2D_RECT = GL_INT_SAMPLER_2D_RECT,
+    UNSIGNED_INT_SAMPLER_1D = GL_UNSIGNED_INT_SAMPLER_1D,
+    UNSIGNED_INT_SAMPLER_2D = GL_UNSIGNED_INT_SAMPLER_2D,
+    UNSIGNED_INT_SAMPLER_3D = GL_UNSIGNED_INT_SAMPLER_3D,
+    UNSIGNED_INT_SAMPLER_CUBE = GL_UNSIGNED_INT_SAMPLER_CUBE,
+    UNSIGNED_INT_SAMPLER_1D_ARRAY = GL_UNSIGNED_INT_SAMPLER_1D_ARRAY,
+    UNSIGNED_INT_SAMPLER_2D_ARRAY = GL_UNSIGNED_INT_SAMPLER_2D_ARRAY,
+    UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY = GL_UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY,
+    UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE = GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE,
+    UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY = GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY,
+    UNSIGNED_INT_SAMPLER_BUFFER = GL_UNSIGNED_INT_SAMPLER_BUFFER,
+    UNSIGNED_INT_SAMPLER_2D_RECT = GL_UNSIGNED_INT_SAMPLER_2D_RECT,
+    IMAGE_1D = GL_IMAGE_1D,
+    IMAGE_2D = GL_IMAGE_2D,
+    IMAGE_3D = GL_IMAGE_3D,
+    IMAGE_2D_RECT = GL_IMAGE_2D_RECT,
+    IMAGE_CUBE = GL_IMAGE_CUBE,
+    IMAGE_BUFFER = GL_IMAGE_BUFFER,
+    IMAGE_1D_ARRAY = GL_IMAGE_1D_ARRAY,
+    IMAGE_2D_ARRAY = GL_IMAGE_2D_ARRAY,
+    IMAGE_CUBE_MAP_ARRAY = GL_IMAGE_CUBE_MAP_ARRAY,
+    IMAGE_2D_MULTISAMPLE = GL_IMAGE_2D_MULTISAMPLE,
+    IMAGE_2D_MULTISAMPLE_ARRAY = GL_IMAGE_2D_MULTISAMPLE_ARRAY,
+    INT_IMAGE_1D = GL_INT_IMAGE_1D,
+    INT_IMAGE_2D = GL_INT_IMAGE_2D,
+    INT_IMAGE_3D = GL_INT_IMAGE_3D,
+    INT_IMAGE_2D_RECT = GL_INT_IMAGE_2D_RECT,
+    INT_IMAGE_CUBE = GL_INT_IMAGE_CUBE,
+    INT_IMAGE_BUFFER  = GL_INT_IMAGE_BUFFER ,
+    INT_IMAGE_1D_ARRAY = GL_INT_IMAGE_1D_ARRAY,
+    INT_IMAGE_2D_ARRAY = GL_INT_IMAGE_2D_ARRAY,
+    INT_IMAGE_CUBE_MAP_ARRAY = GL_INT_IMAGE_CUBE_MAP_ARRAY,
+    INT_IMAGE_2D_MULTISAMPLE = GL_INT_IMAGE_2D_MULTISAMPLE,
+    INT_IMAGE_2D_MULTISAMPLE_ARRAY = GL_INT_IMAGE_2D_MULTISAMPLE_ARRAY,
+    UNSIGNED_INT_IMAGE_1D = GL_UNSIGNED_INT_IMAGE_1D,
+    UNSIGNED_INT_IMAGE_2D = GL_UNSIGNED_INT_IMAGE_2D,
+    UNSIGNED_INT_IMAGE_3D = GL_UNSIGNED_INT_IMAGE_3D,
+    UNSIGNED_INT_IMAGE_2D_RECT = GL_UNSIGNED_INT_IMAGE_2D_RECT,
+    UNSIGNED_INT_IMAGE_CUBE  = GL_UNSIGNED_INT_IMAGE_CUBE ,
+    UNSIGNED_INT_IMAGE_BUFFER = GL_UNSIGNED_INT_IMAGE_BUFFER,
+    UNSIGNED_INT_IMAGE_1D_ARRAY = GL_UNSIGNED_INT_IMAGE_1D_ARRAY,
+    UNSIGNED_INT_IMAGE_2D_ARRAY = GL_UNSIGNED_INT_IMAGE_2D_ARRAY,
+    UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY = GL_UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY,
+    UNSIGNED_INT_IMAGE_2D_MULTISAMPLE = GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE,
+    UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY = GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY,
+    UNSIGNED_INT_ATOMIC_COUNTER = GL_UNSIGNED_INT_ATOMIC_COUNTER
 };
 
 enum class gl_uniform_type : GLenum
@@ -131,12 +293,6 @@ enum class gl_uniform_type : GLenum
 	UNSIGNED_INT_ATOMIC_COUNTER	= GL_UNSIGNED_INT_ATOMIC_COUNTER	//atomic_uint
 };
 
-struct gl_uniform_buffer_descriptor {
-    std::string block_name;
-    gl_uniform_buffer_layout layout;
-    std::vector<std::pair<std::string, std::string>> rows;
-};
-
 /**
  * [Fixed] you must call this func at some time
  * [Optional] you call choose to call this func and remember to call all associated funcs
@@ -149,17 +305,59 @@ struct gl_uniform_buffer_descriptor {
 class gl_program final : public gl_object, public std::enable_shared_from_this<gl_program>{
 public:
 	gl_program();
-	~gl_program() override;
+    gl_program(const gl_program&) = delete;
+    gl_program& operator=(const gl_program&) = delete;
+
+    ~gl_program() override;
 
 public:
 
 	/**
 	 * once you install these component, you have no chance to remove or add them until the program destroyed
-	 * 
+	 * load shaders code, compile shaders, attach shaders to program and link program
+	 * validate program
 	 */
-	void construct(const std::vector<std::string>& shader_paths);
+	void construct(const std::vector<std::string>& shader_paths)
+    {
+        for (const auto& path : shader_paths)
+        {
+            auto shader = std::make_shared<gl_shader>(path);
+            if (shader)
+            {
+                glAttachShader(_handle, shader->get_handle());
+                _shaders.push_back(shader);
+            }
+        }
 
-	inline void enable()
+        /*if (is_separable)
+            glProgramParameteri(_handle, GL_PROGRAM_SEPARABLE, GL_TRUE);*/
+
+        /*glBindAttribLocation(_handle, 0, "Position");
+        glBindFragDataLocation(_handle, 0, "FragColor");*/
+
+        glLinkProgram(_handle);
+
+        // check the program state
+        if (!is_linked())
+        {
+            std::int32_t _log_length = info_log_length();
+            std::vector<char> _log;
+            _log.resize(_log_length);
+            glGetProgramInfoLog(_handle, _log_length, nullptr, _log.data());
+            std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << _log_length << std::endl;
+            glValidateProgram(_handle);
+        }
+        std::cout << "[program is linked.]" << std::endl;
+
+    }
+
+public:
+
+    /*
+     * check the program state, and bind the program to current context,
+     * there is only one program can be bound to context at the same time
+     * */
+    void enable()
     {
 	    if(glIsProgram(_handle))
         {
@@ -167,7 +365,10 @@ public:
         }
     }
 
-	inline void disable()
+    /*
+     * unbind the program from current context
+     * */
+	void disable()
     {
 	    if(glIsProgram(_handle))
 	        glUseProgram(0);
@@ -175,157 +376,591 @@ public:
         glValidateProgram(_handle);
     }
 
-    enum class gl_active_atomic_counter_buffer_parameter
+public: // query
+    // glGetActiveAtomicCounterBufferiv
+
+    // glGetActiveAttrib
+    // glGetAttribLocation
+
+    // glGetActiveSubroutineName
+    // glGetSubroutineIndex
+
+    // glGetActiveSubroutineUniform
+    // glGetActiveSubroutineUniformName
+    // glGetSubroutineUniformLocation
+    // glGetUniformSubroutine
+
+    // glGetActiveUniform
+    // glGetActiveUniformName
+    // glGetActiveUniforms
+    // glGetActiveUniformsiv
+    // glGetUniformIndices
+    // glGetUniformLocation
+    // glGetUniform
+
+    // glGetUniformBlockIndex
+    // glGetActiveUniformBlock
+    // glGetActiveUniformBlockName
+
+    // glGetFragDataIndex
+    // glGetFragDataLocation
+
+    // glGetTransformFeedbackVarying
+
+
+public:
+
+    void get_interface() const noexcept
     {
-        ATOMIC_COUNTER_BUFFER_BINDING = GL_ATOMIC_COUNTER_BUFFER_BINDING,
-        ATOMIC_COUNTER_BUFFER_DATA_SIZE = GL_ATOMIC_COUNTER_BUFFER_DATA_SIZE,
-        ATOMIC_COUNTER_BUFFER_ACTIVE_ATOMIC_COUNTERS = GL_ATOMIC_COUNTER_BUFFER_ACTIVE_ATOMIC_COUNTERS,
-        ATOMIC_COUNTER_BUFFER_ACTIVE_ATOMIC_COUNTER_INDICES = GL_ATOMIC_COUNTER_BUFFER_ACTIVE_ATOMIC_COUNTER_INDICES,
-
-        ATOMIC_COUNTER_BUFFER_REFERENCED_BY_VERTEX_SHADER = GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_VERTEX_SHADER,
-        ATOMIC_COUNTER_BUFFER_REFERENCED_BY_TESS_CONTROL_SHADER = GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_TESS_CONTROL_SHADER,
-        ATOMIC_COUNTER_BUFFER_REFERENCED_BY_TESS_EVALUATION_SHADER = GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_TESS_EVALUATION_SHADER,
-        ATOMIC_COUNTER_BUFFER_REFERENCED_BY_GEOMETRY_SHADER = GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_GEOMETRY_SHADER,
-        ATOMIC_COUNTER_BUFFER_REFERENCED_BY_FRAGMENT_SHADER = GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_FRAGMENT_SHADER,
-        ATOMIC_COUNTER_BUFFER_REFERENCED_BY_COMPUTE_SHADER = GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_COMPUTE_SHADER
-    };
-
-	bool is_atomic_counter_buffer_referenced_by_vertex_shader(const char* name)
-    {
-
+        glGetProgramInterfaceiv(_handle, GL_TRANSFORM_FEEDBACK, GL_ACTIVE_RESOURCES, );
     }
 
-    void query_active_atomic_counter_buffer()
+    // glGetProgramResource
+    void get_resource() const noexcept
     {
-
-        GLuint _buffer_index; // 0 - GL_ACTIVE_ATOMIC_COUNTER_BUFFERS - 1
-        if(_buffer_index < 0 || _buffer_index >= GL_ACTIVE_ATOMIC_COUNTER_BUFFERS) return;
-
-        GLint* params;
-        glGetActiveAtomicCounterBufferiv(_handle, _buffer_index, GL_ATOMIC_COUNTER_BUFFER_BINDING, params);
+        //glGetProgramResourceiv(_handle, GL_ATOMIC_COUNTER_BUFFER, -1, 100, {}, 100,  );
     }
 
-    std::int32_t query_attribute_location(const char* name)
+    /*
+     * query the index of a named resource within a program
+     * returns the uint index assigned to a resource named name in the interface type programInterface of program object program.
+     * 4.3
+     * @programInterface :
+     *  A token identifying the interface within program containing the resource named name.
+     *
+     *  UNIFORM,
+     *  UNIFORM_BLOCK,
+     *  SHADER_STORAGE_BLOCK,
+     *  BUFFER_VARIABLE,
+     *
+     *  PROGRAM_INPUT,
+     *  PROGRAM_OUTPUT,
+     *  TRANSFORM_FEEDBACK_VARYING,
+     *  TRANSFORM_FEEDBACK_BUFFER,
+     *
+     *  VERTEX_SUBROUTINE,
+     *  TESS_CONTROL_SUBROUTINE, TESS_EVALUATION_SUBROUTINE,
+     *  GEOMETRY_SUBROUTINE,
+     *  FRAGMENT_SUBROUTINE,
+     *  COMPUTE_SUBROUTINE
+     *
+     *  VERTEX_SUBROUTINE_UNIFORM,
+     *  TESS_CONTROL_SUBROUTINE_UNIFORM, TESS_EVALUATION_SUBROUTINE_UNIFORM,
+     *  GEOMETRY_SUBROUTINE_UNIFORM,
+     *  FRAGMENT_SUBROUTINE_UNIFORM,
+     *  COMPUTE_SUBROUTINE_UNIFORM
+     *
+     * @name : The name of the resource to query the index of.
+     * */
+    bool get_resource_index(gl_program_interface interface, const char* name, std::uint32_t& out_index) const noexcept
     {
-        return glGetAttribLocation(_handle, name);
+        if(interface == gl_program_interface::TRANSFORM_FEEDBACK_BUFFER ||
+        interface == gl_program_interface::ATOMIC_COUNTER_BUFFER) return false;
+        out_index = glGetProgramResourceIndex(_handle, static_cast<GLenum>(interface), name);
+        return true;
+    }
+
+    /*
+     * query the index of a named resource within a program
+     * returns the uint index assigned to a resource named name in the interface type programInterface of program object program.
+     * 4.3
+     * @programInterface :
+     *  A token identifying the interface within program containing the resource named name.
+     *
+     *  UNIFORM,
+     *
+     *  PROGRAM_INPUT,
+     *  PROGRAM_OUTPUT,
+     *  TRANSFORM_FEEDBACK_BUFFER,
+     *
+     *  VERTEX_SUBROUTINE_UNIFORM,
+     *  TESS_CONTROL_SUBROUTINE_UNIFORM, TESS_EVALUATION_SUBROUTINE_UNIFORM,
+     *  GEOMETRY_SUBROUTINE_UNIFORM,
+     *  FRAGMENT_SUBROUTINE_UNIFORM,
+     *  COMPUTE_SUBROUTINE_UNIFORM
+     *
+     * @name : The name of the resource to query the index of.
+     * */
+    bool get_resource_location(gl_program_interface interface, const char* name, std::int32_t& out_location) const noexcept
+    {
+        out_location = glGetProgramResourceLocation(_handle, static_cast<GLenum>(interface), name);
+        return true;
+    }
+
+    /*
+     * get program output var index by specified name, return -1 if it does not exist
+     * query the fragment color index of a named variable within a program
+     * @programInterface : A token identifying the interface within program containing the resource named name.
+     * @name : The name of the resource to query the location of
+     *
+     *  GL_PROGRAM_OUTPUT
+     *
+     * The value -1 will be returned if an error occurs, if name does not identify an active variable on programInterface,
+     * or if name identifies an active variable that does not have a valid location assigned, as described above.
+     * The locations returned by these commands are the same locations returned
+     * when querying the GL_LOCATION and GL_LOCATION_INDEX resource properties.
+     * */
+    bool get_resource_location_index(const char* name, std::int32_t& out_location_index) const noexcept
+    {
+        out_location_index = glGetProgramResourceLocationIndex(_handle, GL_PROGRAM_OUTPUT, name);
+        return true;
+    }
+
+    /*
+     * query the index of a named resource within a program
+     * returns the uint index assigned to a resource named name in the interface type programInterface of program object program.
+     * 4.3
+     * @programInterface :
+     *  A token identifying the interface within program containing the resource named name.
+     *
+     *  UNIFORM,
+     *  UNIFORM_BLOCK,
+     *  SHADER_STORAGE_BLOCK,
+     *  BUFFER_VARIABLE,
+     *
+     *  PROGRAM_INPUT,
+     *  PROGRAM_OUTPUT,
+     *  TRANSFORM_FEEDBACK_VARYING,
+     *
+     *  VERTEX_SUBROUTINE,
+     *  TESS_CONTROL_SUBROUTINE, TESS_EVALUATION_SUBROUTINE,
+     *  GEOMETRY_SUBROUTINE,
+     *  FRAGMENT_SUBROUTINE,
+     *  COMPUTE_SUBROUTINE
+     *
+     * 
+     *  VERTEX_SUBROUTINE_UNIFORM,
+     *  TESS_CONTROL_SUBROUTINE_UNIFORM, TESS_EVALUATION_SUBROUTINE_UNIFORM,
+     *  GEOMETRY_SUBROUTINE_UNIFORM,
+     *  FRAGMENT_SUBROUTINE_UNIFORM,
+     *  COMPUTE_SUBROUTINE_UNIFORM
+     *
+     * @name : The name of the resource to query the index of.
+     * */
+    std::string resource_name(gl_program_interface interface, std::uint32_t index) const noexcept
+    {
+        std::int32_t _length = 0;
+        glGetProgramResourceName(_handle, static_cast<GLenum>(interface), index, 0, &_length, nullptr);
+        char* name;
+        glGetProgramResourceName(_handle, static_cast<GLenum>(interface), index, _length, nullptr, name);
+        return std::string(name);
     }
 
 
-    inline bool is_deleted() const noexcept
+
+    // glGetProgramStageiv
+    std::int32_t stage_active_subroutine_uniforms_num(gl_shader_type shader_type)
+    {
+        GLint param;
+        glGetProgramStageiv(_handle, static_cast<GLenum>(shader_type), GL_ACTIVE_SUBROUTINE_UNIFORMS, &param);
+        return param;
+    }
+
+    std::int32_t stage_active_subroutine_uniform_locations_num(gl_shader_type shader_type)
+    {
+        GLint param;
+        glGetProgramStageiv(_handle, static_cast<GLenum>(shader_type), GL_ACTIVE_SUBROUTINE_UNIFORM_LOCATIONS, &param);
+        return param;
+    }
+
+    std::int32_t stage_active_subroutines_num(gl_shader_type shader_type)
+    {
+        GLint param;
+        glGetProgramStageiv(_handle, static_cast<GLenum>(shader_type), GL_ACTIVE_SUBROUTINES, &param);
+        return param;
+    }
+
+    std::int32_t stage_active_subroutine_uniform_name_max_length(gl_shader_type shader_type)
+    {
+        GLint param;
+        glGetProgramStageiv(_handle, static_cast<GLenum>(shader_type), GL_ACTIVE_SUBROUTINE_UNIFORM_MAX_LENGTH, &param);
+        return param;
+    }
+
+    std::int32_t stage_active_subroutine_name_max_length(gl_shader_type shader_type)
+    {
+        GLint param;
+        glGetProgramStageiv(_handle, static_cast<GLenum>(shader_type), GL_ACTIVE_SUBROUTINE_MAX_LENGTH, &param);
+        return param;
+    }
+    // glGetProgramStageiv
+
+    //glGetShaderPrecisionFormat
+
+    //glGetShaderPrecisionFormat
+
+
+
+
+public: // glGetProgramiv
+    /*
+     * if program is currently flagged for deletion, return true
+     * */
+    bool is_deleted() const noexcept
     {
         GLint param;
         glGetProgramiv(_handle, GL_DELETE_STATUS, &param);
         return param == GL_TRUE;
 	}
-	inline bool is_linked() const noexcept
+
+    /*
+     * if the last link operation on program was successful, return true
+     * */
+    bool is_linked() const noexcept
     {
         GLint param;
         glGetProgramiv(_handle, GL_LINK_STATUS, &param);
         return param == GL_TRUE;
     }
-    inline bool is_valid() const noexcept
+
+    /*
+     * if the last validation operation on program was successful, return true
+     * */
+    bool is_valid() const noexcept
     {
         GLint param;
         glGetProgramiv(_handle, GL_VALIDATE_STATUS, &param);
         return param == GL_TRUE;
     }
-    inline std::int32_t info_log_length() const noexcept
+
+    /*
+     * returns the number of characters in the information log for program including the null termination character
+     * (i.e., the size of the character buffer required to store the information log).
+     * If program has no information log, a value of 0 is returned.
+     * */
+    std::int32_t info_log_length() const noexcept
     {
         GLint param;
         glGetProgramiv(_handle, GL_INFO_LOG_LENGTH, &param);
         return param;
     }
-    inline std::int32_t attached_shaders_num() const noexcept
+
+    /*
+     * returns the number of shader objects attached to program
+     * */
+    std::int32_t attached_shaders_num() const noexcept
     {
         GLint param;
         glGetProgramiv(_handle, GL_ATTACHED_SHADERS, &param);
         return param;
     }
-    inline std::int32_t active_atomic_counter_buffers_num() const noexcept
+
+    /*
+     * returns the number of active attribute atomic counter buffers used by program
+     * */
+    std::int32_t active_atomic_counter_buffers_num() const noexcept
     {
         GLint param;
         glGetProgramiv(_handle, GL_ACTIVE_ATOMIC_COUNTER_BUFFERS, &param);
         return param;
     }
-    inline std::int32_t active_attributes_num() const noexcept
+
+    /*
+     * returns the number of active attribute variables for program
+     * */
+    std::int32_t active_attributes_num() const noexcept
     {
         GLint param;
         glGetProgramiv(_handle, GL_ACTIVE_ATTRIBUTES, &param);
         return param;
     }
-    inline std::int32_t active_attribute_name_max_length() const noexcept
+
+    /*
+     * returns the length of the longest active attribute name for program, including the null termination character
+     * (i.e., the size of the character buffer required to store the longest attribute name).
+     * If no active attributes exist, 0 is returned.
+     * */
+    std::int32_t active_attribute_name_max_length() const noexcept
     {
         GLint param;
         glGetProgramiv(_handle, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &param);
         return param;
     }
-    inline std::int32_t active_uniforms_num() const noexcept
+
+    /*
+     * returns the number of active uniform variables for program
+     * */
+    std::int32_t active_uniforms_num() const noexcept
     {
         GLint param;
         glGetProgramiv(_handle, GL_ACTIVE_UNIFORMS, &param);
         return param;
     }
-    inline std::int32_t active_uniform_blocks_num() const noexcept
-    {
-        GLint param;
-        glGetProgramiv(_handle, GL_ACTIVE_UNIFORM_BLOCKS, &param);
-        return param;
-    }
-    inline std::int32_t active_uniform_block_name_max_length() const noexcept
-    {
-        GLint param;
-        glGetProgramiv(_handle, GL_ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH, &param);
-        return param;
-    }
-    inline std::int32_t active_uniform_name_max_length() const noexcept
+
+    /*
+     * params returns the length of the longest active uniform variable name for program, including the null termination character
+     * (i.e., the size of the character buffer required to store the longest uniform variable name).
+     * If no active uniform variables exist, 0 is returned.
+     * */
+    std::int32_t active_uniform_name_max_length() const noexcept
     {
         GLint param;
         glGetProgramiv(_handle, GL_ACTIVE_UNIFORM_MAX_LENGTH, &param);
         return param;
     }
-    inline std::int32_t compute_work_group_size() const noexcept
+
+    /*
+     *
+     * */
+    std::int32_t active_uniform_blocks_num() const noexcept
+    {
+        GLint param;
+        glGetProgramiv(_handle, GL_ACTIVE_UNIFORM_BLOCKS, &param);
+        return param;
+    }
+
+    /*
+     *
+     * */
+    std::int32_t active_uniform_block_name_max_length() const noexcept
+    {
+        GLint param;
+        glGetProgramiv(_handle, GL_ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH, &param);
+        return param;
+    }
+
+
+    /*
+     * params returns an array of three integers containing the local work group size of the compute program as specified by its input layout qualifier(s).
+     * program must be the name of a program object that has been previously linked successfully and contains a binary for the compute shader stage.
+     * */
+    std::int32_t compute_work_group_size() const noexcept
     {
         GLint param;
         glGetProgramiv(_handle, GL_COMPUTE_WORK_GROUP_SIZE, &param);
         return param;
     }
-    inline std::int32_t program_binary_length() const noexcept
+
+    /*
+     * returns the length of the program binary, in bytes that will be returned by a call to glGetProgramBinary.
+     * When a program is not linked, its program binary length is zero.
+     * */
+    std::int32_t program_binary_length() const noexcept
     {
         GLint param;
         glGetProgramiv(_handle, GL_PROGRAM_BINARY_LENGTH, &param);
         return param;
     }
-    inline void transform_feedback_buffer_mode() const noexcept{}
-    inline std::int32_t transform_feedback_varyings_num() const noexcept
+
+    /*
+     * returns the number of varying variables to capture in transform feedback mode for the program
+     * */
+    std::int32_t transform_feedback_varyings_num() const noexcept
     {
         GLint param;
         glGetProgramiv(_handle, GL_TRANSFORM_FEEDBACK_VARYINGS, &param);
         return param;
     }
-    inline std::int32_t transform_feedback_varying_name_max_length() const noexcept
+
+    /*
+     * returns the length of the longest variable name to be used for transform feedback, including the null-terminator.
+     * */
+    std::int32_t transform_feedback_varying_name_max_length() const noexcept
     {
         GLint param;
         glGetProgramiv(_handle, GL_TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH, &param);
         return param;
     }
-    inline std::int32_t geometry_vertices_max_num() const noexcept
-    {}
-    
 
+    /*
+     * returns a symbolic constant indicating the buffer mode used when transform feedback is active.
+     * This may be SEPARATE_ATTRIBS or INTERLEAVED_ATTRIBS.
+     * */
+    gl_transform_feedback_buffer_mode transform_feedback_buffer_mode() const noexcept{
+        GLint param;
+        glGetProgramiv(_handle, GL_TRANSFORM_FEEDBACK_BUFFER_MODE, &param);
+        return static_cast<gl_transform_feedback_buffer_mode>(param);
+    }
+
+    /*
+     * returns the maximum number of vertices that the geometry shader in program will output
+     * */
+    std::int32_t geometry_vertices_max_num() const noexcept
+    {
+        GLint param;
+        glGetProgramiv(_handle, GL_GEOMETRY_VERTICES_OUT, &param);
+        return param;
+    }
+
+    /*
+     * returns a symbolic constant indicating the primitive type accepted as input to the geometry shader contained in program.
+     * */
+    gl_primitive_type geometry_input_type() const noexcept{
+        GLint param;
+        glGetProgramiv(_handle, GL_GEOMETRY_INPUT_TYPE, &param);
+        return static_cast<gl_primitive_type>(param);
+    }
+
+    /*
+     * returns a symbolic constant indicating the primitive type that will be output by the geometry shader contained in program.
+     * */
+    gl_primitive_type geometry_output_type() const noexcept{
+        GLint param;
+        glGetProgramiv(_handle, GL_GEOMETRY_OUTPUT_TYPE, &param);
+        return static_cast<gl_primitive_type>(param);
+    }
+
+public:
+
+    std::int32_t active_atomic_counter_buffer_binding() const noexcept
+    {
+        GLuint _buffer_index = 0;
+        if(_buffer_index < 0 || _buffer_index >= active_atomic_counter_buffers_num()) return -1;
+        GLint param;
+        glGetActiveAtomicCounterBufferiv(_handle, _buffer_index, GL_ATOMIC_COUNTER_BUFFER_BINDING, &param);
+        return param;
+    }
+
+    std::int32_t active_atomic_counter_buffer_data_size() const noexcept
+    {
+        GLuint _buffer_index = 0;
+        if(_buffer_index < 0 || _buffer_index >= active_atomic_counter_buffers_num()) return -1;
+        GLint param;
+        glGetActiveAtomicCounterBufferiv(_handle, _buffer_index, GL_ATOMIC_COUNTER_BUFFER_DATA_SIZE, &param);
+        return param;
+    }
+
+    std::int32_t active_atomic_counter_buffer_counters_num() const noexcept
+    {
+        std::uint32_t _buffer_index = 0;
+        if(_buffer_index < 0 || _buffer_index >= active_atomic_counter_buffers_num()) return -1;
+        GLint param;
+        glGetActiveAtomicCounterBufferiv(_handle, _buffer_index, GL_ATOMIC_COUNTER_BUFFER_ACTIVE_ATOMIC_COUNTERS, &param);
+        return param;
+    }
+
+    std::vector<std::int32_t> active_atomic_counter_buffer_counters_indices() const noexcept
+    {
+        std::uint32_t _buffer_index = 0;
+        if(_buffer_index < 0 || _buffer_index >= active_atomic_counter_buffers_num()) return {};
+        std::int32_t _counters_num = active_atomic_counter_buffer_counters_num();
+        std::vector<std::int32_t> indices(_counters_num);
+        glGetActiveAtomicCounterBufferiv(_handle, _buffer_index, GL_ATOMIC_COUNTER_BUFFER_ACTIVE_ATOMIC_COUNTER_INDICES, indices.data());
+        return indices;
+    }
+
+    bool is_atomic_counter_buffer_referenced_by_vertex_shader() const noexcept
+    {
+        std::uint32_t _buffer_index = 0;
+        if(_buffer_index < 0 || _buffer_index >= active_atomic_counter_buffers_num()) return -1;
+        GLint param;
+        glGetActiveAtomicCounterBufferiv(_handle, _buffer_index, GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_VERTEX_SHADER, &param);
+        return param == GL_TRUE;
+    }
+
+    bool is_atomic_counter_buffer_referenced_by_tess_control_shader() const noexcept
+    {
+        std::uint32_t _buffer_index = 0;
+        if(_buffer_index < 0 || _buffer_index >= active_atomic_counter_buffers_num()) return -1;
+        GLint param;
+        glGetActiveAtomicCounterBufferiv(_handle, _buffer_index, GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_TESS_CONTROL_SHADER, &param);
+        return param == GL_TRUE;
+    }
+
+    bool is_atomic_counter_buffer_referenced_by_tess_evaluation_shader() const noexcept
+    {
+        std::uint32_t _buffer_index = 0;
+        if(_buffer_index < 0 || _buffer_index >= active_atomic_counter_buffers_num()) return -1;
+        GLint param;
+        glGetActiveAtomicCounterBufferiv(_handle, _buffer_index, GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_TESS_EVALUATION_SHADER, &param);
+        return param == GL_TRUE;
+    }
+
+    bool is_atomic_counter_buffer_referenced_by_geometry_shader() const noexcept
+    {
+        std::uint32_t _buffer_index = 0;
+        if(_buffer_index < 0 || _buffer_index >= active_atomic_counter_buffers_num()) return -1;
+        GLint param;
+        glGetActiveAtomicCounterBufferiv(_handle, _buffer_index, GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_GEOMETRY_SHADER, &param);
+        return param == GL_TRUE;
+    }
+
+    bool is_atomic_counter_buffer_referenced_by_fragment_shader() const noexcept
+    {
+        std::uint32_t _buffer_index = 0;
+        if(_buffer_index < 0 || _buffer_index >= active_atomic_counter_buffers_num()) return -1;
+        GLint param;
+        glGetActiveAtomicCounterBufferiv(_handle, _buffer_index, GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_FRAGMENT_SHADER, &param);
+        return param == GL_TRUE;
+    }
+
+    bool is_atomic_counter_buffer_referenced_by_compute_shader() const noexcept
+    {
+        std::uint32_t _buffer_index = 0;
+        if(_buffer_index < 0 || _buffer_index >= active_atomic_counter_buffers_num()) return -1;
+        GLint param;
+        glGetActiveAtomicCounterBufferiv(_handle, _buffer_index, GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_COMPUTE_SHADER, &param);
+        return param == GL_TRUE;
+    }
+
+
+
+
+
+public: // glGetActiveAttrib
+
+    struct gl_attribute_info
+    {
+        std::int32_t size;
+        std::uint32_t type;
+        std::string name;
+    };
+
+    gl_attribute_info active_attribute(std::uint32_t index)
+    {
+        gl_attribute_info _info;
+        glGetActiveAttrib(_handle, index, active_attribute_name_max_length(), nullptr, &_info.size, &_info.type, _info.name.data());
+        return _info;
+    }
+
+public:
+
+    /*
+     * Returns the location of an attribute variable
+     * */
+    std::int32_t attribute_location(const char* name) const noexcept
+    {
+        return glGetAttribLocation(_handle, name);
+    }
+
+
+public:
+
+    /*
+     * query the bindings of color indices to user-defined varying out variables
+     * */
+    std::int32_t fragment_data_index(const char* name) const noexcept
+    {
+        return glGetFragDataIndex(_handle, name);
+    }
+
+    /*
+     *  query the bindings of color numbers to user-defined varying out variables
+     * */
+    std::int32_t fragment_data_location(const char* name) const noexcept
+    {
+        return glGetFragDataLocation(_handle, name);
+    }
+
+
+public:
+
+    std::uint32_t query_uniform_block_index(const char* name)
+    {
+        return glGetUniformBlockIndex(_handle, name);
+    }
+
+
+
+    //
+    std::int32_t attribute_location(const char* name)
+    {
+        return glGetAttribLocation(_handle, name);
+    }
 
     void query()
     {
 	    GLint param;
-
-        GL_TRANSFORM_FEEDBACK_BUFFER_MODE,
-
-        GL_GEOMETRY_VERTICES_OUT,
-        GL_GEOMETRY_INPUT_TYPE,
-        GL_GEOMETRY_OUTPUT_TYPE
-
-
-
-	    glGetActiveAttrib(_handle, -1, , );
 
 
 	    glGetActiveSubroutineName();
@@ -338,15 +973,6 @@ public:
 
         glGetActiveUniformsiv();
         //glGetAttribLocation();
-        glGetFragDataIndex();
-        glGetFragDataLocation();
-
-        glGetProgramInterfaceiv();
-        glGetProgramResourceiv();
-        glGetProgramResourceLocation();
-        glGetProgramResourceLocationIndex();
-        glGetProgramResourceIndex();
-        glGetProgramResourceName();
 
         glGetProgramStageiv();
         glGetShaderPrecisionFormat();
