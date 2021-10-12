@@ -41,49 +41,4 @@ std::unordered_map<std::string, std::int64_t> gl_uniform_buffer::_glsl_type_size
         {"dmat4x3", sizeof(glsl_dmat4x3)}
 };
 
-void gl_uniform_buffer::bind(std::uint32_t binding)
-{
-    if(_public_buffer)
-    {
-        glBindBufferRange(GL_UNIFORM_BUFFER, binding, _public_buffer->get_handle(), _uniform_buffer_offset, _uniform_buffer_size);
-        gl_buffer::_throw_errors("glBindBufferRange");
-        _binding = binding;
-    }
-#ifdef _DEBUG
-    std::cout << "uniform buffers [ "<< _block_name <<"]" << std::endl;
-    std::cout << "binding: " << _binding <<std::endl;
-    std::cout << "offset: " << _uniform_buffer_offset<<std::endl;
-    std::cout << "size: " << _uniform_buffer_size<<std::endl;
-#endif
-}
 
-void gl_uniform_buffer::unbind()
-{
-	glBindBufferRange(GL_UNIFORM_BUFFER, _binding, 0, 0, 0);
-	_binding = 0;
-}
-
-void gl_uniform_buffer::_generate_packed_memory(const std::vector<std::pair<std::string, std::string>> &rows)
-{
-    if (_owner.lock())
-    {
-    }
-}
-
-void gl_uniform_buffer::_generate_shared_memory(const std::vector<std::pair<std::string, std::string>> &rows)
-{
-    if(_owner.lock())
-    {
-        GLuint al = GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT;
-        _uniform_buffer_offset = _public_buffer->get_size();
-        _uniform_buffer_size = _owner.lock()->get_uniform_buffer_block_size(_block_name);
-        for(const auto& row : rows)
-        {
-            std::int64_t _offset = _uniform_buffer_offset + _owner.lock()->get_uniform_buffer_item_offset(row.second);
-            auto _attribute_size = _glsl_type_size_map.find(row.first)->second;
-            _attribute_layout.emplace(row.second, std::pair<std::int64_t, std::int64_t>(_offset, _attribute_size));
-        }
-        // place the public buffers
-        _public_buffer->push_back('0', _uniform_buffer_size);
-    }
-}

@@ -35,9 +35,13 @@ class glsl_uniform_block_t : public glsl_interface_block_t{
 public:
     glsl_uniform_block_t();
 
+    void mark_dirty(bool is_dirty);
+
+    bool is_dirty();
+
 public:
     std::uint8_t* data;
-    std::int32_t data_size;
+    std::int64_t data_size;
 
 };
 
@@ -51,11 +55,13 @@ public:
 class glsl_shader_storage_block_t : public glsl_interface_block_t{
 public:
     glsl_shader_storage_block_t();
+
 public:
 
-    std::uint8_t* data();
-    std::int32_t size();
+    virtual std::uint8_t* data() = 0;
+    virtual std::int64_t size() = 0;
 
+    
 
 };
 

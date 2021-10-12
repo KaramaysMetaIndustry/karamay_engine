@@ -4,7 +4,6 @@
 #include "graphics/glo/gl_object.h"
 #include "graphics/buffers/buffer/gl_buffer_tools.h"
 
-
 enum class access : GLenum
 {
     READ_WRITE = GL_READ_WRITE,
@@ -21,8 +20,6 @@ enum class gl_buffer_storage_flag : GLenum
     MAP_PERSISTENT_BIT = GL_MAP_PERSISTENT_BIT,
     MAP_COHERENT_BIT = GL_MAP_COHERENT_BIT
 };
-
-
 
 enum class gl_buffer_map_access_flag : GLenum
 {
@@ -88,10 +85,15 @@ public:
 		}
     }
 
-    ~gl_buffer() override
-    {
-    }
+    ~gl_buffer() override;
 
+
+public:
+
+    std::int64_t size() const
+    {
+        return _size;
+    }
 
 public:
 

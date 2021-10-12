@@ -7,6 +7,8 @@
 #include "graphics/glsl/glsl_class.h"
 #include "graphics/glsl/opaque_t/glsl_sampler_t.h"
 #include "graphics/glsl/opaque_t/glsl_image_t.h"
+#include "graphics/glsl/transparent_t/glsl_transparent_t.h"
+#include "graphics/glsl/transparent_t/interface_block_t/glsl_interface_block_t.h"
 
 enum gl_stencil_op : GLenum
 {
@@ -82,7 +84,11 @@ enum gl_clip_control_depth_mode : GLenum
     zero_to_one = GL_ZERO_TO_ONE
 };
 
-class gl_graphics_pipeline_parameters{};
+enum class gl_primitive_mode
+{
+
+};
+
 
 /*
  * for dynamical modifying
@@ -103,16 +109,12 @@ struct gl_graphics_pipeline_state
     {
         struct gl_vertex_shading
         {
-            std::shared_ptr<gl_vertex_shader> shader;
         }vertex_shading;
         struct gl_tessellation
         {
-            std::shared_ptr<gl_tessellation_control_shader> control_shader;
-            std::shared_ptr<gl_tessellation_evaluation_shader> evaluation_shader;
         } tessellation;
         struct gl_geometry_shading
         {
-            std::shared_ptr<gl_geometry_shader> shader;
         } geometry_shading;
         struct gl_post_vertex_processing
         {
@@ -144,10 +146,10 @@ struct gl_graphics_pipeline_state
     {
         bool discard_all_primitives; // discard all primitives, if true the pipeline wont go head
     } primitive_assembly; // collect primitives or discard all of them
-    struct gl_rasterization
+    struct gl_rasterisation
     {
 
-    } rasterization; // the stage generate fragments from primitives (points, lines, polygons)
+    } rasterisation; // the stage generate fragments from primitives (points, lines, polygons)
     struct gl_fragment_processing
     {
         /*
@@ -171,7 +173,6 @@ struct gl_graphics_pipeline_state
         } pre_fragment_operations;
         struct gl_fragment_shading
         {
-            std::shared_ptr<gl_fragment_shader> shader;
         } fragment_shading;
         struct gl_post_fragment_operations
         {
@@ -237,83 +238,129 @@ struct gl_graphics_pipeline_state
 /*
  * for building graphics pipe
  * */
-struct gl_graphics_pipeline_descriptor
-{
-    std::shared_ptr<gl_graphics_pipeline_parameters> parameters;
-    gl_graphics_pipeline_state state;
 
+class gl_graphics_pipeline_global_parameters{
+public:
+    std::vector<std::shared_ptr<glsl_image_t>> images;
+    std::vector<std::shared_ptr<glsl_sampler_t>> samplers;
+    std::vector<std::shared_ptr<glsl_atomic_uint>> atomic_counters;
+    std::vector<std::shared_ptr<glsl_uniform_block_t>> uniform_blocks;
+    std::vector<std::shared_ptr<glsl_shader_storage_block_t>> shader_storage_blocks;
 };
 
+class gl_graphics_pipeline_attribute_stream{};
+
+struct gl_graphics_pipeline_descriptor
+{
+    gl_graphics_pipeline_state state;
+    gl_graphics_pipeline_global_parameters global_parameters;
+    gl_graphics_pipeline_attribute_stream attribute_stream;
+    std::shared_ptr<gl_framebuffer> framebuffer;
+};
+
+
+/*
+ * graphics pipeline
+ * */
 class gl_graphics_pipeline : public gl_pipeline{
 public:
-    gl_graphics_pipeline() = delete;
-    explicit gl_graphics_pipeline(const gl_graphics_pipeline_descriptor& descriptor) :
-        _descriptor(std::move(descriptor))
-    {
-    }
+    gl_graphics_pipeline() = default;
     gl_graphics_pipeline(const gl_graphics_pipeline&) = delete;
     gl_graphics_pipeline& operator=(const gl_graphics_pipeline&) = delete;
 
     ~gl_graphics_pipeline() = default;
 
-
 public:
-    void construct(const gl_graphics_pipeline_descriptor& descriptor)
+    /*
+     * generate shader code
+     * create program object, compile shaders and attach them to program
+     * pre-link actions:
+     * link program
+     * query resource state info
+     * generate resource
+     * */
+    void construct(const gl_graphics_pipeline_descriptor& descriptor) noexcept
     {
-        _program = std::make_unique<gl_program>();
-
-        if(!_program) return;
-
         // generate shader code
-        // ..
+        descriptor.global_parameters;
+
         // construct shader program
+        _program = std::make_unique<gl_program>();
+        if(!_program) return;
         _program->construct({});
+
         // query state settings and generate settings cache
         _program->get_resource();
         std::uint32_t _index = 0;
         _program->get_resource_index(gl_program_interface::ATOMIC_COUNTER_BUFFER, "test", _index);
+
         // generate resources
         //..
     }
 
 public:
 
-    void draw_arrays(std::int32_t first, std::int32_t count)
+    /*
+     *
+     * */
+    void draw_arrays(gl_primitive_mode mode, std::int32_t first, std::int32_t count) noexcept
     {
-        glDrawArrays(GL_POINTS, first, count);
+        if(!_program) return;
+        glDrawArrays(static_cast<GLenum>(mode), first, count);
     }
 
-    void draw_indices()
-    {}
+    /*
+     *
+     * */
+    void draw_indices(gl_primitive_mode mode, std::int32_t first, std::int32_t count) noexcept
+    {
+        if(_program) return;
+        glDrawElements(static_cast<GLenum>(mode), first, count, nullptr);
+    }
 
 private:
-    
-    gl_graphics_pipeline_descriptor _descriptor;
 
     std::unique_ptr<gl_program> _program;
 
+    std::shared_ptr<gl_graphics_pipeline_descriptor> _descriptor;
+
+    std::shared_ptr<gl_uniform_buffer> _ubo;
+    std::shared_ptr<gl_shader_storage_buffer> _ssbo;
+
 private:
-    void _generate_resources();
-    void _bind_resources();
-    void _unbind_resources();
-
-public:
-
     enum class shader_combination_flag : std::uint8_t
     {
         _vs,
         _vs_tescs_teses,
         _vs_tescs_teses_gs,
-        
+
         _vs_fs,
         _vs_gs_fs,
         _vs_tescs_teses_fs,
         _vs_tescs_teses_gs_fs,
-        
+
     };
 
+    void _generate_resources()
+    {
+        auto& _uniform_blocks = _descriptor->global_parameters.uniform_blocks;
+        _ubo = std::make_shared<gl_uniform_buffer>(_uniform_blocks);
+        _ssbo = std::make_shared<gl_shader_storage_buffer>();
 
-private:
+    }
+    void _bind_resources()
+    {
+        _ubo->bind();
+        _ssbo->bind();
+    }
+
+    void _unbind_resources();
+
+    void flush_resources()
+    {
+        _ubo->flush_dirty_blocks();
+        _ssbo->flush_dirty_blocks();
+    }
 
 
     void _update_pipeline_state()
@@ -506,6 +553,25 @@ private:
 
 
 };
+
+/*
+ * vertex processing pipeline, optimized for vertex processing.
+ * fetch data from transform feedback buffer, after vertex processing, all primitives will be discard.
+ * */
+class gl_vertex_processing_pipeline : public gl_pipeline{
+public:
+    gl_vertex_processing_pipeline() = default;
+    gl_vertex_processing_pipeline(const gl_vertex_processing_pipeline&) = delete;
+    gl_vertex_processing_pipeline& operator=(const gl_vertex_processing_pipeline&) = delete;
+
+    ~gl_vertex_processing_pipeline();
+
+public:
+
+
+};
+
+
 
 #define DEFINE_GRAPHICS_PIPELINE_PARAMETERS(PIPELINE_NAME)\
 struct gl_##PIPELINE_NAME##_graphics_pipeline_parameters : public gl_graphics_pipeline_parameters\

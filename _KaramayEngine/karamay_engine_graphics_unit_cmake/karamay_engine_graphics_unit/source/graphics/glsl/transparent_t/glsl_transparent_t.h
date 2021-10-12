@@ -92,4 +92,10 @@ public:
 const glsl_transparent_t_meta glsl_dvec3::_meta(glm::dvec3::length(), sizeof(glm::dvec3::value_type), to_enum<glm::dvec3::value_type>(), sizeof(glm::dvec3), "dvec3");
 
 
+
+class glsl_vertex_stream
+{
+
+};
+
 #endif
