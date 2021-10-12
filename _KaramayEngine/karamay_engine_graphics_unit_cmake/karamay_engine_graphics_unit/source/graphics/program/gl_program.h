@@ -316,25 +316,28 @@ public:
 	 * once you install these component, you have no chance to remove or add them until the program destroyed
 	 * load shaders code, compile shaders, attach shaders to program and link program
 	 * validate program
+	 *
+	 * (0) program creation : shaders compilation
+	 * (1) pre-link
+	 * (2) link
+	 * (3) introspection
+	 * (4) state setting
 	 */
-	void construct(const std::vector<std::string>& shader_paths)
+	void construct(const std::vector<std::pair<std::string, gl_shader_type>>& shaders)
     {
-        for (const auto& path : shader_paths)
+        std::vector<std::uint32_t> _shader_handles;
+        for (const auto& shader : shaders)
         {
-            auto shader = std::make_shared<gl_shader>(path);
-            if (shader)
-            {
-                glAttachShader(_handle, shader->get_handle());
-                _shaders.push_back(shader);
-            }
+            std::uint32_t _shader_handle = glCreateShader(static_cast<std::uint32_t>(shader.second));
+            glAttachShader(_handle, _shader_handle);
+            _shader_handles.push_back(_shader_handle);
         }
 
-        /*if (is_separable)
-            glProgramParameteri(_handle, GL_PROGRAM_SEPARABLE, GL_TRUE);*/
-
-        /*glBindAttribLocation(_handle, 0, "Position");
-        glBindFragDataLocation(_handle, 0, "FragColor");*/
-
+        // pre-link
+        glBindAttribLocation(_handle, 0, ""); // input
+        glBindFragDataLocation(_handle, 0, ""); // output
+        //glTransformFeedbackVaryings(_handle, 10, {"", ""}, GL_INTERLEAVED_ATTRIBS );
+        // link
         glLinkProgram(_handle);
 
         // check the program state
@@ -528,7 +531,7 @@ public:
      *  FRAGMENT_SUBROUTINE,
      *  COMPUTE_SUBROUTINE
      *
-     * 
+     *
      *  VERTEX_SUBROUTINE_UNIFORM,
      *  TESS_CONTROL_SUBROUTINE_UNIFORM, TESS_EVALUATION_SUBROUTINE_UNIFORM,
      *  GEOMETRY_SUBROUTINE_UNIFORM,

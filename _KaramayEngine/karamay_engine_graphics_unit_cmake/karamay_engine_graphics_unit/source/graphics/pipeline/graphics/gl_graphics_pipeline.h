@@ -250,37 +250,52 @@ public:
     explicit gl_graphics_pipeline(const gl_graphics_pipeline_descriptor& descriptor) :
         _descriptor(std::move(descriptor))
     {
-        _initialize();
     }
     gl_graphics_pipeline(const gl_graphics_pipeline&) = delete;
     gl_graphics_pipeline& operator=(const gl_graphics_pipeline&) = delete;
 
     ~gl_graphics_pipeline() = default;
 
+
+public:
+    void construct(const gl_graphics_pipeline_descriptor& descriptor)
+    {
+        _program = std::make_unique<gl_program>();
+
+        if(!_program) return;
+
+        // generate shader code
+        // ..
+        // construct shader program
+        _program->construct({});
+        // query state settings and generate settings cache
+        _program->get_resource();
+        std::uint32_t _index = 0;
+        _program->get_resource_index(gl_program_interface::ATOMIC_COUNTER_BUFFER, "test", _index);
+        // generate resources
+        //..
+    }
+
 public:
 
     void draw_arrays(std::int32_t first, std::int32_t count)
     {
-        _bind();
         glDrawArrays(GL_POINTS, first, count);
-        _unbind();
     }
 
     void draw_indices()
     {}
 
-public:
-
-   gl_graphics_pipeline_state& state(){
-        return _descriptor.state;
-    }
-
-
 private:
     
     gl_graphics_pipeline_descriptor _descriptor;
 
-    std::shared_ptr<gl_program> _program;
+    std::unique_ptr<gl_program> _program;
+
+private:
+    void _generate_resources();
+    void _bind_resources();
+    void _unbind_resources();
 
 public:
 
@@ -297,98 +312,8 @@ public:
         
     };
 
-    void initialize()
-    {
-
-        shader_combination_flag _combination_flag;
-        std::uint8_t _flag = 0;
-
-        // check the shaders combination invalidation
-//        switch (_combination_flag)
-//        {
-//        case gl_graphics_pipeline::shader_combination_flag::_vs:
-//        {
-//            if (!_descriptor.primitive_assembly.discard_all_primitives)
-//            {
-//                std::cout << "You must specify a fragment shader otherwise enable the option 'discard_all_primitives'" << std::endl;
-//                return;
-//            }
-//
-//            // generate pipeline shaders template
-//            const auto& _vs_template = _vs->get_shader_glsl_template();
-//
-//            //_program->construct();
-//
-//        }
-//            break;
-//        case gl_graphics_pipeline::shader_combination_flag::_vs_tescs_teses:
-//        {
-//            if (!_descriptor.primitive_assembly.discard_all_primitives)
-//            {
-//                std::cout << "You must specify a fragment shader otherwise enable the option 'discard_all_primitives'" << std::endl;
-//                return;
-//            }
-//        }
-//            break;
-//        case gl_graphics_pipeline::shader_combination_flag::_vs_tescs_teses_gs:
-//        {
-//            if (!_descriptor.primitive_assembly.discard_all_primitives)
-//            {
-//                std::cout << "You must specify a fragment shader otherwise enable the option 'discard_all_primitives'" << std::endl;
-//                return;
-//            }
-//
-//
-//        }
-//            break;
-//        case gl_graphics_pipeline::shader_combination_flag::_vs_fs:
-//            break;
-//        case gl_graphics_pipeline::shader_combination_flag::_vs_gs_fs:
-//            break;
-//        case gl_graphics_pipeline::shader_combination_flag::_vs_tescs_teses_fs:
-//            break;
-//        case gl_graphics_pipeline::shader_combination_flag::_vs_tescs_teses_gs_fs:
-//            break;
-//        default:
-//            break;
-//        }
-//
-
-
-
-
-
-        std::vector<std::shared_ptr<gl_shader>> _shaders;
-
-        // check dir
-
-        // generate shader templates
-        for (const auto& _shader : _shaders)
-        {
-            _shader->get_shader_glsl_template();
-        }
-
-        // load source code and compile  
-    }
-
 
 private:
-
-    void _initialize()
-    {
-    }
-
-    void _bind()
-    {
-        _update_pipeline_state();
-        _program->render(0.0f);
-    }
-
-    void _unbind()
-    {
-
-    }
-
 
 
     void _update_pipeline_state()
@@ -578,9 +503,6 @@ private:
     {
         return path.substr(path.find_first_of('.')) == ext;
     }
-
-
-
 
 
 };
