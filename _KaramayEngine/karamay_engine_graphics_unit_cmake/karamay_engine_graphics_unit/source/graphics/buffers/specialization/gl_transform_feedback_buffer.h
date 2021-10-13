@@ -20,8 +20,18 @@ public:
 
     ~gl_transform_feedback_buffer() = default;
 
+
+public:
+
+    void initialize()
+    {
+
+    }
+
+
 private:
-    std::shared_ptr<gl_buffer> _buffer;
+
+    std::unique_ptr<gl_buffer> _buffer;
 
 };
 

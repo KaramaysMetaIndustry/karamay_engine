@@ -7,11 +7,11 @@
  *
  *
  * */
-class glsl_atomic_uint : public glsl_opaque_t{
+class glsl_atomic_counter : public glsl_opaque_t{
 public:
-    glsl_atomic_uint() = default;
-    glsl_atomic_uint(std::uint32_t value) {}
-    ~glsl_atomic_uint() = default;
+    glsl_atomic_counter() = default;
+    glsl_atomic_counter(std::uint32_t value) {}
+    ~glsl_atomic_counter() = default;
 
 private:
 
