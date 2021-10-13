@@ -19,7 +19,7 @@ enum class matrix_layout
 class gl_shader_storage_buffer final{
 public:
     gl_shader_storage_buffer() = default;
-    gl_shader_storage_buffer(const std::vector<glsl_shader_storage_block_t>& shader_storage_blocks)
+    explicit gl_shader_storage_buffer(const std::vector<std::shared_ptr<glsl_shader_storage_block_t>>& shader_storage_blocks)
     {
 
     }
@@ -32,6 +32,13 @@ public:
     void unbind();
 
     void flush_dirty_blocks()
+    {
+
+    }
+
+private:
+
+    void _initialize_ssbo(const std::vector<std::shared_ptr<glsl_shader_storage_block_t>>& shader_storage_blocks)
     {
 
     }

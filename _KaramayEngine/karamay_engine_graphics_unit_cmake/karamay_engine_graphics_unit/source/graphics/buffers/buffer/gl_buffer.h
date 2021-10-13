@@ -52,6 +52,8 @@ struct gl_buffer_storage_options
                other.is_dynamic_storage == is_dynamic_storage &&
                other.is_client_storage == is_client_storage;
     }
+
+    gl_buffer_storage_options() = default;
 };
 
 /*

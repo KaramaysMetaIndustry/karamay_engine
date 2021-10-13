@@ -61,7 +61,7 @@ public:
     virtual std::uint8_t* data() = 0;
     virtual std::int64_t size() = 0;
 
-    
+
 
 };
 

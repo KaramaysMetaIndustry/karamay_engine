@@ -243,7 +243,7 @@ class gl_graphics_pipeline_global_parameters{
 public:
     std::vector<std::shared_ptr<glsl_image_t>> images;
     std::vector<std::shared_ptr<glsl_sampler_t>> samplers;
-    std::vector<std::shared_ptr<glsl_atomic_uint>> atomic_counters;
+    std::vector<std::shared_ptr<glsl_atomic_counter>> atomic_counters;
     std::vector<std::shared_ptr<glsl_uniform_block_t>> uniform_blocks;
     std::vector<std::shared_ptr<glsl_shader_storage_block_t>> shader_storage_blocks;
 };
@@ -343,9 +343,13 @@ private:
 
     void _generate_resources()
     {
-        auto& _uniform_blocks = _descriptor->global_parameters.uniform_blocks;
-        _ubo = std::make_shared<gl_uniform_buffer>(_uniform_blocks);
-        _ssbo = std::make_shared<gl_shader_storage_buffer>();
+        _ubo = std::make_shared<gl_uniform_buffer>(
+                _descriptor->global_parameters.uniform_blocks
+        );
+
+        _ssbo = std::make_shared<gl_shader_storage_buffer>(
+                _descriptor->global_parameters.shader_storage_blocks
+        );
 
     }
     void _bind_resources()
