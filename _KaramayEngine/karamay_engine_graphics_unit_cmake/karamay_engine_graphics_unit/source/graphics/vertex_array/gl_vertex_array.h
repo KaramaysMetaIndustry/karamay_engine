@@ -2,6 +2,8 @@
 #define H_GL_VERTEX_ARRAY
 
 #include "graphics/glo/gl_object.h"
+#include "graphics/buffers/buffer/gl_buffer.h"
+#include "graphics/glsl/transparent_t/glsl_vertex_stream.h"
 
 class gl_buffer;
 
@@ -180,11 +182,9 @@ struct gl_attribute_list_anchor
  * Store Vertex Attributes & Instance Attributes
  *
  * */
-class gl_vertex_array final : public gl_object
-{
-
+class gl_vertex_array final : public gl_object{
 public:
-
+    gl_vertex_array() = delete;
     gl_vertex_array(
             std::int64_t vertex_count, const std::vector<gl_vertex_attribute_descriptor>& vertex_attribute_descriptors,
             std::int32_t instance_count, const std::vector<gl_instance_attribute_descriptor>& instance_attribute_descriptors) :
@@ -196,35 +196,49 @@ public:
 
     ~gl_vertex_array() override;
 
-public:
+private:
 
-    template<typename GLSL_STREAMABLE_CLASS>
-    void update_vertex_attribute(const std::string& attribute_name, std::int32_t attribute_index, const GLSL_STREAMABLE_CLASS& value)
+    std::unique_ptr<gl_buffer> _buffer;
+
+
+private:
+
+    void _initialize_vao()
     {
 
     }
 
-    template<typename GLSL_STREAMABLE_CLASS>
-    void update_vertex_attributes(const std::string& attribute_name, std::int32_t attribute_index, const std::vector<GLSL_STREAMABLE_CLASS>& values)
-    {}
-
-    void update_vertex_attributes(){}
-
 public:
 
-    /*
-    * 单个attribute
-    */
-    template<typename GLSL_TRANSPARENT_CLASS>
-    void update_instance_attribute(const std::string& attribute_name, std::int32_t attribute_index, const GLSL_TRANSPARENT_CLASS& value)
-    {}
+    void bind()
+    {
+        glBindVertexArray(_handle);
+    }
 
-    /*
-    * 同组连续 attribute
-    */
-    template<typename GLSL_TRANSPARENT_CLASS>
-    void update_instance_attributes(const std::string& attribute_name, std::int32_t attribute_index, const std::vector<GLSL_TRANSPARENT_CLASS>& values)
-    {}
+    void unbind()
+    {
+        glBindVertexArray(0);
+    }
+
+    std::uint8_t* data(std::int64_t offset, std::int64_t size)
+    {
+
+    }
+
+    template<typename GLSL_TRANSPARENT_T>
+    GLSL_TRANSPARENT_T& attribute(std::uint32_t index)
+    {
+        auto* _data = reinterpret_cast<GLSL_TRANSPARENT_T*>(
+                data(index * sizeof(GLSL_TRANSPARENT_T), sizeof(GLSL_TRANSPARENT_T))
+                );
+        return *_data;
+    }
+
+
+
+
+
+
 
     /*
     * @Param0 attribute_name
@@ -264,11 +278,6 @@ public:
         }
     }
 
-public:
-
-    void reallocate_attributes(std::uint32_t new_vertices_count);
-
-    void reallocate_instance_attributes(const std::vector<std::pair<std::string, std::uint32_t>>&);
 
 private:
 
@@ -294,13 +303,7 @@ private:
 
     void _set_vertex_pointers(gl_attribute_component::type attribute_component_type, std::uint32_t  index, std::uint32_t components_count,std::uint32_t attribute_size, std::uint32_t offset);
 
-    void _reallocate();
-
 public:
-
-	void bind();
-
-	void unbind();
 
 	void enable_pointers();
 

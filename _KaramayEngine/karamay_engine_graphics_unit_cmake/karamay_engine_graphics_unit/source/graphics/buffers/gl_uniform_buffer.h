@@ -17,7 +17,15 @@ enum class gl_uniform_buffer_matrix_layout
     column_major
 };
 
-struct gl_uniform_buffer_block_query_info{
+struct gl_uniform_buffer_block_layout{
+    std::uint32_t binding;
+    std::int64_t offset;
+    std::int64_t size;
+    std::shared_ptr<glsl_uniform_block_t> block;
+};
+
+struct gl_uniform_buffer_block_state
+{
 
 };
 
@@ -25,20 +33,13 @@ struct gl_uniform_buffer_descriptor{
     gl_uniform_buffer_memory_layout memory_layout;
     gl_uniform_buffer_matrix_layout matrix_layout;
     std::vector<std::shared_ptr<glsl_uniform_block_t>> uniform_blocks;
-    std::vector<std::shared_ptr<gl_uniform_buffer_block_query_info>> uniform_block_query_infos;
-
-    gl_uniform_buffer_descriptor() :
-        memory_layout(gl_uniform_buffer_memory_layout::std140),
-        matrix_layout(gl_uniform_buffer_matrix_layout::row_major),
-        uniform_blocks(),
-        uniform_block_query_infos()
-    {}
+    std::vector<std::shared_ptr<gl_uniform_buffer_block_state>> uniform_block_states;
 };
 
 
 /*
- * flush Á£¶Èµ¥Î»Îª block
- * read back Á£¶ÈÎª buffer
+ * flush ï¿½ï¿½ï¿½Èµï¿½Î»Îª block
+ * read back ï¿½ï¿½ï¿½ï¿½Îª buffer
  *
  * */
 class gl_uniform_buffer final{

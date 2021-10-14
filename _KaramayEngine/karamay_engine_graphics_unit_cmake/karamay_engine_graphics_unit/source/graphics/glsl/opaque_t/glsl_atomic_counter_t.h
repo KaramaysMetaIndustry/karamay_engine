@@ -7,15 +7,14 @@
  *
  *
  * */
-class glsl_atomic_counter : public glsl_opaque_t{
+class glsl_atomic_counter_t : public glsl_opaque_t{
 public:
-    glsl_atomic_counter() = default;
-    glsl_atomic_counter(std::uint32_t value) {}
-    ~glsl_atomic_counter() = default;
+    glsl_atomic_counter_t() = default;
+    ~glsl_atomic_counter_t() = default;
 
-private:
+public:
 
-    std::uint32_t value;
+    std::uint32_t data;
 
 };
 
