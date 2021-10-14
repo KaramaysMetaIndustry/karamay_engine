@@ -17,32 +17,47 @@ enum class gl_uniform_buffer_matrix_layout
     column_major
 };
 
-struct gl_uniform_buffer_block_layout{
-    std::uint32_t binding;
-    std::int64_t offset;
-    std::int64_t size;
-    std::shared_ptr<glsl_uniform_block_t> block;
-};
-
-struct gl_uniform_buffer_block_query_info
-{
+struct gl_uniform_buffer_block_query_info{
 
 };
 
-struct gl_uniform_buffer_descriptor
-{
+struct gl_uniform_buffer_descriptor{
     gl_uniform_buffer_memory_layout memory_layout;
+    gl_uniform_buffer_matrix_layout matrix_layout;
     std::vector<std::shared_ptr<glsl_uniform_block_t>> uniform_blocks;
-    std::vector<gl_uniform_buffer_block_query_info> uniform_block_query_infos;
+    std::vector<std::shared_ptr<gl_uniform_buffer_block_query_info>> uniform_block_query_infos;
+
+    gl_uniform_buffer_descriptor() :
+        memory_layout(gl_uniform_buffer_memory_layout::std140),
+        matrix_layout(gl_uniform_buffer_matrix_layout::row_major),
+        uniform_blocks(),
+        uniform_block_query_infos()
+    {}
 };
 
+
+/*
+ * flush 粒度单位为 block
+ * read back 粒度为 buffer
+ *
+ * */
 class gl_uniform_buffer final{
 public:
-	gl_uniform_buffer() = default;
+    struct gl_uniform_buffer_block_layout{
+        std::uint32_t baked_binding;
+        std::int64_t baked_offset;
+        std::int64_t baked_size;
+        std::shared_ptr<glsl_uniform_block_t> block;
+    };
+
+public:
+	gl_uniform_buffer() = delete;
 	explicit gl_uniform_buffer(const gl_uniform_buffer_descriptor& descriptor)
     {
         _initialize_ubo(descriptor);
     }
+    gl_uniform_buffer(const gl_uniform_buffer&) = delete;
+    gl_uniform_buffer& operator=(const gl_uniform_buffer&) = delete;
 
     ~gl_uniform_buffer() = default;
 
@@ -54,11 +69,7 @@ public:
 
         for(const auto& _block_layout : _layouts)
         {
-            glBindBufferRange(GL_UNIFORM_BUFFER,
-                              _block_layout.binding,
-                              _buffer->get_handle(),
-                              _block_layout.offset, _block_layout.size
-            );
+            glBindBufferRange(GL_UNIFORM_BUFFER, _block_layout.baked_binding, _buffer->get_handle(),_block_layout.baked_offset, _block_layout.baked_size);
         }
     }
 
@@ -77,7 +88,7 @@ public:
             if(_layout.block && _layout.block->is_dirty())
             {
                 if(!_layout.block->data) return;
-                _buffer->write(_layout.offset, _layout.block->data, _layout.size);
+                _buffer->write(_layout.baked_offset, _layout.block->data, _layout.baked_size);
                 _layout.block->mark_dirty(false);
             }
         }
@@ -90,7 +101,7 @@ public:
                                               [this](const uint8_t* data, std::int64_t size){
             for(const auto& _layout : _layouts)
             {
-                std::memcpy(_layout.block->data, data + _layout.offset, _layout.size);
+                std::memcpy(_layout.block->data, data + _layout.baked_offset, _layout.baked_size);
             }
         });
     }
@@ -135,13 +146,6 @@ private:
             _ubo_initialization_size += _block_offset;
         }
 
-//        std::int32_t _max_uniform_block_size = 0;
-//        glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &_max_uniform_block_size);
-//        if(_ubo_initialization_size > static_cast<std::int64_t>(_max_uniform_block_size))
-//        {
-//
-//        }
-
         // create ubo
         gl_buffer_storage_options _options{
                 true, true, true, true,
@@ -159,8 +163,8 @@ private:
                 {
                     std::uint8_t* _src_data = _layout.block->data;
                     std::int64_t _src_size = _layout.block->data_size;
-                    std::memcpy(data, _src_data, _src_size);
-                    data += _layout.offset;
+                    std::memcpy(data, _src_data, _src_size);  
+                    data += _layout.baked_offset;
                 }
             });
         }

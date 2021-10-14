@@ -26,6 +26,12 @@ public:
     void initialize()
     {
 
+
+
+
+
+        gl_buffer_storage_options _options;
+        _buffer = std::make_unique<gl_buffer>(100, _options);
     }
 
 
