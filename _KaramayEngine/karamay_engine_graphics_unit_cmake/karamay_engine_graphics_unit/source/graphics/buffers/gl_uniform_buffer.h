@@ -24,7 +24,7 @@ struct gl_uniform_buffer_block_layout{
     std::shared_ptr<glsl_uniform_block_t> block;
 };
 
-struct gl_uniform_buffer_block_query_info
+struct gl_uniform_buffer_block_state
 {
 
 };
@@ -33,7 +33,7 @@ struct gl_uniform_buffer_descriptor
 {
     gl_uniform_buffer_memory_layout memory_layout;
     std::vector<std::shared_ptr<glsl_uniform_block_t>> uniform_blocks;
-    std::vector<gl_uniform_buffer_block_query_info> uniform_block_query_infos;
+    std::vector<std::shared_ptr<gl_uniform_buffer_block_state>> uniform_block_states;
 };
 
 class gl_uniform_buffer final{
@@ -134,13 +134,6 @@ private:
                     GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT;
             _ubo_initialization_size += _block_offset;
         }
-
-//        std::int32_t _max_uniform_block_size = 0;
-//        glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &_max_uniform_block_size);
-//        if(_ubo_initialization_size > static_cast<std::int64_t>(_max_uniform_block_size))
-//        {
-//
-//        }
 
         // create ubo
         gl_buffer_storage_options _options{

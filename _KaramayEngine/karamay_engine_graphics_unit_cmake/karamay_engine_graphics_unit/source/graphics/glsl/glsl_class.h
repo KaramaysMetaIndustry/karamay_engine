@@ -1,11 +1,10 @@
 #ifndef H_GLSL_CLASS
 #define H_GLSL_CLASS
 
-#include "public/_glew.h"
-#include "public/glm.h"
 #include "public/stl.h"
-#include "graphics/sampler/gl_sampler.h"
-#include "graphics/texture/gl_texture.h"
+#include "public/glm.h"
+#include "public/_glew.h"
+
 
 class glsl_t {
 public:
@@ -14,6 +13,8 @@ public:
 protected:
     std::string _token;
 };
+
+
 
 struct glsl_transparent_t_meta
 {
@@ -44,6 +45,8 @@ public:
 	virtual const std::uint8_t* data() const = 0;
 
 };
+
+
 
 class glsl_opaque_t : public glsl_t{
 protected:

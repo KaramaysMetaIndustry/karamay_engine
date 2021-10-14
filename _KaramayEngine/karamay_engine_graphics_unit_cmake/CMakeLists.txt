@@ -475,14 +475,14 @@ add_executable(karamay_engine_graphics_unit
 #        karamay_engine_graphics_unit/dependencies/stb/stb_truetype.h
 #        karamay_engine_graphics_unit/dependencies/stb/stb_vorbis.c
 #        karamay_engine_graphics_unit/dependencies/stb/stb_voxel_render.h
-        karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_atomic_counter_buffer.cpp
-        karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_atomic_counter_buffer.h
-        karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_element_array_buffer.cpp
-        karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_element_array_buffer.h
-        karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_shader_storage_buffer.cpp
-        karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_shader_storage_buffer.h
-        karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_uniform_buffer.cpp
-        karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_uniform_buffer.h
+        karamay_engine_graphics_unit/source/graphics/buffers/gl_atomic_counter_buffer.cpp
+        karamay_engine_graphics_unit/source/graphics/buffers/gl_atomic_counter_buffer.h
+        karamay_engine_graphics_unit/source/graphics/buffers/gl_element_array_buffer.cpp
+        karamay_engine_graphics_unit/source/graphics/buffers/gl_element_array_buffer.h
+        karamay_engine_graphics_unit/source/graphics/buffers/gl_shader_storage_buffer.cpp
+        karamay_engine_graphics_unit/source/graphics/buffers/gl_shader_storage_buffer.h
+        karamay_engine_graphics_unit/source/graphics/buffers/gl_uniform_buffer.cpp
+        karamay_engine_graphics_unit/source/graphics/buffers/gl_uniform_buffer.h
         karamay_engine_graphics_unit/source/graphics/camera/gl_camera.cpp
         karamay_engine_graphics_unit/source/graphics/camera/gl_camera.h
         karamay_engine_graphics_unit/source/graphics/commands/gl_commands.cpp
@@ -535,13 +535,12 @@ karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/static
 karamay_engine_graphics_unit/source/renderers/gl_template_renderer_family/static_mesh_renderer/gl_instanced_static_mesh_renderer.h 
 karamay_engine_graphics_unit/source/dispatcher/gl_renderer_dispatcher.cpp 
 karamay_engine_graphics_unit/source/dispatcher/gl_renderer_dispatcher.h 
-karamay_engine_graphics_unit/source/graphics/buffers/buffer/gl_buffer_tools.h 
-karamay_engine_graphics_unit/source/graphics/buffers/gl_buffers.h
+karamay_engine_graphics_unit/source/graphics/buffers/buffer/gl_buffer_tools.h
         "karamay_engine_graphics_unit/source/graphics/pipeline/base/gl_pipeline.h"
 "karamay_engine_graphics_unit/source/graphics/pipeline/base/gl_pipeline.cpp" 
 "karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer_dispatcher.h" 
 "karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer_dispatcher.cpp"
-        karamay_engine_graphics_unit/source/public/_lua.h karamay_engine_graphics_unit/source/graphics/glsl/opaque_t/glsl_sampler_t.h karamay_engine_graphics_unit/source/graphics/glsl/opaque_t/glsl_image_t.h karamay_engine_graphics_unit/source/graphics/glsl/transparent_t/interface_block_t/glsl_interface_block_t.h karamay_engine_graphics_unit/source/graphics/glsl/opaque_t/glsl_atomic_counter_t.h karamay_engine_graphics_unit/source/graphics/glsl/transparent_t/glsl_transparent_t.h karamay_engine_graphics_unit/source/graphics/glsl/glsl_vertex_stream.h karamay_engine_graphics_unit/source/utility/json/json_handler.cpp karamay_engine_graphics_unit/source/utility/json/json_handler.h karamay_engine_graphics_unit/source/utility/xml/xml_handler.cpp karamay_engine_graphics_unit/source/utility/xml/xml_handler.h karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_transform_feedback_buffer.cpp karamay_engine_graphics_unit/source/graphics/buffers/specialization/gl_transform_feedback_buffer.h)
+        karamay_engine_graphics_unit/source/public/_lua.h karamay_engine_graphics_unit/source/graphics/glsl/opaque_t/glsl_sampler_t.h karamay_engine_graphics_unit/source/graphics/glsl/opaque_t/glsl_image_t.h karamay_engine_graphics_unit/source/graphics/glsl/transparent_t/interface_block_t/glsl_interface_block_t.h karamay_engine_graphics_unit/source/graphics/glsl/opaque_t/glsl_atomic_counter_t.h karamay_engine_graphics_unit/source/graphics/glsl/transparent_t/glsl_transparent_t.h karamay_engine_graphics_unit/source/utility/json/json_handler.cpp karamay_engine_graphics_unit/source/utility/json/json_handler.h karamay_engine_graphics_unit/source/utility/xml/xml_handler.cpp karamay_engine_graphics_unit/source/utility/xml/xml_handler.h karamay_engine_graphics_unit/source/graphics/buffers/gl_transform_feedback_buffer.cpp karamay_engine_graphics_unit/source/graphics/buffers/gl_transform_feedback_buffer.h karamay_engine_graphics_unit/source/graphics/glsl/transparent_t/glsl_vertex_stream.cpp karamay_engine_graphics_unit/source/graphics/glsl/transparent_t/glsl_vertex_stream.h)
 
 target_link_libraries(karamay_engine_graphics_unit glew32s.lib glfw3.lib)
 
