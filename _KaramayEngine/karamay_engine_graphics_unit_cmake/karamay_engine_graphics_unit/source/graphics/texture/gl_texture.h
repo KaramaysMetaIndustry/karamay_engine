@@ -3,7 +3,7 @@
 
 #include "graphics/glo/gl_object.h"
 #include "graphics/sampler/gl_sampler.h"
-#include "graphics/buffers/gl_buffers.h"
+#include "graphics/buffers/gl_buffer.h"
 #include "gl_pixels.h"
 
 enum class parameter : GLenum
@@ -1330,7 +1330,6 @@ public:
 
 private:
 
-	std::shared_ptr<gl_buffer> _associated_buffer;
 
 };
 

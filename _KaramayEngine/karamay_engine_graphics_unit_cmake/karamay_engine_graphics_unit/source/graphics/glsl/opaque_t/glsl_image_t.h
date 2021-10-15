@@ -37,11 +37,11 @@ enum class glsl_image_format_layout_qualifier
 
 enum class glsl_image_memory_qualifier
 {
-    _coherent,
-    _volatile,
-    _restrict,
-    _readonly,
-    _writeonly
+//    _coherent,
+//    _volatile,
+//    _restrict,
+//    _readonly,
+//    _writeonly
 };
 
 enum class gl_image_access_mode : GLenum
@@ -86,8 +86,6 @@ private:
 
     static gl_image_access_mode transfer_memory_qualifier(glsl_image_memory_qualifier memory_qualifier)
     {
-        std::uint32_t * b;
-        reinterpret_cast
     }
 
     static gl_image_format transfer_format_layout_qualifier(glsl_image_format_layout_qualifier format_layout_qualifier)
@@ -101,7 +99,7 @@ private:
 class glsl_image1D : public glsl_image_t{
 public:
     struct glsl_image1DResource{
-        std::shared_ptr<gl_texture_1d_base> texture_1d;
+        std::shared_ptr<gl_texture_1d_t> texture_1d;
         std::int32_t mipmap_index;
         glsl_image1DResource() : texture_1d(nullptr), mipmap_index(0){}
     }resource;
@@ -143,7 +141,7 @@ public:
 class glsl_image1DArray : private glsl_image_t{
 public:
     struct glsl_image1DArrayResource{
-        std::shared_ptr<gl_texture_1d_array_base> texture_1d_array;
+        std::shared_ptr<gl_texture_1d_array_t> texture_1d_array;
         std::int32_t mipmap_index;
         glsl_image1DArrayResource() : texture_1d_array(nullptr), mipmap_index(0){}
     }resource;

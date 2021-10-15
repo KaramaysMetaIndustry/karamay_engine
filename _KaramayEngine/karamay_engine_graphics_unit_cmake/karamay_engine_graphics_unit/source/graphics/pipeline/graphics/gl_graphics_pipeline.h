@@ -1,14 +1,10 @@
 #ifndef H_GRAPHICS_PIPELINE
 #define H_GRAPHICS_PIPELINE
 
-#include <utility>
-
-#include "graphics/pipeline/base/gl_pipeline.h"
 #include "graphics/glsl/glsl_class.h"
 #include "graphics/glsl/opaque_t/glsl_sampler_t.h"
 #include "graphics/glsl/opaque_t/glsl_image_t.h"
-#include "graphics/glsl/transparent_t/glsl_transparent_t.h"
-#include "graphics/glsl/transparent_t/interface_block_t/glsl_interface_block_t.h"
+#include "graphics/program/gl_program.h"
 
 enum gl_stencil_op : GLenum
 {
@@ -231,7 +227,7 @@ struct gl_graphics_pipeline_state
     } fragment_processing; // process fragments
     struct gl_render_target
     {
-        std::shared_ptr<gl_framebuffer> framebuffer;
+        //std::shared_ptr<gl_framebuffer> framebuffer;
     } render_target;
 };
 
@@ -243,7 +239,7 @@ class gl_graphics_pipeline_global_parameters{
 public:
     std::vector<std::shared_ptr<glsl_image_t>> images;
     std::vector<std::shared_ptr<glsl_sampler_t>> samplers;
-    std::vector<std::shared_ptr<glsl_atomic_counter>> atomic_counters;
+    std::vector<std::shared_ptr<glsl_atomic_counter_t>> atomic_counters;
     std::vector<std::shared_ptr<glsl_uniform_block_t>> uniform_blocks;
     std::vector<std::shared_ptr<glsl_shader_storage_block_t>> shader_storage_blocks;
 };
@@ -255,14 +251,14 @@ struct gl_graphics_pipeline_descriptor
     gl_graphics_pipeline_state state;
     gl_graphics_pipeline_global_parameters global_parameters;
     gl_graphics_pipeline_attribute_stream attribute_stream;
-    std::shared_ptr<gl_framebuffer> framebuffer;
+    //std::shared_ptr<gl_framebuffer> framebuffer;
 };
 
 
 /*
  * graphics pipeline
  * */
-class gl_graphics_pipeline : public gl_pipeline{
+class gl_graphics_pipeline{
 public:
     gl_graphics_pipeline() = default;
     gl_graphics_pipeline(const gl_graphics_pipeline&) = delete;
@@ -569,7 +565,7 @@ private:
  * vertex processing pipeline, optimized for vertex processing.
  * fetch data from transform feedback buffer, after vertex processing, all primitives will be discard.
  * */
-class gl_vertex_processing_pipeline : public gl_pipeline{
+class gl_vertex_processing_pipeline{
 public:
     gl_vertex_processing_pipeline() = default;
     gl_vertex_processing_pipeline(const gl_vertex_processing_pipeline&) = delete;

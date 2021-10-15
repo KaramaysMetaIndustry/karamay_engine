@@ -4,8 +4,6 @@
 #include "graphics/glsl/glsl_class.h"
 #include "graphics/glsl/opaque_t/glsl_sampler_t.h"
 #include "graphics/glsl/opaque_t/glsl_image_t.h"
-#include "graphics/glsl/opaque_t/glsl_atomic_counter_t.h"
-#include "graphics/glsl/transparent_t/interface_block_t/glsl_interface_block_t.h"
 #include "graphics/pipeline/base/gl_pipeline.h"
 #include "graphics/program/gl_program.h"
 #include "graphics/shader/gl_shader.h"
@@ -53,7 +51,7 @@ class gl_compute_pipeline_parameters{
 public:
     std::vector<std::shared_ptr<glsl_sampler_t>> samplers;
     std::vector<std::shared_ptr<glsl_image_t>> images;
-    std::vector<std::shared_ptr<glsl_atomic_uint>> atomic_counters;
+    std::vector<std::shared_ptr<glsl_atomic_counter_t>> atomic_counters;
     std::vector<std::shared_ptr<glsl_uniform_block_t>> uniform_blocks;
     std::vector<std::shared_ptr<glsl_shader_storage_block_t>> buffer_blocks;
 };
@@ -65,7 +63,7 @@ struct gl_compute_pipeline_descriptor{
     std::shared_ptr<gl_compute_pipeline_parameters> parameters;
 };
 
-class gl_compute_pipeline final : public gl_pipeline{
+class gl_compute_pipeline final{
 public:
     gl_compute_pipeline() = delete;
 	explicit gl_compute_pipeline(const gl_compute_pipeline_descriptor& descriptor) :
@@ -167,7 +165,7 @@ private:
             if(!shader_storage_buffer.second) return false;
         for(const auto& uniform_buffer : _memory_pool->uniform_buffers)
             if(!uniform_buffer.second) return false;
-        _memory_pool->uniform_buffers.emplace("std140", std::make_unique<gl_uniform_buffer>());
+        //_memory_pool->uniform_buffers.emplace("std140", std::make_unique<gl_uniform_buffer>());
         return true;
     }
 

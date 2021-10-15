@@ -3,11 +3,6 @@
 
 #include "graphics/glo/gl_object.h"
 #include "graphics/glsl/glsl_class.h"
-#include "graphics/buffers/buffer/gl_buffer.h"
-#include "graphics/buffers/gl_element_array_buffer.h"
-#include "graphics/buffers/gl_uniform_buffer.h"
-#include "graphics/buffers/gl_shader_storage_buffer.h"
-#include "graphics/buffers/gl_atomic_counter_buffer.h"
 #include "graphics/texture/gl_texture.h"
 #include "graphics/framebuffer/gl_framebuffer.h"
 #include "graphics/framebuffer/gl_default_framebuffer.h"
@@ -415,7 +410,7 @@ public:
 
     void get_interface() const noexcept
     {
-        glGetProgramInterfaceiv(_handle, GL_TRANSFORM_FEEDBACK, GL_ACTIVE_RESOURCES, );
+        //glGetProgramInterfaceiv(_handle, GL_TRANSFORM_FEEDBACK, GL_ACTIVE_RESOURCES, );
     }
 
     // glGetProgramResource
@@ -965,46 +960,46 @@ public:
     {
 	    GLint param;
 
-
-	    glGetActiveSubroutineName();
-	    glGetActiveSubroutineUniformiv();
-	    glGetActiveSubroutineUniformName();
-
-	    glGetActiveUniform();
-	    glGetActiveUniformBlockName();
-	    glGetActiveUniformName();
-
-        glGetActiveUniformsiv();
-        //glGetAttribLocation();
-
-        glGetProgramStageiv();
-        glGetShaderPrecisionFormat();
-
-        glGetSubroutineIndex();
-        glGetSubroutineUniformLocation();
-
-        glGetTransformFeedbackVarying();
-        glGetUniformdv();
-        // etc
-        glGetUniformBlockIndex();
-        glGetUniformIndices();
-        glGetUniformLocation();
-        glGetUniformSubroutineuiv();
+//
+//	    glGetActiveSubroutineName();
+//	    glGetActiveSubroutineUniformiv();
+//	    glGetActiveSubroutineUniformName();
+//
+//	    glGetActiveUniform();
+//	    glGetActiveUniformBlockName();
+//	    glGetActiveUniformName();
+//
+//        glGetActiveUniformsiv();
+//        //glGetAttribLocation();
+//
+//        glGetProgramStageiv();
+//        glGetShaderPrecisionFormat();
+//
+//        glGetSubroutineIndex();
+//        glGetSubroutineUniformLocation();
+//
+//        glGetTransformFeedbackVarying();
+//        glGetUniformdv();
+//        // etc
+//        glGetUniformBlockIndex();
+//        glGetUniformIndices();
+//        glGetUniformLocation();
+//        glGetUniformSubroutineuiv();
 
     }
 
     void set()
     {
-	    glActiveShaderProgram();
-	    glBindProgramPipeline();
-	    glProgramUniform1d();
-	    glProgramUniformMatrix2dv();
-	    glShaderStorageBlockBinding();
-	    glUniform1d();
-	    glUniformBlockBinding();
-	    glUniformMatrix2dv();
-	    glUniformSubroutinesuiv();
-	    glUseProgram();
+//	    glActiveShaderProgram();
+//	    glBindProgramPipeline();
+//	    glProgramUniform1d();
+//	    glProgramUniformMatrix2dv();
+//	    glShaderStorageBlockBinding();
+//	    glUniform1d();
+//	    glUniformBlockBinding();
+//	    glUniformMatrix2dv();
+//	    glUniformSubroutinesuiv();
+//	    glUseProgram();
     }
 
 public:

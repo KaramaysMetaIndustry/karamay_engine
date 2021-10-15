@@ -1,6 +1,8 @@
 #ifndef GLSL_SAMPLER_T_H
 #define GLSL_SAMPLER_T_H
+
 #include "graphics/glsl/glsl_class.h"
+#include "graphics/texture/gl_texture.h"
 
 class glsl_sampler_item{
     std::string code;

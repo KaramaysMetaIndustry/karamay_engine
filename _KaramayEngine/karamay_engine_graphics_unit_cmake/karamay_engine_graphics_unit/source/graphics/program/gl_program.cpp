@@ -140,14 +140,14 @@ inline void gl_program::_bind_uniform_buffers()
 		{
 			if (uniform_buffer)
 			{
-			    // bind uniform buffers to context binding
-				uniform_buffer->bind(i);
-				// bind program uniform index to context binding
-				std::uint32_t _uniform_block_index = glGetUniformBlockIndex(_handle, uniform_buffer->get_block_name().c_str());
-				glUniformBlockBinding(_handle, _uniform_block_index, i);
-#ifdef _DEBUG
-				std::cout << "[ uniform block index: "<< _uniform_block_index <<".]" << std::endl;
-#endif
+//			    // bind uniform buffers to context binding
+//				uniform_buffer->bind(i);
+//				// bind program uniform index to context binding
+//				std::uint32_t _uniform_block_index = glGetUniformBlockIndex(_handle, uniform_buffer->get_block_name().c_str());
+//				glUniformBlockBinding(_handle, _uniform_block_index, i);
+//#ifdef _DEBUG
+//				std::cout << "[ uniform block index: "<< _uniform_block_index <<".]" << std::endl;
+//#endif
 
 			}
 		}
@@ -165,15 +165,15 @@ inline void gl_program::_bind_shader_storage_buffers()
 		{
 			if (shader_storage_buffer)
 			{
-				// bind buffers to context
-				shader_storage_buffer->bind(i);
-				// bind program to context
-				const GLuint _index = glGetProgramResourceIndex(_handle, GL_SHADER_STORAGE_BLOCK, shader_storage_buffer->get_descriptor()->get_block_name().c_str());
-				glShaderStorageBlockBinding(_handle, _index, i);
-				
-#ifdef _DEBUG
-				std::cout << "[ " << i << " shader storage buffers is bound.]" << std::endl;
-#endif // DEBUG	
+//				// bind buffers to context
+//				shader_storage_buffer->bind(i);
+//				// bind program to context
+//				const GLuint _index = glGetProgramResourceIndex(_handle, GL_SHADER_STORAGE_BLOCK, shader_storage_buffer->get_descriptor()->get_block_name().c_str());
+//				glShaderStorageBlockBinding(_handle, _index, i);
+//
+//#ifdef _DEBUG
+//				std::cout << "[ " << i << " shader storage buffers is bound.]" << std::endl;
+//#endif // DEBUG
 			}
 		}
 	}
@@ -190,11 +190,11 @@ inline void gl_program::_bind_atomic_counter_buffers()
 		{
 			if (atomic_counter_buffer)
 			{
-				// bind buffers to context
-				atomic_counter_buffer->bind(i);
-#ifdef _DEBUG
-				std::cout << "[ " << i << " atomic counter buffers is bound.]" << std::endl;
-#endif // DEBUG
+//				// bind buffers to context
+//				atomic_counter_buffer->bind(i);
+//#ifdef _DEBUG
+//				std::cout << "[ " << i << " atomic counter buffers is bound.]" << std::endl;
+//#endif // DEBUG
 				
 			}
 		}
@@ -226,41 +226,11 @@ inline void gl_program::_bind_framebuffer()
 
 inline void gl_program::_bind_textures()
 {
-#define BIND_TEXTURES(TYPE)\
-for (std::uint32_t i = 0; i < _##TYPE##s.size(); ++i)\
-{\
-	_##TYPE##s[i]->bind(i);\
-	std::cout<<"[texture is bound.]"<<std::endl;\
-}\
 
-	// bind textures to context
-	// and prepare to launch it's unit index as a uniform 
-	BIND_TEXTURES(texture_1d)
-	BIND_TEXTURES(texture_1d_array)
-	BIND_TEXTURES(texture_2d)
-	BIND_TEXTURES(texture_2d_multisample)
-	BIND_TEXTURES(texture_2d_array)
-	BIND_TEXTURES(texture_2d_array_multisample)
-	BIND_TEXTURES(texture_rectangle)
-	BIND_TEXTURES(texture_3d)
-	BIND_TEXTURES(texture_cube)
-	BIND_TEXTURES(texture_cube_array)
-	BIND_TEXTURES(texture_buffer)
+
 }
 
 void gl_program::_launch_uniforms()
 {
-	for (const auto& uniform : _uniforms)
-	{
-		if (uniform)
-		{
-			auto _iterator =
-				_update_uniform_funcs_map.find(uniform->get_type());
 
-			if (_iterator != _update_uniform_funcs_map.cend())
-			{
-				_iterator->second(this, uniform);
-			}
-		}
-	}
 }
