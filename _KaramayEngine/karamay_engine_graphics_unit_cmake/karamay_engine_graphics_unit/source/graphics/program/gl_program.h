@@ -849,7 +849,7 @@ public:
     bool is_atomic_counter_buffer_referenced_by_tess_control_shader() const noexcept
     {
         std::uint32_t _buffer_index = 0;
-        if(_buffer_index < 0 || _buffer_index >= active_atomic_counter_buffers_num()) return -1;
+        if(_buffer_index < 0 || _buffer_index >= active_atomic_counter_buffers_num()) return false;
         GLint param;
         glGetActiveAtomicCounterBufferiv(_handle, _buffer_index, GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_TESS_CONTROL_SHADER, &param);
         return param == GL_TRUE;
@@ -858,7 +858,7 @@ public:
     bool is_atomic_counter_buffer_referenced_by_tess_evaluation_shader() const noexcept
     {
         std::uint32_t _buffer_index = 0;
-        if(_buffer_index < 0 || _buffer_index >= active_atomic_counter_buffers_num()) return -1;
+        if(_buffer_index < 0 || _buffer_index >= active_atomic_counter_buffers_num()) return false;
         GLint param;
         glGetActiveAtomicCounterBufferiv(_handle, _buffer_index, GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_TESS_EVALUATION_SHADER, &param);
         return param == GL_TRUE;
@@ -867,7 +867,7 @@ public:
     bool is_atomic_counter_buffer_referenced_by_geometry_shader() const noexcept
     {
         std::uint32_t _buffer_index = 0;
-        if(_buffer_index < 0 || _buffer_index >= active_atomic_counter_buffers_num()) return -1;
+        if(_buffer_index < 0 || _buffer_index >= active_atomic_counter_buffers_num()) return false;
         GLint param;
         glGetActiveAtomicCounterBufferiv(_handle, _buffer_index, GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_GEOMETRY_SHADER, &param);
         return param == GL_TRUE;
@@ -876,7 +876,7 @@ public:
     bool is_atomic_counter_buffer_referenced_by_fragment_shader() const noexcept
     {
         std::uint32_t _buffer_index = 0;
-        if(_buffer_index < 0 || _buffer_index >= active_atomic_counter_buffers_num()) return -1;
+        if(_buffer_index < 0 || _buffer_index >= active_atomic_counter_buffers_num()) return false;
         GLint param;
         glGetActiveAtomicCounterBufferiv(_handle, _buffer_index, GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_FRAGMENT_SHADER, &param);
         return param == GL_TRUE;
@@ -885,7 +885,7 @@ public:
     bool is_atomic_counter_buffer_referenced_by_compute_shader() const noexcept
     {
         std::uint32_t _buffer_index = 0;
-        if(_buffer_index < 0 || _buffer_index >= active_atomic_counter_buffers_num()) return -1;
+        if(_buffer_index < 0 || _buffer_index >= active_atomic_counter_buffers_num()) return false;
         GLint param;
         glGetActiveAtomicCounterBufferiv(_handle, _buffer_index, GL_ATOMIC_COUNTER_BUFFER_REFERENCED_BY_COMPUTE_SHADER, &param);
         return param == GL_TRUE;
@@ -958,7 +958,6 @@ public:
 
     void query()
     {
-	    GLint param;
 
 //
 //	    glGetActiveSubroutineName();
@@ -1014,37 +1013,6 @@ public:
         return glGetUniformBlockIndex(_handle, block_item_name);
     }
 
-	void set_vertex_array(std::shared_ptr<class gl_vertex_array> vertex_array);
-
-	void set_element_array_buffer(std::shared_ptr<class gl_element_array_buffer> element_array_buffer);
-
-	void set_transform_feedback(std::shared_ptr<class gl_transform_feedback> transform_feedback);
-
-	void add_uniform_buffer(std::shared_ptr<class gl_uniform_buffer> uniform_buffer);
-
-	void add_shader_storage_buffer(std::shared_ptr<class gl_shader_storage_buffer> shader_storage_buffer);
-
-	void add_atomic_counter_buffer(std::shared_ptr<class gl_atomic_counter_buffer> atomic_counter_buffer);
-
-	void set_framebuffer(std::shared_ptr<class gl_framebuffer> framebuffer = nullptr);
-
-	void set_commands(std::function<void(void)> commands_lambda);
-
-public:
-
-	std::shared_ptr<gl_vertex_array> get_vertex_array();
-
-	std::shared_ptr<gl_element_array_buffer> get_element_array_buffer();
-
-	std::shared_ptr<gl_transform_feedback> get_transform_feedback();
-
-	std::shared_ptr<gl_uniform_buffer> get_uniform_buffer(std::uint32_t index);
-
-	std::shared_ptr<gl_shader_storage_buffer> get_shader_storage_buffer(std::uint32_t index);
-
-	std::shared_ptr<gl_atomic_counter_buffer> get_atomic_counter_buffer(std::uint32_t index);
-
-	std::shared_ptr<gl_framebuffer> get_framebuffer();
 
 public:
 
@@ -1109,17 +1077,9 @@ private:
 	std::vector<std::shared_ptr<gl_shader>> _shaders;
 
 	std::shared_ptr<gl_vertex_array> _vertex_array;
-	
-	std::shared_ptr<gl_element_array_buffer> _element_array_buffer;
-	
+
 	std::shared_ptr<gl_transform_feedback> _transform_feedback;
-	
-	std::vector<std::shared_ptr<gl_uniform_buffer>> _uniform_buffers;
-	
-	std::vector<std::shared_ptr<gl_shader_storage_buffer>> _shader_storage_buffers;
-	
-	std::vector<std::shared_ptr<gl_atomic_counter_buffer>> _atomic_counter_buffers;
-	
+
 	std::shared_ptr<gl_framebuffer> _framebuffer;
 	
 	static std::shared_ptr<gl_default_framebuffer> _default_framebuffer;

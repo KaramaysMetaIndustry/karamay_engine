@@ -1,5 +1,5 @@
-#ifndef GL_TEXTURE_BASE_H
-#define GL_TEXTURE_BASE_H
+#ifndef GL_TEXTURE_H
+#define GL_TEXTURE_H
 
 #include "graphics/glo/gl_object.h"
 #include "graphics/sampler/gl_sampler.h"
@@ -1290,7 +1290,6 @@ public:
                         buffer->get_handle()
         );
 
-        _associated_buffer = buffer;
 	}
 
     /*
@@ -1299,8 +1298,6 @@ public:
      */
 	void associate(const std::shared_ptr<gl_buffer>& buffer, std::int32_t offset, std::int32_t length) noexcept
 	{
-		if (!buffer) return;
-		if (offset < 0 || offset >= buffer->get_capacity() || length < 0 || offset + length > buffer->get_capacity()) return;
 
         glTextureBufferRange(_handle,
                              static_cast<GLenum>(FORMAT),
@@ -1308,28 +1305,7 @@ public:
                              offset, length
                              );
 
-        _associated_buffer = buffer;
 	}
-
-	/*
-	 * get the buffer has been associated to this texture
-	 *
-	 */
-    [[nodiscard]] std::shared_ptr<gl_buffer> associated_buffer() const
-    {
-	    if(!_associated_buffer)
-	        return nullptr;
-	    return _associated_buffer;
-    }
-
-public:
-    void fill(const pixels_t& pixels)
-    {
-
-    }
-
-private:
-
 
 };
 

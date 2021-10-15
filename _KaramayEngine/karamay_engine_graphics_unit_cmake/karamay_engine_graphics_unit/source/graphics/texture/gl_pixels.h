@@ -1,3 +1,5 @@
+#ifndef GL_PIXELS_H
+#define GL_PIXELS_H
 
 #include "public/_glew.h"
 
@@ -154,8 +156,7 @@ enum class gl_pixel_type : GLenum
 };
 
 
-class gl_pixels_base
-{
+class gl_pixels_base{
 public:
 	virtual gl_image_format image_format() const = 0;
 	virtual gl_pixel_format pixel_format() const = 0;
@@ -1999,3 +2000,5 @@ private:
 	std::vector<pixel_t> _pixels;
 
 };
+
+#endif

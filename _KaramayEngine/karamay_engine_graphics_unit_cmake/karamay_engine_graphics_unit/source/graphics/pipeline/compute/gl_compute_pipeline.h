@@ -2,8 +2,6 @@
 #define _GL_COMPUTE_PIPELINE_H_
 
 #include "graphics/glsl/glsl_class.h"
-#include "graphics/glsl/opaque_t/glsl_sampler_t.h"
-#include "graphics/glsl/opaque_t/glsl_image_t.h"
 #include "graphics/pipeline/base/gl_pipeline.h"
 #include "graphics/program/gl_program.h"
 #include "graphics/shader/gl_shader.h"
@@ -32,9 +30,6 @@ class gl_compute_pipeline_parameters_meta
 {
     struct AsLightModel
     {
-        glsl_vec2 a;
-        glsl_vec2 x[2][2];
-        glsl_vec2 w[1];
     };
 
     class cpp_uniform_block : public glsl_uniform_block_t

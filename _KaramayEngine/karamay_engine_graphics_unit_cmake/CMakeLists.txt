@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 project(karamay_engine_graphics_unit)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(BUILD_ARCH "-m64") 
 
 link_libraries(opengl32.lib)
@@ -529,9 +529,8 @@ karamay_engine_graphics_unit/source/dispatcher/gl_renderer_dispatcher.h
 "karamay_engine_graphics_unit/source/graphics/pipeline/base/gl_pipeline.cpp" 
 "karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer_dispatcher.h" 
 "karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer_dispatcher.cpp"
-        karamay_engine_graphics_unit/source/public/_lua.h karamay_engine_graphics_unit/source/graphics/glsl/opaque_t/glsl_sampler_t.h
-        karamay_engine_graphics_unit/source/graphics/glsl/opaque_t/glsl_image_t.h
-        karamay_engine_graphics_unit/source/graphics/buffers/gl_buffer.h)
+        karamay_engine_graphics_unit/source/public/_lua.h
+        karamay_engine_graphics_unit/source/graphics/buffers/gl_buffer.h karamay_engine_graphics_unit/source/graphics/buffers/gl_uniform_buffer.h karamay_engine_graphics_unit/source/graphics/buffers/gl_shader_storage_buffer.h karamay_engine_graphics_unit/source/graphics/buffers/gl_atomic_counter_buffer.h karamay_engine_graphics_unit/source/graphics/buffers/gl_transform_feedback_buffer.h karamay_engine_graphics_unit/source/graphics/buffers/gl_element_buffer.h)
 
 target_link_libraries(karamay_engine_graphics_unit glew32s.lib glfw3.lib)
 

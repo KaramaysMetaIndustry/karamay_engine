@@ -183,6 +183,7 @@ struct gl_attribute_list_anchor
 class gl_vertex_array final : public gl_object{
 public:
     gl_vertex_array() = delete;
+    gl_vertex_array(std::uint32_t vertices_num){}
     gl_vertex_array(
             std::int64_t vertex_count, const std::vector<gl_vertex_attribute_descriptor>& vertex_attribute_descriptors,
             std::int32_t instance_count, const std::vector<gl_instance_attribute_descriptor>& instance_attribute_descriptors) :
@@ -231,12 +232,6 @@ public:
         return *_data;
     }
 
-
-
-
-
-
-
     /*
     * @Param0 attribute_name
     * @Param1 attribute_index
@@ -245,34 +240,30 @@ public:
     */
     void update_instance_attributes(const std::vector<std::tuple<std::string, std::int32_t, const glsl_transparent_t_meta*>>& list)
     {
-//        std::int64_t _mapped_memory_offset = 0;
-//        std::int64_t _mapped_memory_size = 0;
-//        std::vector<std::pair<std::int64_t, const glsl_transparent_t_meta*>> _baked_list;
-//
-//        for(const auto& _item : list)
-//        {
-//            _asm {
-//                mov eax, [esp];
-//                ret;
-//            }
-//            auto _it = _instance_attribute_layout.find(std::get<0>(_item));
-//            if(_it == _instance_attribute_layout.cend()) return;
-//            std::int64_t _instance_attribute_list_offset = _it->second.offset;
-//            std::int64_t _instance_attribute_offset = _instance_attribute_list_offset + std::get<1>(_item) * std::get<2>(_item)->clazz()->class_size;
-//            _baked_list.push_back(std::make_pair(_instance_attribute_offset, std::get<2>(_item)));
-//        }
-//
-//        if(_instance_attribute_buffer)
-//        {
-//            // _instance_attribute_buffer->execute_mutable_memory_handler(_mapped_memory_offset, _mapped_memory_size,
-//            // [&_baked_list](std::uint8_t* mapped_memory, std::int64_t size)
-//            // {
-//            //     for(const auto& _item : _baked_list)
-//            //     {
-//            //         std::memcpy(mapped_memory + _item.first, _item.second->stream(), _item.second->stream_size());
-//            //     }
-//            // });
-//        }
+        std::int64_t _mapped_memory_offset = 0;
+        std::int64_t _mapped_memory_size = 0;
+        std::vector<std::pair<std::int64_t, const glsl_transparent_class*>> _baked_list;
+
+        for(const auto& _item : list)
+        {
+            auto _it = _instance_attribute_layout.find(std::get<0>(_item));
+            if(_it == _instance_attribute_layout.cend()) return;
+            std::int64_t _instance_attribute_list_offset = _it->second.offset;
+            std::int64_t _instance_attribute_offset = _instance_attribute_list_offset + std::get<1>(_item) * std::get<2>(_item)->clazz()->class_size;
+            _baked_list.push_back(std::make_pair(_instance_attribute_offset, std::get<2>(_item)));
+        }
+
+        if(_instance_attribute_buffer)
+        {
+            // _instance_attribute_buffer->execute_mutable_memory_handler(_mapped_memory_offset, _mapped_memory_size, 
+            // [&_baked_list](std::uint8_t* mapped_memory, std::int64_t size)
+            // {
+            //     for(const auto& _item : _baked_list)
+            //     {
+            //         std::memcpy(mapped_memory + _item.first, _item.second->stream(), _item.second->stream_size());
+            //     }
+            // });
+        }
     }
 
 

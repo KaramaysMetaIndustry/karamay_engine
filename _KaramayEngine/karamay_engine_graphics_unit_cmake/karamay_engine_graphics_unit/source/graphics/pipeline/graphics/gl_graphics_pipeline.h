@@ -1,10 +1,12 @@
 #ifndef H_GRAPHICS_PIPELINE
 #define H_GRAPHICS_PIPELINE
 
-#include "graphics/glsl/glsl_class.h"
-#include "graphics/glsl/opaque_t/glsl_sampler_t.h"
-#include "graphics/glsl/opaque_t/glsl_image_t.h"
 #include "graphics/program/gl_program.h"
+#include "graphics/buffers/gl_element_buffer.h"
+#include "graphics/buffers/gl_uniform_buffer.h"
+#include "graphics/buffers/gl_shader_storage_buffer.h"
+#include "graphics/buffers/gl_atomic_counter_buffer.h"
+#include "graphics/buffers/gl_transform_feedback_buffer.h"
 
 enum gl_stencil_op : GLenum
 {
@@ -296,18 +298,12 @@ public:
 
 public:
 
-    /*
-     *
-     * */
     void draw_arrays(gl_primitive_mode mode, std::int32_t first, std::int32_t count) noexcept
     {
         if(!_program) return;
         glDrawArrays(static_cast<GLenum>(mode), first, count);
     }
 
-    /*
-     *
-     * */
     void draw_indices(gl_primitive_mode mode, std::int32_t first, std::int32_t count) noexcept
     {
         if(_program) return;
@@ -320,8 +316,11 @@ private:
 
     std::shared_ptr<gl_graphics_pipeline_descriptor> _descriptor;
 
-    std::shared_ptr<gl_uniform_buffer> _ubo;
-    std::shared_ptr<gl_shader_storage_buffer> _ssbo;
+    std::shared_ptr<gl_element_array_buffer> _element_array_buffer;
+    std::shared_ptr<gl_uniform_buffer> _uniform_buffer;
+    std::shared_ptr<gl_shader_storage_buffer> _shader_storage_buffer;
+    std::shared_ptr<gl_atomic_counter_buffer> _atomic_counter_buffer;
+    std::shared_ptr<gl_transform_feedback_buffer> _transform_feedback_buffer;
 
 private:
     enum class shader_combination_flag : std::uint8_t
@@ -341,19 +340,40 @@ private:
     {
 
     }
+
     void _bind_resources()
     {
-        _ubo->bind();
-        _ssbo->bind();
+        if(_element_array_buffer)
+        {
+            _element_array_buffer->bind();
+        }
+
+        if(_uniform_buffer)
+        {
+            _uniform_buffer->bind();
+        }
+
+        if(_shader_storage_buffer)
+        {
+            _shader_storage_buffer->bind();
+        }
+
+        if(_atomic_counter_buffer)
+        {
+            _atomic_counter_buffer->bind();
+        }
+
+        if(_transform_feedback_buffer)
+        {
+            _transform_feedback_buffer->bind();
+        }
+
     }
 
     void _unbind_resources();
 
     void flush_resources()
     {
-        _ubo->flush_dirty_blocks();
-        _ssbo->flush_dirty_blocks();
-
         GLint MaxVertexAtomicCounterBuffers(0);
         GLint MaxControlAtomicCounterBuffers(0);
         GLint MaxEvaluationAtomicCounterBuffers(0);
