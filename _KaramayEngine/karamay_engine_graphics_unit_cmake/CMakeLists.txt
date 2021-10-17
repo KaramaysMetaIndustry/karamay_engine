@@ -479,33 +479,31 @@ add_executable(karamay_engine_graphics_unit
         karamay_engine_graphics_unit/source/graphics/camera/gl_camera.h
         karamay_engine_graphics_unit/source/graphics/commands/gl_commands.cpp
         karamay_engine_graphics_unit/source/graphics/commands/gl_commands.h
-        karamay_engine_graphics_unit/source/graphics/framebuffer/gl_default_framebuffer.cpp
-        karamay_engine_graphics_unit/source/graphics/framebuffer/gl_default_framebuffer.h
-        karamay_engine_graphics_unit/source/graphics/framebuffer/gl_framebuffer.cpp
-        karamay_engine_graphics_unit/source/graphics/framebuffer/gl_framebuffer.h
-        karamay_engine_graphics_unit/source/graphics/glo/gl_object.cpp
-        karamay_engine_graphics_unit/source/graphics/glo/gl_object.h
+        karamay_engine_graphics_unit/source/graphics/resource/framebuffer/gl_framebuffer.cpp
+        karamay_engine_graphics_unit/source/graphics/resource/framebuffer/gl_framebuffer.h
+        karamay_engine_graphics_unit/source/graphics/resource/glo/gl_object.cpp
+        karamay_engine_graphics_unit/source/graphics/resource/glo/gl_object.h
         "karamay_engine_graphics_unit/source/graphics/pipeline/compute/gl_compute_pipeline.cpp"
         "karamay_engine_graphics_unit/source/graphics/pipeline/compute/gl_compute_pipeline.h"
         "karamay_engine_graphics_unit/source/graphics/pipeline/graphics/gl_graphics_pipeline.cpp"
         "karamay_engine_graphics_unit/source/graphics/pipeline/graphics/gl_graphics_pipeline.h"
-        karamay_engine_graphics_unit/source/graphics/program/gl_program.cpp
-        karamay_engine_graphics_unit/source/graphics/program/gl_program.h
-        
-        
-        karamay_engine_graphics_unit/source/graphics/renderbuffer/gl_renderbuffer.cpp
-        karamay_engine_graphics_unit/source/graphics/renderbuffer/gl_renderbuffer.h
+        karamay_engine_graphics_unit/source/graphics/resource/program/gl_program.cpp
+        karamay_engine_graphics_unit/source/graphics/resource/program/gl_program.h
+
+
+        karamay_engine_graphics_unit/source/graphics/resource/renderbuffer/gl_renderbuffer.cpp
+        karamay_engine_graphics_unit/source/graphics/resource/renderbuffer/gl_renderbuffer.h
         karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer.cpp
         karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer.h
-        karamay_engine_graphics_unit/source/graphics/sampler/gl_sampler.cpp
-        karamay_engine_graphics_unit/source/graphics/sampler/gl_sampler.h
-        karamay_engine_graphics_unit/source/graphics/shader/gl_shader.cpp
-        karamay_engine_graphics_unit/source/graphics/shader/gl_shader.h
-        karamay_engine_graphics_unit/source/graphics/texture/gl_texture.h
-        karamay_engine_graphics_unit/source/graphics/transform_feedback/gl_transform_feedback.cpp
-        karamay_engine_graphics_unit/source/graphics/transform_feedback/gl_transform_feedback.h
-        karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.cpp
-        karamay_engine_graphics_unit/source/graphics/vertex_array/gl_vertex_array.h
+        karamay_engine_graphics_unit/source/graphics/resource/sampler/gl_sampler.cpp
+        karamay_engine_graphics_unit/source/graphics/resource/sampler/gl_sampler.h
+        karamay_engine_graphics_unit/source/graphics/resource/shader/gl_shader.cpp
+        karamay_engine_graphics_unit/source/graphics/resource/shader/gl_shader.h
+        karamay_engine_graphics_unit/source/graphics/resource/texture/gl_texture.h
+        karamay_engine_graphics_unit/source/graphics/resource/transform_feedback/gl_transform_feedback.cpp
+        karamay_engine_graphics_unit/source/graphics/resource/transform_feedback/gl_transform_feedback.h
+        karamay_engine_graphics_unit/source/graphics/resource/vertex_array/gl_vertex_array.cpp
+        karamay_engine_graphics_unit/source/graphics/resource/vertex_array/gl_vertex_array.h
         karamay_engine_graphics_unit/source/public/_glfw.h
         karamay_engine_graphics_unit/source/public/nlohmann_json.h
         karamay_engine_graphics_unit/source/public/_glew.h
@@ -530,7 +528,7 @@ karamay_engine_graphics_unit/source/dispatcher/gl_renderer_dispatcher.h
 "karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer_dispatcher.h" 
 "karamay_engine_graphics_unit/source/graphics/renderer/gl_renderer_dispatcher.cpp"
         karamay_engine_graphics_unit/source/public/_lua.h
-        karamay_engine_graphics_unit/source/graphics/buffers/gl_buffer.h karamay_engine_graphics_unit/source/graphics/buffers/gl_uniform_buffer.h karamay_engine_graphics_unit/source/graphics/buffers/gl_shader_storage_buffer.h karamay_engine_graphics_unit/source/graphics/buffers/gl_atomic_counter_buffer.h karamay_engine_graphics_unit/source/graphics/buffers/gl_transform_feedback_buffer.h karamay_engine_graphics_unit/source/graphics/buffers/gl_element_buffer.h)
+        karamay_engine_graphics_unit/source/graphics/resource/buffers/gl_buffer.h karamay_engine_graphics_unit/source/graphics/resource/buffers/Indexed_buffer/gl_uniform_buffer.h karamay_engine_graphics_unit/source/graphics/resource/buffers/Indexed_buffer/gl_shader_storage_buffer.h karamay_engine_graphics_unit/source/graphics/resource/buffers/Indexed_buffer/gl_atomic_counter_buffer.h karamay_engine_graphics_unit/source/graphics/resource/buffers/Indexed_buffer/gl_transform_feedback_buffer.h karamay_engine_graphics_unit/source/graphics/resource/buffers/gl_element_buffer.h karamay_engine_graphics_unit/source/graphics/glsl/glsl_shader.h karamay_engine_graphics_unit/source/graphics/glsl/glsl_sampler.h karamay_engine_graphics_unit/source/graphics/glsl/glsl_image.h karamay_engine_graphics_unit/source/graphics/glsl/glsl_out_block.h karamay_engine_graphics_unit/source/graphics/glsl/glsl_atomic_counter.h karamay_engine_graphics_unit/source/graphics/glsl/glsl_uniform_block.h karamay_engine_graphics_unit/source/graphics/glsl/glsl_shader_storage_block.h karamay_engine_graphics_unit/source/graphics/resource/buffers/gl_array_buffer.h karamay_engine_graphics_unit/source/graphics/resource/buffers/gl_query_buffer.h karamay_engine_graphics_unit/source/graphics/resource/buffers/gl_draw_indirect_buffer.h karamay_engine_graphics_unit/source/graphics/resource/buffers/gl_dispatch_indirect_buffer.h karamay_engine_graphics_unit/source/graphics/glsl/glsl_in_block.h)
 
 target_link_libraries(karamay_engine_graphics_unit glew32s.lib glfw3.lib)
 

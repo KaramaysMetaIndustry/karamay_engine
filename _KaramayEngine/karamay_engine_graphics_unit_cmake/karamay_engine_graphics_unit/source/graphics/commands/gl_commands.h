@@ -1,7 +1,7 @@
 #ifndef H_GL_COMMANDS
 #define H_GL_COMMANDS
 
-#include "graphics/glo/gl_object.h"
+#include "graphics/resource/glo/gl_object.h"
 
 namespace gl_commands
 {

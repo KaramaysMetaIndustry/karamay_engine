@@ -1,12 +1,15 @@
-#ifndef H_GRAPHICS_PIPELINE
-#define H_GRAPHICS_PIPELINE
+#ifndef GRAPHICS_PIPELINE_H
+#define GRAPHICS_PIPELINE_H
 
-#include "graphics/program/gl_program.h"
-#include "graphics/buffers/gl_element_buffer.h"
-#include "graphics/buffers/gl_uniform_buffer.h"
-#include "graphics/buffers/gl_shader_storage_buffer.h"
-#include "graphics/buffers/gl_atomic_counter_buffer.h"
-#include "graphics/buffers/gl_transform_feedback_buffer.h"
+#include "graphics/glsl/glsl_class.h"
+#include "graphics/glsl/glsl_shader.h"
+#include "graphics/resource/program/gl_program.h"
+#include "graphics/resource/buffers/gl_buffer.h"
+#include "graphics/resource/buffers/gl_element_buffer.h"
+#include "graphics/resource/buffers/Indexed_buffer/gl_uniform_buffer.h"
+#include "graphics/resource/buffers/Indexed_buffer/gl_shader_storage_buffer.h"
+#include "graphics/resource/buffers/Indexed_buffer/gl_atomic_counter_buffer.h"
+#include "graphics/resource/buffers/Indexed_buffer/gl_transform_feedback_buffer.h"
 
 enum gl_stencil_op : GLenum
 {
@@ -87,6 +90,19 @@ enum class gl_primitive_mode
 
 };
 
+
+enum class shader_combination_flag : std::uint8_t
+{
+    _vs,
+    _vs_tescs_teses,
+    _vs_tescs_teses_gs,
+
+    _vs_fs,
+    _vs_gs_fs,
+    _vs_tescs_teses_fs,
+    _vs_tescs_teses_gs_fs,
+
+};
 
 /*
  * for dynamical modifying
@@ -233,29 +249,20 @@ struct gl_graphics_pipeline_state
     } render_target;
 };
 
+struct gl_vertex_stream
+{};
+
 /*
  * for building graphics pipe
  * */
 
-class gl_graphics_pipeline_global_parameters{
-public:
-    std::vector<std::shared_ptr<glsl_image_t>> images;
-    std::vector<std::shared_ptr<glsl_sampler_t>> samplers;
-    std::vector<std::shared_ptr<glsl_atomic_counter_t>> atomic_counters;
-    std::vector<std::shared_ptr<glsl_uniform_block_t>> uniform_blocks;
-    std::vector<std::shared_ptr<glsl_shader_storage_block_t>> shader_storage_blocks;
-};
-
-class gl_graphics_pipeline_attribute_stream{};
-
 struct gl_graphics_pipeline_descriptor
 {
-    gl_graphics_pipeline_state state;
-    gl_graphics_pipeline_global_parameters global_parameters;
-    gl_graphics_pipeline_attribute_stream attribute_stream;
-    //std::shared_ptr<gl_framebuffer> framebuffer;
+    std::shared_ptr<gl_graphics_pipeline_state> state;
+    std::shared_ptr<gl_vertex_stream> vertex_stream;
+    std::vector<std::shared_ptr<gl_shader>> shaders;
+    std::shared_ptr<gl_framebuffer> framebuffer;
 };
-
 
 /*
  * graphics pipeline
@@ -280,7 +287,11 @@ public:
     void construct(const gl_graphics_pipeline_descriptor& descriptor) noexcept
     {
         // generate shader code
-        descriptor.global_parameters;
+        for(const auto& _shader : descriptor.shaders)
+        {
+            _shader->generate_shader_code("");
+            _shader->load("");
+        }
 
         // construct shader program
         _program = std::make_unique<gl_program>();
@@ -294,6 +305,7 @@ public:
 
         // generate resources
         //..
+        _generate_resources();
     }
 
 public:
@@ -317,24 +329,18 @@ private:
     std::shared_ptr<gl_graphics_pipeline_descriptor> _descriptor;
 
     std::shared_ptr<gl_element_array_buffer> _element_array_buffer;
+
     std::shared_ptr<gl_uniform_buffer> _uniform_buffer;
     std::shared_ptr<gl_shader_storage_buffer> _shader_storage_buffer;
     std::shared_ptr<gl_atomic_counter_buffer> _atomic_counter_buffer;
+    std::vector<std::shared_ptr<glsl_sampler_t>> _samplers;
+    std::vector<std::shared_ptr<glsl_image_t>> _images;
+
     std::shared_ptr<gl_transform_feedback_buffer> _transform_feedback_buffer;
 
+    std::shared_ptr<gl_framebuffer> framebuffer;
+
 private:
-    enum class shader_combination_flag : std::uint8_t
-    {
-        _vs,
-        _vs_tescs_teses,
-        _vs_tescs_teses_gs,
-
-        _vs_fs,
-        _vs_gs_fs,
-        _vs_tescs_teses_fs,
-        _vs_tescs_teses_gs_fs,
-
-    };
 
     void _generate_resources()
     {
@@ -363,6 +369,18 @@ private:
             _atomic_counter_buffer->bind();
         }
 
+        for(const auto& _sampler : _samplers)
+        {
+            if(_sampler)
+                _sampler->bind();
+        }
+
+        for(const auto& _image : _images)
+        {
+            if(_image)
+                _image->bind();
+        }
+
         if(_transform_feedback_buffer)
         {
             _transform_feedback_buffer->bind();
@@ -370,7 +388,10 @@ private:
 
     }
 
-    void _unbind_resources();
+    void _unbind_resources()
+    {
+
+    }
 
     void flush_resources()
     {
@@ -388,7 +409,6 @@ private:
         glGetIntegerv(GL_MAX_FRAGMENT_ATOMIC_COUNTER_BUFFERS, &MaxFragmentAtomicCounterBuffers);
         glGetIntegerv(GL_MAX_COMBINED_ATOMIC_COUNTER_BUFFERS, &MaxCombinedAtomicCounterBuffers);
     }
-
 
     void _update_pipeline_state()
     {
@@ -577,7 +597,6 @@ private:
     {
         return path.substr(path.find_first_of('.')) == ext;
     }
-
 
 };
 
