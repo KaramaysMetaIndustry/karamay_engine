@@ -1,7 +1,7 @@
 #ifndef GL_ATOMIC_COUNTER_BUFFER_H
 #define GL_ATOMIC_COUNTER_BUFFER_H
 
-#include "graphics/resource/buffers/gl_buffer.h"
+#include "graphics/resource/buffers/raw_buffer/gl_buffer.h"
 #include "graphics/glsl/glsl_atomic_counter.h"
 
 /*

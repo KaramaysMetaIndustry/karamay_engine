@@ -2,22 +2,19 @@
 #define H_GL_SHADER
 
 #include "graphics/resource/glo/gl_object.h"
-#include "graphics/glsl/glsl_class.h"
+
+enum class gl_shader_type : GLenum
+{
+	VERTEX_SHADER = GL_VERTEX_SHADER,
+	TESS_CONTROL_SHADER = GL_TESS_CONTROL_SHADER,
+	TESS_EVALUATION_SHADER = GL_TESS_EVALUATION_SHADER,
+	GEOMETRY_SHADER = GL_GEOMETRY_SHADER,
+	FRAGMENT_SHADER = GL_FRAGMENT_SHADER,
+	COMPUTE_SHADER = GL_COMPUTE_SHADER
+};
 
 namespace gl_shader_enum
 {
-	enum class type : GLenum
-	{
-        UNKNOWN = 0,
-
-	    VERTEX_SHADER = GL_VERTEX_SHADER,
-	    TESS_CONTROL_SHADER = GL_TESS_CONTROL_SHADER,
-	    TESS_EVALUATION_SHADER = GL_TESS_EVALUATION_SHADER,
-	    GEOMETRY_SHADER = GL_GEOMETRY_SHADER,
-	    FRAGMENT_SHADER = GL_FRAGMENT_SHADER,
-
-	    COMPUTE_SHADER = GL_COMPUTE_SHADER
-	};
 
 //	std::string enum_to_string(gl_shader_enum::type shader_type)
 //    {
@@ -58,7 +55,7 @@ public:
 
 public:
 
-    [[nodiscard]] gl_shader_enum::type get_shader_type() const { return _shader_type; }
+    [[nodiscard]] gl_shader_type get_shader_type() const { return _shader_type; }
 
 	void load(const std::string& path)
 	{
@@ -123,11 +120,11 @@ public:
 
 public:
 
-	gl_shader_enum::type get_type()
+	gl_shader_type get_type()
 	{
 		GLint _shader_type = 0;
 		_get_shader_params(GL_SHADER_TYPE, &_shader_type);
-		return static_cast<gl_shader_enum::type>(_shader_type);
+		return static_cast<gl_shader_type>(_shader_type);
 	}
 
 	bool get_delete_status()
@@ -166,7 +163,7 @@ public:
 
 private:
 
-    gl_shader_enum::type _shader_type;
+	gl_shader_type _shader_type;
 
     std::vector<std::uint8_t> _source_stream;
 

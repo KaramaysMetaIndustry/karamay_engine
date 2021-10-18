@@ -17,8 +17,7 @@ public:
     glsl_shader_storage_block_t() = default;
     glsl_shader_storage_block_t(
             glsl_interface_block_matrix_layout matrix_layout,
-            glsl_shader_storage_block_memory_layout memory_layout,
-            std::uint32_t binding
+            glsl_shader_storage_block_memory_layout memory_layout
     ){}
     glsl_shader_storage_block_t(const glsl_shader_storage_block_t&) = delete;
     glsl_shader_storage_block_t& operator=(const glsl_shader_storage_block_t&) = delete;

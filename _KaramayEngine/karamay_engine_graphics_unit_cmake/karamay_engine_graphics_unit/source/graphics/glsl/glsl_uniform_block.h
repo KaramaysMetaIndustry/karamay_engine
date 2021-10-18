@@ -1,6 +1,7 @@
 #ifndef GLSL_UNIFORM_BLOCK_H
 #define GLSL_UNIFORM_BLOCK_H
 
+#include "graphics/glsl/glsl_class.h"
 
 enum class glsl_uniform_block_memory_layout
 {
@@ -38,6 +39,86 @@ public:
 
     bool is_dirty;
 
+public:
+    virtual const std::string token() {}
+
+
+};
+
+struct MatrixGroup
+{
+    glsl_mat4x2 m0;
+    glsl_mat4x2 m1;
+    glsl_mat4x2 m2;
+};
+
+
+#define DEFINE_UNIFORM_BLOCK(BLOCK_NAME, MATRIX_LAYOUT, MEMORY_LAYOUT)\
+class glsl_uniform_block_BLOCK_NAME : public glsl_uniform_block_t{\
+public:\
+    glsl_uniform_block_BLOCK_NAME() : glsl_uniform_block_t(glsl_interface_block_matrix_layout::MATRIX_LAYOUT, glsl_uniform_block_memory_layout::MEMORY_LAYOUT) {}\
+    \
+    struct glsl_uniform_block_BLOCK_NAME_scope\
+    {\
+        MatrixGroup group[1][2];\
+    } scope;\
+\
+    std::uint8_t* data() override\
+    {\
+        return reinterpret_cast<std::uint8_t*>(&scope);\
+    }\
+\
+    const std::uint8_t* data() const override\
+    {\
+        return reinterpret_cast<const std::uint8_t*>(&scope);\
+    }\
+\
+    std::int64_t size() const override\
+    {\
+        return sizeof(glsl_uniform_block_BLOCK_NAME_scope);\
+    }\
+};\
+std::shared_ptr<glsl_uniform_block_BLOCK_NAME> BLOCK_NAME;\
+
+
+#define DEFINE_GLSL_TRANSPARENT_T(TRANSPARENT_T, VAR_NAME, ARRAY_SPECIFIER)\
+TRANSPARENT_T VAR_NAME##ARRAY_SPECIFIER;\
+
+
+class glsl_uniform_block_t0 : public glsl_uniform_block_t{
+public:
+    glsl_uniform_block_t0() : glsl_uniform_block_t(glsl_interface_block_matrix_layout::ROW_MAJOR, glsl_uniform_block_memory_layout::STD140){}
+
+    struct glsl_uniform_block_t0_scope
+    {
+        //MatrixGroup group[1][2];
+        DEFINE_GLSL_TRANSPARENT_T(MatrixGroup, group, [1][2])
+
+        static std::string token;
+        //static std::function<>
+    } scope;
+
+public:
+
+    const std::uint8_t* data() const override
+    {
+        return reinterpret_cast<const std::uint8_t*>(&scope);
+    }
+
+    std::uint8_t* data() override
+    {
+        return reinterpret_cast<std::uint8_t*>(&scope);
+    }
+
+    std::int64_t size() const override
+    {
+        return sizeof(glsl_uniform_block_t0_scope);
+    }
+
+    const std::string& token() const override
+    {
+        return scope.token;
+    }
 
 };
 

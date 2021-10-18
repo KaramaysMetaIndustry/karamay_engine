@@ -1,10 +1,8 @@
 #ifndef GLSL_IMAGE_H
 #define GLSL_IMAGE_H
 
-
 #include "glsl_class.h"
 #include "graphics/resource/texture/gl_texture.h"
-#include "graphics/resource/sampler/gl_sampler.h"
 
 enum class glsl_image_format_layout_qualifier
 {

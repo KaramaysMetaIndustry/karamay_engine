@@ -1,8 +1,14 @@
-#ifndef KGL_TRANSFORM_FEEDBACK_BUFFER_H
-#define KGL_TRANSFORM_FEEDBACK_BUFFER_H
+#ifndef GL_TRANSFORM_FEEDBACK_BUFFER_H
+#define GL_TRANSFORM_FEEDBACK_BUFFER_H
 
-#include "graphics/resource/buffers/gl_buffer.h"
+#include "graphics/resource/buffers/raw_buffer/gl_buffer.h"
 #include "graphics/glsl/glsl_class.h"
+
+enum class gl_transform_feedback_buffer_mode
+{
+    SEPARATE_ATTRIBS = GL_SEPARATE_ATTRIBS,
+    INTERLEAVED = GL_INTERLEAVED_ATTRIBS
+};
 
 // 0xFC807e12026BedD66DD1f6e853fd93beBEA66558
 struct gl_transform_feedback_buffer_descriptor{

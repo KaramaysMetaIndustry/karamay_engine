@@ -1,7 +1,7 @@
 #ifndef GL_SHADER_STORAGE_BUFFER_H
 #define GL_SHADER_STORAGE_BUFFER_H
 
-#include "graphics/resource/buffers/gl_buffer.h"
+#include "graphics/resource/buffers/raw_buffer/gl_buffer.h"
 #include "graphics/glsl/glsl_shader_storage_block.h"
 
 struct gl_shader_storage_buffer_descriptor{

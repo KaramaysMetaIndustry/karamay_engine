@@ -1,10 +1,6 @@
 #ifndef GL_OBJECT_H
 #define GL_OBJECT_H
 
-#include "public/stl.h"
-#include "public/_glew.h"
-#include "public/glm.h"
-
 #include "graphics/glsl/glsl_class.h"
 
 enum gl_error : GLenum
@@ -39,10 +35,8 @@ namespace gl_object_enum
 	};
 }
 
-class gl_object
-{
+class gl_object{
 protected:
-	
 	gl_object():
 		_handle(0),
 		_type(gl_object_enum::type::NONE)
@@ -102,8 +96,6 @@ public:
 public:
 	
 	[[nodiscard]] std::uint32_t get_handle() const { return _handle; }
-
-
 
     void sync()
     {

@@ -1,7 +1,6 @@
+#include "graphics/resource/vertex_array/gl_vertex_array.h"
+#include "graphics/resource/program/gl_program.h"
 #include "window/window.h"
-#include "graphics/vertex_array/gl_vertex_array.h"
-#include "graphics/program/gl_program.h"
-#include "public/_glew.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../dependencies/stb/stb_image.h"

@@ -1,0 +1,12 @@
+# ninja log v5
+28	245	6562248392250231	CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/pipeline/base/gl_pipeline.cpp.obj	38694e9b57289dc5
+2	3504	6562310891987262	CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/commands/gl_commands.cpp.obj	d66b4eabda0c80c7
+3	1725	6562248406990964	CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/dependencies/glm_pack/include/glm/detail/glm.cpp.obj	d564ff6b5a906b52
+8	3553	6562310892485244	CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/resource/glo/gl_object.cpp.obj	80191bab02a6036d
+14	3510	6562310892038387	CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/resource/sampler/gl_sampler.cpp.obj	4310a3e449dcc077
+27	3112	6562248421013479	CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/window/window.cpp.obj	cc8ec3e98d37ef3b
+13	3526	6562310892217982	CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/resource/renderbuffer/gl_renderbuffer.cpp.obj	9bf45ed2ab86eaff
+15	3566	6562310892625930	CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/resource/transform_feedback/gl_transform_feedback.cpp.obj	aa328c29f2048df2
+4	3493	6562248424823569	CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/camera/gl_camera.cpp.obj	1eb54c902ae2af33
+4	4069	6562310897651873	CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/resource/framebuffer/gl_framebuffer.cpp.obj	9d1352a585e7583d
+17	3549	6562310892455320	CMakeFiles/karamay_engine_graphics_unit.dir/karamay_engine_graphics_unit/source/graphics/resource/shader/gl_shader.cpp.obj	1e11139e6fa3c774

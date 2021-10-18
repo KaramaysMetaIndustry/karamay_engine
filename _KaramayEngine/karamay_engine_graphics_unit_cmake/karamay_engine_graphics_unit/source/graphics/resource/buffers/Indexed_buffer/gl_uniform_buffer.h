@@ -1,7 +1,7 @@
 #ifndef GL_UNIFORM_BUFFER_H
 #define GL_UNIFORM_BUFFER_H
 
-#include "graphics/resource/buffers/gl_buffer.h"
+#include "graphics/resource/buffers/raw_buffer/gl_buffer.h"
 #include "graphics/glsl/glsl_uniform_block.h"
 
 struct gl_uniform_buffer_descriptor{

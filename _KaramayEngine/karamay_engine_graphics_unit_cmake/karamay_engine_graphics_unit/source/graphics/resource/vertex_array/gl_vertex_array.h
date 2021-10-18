@@ -2,8 +2,13 @@
 #define H_GL_VERTEX_ARRAY
 
 #include "graphics/resource/glo/gl_object.h"
-#include "graphics/resource/buffers/gl_buffer.h"
+#include "graphics/resource/buffers/common_buffer/gl_array_buffer.h"
 #include "graphics/glsl/glsl_in_block.h"
+
+enum class gl_primitive_type
+{
+
+};
 
 class gl_attribute_component
 {
@@ -197,11 +202,15 @@ public:
     }
     gl_vertex_array(const gl_vertex_array_descriptor& descriptor)
     {
-
     }
 
+    gl_vertex_array(const gl_vertex_array&) = delete;
+    gl_vertex_array& operator=(const gl_vertex_array&) = delete;
 
-    ~gl_vertex_array() override;
+    ~gl_vertex_array() override
+    {
+        glDeleteVertexArrays(1, &_handle);
+    }
 
 private:
 
@@ -225,12 +234,12 @@ public:
     }
 
     template<typename GLSL_TRANSPARENT_T>
-    GLSL_TRANSPARENT_T& attribute(std::uint32_t index)
+    const GLSL_TRANSPARENT_T* attribute(std::uint32_t index)
     {
-        auto* _data = reinterpret_cast<GLSL_TRANSPARENT_T*>(
+        const auto* _data = reinterpret_cast<const GLSL_TRANSPARENT_T*>(
                 data(index * sizeof(GLSL_TRANSPARENT_T), sizeof(GLSL_TRANSPARENT_T))
                 );
-        return *_data;
+        return _data;
     }
 
     /*
@@ -242,7 +251,7 @@ public:
     {
         std::int64_t _mapped_memory_offset = 0;
         std::int64_t _mapped_memory_size = 0;
-        std::vector<std::pair<std::int64_t, const glsl_transparent_class*>> _baked_list;
+        //std::vector<std::pair<std::int64_t, const glsl_transparent_class*>> _baked_list;
 
         for(const auto& _item : list)
         {

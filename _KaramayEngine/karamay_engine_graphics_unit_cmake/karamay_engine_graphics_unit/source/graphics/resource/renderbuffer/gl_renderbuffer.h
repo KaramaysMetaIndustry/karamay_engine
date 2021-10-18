@@ -1,5 +1,5 @@
-#ifndef H_GL_RENDERBUFFER
-#define H_GL_RENDERBUFFER
+#ifndef GL_RENDERBUFFER_H
+#define GL_RENDERBUFFER_H
 
 #include "graphics/resource/glo/gl_object.h"
 

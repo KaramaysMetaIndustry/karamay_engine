@@ -2,7 +2,7 @@
 #define GL_TRANSFORM_FEEDBACK_H
 
 #include "graphics/resource/glo/gl_object.h"
-#include "graphics/resource/buffers/gl_buffer.h"
+#include "graphics/resource/buffers/indexed_buffer/gl_transform_feedback_buffer.h"
 
 class gl_transform_feedback_descriptor{
 public:
@@ -11,29 +11,59 @@ public:
 
 class gl_transform_feedback final : public gl_object{
 public:
-	explicit gl_transform_feedback(const std::shared_ptr<gl_transform_feedback_descriptor>& descriptor);
-	~gl_transform_feedback() override;
+	gl_transform_feedback() = delete;
+	explicit gl_transform_feedback(const std::shared_ptr<gl_transform_feedback_descriptor>& descriptor)
+	{
+		glCreateTransformFeedbacks(1, &_handle);
+	}
+	gl_transform_feedback(const gl_transform_feedback&) = delete;
+	gl_transform_feedback& operator=(const gl_transform_feedback&) = delete;
 
-private:
-
-    gl_transform_feedback_descriptor _descriptor;
-
-	std::shared_ptr<gl_buffer> _output_buffer;
+	~gl_transform_feedback() override
+	{
+		glDeleteTransformFeedbacks(1, &_handle);
+	}
 
 public:
 
+	void bind() noexcept
+	{
+		glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, _handle);
+	}
 
-    [[nodiscard]] const auto& get_varyings() const {return _descriptor.varyings;}
+	void unbind() noexcept
+	{
+		GLint handle;
+		glGetIntegerv(GL_TRANSFORM_FEEDBACK_BINDING, &handle);
+		if (handle == _handle)
+		{
+			glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
+		}
+	}
 
-	void associate_buffer(std::uint32_t index, const std::shared_ptr<gl_buffer>& buffer);
+public:
 
-	void associate_buffer(std::uint32_t index, const std::shared_ptr<gl_buffer>& buffer, std::int64_t offset, std::int64_t size);
+	void associate_buffer(std::uint32_t index, const std::shared_ptr<gl_buffer>& buffer)
+	{
+		if (index < GL_MAX_TRANSFORM_FEEDBACK_BUFFERS && buffer)
+		{
+			//glTransformFeedbackBufferBase(_handle, static_cast<GLuint>(index), buffer->get_handle());
+		}
+	}
 
-	void bind();
+	void associate_buffer(std::uint32_t index, const std::shared_ptr<gl_buffer>& buffer, std::int64_t offset, std::int64_t size)
+	{
+		if (index < GL_MAX_TRANSFORM_FEEDBACK_BUFFERS && buffer)
+		{
+			//glTransformFeedbackBufferRange(_handle, index, buffer->get_handle(), offset, size);
+		}
+	}
 
-	void unbind();
+private:
 
-	std::shared_ptr<const gl_buffer> get_output_buffer() const;
+	gl_transform_feedback_descriptor _descriptor;
+
+	std::unique_ptr<gl_transform_feedback_buffer> _transform_feedback_bufffer;
 
 };
 

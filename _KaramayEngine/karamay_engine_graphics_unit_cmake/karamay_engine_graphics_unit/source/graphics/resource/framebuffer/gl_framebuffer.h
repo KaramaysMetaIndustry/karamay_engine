@@ -1,5 +1,5 @@
-#ifndef H_GL_FRAMEBUFFER
-#define H_GL_FRAMEBUFFER
+#ifndef GL_FRAMEBUFFER_H
+#define GL_FRAMEBUFFER_H
 
 #include "graphics/resource/glo/gl_object.h"
 #include "graphics/resource/texture/gl_texture.h"
@@ -17,6 +17,10 @@ public:
     {
         glCreateFramebuffers(1, &_handle);
     }
+
+    gl_framebuffer(const gl_framebuffer&) = delete;
+    gl_framebuffer& operator=(const gl_framebuffer&) = delete;
+
     ~gl_framebuffer() override;
 
 public:
@@ -35,27 +39,21 @@ public:
 
     void attach_color_renderbuffer(std::uint32_t attachment_index, std::shared_ptr<gl_renderbuffer> renderbuffer)
     {
-        if (renderbuffer && attachment_index <= GL_MAX_COLOR_ATTACHMENTS)
-        {
-            glNamedFramebufferRenderbuffer(_handle, GL_COLOR_ATTACHMENT0 + attachment_index, GL_RENDERBUFFER, renderbuffer->get_handle());
-        }
-
+        if (!renderbuffer || attachment_index >= GL_MAX_COLOR_ATTACHMENTS) return;
+        glNamedFramebufferRenderbuffer(_handle, GL_COLOR_ATTACHMENT0 + attachment_index, GL_RENDERBUFFER, renderbuffer->get_handle());
     }
     void attach_depth_renderbuffer(std::shared_ptr<gl_renderbuffer> renderbuffer)
     {
-        if (renderbuffer)
-        {
-            glNamedFramebufferRenderbuffer(_handle, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderbuffer->get_handle());
-        }
+        if (!renderbuffer) return;
+        glNamedFramebufferRenderbuffer(_handle, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderbuffer->get_handle());
     }
+
     void attach_stencil_renderbuffer(std::shared_ptr<gl_renderbuffer> renderbuffer)
     {
-        if (renderbuffer)
-        {
-            glNamedFramebufferRenderbuffer(_handle, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer->get_handle());
-        }
-
+        if (!renderbuffer) return;
+        glNamedFramebufferRenderbuffer(_handle, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer->get_handle());
     }
+
     void attach_depth_stencil_renderbuffer(std::shared_ptr<gl_renderbuffer> renderbuffer)
     {
         if (renderbuffer)

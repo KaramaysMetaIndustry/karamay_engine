@@ -44,17 +44,6 @@ void* gl_vertex_array::get_mapped_data()
 	return nullptr;
 }
 
-const std::int32_t gl_vertex_array::get_size() const
-{
-	return 0;
-}
-
-gl_vertex_array::~gl_vertex_array()
-{
-    //~gl_object();
-	glDeleteVertexArrays(1, &_handle);
-}
-
 void gl_vertex_array::bind()
 {
 	glBindVertexArray(_handle);
@@ -132,15 +121,6 @@ void gl_vertex_array::_generate_attribute_layout()
         const auto _instance_attribute_size = _instance_attribute_descriptor.get_component_count() * gl_attribute_component::get_size(_instance_attribute_descriptor.get_component_type());
         _memory_demand += _instance_attribute_size *  _instance_attribute_descriptor.get_count();
     }
-
-    if(!_buffer)
-    {
-        _buffer = std::make_shared<gl_buffer>();
-    }
-
-    _buffer->allocate(_memory_demand);
-
-    bind(); _bind_buffer();
 
 
     std::uint32_t _index = 0;

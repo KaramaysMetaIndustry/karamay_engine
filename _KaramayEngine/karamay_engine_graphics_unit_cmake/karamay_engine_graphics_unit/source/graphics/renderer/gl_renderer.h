@@ -4,7 +4,7 @@
 #include "public/stl.h"
 #include "graphics/pipeline/graphics/gl_graphics_pipeline.h"
 #include "graphics/pipeline/compute/gl_compute_pipeline.h"
-#include "graphics/texture/gl_texture.h"
+#include "graphics/resource/texture/gl_texture.h"
 
 class gl_graphics_pipeline;
 class gl_vertex_processing_pipeline;

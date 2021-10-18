@@ -5,32 +5,9 @@
 #include "graphics/resource/shader/gl_shader.h"
 #include "graphics/resource/vertex_array/gl_vertex_array.h"
 #include "graphics/resource/transform_feedback/gl_transform_feedback.h"
-#include "graphics/resource/texture/gl_texture.h"
 #include "graphics/resource/framebuffer/gl_framebuffer.h"
-#include "graphics/resource/framebuffer/gl_default_framebuffer.h"
+#include "graphics/resource/texture/gl_texture.h"
 
-enum class gl_transform_feedback_buffer_mode
-{
-    SEPARATE_ATTRIBS = GL_SEPARATE_ATTRIBS,
-    INTERLEAVED = GL_INTERLEAVED_ATTRIBS,
-    UNKNOWN
-};
-
-enum class gl_primitive_type
-{
-
-};
-
-enum class gl_shader_type : GLenum
-{
-    VERTEX_SHADER = GL_VERTEX_SHADER,
-    TESS_CONTROL_SHADER = GL_TESS_CONTROL_SHADER,
-    TESS_EVALUATION_SHADER = GL_TESS_EVALUATION_SHADER,
-    GEOMETRY_SHADER = GL_GEOMETRY_SHADER,
-    FRAGMENT_SHADER = GL_FRAGMENT_SHADER,
-
-    COMPUTE_SHADER = GL_COMPUTE_SHADER
-};
 
 enum class gl_program_interface
 {
@@ -56,122 +33,6 @@ enum class gl_program_interface
     FRAGMENT_SUBROUTINE_UNIFORM = GL_FRAGMENT_SUBROUTINE_UNIFORM,
     COMPUTE_SUBROUTINE = GL_COMPUTE_SUBROUTINE,
     COMPUTE_SUBROUTINE_UNIFORM = GL_COMPUTE_SUBROUTINE_UNIFORM,
-};
-
-enum class glsl_type_enum
-{
-    FLOAT = GL_FLOAT,
-    FLOAT_VEC2 = GL_FLOAT_VEC2,
-    FLOAT_VEC3 = GL_FLOAT_VEC3,
-    FLOAT_VEC4 = GL_FLOAT_VEC4,
-    DOUBLE = GL_DOUBLE,
-    DOUBLE_VEC2 = GL_DOUBLE_VEC2,
-    DOUBLE_VEC3 = GL_DOUBLE_VEC3,
-    DOUBLE_VEC4 = GL_DOUBLE_VEC4,
-    INT = GL_INT,
-    INT_VEC2 = GL_INT_VEC2,
-    INT_VEC3 = GL_INT_VEC3,
-    INT_VEC4 = GL_INT_VEC4,
-    UNSIGNED_INT = GL_UNSIGNED_INT,
-    UNSIGNED_INT_VEC2 = GL_UNSIGNED_INT_VEC2,
-    UNSIGNED_INT_VEC3 = GL_UNSIGNED_INT_VEC3,
-    UNSIGNED_INT_VEC4 = GL_UNSIGNED_INT_VEC4,
-    BOOL = GL_BOOL,
-    BOOL_VEC2 = GL_BOOL_VEC2,
-    BOOL_VEC3 = GL_BOOL_VEC3,
-    BOOL_VEC4 = GL_BOOL_VEC4,
-    FLOAT_MAT2 = GL_FLOAT_MAT2,
-    FLOAT_MAT3 = GL_FLOAT_MAT3,
-    FLOAT_MAT4 = GL_FLOAT_MAT4,
-    FLOAT_MAT2x3 = GL_FLOAT_MAT2x3,
-    FLOAT_MAT2x4 = GL_FLOAT_MAT2x4,
-    FLOAT_MAT3x2 = GL_FLOAT_MAT3x2,
-    FLOAT_MAT3x4 = GL_FLOAT_MAT3x4,
-    FLOAT_MAT4x2 = GL_FLOAT_MAT4x2,
-    FLOAT_MAT4x3 = GL_FLOAT_MAT4x3,
-    DOUBLE_MAT2 = GL_DOUBLE_MAT2,
-    DOUBLE_MAT3 = GL_DOUBLE_MAT3,
-    DOUBLE_MAT4 = GL_DOUBLE_MAT4,
-    DOUBLE_MAT2x3 = GL_DOUBLE_MAT2x3,
-    DOUBLE_MAT2x4 = GL_DOUBLE_MAT2x4,
-    DOUBLE_MAT3x2 = GL_DOUBLE_MAT3x2,
-    DOUBLE_MAT3x4 = GL_DOUBLE_MAT3x4,
-    DOUBLE_MAT4x2 = GL_DOUBLE_MAT4x2,
-    DOUBLE_MAT4x3 = GL_DOUBLE_MAT4x3,
-    SAMPLER_1D = GL_SAMPLER_1D,
-    SAMPLER_2D = GL_SAMPLER_2D,
-    SAMPLER_3D = GL_SAMPLER_3D,
-    SAMPLER_CUBE = GL_SAMPLER_CUBE,
-    SAMPLER_1D_SHADOW = GL_SAMPLER_1D_SHADOW,
-    SAMPLER_2D_SHADOW = GL_SAMPLER_2D_SHADOW,
-    SAMPLER_1D_ARRAY = GL_SAMPLER_1D_ARRAY,
-    SAMPLER_2D_ARRAY = GL_SAMPLER_2D_ARRAY,
-    SAMPLER_CUBE_MAP_ARRAY = GL_SAMPLER_CUBE_MAP_ARRAY,
-    SAMPLER_1D_ARRAY_SHADOW = GL_SAMPLER_1D_ARRAY_SHADOW,
-    SAMPLER_2D_ARRAY_SHADOW = GL_SAMPLER_2D_ARRAY_SHADOW,
-    SAMPLER_2D_MULTISAMPLE = GL_SAMPLER_2D_MULTISAMPLE,
-    SAMPLER_2D_MULTISAMPLE_ARRAY = GL_SAMPLER_2D_MULTISAMPLE_ARRAY,
-    SAMPLER_CUBE_SHADOW = GL_SAMPLER_CUBE_SHADOW,
-    SAMPLER_CUBE_MAP_ARRAY_SHADOW = GL_SAMPLER_CUBE_MAP_ARRAY_SHADOW,
-    SAMPLER_BUFFER = GL_SAMPLER_BUFFER,
-    SAMPLER_2D_RECT = GL_SAMPLER_2D_RECT,
-    SAMPLER_2D_RECT_SHADOW = GL_SAMPLER_2D_RECT_SHADOW,
-    INT_SAMPLER_1D = GL_INT_SAMPLER_1D,
-    INT_SAMPLER_2D = GL_INT_SAMPLER_2D,
-    INT_SAMPLER_3D = GL_INT_SAMPLER_3D,
-    INT_SAMPLER_CUBE = GL_INT_SAMPLER_CUBE,
-    INT_SAMPLER_1D_ARRAY = GL_INT_SAMPLER_1D_ARRAY,
-    INT_SAMPLER_2D_ARRAY = GL_INT_SAMPLER_2D_ARRAY,
-    INT_SAMPLER_CUBE_MAP_ARRAY = GL_INT_SAMPLER_CUBE_MAP_ARRAY,
-    INT_SAMPLER_2D_MULTISAMPLE = GL_INT_SAMPLER_2D_MULTISAMPLE,
-    INT_SAMPLER_2D_MULTISAMPLE_ARRAY = GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY,
-    INT_SAMPLER_BUFFER = GL_INT_SAMPLER_BUFFER,
-    INT_SAMPLER_2D_RECT = GL_INT_SAMPLER_2D_RECT,
-    UNSIGNED_INT_SAMPLER_1D = GL_UNSIGNED_INT_SAMPLER_1D,
-    UNSIGNED_INT_SAMPLER_2D = GL_UNSIGNED_INT_SAMPLER_2D,
-    UNSIGNED_INT_SAMPLER_3D = GL_UNSIGNED_INT_SAMPLER_3D,
-    UNSIGNED_INT_SAMPLER_CUBE = GL_UNSIGNED_INT_SAMPLER_CUBE,
-    UNSIGNED_INT_SAMPLER_1D_ARRAY = GL_UNSIGNED_INT_SAMPLER_1D_ARRAY,
-    UNSIGNED_INT_SAMPLER_2D_ARRAY = GL_UNSIGNED_INT_SAMPLER_2D_ARRAY,
-    UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY = GL_UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY,
-    UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE = GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE,
-    UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY = GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY,
-    UNSIGNED_INT_SAMPLER_BUFFER = GL_UNSIGNED_INT_SAMPLER_BUFFER,
-    UNSIGNED_INT_SAMPLER_2D_RECT = GL_UNSIGNED_INT_SAMPLER_2D_RECT,
-    IMAGE_1D = GL_IMAGE_1D,
-    IMAGE_2D = GL_IMAGE_2D,
-    IMAGE_3D = GL_IMAGE_3D,
-    IMAGE_2D_RECT = GL_IMAGE_2D_RECT,
-    IMAGE_CUBE = GL_IMAGE_CUBE,
-    IMAGE_BUFFER = GL_IMAGE_BUFFER,
-    IMAGE_1D_ARRAY = GL_IMAGE_1D_ARRAY,
-    IMAGE_2D_ARRAY = GL_IMAGE_2D_ARRAY,
-    IMAGE_CUBE_MAP_ARRAY = GL_IMAGE_CUBE_MAP_ARRAY,
-    IMAGE_2D_MULTISAMPLE = GL_IMAGE_2D_MULTISAMPLE,
-    IMAGE_2D_MULTISAMPLE_ARRAY = GL_IMAGE_2D_MULTISAMPLE_ARRAY,
-    INT_IMAGE_1D = GL_INT_IMAGE_1D,
-    INT_IMAGE_2D = GL_INT_IMAGE_2D,
-    INT_IMAGE_3D = GL_INT_IMAGE_3D,
-    INT_IMAGE_2D_RECT = GL_INT_IMAGE_2D_RECT,
-    INT_IMAGE_CUBE = GL_INT_IMAGE_CUBE,
-    INT_IMAGE_BUFFER  = GL_INT_IMAGE_BUFFER ,
-    INT_IMAGE_1D_ARRAY = GL_INT_IMAGE_1D_ARRAY,
-    INT_IMAGE_2D_ARRAY = GL_INT_IMAGE_2D_ARRAY,
-    INT_IMAGE_CUBE_MAP_ARRAY = GL_INT_IMAGE_CUBE_MAP_ARRAY,
-    INT_IMAGE_2D_MULTISAMPLE = GL_INT_IMAGE_2D_MULTISAMPLE,
-    INT_IMAGE_2D_MULTISAMPLE_ARRAY = GL_INT_IMAGE_2D_MULTISAMPLE_ARRAY,
-    UNSIGNED_INT_IMAGE_1D = GL_UNSIGNED_INT_IMAGE_1D,
-    UNSIGNED_INT_IMAGE_2D = GL_UNSIGNED_INT_IMAGE_2D,
-    UNSIGNED_INT_IMAGE_3D = GL_UNSIGNED_INT_IMAGE_3D,
-    UNSIGNED_INT_IMAGE_2D_RECT = GL_UNSIGNED_INT_IMAGE_2D_RECT,
-    UNSIGNED_INT_IMAGE_CUBE  = GL_UNSIGNED_INT_IMAGE_CUBE ,
-    UNSIGNED_INT_IMAGE_BUFFER = GL_UNSIGNED_INT_IMAGE_BUFFER,
-    UNSIGNED_INT_IMAGE_1D_ARRAY = GL_UNSIGNED_INT_IMAGE_1D_ARRAY,
-    UNSIGNED_INT_IMAGE_2D_ARRAY = GL_UNSIGNED_INT_IMAGE_2D_ARRAY,
-    UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY = GL_UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY,
-    UNSIGNED_INT_IMAGE_2D_MULTISAMPLE = GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE,
-    UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY = GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY,
-    UNSIGNED_INT_ATOMIC_COUNTER = GL_UNSIGNED_INT_ATOMIC_COUNTER
 };
 
 enum class gl_uniform_type : GLenum
@@ -313,7 +174,7 @@ public:
 	 * (3) introspection
 	 * (4) state setting
 	 */
-    void construct(const std::vector<std::shared_ptr<gl_shader>>& shaders)
+    void construct(const std::vector<std::shared_ptr<gl_shader>>& shaders) noexcept
     {
         // attach shaders
         for (const auto& _shader : shaders)
@@ -347,7 +208,7 @@ public:
      * check the program state, and bind the program to current context,
      * there is only one program can be bound to context at the same time
      * */
-    void enable()
+    void enable() noexcept
     {
 	    if(glIsProgram(_handle))
         {
@@ -358,7 +219,7 @@ public:
     /*
      * unbind the program from current context
      * */
-	void disable()
+	void disable() noexcept
     {
 	    if(glIsProgram(_handle))
 	        glUseProgram(0);
@@ -1117,29 +978,7 @@ private:
 	{
 		glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
 	}
-	void _unbind_uniform_buffers()
-	{
-		// clear all uniform buffers binding is too expensive
-		// use the stored ids
-		for (std::int32_t i = 0; i < _uniform_buffers.size(); ++i)
-		{
-			glBindBufferBase(GL_UNIFORM_BUFFER, i, 0);
-		}
-	}
-	void _unbind_shader_storage_buffers()
-	{
-		for (std::int32_t i = 0; i < _shader_storage_buffers.size(); ++i)
-		{
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, i, 0);
-		}
-	}
-	void _unbind_atomic_counter_buffers()
-	{
-		for (std::uint32_t i = 0; i < _atomic_counter_buffers.size(); ++i)
-		{
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, i, 0);
-		}
-	}
+	
 	void _unbind_framebuffer()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -1149,7 +988,7 @@ public:
 
 	void generate_uniform_buffer_layout(const std::string& block_name)
 	{
-		std::vector<GLchar*> _names = {};
+		std::vector<char*> _names = {};
 		std::vector<GLuint> _indices(_names.size());
 		std::vector<GLint> _offsets(_names.size());
 		// get block size

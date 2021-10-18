@@ -2,7 +2,7 @@
 #define GL_TEXTURE_H
 
 #include "graphics/resource/glo/gl_object.h"
-#include "graphics/resource/buffers/gl_buffer.h"
+#include "graphics/resource/buffers/raw_buffer/gl_buffer.h"
 #include "gl_pixels.h"
 
 enum class parameter : GLenum
