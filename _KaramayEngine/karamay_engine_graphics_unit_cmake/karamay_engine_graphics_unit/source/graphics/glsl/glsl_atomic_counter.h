@@ -22,15 +22,14 @@ public:
 
     bool dirty;
 
-    void set(std::uint32_t value)
+    std::uint8_t* data()
     {
-        _value = value;
-        dirty = true;
+        return reinterpret_cast<std::uint8_t*>(&_value);
     }
 
-    [[nodiscard]] std::uint32_t get() const noexcept
+    const std::uint8_t* data() const
     {
-        return _value;
+        return reinterpret_cast<const std::uint8_t*>(&_value);
     }
 
 public:

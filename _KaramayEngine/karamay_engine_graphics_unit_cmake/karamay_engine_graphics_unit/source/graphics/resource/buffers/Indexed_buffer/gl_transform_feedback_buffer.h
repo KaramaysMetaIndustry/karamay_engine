@@ -6,6 +6,7 @@
 
 // 0xFC807e12026BedD66DD1f6e853fd93beBEA66558
 struct gl_transform_feedback_buffer_descriptor{
+
 };
 
 class gl_transform_feedback_buffer {

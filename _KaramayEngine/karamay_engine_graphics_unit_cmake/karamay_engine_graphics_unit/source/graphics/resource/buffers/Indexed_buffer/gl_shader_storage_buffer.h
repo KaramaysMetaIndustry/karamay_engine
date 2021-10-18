@@ -53,7 +53,9 @@ public:
                 _initialization_size,
                 [this](std::uint8_t* data, std::int64_t size){
                     if(!data || size < 0) return;
-
+                    // make sure the padding initialized by zero
+                    std::memset(data, 0, size);
+                    // fill the block data
                     for(const auto& _layout : _layouts)
                     {
                         std::memcpy(data + _layout.offset, _layout.block->data(), _layout.block->size());

@@ -4,6 +4,7 @@
 #include "glsl_class.h"
 #include "glsl_sampler.h"
 #include "glsl_image.h"
+#include "glsl_in_block.h"
 #include "glsl_out_block.h"
 #include "glsl_atomic_counter.h"
 #include "glsl_uniform_block.h"

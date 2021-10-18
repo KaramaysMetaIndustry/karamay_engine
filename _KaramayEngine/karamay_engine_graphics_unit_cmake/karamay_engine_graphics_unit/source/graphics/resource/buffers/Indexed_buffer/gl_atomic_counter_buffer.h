@@ -15,9 +15,9 @@ struct gl_atomic_counter_buffer_descriptor{
 class gl_atomic_counter_buffer final {
 public:
     struct gl_atomic_counter_layout{
-        std::shared_ptr<glsl_atomic_counter_t> atomic_counter;
         std::uint32_t binding;
         std::int32_t offset;
+        std::shared_ptr<glsl_atomic_counter_t> atomic_counter;
     };
 
 public:
@@ -31,7 +31,7 @@ public:
             const auto& _atomic_counter = descriptor.atomic_counters[_idx];
             if(_atomic_counter)
             {
-                _layout_infos.push_back({_atomic_counter, _idx, static_cast<std::int32_t>(_idx * 4)});
+                _layouts.push_back({_idx, static_cast<std::int32_t>(_idx * 4), _atomic_counter});
                 _initialization_size += 4;
             }
         }
@@ -49,13 +49,10 @@ public:
         {
             if(!data || size < 0) return;
             //std::memset(data, 0, size); //no padding
-            std::vector<std::uint32_t> _counters(_layout_infos.size());
-            for(const auto& _binding_info : _layout_infos)
+            for(const auto& _layout : _layouts)
             {
-                _counters.push_back(_binding_info.atomic_counter->get());
+                std::memcpy(data + _layout.offset, _layout.atomic_counter->data(), 4);
             }
-            // cpy
-            std::memcpy(data, _counters.data(), 4 * _counters.size());
         });
     }
 
@@ -67,12 +64,12 @@ public:
     {
         if(!_buffer) return;
 
-        for(const auto& _layout_info: _layout_infos)
+        for(const auto& _layout: _layouts)
         {
             glBindBufferRange(GL_ATOMIC_COUNTER_BUFFER,
-                              _layout_info.binding,
+                              _layout.binding,
                               _buffer->get_handle(),
-                              _layout_info.offset, 4
+                              _layout.offset, 4
             );
         }
     }
@@ -84,11 +81,47 @@ public:
         glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0);
     }
 
+    void upload()
+    {
+        if(!_buffer) return;
+
+        for(const auto& _layout : _layouts)
+        {
+            if(_layout.atomic_counter && _layout.atomic_counter->dirty)
+            {
+                _buffer->execute_mapped_memory_writer(
+                        _layout.offset,
+                        4,
+                        [_layout](std::uint8_t* data, std::int64_t size){
+                            std::memcpy(data, _layout.atomic_counter->data(), 4);
+                        });
+            }
+        }
+    }
+
+    void download()
+    {
+        if(!_buffer) return;
+
+        for(const auto& _layout : _layouts)
+        {
+            if(_layout.atomic_counter && _layout.atomic_counter->dirty)
+            {
+                _buffer->execute_mapped_memory_reader(
+                        _layout.offset,
+                        4,
+                        [_layout](const std::uint8_t* data, std::int64_t size){
+                            std::memcpy(_layout.atomic_counter->data(), data, 4);
+                        });
+            }
+        }
+    }
+
 private:
 
     std::unique_ptr<gl_buffer> _buffer;
 
-    std::vector<gl_atomic_counter_layout> _layout_infos;
+    std::vector<gl_atomic_counter_layout> _layouts;
 
 };
 
