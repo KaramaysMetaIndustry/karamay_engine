@@ -6,10 +6,6 @@
 
 class gl_particle_system_renderer : public gl_renderer {
 
-    void assembly() override;
-
-    void render(std::float_t delta_time) override;
-
 };
 
 

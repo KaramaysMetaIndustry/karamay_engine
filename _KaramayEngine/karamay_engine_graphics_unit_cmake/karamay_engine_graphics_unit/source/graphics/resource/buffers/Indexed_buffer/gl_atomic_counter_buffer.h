@@ -2,7 +2,7 @@
 #define GL_ATOMIC_COUNTER_BUFFER_H
 
 #include "graphics/resource/buffers/raw_buffer/gl_buffer.h"
-#include "graphics/glsl/glsl_atomic_counter.h"
+#include "graphics/glsl/opaque_t/glsl_atomic_counter.h"
 
 /*
  * constructed by pipeline

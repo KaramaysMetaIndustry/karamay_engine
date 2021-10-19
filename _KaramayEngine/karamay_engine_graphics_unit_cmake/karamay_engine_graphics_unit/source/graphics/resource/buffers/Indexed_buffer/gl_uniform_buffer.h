@@ -2,7 +2,7 @@
 #define GL_UNIFORM_BUFFER_H
 
 #include "graphics/resource/buffers/raw_buffer/gl_buffer.h"
-#include "graphics/glsl/glsl_uniform_block.h"
+#include "graphics/glsl/interface_block/glsl_uniform_block.h"
 
 struct gl_uniform_buffer_descriptor{
     std::vector<std::shared_ptr<glsl_uniform_block_t>> uniform_blocks;

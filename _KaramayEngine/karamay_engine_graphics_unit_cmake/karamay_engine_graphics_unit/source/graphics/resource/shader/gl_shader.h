@@ -13,45 +13,11 @@ enum class gl_shader_type : GLenum
 	COMPUTE_SHADER = GL_COMPUTE_SHADER
 };
 
-namespace gl_shader_enum
-{
-
-//	std::string enum_to_string(gl_shader_enum::type shader_type)
-//    {
-//        switch (shader_type) {
-//            case type::VERTEX_SHADER:
-//                return std::string("VERTEX_SHADER");
-//            case type::TESS_CONTROL_SHADER:
-//                return std::string("TESS_CONTROL_SHADER");
-//            case type::TESS_EVALUATION_SHADER:
-//                return std::string("TESS_EVALUATION_SHADER");
-//            case type::GEOMETRY_SHADER:
-//                return std::string("GEOMETRY_SHADER");
-//            case type::FRAGMENT_SHADER:
-//                return std::string("FRAGMENT_SHADER");
-//            case type::COMPUTE_SHADER:
-//                return std::string("COMPUTE_SHADER");
-//            default:
-//                return std::string("UNKNOWN");
-//        }
-//    }
-//
-//    type string_to_enum(const std::string& shader_type)
-//    {
-//        if(shader_type == "VERTEX_SHADER") return gl_shader_enum::type::VERTEX_SHADER;
-//        if(shader_type == "TESS_CONTROL_SHADER") return gl_shader_enum::type::TESS_CONTROL_SHADER;
-//        if(shader_type == "TESS_EVALUATION_SHADER") return gl_shader_enum::type::TESS_EVALUATION_SHADER;
-//        if(shader_type == "GEOMETRY_SHADER") return gl_shader_enum::type::GEOMETRY_SHADER;
-//        if(shader_type == "FRAGMENT_SHADER") return gl_shader_enum::type::FRAGMENT_SHADER;
-//        return gl_shader_enum::type::UNKNOWN;
-//    }
-}
-
 class gl_shader : public gl_object{
 public:
 	gl_shader() = default;
 
-	~gl_shader() override;
+	~gl_shader() override = default;
 
 public:
 

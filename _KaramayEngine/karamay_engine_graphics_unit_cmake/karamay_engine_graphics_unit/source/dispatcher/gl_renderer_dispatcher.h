@@ -20,7 +20,6 @@ public:
     {
         if(renderer)
         {
-            renderer->assembly();
         }
     }
 

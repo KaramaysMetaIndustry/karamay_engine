@@ -2,8 +2,8 @@
 #define H_GL_VERTEX_ARRAY
 
 #include "graphics/resource/glo/gl_object.h"
+#include "graphics/glsl/interface_block/glsl_in_block.h"
 #include "graphics/resource/buffers/common_buffer/gl_array_buffer.h"
-#include "graphics/glsl/glsl_in_block.h"
 
 enum class gl_primitive_type
 {
@@ -255,11 +255,11 @@ public:
 
         for(const auto& _item : list)
         {
-            auto _it = _instance_attribute_layout.find(std::get<0>(_item));
+            /*auto _it = _instance_attribute_layout.find(std::get<0>(_item));
             if(_it == _instance_attribute_layout.cend()) return;
             std::int64_t _instance_attribute_list_offset = _it->second.offset;
             std::int64_t _instance_attribute_offset = _instance_attribute_list_offset + std::get<1>(_item) * std::get<2>(_item)->clazz()->class_size;
-            _baked_list.push_back(std::make_pair(_instance_attribute_offset, std::get<2>(_item)));
+            _baked_list.push_back(std::make_pair(_instance_attribute_offset, std::get<2>(_item)));*/
         }
 
         if(_instance_attribute_buffer)
@@ -295,15 +295,15 @@ private:
 
 private:
 
-    void _generate_attribute_layout();
+    void _generate_attribute_layout() {}
 
-    void _set_vertex_pointers(gl_attribute_component::type attribute_component_type, std::uint32_t  index, std::uint32_t components_count,std::uint32_t attribute_size, std::uint32_t offset);
+    void _set_vertex_pointers(gl_attribute_component::type attribute_component_type, std::uint32_t  index, std::uint32_t components_count, std::uint32_t attribute_size, std::uint32_t offset) {}
 
 public:
 
-	void enable_pointers();
+    void enable_pointers() {}
 
-	void disable_pointers();
+    void disable_pointers() {}
 
 public:
 	// default false

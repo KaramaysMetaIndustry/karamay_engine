@@ -376,18 +376,6 @@ MessageCallback( GLenum source,
 
 void test0()
 {
-    gl_vertex_array a(
-            {
-                    {"vec2", "uv"},
-                    {"vec3", "position"},
-                    {"vec4", "colors"}
-            },
-            {
-                    {"vec2", "instance_uv_offset", 3},
-                    {"vec3", "instance_position_offset", 2}
-            });
-    a.reallocate_attributes();
-
 	auto* window = new glfw_window();
 	window->load_context();
 	
@@ -395,10 +383,8 @@ void test0()
 	glewInit();
 
 	glViewport(0, 0, window->get_framebuffer_width(), window->get_framebuffer_height());
-
-
     // During init, enable debug output
-    glEnable              ( GL_DEBUG_OUTPUT );
+    glEnable( GL_DEBUG_OUTPUT );
     glDebugMessageCallback( MessageCallback, 0 );
 
 //	std::vector<glv::f32vec3> positions{
@@ -430,19 +416,6 @@ void test0()
 
 	// uniforms
 	// textures
-
-	auto ebo = std::make_shared<gl_element_array_buffer>();
-
-    std::shared_ptr<gl_program> program = std::make_shared<gl_program>();
-
-	program->construct({
-		"shaders/test.vert",
-		"shaders/test.frag" });
-
-	program->set_framebuffer();
-	program->set_commands([] {
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-		});
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //GL_FILL GL_POINT
 	//glFrontFace(GL_CW);//default ��ʱ�� GL_CW ˳ʱ��
@@ -476,7 +449,6 @@ void test0()
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClear(GL_COLOR_BUFFER_BIT);
 		
-		program->render(0.0f);
 		window->tick(0.0f);
 
 //		if(i%2 == 0)

@@ -4,12 +4,3 @@
 
 #include "gl_instanced_static_mesh_renderer.h"
 
-void gl_instanced_static_mesh_renderer::assembly()
-{
-
-}
-
-void gl_instanced_static_mesh_renderer::render(std::float_t delta_time)
-{
-
-}

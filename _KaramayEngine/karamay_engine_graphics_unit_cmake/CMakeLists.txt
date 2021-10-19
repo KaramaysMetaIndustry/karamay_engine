@@ -535,17 +535,17 @@ karamay_engine_graphics_unit/source/graphics/resource/buffers/Indexed_buffer/gl_
 karamay_engine_graphics_unit/source/graphics/resource/buffers/Indexed_buffer/gl_transform_feedback_buffer.h 
 "karamay_engine_graphics_unit/source/graphics/resource/buffers/common_buffer/gl_element_buffer.h" 
 karamay_engine_graphics_unit/source/graphics/glsl/glsl_shader.h 
-karamay_engine_graphics_unit/source/graphics/glsl/glsl_sampler.h 
-karamay_engine_graphics_unit/source/graphics/glsl/glsl_image.h 
-karamay_engine_graphics_unit/source/graphics/glsl/glsl_out_block.h 
-karamay_engine_graphics_unit/source/graphics/glsl/glsl_atomic_counter.h 
-karamay_engine_graphics_unit/source/graphics/glsl/glsl_uniform_block.h 
-karamay_engine_graphics_unit/source/graphics/glsl/glsl_shader_storage_block.h 
+"karamay_engine_graphics_unit/source/graphics/glsl/opaque_t/glsl_sampler.h" 
+"karamay_engine_graphics_unit/source/graphics/glsl/opaque_t/glsl_image.h" 
+"karamay_engine_graphics_unit/source/graphics/glsl/interface_block/glsl_out_block.h" 
+"karamay_engine_graphics_unit/source/graphics/glsl/opaque_t/glsl_atomic_counter.h" 
+"karamay_engine_graphics_unit/source/graphics/glsl/interface_block/glsl_uniform_block.h" 
+"karamay_engine_graphics_unit/source/graphics/glsl/interface_block/glsl_shader_storage_block.h" 
 "karamay_engine_graphics_unit/source/graphics/resource/buffers/common_buffer/gl_array_buffer.h" 
 "karamay_engine_graphics_unit/source/graphics/resource/buffers/common_buffer/gl_query_buffer.h" 
 "karamay_engine_graphics_unit/source/graphics/resource/buffers/indirect_buffer/gl_draw_indirect_buffer.h" 
 "karamay_engine_graphics_unit/source/graphics/resource/buffers/indirect_buffer/gl_dispatch_indirect_buffer.h" 
-karamay_engine_graphics_unit/source/graphics/glsl/glsl_in_block.h
+"karamay_engine_graphics_unit/source/graphics/glsl/interface_block/glsl_in_block.h"
  "karamay_engine_graphics_unit/source/graphics/resource/query/gl_query.h" "karamay_engine_graphics_unit/source/graphics/resource/query/gl_query.cpp" )
 
 target_link_libraries(karamay_engine_graphics_unit glew32s.lib glfw3.lib)

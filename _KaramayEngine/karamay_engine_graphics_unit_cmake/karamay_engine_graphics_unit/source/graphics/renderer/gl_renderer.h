@@ -13,19 +13,6 @@ class gl_compute_pipeline;
 class gl_renderer_builder{
 public:
     gl_renderer_builder() = default;
-
-public:
-
-    std::shared_ptr<gl_graphics_pipeline> build_graphics_pipeline(const gl_graphics_pipeline_descriptor& descriptor)
-    {
-        return std::make_shared<gl_graphics_pipeline>(descriptor);
-    }
-
-    std::shared_ptr<gl_compute_pipeline> build_compute_pipeline(const gl_compute_pipeline_descriptor& descriptor)
-    {
-        return std::make_shared<gl_compute_pipeline>(descriptor);
-    }
-
 };
 
 /*
@@ -33,8 +20,7 @@ public:
 * 
 * 
 */
-class gl_renderer
-{
+class gl_renderer{
 public:
 
     gl_renderer(){}
@@ -78,8 +64,6 @@ private:
     std::string _renderer_name; 
 
     gl_renderer_builder _renderer_builder;
-
-    std::vector<std::shared_ptr<gl_pipeline>> _pipelines;
 
     std::vector<_pass_lambda> _passes;
 

@@ -2,7 +2,7 @@
 #define GL_SHADER_STORAGE_BUFFER_H
 
 #include "graphics/resource/buffers/raw_buffer/gl_buffer.h"
-#include "graphics/glsl/glsl_shader_storage_block.h"
+#include "graphics/glsl/interface_block/glsl_shader_storage_block.h"
 
 struct gl_shader_storage_buffer_descriptor{
     std::vector<std::shared_ptr<glsl_shader_storage_block_t>> shader_storage_blocks;

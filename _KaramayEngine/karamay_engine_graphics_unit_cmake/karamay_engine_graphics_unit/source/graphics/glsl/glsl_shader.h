@@ -1,17 +1,18 @@
 #ifndef GLSL_SHADER_H
 #define GLSL_SHADER_H
 
-#include "glsl_class.h"
-#include "glsl_sampler.h"
-#include "glsl_image.h"
-#include "glsl_in_block.h"
-#include "glsl_out_block.h"
-#include "glsl_atomic_counter.h"
-#include "glsl_uniform_block.h"
-#include "glsl_shader_storage_block.h"
+#include "graphics/glsl/interface_block/glsl_in_block.h"
+#include "graphics/glsl/interface_block/glsl_out_block.h"
+#include "graphics/glsl/interface_block/glsl_uniform_block.h"
+#include "graphics/glsl/interface_block/glsl_shader_storage_block.h"
+#include "graphics/glsl/opaque_t/glsl_atomic_counter.h"
+#include "graphics/glsl/opaque_t/glsl_image.h"
+#include "graphics/glsl/opaque_t/glsl_sampler.h"
 
-class glsl_shader
-{
+class glsl_shader{
+public:
+    glsl_shader() = default;
+
     std::vector<std::shared_ptr<glsl_uniform_block_t>> uniform_blocks;
     std::vector<std::shared_ptr<glsl_shader_storage_block_t>> shader_storage_blocks;
     std::vector<std::shared_ptr<glsl_atomic_counter_t>> atomic_counters;
