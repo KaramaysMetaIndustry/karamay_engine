@@ -195,13 +195,11 @@ public:
     gl_vertex_array(
             std::int64_t vertex_count, const std::vector<gl_vertex_attribute_descriptor>& vertex_attribute_descriptors,
             std::int32_t instance_count, const std::vector<gl_instance_attribute_descriptor>& instance_attribute_descriptors) :
+            gl_object(gl_object_type::VERTEX_ARRAY_OBJ),
             _vertex_count(vertex_count),
             _instance_count(instance_count)
     {
         glCreateVertexArrays(1, &_handle);
-    }
-    gl_vertex_array(const gl_vertex_array_descriptor& descriptor)
-    {
     }
 
     gl_vertex_array(const gl_vertex_array&) = delete;

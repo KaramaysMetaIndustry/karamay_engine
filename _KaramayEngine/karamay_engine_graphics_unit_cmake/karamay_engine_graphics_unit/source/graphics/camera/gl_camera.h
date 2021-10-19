@@ -1,5 +1,5 @@
-#ifndef H_GL_CAMERA
-#define H_GL_CAMERA
+#ifndef GL_CAMERA_H
+#define GL_CAMERA_H
 
 #include "public/_glew.h"
 #include "public/glm.h"

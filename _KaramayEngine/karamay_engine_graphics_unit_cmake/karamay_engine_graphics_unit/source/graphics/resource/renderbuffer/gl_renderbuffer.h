@@ -16,11 +16,13 @@ struct gl_renderbuffer_descriptor
 class gl_renderbuffer final : public gl_object{
 public:
     gl_renderbuffer() = delete;
-    explicit gl_renderbuffer(const gl_renderbuffer_descriptor& descriptor)
+    explicit gl_renderbuffer(const gl_renderbuffer_descriptor& descriptor) :
+        gl_object(gl_object_type::RENDERBUFFER_OBJ)
     {}
 
 	gl_renderbuffer(std::int32_t width, std::int32_t height, gl_renderbuffer_internal_format internal_format) :
-		_width(width),
+        gl_object(gl_object_type::RENDERBUFFER_OBJ),
+        _width(width),
 		_height(height),
 		_internal_format(internal_format)
 	{
@@ -70,10 +72,12 @@ struct gl_renderbuffer_multisample_descriptor
 class gl_renderbuffer_multisample final : public gl_object{
 public:
 
-    gl_renderbuffer_multisample(const gl_renderbuffer_multisample_descriptor& descriptor)
+    gl_renderbuffer_multisample(const gl_renderbuffer_multisample_descriptor& descriptor) :
+        gl_object(gl_object_type::RENDERBUFFER_OBJ)
     {}
 
     gl_renderbuffer_multisample(std::int32_t samples_count, std::int32_t width, std::int32_t height, gl_renderbuffer_internal_format internal_format) :
+        gl_object(gl_object_type::RENDERBUFFER_OBJ),
         _samples_count(samples_count),
         _width(width),
         _height(height),

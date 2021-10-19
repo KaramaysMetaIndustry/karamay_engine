@@ -1,5 +1,5 @@
-#ifndef H_GL_COMMANDS
-#define H_GL_COMMANDS
+#ifndef GL_COMMANDS_H
+#define GL_COMMANDS_H
 
 #include "graphics/resource/glo/gl_object.h"
 

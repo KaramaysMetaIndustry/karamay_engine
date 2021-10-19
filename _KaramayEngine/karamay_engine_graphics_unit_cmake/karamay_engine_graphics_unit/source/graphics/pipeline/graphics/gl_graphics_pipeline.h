@@ -89,20 +89,6 @@ enum class gl_primitive_mode
 
 };
 
-
-enum class shader_combination_flag : std::uint8_t
-{
-    _vs,
-    _vs_tescs_teses,
-    _vs_tescs_teses_gs,
-
-    _vs_fs,
-    _vs_gs_fs,
-    _vs_tescs_teses_fs,
-    _vs_tescs_teses_gs_fs,
-
-};
-
 /*
  * for dynamical modifying
  * */
@@ -110,7 +96,6 @@ struct gl_graphics_pipeline_state
 {
     struct gl_vertex_assembly
     {
-        struct gl_vertex_specification{} specification;
         struct gl_primitive_restart
         {
             bool enabled;
@@ -120,22 +105,8 @@ struct gl_graphics_pipeline_state
     } vertex_assembly; // organize vertex stream
     struct gl_vertex_processing
     {
-        struct gl_vertex_shading
-        {
-        }vertex_shading;
-        struct gl_tessellation
-        {
-        } tessellation;
-        struct gl_geometry_shading
-        {
-        } geometry_shading;
         struct gl_post_vertex_processing
         {
-            struct gl_transform_feedback
-            {
-
-                std::string semantic_name;
-            } transform_feedback;
             struct gl_flatshading
             {
                 gl_provoke_mode provoke_mode;
@@ -184,15 +155,11 @@ struct gl_graphics_pipeline_state
             } scissor_test;
             struct gl_multisample_fragment_operations {} multisample_fragment_operations;
         } pre_fragment_operations;
-        struct gl_fragment_shading
-        {
-        } fragment_shading;
         struct gl_post_fragment_operations
         {
             struct gl_alpha_to_coverage
             {
                 bool enabled;
-
             } alpha_to_coverage;
             struct gl_advanceable_operations
             {
@@ -219,11 +186,9 @@ struct gl_graphics_pipeline_state
             } advanceable_operations;
             struct gl_blending
             {
-
             } blending;
             struct gl_srgb_conversion
             {
-
             } srgb_conversion;
             struct gl_dithering
             {
@@ -242,14 +207,7 @@ struct gl_graphics_pipeline_state
             } additional_multisample_fragment_operations;
         } post_fragment_operations;
     } fragment_processing; // process fragments
-    struct gl_render_target
-    {
-        //std::shared_ptr<gl_framebuffer> framebuffer;
-    } render_target;
 };
-
-struct gl_vertex_stream
-{};
 
 /*
  * descriptor for graphics pipeline construction
@@ -278,7 +236,7 @@ struct gl_graphics_pipeline_descriptor{
     // optional transform feedback 
     std::shared_ptr<gl_transform_feedback> tramsform_feedback;
     // where program final color output
-    std::shared_ptr<gl_framebuffer> framebuffer; 
+    std::shared_ptr<gl_framebuffer> framebuffer;
 
     gl_graphics_pipeline_descriptor() : 
         state(nullptr), 
@@ -381,8 +339,7 @@ private:
         if (_glsl_vs)
         {
            
-            auto _vs = std::make_shared<gl_shader>();
-            _vs->load("");
+            auto _vs = std::make_shared<gl_shader>(gl_shader_type::VERTEX_SHADER, "");
             _shaders.push_back(_vs);
             _glsl_shaders.push_back(_glsl_vs);
         }
@@ -390,8 +347,8 @@ private:
         const auto& _glsl_tess = descriptor->program.tessellation_shader;
         if (_glsl_tess)
         {
-            auto _tesc = std::make_shared<gl_shader>();
-            auto _tese = std::make_shared<gl_shader>();
+            auto _tesc = std::make_shared<gl_shader>(gl_shader_type::TESS_CONTROL_SHADER, "");
+            auto _tese = std::make_shared<gl_shader>(gl_shader_type::TESS_EVALUATION_SHADER, "");
 
             _shaders.push_back(_tesc);
             _shaders.push_back(_tese);
@@ -401,7 +358,7 @@ private:
         const auto& _glsl_gs = descriptor->program.geometry_shader;
         if (_glsl_gs)
         {
-            auto _gs = std::make_shared<gl_shader>();
+            auto _gs = std::make_shared<gl_shader>(gl_shader_type::GEOMETRY_SHADER, "");
 
             _shaders.push_back(_gs);
             _glsl_shaders.push_back(_glsl_gs);
@@ -410,7 +367,7 @@ private:
         const auto& _glsl_fs = descriptor->program.fragment_shader;
         if (_glsl_fs)
         {
-            auto _fs = std::make_shared<gl_shader>();
+            auto _fs = std::make_shared<gl_shader>(gl_shader_type::FRAGMENT_SHADER, "");
             _shaders.push_back(_fs);
             _glsl_shaders.push_back(_glsl_fs);
         }
@@ -462,16 +419,25 @@ private:
 
     std::shared_ptr<const gl_graphics_pipeline_descriptor> _descriptor;
 
-    //std::unique_ptr<gl_element_array_buffer> _element_array_buffer;
+    struct gl_graphics_pipeline_resource_pool{
+
+        std::unique_ptr<gl_uniform_buffer> uniform_buffer;
+        std::unique_ptr<gl_shader_storage_buffer> shader_storage_buffer;
+        std::unique_ptr<gl_atomic_counter_buffer> atomic_counter_buffer;
+        
+        std::vector<std::shared_ptr<glsl_sampler_t>> _samplers;
+        std::vector<std::shared_ptr<glsl_image_t>> _images;
+        
+        std::shared_ptr<gl_transform_feedback> transform_feedback;
+
+        std::shared_ptr<gl_framebuffer> framebuffer;
+
+    } _resource_pool;
+
     std::unique_ptr<gl_uniform_buffer> _uniform_buffer;
     std::unique_ptr<gl_shader_storage_buffer> _shader_storage_buffer;
     std::unique_ptr<gl_atomic_counter_buffer> _atomic_counter_buffer;
-    //std::shared_ptr<gl_transform_feedback_buffer> _transform_feedback_buffer;
-
-    //std::vector<std::shared_ptr<glsl_sampler_t>> _samplers;
-    //std::vector<std::shared_ptr<glsl_image_t>> _images;
-
-    //std::shared_ptr<gl_framebuffer> framebuffer;
+ 
 
 private:
 

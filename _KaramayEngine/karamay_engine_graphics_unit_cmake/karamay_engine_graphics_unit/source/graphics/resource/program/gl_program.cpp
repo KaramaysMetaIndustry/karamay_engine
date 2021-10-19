@@ -1,15 +1,6 @@
 #include "gl_program.h"
 
 
-gl_program::gl_program()
-{
-	_handle = glCreateProgram();
-}
-
-gl_program::~gl_program()
-{
-	glDeleteProgram(_handle);
-}
 
 void gl_program::render(std::float_t delta_time)
 {

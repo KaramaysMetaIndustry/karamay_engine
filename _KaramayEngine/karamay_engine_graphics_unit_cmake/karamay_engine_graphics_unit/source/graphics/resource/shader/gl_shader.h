@@ -15,13 +15,18 @@ enum class gl_shader_type : GLenum
 
 class gl_shader : public gl_object{
 public:
-	gl_shader() = default;
+	gl_shader() = delete;
+	gl_shader(gl_shader_type shader_type, const std::string& shader_path) :
+		gl_object(gl_object_type::SHADER_OBJ)
+	{
+		_load(shader_path);
+	}
 
 	~gl_shader() override = default;
 
-public:
+private:
 
-	void load(const std::string& path)
+	void _load(const std::string& path)
 	{
 		auto _suffix = path.substr(path.find_last_of('.'));
 		std::uint32_t _shader_type = 0;

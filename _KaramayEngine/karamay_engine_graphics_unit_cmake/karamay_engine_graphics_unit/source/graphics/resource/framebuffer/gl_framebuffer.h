@@ -6,6 +6,9 @@
 #include "graphics/resource/renderbuffer/gl_renderbuffer.h"
 
 class gl_framebuffer_base : public gl_object{
+protected:
+    gl_framebuffer_base() : gl_object(gl_object_type::FRAMEBUFFER_OBJ) {}
+
 public:
     virtual void bind() = 0;
     virtual void unbind() = 0;

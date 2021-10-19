@@ -87,6 +87,7 @@ public:
 protected:
 
     gl_texture_t(gl_texture_type type, const gl_texture_parameters& parameters):
+		gl_object(gl_object_type::TEXTURE_OBJ),
 		_type(type),
 		_unit(0),
         _parameters(parameters)

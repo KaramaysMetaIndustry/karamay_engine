@@ -12,7 +12,8 @@ public:
 class gl_transform_feedback final : public gl_object{
 public:
 	gl_transform_feedback() = delete;
-	explicit gl_transform_feedback(const std::shared_ptr<gl_transform_feedback_descriptor>& descriptor)
+	explicit gl_transform_feedback(const std::shared_ptr<gl_transform_feedback_descriptor>& descriptor) :
+		gl_object(gl_object_type::TRANSFORM_FEEDBACK_OBJ)
 	{
 		glCreateTransformFeedbacks(1, &_handle);
 	}
@@ -42,14 +43,6 @@ public:
 	}
 
 public:
-
-	void associate_buffer(std::uint32_t index, const std::shared_ptr<gl_buffer>& buffer)
-	{
-		if (index < GL_MAX_TRANSFORM_FEEDBACK_BUFFERS && buffer)
-		{
-			//glTransformFeedbackBufferBase(_handle, static_cast<GLuint>(index), buffer->get_handle());
-		}
-	}
 
 	void associate_buffer(std::uint32_t index, const std::shared_ptr<gl_buffer>& buffer, std::int64_t offset, std::int64_t size)
 	{

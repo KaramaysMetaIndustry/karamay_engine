@@ -30,15 +30,6 @@ public:
 
     bool is_dirty;
 
-    const std::string& token() const override
-    {
-        return _token;
-    }
-
-
-private:
-    std::string _token;
-
 };
 
 #endif

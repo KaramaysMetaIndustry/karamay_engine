@@ -16,39 +16,32 @@ enum gl_error : GLenum
     TABLE_TOO_LARGE = GL_TABLE_TOO_LARGE
 };
 
-namespace gl_object_enum
+enum class gl_object_type
 {
-	enum class type
-	{
-		NONE,
-		BUFFER_OBJ = GL_BUFFER,
-		SHADER_OBJ = GL_SHADER,
-		PROGRAM_OBJ = GL_PROGRAM,
-		VERTEX_ARRAY_OBJ = GL_VERTEX_ARRAY,
-		QUERY_OBJ = GL_QUERY,
-		PROGRAM_PIPELINE_OBJ = GL_PROGRAM_PIPELINE,
-		TRANSFORM_FEEDBACK_OBJ = GL_TRANSFORM_FEEDBACK,
-		SAMPLER_OBJ = GL_SAMPLER,
-		TEXTURE_OBJ = GL_TEXTURE,
-		RENDERBUFFER_OBJ = GL_RENDERBUFFER,
-		FRAMEBUFFER_OBJ = GL_FRAMEBUFFER
-	};
-}
+    BUFFER_OBJ = GL_BUFFER,
+    SHADER_OBJ = GL_SHADER,
+    PROGRAM_OBJ = GL_PROGRAM,
+    VERTEX_ARRAY_OBJ = GL_VERTEX_ARRAY,
+    QUERY_OBJ = GL_QUERY,
+    PROGRAM_PIPELINE_OBJ = GL_PROGRAM_PIPELINE,
+    TRANSFORM_FEEDBACK_OBJ = GL_TRANSFORM_FEEDBACK,
+    SAMPLER_OBJ = GL_SAMPLER,
+    TEXTURE_OBJ = GL_TEXTURE,
+    RENDERBUFFER_OBJ = GL_RENDERBUFFER,
+    FRAMEBUFFER_OBJ = GL_FRAMEBUFFER
+};
 
 class gl_object{
 protected:
-	gl_object():
-		_handle(0),
-		_type(gl_object_enum::type::NONE)
+    gl_object() = delete;
+	gl_object(gl_object_type object_type) : _handle(0), _type(object_type)
 	{}
-
-	virtual ~gl_object() = default;
-
-protected:
+	
+    virtual ~gl_object() = default;
 
 	std::uint32_t _handle;
 
-	gl_object_enum::type _type;
+    gl_object_type _type;
 
 public:
 

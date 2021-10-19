@@ -39,10 +39,6 @@ public:
 
     bool is_dirty;
 
-public:
-    virtual const std::string token() {}
-
-
 };
 
 struct MatrixGroup

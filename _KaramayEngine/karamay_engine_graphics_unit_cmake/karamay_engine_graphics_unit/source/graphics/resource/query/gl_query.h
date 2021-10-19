@@ -17,7 +17,7 @@ enum class gl_query_type
 
 class gl_query : public gl_object{
 public:
-	gl_query()
+	gl_query() : gl_object(gl_object_type::QUERY_OBJ)
 	{		
 		//glCreateQueries()
 	}

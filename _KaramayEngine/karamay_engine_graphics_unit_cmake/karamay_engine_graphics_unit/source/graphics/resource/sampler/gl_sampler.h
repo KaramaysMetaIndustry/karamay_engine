@@ -113,7 +113,7 @@ struct gl_sampler_parameters{
 
 class gl_sampler final : public gl_object{
 public:
-    gl_sampler()
+    gl_sampler() : gl_object(gl_object_type::SAMPLER_OBJ)
     {
         glCreateSamplers(1, &_handle);
     }
