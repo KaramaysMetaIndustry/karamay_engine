@@ -941,7 +941,7 @@ private:
 
 private:
 	//~ render begin
-	void _tick_objects();
+    void _tick_objects() {}
 	void _install();
 	void _enable();
 	void _call_commands();
@@ -961,9 +961,9 @@ private:
 	void _bind_shader_storage_buffers();
 	void _bind_atomic_counter_buffers();
 	void _bind_framebuffer();
-	void _bind_textures();
+    void _bind_textures() {}
 
-	void _launch_uniforms();
+    void _launch_uniforms() {}
 
 	// unbind these persistent data from context (you can not ensure that slots your have used will be overriden by next program)
 	void _unbind_vertex_array()

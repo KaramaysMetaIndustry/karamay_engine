@@ -31,13 +31,18 @@ class glsl_vertex_shader : public glsl_graphics_shader{
 
 };
 
-class glsl_tessellation_control_shader : public glsl_graphics_shader{
+//class glsl_tessellation_control_shader : public glsl_graphics_shader{
+//
+//};
+//
+//class glsl_tessellation_evaluation_shader : public glsl_graphics_shader{
+//
+//};
+
+class glsl_tessellation_shader : public glsl_graphics_shader {
 
 };
 
-class glsl_tessellation_evaluation_shader : public glsl_graphics_shader{
-
-};
 
 class glsl_geometry_shader : public glsl_graphics_shader{
 

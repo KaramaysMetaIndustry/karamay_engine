@@ -221,14 +221,3 @@ inline void gl_program::_bind_framebuffer()
 	}
 		
 }
-
-inline void gl_program::_bind_textures()
-{
-
-
-}
-
-void gl_program::_launch_uniforms()
-{
-
-}
