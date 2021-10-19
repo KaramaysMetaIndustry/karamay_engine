@@ -21,8 +21,6 @@ public:
 
 public:
 
-    [[nodiscard]] gl_shader_type get_shader_type() const { return _shader_type; }
-
 	void load(const std::string& path)
 	{
 		auto _suffix = path.substr(path.find_last_of('.'));
@@ -81,8 +79,6 @@ public:
             std::cout << "shader compile fail : " << info << std::endl;
         }
 	}
-
-    virtual void generate_shader_code(const std::string& path) = 0;
 
 public:
 

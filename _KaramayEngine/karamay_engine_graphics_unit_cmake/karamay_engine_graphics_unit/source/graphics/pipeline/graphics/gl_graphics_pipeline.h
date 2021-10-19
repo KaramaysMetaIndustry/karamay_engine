@@ -252,59 +252,79 @@ struct gl_vertex_stream
 {};
 
 /*
- * for building graphics pipe
+ * descriptor for graphics pipeline construction
  * */
-
-struct gl_graphics_pipeline_descriptor
-{
+struct gl_graphics_pipeline_descriptor{
+    // pipeline state
     std::shared_ptr<gl_graphics_pipeline_state> state;
-    std::shared_ptr<gl_vertex_stream> vertex_stream;
-    std::vector<std::shared_ptr<gl_shader>> shaders;
-    std::shared_ptr<gl_framebuffer> framebuffer;
+    // vertex stream which input into program by vertex puller
+    std::shared_ptr<gl_vertex_array> attributes;
+    // program body
+    struct glsl_graphics_pipeline_program{
+        // must have impl
+        std::shared_ptr<glsl_vertex_shader> vertex_shader;
+        // optional stage
+        std::shared_ptr<glsl_tessellation_shader> tessellation_shader;
+        // optional stage
+        std::shared_ptr<glsl_geometry_shader> geometry_shader;
+        // must have impl
+        std::shared_ptr<glsl_fragment_shader> fragment_shader;
+
+        glsl_graphics_pipeline_program() : 
+            vertex_shader(nullptr), tessellation_shader(nullptr), geometry_shader(nullptr), 
+            fragment_shader(nullptr) 
+        {}
+    } program;
+    // optional transform feedback 
+    std::shared_ptr<gl_transform_feedback> tramsform_feedback;
+    // where program final color output
+    std::shared_ptr<gl_framebuffer> framebuffer; 
+
+    gl_graphics_pipeline_descriptor() : 
+        state(nullptr), 
+        attributes(nullptr), program(), framebuffer(nullptr)
+    {}
 };
 
 /*
  * graphics pipeline
+ * vertex shader [+ tessellation control shader + tessellation evaluation shader] [+ geometry shader] + fragment shader
  * */
 class gl_graphics_pipeline{
 public:
     gl_graphics_pipeline() = default;
+    gl_graphics_pipeline(const std::shared_ptr<gl_graphics_pipeline_descriptor>& desc)
+    {
+        try
+        {
+            if (!_validate_descriptor(desc) || !_construct(desc)) {
+                throw std::exception("desc is not validate");
+            }
+        }
+        catch (const std::exception& e)
+        {
+            std::cerr << e.what() << std::endl;
+        }
+    }
     gl_graphics_pipeline(const gl_graphics_pipeline&) = delete;
     gl_graphics_pipeline& operator=(const gl_graphics_pipeline&) = delete;
 
     ~gl_graphics_pipeline() = default;
-
+   
 public:
-    /*
-     * generate shader code
-     * create program object, compile shaders and attach them to program
-     * pre-link actions:
-     * link program
-     * query resource state info
-     * generate resource
-     * */
-    void construct(const gl_graphics_pipeline_descriptor& descriptor) noexcept
+
+    void enable() noexcept
     {
-        // generate shader code
-        for(const auto& _shader : descriptor.shaders)
-        {
-            _shader->generate_shader_code("");
-            _shader->load("");
-        }
+        if (!_program) return;
+        _program->enable();
+        _bind_resources();
+    }
 
-        // construct shader program
-        _program = std::make_unique<gl_program>();
-        if(!_program) return;
-        _program->construct({});
-
-        // query state settings and generate settings cache
-        _program->get_resource();
-        std::uint32_t _index = 0;
-        _program->get_resource_index(gl_program_interface::ATOMIC_COUNTER_BUFFER, "test", _index);
-
-        // generate resources
-        //..
-        _generate_resources();
+    void disable() noexcept
+    {
+        if (!_program) return;
+        _unbind_resources();
+        _program->disable();
     }
 
 public:
@@ -323,68 +343,152 @@ public:
 
 private:
 
-    std::unique_ptr<gl_program> _program;
-
-    std::shared_ptr<gl_graphics_pipeline_descriptor> _descriptor;
-
-    std::shared_ptr<gl_element_array_buffer> _element_array_buffer;
-
-    std::shared_ptr<gl_uniform_buffer> _uniform_buffer;
-    std::shared_ptr<gl_shader_storage_buffer> _shader_storage_buffer;
-    std::shared_ptr<gl_atomic_counter_buffer> _atomic_counter_buffer;
-    std::vector<std::shared_ptr<glsl_sampler_t>> _samplers;
-    std::vector<std::shared_ptr<glsl_image_t>> _images;
-
-    std::shared_ptr<gl_transform_feedback_buffer> _transform_feedback_buffer;
-
-    std::shared_ptr<gl_framebuffer> framebuffer;
-
-private:
-
-    void _generate_resources()
+    bool _validate_descriptor(const std::shared_ptr<gl_graphics_pipeline_descriptor>& descriptor)
     {
+        if (!descriptor) return false;
+
+        if (!descriptor->program.vertex_shader || !descriptor->program.fragment_shader)
+        {
+            std::cerr << "graphics pipeline program must have vertex and fragment stage impl." << std::endl;
+            return false;
+        }
+
+        if (!descriptor->attributes || !descriptor->framebuffer || !descriptor->state)
+        {
+            std::cerr << "graphics pipeline must have state, attributes and framebuffer." << std::endl;
+            return false;
+        }
+    }
+
+    /*
+     * generate shader code
+     * create program object, compile shaders and attach them to program
+     * pre-link actions:
+     * link program
+     * query resource state info
+     * generate resource
+     * */
+    bool _construct(const std::shared_ptr<gl_graphics_pipeline_descriptor>& descriptor) noexcept
+    {
+        if (!descriptor) return false;
+
+        // generate shader code
+        // load and complie shaders
+        std::vector<std::shared_ptr<glsl_shader>> _glsl_shaders;
+        std::vector<std::shared_ptr<gl_shader>> _shaders;
+
+        const auto& _glsl_vs = descriptor->program.vertex_shader;
+        if (_glsl_vs)
+        {
+           
+            auto _vs = std::make_shared<gl_shader>();
+            _vs->load("");
+            _shaders.push_back(_vs);
+            _glsl_shaders.push_back(_glsl_vs);
+        }
+
+        const auto& _glsl_tess = descriptor->program.tessellation_shader;
+        if (_glsl_tess)
+        {
+            auto _tesc = std::make_shared<gl_shader>();
+            auto _tese = std::make_shared<gl_shader>();
+
+            _shaders.push_back(_tesc);
+            _shaders.push_back(_tese);
+            _glsl_shaders.push_back(_glsl_tess);
+        }
+
+        const auto& _glsl_gs = descriptor->program.geometry_shader;
+        if (_glsl_gs)
+        {
+            auto _gs = std::make_shared<gl_shader>();
+
+            _shaders.push_back(_gs);
+            _glsl_shaders.push_back(_glsl_gs);
+        }
+
+        const auto& _glsl_fs = descriptor->program.fragment_shader;
+        if (_glsl_fs)
+        {
+            auto _fs = std::make_shared<gl_shader>();
+            _shaders.push_back(_fs);
+            _glsl_shaders.push_back(_glsl_fs);
+        }
+
+        // construct shader program
+        _program = std::make_unique<gl_program>();
+        if (!_program) return false;
+        _program->construct(_shaders);
+
+        // query state settings and generate settings cache
+       // _program->get_resource();
+        std::uint32_t _index = 0;
+        _program->get_resource_index(gl_program_interface::ATOMIC_COUNTER_BUFFER, "test", _index);
+        
+        // generate resources
+        {
+            // collect uniform blocks and generate uniform buffer
+            std::vector<std::shared_ptr<glsl_uniform_block_t>> _uniform_blocks;
+            for (const auto& _glsl_shader : _glsl_shaders)
+            {
+                
+            }
+
+            if (_uniform_blocks.size() != 0)
+            {
+                _uniform_buffer = std::make_unique<gl_uniform_buffer>(gl_uniform_buffer_descriptor{ _uniform_blocks });
+            }
+
+            // collect shader storage blocks and generate shader storage buffer
+            std::vector<std::shared_ptr<glsl_shader_storage_block_t>> _shader_storage_blocks;
+            if (_shader_storage_blocks.size() != 0)
+            {
+                _shader_storage_buffer = std::make_unique<gl_shader_storage_buffer>(gl_shader_storage_buffer_descriptor{ _shader_storage_blocks });
+            }
+
+            // collect atomic counters and genrate atomic counter buffer
+            std::vector<std::shared_ptr<glsl_atomic_counter_t>> _atomic_counters;
+            if (_atomic_counters.size() != 0)
+            {
+                _atomic_counter_buffer = std::make_unique<gl_atomic_counter_buffer>(gl_atomic_counter_buffer_descriptor{ _atomic_counters });
+            }
+        }
 
     }
 
+private:
+
+    std::unique_ptr<gl_program> _program;
+
+    std::shared_ptr<const gl_graphics_pipeline_descriptor> _descriptor;
+
+    //std::unique_ptr<gl_element_array_buffer> _element_array_buffer;
+    std::unique_ptr<gl_uniform_buffer> _uniform_buffer;
+    std::unique_ptr<gl_shader_storage_buffer> _shader_storage_buffer;
+    std::unique_ptr<gl_atomic_counter_buffer> _atomic_counter_buffer;
+    //std::shared_ptr<gl_transform_feedback_buffer> _transform_feedback_buffer;
+
+    //std::vector<std::shared_ptr<glsl_sampler_t>> _samplers;
+    //std::vector<std::shared_ptr<glsl_image_t>> _images;
+
+    //std::shared_ptr<gl_framebuffer> framebuffer;
+
+private:
+
     void _bind_resources()
     {
-        if(_element_array_buffer)
-        {
-            _element_array_buffer->bind();
-        }
-
         if(_uniform_buffer)
         {
             _uniform_buffer->bind();
         }
-
         if(_shader_storage_buffer)
         {
             _shader_storage_buffer->bind();
         }
-
         if(_atomic_counter_buffer)
         {
             _atomic_counter_buffer->bind();
         }
-
-        for(const auto& _sampler : _samplers)
-        {
-            if(_sampler)
-                _sampler->bind();
-        }
-
-        for(const auto& _image : _images)
-        {
-            if(_image)
-                _image->bind();
-        }
-
-        if(_transform_feedback_buffer)
-        {
-            _transform_feedback_buffer->bind();
-        }
-
     }
 
     void _unbind_resources()
@@ -599,9 +703,18 @@ private:
 
 };
 
+
+class gl_vertex_processing_pipeline_descriptor
+{
+    std::shared_ptr<glsl_vertex_shader> vertex_shader;
+    std::shared_ptr<glsl_tessellation_shader> tessellation_shader;
+    std::shared_ptr<glsl_geometry_shader> geometry_shader;
+};
+
 /*
  * vertex processing pipeline, optimized for vertex processing.
  * fetch data from transform feedback buffer, after vertex processing, all primitives will be discard.
+ * vertex shader [+ tessellation control shader + tessellation evaluation shader] [+geometry shader]
  * */
 class gl_vertex_processing_pipeline{
 public:
@@ -609,10 +722,11 @@ public:
     gl_vertex_processing_pipeline(const gl_vertex_processing_pipeline&) = delete;
     gl_vertex_processing_pipeline& operator=(const gl_vertex_processing_pipeline&) = delete;
 
-    ~gl_vertex_processing_pipeline();
+    ~gl_vertex_processing_pipeline() = default;
 
 public:
 
+    void construct(const gl_vertex_processing_pipeline_descriptor& descriptor){}
 
 };
 
