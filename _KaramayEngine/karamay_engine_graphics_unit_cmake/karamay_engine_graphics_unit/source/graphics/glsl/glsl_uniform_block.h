@@ -78,29 +78,29 @@ public:\
         return sizeof(glsl_uniform_block_BLOCK_NAME_scope);\
     }\
 };\
-std::shared_ptr<glsl_uniform_block_BLOCK_NAME> BLOCK_NAME;\
+std::shared_ptr<glsl_uniform_block_BLOCK_NAME> (BLOCK_NAME);\
 
 
-#define DEFINE_GLSL_TRANSPARENT_T(TRANSPARENT_T, VAR_NAME, ARRAY_SPECIFIER)\
-TRANSPARENT_T VAR_NAME##ARRAY_SPECIFIER;\
-
+struct glsl_item{
+    glsl_item(){}
+};
 
 class glsl_uniform_block_t0 : public glsl_uniform_block_t{
 public:
     glsl_uniform_block_t0() : glsl_uniform_block_t(glsl_interface_block_matrix_layout::ROW_MAJOR, glsl_uniform_block_memory_layout::STD140){}
 
+
     struct glsl_uniform_block_t0_scope
     {
         //MatrixGroup group[1][2];
-        DEFINE_GLSL_TRANSPARENT_T(MatrixGroup, group, [1][2])
+        //DEFINE_GLSL_TRANSPARENT_T(MatrixGroup, group, [1][2])
 
         static std::string token;
-        //static std::function<>
     } scope;
 
 public:
 
-    const std::uint8_t* data() const override
+    [[nodiscard]] const std::uint8_t* data() const override
     {
         return reinterpret_cast<const std::uint8_t*>(&scope);
     }
@@ -110,17 +110,24 @@ public:
         return reinterpret_cast<std::uint8_t*>(&scope);
     }
 
-    std::int64_t size() const override
+    [[nodiscard]] std::int64_t size() const override
     {
         return sizeof(glsl_uniform_block_t0_scope);
     }
 
-    const std::string& token() const override
+    [[nodiscard]] const std::string& token() const override
     {
-        return scope.token;
+        return glsl_uniform_block_t0_scope::token;
     }
 
 };
+
+template<typename T, typename...GLSL_TRANSPARENT_T>
+struct glsl_uniform_block_der
+{
+
+};
+
 
 
 #endif

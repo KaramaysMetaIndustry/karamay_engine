@@ -83,6 +83,7 @@ struct gl_texture_parameters{
 class gl_texture_t : public gl_object{
 public:
     gl_texture_t() = delete;
+
 protected:
 
     gl_texture_t(gl_texture_type type, const gl_texture_parameters& parameters):

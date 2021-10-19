@@ -319,4 +319,11 @@ public:
 
 };
 
+template<typename... GLSL_TRANSPARENT_T>
+class glsl_vertex_array
+{
+
+};
+
+
 #endif
