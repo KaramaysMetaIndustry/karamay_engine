@@ -213,6 +213,11 @@ struct gl_graphics_pipeline_state
  * descriptor for graphics pipeline construction
  * */
 struct gl_graphics_pipeline_descriptor{
+    // pipeline name
+    std::string name;
+    // renderer dir
+    std::string owner_renderer_dir;
+
     // pipeline state
     std::shared_ptr<gl_graphics_pipeline_state> state;
     // vertex stream which input into program by vertex puller
@@ -334,12 +339,19 @@ private:
         // load and complie shaders
         std::vector<std::shared_ptr<glsl_shader>> _glsl_shaders;
         std::vector<std::shared_ptr<gl_shader>> _shaders;
+        
+        const std::string _pipeline_dir = descriptor->owner_renderer_dir + descriptor->name + "/";
 
         const auto& _glsl_vs = descriptor->program.vertex_shader;
         if (_glsl_vs)
         {
-           
-            auto _vs = std::make_shared<gl_shader>(gl_shader_type::VERTEX_SHADER, "");
+            const std::string _vs_path = _pipeline_dir + descriptor->name + ".vs";
+            auto _vs = std::make_shared<gl_shader>(gl_shader_type::VERTEX_SHADER, _vs_path);
+            if (!_vs)
+            {
+                std::cerr << "vertex shader create fail" << std::endl;
+                return false;
+            }
             _shaders.push_back(_vs);
             _glsl_shaders.push_back(_glsl_vs);
         }
@@ -347,9 +359,17 @@ private:
         const auto& _glsl_tess = descriptor->program.tessellation_shader;
         if (_glsl_tess)
         {
-            auto _tesc = std::make_shared<gl_shader>(gl_shader_type::TESS_CONTROL_SHADER, "");
-            auto _tese = std::make_shared<gl_shader>(gl_shader_type::TESS_EVALUATION_SHADER, "");
+            const std::string _tesc_path = _pipeline_dir + descriptor->name + ".tesc";
+            const std::string _tese_path = _pipeline_dir + descriptor->name + ".tese";
 
+            auto _tesc = std::make_shared<gl_shader>(gl_shader_type::TESS_CONTROL_SHADER, _tesc_path);
+            auto _tese = std::make_shared<gl_shader>(gl_shader_type::TESS_EVALUATION_SHADER, _tese_path);
+
+            if (!_tesc || !_tese)
+            {
+                std::cerr << "tessellation shader create fail" << std::endl;
+                return false;
+            }
             _shaders.push_back(_tesc);
             _shaders.push_back(_tese);
             _glsl_shaders.push_back(_glsl_tess);
@@ -358,8 +378,13 @@ private:
         const auto& _glsl_gs = descriptor->program.geometry_shader;
         if (_glsl_gs)
         {
-            auto _gs = std::make_shared<gl_shader>(gl_shader_type::GEOMETRY_SHADER, "");
-
+            const std::string _gs_path = _pipeline_dir + descriptor->name + ".gs";
+            auto _gs = std::make_shared<gl_shader>(gl_shader_type::GEOMETRY_SHADER, _gs_path);
+            if (!_gs)
+            {
+                std::cerr << "geometry shader create fail" << std::endl;
+                return false;
+            }
             _shaders.push_back(_gs);
             _glsl_shaders.push_back(_glsl_gs);
         }
@@ -367,7 +392,13 @@ private:
         const auto& _glsl_fs = descriptor->program.fragment_shader;
         if (_glsl_fs)
         {
-            auto _fs = std::make_shared<gl_shader>(gl_shader_type::FRAGMENT_SHADER, "");
+            const std::string _fs_path(_pipeline_dir + descriptor->name + ".fs");
+            auto _fs = std::make_shared<gl_shader>(gl_shader_type::FRAGMENT_SHADER, _fs_path);
+            if (!_fs)
+            {
+                std::cerr << "fragment shader create fail" << std::endl;
+                return false;
+            }
             _shaders.push_back(_fs);
             _glsl_shaders.push_back(_glsl_fs);
         }
@@ -379,32 +410,32 @@ private:
 
         // query state settings and generate settings cache
        // _program->get_resource();
-        std::uint32_t _index = 0;
-        _program->get_resource_index(gl_program_interface::ATOMIC_COUNTER_BUFFER, "test", _index);
+        //std::uint32_t _index = 0;
+        //_program->get_resource_index(gl_program_interface::ATOMIC_COUNTER_BUFFER, "test", _index);
         
         // generate resources
         {
-            // collect uniform blocks and generate uniform buffer
+            // collect
             std::vector<std::shared_ptr<glsl_uniform_block_t>> _uniform_blocks;
+            std::vector<std::shared_ptr<glsl_shader_storage_block_t>> _shader_storage_blocks;
+            std::vector<std::shared_ptr<glsl_atomic_counter_t>> _atomic_counters;
             for (const auto& _glsl_shader : _glsl_shaders)
             {
-                
             }
 
+            // create buffer
             if (_uniform_blocks.size() != 0)
             {
                 _uniform_buffer = std::make_unique<gl_uniform_buffer>(gl_uniform_buffer_descriptor{ _uniform_blocks });
             }
 
-            // collect shader storage blocks and generate shader storage buffer
-            std::vector<std::shared_ptr<glsl_shader_storage_block_t>> _shader_storage_blocks;
+            // create buffer
             if (_shader_storage_blocks.size() != 0)
             {
                 _shader_storage_buffer = std::make_unique<gl_shader_storage_buffer>(gl_shader_storage_buffer_descriptor{ _shader_storage_blocks });
             }
 
-            // collect atomic counters and genrate atomic counter buffer
-            std::vector<std::shared_ptr<glsl_atomic_counter_t>> _atomic_counters;
+            // create buffer
             if (_atomic_counters.size() != 0)
             {
                 _atomic_counter_buffer = std::make_unique<gl_atomic_counter_buffer>(gl_atomic_counter_buffer_descriptor{ _atomic_counters });
@@ -438,6 +469,8 @@ private:
     std::unique_ptr<gl_shader_storage_buffer> _shader_storage_buffer;
     std::unique_ptr<gl_atomic_counter_buffer> _atomic_counter_buffer;
  
+    const std::string _name;
+    const std::string _owner_renderer_dir;
 
 private:
 
