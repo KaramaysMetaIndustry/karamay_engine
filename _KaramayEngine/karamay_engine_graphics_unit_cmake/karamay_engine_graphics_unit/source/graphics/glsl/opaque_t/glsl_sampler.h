@@ -22,9 +22,6 @@ public:
 
 public:
 
-    [[nodiscard]] const std::string& token() const override{
-        std::string _token("layout(binding={0}) uniform {1} {2};");
-    }
 
 };
 

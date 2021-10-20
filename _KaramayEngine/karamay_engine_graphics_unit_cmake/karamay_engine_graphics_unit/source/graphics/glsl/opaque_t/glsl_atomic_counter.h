@@ -34,10 +34,6 @@ public:
 
 public:
 
-    [[nodiscard]] const std::string& token() const override
-    {
-        //_token.append("layout(binding={0}, offset={1}) uniform atomic_uint {2};",);
-    }
 
 private:
 

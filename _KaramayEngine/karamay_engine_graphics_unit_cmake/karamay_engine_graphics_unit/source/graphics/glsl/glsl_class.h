@@ -237,7 +237,6 @@ enum class gl_uniform_type : GLenum
  * */
 class glsl_t {
 public:
-    [[nodiscard]] virtual const std::string& token() const {};
 };
 
 struct glsl_transparent_t_meta

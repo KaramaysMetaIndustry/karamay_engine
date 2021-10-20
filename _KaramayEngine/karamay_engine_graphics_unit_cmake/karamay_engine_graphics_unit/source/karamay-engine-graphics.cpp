@@ -1,9 +1,13 @@
 #include "graphics/resource/vertex_array/gl_vertex_array.h"
 #include "graphics/resource/program/gl_program.h"
+#include "graphics/resource/buffers/raw_buffer/gl_buffer.h"
 #include "window/window.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../dependencies/stb/stb_image.h"
+
+
+
 
 float vertices[] = {
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f, //0
@@ -248,9 +252,26 @@ struct gl_texture_pixels
 
 void test0();
 
-int main()
+#define CLASS_NAME(__CLASS__)  #__CLASS__
+
+#define DEFINE_UNIFORM_BLOCK(...)\
+__VA_ARGS__\
+
+
+void pt(glsl_transparent_t*)
 {
 
+}
+
+template<typename T, typename... Ts>
+void pt(T v, Ts... ts)
+{
+	
+	pt(ts...);
+}
+
+int main()
+{
 	test0();
 }
 
@@ -280,10 +301,10 @@ enum class gl_debug_source : GLenum
 
 enum class gl_debug_severity : GLenum
 {
-    SEVERITY_HIGH = GL_DEBUG_SEVERITY_HIGH,
-    SEVERITY_LOW = GL_DEBUG_SEVERITY_LOW,
-    SEVERITY_MEDIUM = GL_DEBUG_SEVERITY_MEDIUM,
-    SEVERITY_NOTIFICATION = GL_DEBUG_SEVERITY_NOTIFICATION,
+    SEVERITY_HIGH = GL_DEBUG_SEVERITY_HIGH, // 高级
+    SEVERITY_LOW = GL_DEBUG_SEVERITY_LOW, // 低级
+    SEVERITY_MEDIUM = GL_DEBUG_SEVERITY_MEDIUM, // 中级
+    SEVERITY_NOTIFICATION = GL_DEBUG_SEVERITY_NOTIFICATION, // 通知
 };
 
 
@@ -371,8 +392,6 @@ MessageCallback( GLenum source,
 
 }
 
-#include "renderers/gl_template_renderer_family/static_mesh_renderer/gl_static_mesh_renderer.h"
-
 
 void test0()
 {
@@ -384,8 +403,49 @@ void test0()
 
 	glViewport(0, 0, window->get_framebuffer_width(), window->get_framebuffer_height());
     // During init, enable debug output
-    glEnable( GL_DEBUG_OUTPUT );
-    glDebugMessageCallback( MessageCallback, 0 );
+#ifdef _DEBUG
+	glEnable(GL_DEBUG_OUTPUT);
+	glDebugMessageCallback(MessageCallback, 0);
+#endif // _DEBUG
+
+	gl_buffer_storage_options _options;
+	_options.is_client_storage = false; // backing storage in client or server, server will be more fast
+	_options.is_dynamic_storage = false; // allow client directly send data to gpu
+	_options.is_map_read = true; // allow mapfunc read
+	_options.is_map_write = true; // allow mapfunc write
+	_options.is_map_coherent = false;
+	_options.is_map_persistent = false;
+
+	const std::int64_t _size = sizeof(glsl_vec4) * 10;
+	gl_buffer _buffer{ _size, _options };
+
+	_buffer.execute_mapped_memory_writer(0, _size, [](std::uint8_t* data, std::int64_t size) {
+		glm::vec4* _data = reinterpret_cast<glm::vec4*>(data);
+		std::int64_t _size = size / sizeof(glm::vec4);
+		if (!data || size < 0) return;
+
+		for (std::int32_t _idx = 0; _idx < _size; ++_idx)
+		{
+			std::cout << "add" << std::endl;
+			_data[_idx] = glm::vec4(1.0f, 1.2f, 1.3f,1.11f);
+		}
+		});
+
+	glm::vec4 a(0.0f);
+	//_buffer.write(0, reinterpret_cast<const std::uint8_t*>(&a), sizeof glm::vec4);
+	//_buffer.read(0, sizeof(glm::vec4), &a);
+	std::cout << "direct get: " << a.x << ", " << a.y << ", " << a.z << ", " << a.w << std::endl;
+
+	_buffer.execute_mapped_memory_reader(0, _size, [](const std::uint8_t* data, std::int64_t size) {
+		const glm::vec4* _data = reinterpret_cast<const glm::vec4*>(data);
+		std::int64_t _size = size / sizeof(glm::vec4);
+		if (!data || size < 0) return;
+
+		for (std::int32_t _idx = 0; _idx < _size; ++_idx)
+		{
+			std::cout << _data[_idx].x << ", " << _data[_idx].y << ", " << _data[_idx].z << ", " << _data[_idx].w << std::endl;
+		}
+		});
 
 //	std::vector<glv::f32vec3> positions{
 //		glv::f32vec3(0.5f, 0.5f, 0.0f), //0

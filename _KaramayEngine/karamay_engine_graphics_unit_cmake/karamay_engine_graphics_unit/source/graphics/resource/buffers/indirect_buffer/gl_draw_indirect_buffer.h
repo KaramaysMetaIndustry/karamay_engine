@@ -10,11 +10,16 @@ public:
 
 	}
 
-	~gl_draw_indirect_buffer();
+	~gl_draw_indirect_buffer()
+	{
+
+	}
 
 
 private:
+	
 	std::unique_ptr<gl_buffer> _buffer;
+
 };
 
 

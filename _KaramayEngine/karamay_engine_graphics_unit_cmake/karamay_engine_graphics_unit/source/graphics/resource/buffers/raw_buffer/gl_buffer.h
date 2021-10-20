@@ -136,10 +136,12 @@ enum class access : GLenum
 
 enum class gl_buffer_storage_flag : GLenum
 {
+    CLIENT_STORAGE_BIT = GL_CLIENT_STORAGE_BIT,
+    DYNAMIC_STORAGE_BIT = GL_DYNAMIC_STORAGE_BIT,
+
     MAP_READ_BIT = GL_MAP_READ_BIT,
     MAP_WRITE_BIT = GL_MAP_WRITE_BIT,
-    DYNAMIC_STORAGE_BIT = GL_DYNAMIC_STORAGE_BIT,
-    CLIENT_STORAGE_BIT = GL_CLIENT_STORAGE_BIT,
+
     MAP_PERSISTENT_BIT = GL_MAP_PERSISTENT_BIT,
     MAP_COHERENT_BIT = GL_MAP_COHERENT_BIT
 };
@@ -153,10 +155,16 @@ enum class gl_buffer_map_access_flag : GLenum
 
     MAP_INVALIDATE_RANGE_BIT = GL_MAP_INVALIDATE_RANGE_BIT,
     MAP_INVALIDATE_BUFFER_BIT = GL_MAP_INVALIDATE_BUFFER_BIT,
+
     MAP_FLUSH_EXPLICIT_BIT = GL_MAP_FLUSH_EXPLICIT_BIT,
+    
     MAP_UNSYNCHRONIZED_BIT = GL_MAP_UNSYNCHRONIZED_BIT
 };
 
+/*
+*
+* 
+*/
 struct gl_buffer_storage_options
 {
     std::uint8_t is_map_read;
@@ -165,18 +173,6 @@ struct gl_buffer_storage_options
     std::uint8_t is_client_storage;
     std::uint8_t is_map_persistent;
     std::uint8_t is_map_coherent;
-
-    bool operator==(const gl_buffer_storage_options& other) const
-    {
-        return other.is_map_read == is_map_read &&
-               other.is_map_write == is_map_write &&
-               other.is_map_coherent == is_map_coherent &&
-               other.is_map_persistent == is_map_persistent &&
-               other.is_dynamic_storage == is_dynamic_storage &&
-               other.is_client_storage == is_client_storage;
-    }
-
-    gl_buffer_storage_options() = default;
 };
 
 /*
@@ -187,14 +183,14 @@ struct gl_buffer_storage_options
 */
 class gl_buffer : public gl_object{
 public:
-
     /*
     * GL_MAP_READ_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT
     * GL_DYNAMIC_STORAGE_BIT | GL_CLIENT_STORAGE_BIT
     */
+    gl_buffer() = delete;
     explicit gl_buffer(std::int64_t capacity, gl_buffer_storage_options storage_options) : 
         gl_object(gl_object_type::BUFFER_OBJ),
-        _storage_options(storage_options)
+        _storage_options(storage_options), _size(capacity)
     {
         glCreateBuffers(1, &_handle);
         if (_handle != 0)
@@ -210,64 +206,50 @@ public:
             glNamedBufferStorage(_handle, capacity, nullptr, _storage_flags);
         }
     }
+    gl_buffer(const gl_buffer&) = delete;
+    gl_buffer& operator=(const gl_buffer&) = delete;
 
-    ~gl_buffer() override;
-
-
-public:
-
-    std::int64_t size() const
+    ~gl_buffer() override 
     {
-        return _size;
+        glDeleteBuffers(1, &_handle);
     }
 
 public:
 
     /*
     * write byte stream into buffer, this operation will affect GPU memory immediately
-	*
     */
-    inline void write(std::int64_t offset, const std::uint8_t* data, std::int64_t size)
+    void write(std::int64_t offset, const std::uint8_t* data, std::int64_t size)
     {
-        if(offset < 0 || offset >= _size || offset + size > _size) return;
+        if (!_storage_options.is_dynamic_storage) return;
+        if (!data || offset < 0 || offset >= _size || offset + size > _size) return;
+
         glNamedBufferSubData(_handle, offset, size, data);
     }
 
-    inline void read(std::int64_t offset, std::int64_t size, void* out_data)
+    void read(std::int64_t offset, std::int64_t size, void* out_data)
     {
+        if (offset < 0 || offset >= _size || offset + size > _size) return;
+
         glGetNamedBufferSubData(_handle, offset, size, out_data);
-    }
-
-
-public:
-
-    /*
-     * Mostly [Server -> Server]
-     * You must sacrifice some flexibility to get rapid filling.
-     * capacity % sizeof (data_mask) == 0
-     * */
-    template<typename GLSL_T>
-    inline void overwrite_by_unit(std::int64_t offset, std::int64_t size, const GLSL_T& unit)
-    {
-        glClearNamedBufferSubData(_handle, 0, offset, size, 0, 0, reinterpret_cast<const std::uint8_t*>(&unit));
     }
 
 public:
 
     using mapped_memory_handler = std::function<void(std::uint8_t*, std::int64_t)>;
 
-    using mapped_memory_writer = std::function<void(std::uint8_t*, std::int64_t)>;
-
-    using mapped_memory_reader = std::function<void(const std::uint8_t*, std::int64_t)>;
-
     /*
+    * advised for dispersed filling
      * execute a handler(which can read/write) on mapped memory (specified by offset and size)
      * mapped memory has valid content which come from GPU memory
      * also your bytes write into mapped memory can affect GPU memory
+     * [ ] (std::uint8_t* data, std::int64_t size) { }
      * */
     void execute_mapped_memory_handler(std::int64_t offset, std::int64_t size, const mapped_memory_handler& handler, std::uint8_t should_async = false)
     {
+        if (!_storage_options.is_map_write || !_storage_options.is_map_read ) return;
         if (offset < 0 || size < 0 || offset + size > _size) return;
+
         auto* _mapped_memory = reinterpret_cast<std::uint8_t*>(
                 glMapNamedBufferRange(_handle, offset, size, static_cast<GLenum>(gl_buffer_map_access_flag::MAP_WRITE_BIT))
         );
@@ -275,20 +257,32 @@ public:
         glUnmapNamedBuffer(_handle);
     }
 
+    template<typename GLSL_TRANSPARENT_T>
+    using mapped_memory_handler_transparent_t = std::function<void(GLSL_TRANSPARENT_T*, std::int64_t)>;
+
+    template<typename GLSL_TRANSAPRENT_T>
+    void execute_mapped_memory_handler_transparent_t(std::int64_t offset, std::int64_t size, const mapped_memory_handler_transparent_t<GLSL_TRANSAPRENT_T>& handler, bool should_async = false)
+    {
+
+    }
+
+    using mapped_memory_writer = std::function<void(std::uint8_t*, std::int64_t)>;
+
     /*
-     * map a block of mutable memory
+     * map a block of mutable memory, advised for whole block filling
      * then execute a handler you specified
      * @offset : mapped memory' offset to whole buffer
      * @size : mapped memory' size
-     * @writer : void(mapped_memory_block, mapped_memory_block_size)
+     * @writer : [ ] (std::uint8_t* data, std::int64_t size) {}
      * @should_async : if true, this func will not ensure the operation to buffer will work when it end, if false ..
      * */
     void execute_mapped_memory_writer(std::int64_t offset, std::int64_t size, const mapped_memory_writer& writer, bool should_async = false)
     {
+        if (!_storage_options.is_map_write) return;
         if (offset <0 || size < 0 || offset + size > _size) return;
 
         auto* _mapped_memory = reinterpret_cast<std::uint8_t*>(
-                glMapNamedBufferRange(_handle, offset, size, GL_MAP_WRITE_BIT)
+            glMapNamedBufferRange(_handle, offset, size, static_cast<GLenum>(gl_buffer_map_access_flag::MAP_WRITE_BIT))
         );
 
         if (_mapped_memory)
@@ -296,17 +290,24 @@ public:
             writer(_mapped_memory, size);
             glFlushMappedNamedBufferRange(_handle, offset, size);
             //glMemoryBarrier();
-        } // make sure modification pushed to GPU
-
+            // make sure modification pushed to GPU
+        }
+        //glFinish();
         glUnmapNamedBuffer(_handle);
     }
 
+    using mapped_memory_reader = std::function<void(const std::uint8_t*, std::int64_t)>;
+
     /*
+    * advised for whole block reading
      * map a block of immutable memory
      * then execute a handler you specified (can not do any modification)
      * @ task void(mapped_memory_block, mapped_memory_block_size)
+     * [ ] (const std::uint8_t* data, std::int64_t size) { }
      * */
-    void execute_mapped_memory_reader(std::int64_t offset, std::int64_t size, const mapped_memory_reader& reader, std::uint8_t should_async = false) const {
+    void execute_mapped_memory_reader(std::int64_t offset, std::int64_t size, const mapped_memory_reader& reader, std::uint8_t should_async = false) const 
+    {
+        if (!_storage_options.is_map_read) return;
         if (offset < 0 || size < 0 || offset + size > _size) return;
 
         const auto* _mapped_memory = reinterpret_cast<const std::uint8_t*>(
@@ -318,9 +319,35 @@ public:
         glUnmapNamedBuffer(_handle);
     }
 
+public:
 
+    void clear(std::int64_t buffer_offset, std::uint8_t* data, std::int64_t data_size)
+    {
+        //glClearNamedBufferSubData(_handle, GL_UNSIGNED_BYTE, buffer_offset, data_size, GL_UNSIGNED_BYTE, )
+    }
+
+    /*
+     * Mostly [Server -> Server]
+     * You must sacrifice some flexibility to get rapid filling.
+     * capacity % sizeof (data_mask) == 0
+     * */
+    static void buffer_copy()
+    {}
 
 public:
+
+    std::int64_t size() const
+    {
+        return _size;
+    }
+
+private:
+
+    const gl_buffer_storage_options _storage_options;
+    
+    const std::int64_t _size;
+
+private:
 
     /*
      * Invalidate the whole buffers, data in buffers will become undefined.
@@ -337,14 +364,6 @@ public:
     {
         glInvalidateBufferSubData(_handle, offset, size);
     }
-
-public:
-
-    void copy()
-    {}
-
-
-private:
 
     inline std::int64_t _get_buffer_size() const
     {
@@ -374,13 +393,6 @@ private:
         return _buffer_usage;
     }
 
-
-private:
-
-    std::int64_t _size;
-
-    gl_buffer_storage_options _storage_options;
-
 private:
 
     const static std::int64_t THEORETICAL_MAX_CAPACITY;
@@ -390,6 +402,12 @@ private:
     const static std::int64_t GPU_MAX_CAPACITY;
 
     const static std::int64_t BUFFER_AVAILABLE_MAX_CAPACITY;
+
+};
+
+template<typename GLSL_TRANSPARENT_T>
+class gl_transparent_buffer : public gl_buffer
+{
 
 };
 

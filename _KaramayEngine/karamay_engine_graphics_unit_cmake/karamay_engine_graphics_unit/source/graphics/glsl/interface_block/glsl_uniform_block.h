@@ -111,11 +111,6 @@ public:
         return sizeof(glsl_uniform_block_t0_scope);
     }
 
-    [[nodiscard]] const std::string& token() const override
-    {
-        return glsl_uniform_block_t0_scope::token;
-    }
-
 };
 
 template<typename T, typename...GLSL_TRANSPARENT_T>
