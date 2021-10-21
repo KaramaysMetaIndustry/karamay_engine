@@ -393,8 +393,114 @@ MessageCallback( GLenum source,
 }
 
 
+
+void _create(std::string name) {
+	std::cout << name << std::endl;
+}
+
+void _create(glm::vec3 a) {
+	std::cout << a.x << a.y << a.z << std::endl;
+}
+
+void _create(int32_t a) {
+	std::cout << a << std::endl;
+}
+
+void create() {
+	std::cout << "null" << std::endl;
+}
+
+template<typename T, typename... Args>
+void create(T v, Args... args)
+{
+	struct MATR{} a;
+	_create(v);
+	create(args...);
+}
+
+#define TOKEN(__NAME__) #__NAME__
+
+
+
+#define DEFINE_GLSL_STRUCT(STRUCT_NAME, ...)\
+struct STRUCT_NAME{\
+STRUCT_NAME(){ glsl_program_t::register_glsl_struct(TOKEN(__VA_ARGS__));}\
+\
+static const char* token(){return TOKEN(__VA_ARGS__);}\
+__VA_ARGS__\
+};\
+
+
+
+#define DECLARE_STD140_UNIFORM_BLOCK(NAME, ...)\
+struct NAME {\
+\
+NAME() = default;\
+static const char* token(){return TOKEN(__VA_ARGS__);}\
+virtual const std::uint8_t* data() const {return reinterpret_cast<const std::uint8_t*>(this);}\
+virtual std::uint8_t* data() {return reinterpret_cast<std::uint8_t*>(this);}\
+virtual std::int64_t size() const {return sizeof(NAME);}\
+\
+\
+__VA_ARGS__\
+} global_std140_uniform_block;\
+
+#define DECLARE_SHARED_UNIFORM_BLOCK()\
+
+#define DECLARE_PACKED_UNIFORM_BLOCK()\
+
+
+#define DEFINE_GLOBAL_SHADER_STORAGE_BLOCK(BLOCK_NAME)\
+
+
+
+
+class glsl_program_t
+{
+	
+public:
+	static void register_glsl_struct(const char* struct_name) {}
+	//static void register_glsl_uniform_block(const glsl_uniform_block_t* block) {}
+
+	DEFINE_GLSL_STRUCT(MatrixStruct,
+	glm::mat4 model_mat[10];
+	glm::mat4 view_mat[10];
+	glm::mat4 projection_mat[10];
+	)
+	
+	/////////////////////////////////////////////////////////////////////
+	DECLARE_STD140_UNIFORM_BLOCK(UniformBlock,
+	glm::vec2 a[5];
+	glm::uvec2 x[2];
+	glm::vec3 offset_position;
+	MatrixStruct matrices;
+	)
+
+
+public:
+
+	void test()
+	{
+		// collect all struct definitions
+
+		// collect all blocks
+
+		// collect all uniforms
+
+
+		global_std140_uniform_block.a;
+		global_std140_uniform_block.matrices.model_mat;
+	}
+
+};
+
+
+
 void test0()
 {
+
+	create(std::string("aa"), std::string("bb"), int32_t(2), glm::vec3(1.0f));
+
 	auto* window = new glfw_window();
 	window->load_context();
 	

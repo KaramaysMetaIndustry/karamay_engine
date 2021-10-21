@@ -41,8 +41,7 @@ public:
             // raw offset
             const std::int64_t _raw_block_offset = _block_offset + _uniform_block->size();
             // add padding
-            _block_offset += _raw_block_offset -
-                    _raw_block_offset%GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT + GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT;
+            _block_offset += _raw_block_offset - _raw_block_offset%GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT + GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT;
             // calc total size
             _initialization_size += _block_offset;
         }
