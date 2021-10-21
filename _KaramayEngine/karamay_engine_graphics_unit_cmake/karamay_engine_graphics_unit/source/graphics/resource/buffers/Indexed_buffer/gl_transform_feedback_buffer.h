@@ -49,9 +49,6 @@ private:
 
     void _initialize(const gl_transform_feedback_buffer_descriptor& descriptor)
     {
-        gl_buffer_storage_options _options;
-        _buffer = std::make_unique<gl_buffer>(100, _options);
-        //_buffer->execute_mapped_memory_writer()
     }
 };
 

@@ -38,7 +38,7 @@ public:
 
         // generate buffer
         gl_buffer_storage_options _options{};
-        _buffer = std::make_unique<gl_buffer>(_initialization_size, _options);
+        _buffer = std::make_unique<gl_buffer>(_options, _initialization_size);
         if(_buffer) return;
 
         // upload data

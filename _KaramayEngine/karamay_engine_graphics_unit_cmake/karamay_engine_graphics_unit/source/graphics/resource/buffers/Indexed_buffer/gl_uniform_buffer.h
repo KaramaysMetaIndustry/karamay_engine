@@ -48,8 +48,10 @@ public:
         }
 
         // create buffer
-        gl_buffer_storage_options _options{};
-        _buffer = std::make_unique<gl_buffer>(_initialization_size, _options);
+        gl_buffer_storage_options _options;
+
+
+        _buffer = std::make_unique<gl_buffer>(_options, _initialization_size);
         if(!_buffer) return;
 
         // upload data
@@ -118,7 +120,7 @@ public:
 
         _buffer->execute_mapped_memory_reader(
                 0,
-                _buffer->size(),
+                _buffer->size,
                 [this](const uint8_t* data, std::int64_t size){
                     for(const auto& _layout : _layouts)
                     {

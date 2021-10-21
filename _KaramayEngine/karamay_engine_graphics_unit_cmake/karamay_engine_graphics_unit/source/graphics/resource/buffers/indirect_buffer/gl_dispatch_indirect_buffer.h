@@ -8,11 +8,7 @@ public:
 	gl_dispatch_indirect_buffer()
 	{}
 
-	~gl_dispatch_indirect_buffer();
-
-private:
-
-	std::unique_ptr<gl_buffer> _buffer;
+	~gl_dispatch_indirect_buffer() {}
 
 };
 

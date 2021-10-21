@@ -417,7 +417,7 @@ void test0()
 	_options.is_map_persistent = false;
 
 	const std::int64_t _size = sizeof(glsl_vec4) * 10;
-	gl_buffer _buffer{ _size, _options };
+	gl_buffer _buffer{ _options, _size };
 
 	_buffer.execute_mapped_memory_writer(0, _size, [](std::uint8_t* data, std::int64_t size) {
 		glm::vec4* _data = reinterpret_cast<glm::vec4*>(data);
@@ -446,6 +446,7 @@ void test0()
 			std::cout << _data[_idx].x << ", " << _data[_idx].y << ", " << _data[_idx].z << ", " << _data[_idx].w << std::endl;
 		}
 		});
+
 
 //	std::vector<glv::f32vec3> positions{
 //		glv::f32vec3(0.5f, 0.5f, 0.0f), //0

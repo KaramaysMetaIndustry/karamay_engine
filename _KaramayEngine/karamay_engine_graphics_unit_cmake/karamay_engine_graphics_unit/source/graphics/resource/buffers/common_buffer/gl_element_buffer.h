@@ -47,9 +47,9 @@ private:
         std::int64_t _ebo_initialization_size = static_cast<std::int64_t>(descriptor.primitives.size() * sizeof (std::uint32_t));
 
         gl_buffer_storage_options _options{};
-        _buffer = std::make_unique<gl_buffer>(_ebo_initialization_size, _options);
+        _buffer = std::make_unique<gl_buffer>(_options, _ebo_initialization_size);
 
-        _buffer->execute_mapped_memory_writer(0, _buffer->size(), [this](std::uint8_t* data, std::int64_t size){
+        _buffer->execute_mapped_memory_writer(0, _buffer->size, [this](std::uint8_t* data, std::int64_t size){
 
         });
     }

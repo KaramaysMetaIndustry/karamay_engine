@@ -3,22 +3,12 @@
 
 #include "graphics/resource/buffers/raw_buffer/gl_buffer.h"
 
-class gl_draw_indirect_buffer{
+class gl_draw_indirect_buffer final{
 public:
 	gl_draw_indirect_buffer()
-	{
+	{}
 
-	}
-
-	~gl_draw_indirect_buffer()
-	{
-
-	}
-
-
-private:
-	
-	std::unique_ptr<gl_buffer> _buffer;
+	~gl_draw_indirect_buffer() {}
 
 };
 
