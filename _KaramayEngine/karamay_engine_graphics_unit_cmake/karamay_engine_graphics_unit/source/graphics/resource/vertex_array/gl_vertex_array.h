@@ -6,9 +6,7 @@
 #include "graphics/resource/buffers/common_buffer/gl_array_buffer.h"
 
 enum class gl_primitive_type
-{
-
-};
+{};
 
 class gl_attribute_component
 {
@@ -211,6 +209,8 @@ public:
     }
 
 private:
+    
+    std::unique_ptr<gl_array_buffer> _array_buffer;
 
     std::unique_ptr<gl_buffer> _buffer;
 
@@ -225,6 +225,8 @@ public:
     {
         glBindVertexArray(0);
     }
+
+public:
 
     std::uint8_t* data(std::int64_t offset, std::int64_t size)
     {

@@ -13,48 +13,26 @@ enum class gl_shader_type : GLenum
 	COMPUTE_SHADER = GL_COMPUTE_SHADER
 };
 
-class gl_shader : public gl_object{
+class gl_shader final : public gl_object{
 public:
 	gl_shader() = delete;
 	gl_shader(gl_shader_type shader_type, const std::string& shader_path) :
-		gl_object(gl_object_type::SHADER_OBJ)
+		gl_object(gl_object_type::SHADER_OBJ),
+		_shader_type(shader_type)
 	{
+		_handle = glCreateShader(static_cast<GLenum>(shader_type));
 		_load(shader_path);
 	}
 
-	~gl_shader() override = default;
+	~gl_shader() override
+	{
+		glDeleteShader(_handle);
+	}
 
 private:
 
 	void _load(const std::string& path)
 	{
-		auto _suffix = path.substr(path.find_last_of('.'));
-		std::uint32_t _shader_type = 0;
-		if (_suffix == ".vert")
-		{
-			_shader_type = GL_VERTEX_SHADER;
-		}
-		if (_suffix == ".tesc")
-		{
-			_shader_type = GL_TESS_CONTROL_SHADER;
-		}
-		if (_suffix == ".tese")
-		{
-			_shader_type = GL_TESS_EVALUATION_SHADER;
-		}
-		if (_suffix == ".geom")
-		{
-			_shader_type = GL_GEOMETRY_SHADER;
-		}
-		if (_suffix == ".frag")
-		{
-			_shader_type = GL_FRAGMENT_SHADER;
-		}
-		if (_suffix == ".comp")
-		{
-			_shader_type = GL_COMPUTE_SHADER;
-		}
-
 		// load bytes - FilePath
 		std::ifstream file;
 		std::string content;
@@ -71,11 +49,9 @@ private:
 		}
 
 		auto source = content.c_str();
-		_handle = glCreateShader(_shader_type);
 		glShaderSource(_handle, 1, &source, NULL);
 
         glCompileShader(_handle);
-
         GLint _result = GL_FALSE;
         char info[512];
         glGetShaderiv(_handle, GL_COMPILE_STATUS, &_result);

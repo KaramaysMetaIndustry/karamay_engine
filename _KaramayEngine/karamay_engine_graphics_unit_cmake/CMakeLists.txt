@@ -546,7 +546,7 @@ karamay_engine_graphics_unit/source/graphics/glsl/glsl_shader.h
 "karamay_engine_graphics_unit/source/graphics/resource/buffers/indirect_buffer/gl_draw_indirect_buffer.h" 
 "karamay_engine_graphics_unit/source/graphics/resource/buffers/indirect_buffer/gl_dispatch_indirect_buffer.h" 
 "karamay_engine_graphics_unit/source/graphics/glsl/interface_block/glsl_in_block.h"
- "karamay_engine_graphics_unit/source/graphics/resource/query/gl_query.h" "karamay_engine_graphics_unit/source/graphics/resource/query/gl_query.cpp" )
+ "karamay_engine_graphics_unit/source/graphics/resource/query/gl_query.h" "karamay_engine_graphics_unit/source/graphics/resource/query/gl_query.cpp"  "karamay_engine_graphics_unit/source/graphics/glsl/glsl_program.h")
 
 target_link_libraries(karamay_engine_graphics_unit glew32s.lib glfw3.lib)
 

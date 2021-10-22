@@ -3,6 +3,8 @@
 
 #include "graphics/glsl/glsl_class.h"
 #include "graphics/glsl/glsl_shader.h"
+#include "graphics/glsl/glsl_program.h"
+#include "graphics/resource/vertex_launcher/gl_vertex_launcher.h"
 #include "graphics/resource/program/gl_program.h"
 #include "graphics/resource/buffers/common_buffer/gl_element_buffer.h"
 #include "graphics/resource/buffers/Indexed_buffer/gl_uniform_buffer.h"
@@ -82,11 +84,6 @@ enum gl_clip_control_depth_mode : GLenum
 {
     negative_one_to_one = GL_NEGATIVE_ONE_TO_ONE,
     zero_to_one = GL_ZERO_TO_ONE
-};
-
-enum class gl_primitive_mode
-{
-
 };
 
 /*
@@ -221,31 +218,20 @@ struct gl_graphics_pipeline_descriptor{
     // pipeline state
     std::shared_ptr<gl_graphics_pipeline_state> state;
     // vertex stream which input into program by vertex puller
-    std::shared_ptr<gl_vertex_array> attributes;
+    std::shared_ptr<gl_vertex_launcher> vertex_launcher;
     // program body
-    struct glsl_graphics_pipeline_program{
-        // must have impl
-        std::shared_ptr<glsl_vertex_shader> vertex_shader;
-        // optional stage
-        std::shared_ptr<glsl_tessellation_shader> tessellation_shader;
-        // optional stage
-        std::shared_ptr<glsl_geometry_shader> geometry_shader;
-        // must have impl
-        std::shared_ptr<glsl_fragment_shader> fragment_shader;
-
-        glsl_graphics_pipeline_program() : 
-            vertex_shader(nullptr), tessellation_shader(nullptr), geometry_shader(nullptr), 
-            fragment_shader(nullptr) 
-        {}
-    } program;
-    // optional transform feedback 
-    std::shared_ptr<gl_transform_feedback> tramsform_feedback;
+    std::shared_ptr<glsl_program> program;
+    // [optional] transform feedback 
+    std::shared_ptr<gl_transform_feedback> transform_feedback;
     // where program final color output
     std::shared_ptr<gl_framebuffer> framebuffer;
 
     gl_graphics_pipeline_descriptor() : 
         state(nullptr), 
-        attributes(nullptr), program(), framebuffer(nullptr)
+        vertex_launcher(nullptr),
+        program(nullptr), 
+        transform_feedback(nullptr),
+        framebuffer(nullptr)
     {}
 };
 
