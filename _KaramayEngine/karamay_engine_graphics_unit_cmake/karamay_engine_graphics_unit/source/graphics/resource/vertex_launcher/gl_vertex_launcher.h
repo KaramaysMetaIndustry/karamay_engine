@@ -33,7 +33,7 @@ class gl_vertex_launcher final{
 public:
 	gl_vertex_launcher(std::uint32_t primitives_num) 
 	{
-		_element_array_buffer = std::make_unique<gl_element_array_buffer>(primitives_num * 3);
+		//_element_array_buffer = std::make_unique<gl_element_array_buffer>(primitives_num * 3);
 	}
 
 	~gl_vertex_launcher() {}

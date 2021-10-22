@@ -4,13 +4,8 @@
 #include "glsl_class.h"
 #include "glsl_shader.h"
 
-
-class glsl_program
+struct glsl_graphics_pipeline_program
 {
-
-};
-
-struct glsl_graphics_pipeline_program {
 	// must have impl
 	std::shared_ptr<glsl_vertex_shader> vertex_shader;
 	// optional stage
@@ -24,7 +19,38 @@ struct glsl_graphics_pipeline_program {
 		vertex_shader(nullptr), tessellation_shader(nullptr), geometry_shader(nullptr),
 		fragment_shader(nullptr)
 	{}
-} program;
+};
+
+struct glsl_vertex_processing_pipeline_program
+{
+	// must have impl
+	std::shared_ptr<glsl_vertex_shader> vertex_shader;
+	// optional stage
+	std::shared_ptr<glsl_tessellation_shader> tessellation_shader;
+	// optional stage
+	std::shared_ptr<glsl_geometry_shader> geometry_shader;
+};
+
+struct glsl_compute_pipeline_program
+{
+	std::shared_ptr<glsl_compute_shader> compute_shader;
+};
+
+//struct glsl_graphics_pipeline_program {
+//	// must have impl
+//	std::shared_ptr<glsl_vertex_shader> vertex_shader;
+//	// optional stage
+//	std::shared_ptr<glsl_tessellation_shader> tessellation_shader;
+//	// optional stage
+//	std::shared_ptr<glsl_geometry_shader> geometry_shader;
+//	// must have impl
+//	std::shared_ptr<glsl_fragment_shader> fragment_shader;
+//
+//	glsl_graphics_pipeline_program() :
+//		vertex_shader(nullptr), tessellation_shader(nullptr), geometry_shader(nullptr),
+//		fragment_shader(nullptr)
+//	{}
+//} program;
 
 #define TOKEN(__NAME__) #__NAME__
 

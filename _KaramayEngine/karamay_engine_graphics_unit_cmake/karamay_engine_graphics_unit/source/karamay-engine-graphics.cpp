@@ -2,6 +2,7 @@
 #include "graphics/resource/program/gl_program.h"
 #include "graphics/resource/buffers/raw_buffer/gl_buffer.h"
 #include "window/window.h"
+#include "lua/lua_manager.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../dependencies/stb/stb_image.h"
@@ -424,6 +425,9 @@ void create(T v, Args... args)
 
 void test0()
 {
+
+	lua_manager _lua_mana;
+
 
 	create(std::string("aa"), std::string("bb"), int32_t(2), glm::vec3(1.0f));
 

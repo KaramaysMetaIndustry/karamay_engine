@@ -65,7 +65,7 @@ public:
 	 * (3) introspection
 	 * (4) state setting
 	 */
-    void construct(const std::vector<std::shared_ptr<gl_shader>>& shaders) noexcept
+    bool construct(const std::vector<std::shared_ptr<gl_shader>>& shaders) noexcept
     {
         // attach shaders
         for (const auto& _shader : shaders)
@@ -91,6 +91,8 @@ public:
             std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << _log_length << std::endl;
             glValidateProgram(_handle);
         }
+
+        return true;
     }
 
 public:
