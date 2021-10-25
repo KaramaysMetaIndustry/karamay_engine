@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 3.14)
 project(karamay_engine_graphics_unit)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 set(BUILD_ARCH "-m64") 
 
 link_libraries(opengl32.lib)
-#
+#sys
+
 link_libraries(glew32s.lib)
 #link_directories(karamay_engine_graphics_unit/dependencies/glew-2.1.0/lib/Release/Win32/)
 link_directories(karamay_engine_graphics_unit/dependencies/glew-2.1.0/lib/Release/x64/)
@@ -14,8 +15,13 @@ link_libraries(glfw3.lib)
 #link_directories(karamay_engine_graphics_unit/dependencies/glfw-3.3.bin.WIN32/lib-vc2019/)
 link_directories(karamay_engine_graphics_unit/dependencies/glfw-3.3.4.bin.WIN64/lib-vc2019/)
 
+link_libraries(lua54.lib)
+link_directories(karamay_engine_graphics_unit/dependencies/lua54/)
+
+
 include_directories(karamay_engine_graphics_unit/dependencies)
 include_directories(karamay_engine_graphics_unit/dependencies/glm_pack/include)
+include_directories(karamay_engine_graphics_unit/dependencies/lua54/include)
 include_directories(karamay_engine_graphics_unit/source)
 
 add_executable(karamay_engine_graphics_unit

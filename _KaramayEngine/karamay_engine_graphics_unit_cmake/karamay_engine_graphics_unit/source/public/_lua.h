@@ -1,13 +1,14 @@
-//
-// Created by jichengcheng on 2021/9/18.
-//
-
-#ifndef KARAMAY_ENGINE_GRAPHICS_UNIT__LUA_H
-#define KARAMAY_ENGINE_GRAPHICS_UNIT__LUA_H
-
-#include "lua-5.4.3/src/lua.h"
-#include "lua-5.4.3/src/lauxlib.h"
-#include "lua-5.4.3/src/lualib.h"
+#ifndef __LUA_H
+#define __LUA_H
 
 
-#endif //KARAMAY_ENGINE_GRAPHICS_UNIT__LUA_H
+extern "C"
+{
+#include "lua54/include/lua.h"
+#include "lua54/include/lualib.h"
+#include "lua54/include/lauxlib.h"
+#include "lua54/include/luaconf.h"
+
+}
+
+#endif

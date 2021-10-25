@@ -427,6 +427,7 @@ void test0()
 {
 
 	lua_manager _lua_mana;
+	_lua_mana.construct();
 
 
 	create(std::string("aa"), std::string("bb"), int32_t(2), glm::vec3(1.0f));
