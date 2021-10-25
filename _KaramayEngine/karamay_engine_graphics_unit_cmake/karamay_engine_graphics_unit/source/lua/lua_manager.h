@@ -6,117 +6,138 @@
 namespace karamay_lua
 {
     lua_State* state(){}
+
+	struct lua_index
+	{
+		explicit lua_index(std::int32_t index) : _index(index) 
+		{
+			if (_index < 0 && _index > LUA_REGISTRYINDEX)
+			{
+				std::int32_t _top = lua_gettop(state());
+				_index = _top + _index + 1;
+			}
+		}
+
+		std::int32_t index() const { return _index; }
+
+	protected:
+
+		std::int32_t _index;
+	};
+
+	struct lua_t : lua_index
+	{
+		template <typename T>
+		T value() const
+		{
+
+		}
+
+		template <typename T>
+		operator T() const;
+	};
+
+	struct lua_result
+	{
+		explicit lua_result(std::int32_t num) 
+		{
+			std::string s;
+			int n;
+		}
+
+		void pop() {}
+		bool is_valid() const { return _valid; }
+		std::int32_t num() const { return _values.size(); }
+
+		const lua_t& operator[](std::int32_t index) const { return _values[index]; }
+
+	private:
+
+		std::vector<lua_t> _values;
+		bool _valid;
+	};
+
+	struct lua_table : lua_index {
+		explicit lua_table(std::int32_t);
+		explicit lua_table(lua_t value);
+
+		void reset();
+		std::int32_t length() const {}
+
+		lua_t operator[](std::int32_t i) const;
+		lua_t operator[](std::int64_t i) const;
+		lua_t operator[](std::double_t d) const;
+		lua_t operator[](const char* s) const;
+		lua_t operator[](const void* p) const;
+		lua_t operator[](lua_index stack_index) const;
+		lua_t operator[](lua_t key) const;
+
+		template<class... T>
+		lua_result call(const char* method_name, T&&... args) const
+		{
+			if (!method_name) {
+				return lua_result(0);
+			}
+
+			auto* _state = karamay_lua::state();
+			lua_pushcfunction(_state, report_lua_call_error);
+
+			lua_pushstring(_state, method_name);
+			std::int32_t _type = lua_gettable(_state, _index);
+			if (_type != LUA_TFUNCTION)
+			{
+				std::cout << "method does not exist" << std::endl;
+				lua_pop(_state, 2);
+				return lua_result(0);
+			}
+
+
+		}
+
+	private:
+
+		mutable std::int32_t pushed_values;
+	};
+
+	struct lua_function
+	{
+
+		template<typename... T>
+		lua_result invoke(T&&... args) const
+		{
+
+		}
+
+	};
+
+	template<typename... T>
+	lua_result call_function_internal(lua_State* state, T&&... args)
+	{
+		std::int32_t _message_handler_index = lua_gettop(state) - 1;
+		if (_message_handler_index > 0)
+		{
+			std::int32_t _args_num;
+			std::int32_t _code = lua_pcall(state, _args_num, LUA_MULTRET, _message_handler_index);
+			std::int32_t _top_index = lua_gettop(state);
+			if (_code == LUA_OK)
+			{
+				std::int32_t _results_num = _top_index - _message_handler_index;
+				lua_remove(state, _message_handler_index);
+				return lua_result(_results_num);
+			}
+			lua_pop(state, _top_index - _message_handler_index + 1);
+			return lua_result(0);
+		}
+	}
+
+	lua_CFunction report_lua_call_error;
 }
 
-struct lua_index
-{
-    explicit lua_index(std::int32_t index): _index(index){}
-
-    std::int32_t index() const { return _index; }
-
-protected:
-
-    std::int32_t _index;
-};
-
-struct lua_t
-{
-
-};
-
-struct lua_result
-{
-    explicit lua_result(std::int32_t num){}
-
-    void pop(){}
-    bool is_valid() const{ return _valid;}
-    std::int32_t num() const{return _values.size();}
-
-    const lua_t& operator[](std::int32_t index) const { return _values[index];}
-
-private:
-
-    std::vector<lua_t> _values;
-    bool _valid;
-};
 
 
 
-template<typename... T>
-lua_result call_function_internal(lua_State* state, T&&... args)
-{
-    std::int32_t _message_handler_index = lua_gettop(state) - 1;
-    if(_message_handler_index > 0)
-    {
-        std::int32_t _args_num;
-        std::int32_t _code = lua_pcall(state, _args_num, LUA_MULTRET, _message_handler_index);
-        std::int32_t _top_index = lua_gettop(state);
-        if(_code == LUA_OK)
-        {
-            std::int32_t _results_num = _top_index - _message_handler_index;
-            lua_remove(state, _message_handler_index);
-            return lua_result(_results_num);
-        }
-        lua_pop(state, _top_index - _message_handler_index + 1);
-        return lua_result(0);
-    }
-}
-
-lua_CFunction report_lua_call_error;
-
-struct lua_table : lua_index{
-    explicit lua_table(std::int32_t){}
-    explicit lua_table(lua_t value){}
-
-    void reset();
-    std::int32_t length() const{}
-
-    lua_t operator[](std::int32_t i) const;
-    lua_t operator[](std::int64_t i) const;
-    lua_t operator[](std::double_t d) const;
-    lua_t operator[](const char* s) const;
-    lua_t operator[](const void* p) const;
-    lua_t operator[](lua_index stack_index) const;
-    lua_t operator[](lua_t key) const;
-
-    template<class... T>
-    lua_result call(const char* method_name, T&&... args) const
-    {
-        if(!method_name){
-            return lua_result(0);
-        }
-
-        auto* _state = karamay_lua::state();
-        lua_pushcfunction(_state, report_lua_call_error);
-
-        lua_pushstring(_state, method_name);
-        std::int32_t _type = lua_gettable(_state, _index);
-        if(_type != LUA_TFUNCTION)
-        {
-            std::cout<<"method does not exist"<<std::endl;
-            lua_pop(_state, 2);
-            return lua_result(0);
-        }
 
 
-    }
-
-private:
-
-    mutable std::int32_t pushed_values;
-};
-
-
-struct lua_function
-{
-
-    template<typename... T>
-    lua_result invoke(T&&... args) const
-    {
-        
-    }
-
-};
 
 
 int test(lua_State* L)
