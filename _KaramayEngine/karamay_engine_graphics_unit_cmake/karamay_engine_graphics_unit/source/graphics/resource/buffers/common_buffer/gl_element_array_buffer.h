@@ -10,12 +10,32 @@ struct gl_element_array_buffer_descriptor
 };
 
 
+enum class gl_primitive_mode
+{
+    POINTS = GL_POINTS,
+
+    LINES = GL_LINES,
+    LINES_ADJACENCY = GL_LINES_ADJACENCY,
+    LINE_LOOP = GL_LINE_LOOP,
+    LINE_STRIP_ADJACENCY = GL_LINE_STRIP_ADJACENCY,
+    LINE_STRIP = GL_LINE_STRIP,
+
+    TRIANGLES = GL_TRIANGLES,
+    TRIANGLES_ADJACENCY = GL_TRIANGLES_ADJACENCY,
+    TRIANGLE_STRIP = GL_TRIANGLE_STRIP,
+    TRIANGLE_STRIP_ADJACENCY = GL_TRIANGLE_STRIP_ADJACENCY,
+    TRIANGLE_FAN = GL_TRIANGLE_FAN,
+
+    PATCHES = GL_PATCHES
+};
+
+
 /*
 * dynamic storage
 */
 class gl_element_array_buffer final{
 public:
-    gl_element_array_buffer() = delete;
+    gl_element_array_buffer() = default;
     explicit gl_element_array_buffer(const gl_element_array_buffer_descriptor& descriptor) :
         _descriptor(descriptor)
     {

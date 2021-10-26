@@ -420,30 +420,65 @@ void create(T v, Args... args)
 }
 
 
-
+#include "graphics/pipeline/graphics/gl_graphics_pipeline.h"
 
 
 void test0()
 {
-
-	lua_manager _lua_mana;
-	_lua_mana.construct();
-
-
-	create(std::string("aa"), std::string("bb"), int32_t(2), glm::vec3(1.0f));
+//	lua_manager _lua_mana;
+//	_lua_mana.construct();
 
 	auto* window = new glfw_window();
 	window->load_context();
 	
 	std::cout << "GL_VERSION: " << glGetString(GL_VERSION) << std::endl;
 	glewInit();
-
 	glViewport(0, 0, window->get_framebuffer_width(), window->get_framebuffer_height());
     // During init, enable debug output
 #ifdef _DEBUG
 	glEnable(GL_DEBUG_OUTPUT);
 	glDebugMessageCallback(MessageCallback, 0);
 #endif // _DEBUG
+
+
+	// vetex launcher
+	auto _vertices = std::make_shared<gl_vertex_array>();
+	_vertices->reallocate_vertex_attributes(100);
+	_vertices->reallocate_instance_attributes(0);
+
+	std::vector<glm::vec4> _raw_colors;
+
+	auto _indices = std::make_shared<gl_element_array_buffer>();
+	auto _vertex_launcher = std::make_shared<gl_vertex_launcher>();
+	_vertex_launcher->vertices = _vertices;
+	_vertex_launcher->indices = _indices;
+	_vertex_launcher->assembly();
+
+	// shader program
+	auto _program = std::make_shared<glsl_graphics_pipeline_program>();
+	_program->vertex_shader;
+	_program->tessellation_shader;
+	_program->geometry_shader;
+	_program->fragment_shader;
+
+	// framebuffer
+	auto _framebuffer = std::make_shared<gl_framebuffer>();
+
+	// state
+	auto _state = std::make_shared<gl_graphics_pipeline_state>();
+	
+
+	// pipeline
+	auto  _gp_des = std::make_shared<gl_graphics_pipeline_descriptor>();
+	_gp_des->name = "test_pipeline";
+	_gp_des->owner_renderer_dir = "/shaders/test_renderer/";
+	_gp_des->vertex_launcher = _vertex_launcher;
+	_gp_des->program = _program;
+	_gp_des->transform_feedback = nullptr; // nullptr
+	_gp_des->framebuffer = _framebuffer;
+	_gp_des->state;
+	auto _test_pipeline = std::make_shared<gl_graphics_pipeline>(_gp_des);
+
 
 	gl_buffer_storage_options _options;
 	_options.is_client_storage = false; // backing storage in client or server, server will be more fast

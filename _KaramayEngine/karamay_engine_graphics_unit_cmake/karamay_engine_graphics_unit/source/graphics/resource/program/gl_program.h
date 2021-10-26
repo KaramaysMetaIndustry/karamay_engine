@@ -50,7 +50,7 @@ public:
     gl_program(const gl_program&) = delete;
     gl_program& operator=(const gl_program&) = delete;
 
-    ~gl_program() override;
+    ~gl_program() override {};
 
 public:
 

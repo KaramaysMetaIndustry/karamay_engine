@@ -147,6 +147,16 @@ class gl_attribute
     }
 };
 
+struct gl_vertex_attributes
+{
+    std::int64_t attribute_size;
+    std::vector<std::uint8_t> data;
+    gl_vertex_attributes() {}
+    gl_vertex_attributes(std::int64_t _attribute_size, std::int64_t _attributes_num) :
+        attribute_size(_attribute_size), data(_attributes_num* _attribute_size)
+    {}
+};
+
 struct gl_vertex_attribute_descriptor
 {
     std::string type_name;
@@ -174,6 +184,8 @@ struct gl_vertex_array_descriptor
     const std::shared_ptr<glsl_in_block_t> vertex_shader_in_block;
 };
 
+
+
 /*
  * Dynamic Storage : if required capacity is not enough,
  *
@@ -189,13 +201,11 @@ struct gl_vertex_array_descriptor
  * */
 class gl_vertex_array final : public gl_object{
 public:
-    gl_vertex_array() = delete;
+    gl_vertex_array() : gl_object(gl_object_type::VERTEX_ARRAY_OBJ) {}
     gl_vertex_array(
-            std::int64_t vertex_count, const std::vector<gl_vertex_attribute_descriptor>& vertex_attribute_descriptors,
-            std::int32_t instance_count, const std::vector<gl_instance_attribute_descriptor>& instance_attribute_descriptors) :
+            const std::vector<gl_vertex_attribute_descriptor>& vertex_attribute_descriptors,
+           const std::vector<gl_instance_attribute_descriptor>& instance_attribute_descriptors) :
             gl_object(gl_object_type::VERTEX_ARRAY_OBJ),
-            _vertex_count(vertex_count),
-            _instance_count(instance_count)
     {
         glCreateVertexArrays(1, &_handle);
     }
@@ -208,25 +218,40 @@ public:
         glDeleteVertexArrays(1, &_handle);
     }
 
-private:
-    
-    std::unique_ptr<gl_array_buffer> _array_buffer;
-
-    std::unique_ptr<gl_buffer> _buffer;
-
 public:
 
-    void bind() noexcept
+    void reallocate_vertex_attributes(std::int64_t vertices_num) {}
+
+    void reallocate_instance_attributes(std::int64_t instances_num) {}
+
+    std::int64_t vertex_attributes_num()  const
     {
-        glBindVertexArray(_handle);
+        return _vertices_num;
     }
 
-    void unbind() noexcept
+    std::int64_t instance_attributes_num() const
     {
-        glBindVertexArray(0);
+        return _instances_num;
     }
 
-public:
+    std::int64_t attribute_size(const std::string& attribute_name) const
+    {
+        auto _it = _attributes.find(attribute_name);
+        if (_it == _attributes.cend())
+        {
+            return _it->second.attribute_size;
+        }
+        return -1;
+    }
+
+    std::uint8_t* attributes(const std::string& attribute_name)
+    {
+        if (_attributes.find(attribute_name) == _attributes.cend())
+        {
+            return _attributes[attribute_name].data.data();
+        }
+        return nullptr;
+    }
 
     std::uint8_t* data(std::int64_t offset, std::int64_t size)
     {
@@ -242,6 +267,37 @@ public:
         return _data;
     }
 
+public:
+
+    void bind() noexcept
+    {
+        glBindVertexArray(_handle);
+    }
+
+    void unbind() noexcept
+    {
+        glBindVertexArray(0);
+    }
+
+    void enable_pointers()
+    {
+        const std::size_t _size = _descriptor.get_vertex_attribute_descriptors().size() + _descriptor.get_instance_attribute_descriptors().size();
+        for (std::uint32_t _index = 0; _index < _size; ++_index)
+        {
+            glEnableVertexAttribArray(_index);
+        }
+    }
+
+    void disable_pointers()
+    {
+        const std::size_t _size = _descriptor.get_vertex_attribute_descriptors().size() + _descriptor.get_instance_attribute_descriptors().size();
+        for (std::uint32_t _index = 0; _index < _size; ++_index)
+        {
+            glDisableVertexAttribArray(_index);
+        }
+    }
+
+public:
     /*
     * @Param0 attribute_name
     * @Param1 attribute_index
@@ -277,53 +333,62 @@ public:
 
 private:
 
-    std::shared_ptr<gl_buffer> _vertex_attribute_buffer;
+    std::int64_t _vertices_num;
+    std::int32_t _instances_num;
 
-    std::shared_ptr<gl_buffer> _instance_attribute_buffer;
+    std::unique_ptr<gl_array_buffer> _buffer;
 
-    std::int64_t _vertex_count;
 
     std::vector<gl_vertex_attribute_descriptor> _vertex_attribute_descriptors;
-
-    std::int32_t _instance_count;
-
     std::vector<gl_vertex_attribute_descriptor> _instance_attribute_descriptors;
-
     std::unordered_map<std::string, gl_attribute_list_anchor> _vertex_attribute_layout;
-
     std::unordered_map<std::string, gl_attribute_list_anchor> _instance_attribute_layout;
 
 private:
 
-    void _generate_attribute_layout() {}
-
     void _set_vertex_pointers(gl_attribute_component::type attribute_component_type, std::uint32_t  index, std::uint32_t components_count, std::uint32_t attribute_size, std::uint32_t offset) {}
 
-public:
 
-    void enable_pointers() {}
 
-    void disable_pointers() {}
+    bool is_pointer_enabled(std::uint32_t index)
+    {
+        bind();
+        GLint _is_enabled = GL_FALSE;
+        glGetVertexAttribiv(index, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &_is_enabled);
+        unbind();
+        return _is_enabled;
+    }
 
-public:
-	// default false
-	bool is_pointer_enabled(std::uint32_t index);
-	// default is 4
-	std::uint32_t get_attribute_components_num(std::uint32_t index);
-	// default is GL_FLOAT
-	std::string get_attribute_component_type(std::uint32_t index);
+    std::uint32_t get_attribute_components_num(std::uint32_t index)
+    {
+        bind();
+        GLint _num = 0;
+        glGetVertexAttribiv(index, GL_VERTEX_ATTRIB_ARRAY_SIZE, &_num);
+        unbind();
+        return _num;
+    }
 
-	void* get_mapped_data();
+    std::string get_attribute_component_type(std::uint32_t index)
+    {
+        bind();
+        GLint _num = 0;
+        glGetVertexAttribiv(index, GL_VERTEX_ATTRIB_ARRAY_TYPE, &_num);
+        unbind();
 
-	[[nodiscard]] const std::int32_t get_size() const;
+        switch (_num)
+        {
+        case GL_BYTE: return "BYTE";
+        case GL_UNSIGNED_BYTE: return "UNSIGNED BYTE";
+        case GL_SHORT: return "SHORT";
+        case GL_UNSIGNED_SHORT: return "UNSIGNED SHORT";
+        case GL_INT: return "INT";
+        case GL_UNSIGNED_INT: return "UNSIGNED INT";
+        case GL_FLOAT: return "FLOAT";
+        case GL_DOUBLE: return "DOUBLE";
+        default: return "";
+        }
+    }
 
 };
-
-template<typename... GLSL_TRANSPARENT_T>
-class glsl_vertex_array
-{
-
-};
-
 
 #endif

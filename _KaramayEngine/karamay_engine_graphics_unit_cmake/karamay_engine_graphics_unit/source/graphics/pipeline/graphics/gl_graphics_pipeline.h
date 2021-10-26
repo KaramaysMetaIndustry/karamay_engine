@@ -211,25 +211,26 @@ struct gl_graphics_pipeline_descriptor{
     std::string name;
     // renderer dir
     std::string owner_renderer_dir;
-
-    // pipeline state
-    std::shared_ptr<gl_graphics_pipeline_state> state;
-    // vertex stream which input into program by vertex puller
+   
+    // [must have] vertex stream which input into program by vertex puller
     std::shared_ptr<gl_vertex_launcher> vertex_launcher;
-    // program body
+    // [must have] program body
     std::shared_ptr<glsl_graphics_pipeline_program> program;
     // [optional] transform feedback 
     std::shared_ptr<gl_transform_feedback> transform_feedback;
-    // where program final color output
+    // [must have] where program final color output
     std::shared_ptr<gl_framebuffer> framebuffer;
+    // [must have] pipeline state
+    std::shared_ptr<gl_graphics_pipeline_state> state;
 
     gl_graphics_pipeline_descriptor() : 
-        state(nullptr), 
         vertex_launcher(nullptr),
         program(nullptr), 
         transform_feedback(nullptr),
-        framebuffer(nullptr)
+        framebuffer(nullptr),
+        state(nullptr)
     {}
+
 };
 
 /*
@@ -304,6 +305,7 @@ private:
             std::cerr << "graphics pipeline must have state, attributes and framebuffer." << std::endl;
             return false;
         }*/
+        return false;
     }
 
     /*
@@ -424,7 +426,7 @@ private:
         //        _atomic_counter_buffer = std::make_unique<gl_atomic_counter_buffer>(gl_atomic_counter_buffer_descriptor{ _atomic_counters });
         //    }
         //}
-
+return false;
     }
 
 private:
