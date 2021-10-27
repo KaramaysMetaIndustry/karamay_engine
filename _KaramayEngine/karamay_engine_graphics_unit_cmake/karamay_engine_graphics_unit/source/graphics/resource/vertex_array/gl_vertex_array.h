@@ -190,8 +190,9 @@ struct gl_vertex_array_descriptor
  * Store Vertex Attributes & Instance Attributes
  *
  * */
-class gl_vertex_array final : public gl_object{
+class gl_vertex_array final : public gl_object {
 public:
+    gl_vertex_array() : gl_object(gl_object_type::VERTEX_ARRAY_OBJ) {}
     gl_vertex_array(const gl_vertex_array_descriptor& descriptor) : gl_object(gl_object_type::VERTEX_ARRAY_OBJ)
     {
         glCreateVertexArrays(1, &_handle);
@@ -232,30 +233,30 @@ public:
 
     std::int64_t vertex_attributes_num()  const
     {
-        return _vertices_num;
+        return 0;
     }
 
     std::int64_t instance_attributes_num() const
     {
-        return _instances_num;
+        return 0;
     }
 
     std::int64_t attribute_size(const std::string& attribute_name) const
     {
-        auto _it = _attributes.find(attribute_name);
+        /*auto _it = _attributes.find(attribute_name);
         if (_it == _attributes.cend())
         {
             return _it->second.attribute_size;
-        }
+        }*/
         return -1;
     }
 
     std::uint8_t* attributes(const std::string& attribute_name)
     {
-        if (_attributes.find(attribute_name) == _attributes.cend())
+        /*if (_attributes.find(attribute_name) == _attributes.cend())
         {
             return _attributes[attribute_name].data.data();
-        }
+        }*/
         return nullptr;
     }
 
@@ -287,20 +288,20 @@ public:
 
     void enable_pointers()
     {
-        const std::size_t _size = _descriptor.get_vertex_attribute_descriptors().size() + _descriptor.get_instance_attribute_descriptors().size();
+       /* const std::size_t _size = _descriptor.get_vertex_attribute_descriptors().size() + _descriptor.get_instance_attribute_descriptors().size();
         for (std::uint32_t _index = 0; _index < _size; ++_index)
         {
             glEnableVertexAttribArray(_index);
-        }
+        }*/
     }
 
     void disable_pointers()
     {
-        const std::size_t _size = _descriptor.get_vertex_attribute_descriptors().size() + _descriptor.get_instance_attribute_descriptors().size();
+        /*const std::size_t _size = _descriptor.get_vertex_attribute_descriptors().size() + _descriptor.get_instance_attribute_descriptors().size();
         for (std::uint32_t _index = 0; _index < _size; ++_index)
         {
             glDisableVertexAttribArray(_index);
-        }
+        }*/
     }
 
 public:
@@ -374,7 +375,7 @@ private:
     void gl_vertex_array::_generate_attribute_layout()
     {
 
-        const auto& _vertex_attribute_descriptors = _descriptor.get_vertex_attribute_descriptors();
+       /* const auto& _vertex_attribute_descriptors = _descriptor.get_vertex_attribute_descriptors();
         const auto& _instance_attribute_descriptors = _descriptor.get_instance_attribute_descriptors();
         const auto _vertices_count = _descriptor.get_vertices_count();
 
@@ -430,7 +431,7 @@ private:
             ++_index;
         }
 
-        _unbind_buffer(); unbind();
+        _unbind_buffer(); unbind();*/
     }
 
     bool is_pointer_enabled(std::uint32_t index)

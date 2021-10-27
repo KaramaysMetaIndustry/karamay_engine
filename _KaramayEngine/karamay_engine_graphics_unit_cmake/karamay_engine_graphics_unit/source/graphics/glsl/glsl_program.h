@@ -133,7 +133,7 @@ public:
 		MatrixStruct matrices;
 	);
 
-	DECLARE_IMAGE(glsl_sampler2D a);
+	//DECLARE_IMAGE(glsl_sampler2D a);
 
 
 

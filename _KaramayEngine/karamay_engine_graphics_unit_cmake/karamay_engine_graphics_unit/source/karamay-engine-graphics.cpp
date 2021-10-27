@@ -444,7 +444,7 @@ void test0()
 	// vetex launcher
 	auto _vertices = std::make_shared<gl_vertex_array>();
 	_vertices->reallocate_vertex_attributes(100);
-	_vertices->reallocate_instance_attributes(0);
+	//_vertices->reallocate_instance_attributes(0);
 
 	std::vector<glm::vec4> _raw_colors;
 
