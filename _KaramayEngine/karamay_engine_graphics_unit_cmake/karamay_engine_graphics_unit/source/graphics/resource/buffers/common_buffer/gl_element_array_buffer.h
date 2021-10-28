@@ -3,44 +3,43 @@
 
 #include "graphics/resource/buffers/raw_buffer/gl_buffer.h"
 
-struct gl_element_array_buffer_descriptor
-{
-    std::uint32_t primitives_num, primitive_size;
-};
-
-
-enum class gl_primitive_mode
-{
-    POINTS = GL_POINTS,
-
-    LINES = GL_LINES,
-    LINES_ADJACENCY = GL_LINES_ADJACENCY,
-    LINE_LOOP = GL_LINE_LOOP,
-    LINE_STRIP_ADJACENCY = GL_LINE_STRIP_ADJACENCY,
-    LINE_STRIP = GL_LINE_STRIP,
-
-    TRIANGLES = GL_TRIANGLES,
-    TRIANGLES_ADJACENCY = GL_TRIANGLES_ADJACENCY,
-    TRIANGLE_STRIP = GL_TRIANGLE_STRIP,
-    TRIANGLE_STRIP_ADJACENCY = GL_TRIANGLE_STRIP_ADJACENCY,
-    TRIANGLE_FAN = GL_TRIANGLE_FAN,
-
-    PATCHES = GL_PATCHES
-};
-
 
 /*
 * dynamic storage
 */
 class gl_element_array_buffer final{
 public:
-    gl_element_array_buffer() = default;
-    explicit gl_element_array_buffer(const gl_element_array_buffer_descriptor& descriptor) :
-        _descriptor(descriptor)
+    gl_element_array_buffer() : _buffer(nullptr) {}
+    gl_element_array_buffer(std::int64_t size, std::uint8_t* data) : _buffer(nullptr)
     {
+        _allocate(size, data);
     }
 
     ~gl_element_array_buffer() = default;
+
+
+public:
+
+    void reallocate(std::int64_t size, std::uint8_t* new_data = nullptr)
+    {
+        if (!_buffer || (_buffer && _buffer->size != size))
+        {
+            _allocate(size, nullptr);
+        }
+    }
+
+    void fill(std::uint8_t* new_data)
+    {
+        if (new_data && _buffer)
+        {
+            _buffer->execute_mapped_memory_writer(0, _buffer->size, [&](std::uint8_t* data, std::int64_t size) {
+                if (!data || size < 0) return;
+                std::memcpy(data, new_data, size);
+                });
+        }
+    }
+
+    void fill(std::int64_t offset, std::uint8_t* data) {}
 
 public:
 
@@ -58,7 +57,11 @@ public:
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    void reallocate(std::int64_t size, std::uint8_t* new_data = nullptr)
+private:
+
+    std::unique_ptr<gl_buffer> _buffer;
+
+    void _allocate(std::int64_t size, std::uint8_t* data = nullptr)
     {
         if (!_buffer || (_buffer && _buffer->size != size))
         {
@@ -70,27 +73,10 @@ public:
             _options.is_map_coherent = false;
             _options.is_map_persistent = false;
             _buffer = std::make_unique<gl_buffer>(_options, size);
-            
-            fill(new_data);
+
+            fill(data);
         }
     }
-
-    void fill(std::uint8_t* new_data)
-    {
-        if (new_data && _buffer)
-        {
-            _buffer->execute_mapped_memory_writer(0, _buffer->size, [&](std::uint8_t* data, std::int64_t size) {
-                if (!data || size < 0) return;
-                std::memcpy(data, new_data, size);
-                });
-        }
-    }
-
-private:
-
-    gl_element_array_buffer_descriptor _descriptor;
-
-    std::unique_ptr<gl_buffer> _buffer;
 
 };
 

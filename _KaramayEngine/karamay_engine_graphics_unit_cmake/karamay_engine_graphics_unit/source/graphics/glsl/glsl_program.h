@@ -4,21 +4,68 @@
 #include "glsl_class.h"
 #include "glsl_shader.h"
 
-struct glsl_graphics_pipeline_program
+struct glsl_graphics_pipeline_parameters
 {
-	// must have impl
-	std::shared_ptr<glsl_vertex_shader> vertex_shader;
-	// optional stage
-	std::shared_ptr<glsl_tessellation_shader> tessellation_shader;
-	// optional stage
-	std::shared_ptr<glsl_geometry_shader> geometry_shader;
-	// must have impl
-	std::shared_ptr<glsl_fragment_shader> fragment_shader;
+	std::vector<std::shared_ptr<glsl_uniform_block_t>> uniform_blocks;
+	std::vector<std::shared_ptr<glsl_shader_storage_block_t>> shader_storage_blocks;
+	std::vector<std::shared_ptr<glsl_atomic_counter_t>> atomic_counters;
+	std::vector<std::shared_ptr<glsl_sampler_t>> samplers;
+	std::vector<std::shared_ptr<glsl_image_t>> images;
+};
 
-	glsl_graphics_pipeline_program() :
-		vertex_shader(nullptr), tessellation_shader(nullptr), geometry_shader(nullptr),
-		fragment_shader(nullptr)
-	{}
+class glsl_graphics_pipeline_program final{
+public:
+	
+	glsl_graphics_pipeline_program(const std::shared_ptr<glsl_vertex_shader>& vs, const std::shared_ptr<glsl_fragment_shader>& fs) :
+		_vertex_shader(vs), _tessellation_shader(nullptr), _geometry_shader(nullptr), _fragment_shader(fs)
+	{
+		_collect_parameters();
+	}
+	glsl_graphics_pipeline_program(const std::shared_ptr<glsl_vertex_shader>& vs, const std::shared_ptr<glsl_tessellation_shader>& ts, const std::shared_ptr<glsl_fragment_shader>& fs) :
+		_vertex_shader(vs), _tessellation_shader(ts), _geometry_shader(nullptr), _fragment_shader(fs)
+	{
+		_collect_parameters();
+	}
+	glsl_graphics_pipeline_program(const std::shared_ptr<glsl_vertex_shader>& vs, const std::shared_ptr<glsl_geometry_shader>& gs, const std::shared_ptr<glsl_fragment_shader>& fs) :
+		_vertex_shader(vs), _tessellation_shader(nullptr), _geometry_shader(gs), _fragment_shader(fs) 
+	{
+		_collect_parameters();
+	}
+	glsl_graphics_pipeline_program(const std::shared_ptr<glsl_vertex_shader>& vs, const std::shared_ptr<glsl_tessellation_shader>& ts, const std::shared_ptr<glsl_geometry_shader>& gs, const std::shared_ptr<glsl_fragment_shader>& fs) :
+		_vertex_shader(vs), _tessellation_shader(ts), _geometry_shader(gs), _fragment_shader(fs) 
+	{
+		_collect_parameters();
+	}
+
+	glsl_graphics_pipeline_program(const glsl_graphics_pipeline_program&) = delete;
+	glsl_graphics_pipeline_program& operator=(const glsl_graphics_pipeline_program&) = delete;
+
+	~glsl_graphics_pipeline_program() = default;
+
+public:
+	
+	const glsl_graphics_pipeline_parameters& parameters() { return _parameters; }
+
+
+private:
+
+	// must have impl
+	std::shared_ptr<glsl_vertex_shader> _vertex_shader;
+	// optional stage
+	std::shared_ptr<glsl_tessellation_shader> _tessellation_shader;
+	// optional stage
+	std::shared_ptr<glsl_geometry_shader> _geometry_shader;
+	// must have impl
+	std::shared_ptr<glsl_fragment_shader> _fragment_shader;
+
+	void _collect_parameters()
+	{
+		auto& _collected_uniform_blocks = _parameters.uniform_blocks;
+
+	}
+
+	glsl_graphics_pipeline_parameters _parameters;
+
 };
 
 struct glsl_vertex_processing_pipeline_program

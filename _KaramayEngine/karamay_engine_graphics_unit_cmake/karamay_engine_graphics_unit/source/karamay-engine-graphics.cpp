@@ -422,7 +422,6 @@ void create(T v, Args... args)
 
 #include "graphics/pipeline/graphics/gl_graphics_pipeline.h"
 
-
 void test0()
 {
 //	lua_manager _lua_mana;
@@ -443,28 +442,30 @@ void test0()
 
 
 	// vetex launcher
+	// vertices
 	auto _vertices = std::make_shared<gl_vertex_array>();
 	_vertices->reallocate_vertex_attributes(100);
-	//_vertices->reallocate_instance_attributes(0);
-
 	std::vector<glm::vec4> _raw_colors;
-
+	// indices
 	auto _indices = std::make_shared<gl_element_array_buffer>();
+	_indices->reallocate(1024 * sizeof(std::uint32_t));
+	_indices->fill(nullptr);
+
 	auto _vertex_launcher = std::make_shared<gl_vertex_launcher>();
 	_vertex_launcher->vertices = _vertices;
 	_vertex_launcher->indices = _indices;
 	_vertex_launcher->assembly();
 
 	// shader program
-	auto _program = std::make_shared<glsl_graphics_pipeline_program>();
-	_program->vertex_shader;
-	_program->tessellation_shader;
-	_program->geometry_shader;
-	_program->fragment_shader;
+	auto _vs = std::make_shared<glsl_vertex_shader>();
+	auto _ts = std::make_shared<glsl_tessellation_shader>();
+	auto _gs = std::make_shared<glsl_geometry_shader>();
+	auto _fs = std::make_shared<glsl_fragment_shader>();
 
+	auto _program = std::make_shared<glsl_graphics_pipeline_program>(_vs, _ts, _gs, _fs);
+	
 	// framebuffer
 	auto _framebuffer = std::make_shared<gl_framebuffer>();
-	
 
 	// state
 	auto _state = std::make_shared<gl_graphics_pipeline_state>();
@@ -483,7 +484,9 @@ void test0()
 	_gp_des->transform_feedback = nullptr;
 	_gp_des->framebuffer = _framebuffer;
 	_gp_des->state = _state;
+	
 	auto _test_pipeline = std::make_shared<gl_graphics_pipeline>(_gp_des);
+
 	_test_pipeline->enable();
 	//_test_pipeline->draw_indices();
 	//_test_pipeline->draw_arrays();
@@ -520,7 +523,7 @@ void test0()
 	glm::vec4 a(0.0f);
 	//_buffer.write(0, reinterpret_cast<const std::uint8_t*>(&a), sizeof glm::vec4);
 	//_buffer.read(0, sizeof(glm::vec4), &a);
-	std::cout << "direct get: " << a.x << ", " << a.y << ", " << a.z << ", " << a.w << std::endl;
+	//std::cout << "direct get: " << a.x << ", " << a.y << ", " << a.z << ", " << a.w << std::endl;
 
 	_buffer.execute_mapped_memory_reader(0, _size, [](const std::uint8_t* data, std::int64_t size) {
 		const glm::vec4* _data = reinterpret_cast<const glm::vec4*>(data);

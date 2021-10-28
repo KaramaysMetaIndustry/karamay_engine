@@ -25,6 +25,12 @@ public:
 		glDeleteTransformFeedbacks(1, &_handle);
 	}
 
+	void draw(gl_primitive_mode mode, std::int32_t stream_index, std::int32_t instances_count)
+	{
+		//glDrawTransformFeedback(static_cast<GLenum>(mode), _handle);
+		glDrawTransformFeedbackStreamInstanced(static_cast<GLenum>(mode), _handle, stream_index, instances_count);
+	}
+
 public:
 
 	void bind() noexcept

@@ -201,6 +201,190 @@ struct gl_graphics_pipeline_state
             } additional_multisample_fragment_operations;
         } post_fragment_operations;
     } fragment_processing; // process fragments
+
+    void set()
+    {
+        // vertex specification
+        {
+            glEnable(GL_PRIMITIVE_RESTART);
+            glPrimitiveRestartIndex(0);
+            // or
+            glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);// 2^N - 1
+        }
+
+        // vertex process
+        {
+            //shading
+
+            // flatshading
+            glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);
+
+            // clipping
+            glEnable(GL_CLIP_DISTANCE0); // [0, GL_MAX_CLIP_DISTANCES-1]
+            glClipControl(GL_LOWER_LEFT, GL_NEGATIVE_ONE_TO_ONE);
+            // glEnable(GL_DEPTH_CLAMP);
+            glDepthRange(1.0l, 1.1l);
+            //glDepthRangeArrayv();
+            //glDepthRangef();
+//            glViewport();
+//            glDepthRangeIndexed();
+//            glViewportArrayv();
+//            glViewportIndexedf();
+//            glViewportIndexedfv();
+
+
+        }
+
+        // primitive assmebly
+        {
+
+        }
+        // rasterization
+        {
+            // 到达光栅化之前抛弃所有图元, 使得光栅化包括光栅化之后的阶段全部失效
+            if (true)
+                glEnable(GL_RASTERIZER_DISCARD);
+            else
+                glDisable(GL_RASTERIZER_DISCARD);
+
+            // multisampling
+            glEnable(GL_MULTISAMPLE);
+            glEnable(GL_SAMPLE_SHADING);
+            //            glMinSampleShading();
+            //            glGetMultisamplefv();
+
+                        // points
+            glEnable(GL_PROGRAM_POINT_SIZE);
+            glDisable(GL_PROGRAM_POINT_SIZE);
+            glPointSize(0);
+            //            glPointParameteri();
+            //            glPointParameteriv();
+            //            glPointParameterf();
+            //            glPointParameterfv();
+
+                        // line segments
+            glEnable(GL_LINE_SMOOTH);
+            glLineWidth(1.0f);
+
+            // polygons
+            glEnable(GL_POLYGON_SMOOTH);
+
+            glEnable(GL_CULL_FACE);
+            glFrontFace(GL_CCW);
+            glCullFace(GL_FRONT_AND_BACK);
+
+            // polygon rast & depth offset
+            glEnable(GL_POLYGON_OFFSET_FILL);
+            glEnable(GL_POLYGON_OFFSET_LINE);
+            glEnable(GL_POLYGON_OFFSET_POINT);
+            glEnable(GL_POLYGON_SMOOTH);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+            //glPolygonOffsetClamp();
+            glPolygonOffset(1.2f, 0);
+
+        }
+
+        // pre frag operations
+        {
+
+            // scissor test
+            glEnable(GL_SCISSOR_TEST);
+            glDisable(GL_SCISSOR_TEST);
+
+            glEnablei(GL_SCISSOR_TEST, 0);
+            glDisablei(GL_SCISSOR_TEST, 0);
+            glScissor(0, 0, 0, 0);
+            glScissorArrayv(0, 100, nullptr);
+            //glScissorIndexed();
+            //glScissorIndexedv();
+
+            // multisample fragment ops
+
+        }
+
+        // fragment shading
+        {
+
+        }
+
+        glEnable(GL_SAMPLE_COVERAGE);
+
+        // alpha to coverage
+        {
+            glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+            glEnable(GL_SAMPLE_ALPHA_TO_ONE); // or
+        }
+        // Stencil test
+        {
+            // do stencil test and update the stencil buffer
+            glEnable(GL_STENCIL_TEST);
+            gl_stencil_func _stencil_func;
+            //glStencilFunc(_stencil_func, 0, 1); // set front-face and back-face function and
+            glStencilFuncSeparate(static_cast<GLenum>(_stencil_func), static_cast<GLenum>(_stencil_func), 0, 1);
+
+            gl_stencil_op _stencil_op;
+            // stencil test fail , stencil stencil test pass but depth test fail, both pass
+           // glStencilOpSeparate(GL_FRONT, _stencil_op, _stencil_op, _stencil_op);
+           // glStencilOpSeparate(GL_BACK, _stencil_op, _stencil_op, _stencil_op);
+           // glStencilOpSeparate(GL_FRONT_AND_BACK, _stencil_op, _stencil_op, _stencil_op);
+            //glStencilOp(_stencil_op, _stencil_op, _stencil_op);
+            glStencilMaskSeparate(GL_FRONT, 1);
+            glStencilMaskSeparate(GL_BACK, 1);
+            glStencilMaskSeparate(GL_FRONT_AND_BACK, 1);
+            //glStencilMask(1);
+        }
+        // Depth test
+        {
+            glEnable(GL_DEPTH_TEST);
+            //glDepthFunc(df_never);
+        }
+        // occlusion queries
+        {
+
+        }
+        // blending
+        {
+            glEnable(GL_BLEND);
+            //            glBlendColor(1.0f, 1.0f, 1.0f, 1.0f);
+            //            glBlendFunc();
+            //            glBlendFuncSeparate();
+            //            glBlendFunci();
+            //            glBlendFuncSeparatei();
+            //            glBlendEquation();
+            //            glBlendEquationi();
+            //            glBlendEquationSeparate();
+            //            glBlendEquationSeparatei();
+        }
+        // sRGB Conversion
+        {
+            glEnable(GL_FRAMEBUFFER_SRGB);
+
+        }
+        //Dithering
+        {
+            glEnable(GL_DITHER);
+        }
+        // color logic operations
+        {
+
+            gl_logic_op _logic_op;
+            glEnable(GL_COLOR_LOGIC_OP);
+            glDisable(GL_COLOR_LOGIC_OP);
+            glLogicOp(static_cast<GLenum>(_logic_op));
+        }
+        // additional multisample fragment operations
+        {
+            glEnable(GL_MULTISAMPLE);
+            //glSampleCoverage();
+        }
+
+        glEnable(GL_SAMPLE_MASK);
+        //glSampleMaski();
+
+        glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+    }
+
+    void reset();
 };
 
 /*
@@ -232,6 +416,22 @@ struct gl_graphics_pipeline_descriptor{
     {}
 
 };
+
+
+struct gl_draw_arrays_indirect_command {
+    std::uint32_t  count;
+    std::uint32_t  primCount;
+    std::uint32_t  first;
+    std::uint32_t  baseInstance;
+};
+
+struct gl_draw_elements_indirect_command {
+    std::uint32_t count;
+    std::uint32_t primCount;
+    std::uint32_t firstIndex;
+    std::uint32_t baseVertex;
+    std::uint32_t baseInstance;
+} ;
 
 /*
  * graphics pipeline
@@ -276,17 +476,175 @@ public:
 
 public:
 
-    void draw_arrays(gl_primitive_mode mode, std::int32_t first, std::int32_t count) noexcept
+    //void begin_transform_feedback()
+    //{
+    //    glBeginTransformFeedback(0);
+    //}
+    //void end_transform_feedback()
+    //{
+    //    glEndTransformFeedback();
+    //}
+    //
+    void pause_transform_feedback()
     {
-        /*if(!_program) return;
-        glDrawArrays(static_cast<GLenum>(mode), first, count);*/
+        if (_descriptor && _descriptor->transform_feedback)
+        {
+            glPauseTransformFeedback();
+        }
     }
 
-    void draw_indices(gl_primitive_mode mode, std::int32_t first, std::int32_t count) noexcept
+    void resume_transform_feedback()
     {
-        /*if(_program) return;
-        glDrawElements(static_cast<GLenum>(mode), first, count, nullptr);*/
+        if (_descriptor && _descriptor->transform_feedback)
+        {
+            glResumeTransformFeedback();
+        }
     }
+
+    /*
+    * draw vertices
+    * 
+    * @ vertex_index
+    * @ vertices_count
+    * @ instances_count
+    * @ base_instance
+    * @ is_indirect
+    */
+    void draw_arrays(std::int32_t vertex_index, std::int32_t vertices_count, std::int32_t instances_count, std::int32_t base_instance, bool is_indirect = false, bool need_feedback = false)
+    {
+        if (_descriptor && _descriptor->vertex_launcher)
+        {
+            gl_primitive_mode _mode = _descriptor->vertex_launcher->primitive_mode;
+            if (need_feedback && _descriptor->transform_feedback)
+            {
+                glBeginTransformFeedback(static_cast<GLenum>(_mode));
+            }
+
+            if (is_indirect)
+            {
+                gl_draw_arrays_indirect_command _command;
+                glDrawArraysIndirect(static_cast<GLenum>(_mode), &_command);
+            }
+            else {
+                glDrawArraysInstancedBaseInstance(static_cast<GLenum>(_mode), vertex_index, vertices_count, instances_count, base_instance);
+            }
+
+            if (need_feedback && _descriptor->transform_feedback)
+            {
+                glEndTransformFeedback();
+            }
+        }
+    }
+    
+    /*
+    * draw vertices by indices
+    *
+    * @ instances_count
+    * @ base_vertex
+    * @ base_instance
+    * @ is_indirect
+    */
+    void draw_elemnets(std::int32_t instances_count, std::int32_t base_vertex, std::int32_t base_instance, bool is_indirect = false, bool need_feedback = false)
+    {
+        if (_descriptor && _descriptor->vertex_launcher)
+        {
+            gl_primitive_mode _mode = _descriptor->vertex_launcher->primitive_mode;
+            std::int32_t primitive_vetices_num = 0;
+
+            if (need_feedback && _descriptor->transform_feedback)
+            {
+                glBeginTransformFeedback(static_cast<GLenum>(_mode));
+            }
+
+            if (is_indirect)
+            {
+                gl_draw_elements_indirect_command _command;
+                _command.firstIndex;
+                _command.count;
+                _command.primCount = instances_count;
+                _command.baseVertex = base_vertex;
+                _command.baseInstance = base_instance;
+                glDrawElementsIndirect(static_cast<GLenum>(_mode), GL_UNSIGNED_INT, &_command);
+            }
+            else {
+                glDrawElementsInstancedBaseVertexBaseInstance(static_cast<GLenum>(_mode), primitive_vetices_num, GL_UNSIGNED_INT, nullptr, instances_count, base_vertex, base_instance);
+            }
+
+            if (need_feedback && _descriptor->transform_feedback)
+            {
+                glEndTransformFeedback();
+            }
+        }
+    }
+
+    /*
+    * transform feedback exist and transform feedback bound and transform feedback has cached stream 
+    * 
+    */
+    void draw_feedback_stream(std::int32_t stream_index, std::int32_t instances_count)
+    {
+        if (_descriptor && _descriptor->transform_feedback && _descriptor->vertex_launcher)
+        {
+            gl_primitive_mode _mode = _descriptor->vertex_launcher->primitive_mode;
+            _descriptor->transform_feedback->draw(_mode, stream_index, instances_count);
+        }
+    }
+
+private:
+    void draw_arrays(std::int32_t vertex_index, std::int32_t vertices_count) noexcept
+    {
+        if (_descriptor && _descriptor->vertex_launcher)
+        {
+            gl_primitive_mode _mode = _descriptor->vertex_launcher->primitive_mode;
+            glDrawArrays(static_cast<GLenum>(_mode), vertex_index, vertices_count);
+        }
+    }
+    void draw_arrays(std::int32_t vertex_index, std::int32_t vertices_count, std::int32_t instances_count)
+    {
+        if (_descriptor && _descriptor->vertex_launcher)
+        {
+            gl_primitive_mode _mode = _descriptor->vertex_launcher->primitive_mode;
+            glDrawArraysInstanced(static_cast<GLenum>(_mode), vertex_index, vertices_count, instances_count);
+        }
+    }
+   
+    void draw_elemnets() noexcept
+    {
+        if (_descriptor && _descriptor->vertex_launcher)
+        {
+            gl_primitive_mode _mode = _descriptor->vertex_launcher->primitive_mode;
+            std::int32_t primitive_vetices_num = 0;
+            glDrawElements(static_cast<GLenum>(_mode), primitive_vetices_num, GL_UNSIGNED_INT, nullptr);
+        }
+    }
+    void draw_elemnets_base_vertex(std::uint32_t base_vertex) 
+    {
+        if (_descriptor && _descriptor->vertex_launcher)
+        {
+            gl_primitive_mode _mode = _descriptor->vertex_launcher->primitive_mode;
+            std::int32_t primitive_vetices_num = 0;
+            glDrawElementsBaseVertex(static_cast<GLenum>(_mode), primitive_vetices_num, GL_UNSIGNED_INT, nullptr, base_vertex);
+        }
+    }
+    void draw_elemnets_instanced(std::int32_t instances_count)
+    {
+        if (_descriptor && _descriptor->vertex_launcher)
+        {
+            gl_primitive_mode _mode = _descriptor->vertex_launcher->primitive_mode;
+            std::int32_t primitive_vetices_num = 0;
+            glDrawElementsInstanced(static_cast<GLenum>(_mode), primitive_vetices_num, GL_UNSIGNED_INT, nullptr, instances_count);
+        }
+    }
+    void draw_elemnets_instanced_base_instance(std::int32_t instances_count, std::int32_t base_instance)
+    {
+        if (_descriptor && _descriptor->vertex_launcher)
+        {
+            gl_primitive_mode _mode = _descriptor->vertex_launcher->primitive_mode;
+            std::int32_t primitive_vetices_num = 0;
+            glDrawElementsInstancedBaseInstance(static_cast<GLenum>(_mode), primitive_vetices_num, GL_UNSIGNED_INT, nullptr, instances_count, base_instance);
+        }
+    }
+    void draw_elemnets_instanced_base_vertex(std::int32_t instances_count, std::int32_t base_vertex) {}
 
 private:
 
@@ -430,49 +788,65 @@ return false;
     }
 
 private:
+    
+    std::shared_ptr<const gl_graphics_pipeline_descriptor> _descriptor;
 
     std::unique_ptr<gl_program> _program;
 
-    std::shared_ptr<const gl_graphics_pipeline_descriptor> _descriptor;
-
+    /*
+    * this resource managed by pipeline
+    */
     struct gl_graphics_pipeline_resource_pool{
-
         std::unique_ptr<gl_uniform_buffer> uniform_buffer;
         std::unique_ptr<gl_shader_storage_buffer> shader_storage_buffer;
         std::unique_ptr<gl_atomic_counter_buffer> atomic_counter_buffer;
-        
-        std::vector<std::shared_ptr<glsl_sampler_t>> _samplers;
-        std::vector<std::shared_ptr<glsl_image_t>> _images;
-        
-        std::shared_ptr<gl_transform_feedback> transform_feedback;
-
-        std::shared_ptr<gl_framebuffer> framebuffer;
-
     } _resource_pool;
-
-    std::unique_ptr<gl_uniform_buffer> _uniform_buffer;
-    std::unique_ptr<gl_shader_storage_buffer> _shader_storage_buffer;
-    std::unique_ptr<gl_atomic_counter_buffer> _atomic_counter_buffer;
- 
-    const std::string _name;
-    const std::string _owner_renderer_dir;
 
 private:
 
     void _bind_resources()
     {
-        if(_uniform_buffer)
+        if (_descriptor && _descriptor->vertex_launcher && _descriptor->program && _descriptor->framebuffer && _descriptor->state)
         {
-            _uniform_buffer->bind();
+            // bind vertex launcher
+            _descriptor->vertex_launcher->bind();
+
+            // bind program parameters
+            const auto& _program_parameters = _descriptor->program->parameters();
+            for (const auto& _image : _program_parameters.images)
+            {
+                if(_image) _image->bind();
+            }
+            for (const auto& _sampler : _program_parameters.samplers)
+            {
+                if (_sampler) _sampler->bind();
+            }
+            if (_resource_pool.uniform_buffer)
+            {
+                _resource_pool.uniform_buffer->bind();
+            }
+            if (_resource_pool.shader_storage_buffer)
+            {
+                _resource_pool.shader_storage_buffer->bind();
+            }
+            if (_resource_pool.atomic_counter_buffer)
+            {
+                _resource_pool.atomic_counter_buffer->bind();
+            }
+           
+            // bind transform feedback
+            if (_descriptor->transform_feedback)
+            {
+                _descriptor->transform_feedback->bind();
+            }
+
+            // bind framebuffer
+            _descriptor->framebuffer->bind();
+
+            // set state
+            _descriptor->state->set();
         }
-        if(_shader_storage_buffer)
-        {
-            _shader_storage_buffer->bind();
-        }
-        if(_atomic_counter_buffer)
-        {
-            _atomic_counter_buffer->bind();
-        }
+ 
     }
 
     void _unbind_resources()
@@ -495,189 +869,6 @@ private:
         glGetIntegerv(GL_MAX_GEOMETRY_ATOMIC_COUNTER_BUFFERS, &MaxGeometryAtomicCounterBuffers);
         glGetIntegerv(GL_MAX_FRAGMENT_ATOMIC_COUNTER_BUFFERS, &MaxFragmentAtomicCounterBuffers);
         glGetIntegerv(GL_MAX_COMBINED_ATOMIC_COUNTER_BUFFERS, &MaxCombinedAtomicCounterBuffers);
-    }
-
-    void _update_pipeline_state()
-    {
-        // vertex specification
-        {
-            glEnable(GL_PRIMITIVE_RESTART);
-            glPrimitiveRestartIndex(0);
-            // or
-            glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);// 2^N - 1
-        }
-
-        // vertex process
-        {
-            //shading
-
-            // flatshading
-            glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);
-
-            // clipping
-            glEnable(GL_CLIP_DISTANCE0); // [0, GL_MAX_CLIP_DISTANCES-1]
-            glClipControl(GL_LOWER_LEFT, GL_NEGATIVE_ONE_TO_ONE);
-            // glEnable(GL_DEPTH_CLAMP);
-            glDepthRange(1.0l, 1.1l);
-            //glDepthRangeArrayv();
-            //glDepthRangef();
-//            glViewport();
-//            glDepthRangeIndexed();
-//            glViewportArrayv();
-//            glViewportIndexedf();
-//            glViewportIndexedfv();
-
-
-        }
-
-        // primitive assmebly
-        {
-
-        }
-        // rasterization
-        {
-            // 到达光栅化之前抛弃所有图元, 使得光栅化包括光栅化之后的阶段全部失效
-            if (true)
-                glEnable(GL_RASTERIZER_DISCARD);
-            else
-                glDisable(GL_RASTERIZER_DISCARD);
-
-            // multisampling
-            glEnable(GL_MULTISAMPLE);
-            glEnable(GL_SAMPLE_SHADING);
-//            glMinSampleShading();
-//            glGetMultisamplefv();
-
-            // points
-            glEnable(GL_PROGRAM_POINT_SIZE);
-            glDisable(GL_PROGRAM_POINT_SIZE);
-            glPointSize(0);
-//            glPointParameteri();
-//            glPointParameteriv();
-//            glPointParameterf();
-//            glPointParameterfv();
-
-            // line segments
-            glEnable(GL_LINE_SMOOTH);
-            glLineWidth(1.0f);
-
-            // polygons
-            glEnable(GL_POLYGON_SMOOTH);
-
-            glEnable(GL_CULL_FACE);
-            glFrontFace(GL_CCW);
-            glCullFace(GL_FRONT_AND_BACK);
-
-            // polygon rast & depth offset
-            glEnable(GL_POLYGON_OFFSET_FILL);
-            glEnable(GL_POLYGON_OFFSET_LINE);
-            glEnable(GL_POLYGON_OFFSET_POINT);
-            glEnable(GL_POLYGON_SMOOTH);
-            glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-            //glPolygonOffsetClamp();
-            glPolygonOffset(1.2f, 0);
-
-        }
-
-        // pre frag operations
-        {
-
-            // scissor test
-            glEnable(GL_SCISSOR_TEST);
-            glDisable(GL_SCISSOR_TEST);
-
-            glEnablei(GL_SCISSOR_TEST, 0);
-            glDisablei(GL_SCISSOR_TEST, 0);
-            glScissor(0, 0, 0, 0);
-            glScissorArrayv(0, 100, nullptr);
-            //glScissorIndexed();
-            //glScissorIndexedv();
-
-            // multisample fragment ops
-
-        }
-
-        // fragment shading
-        {
-
-        }
-
-        glEnable(GL_SAMPLE_COVERAGE);
-
-        // alpha to coverage
-        {
-            glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-            glEnable(GL_SAMPLE_ALPHA_TO_ONE); // or
-        }
-        // Stencil test
-        {
-            // do stencil test and update the stencil buffer
-            glEnable(GL_STENCIL_TEST);
-            gl_stencil_func _stencil_func;
-            //glStencilFunc(_stencil_func, 0, 1); // set front-face and back-face function and
-            glStencilFuncSeparate(static_cast<GLenum>(_stencil_func), static_cast<GLenum>(_stencil_func), 0, 1);
-
-            gl_stencil_op _stencil_op;
-            // stencil test fail , stencil stencil test pass but depth test fail, both pass
-           // glStencilOpSeparate(GL_FRONT, _stencil_op, _stencil_op, _stencil_op);
-           // glStencilOpSeparate(GL_BACK, _stencil_op, _stencil_op, _stencil_op);
-           // glStencilOpSeparate(GL_FRONT_AND_BACK, _stencil_op, _stencil_op, _stencil_op);
-            //glStencilOp(_stencil_op, _stencil_op, _stencil_op);
-            glStencilMaskSeparate(GL_FRONT, 1);
-            glStencilMaskSeparate(GL_BACK, 1);
-            glStencilMaskSeparate(GL_FRONT_AND_BACK, 1);
-            //glStencilMask(1);
-        }
-        // Depth test
-        {
-            glEnable(GL_DEPTH_TEST);
-            //glDepthFunc(df_never);
-        }
-        // occlusion queries
-        {
-
-        }
-        // blending
-        {
-            glEnable(GL_BLEND);
-//            glBlendColor(1.0f, 1.0f, 1.0f, 1.0f);
-//            glBlendFunc();
-//            glBlendFuncSeparate();
-//            glBlendFunci();
-//            glBlendFuncSeparatei();
-//            glBlendEquation();
-//            glBlendEquationi();
-//            glBlendEquationSeparate();
-//            glBlendEquationSeparatei();
-        }
-        // sRGB Conversion
-        {
-            glEnable(GL_FRAMEBUFFER_SRGB);
-
-        }
-        //Dithering
-        {
-            glEnable(GL_DITHER);
-        }
-        // color logic operations
-        {
-
-            gl_logic_op _logic_op;
-            glEnable(GL_COLOR_LOGIC_OP);
-            glDisable(GL_COLOR_LOGIC_OP);
-            glLogicOp(static_cast<GLenum>(_logic_op));
-        }
-        // additional multisample fragment operations
-        {
-            glEnable(GL_MULTISAMPLE);
-            //glSampleCoverage();
-        }
-
-        glEnable(GL_SAMPLE_MASK);
-        //glSampleMaski();
-
-        glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-
     }
 
     bool _check_shader_ext(const std::string& path, const std::string& ext)
