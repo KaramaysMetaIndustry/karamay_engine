@@ -441,6 +441,7 @@ void test0()
 #endif // _DEBUG
 
 
+
 	// vetex launcher
 	auto _vertices = std::make_shared<gl_vertex_array>();
 	_vertices->reallocate_vertex_attributes(100);
@@ -463,10 +464,15 @@ void test0()
 
 	// framebuffer
 	auto _framebuffer = std::make_shared<gl_framebuffer>();
+	
 
 	// state
 	auto _state = std::make_shared<gl_graphics_pipeline_state>();
-	
+	_state->vertex_processing.post_vertex_processing.primitive_clipping.clip_control_depth_mode;
+	_state->vertex_assembly.primitive_restart.enabled;
+	_state->primitive_assembly.discard_all_primitives = false;
+	_state->fragment_processing.pre_fragment_operations.scissor_test.enabled = true;
+	_state->fragment_processing.post_fragment_operations.blending;
 
 	// pipeline
 	auto  _gp_des = std::make_shared<gl_graphics_pipeline_descriptor>();
@@ -474,10 +480,18 @@ void test0()
 	_gp_des->owner_renderer_dir = "/shaders/test_renderer/";
 	_gp_des->vertex_launcher = _vertex_launcher;
 	_gp_des->program = _program;
-	_gp_des->transform_feedback = nullptr; // nullptr
+	_gp_des->transform_feedback = nullptr;
 	_gp_des->framebuffer = _framebuffer;
-	_gp_des->state;
+	_gp_des->state = _state;
 	auto _test_pipeline = std::make_shared<gl_graphics_pipeline>(_gp_des);
+	_test_pipeline->enable();
+	//_test_pipeline->draw_indices();
+	//_test_pipeline->draw_arrays();
+	_test_pipeline->disable();
+
+
+
+
 
 
 	gl_buffer_storage_options _options;

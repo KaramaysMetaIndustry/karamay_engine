@@ -40,24 +40,25 @@ public:
 
 public:
 
-    void attach_color_renderbuffer(std::uint32_t attachment_index, std::shared_ptr<gl_renderbuffer> renderbuffer)
+    void color(std::uint32_t attachment_index, const std::shared_ptr<gl_renderbuffer>& renderbuffer)
     {
         if (!renderbuffer || attachment_index >= GL_MAX_COLOR_ATTACHMENTS) return;
         glNamedFramebufferRenderbuffer(_handle, GL_COLOR_ATTACHMENT0 + attachment_index, GL_RENDERBUFFER, renderbuffer->get_handle());
     }
-    void attach_depth_renderbuffer(std::shared_ptr<gl_renderbuffer> renderbuffer)
+    
+    void depth(const std::shared_ptr<gl_renderbuffer>& renderbuffer)
     {
         if (!renderbuffer) return;
         glNamedFramebufferRenderbuffer(_handle, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderbuffer->get_handle());
     }
 
-    void attach_stencil_renderbuffer(std::shared_ptr<gl_renderbuffer> renderbuffer)
+    void stencil(const std::shared_ptr<gl_renderbuffer>& renderbuffer)
     {
         if (!renderbuffer) return;
         glNamedFramebufferRenderbuffer(_handle, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer->get_handle());
     }
 
-    void attach_depth_stencil_renderbuffer(std::shared_ptr<gl_renderbuffer> renderbuffer)
+    void depth_stencil(const std::shared_ptr<gl_renderbuffer>& renderbuffer)
     {
         if (renderbuffer)
         {
@@ -98,8 +99,6 @@ public:
     {
         glCheckFramebufferStatus(GL_FRAMEBUFFER);
     }
-
-
 
 private:
 
