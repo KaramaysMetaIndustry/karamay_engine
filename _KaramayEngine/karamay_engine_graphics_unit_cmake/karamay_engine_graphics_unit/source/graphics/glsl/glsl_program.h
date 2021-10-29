@@ -44,8 +44,12 @@ public:
 
 public:
 	
-	const glsl_graphics_pipeline_parameters& parameters() { return _parameters; }
+	const glsl_graphics_pipeline_parameters& parameters() const { return _parameters; }
 
+	const std::shared_ptr<glsl_vertex_shader>& vs() const { return _vertex_shader; }
+	const std::shared_ptr<glsl_tessellation_shader>& ts() const { return _tessellation_shader; }
+	const std::shared_ptr<glsl_geometry_shader>& gs() const { return _geometry_shader; }
+	const std::shared_ptr<glsl_fragment_shader>& fs() const { return _fragment_shader; }
 
 private:
 

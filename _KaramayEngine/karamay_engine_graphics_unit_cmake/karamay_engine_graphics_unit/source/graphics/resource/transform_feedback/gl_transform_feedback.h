@@ -25,11 +25,6 @@ public:
 		glDeleteTransformFeedbacks(1, &_handle);
 	}
 
-	void draw(gl_primitive_mode mode, std::int32_t stream_index, std::int32_t instances_count)
-	{
-		//glDrawTransformFeedback(static_cast<GLenum>(mode), _handle);
-		glDrawTransformFeedbackStreamInstanced(static_cast<GLenum>(mode), _handle, stream_index, instances_count);
-	}
 
 public:
 
@@ -46,6 +41,20 @@ public:
 		{
 			glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
 		}
+	}
+
+public:
+
+	void draw(gl_primitive_mode mode, std::uint32_t stream_index)
+	{
+		glDrawTransformFeedbackStream(static_cast<GLenum>(mode), _handle, stream_index);
+	}
+
+	void draw_instance(gl_primitive_mode mode, std::uint32_t stream_index, std::int32_t instances_count)
+	{
+		//glDrawTransformFeedback(static_cast<GLenum>(mode), _handle);
+		glDrawTransformFeedbackStreamInstanced(static_cast<GLenum>(mode), _handle, stream_index, instances_count);
+		//glDrawTransformFeedbackStream()
 	}
 
 public:

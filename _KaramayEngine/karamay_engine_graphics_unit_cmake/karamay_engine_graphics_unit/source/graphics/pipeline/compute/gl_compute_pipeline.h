@@ -6,6 +6,7 @@
 #include "graphics/resource/buffers/Indexed_buffer/gl_uniform_buffer.h"
 #include "graphics/resource/buffers/Indexed_buffer/gl_shader_storage_buffer.h"
 #include "graphics/resource/buffers/Indexed_buffer/gl_atomic_counter_buffer.h"
+#include "graphics/resource/buffers/indirect_buffer/gl_dispatch_indirect_buffer.h"
 
 struct gl_compute_pipeline_descriptor{
     // pipeline name
@@ -52,7 +53,6 @@ public:
 	void dispatch(std::uint32_t group_size_x, std::uint32_t group_size_y, std::uint32_t group_size_z) noexcept
 	{
 	    if(!_program) return;
-
         glDispatchCompute(group_size_x, group_size_y, group_size_z);
 	}
 
@@ -60,11 +60,14 @@ private:
 
     std::unique_ptr<gl_program> _program;
 
-    std::unique_ptr<gl_uniform_buffer> _uniform_buffer;
+    struct gl_compute_pipeline_resource_pool
+    {
+        std::unique_ptr<gl_uniform_buffer> uniform_buffer;
+        std::unique_ptr<gl_shader_storage_buffer> shader_storage_buffer;
+        std::unique_ptr<gl_atomic_counter_buffer> atomic_counter_buffer;
+        std::unique_ptr<gl_dispatch_indirect_buffer> dispatch_indirect_buffer;
+    } _resource_pool;
 
-    std::unique_ptr<gl_shader_storage_buffer> _shader_storage_buffer;
-
-    std::unique_ptr<gl_atomic_counter_buffer> _atomic_counter_buffer;
 
 private:
 
@@ -86,9 +89,6 @@ private:
 
     void _bind_resources()
     {
-        if (_uniform_buffer) _uniform_buffer->bind();
-        if (_shader_storage_buffer) _shader_storage_buffer->bind();
-        if (_atomic_counter_buffer) _atomic_counter_buffer->bind();
     }
 
     void _unbind_resources()

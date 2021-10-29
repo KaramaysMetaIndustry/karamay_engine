@@ -8,6 +8,7 @@
 #include "graphics/resource/buffers/Indexed_buffer/gl_shader_storage_buffer.h"
 #include "graphics/resource/buffers/Indexed_buffer/gl_atomic_counter_buffer.h"
 #include "graphics/resource/buffers/Indexed_buffer/gl_transform_feedback_buffer.h"
+#include "graphics/resource/buffers/indirect_buffer/gl_draw_indirect_buffer.h"
 
 enum class gl_stencil_op : GLenum
 {
@@ -476,15 +477,6 @@ public:
 
 public:
 
-    //void begin_transform_feedback()
-    //{
-    //    glBeginTransformFeedback(0);
-    //}
-    //void end_transform_feedback()
-    //{
-    //    glEndTransformFeedback();
-    //}
-    //
     void pause_transform_feedback()
     {
         if (_descriptor && _descriptor->transform_feedback)
@@ -560,7 +552,7 @@ public:
             {
                 gl_draw_elements_indirect_command _command;
                 _command.firstIndex;
-                _command.count;
+                _command.count = primitive_vetices_num;
                 _command.primCount = instances_count;
                 _command.baseVertex = base_vertex;
                 _command.baseInstance = base_instance;
@@ -581,16 +573,33 @@ public:
     * transform feedback exist and transform feedback bound and transform feedback has cached stream 
     * 
     */
-    void draw_feedback_stream(std::int32_t stream_index, std::int32_t instances_count)
+    void draw_feedback_stream(std::uint32_t stream_index, std::int32_t instances_count, bool need_feedback)
     {
-        if (_descriptor && _descriptor->transform_feedback && _descriptor->vertex_launcher)
-        {
-            gl_primitive_mode _mode = _descriptor->vertex_launcher->primitive_mode;
-            _descriptor->transform_feedback->draw(_mode, stream_index, instances_count);
-        }
+        if (stream_index > 0 && _descriptor->program->gs()) return; // if gs is not active, only output stream 0
+
+        if (!_descriptor || !_descriptor->transform_feedback || !_descriptor->vertex_launcher) return;
+        
+        gl_primitive_mode _mode = _descriptor->vertex_launcher->primitive_mode;
+        
+        if (need_feedback) glBeginTransformFeedback(static_cast<GLenum>(_mode));
+
+        _descriptor->transform_feedback->draw(_mode, stream_index);
+
+        if (need_feedback) glEndTransformFeedback();
+    }
+
+    void draw_feedback_stream_instanced()
+    {
+
+    }
+
+    void restart_primitive_index(std::uint32_t index)
+    {
+        glPrimitiveRestartIndex(index);
     }
 
 private:
+
     void draw_arrays(std::int32_t vertex_index, std::int32_t vertices_count) noexcept
     {
         if (_descriptor && _descriptor->vertex_launcher)
@@ -599,7 +608,7 @@ private:
             glDrawArrays(static_cast<GLenum>(_mode), vertex_index, vertices_count);
         }
     }
-    void draw_arrays(std::int32_t vertex_index, std::int32_t vertices_count, std::int32_t instances_count)
+    void draw_arrays_instanced(std::int32_t vertex_index, std::int32_t vertices_count, std::int32_t instances_count)
     {
         if (_descriptor && _descriptor->vertex_launcher)
         {
@@ -645,6 +654,21 @@ private:
         }
     }
     void draw_elemnets_instanced_base_vertex(std::int32_t instances_count, std::int32_t base_vertex) {}
+
+    void draw_range_elements()
+    {
+        //glDrawRangeElements()
+    }
+
+    void multi_draw_arrays()
+    {
+        //glMultiDrawArrays()
+    }
+
+    void mutl_draw_elements()
+    {
+        //glMultiDrawElements()
+    }
 
 private:
 
@@ -793,13 +817,11 @@ private:
 
     std::unique_ptr<gl_program> _program;
 
-    /*
-    * this resource managed by pipeline
-    */
     struct gl_graphics_pipeline_resource_pool{
         std::unique_ptr<gl_uniform_buffer> uniform_buffer;
         std::unique_ptr<gl_shader_storage_buffer> shader_storage_buffer;
         std::unique_ptr<gl_atomic_counter_buffer> atomic_counter_buffer;
+        std::unique_ptr<gl_draw_indirect_buffer> draw_indirect_buffer;
     } _resource_pool;
 
 private:
