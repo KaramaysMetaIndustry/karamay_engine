@@ -493,6 +493,7 @@ public:
         }
     }
 
+public:
     /*
     * draw vertices
     * 
@@ -528,6 +529,7 @@ public:
         }
     }
     
+public:
     /*
     * draw vertices by indices
     *
@@ -569,6 +571,8 @@ public:
         }
     }
 
+public:
+
     /*
     * transform feedback exist and transform feedback bound and transform feedback has cached stream 
     * 
@@ -593,6 +597,8 @@ public:
 
     }
 
+public:
+    
     void restart_primitive_index(std::uint32_t index)
     {
         glPrimitiveRestartIndex(index);

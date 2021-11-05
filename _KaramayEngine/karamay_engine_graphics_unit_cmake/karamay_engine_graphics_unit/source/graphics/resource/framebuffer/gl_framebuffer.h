@@ -112,6 +112,13 @@ private:
 
 };
 
+
+/*
+* GL_FONT_LEFT GL_FONT_RIGHT
+* GL_BACK_LEFT GL_BACK_RIGHT
+* GL_DEPTH
+* GL_STENCIL
+*/
 class gl_default_framebuffer : public gl_framebuffer_base{
 public:
     gl_default_framebuffer(){}
@@ -135,25 +142,37 @@ public:
 
     void read_stencil(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void* pixels);
 
+public:
 
-    void clear_all_color_buffers(float r, float g, float b, float a)
+    static void clear_color_buffer()
     {
-        glClearColor(r, g, b, a);
         glClear(GL_COLOR_BUFFER_BIT);
     }
-
-    void clear_depth_buffer(double depth)
+    static void clear_color_buffer(std::float_t red, std::float_t green, std::float_t blue, std::float_t alpha)
+    {
+        glClearColor(red, green, blue, alpha);
+        glClear(GL_COLOR_BUFFER_BIT);
+    }
+    static void clear_depth_buffer() noexcept {}
+    static void clear_depth_buffer(std::double_t depth) noexcept
     {
         glClearDepth(depth);
         glClear(GL_DEPTH_BUFFER_BIT);
     }
-
-    void clear_stencil_buffer(int s)
+    static void clear_stencil_buffer() noexcept
     {
-        glClearStencil(s);
-        glClear(GL_STENCIL_BUFFER_BIT);
 
-        glBlitFramebuffer()
+    }
+    static void clear_stencil_buffer(std::int32_t stencil) noexcept
+    {
+        glClearStencil(stencil);
+        glClear(GL_STENCIL_BUFFER_BIT);
+    }
+
+public:
+
+    static void read_pixels()
+    {
     }
 
 public:
