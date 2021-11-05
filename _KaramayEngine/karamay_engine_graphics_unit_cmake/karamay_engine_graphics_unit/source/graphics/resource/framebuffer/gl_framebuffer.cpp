@@ -23,11 +23,6 @@ void gl_framebuffer::draw_depth_stencil(GLsizei width, GLsizei height, GLenum ty
 	glDrawPixels(width, height, GL_DEPTH_STENCIL, type, pixels);
 }
 
-gl_framebuffer::~gl_framebuffer()
-{
-	glDeleteFramebuffers(1, &_handle);
-}
-
 
 void gl_framebuffer::read_color(int attachment_index, GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void* pixels)
 {

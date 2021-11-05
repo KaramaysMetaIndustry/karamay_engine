@@ -24,7 +24,10 @@ public:
     gl_framebuffer(const gl_framebuffer&) = delete;
     gl_framebuffer& operator=(const gl_framebuffer&) = delete;
 
-    ~gl_framebuffer() override;
+    ~gl_framebuffer() override
+    {
+        glDeleteFramebuffers(1, &_handle);
+    }
 
 public:
 
@@ -107,7 +110,6 @@ private:
         return glIsFramebuffer(_handle) == GL_TRUE ? true : false;
     }
 
-
 };
 
 class gl_default_framebuffer : public gl_framebuffer_base{
@@ -150,6 +152,8 @@ public:
     {
         glClearStencil(s);
         glClear(GL_STENCIL_BUFFER_BIT);
+
+        glBlitFramebuffer()
     }
 
 public:
@@ -157,6 +161,7 @@ public:
     void bind() override
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        
     }
 
     void unbind() override
