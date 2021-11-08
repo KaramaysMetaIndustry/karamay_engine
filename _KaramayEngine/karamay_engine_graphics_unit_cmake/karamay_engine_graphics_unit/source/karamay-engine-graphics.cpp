@@ -258,22 +258,14 @@ void test0();
 #define DEFINE_UNIFORM_BLOCK(...)\
 __VA_ARGS__\
 
-
-void pt(glsl_transparent_t*)
-{
-
-}
-
-template<typename T, typename... Ts>
-void pt(T v, Ts... ts)
-{
-	
-	pt(ts...);
-}
+#include "lua/renderer.h"
 
 int main()
 {
-	test0();
+	
+	karamay_lua::load();
+	
+	//test0();
 }
 
 

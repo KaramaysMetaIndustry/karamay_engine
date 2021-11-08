@@ -209,118 +209,204 @@ namespace karamay_lua
 	class CTest
 	{
 	public:
-		CTest() {}
+		CTest() 
+		{
+			value = 0;
+		}
 		~CTest() {}
 
-		int getA() { return 0; }
-		void setA(int a) {}
-
-	public:
-
-		static int lua_construct(lua_State* L)
+		int getA() { return value; }
+		void setA(int a) 
 		{
-			CTest** ppTest = (CTest**)lua_newuserdata(L, sizeof(CTest*));
-			*ppTest = new CTest;
-			luaL_getmetatable(L, "test");
-			lua_setmetatable(L, -2);
-			return 1;
+			value = a;
 		}
 
-		static int lua_getA(lua_State* L)
-		{
-			CTest** ppTest = (CTest**)luaL_checkudata(L, 1, "test");
-			luaL_argcheck(L, ppTest != NULL, 1, "invalid user data");
-			lua_pushnumber(L, (int)(*ppTest)->getA());
-			return 1;
+		CTest* finishNewCTest(CTest* test) {
+			if (test)
+			{
+				test->setA(10);
+			}
+			return test;
 		}
-
-		static int lua_setA(lua_State* L)
-		{
-			CTest** ppTest = (CTest**)luaL_checkudata(L, 1, "test");
-			luaL_argcheck(L, ppTest != NULL, 1, "invalid user data");
-
-			int a = (int)lua_tointeger(L, 2);
-			(*ppTest)->setA(a);
-			
-			return 0;
-		}
-
-		static int desctroy(lua_State* L)
-		{
-			CTest** ppTest = (CTest**)luaL_checkudata(L, 1, "test");
-			delete* ppTest;
-			printf("test is deleted");
-			return 0;
-		}
-
 	private:
-		int m_a;
-	};
+		int value;
 
-	static const struct luaL_Reg test_reg_f[] =
-	{
-		{"test", CTest::lua_construct},
-		{NULL, NULL},
-	};
+};
 
-	static const struct luaL_Reg test_reg_mf[] =
-	{
-		{"TestGetA", CTest::lua_getA},
-		{"TestSetA", CTest::lua_setA},
-		{"__gc", CTest::desctroy},
-		{NULL, NULL},
-	};
+int lua_construct(lua_State* L)
+{
+	CTest** ppTest = (CTest**)lua_newuserdata(L, sizeof(CTest*)); // -1
+	*ppTest = new CTest;
+	luaL_getmetatable(L, "gl_renderer_clazz"); // -1 ; userdata -2
+	lua_setmetatable(L, -2);  // set -1 as -2 's metatable
+	return 1;
+}
+
+int lua_getA(lua_State* L)
+{
+	CTest** ppTest = (CTest**)luaL_checkudata(L, 1, "gl_renderer_clazz");
+	luaL_argcheck(L, ppTest != NULL, 1, "invalid user data");
+	lua_pushnumber(L, (int)(*ppTest)->getA());
+	return 1;
+}
+
+int lua_setA(lua_State* L)
+{
+	int args_num = lua_gettop(L);
+
+	CTest** ppTest = (CTest**)luaL_checkudata(L, 1, "gl_renderer_clazz");
+	luaL_argcheck(L, ppTest != NULL, 1, "invalid user data");
+
+	int a = (int)lua_tointeger(L, 2);
+	(*ppTest)->setA(a);
+
+	return 0;
+}
+
+template<typename T>
+struct lua_type
+{
+	T value;
+};
+
+template<typename T>
+void get_parameter(lua_State* l, int index, lua_type<T>& out)
+{
+
+}
+
+template<typename T>
+T* get_parameter(lua_State* l, int index)
+{
+	T** ppParam = (T**)lua_touserdata(l, index);
+	luaL_argcheck(l, ppParam != NULL, index, "input val test, invalid user data");
+	return ppParam;
+}
+
+int lua_finishNewCTest(lua_State* L)
+{
+	// get this pointer, param 1
+	CTest** ppTest = (CTest**)luaL_checkudata(L, 1, "gl_renderer_clazz");
+	luaL_argcheck(L, ppTest != NULL, 1, "invalid user data");
+
+	// get param 2
+	CTest** ppParamTest = (CTest**)lua_touserdata(L, 2);
+	luaL_argcheck(L, ppTest != NULL, 2, "input val test, invalid user data");
+	
+	// invoke
+	(*ppTest)->finishNewCTest(*ppParamTest);
+
+	return 0;
+}
+
+int desctroy(lua_State* L)
+{
+	CTest** ppTest = (CTest**)luaL_checkudata(L, 1, "gl_renderer_clazz");
+	delete* ppTest;
+	printf("gl_renderer_clazz is deleted \n");
+	return 0;
+}
+
+
+static const struct luaL_Reg libs[] =
+{
+	/*{"gl_renderer", CTest::lua_construct},*/
+	{NULL, NULL},
+};
+
+static const struct luaL_Reg test_reg_mf[] =
+{
+	{"TestGetA", lua_getA},
+	{"TestSetA",lua_setA},
+	{"FinishTest", lua_finishNewCTest},
+	{"__gc", desctroy},
+	{"__call", lua_construct},
+	{NULL, NULL},
+};
 
 	static int testModelOpen(lua_State* L)
 	{
-		luaL_newlib(L, test_reg_f);
+		luaL_newlib(L, libs);
 		return 1;
 	}
 
-	int main()
+	void create_test_metatable(lua_State* L, const char* metatable_name, const luaL_Reg* regs)
 	{
-		int top = 0;
+		luaL_newmetatable(L, metatable_name); // -1 table, push onto top
+		lua_pushvalue(L, -1); // -1 table new -2 table old
+		lua_setfield(L, -2, "__index"); // set -1 table to -2 table's __index -1 pop
+		luaL_setfuncs(L, regs, 0); // set funcs to -1 table
+		lua_pop(L, 1);
+		
+		lua_newtable(L);
+		luaL_setmetatable(L, metatable_name);
+		lua_setglobal(L, "gl_renderer");
+	}
+
+	void register_testModel_module(lua_State* L)
+	{
+		luaL_requiref(L, "karamay_RHI", testModelOpen, 0);
+		create_test_metatable(L, "gl_renderer_clazz", test_reg_mf);
+
+	}
+
+	void load()
+	{
+
+		//lua_State* l = luaL_newstate();
+		//if (!l)return 1;
+		//luaL_openlibs(l);
+
+		////C:\PrivateRepos\Karamays\_KaramayEngine\karamay_engine_graphics_unit_cmake\karamay_engine_graphics_unit\scripts\blue_freckle\Test.lua
+		//int state = luaL_dofile(l, "C:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/scripts/blue_freckle/Test.lua");
+		//// C:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/scripts/blue_freckle/Test.lua
+		//switch (state)
+		//{
+		//case LUA_OK(0): std::cout << "no errors." << std::endl; break;
+		//case LUA_ERRRUN: std::cout << "a runtime error." << std::endl;
+		//case LUA_ERRMEM: std::cout << "memory allocation error.For such errors, Lua does not call the message handler." << std::endl; break;
+		//case LUA_ERRERR: std::cout << "error while running the message handler." << std::endl; break;
+		//case LUA_ERRSYNTAX: std::cout << "syntax error during precompilation." << std::endl; break;
+		//case LUA_YIELD: std::cout << "the thread(coroutine) yields." << std::endl; break;
+		//case LUA_ERRFILE: std::cout << "a file - related error; e.g., it cannot open or read the file." << std::endl; break;
+		//default:
+		//	break;
+		//}
+
 		lua_State* L = luaL_newstate();
+		int top = 0;
 		top = lua_gettop(L);
-		luaopen_base(L);
+
+		// 打开指定标准库
+		/*luaopen_base(L);
+		luaopen_package(L); 
+		luaopen_coroutine(L); 
+		luaopen_string(L); 
+		luaopen_utf8(L);
+		luaopen_table(L);
+		luaopen_math(L);
+		luaopen_io(L);
+		luaopen_os(L);
+		luaopen_debug(L);*/
+		
+		// Opens all standard Lua libraries into the given state.
 		luaL_openlibs(L);
 		top = lua_gettop(L);
+		register_testModel_module(L);
 
-		//加载模块
-		luaL_requiref(L, "testModel", testModelOpen, 0);
-		top = lua_gettop(L);
-
-		//创建metatable
-		luaL_newmetatable(L, "test");
-		lua_pushvalue(L, -1);
-		lua_setfield(L, -2, "__index");
-		luaL_setfuncs(L, test_reg_mf, 0);
-		lua_pop(L, 1);
-		top = lua_gettop(L);
-
-		int ret = luaL_dofile(L, "test.lua");
+		int ret = luaL_dofile(L, "C:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/scripts/blue_freckle/Test.lua");
 		if (ret != 0)
 		{
 			printf("%s", lua_tostring(L, -1));
 		}
+
 		lua_close(L);
-
-		getchar();
-		return 1;
 	}
+
+	
+
 }
 
-
-
-
-
-
-
-
-int test(lua_State* L)
-{
-	return 1;
-}
 
 class lua_manager{
 public:
