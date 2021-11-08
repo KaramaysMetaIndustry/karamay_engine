@@ -3,6 +3,7 @@
 
 #include "public/_lua.h"
 
+
 namespace karamay_lua
 {
 	lua_State* state() { return nullptr; }
@@ -42,7 +43,6 @@ namespace karamay_lua
 		explicit lua_result(std::int32_t num)
 		{
 			std::string s;
-			int n;
 		}
 
 		void pop() {}
@@ -122,92 +122,130 @@ namespace karamay_lua
 	lua_CFunction report_lua_call_error;
 
 
-	struct lua_nil
+	class lua_nil {
+	public:
+		lua_nil() {}
+
+	};
+
+	class lua_boolean {
+	public:
+		lua_boolean() : _value(false) {}
+
+		void fetch(lua_State* l, std::int32_t index)
+		{
+			if (!lua_isboolean(l, index)) return;
+			_value = lua_toboolean(l, index);
+		}
+
+		bool get() { return _value; }
+
+	private:
+
+		bool _value;
+
+	};
+
+	class lua_number {
+	public:
+		lua_number() : _value(0.0l) {}
+
+		void fetch(lua_State* l, std::int32_t index)
+		{
+			if (!lua_isnumber(l, index)) return;
+			_value = lua_tonumber(l, index);
+		}
+
+		std::double_t get() { return _value; }
+
+	private:
+
+		std::double_t _value;
+	};
+
+	class lua_string {
+	public:
+		lua_string() : _string(nullptr) {}
+
+		void fetch(lua_State* l, std::int32_t index)
+		{
+			_string = lua_tostring(l, index);
+		}
+
+		std::string to_std_string() const
+		{
+			if (!_string) return std::string("");
+			return std::string(_string);
+		}
+
+		const char* to_string() const
+		{
+			if (!_string) return "";
+			return _string;
+		}
+
+	private:
+		const char* _string;
+	};
+
+	class lua_userdata {
+	public:
+		lua_userdata() : _userdata(nullptr) {}
+
+		~lua_userdata() {}
+
+		void fetch(lua_State* l, std::int32_t index)
+		{
+			if (!lua_isuserdata(l, index)) return;
+			_userdata = *((void**)lua_touserdata(l, index));
+		}
+
+		template<typename T> T* to_class() { return (T*)(_userdata); }
+
+	private:
+
+		void* _userdata;
+
+	};
+
+	class lua_function {
+	public:
+
+		lua_function() : _func_ptr(nullptr) {}
+
+		~lua_function() = default;
+
+		void fetch(lua_State* l, std::int32_t index)
+		{
+			if (!lua_iscfunction(l, index)) return;
+			_func_ptr = lua_tocfunction(l, index);
+		}
+
+		std::function<std::int32_t(lua_State*)> to_std_function()
+		{
+			return std::function<std::int32_t(lua_State*)>(_func_ptr);
+		}
+
+		lua_CFunction to_c_function() { return _func_ptr; }
+
+		static void push(lua_State* l, lua_CFunction function)
+		{
+			lua_pushcfunction(l, function);
+			lua_pushcclosure(l, function, 0);
+		}
+
+	private:
+
+		lua_CFunction _func_ptr;
+
+	};
+
+	class lua_thread
 	{
 
 	};
 
-	struct lua_function
-	{
-
-	};
-
-	struct lua_boolean { bool value;  };
-
-	struct lua_number {};
-
-	struct lua_string {};
-
-
-	struct lua_userdata {};
-
-	struct lua_thread {};
-
-
-	template<typename LUA_T>
-	void push(const LUA_T& value) 
-	{
-		
-	}
-
-	void push_nil() 
-	{
-		lua_pushnil(state());
-	}
-	
-	void push_boolean(bool value) 
-	{
-		lua_pushboolean(state(), static_cast<int>(value));
-	}
-
-	void push_number(std::int64_t value)
-	{
-		lua_pushinteger(state(), value);
-	}
-
-	void push_number(std::double_t value)
-	{
-		lua_pushnumber(state(), value);
-	}
-
-	void push_string(const std::string& value) 
-	{
-		lua_pushstring(state(), value.c_str());
-		/*lua_pushlstring(state, value, length);
-		lua_pushliteral(state, "");
-		lua_pushfstring(state, format, 1);
-		lua_pushvfstring(state, format, argp);*/
-	}
-
-	void push(const lua_function& value) 
-	{
-		//lua_pushcclosure(state, func, captured_vars_num);
-		//lua_pushcfunction(state, func);
-	}
-
-	void push_userdata(void* value_ptr) 
-	{
-		lua_pushlightuserdata(state(), value_ptr);
-	}
-
-	std::int32_t push_thread() 
-	{
-		return lua_pushthread(state());
-	}
-
-	void push_table() 
-	{
-		lua_pushglobaltable(state());
-	}
-
-	void _push_value(int index)
-	{
-		lua_pushvalue(state(), index);
-	}
-
-
-	class CTest
-	{
+	class CTest{
 	public:
 		CTest() 
 		{
@@ -228,9 +266,9 @@ namespace karamay_lua
 			}
 			return test;
 		}
+
 	private:
 		int value;
-
 };
 
 int lua_construct(lua_State* L)
@@ -264,18 +302,6 @@ int lua_setA(lua_State* L)
 }
 
 template<typename T>
-struct lua_type
-{
-	T value;
-};
-
-template<typename T>
-void get_parameter(lua_State* l, int index, lua_type<T>& out)
-{
-
-}
-
-template<typename T>
 T* get_parameter(lua_State* l, int index)
 {
 	T** ppParam = (T**)lua_touserdata(l, index);
@@ -283,30 +309,54 @@ T* get_parameter(lua_State* l, int index)
 	return ppParam;
 }
 
+/*
+* gl_renderer FinishTest(gl_renderer)
+*/
+
 int lua_finishNewCTest(lua_State* L)
 {
+	// when this func called, 调用改方法的metatable的userdata压入栈，并依次压入栈
 	// get this pointer, param 1
+	int top = lua_gettop(L);
+	if (top != 2) return 0;
+
+	std::cout << "params num : " << top << std::endl;
+
 	CTest** ppTest = (CTest**)luaL_checkudata(L, 1, "gl_renderer_clazz");
 	luaL_argcheck(L, ppTest != NULL, 1, "invalid user data");
+
+	std::function<int(lua_State*)> lua_func;
+
+	auto a = lua_func.target<lua_CFunction>();
 
 	// get param 2
 	CTest** ppParamTest = (CTest**)lua_touserdata(L, 2);
 	luaL_argcheck(L, ppTest != NULL, 2, "input val test, invalid user data");
 	
 	// invoke
-	(*ppTest)->finishNewCTest(*ppParamTest);
+	CTest* pResult = (*ppTest)->finishNewCTest(*ppParamTest);
 
+	// 返回传入参数
+	lua_pushvalue(L, 2);
+
+	return 1;
+}
+
+
+
+template<typename T>
+int lua_desctroy_userdata(lua_State* l, const char* metatable_name)
+{
+	T** pp_userdata = (T**)luaL_checkudata(l, 1, metatable_name);
+	delete* pp_userdata;
+	printf("userdata type of %s is deleted.", metatable_name);
 	return 0;
 }
 
 int desctroy(lua_State* L)
 {
-	CTest** ppTest = (CTest**)luaL_checkudata(L, 1, "gl_renderer_clazz");
-	delete* ppTest;
-	printf("gl_renderer_clazz is deleted \n");
-	return 0;
+	return lua_desctroy_userdata<CTest>(L, "gl_renderer_clazz");
 }
-
 
 static const struct luaL_Reg libs[] =
 {
@@ -394,7 +444,7 @@ static const struct luaL_Reg test_reg_mf[] =
 		top = lua_gettop(L);
 		register_testModel_module(L);
 
-		int ret = luaL_dofile(L, "C:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/scripts/blue_freckle/Test.lua");
+		int ret = luaL_dofile(L, "G:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\scripts\\blue_freckle\\Test.lua");
 		if (ret != 0)
 		{
 			printf("%s", lua_tostring(L, -1));

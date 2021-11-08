@@ -45,9 +45,11 @@
 local test1 = gl_renderer()
 local test2 = gl_renderer()
 
-print('value is : ' .. test2:TestGetA());
-test1:FinishTest(test2)
-print('value is : ' .. test2:TestGetA());
+print('value is : ' .. test2:TestGetA())
+local test3 = test1:FinishTest(test2)
+
+print('value is : ' .. test2:TestGetA())
+print('value is : ' .. test3:TestGetA())
 
 
 
