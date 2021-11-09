@@ -577,9 +577,9 @@ public:
     * transform feedback exist and transform feedback bound and transform feedback has cached stream 
     * 
     */
-    void draw_feedback_stream(std::uint32_t stream_index, std::int32_t instances_count, bool need_feedback)
+    void DrawTransformFeedbackStream(UInt32 StreamIndex, UInt32 InstancesNum, bool need_feedback)
     {
-        if (stream_index > 0 && _descriptor->program->gs()) return; // if gs is not active, only output stream 0
+        if (StreamIndex > 0 && _descriptor->program->gs()) return; // if gs is not active, only output stream 0
 
         if (!_descriptor || !_descriptor->transform_feedback || !_descriptor->vertex_launcher) return;
         
@@ -587,14 +587,14 @@ public:
         
         if (need_feedback) glBeginTransformFeedback(static_cast<GLenum>(_mode));
 
-        _descriptor->transform_feedback->draw(_mode, stream_index);
+        //_descriptor->transform_feedback->draw(_mode, StreamIndex);
 
         if (need_feedback) glEndTransformFeedback();
     }
 
-    void draw_feedback_stream_instanced()
+    void DrawTransformFeedbackStreamInstances()
     {
-
+        
     }
 
 public:
@@ -865,7 +865,7 @@ private:
             // bind transform feedback
             if (_descriptor->transform_feedback)
             {
-                _descriptor->transform_feedback->bind();
+                
             }
 
             // bind framebuffer

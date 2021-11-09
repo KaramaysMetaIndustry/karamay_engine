@@ -24,8 +24,6 @@ enum class PrimitiveMode
 };
 
 
-
-
 class VertexLauncher final 
 {
 public:

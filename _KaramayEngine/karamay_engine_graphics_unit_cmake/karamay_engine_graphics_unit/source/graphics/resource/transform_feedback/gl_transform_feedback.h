@@ -5,74 +5,78 @@
 #include "graphics/resource/buffers/indexed_buffer/gl_transform_feedback_buffer.h"
 #include "graphics/resource/vertex_launcher/gl_vertex_launcher.h"
 
-class gl_transform_feedback_descriptor{
+class TransformFeedback final : public gl_object{
 public:
-    std::vector<std::string> varyings;
-};
-
-class gl_transform_feedback final : public gl_object{
-public:
-	gl_transform_feedback() = delete;
-	explicit gl_transform_feedback(const std::shared_ptr<gl_transform_feedback_descriptor>& descriptor) :
+	TransformFeedback() = delete;
+	explicit TransformFeedback(const std::vector<std::string>& Varings) :
 		gl_object(gl_object_type::TRANSFORM_FEEDBACK_OBJ)
 	{
 		glCreateTransformFeedbacks(1, &_handle);
 	}
-	gl_transform_feedback(const gl_transform_feedback&) = delete;
-	gl_transform_feedback& operator=(const gl_transform_feedback&) = delete;
+	TransformFeedback(const TransformFeedback&) = delete;
+	TransformFeedback& operator=(const TransformFeedback&) = delete;
 
-	~gl_transform_feedback() override
+	~TransformFeedback() override
 	{
 		glDeleteTransformFeedbacks(1, &_handle);
 	}
 
-
 public:
 
-	void bind() noexcept
+	void Bind() const noexcept
 	{
 		glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, _handle);
 	}
 
-	void unbind() noexcept
+	void Unbind() const noexcept
 	{
-		GLint handle;
-		glGetIntegerv(GL_TRANSFORM_FEEDBACK_BINDING, &handle);
-		if (handle == _handle)
-		{
-			glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
-		}
+		//GLint handle;
+		//glGetIntegerv(GL_TRANSFORM_FEEDBACK_BINDING, &handle);
+		glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
 	}
 
 public:
 
-	void draw(PrimitiveMode mode, std::uint32_t stream_index)
+	// if do not have gs, only output stream 0
+	void Draw(PrimitiveMode Mode, UInt32 StreamIndex = 0) const noexcept
 	{
-		glDrawTransformFeedbackStream(static_cast<GLenum>(mode), _handle, stream_index);
+		glDrawTransformFeedbackStream(static_cast<GLenum>(Mode), _handle, StreamIndex);
 	}
 
-	void draw_instance(PrimitiveMode mode, std::uint32_t stream_index, std::int32_t instances_count)
+	// if do not have gs, only output stream 0
+	void DrawInstances(UInt32 InstancesNum, PrimitiveMode Mode, UInt32 StreamIndex = 0) const noexcept
 	{
-		//glDrawTransformFeedback(static_cast<GLenum>(mode), _handle);
-		glDrawTransformFeedbackStreamInstanced(static_cast<GLenum>(mode), _handle, stream_index, instances_count);
-		//glDrawTransformFeedbackStream()
+		glDrawTransformFeedbackStreamInstanced(static_cast<GLenum>(Mode), _handle, StreamIndex, InstancesNum);
 	}
 
 public:
 
-	void associate_buffer(std::uint32_t index, const std::shared_ptr<gl_buffer>& buffer, std::int64_t offset, std::int64_t size)
-	{
-		if (index < GL_MAX_TRANSFORM_FEEDBACK_BUFFERS && buffer)
-		{
-			//glTransformFeedbackBufferRange(_handle, index, buffer->get_handle(), offset, size);
-		}
-	}
+	const std::vector<std::string>& GetVaryings() const noexcept { return _Varyings; }
 
 private:
+	
+	const std::vector<std::string> _Varyings;
 
-	gl_transform_feedback_descriptor _descriptor;
+	std::vector<TransformFeedbackBuffer> _TransformFeedbackBuffers;
 
-	std::unique_ptr<gl_transform_feedback_buffer> _transform_feedback_bufffer;
+	void _Allocate()
+	{
+
+	}
+
+	void _AssociateBuffer()
+	{
+		for (UInt32 Index = 0; Index < _TransformFeedbackBuffers.size(); ++Index)
+		{
+			glTransformFeedbackBufferRange(_handle, Index, _TransformFeedbackBuffers[Index].get_handle(), Offset, Size);
+		}
+
+	/*	if (Index < GL_MAX_TRANSFORM_FEEDBACK_BUFFERS && buffer)
+		{
+			
+		}*/
+	}
+
 
 };
 

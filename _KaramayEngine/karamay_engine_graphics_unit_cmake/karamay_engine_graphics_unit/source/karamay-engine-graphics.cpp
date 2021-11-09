@@ -411,13 +411,6 @@ void test0()
 
 	// pipeline
 	auto  _gp_des = std::make_shared<gl_graphics_pipeline_descriptor>();
-	_gp_des->Name = "test_pipeline";
-	_gp_des->OwnerRendererDir = "/shaders/test_renderer/";
-	_gp_des->vertex_launcher = _vertex_launcher;
-	_gp_des->program = _program;
-	_gp_des->transform_feedback = nullptr;
-	_gp_des->framebuffer = _framebuffer;
-	_gp_des->state = _state;
 	
 	auto _test_pipeline = std::make_shared<gl_graphics_pipeline>(_gp_des);
 

@@ -11,45 +11,38 @@ enum class gl_transform_feedback_buffer_mode
 };
 
 // 0xFC807e12026BedD66DD1f6e853fd93beBEA66558
-struct gl_transform_feedback_buffer_descriptor{
-
-};
-
-class gl_transform_feedback_buffer {
+class TransformFeedbackBuffer {
 public:
-    gl_transform_feedback_buffer() = delete;
-    explicit gl_transform_feedback_buffer(const gl_transform_feedback_buffer_descriptor& descriptor)
+    TransformFeedbackBuffer() = delete;
+    explicit TransformFeedbackBuffer(UInt32 Binding) : _Binding(Binding)
     {}
 
-    ~gl_transform_feedback_buffer() = default;
+    ~TransformFeedbackBuffer() = default;
 
 public:
 
-    void bind() noexcept
+    void Fill() {}
+
+public:
+
+    void Bind() noexcept
     {
         if(!_buffer) return;
-        glBindBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, 0, _buffer->get_handle(), 0, 100);
+        glBindBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, _Binding, _buffer->get_handle(), 0, 100);
     }
 
-    void unbind() noexcept
+    void Unbind() noexcept
     {
         if(!_buffer) return;
         glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);
     }
 
-public:
-
-    void flush(){}
-
-    void read_back(){}
-
 private:
+
+    UInt32 _Binding;
 
     std::unique_ptr<gl_buffer> _buffer;
 
-    void _initialize(const gl_transform_feedback_buffer_descriptor& descriptor)
-    {
-    }
 };
 
 #endif

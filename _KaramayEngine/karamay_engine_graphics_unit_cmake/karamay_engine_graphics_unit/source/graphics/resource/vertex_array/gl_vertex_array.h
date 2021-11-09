@@ -254,6 +254,11 @@ public:
 
 public:
 
+    UInt32 GetVerticesNum() const
+    {
+    }
+
+
     std::uint8_t* data(std::int64_t offset, std::int64_t size)
     {
         return nullptr;
@@ -436,7 +441,7 @@ private:
 
     std::uint32_t get_attribute_components_num(std::uint32_t index)
     {
-        Bind);
+        Bind();
         GLint _num = 0;
         glGetVertexAttribiv(index, GL_VERTEX_ATTRIB_ARRAY_SIZE, &_num);
         Unbind();
