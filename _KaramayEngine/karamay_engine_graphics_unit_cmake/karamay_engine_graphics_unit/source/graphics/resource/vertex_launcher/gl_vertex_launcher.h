@@ -22,35 +22,34 @@ enum class PrimitiveMode
 
 	PATCHES = GL_PATCHES
 };
-using UInt32 = std::uint32_t;
+
+
 
 
 class VertexLauncher final 
 {
 public:
 
-	VertexLauncher() :
-		_VertexArray(nullptr), _ElementArrayBuffer(nullptr), _PrimitiveMode(PrimitiveMode::TRIANGLES)
+	VertexLauncher(PrimitiveMode Mode) :
+		_PrimitiveMode(Mode),
+		_VertexArray(nullptr), _ElementArrayBuffer(nullptr)
 	{
-		_VertexArray = new gl_vertex_array();
-		_ElementArrayBuffer = new gl_element_array_buffer();
+		_VertexArray = std::make_unique<VertexArray>();
+		_ElementArrayBuffer = std::make_unique<ElementArrayBuffer>();
 	}
-
-	VertexLauncher(PrimitiveMode Mode) {}
 
 	VertexLauncher(const VertexLauncher&) = delete;
 	VertexLauncher& operator=(const VertexLauncher&) = delete;
 
 	~VertexLauncher()
-	{
-		delete _VertexArray;
-		delete _ElementArrayBuffer;
-	}
+	{}
 
 private:
 
-	gl_vertex_array* _VertexArray;
-	gl_element_array_buffer* _ElementArrayBuffer;
+	std::unique_ptr<VertexArray> _VertexArray;
+
+	std::unique_ptr<ElementArrayBuffer> _ElementArrayBuffer;
+	
 	PrimitiveMode _PrimitiveMode;
 
 public:
@@ -58,22 +57,53 @@ public:
 	PrimitiveMode GetPrimitiveMode() const { return _PrimitiveMode; }
 
 public:
-	//
+
+	// you must describ a vertex size
+	// you can only respecify a new VerticesNum, cause VertexSize, Layout can not be modified
+	// this action will consume quite time
 	void ReallocateVertices(UInt32 VerticesNum)
 	{
-		if (_VertexArray)
-		{
+		if (!_VertexArray) return;
 
-		}
+		_VertexArray->ReallocateVertices(VerticesNum);
+
 	}
 
-	void FillVertices() {}
+	// Offset unit is a Vertex Size
+	void FillVertices(UInt32 Offset, UInt8* Data, UInt32 VerticesNum) 
+	{
+		if (!_VertexArray) return;
+
+		_VertexArray->FillVertices(Offset, Data, VerticesNum);
+
+	}
 
 public:
 
-	void ReallocateInstanceAttributes() {}
+	// reset num of instances, this decide instance attributes' layout
+	void ResetInstancesNum(UInt32 InstancesNum)
+	{
+		if (!_VertexArray) return;
 
-	void FillInstanceAttributes() {}
+		_VertexArray->ResetInstancesNum(InstancesNum);
+
+	}
+
+	// reallocate the name specified attributes, divisor decide the attributes' layout
+	void ReallocateInstanceAttributes(const std::string& InstanceAttributeName, UInt32 InstanceAttributesNum, UInt32 Divisor) 
+	{
+		if (_VertexArray)
+		{
+			_VertexArray->ReallocateInstanceAttributes(InstanceAttributesNum, Divisor);
+		}
+	}
+
+	// fill the instance attributes
+	// 
+	void FillInstanceAttributes(const std::string& InstanceAttributeName, UInt32 Offset, UInt8* Data, UInt32 InstanceAttributesNum) 
+	{
+
+	}
 
 public:
 
@@ -82,31 +112,33 @@ public:
 	// IndicesNum % PrimitiveVerticesNum = 0
 	void ReallocateIndices(UInt32 IndicesNum)
 	{
-		if (_ElementArrayBuffer && IndicesNum % 3 == 0)
-		{
-			_ElementArrayBuffer->reallocate(IndicesNum * sizeof(std::uint32_t));
-		}
+		const UInt32 PrimitiveVerticesNum = 3;
+
+		if (!_ElementArrayBuffer) return;
+		if (IndicesNum % PrimitiveVerticesNum != 0) return;
+		
+		_ElementArrayBuffer->Reallocate(IndicesNum);
 	}
 
 	void FillIndices(UInt32 Offset, const std::vector<UInt32>& Indices)
 	{
-
+		if (!_ElementArrayBuffer) return;
+		
+		_ElementArrayBuffer->Fill(Offset, Indices);
 	}
 
 public:
 
-	bool Assembly() noexcept
-	{
-		return false;
-	}
-
 	void Bind() noexcept
 	{
-
+		_VertexArray->Bind();
+		_ElementArrayBuffer->Bind();
 	}
 
 	void Unbind() noexcept
 	{
+		_VertexArray->Unbind();
+		_ElementArrayBuffer->Unbind();
 	}
 
 };

@@ -7,50 +7,49 @@
 /*
 * dynamic storage
 */
-class gl_element_array_buffer final{
+class ElementArrayBuffer final{
 public:
-    gl_element_array_buffer() : _buffer(nullptr) {}
-    gl_element_array_buffer(std::int64_t size, std::uint8_t* data) : _buffer(nullptr)
+    ElementArrayBuffer() : _buffer(nullptr) {}
+    ElementArrayBuffer(std::int64_t size, std::uint8_t* data) : _buffer(nullptr)
     {
         _allocate(size, data);
     }
 
-    ~gl_element_array_buffer() = default;
-
+    ~ElementArrayBuffer() = default;
 
 public:
 
-    void reallocate(std::int64_t size, std::uint8_t* new_data = nullptr)
+    void Reallocate(UInt32 IndicesNum) 
     {
-        if (!_buffer || (_buffer && _buffer->size != size))
+        const Int64 Size = sizeof(UInt32) * IndicesNum;
+
+        if (!_buffer || (_buffer && _buffer->size != Size))
         {
-            _allocate(size, nullptr);
+            _allocate(Size, nullptr);
         }
     }
 
-    void fill(std::uint8_t* new_data)
+    void Fill(UInt32 Offset, const std::vector<UInt32>& Indices) 
     {
-        if (new_data && _buffer)
+        if (_buffer)
         {
-            _buffer->execute_mapped_memory_writer(0, _buffer->size, [&](std::uint8_t* data, std::int64_t size) {
+            _buffer->execute_mapped_memory_writer(Offset, _buffer->size, [&](std::uint8_t* data, std::int64_t size) {
                 if (!data || size < 0) return;
-                std::memcpy(data, new_data, size);
+                std::memcpy(data, Indices.data(), size);
                 });
         }
     }
 
-    void fill(std::int64_t offset, std::uint8_t* data) {}
-
 public:
 
-    void bind() noexcept
+    void Bind() noexcept
     {
         if(!_buffer) return;
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffer->get_handle());
     }
 
-    void unbind() noexcept
+    void Unbind() noexcept
     {
         if(!_buffer) return;
 

@@ -5,9 +5,6 @@
 #include "graphics/glsl/interface_block/glsl_in_block.h"
 #include "graphics/resource/buffers/common_buffer/gl_array_buffer.h"
 
-enum class gl_primitive_type
-{};
-
 class gl_attribute_component
 {
 public:
@@ -147,20 +144,45 @@ class gl_attribute
     }
 };
 
-
-
-
-struct gl_vertex_attribute_slot 
+enum class AttributeComponentType
 {
-    std::string attribute_name;
-    std::uint64_t attribute_size;
-    
+    UINT,
+    INT,
+    FLOAT,
+    UINT_TO_FLOAT,
+    DOUBLE,
 };
-struct gl_instance_vertex_attribute_slot
+
+struct VertexAttributeDescriptor 
 {
-    std::string attribute_name;
-    std::string attribute_size;
-    std::uint32_t divisor;
+    UInt32 Index;
+    std::string Name;
+    UInt64 Size;
+    UInt32 ComponentsNum;
+    AttributeComponentType ComponentType;
+};
+
+struct VertexDescriptor
+{
+    std::vector<VertexAttributeDescriptor> AttributeDescriptors;
+};
+
+struct InstanceAttributeDescriptor
+{
+    UInt32 Index;
+    std::string Name;
+    UInt32 Size;
+    UInt32 ComponentsNum;
+    UInt32 ComponentType;
+    UInt32 Divisor;
+};
+
+struct VertexArrayDescriptor
+{
+    UInt32 VerticesNum;
+    VertexDescriptor VertexDesc;
+    UInt32 InstancesNum;
+    std::vector<InstanceAttributeDescriptor> InstanceAttributeDescs;
 };
 
 struct gl_attribute_list_anchor
@@ -171,12 +193,6 @@ struct gl_attribute_list_anchor
     std::int64_t size;
 };
 
-struct gl_vertex_array_descriptor
-{
-    std::uint32_t vertices_num, instance_num;
-    std::vector<gl_vertex_attribute_slot> vertex_attribute_slots;
-    std::vector<gl_instance_vertex_attribute_slot> instance_vertex_arttibute_slots;
-};
 
 /*
  * Dynamic Storage : if required capacity is not enough,
@@ -191,75 +207,52 @@ struct gl_vertex_array_descriptor
  * Store Vertex Attributes & Instance Attributes
  *
  * */
-class gl_vertex_array final : public gl_object {
+class VertexArray final : public gl_object {
 public:
-    gl_vertex_array() : gl_object(gl_object_type::VERTEX_ARRAY_OBJ) {}
-    gl_vertex_array(const gl_vertex_array_descriptor& descriptor) : gl_object(gl_object_type::VERTEX_ARRAY_OBJ)
+    VertexArray() : gl_object(gl_object_type::VERTEX_ARRAY_OBJ) {}
+    VertexArray(const VertexArrayDescriptor& descriptor) : gl_object(gl_object_type::VERTEX_ARRAY_OBJ)
     {
         glCreateVertexArrays(1, &_handle);
     }
 
-    gl_vertex_array(const gl_vertex_array&) = delete;
-    gl_vertex_array& operator=(const gl_vertex_array&) = delete;
+    VertexArray(const VertexArray&) = delete;
+    VertexArray& operator=(const VertexArray&) = delete;
 
-    ~gl_vertex_array() override
+    ~VertexArray() override
     {
         glDeleteVertexArrays(1, &_handle);
     }
 
 private:
 
-    gl_vertex_array_descriptor _descriptor;
+    VertexArrayDescriptor _Descriptor;
 
-    std::shared_ptr<gl_array_buffer> vertex_attributes;
+    gl_array_buffer _VertexBuffer;
+    std::vector<gl_array_buffer> _InstanceAttributeBuffers;
+
     std::unordered_map<std::string, gl_attribute_list_anchor> _vertex_attribute_layout;
-
-    std::shared_ptr<gl_array_buffer> instance_vertex_attributes;
     std::unordered_map<std::string, gl_attribute_list_anchor> _instance_attribute_layout;
 
 public:
 
-    void reallocate_vertex_attributes(std::int64_t vertices_num) 
+    void ReallocateVertices(UInt32 VerticesNum)
+    {
+    }
+
+    void FillVertices(UInt32 Offset, UInt8* Data, UInt32 VerticesNum)
     {
 
     }
 
-    void reallocate_instance_vertex_attributes(std::int64_t instances_num)
-    {
+public:
 
-    }
+    void ResetInstancesNum(UInt32 InstancesNum) {}
 
-    void reset(std::uint32_t instances_num)
-    {}
+    void ReallocateInstanceAttributes(UInt32 InstanceAttributesNum, UInt32 Divisor) {}
 
-    std::int64_t vertex_attributes_num()  const
-    {
-        return 0;
-    }
+    void FillInstanceAttributes() {}
 
-    std::int64_t instance_attributes_num() const
-    {
-        return 0;
-    }
-
-    std::int64_t attribute_size(const std::string& attribute_name) const
-    {
-        /*auto _it = _attributes.find(attribute_name);
-        if (_it == _attributes.cend())
-        {
-            return _it->second.attribute_size;
-        }*/
-        return -1;
-    }
-
-    std::uint8_t* attributes(const std::string& attribute_name)
-    {
-        /*if (_attributes.find(attribute_name) == _attributes.cend())
-        {
-            return _attributes[attribute_name].data.data();
-        }*/
-        return nullptr;
-    }
+public:
 
     std::uint8_t* data(std::int64_t offset, std::int64_t size)
     {
@@ -277,32 +270,32 @@ public:
 
 public:
 
-    void bind() noexcept
+    void Bind() const noexcept
     {
         glBindVertexArray(_handle);
     }
 
-    void unbind() noexcept
+    void Unbind() const noexcept
     {
         glBindVertexArray(0);
     }
 
-    void enable_pointers()
+    void EnablePointers()
     {
-       /* const std::size_t _size = _descriptor.get_vertex_attribute_descriptors().size() + _descriptor.get_instance_attribute_descriptors().size();
-        for (std::uint32_t _index = 0; _index < _size; ++_index)
+        UInt32 _AttributesCategoriesNum = _Descriptor.VertexDesc.AttributeDescriptors.size() + _Descriptor.InstanceAttributeDescs.size();
+        for (UInt32 _Index = 0; _Index < _AttributesCategoriesNum; ++_Index)
         {
-            glEnableVertexAttribArray(_index);
-        }*/
+            glEnableVertexAttribArray(_Index);
+        }
     }
 
-    void disable_pointers()
+    void DisablePointers()
     {
-        /*const std::size_t _size = _descriptor.get_vertex_attribute_descriptors().size() + _descriptor.get_instance_attribute_descriptors().size();
-        for (std::uint32_t _index = 0; _index < _size; ++_index)
+        UInt32 _AttributesCategoriesNum = _Descriptor.VertexDesc.AttributeDescriptors.size() + _Descriptor.InstanceAttributeDescs.size();
+        for (UInt32 _Index = 0; _Index < _AttributesCategoriesNum; ++_Index)
         {
-            glDisableVertexAttribArray(_index);
-        }*/
+            glEnableVertexAttribArray(_Index);
+        }
     }
 
 public:
@@ -339,11 +332,9 @@ public:
         //}
     }
 
-
-
 private:
 
-    void _set_vertex_pointers(gl_attribute_component::type attribute_component_type, std::uint32_t index, std::uint32_t components_count, std::uint32_t attribute_size, std::uint32_t offset)
+    void _SetPointer(gl_attribute_component::type attribute_component_type, std::uint32_t index, std::uint32_t components_count, std::uint32_t attribute_size, std::uint32_t offset)
     {
         const auto _attribute_component_type_enum = gl_attribute_component::to_GLenum(attribute_component_type);
 
@@ -372,7 +363,7 @@ private:
         }
     }
 
-    void gl_vertex_array::_generate_attribute_layout()
+    void VertexArray::_generate_attribute_layout()
     {
 
        /* const auto& _vertex_attribute_descriptors = _descriptor.get_vertex_attribute_descriptors();
@@ -436,28 +427,28 @@ private:
 
     bool is_pointer_enabled(std::uint32_t index)
     {
-        bind();
+        Bind();
         GLint _is_enabled = GL_FALSE;
         glGetVertexAttribiv(index, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &_is_enabled);
-        unbind();
+        Unbind();
         return _is_enabled;
     }
 
     std::uint32_t get_attribute_components_num(std::uint32_t index)
     {
-        bind();
+        Bind);
         GLint _num = 0;
         glGetVertexAttribiv(index, GL_VERTEX_ATTRIB_ARRAY_SIZE, &_num);
-        unbind();
+        Unbind();
         return _num;
     }
 
     std::string get_attribute_component_type(std::uint32_t index)
     {
-        bind();
+        Bind();
         GLint _num = 0;
         glGetVertexAttribiv(index, GL_VERTEX_ATTRIB_ARRAY_TYPE, &_num);
-        unbind();
+        Unbind();
 
         switch (_num)
         {

@@ -380,16 +380,15 @@ void test0()
 
 	// vetex launcher
 	// vertices
-	gl_vertex_array* _vertices = new gl_vertex_array();
-	_vertices->reallocate_vertex_attributes(100);
 	std::vector<glm::vec4> _raw_colors;
 	// indices
-	gl_element_array_buffer* _indices = new gl_element_array_buffer();
-	_indices->reallocate(1024 * sizeof(std::uint32_t));
-	_indices->fill(nullptr);
 
-	auto _vertex_launcher = std::make_shared<VertexLauncher>();
-	_vertex_launcher->Assembly();
+	auto _Launcher = std::make_shared<VertexLauncher>(PrimitiveMode::TRIANGLES);
+	_Launcher->ReallocateIndices(100);
+	_Launcher->FillVertices(0, nullptr, 1024);
+	_Launcher->FillInstanceAttributes("InstanceColor", 0, nullptr, 1);
+	_Launcher->FillIndices(3, { 12, 34, 22, 334,22, 43, 34 });
+
 
 	// shader program
 	auto _vs = std::make_shared<glsl_vertex_shader>();
