@@ -46,12 +46,12 @@ public:
 
 public:
 
-	void draw(gl_primitive_mode mode, std::uint32_t stream_index)
+	void draw(PrimitiveMode mode, std::uint32_t stream_index)
 	{
 		glDrawTransformFeedbackStream(static_cast<GLenum>(mode), _handle, stream_index);
 	}
 
-	void draw_instance(gl_primitive_mode mode, std::uint32_t stream_index, std::int32_t instances_count)
+	void draw_instance(PrimitiveMode mode, std::uint32_t stream_index, std::int32_t instances_count)
 	{
 		//glDrawTransformFeedback(static_cast<GLenum>(mode), _handle);
 		glDrawTransformFeedbackStreamInstanced(static_cast<GLenum>(mode), _handle, stream_index, instances_count);

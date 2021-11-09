@@ -393,12 +393,12 @@ struct gl_graphics_pipeline_state
  * */
 struct gl_graphics_pipeline_descriptor{
     // pipeline name
-    std::string name;
+    std::string Name;
     // renderer dir
-    std::string owner_renderer_dir;
+    std::string OwnerRendererDir;
    
     // [must have] vertex stream which input into program by vertex puller
-    std::shared_ptr<gl_vertex_launcher> vertex_launcher;
+    std::shared_ptr<VertexLauncher> vertex_launcher;
     // [must have] program body
     std::shared_ptr<glsl_graphics_pipeline_program> program;
     // [optional] transform feedback 
@@ -507,7 +507,7 @@ public:
     {
         if (_descriptor && _descriptor->vertex_launcher)
         {
-            gl_primitive_mode _mode = _descriptor->vertex_launcher->primitive_mode;
+            PrimitiveMode _mode = _descriptor->vertex_launcher->GetPrimitiveMode();
             if (need_feedback && _descriptor->transform_feedback)
             {
                 glBeginTransformFeedback(static_cast<GLenum>(_mode));
@@ -542,7 +542,7 @@ public:
     {
         if (_descriptor && _descriptor->vertex_launcher)
         {
-            gl_primitive_mode _mode = _descriptor->vertex_launcher->primitive_mode;
+            PrimitiveMode _mode = _descriptor->vertex_launcher->GetPrimitiveMode();
             std::int32_t primitive_vetices_num = 0;
 
             if (need_feedback && _descriptor->transform_feedback)
@@ -583,7 +583,7 @@ public:
 
         if (!_descriptor || !_descriptor->transform_feedback || !_descriptor->vertex_launcher) return;
         
-        gl_primitive_mode _mode = _descriptor->vertex_launcher->primitive_mode;
+        PrimitiveMode _mode = _descriptor->vertex_launcher->GetPrimitiveMode();
         
         if (need_feedback) glBeginTransformFeedback(static_cast<GLenum>(_mode));
 
@@ -610,7 +610,7 @@ private:
     {
         if (_descriptor && _descriptor->vertex_launcher)
         {
-            gl_primitive_mode _mode = _descriptor->vertex_launcher->primitive_mode;
+            PrimitiveMode _mode = _descriptor->vertex_launcher->GetPrimitiveMode();
             glDrawArrays(static_cast<GLenum>(_mode), vertex_index, vertices_count);
         }
     }
@@ -618,7 +618,7 @@ private:
     {
         if (_descriptor && _descriptor->vertex_launcher)
         {
-            gl_primitive_mode _mode = _descriptor->vertex_launcher->primitive_mode;
+            PrimitiveMode _mode = _descriptor->vertex_launcher->GetPrimitiveMode();
             glDrawArraysInstanced(static_cast<GLenum>(_mode), vertex_index, vertices_count, instances_count);
         }
     }
@@ -627,7 +627,7 @@ private:
     {
         if (_descriptor && _descriptor->vertex_launcher)
         {
-            gl_primitive_mode _mode = _descriptor->vertex_launcher->primitive_mode;
+            PrimitiveMode _mode = _descriptor->vertex_launcher->GetPrimitiveMode();
             std::int32_t primitive_vetices_num = 0;
             glDrawElements(static_cast<GLenum>(_mode), primitive_vetices_num, GL_UNSIGNED_INT, nullptr);
         }
@@ -636,7 +636,7 @@ private:
     {
         if (_descriptor && _descriptor->vertex_launcher)
         {
-            gl_primitive_mode _mode = _descriptor->vertex_launcher->primitive_mode;
+            PrimitiveMode _mode = _descriptor->vertex_launcher->GetPrimitiveMode();
             std::int32_t primitive_vetices_num = 0;
             glDrawElementsBaseVertex(static_cast<GLenum>(_mode), primitive_vetices_num, GL_UNSIGNED_INT, nullptr, base_vertex);
         }
@@ -645,7 +645,7 @@ private:
     {
         if (_descriptor && _descriptor->vertex_launcher)
         {
-            gl_primitive_mode _mode = _descriptor->vertex_launcher->primitive_mode;
+            PrimitiveMode _mode = _descriptor->vertex_launcher->GetPrimitiveMode();
             std::int32_t primitive_vetices_num = 0;
             glDrawElementsInstanced(static_cast<GLenum>(_mode), primitive_vetices_num, GL_UNSIGNED_INT, nullptr, instances_count);
         }
@@ -654,7 +654,7 @@ private:
     {
         if (_descriptor && _descriptor->vertex_launcher)
         {
-            gl_primitive_mode _mode = _descriptor->vertex_launcher->primitive_mode;
+            PrimitiveMode _mode = _descriptor->vertex_launcher->GetPrimitiveMode();
             std::int32_t primitive_vetices_num = 0;
             glDrawElementsInstancedBaseInstance(static_cast<GLenum>(_mode), primitive_vetices_num, GL_UNSIGNED_INT, nullptr, instances_count, base_instance);
         }
@@ -837,7 +837,7 @@ private:
         if (_descriptor && _descriptor->vertex_launcher && _descriptor->program && _descriptor->framebuffer && _descriptor->state)
         {
             // bind vertex launcher
-            _descriptor->vertex_launcher->bind();
+            _descriptor->vertex_launcher->Bind();
 
             // bind program parameters
             const auto& _program_parameters = _descriptor->program->parameters();
@@ -957,7 +957,7 @@ struct gl_vertex_processing_pipeline_descriptor
     // pipeline state
     std::shared_ptr<gl_vertex_processing_pipeline_state> state;
     // vertex stream which input into program by vertex puller
-    std::shared_ptr<gl_vertex_launcher> vertex_launcher;
+    std::shared_ptr<VertexLauncher> vertex_launcher;
     // program body
     std::shared_ptr<glsl_vertex_processing_pipeline_program> program;
     // must have transform feedback 

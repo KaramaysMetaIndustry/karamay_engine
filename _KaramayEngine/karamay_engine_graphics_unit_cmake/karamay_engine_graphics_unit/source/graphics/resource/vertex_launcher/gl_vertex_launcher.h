@@ -4,7 +4,7 @@
 #include "graphics/resource/vertex_array/gl_vertex_array.h"
 #include "graphics/resource/buffers/common_buffer/gl_element_array_buffer.h"
 
-enum class gl_primitive_mode
+enum class PrimitiveMode
 {
 	POINTS = GL_POINTS,
 
@@ -22,44 +22,91 @@ enum class gl_primitive_mode
 
 	PATCHES = GL_PATCHES
 };
+using UInt32 = std::uint32_t;
 
 
-class gl_vertex_launcher final{
-public:
-	gl_vertex_launcher() :
-		vertices(nullptr), indices(nullptr)
-	{}
-
-	gl_vertex_launcher(const gl_vertex_launcher&) = delete;
-	gl_vertex_launcher& operator=(const gl_vertex_launcher&) = delete;
-
-	~gl_vertex_launcher() = default;
-
+class VertexLauncher final 
+{
 public:
 
-	std::shared_ptr<gl_vertex_array> vertices;
+	VertexLauncher() :
+		_VertexArray(nullptr), _ElementArrayBuffer(nullptr), _PrimitiveMode(PrimitiveMode::TRIANGLES)
+	{
+		_VertexArray = new gl_vertex_array();
+		_ElementArrayBuffer = new gl_element_array_buffer();
+	}
 
-	std::shared_ptr<gl_element_array_buffer> indices;
+	VertexLauncher(PrimitiveMode Mode) {}
 
-	gl_primitive_mode primitive_mode;
+	VertexLauncher(const VertexLauncher&) = delete;
+	VertexLauncher& operator=(const VertexLauncher&) = delete;
+
+	~VertexLauncher()
+	{
+		delete _VertexArray;
+		delete _ElementArrayBuffer;
+	}
+
+private:
+
+	gl_vertex_array* _VertexArray;
+	gl_element_array_buffer* _ElementArrayBuffer;
+	PrimitiveMode _PrimitiveMode;
 
 public:
 
-	bool assembly() noexcept
+	PrimitiveMode GetPrimitiveMode() const { return _PrimitiveMode; }
+
+public:
+	//
+	void ReallocateVertices(UInt32 VerticesNum)
+	{
+		if (_VertexArray)
+		{
+
+		}
+	}
+
+	void FillVertices() {}
+
+public:
+
+	void ReallocateInstanceAttributes() {}
+
+	void FillInstanceAttributes() {}
+
+public:
+
+	// Indices only associates to PrimitiveMode
+	// PrimitiveMode will never change once lancher constructed
+	// IndicesNum % PrimitiveVerticesNum = 0
+	void ReallocateIndices(UInt32 IndicesNum)
+	{
+		if (_ElementArrayBuffer && IndicesNum % 3 == 0)
+		{
+			_ElementArrayBuffer->reallocate(IndicesNum * sizeof(std::uint32_t));
+		}
+	}
+
+	void FillIndices(UInt32 Offset, const std::vector<UInt32>& Indices)
+	{
+
+	}
+
+public:
+
+	bool Assembly() noexcept
 	{
 		return false;
 	}
 
-	void bind() noexcept
+	void Bind() noexcept
 	{
-		if(vertices) vertices->bind();
-		if(indices) indices->bind();
+
 	}
 
-	void unbind() noexcept
+	void Unbind() noexcept
 	{
-		if(vertices) vertices->unbind();
-		if(indices) indices->unbind();
 	}
 
 };

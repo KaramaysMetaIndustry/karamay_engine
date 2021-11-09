@@ -6,6 +6,7 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../dependencies/stb/stb_image.h"
+#include "graphics/pipeline/graphics/gl_graphics_pipeline.h"
 
 
 
@@ -203,22 +204,6 @@ std::uint32_t indices[] = {
 //		glv::f32vec3(-0.5f,  0.5f, -0.5f)
 //};
 
-#define sptr(T)\
-std::make_shared<T##>()\
-
-#define uptr(T)\
-std::make_unique<T##>()\
-
-template<typename T>
-std::weak_ptr<T> make_weak(std::shared_ptr<T> sptr)
-{
-	return std::weak_ptr<T>(sptr);
-}
-
-#define wptr(sptr)\
-make_weak(sptr)\
-
-
 struct gl_texture_pixels
 {
 	stbi_uc* pixels;
@@ -253,19 +238,11 @@ struct gl_texture_pixels
 
 void test0();
 
-#define CLASS_NAME(__CLASS__)  #__CLASS__
-
-#define DEFINE_UNIFORM_BLOCK(...)\
-__VA_ARGS__\
-
-#include "lua/renderer.h"
-
 int main()
 {
 	
-	karamay_lua::load();
-	
-	//test0();
+	//karamay_lua::load();
+	test0();
 }
 
 
@@ -386,38 +363,8 @@ MessageCallback( GLenum source,
 }
 
 
-
-void _create(std::string name) {
-	std::cout << name << std::endl;
-}
-
-void _create(glm::vec3 a) {
-	std::cout << a.x << a.y << a.z << std::endl;
-}
-
-void _create(int32_t a) {
-	std::cout << a << std::endl;
-}
-
-void create() {
-	std::cout << "null" << std::endl;
-}
-
-template<typename T, typename... Args>
-void create(T v, Args... args)
-{
-	struct MATR{} a;
-	_create(v);
-	create(args...);
-}
-
-
-#include "graphics/pipeline/graphics/gl_graphics_pipeline.h"
-
 void test0()
 {
-//	lua_manager _lua_mana;
-//	_lua_mana.construct();
 
 	auto* window = new glfw_window();
 	window->load_context();
@@ -425,28 +372,24 @@ void test0()
 	std::cout << "GL_VERSION: " << glGetString(GL_VERSION) << std::endl;
 	glewInit();
 	glViewport(0, 0, window->get_framebuffer_width(), window->get_framebuffer_height());
-    // During init, enable debug output
+
 #ifdef _DEBUG
 	glEnable(GL_DEBUG_OUTPUT);
 	glDebugMessageCallback(MessageCallback, 0);
-#endif // _DEBUG
-
-
+#endif 
 
 	// vetex launcher
 	// vertices
-	auto _vertices = std::make_shared<gl_vertex_array>();
+	gl_vertex_array* _vertices = new gl_vertex_array();
 	_vertices->reallocate_vertex_attributes(100);
 	std::vector<glm::vec4> _raw_colors;
 	// indices
-	auto _indices = std::make_shared<gl_element_array_buffer>();
+	gl_element_array_buffer* _indices = new gl_element_array_buffer();
 	_indices->reallocate(1024 * sizeof(std::uint32_t));
 	_indices->fill(nullptr);
 
-	auto _vertex_launcher = std::make_shared<gl_vertex_launcher>();
-	_vertex_launcher->vertices = _vertices;
-	_vertex_launcher->indices = _indices;
-	_vertex_launcher->assembly();
+	auto _vertex_launcher = std::make_shared<VertexLauncher>();
+	_vertex_launcher->Assembly();
 
 	// shader program
 	auto _vs = std::make_shared<glsl_vertex_shader>();
@@ -469,8 +412,8 @@ void test0()
 
 	// pipeline
 	auto  _gp_des = std::make_shared<gl_graphics_pipeline_descriptor>();
-	_gp_des->name = "test_pipeline";
-	_gp_des->owner_renderer_dir = "/shaders/test_renderer/";
+	_gp_des->Name = "test_pipeline";
+	_gp_des->OwnerRendererDir = "/shaders/test_renderer/";
 	_gp_des->vertex_launcher = _vertex_launcher;
 	_gp_des->program = _program;
 	_gp_des->transform_feedback = nullptr;
@@ -483,7 +426,6 @@ void test0()
 	//_test_pipeline->draw_indices();
 	//_test_pipeline->draw_arrays();
 	_test_pipeline->disable();
-
 
 
 

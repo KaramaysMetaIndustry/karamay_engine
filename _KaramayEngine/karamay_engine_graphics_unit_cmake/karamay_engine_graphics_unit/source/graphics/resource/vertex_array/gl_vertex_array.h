@@ -153,7 +153,8 @@ class gl_attribute
 struct gl_vertex_attribute_slot 
 {
     std::string attribute_name;
-    std::string attribute_size;
+    std::uint64_t attribute_size;
+    
 };
 struct gl_instance_vertex_attribute_slot
 {
@@ -342,9 +343,8 @@ public:
 
 private:
 
-    void _set_vertex_pointers(gl_attribute_component::type attribute_component_type, std::uint32_t index,
-        std::uint32_t components_count, std::uint32_t attribute_size,
-        std::uint32_t offset) {
+    void _set_vertex_pointers(gl_attribute_component::type attribute_component_type, std::uint32_t index, std::uint32_t components_count, std::uint32_t attribute_size, std::uint32_t offset)
+    {
         const auto _attribute_component_type_enum = gl_attribute_component::to_GLenum(attribute_component_type);
 
         switch (attribute_component_type) {
