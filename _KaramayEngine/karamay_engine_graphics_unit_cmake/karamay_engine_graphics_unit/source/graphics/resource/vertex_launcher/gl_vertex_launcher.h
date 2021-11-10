@@ -32,7 +32,8 @@ public:
 		_PrimitiveMode(Mode),
 		_VertexArray(nullptr), _ElementArrayBuffer(nullptr)
 	{
-		_VertexArray = std::make_unique<VertexArray>();
+		VertexArrayDescriptor _Desc;
+		_VertexArray = std::make_unique<VertexArray>(_Desc);
 		_ElementArrayBuffer = std::make_unique<ElementArrayBuffer>();
 	}
 
@@ -54,53 +55,47 @@ public:
 
 	PrimitiveMode GetPrimitiveMode() const { return _PrimitiveMode; }
 
-	UInt32 GetVerticesNum() const { return 0; };
+	UInt32 GetVerticesNum() const { return _VertexArray ? _VertexArray->GetVerticesNum() : 0; }
+
+	UInt32 GetInstancesNum() const { return _VertexArray ?  _VertexArray->GetInstancesNum() : 0; }
 
 public:
 
 	// you must describ a vertex size
 	// you can only respecify a new VerticesNum, cause VertexSize, Layout can not be modified
 	// this action will consume quite time
-	void ReallocateVertices(UInt32 VerticesNum)
+	void ReallocateVertices(UInt32 VerticesNum) noexcept
 	{
 		if (!_VertexArray) return;
-
 		_VertexArray->ReallocateVertices(VerticesNum);
-
 	}
 
 	// Offset unit is a Vertex Size
-	void FillVertices(UInt32 Offset, UInt8* Data, UInt32 VerticesNum) 
+	void FillVertices(UInt32 VertexOffset, const UInt8* Data, UInt32 VerticesNum) noexcept
 	{
 		if (!_VertexArray) return;
-
-		_VertexArray->FillVertices(Offset, Data, VerticesNum);
-
+		_VertexArray->FillVertices(VertexOffset, Data, VerticesNum);
 	}
 
 public:
 
 	// reset num of instances, this decide instance attributes' layout
-	void ResetInstancesNum(UInt32 InstancesNum)
+	void ResetInstancesNum(UInt32 InstancesNum) noexcept
 	{
 		if (!_VertexArray) return;
-		if (_VertexArray->GetInstancesNum() == InstancesNum) return;
-
 		_VertexArray->ResetInstancesNum(InstancesNum);
-
 	}
 
 	// reallocate the name specified attributes, divisor decide the attributes' layout
-	void ReallocateInstanceAttributes(const std::string& InstanceAttributeName, UInt32 InstanceAttributesNum, UInt32 Divisor) 
+	void ReallocateInstanceAttributes(UInt32 AttributeIndex, UInt32 InstanceAttributesNum, UInt32 Divisor) noexcept
 	{
 		if (!_VertexArray) return;
-		
-		_VertexArray->ReallocateInstanceAttributes(InstanceAttributesNum, Divisor);
+		_VertexArray->ReallocateInstanceAttributes(AttributeIndex, InstanceAttributesNum, Divisor);
 	}
 
 	// fill the instance attributes
 	// 
-	void FillInstanceAttributes(const std::string& InstanceAttributeName, UInt32 Offset, UInt8* Data, UInt32 InstanceAttributesNum) 
+	void FillInstanceAttributes(UInt32 AttributeIndex, UInt32 Offset, UInt8* Data, UInt32 InstanceAttributesNum) noexcept
 	{
 		if (!_VertexArray) return;
 

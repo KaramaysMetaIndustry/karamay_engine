@@ -155,11 +155,10 @@ enum class AttributeComponentType
 
 struct VertexAttributeDescriptor 
 {
-    UInt32 Index;
-    std::string Name;
-    UInt64 Size;
-    UInt32 ComponentsNum;
-    AttributeComponentType ComponentType;
+    std::string AttributeName; // BaseColor
+    UInt64 AttributeSize; // sizeof(glm::vec4)
+    UInt32 ComponentsNum; // 4
+    AttributeComponentType ComponentType; // FLOAT
 };
 
 struct VertexDescriptor
@@ -169,51 +168,75 @@ struct VertexDescriptor
 
 struct InstanceAttributeDescriptor
 {
-    UInt32 Index;
-    std::string Name;
-    UInt32 Size;
-    UInt32 ComponentsNum;
-    UInt32 ComponentType;
-    UInt32 Divisor;
+    std::string AttributeName; // InstancePositionOffset
+    UInt32 AttributeSize; // sizeof(glm::vec3)
+    UInt32 ComponentsNum; // 3
+    AttributeComponentType ComponentType; // FLOAT
+    UInt32 AttributesNum; // 10
+    UInt32 Divisor; // 3 每渲染3个instances换一个attribute，总共有10种可以换
 };
 
 struct VertexArrayDescriptor
 {
-    UInt32 VerticesNum;
-    VertexDescriptor VertexDesc;
-    UInt32 InstancesNum;
-    std::vector<InstanceAttributeDescriptor> InstanceAttributeDescs;
+    UInt32 VerticesNum; // 1024
+    VertexDescriptor VertexDesc; // {...}
+    UInt32 InstancesNum; // 30
+    std::vector<InstanceAttributeDescriptor> InstanceAttributeDescs; // {...}
 };
-
-struct gl_attribute_list_anchor
-{
-    std::string attribute_name;
-    std::uint32_t attributes_count;
-    std::int64_t offset;
-    std::int64_t size;
-};
-
 
 /*
  * Dynamic Storage : if required capacity is not enough,
  *
- *
- * [          ] [vertex0] [vertex1] [vertex2] [vertexN]
- * [attribute0] [       ] [       ] [      ] [.......]
- * [attribute1] [       ] [       ] [      ] [.......]
- * [attribute2] [       ] [       ] [      ] [.......]
- * [attributeN] [       ] [       ] [      ] [.......]
+ * [          ] [vertex*] [vertex*] [vertex*] [vertex*]
+ * 
+ * [InstanceAttribute*] [       ] [       ] [      ] [.......]
+ * 
+ * [InstanceAttribute*] [       ] [       ] [      ] [.......]
+ * 
  *
  * Store Vertex Attributes & Instance Attributes
  *
  * */
 class VertexArray final : public gl_object {
 public:
-    VertexArray() : gl_object(gl_object_type::VERTEX_ARRAY_OBJ) {}
     VertexArray(const VertexArrayDescriptor& Descriptor) : 
         gl_object(gl_object_type::VERTEX_ARRAY_OBJ)
     {
         glCreateVertexArrays(1, &_handle);
+
+        // construct internal descriptor and intialize buffers
+        _InternalDescriptor.InstancesNum = Descriptor.InstancesNum;
+        _InternalDescriptor.VerticesNum = Descriptor.VerticesNum;
+
+        UInt32 _AttributeIndex = 0;
+        
+        UInt32 _VertexSize = 0;
+        for (const auto& _VertexAttributeDesc : Descriptor.VertexDesc.AttributeDescriptors)
+        {
+            InternalVertexAttributeDescriptor _InternalVertexAttributeDesc;
+            _InternalVertexAttributeDesc.AttributeIndex = _AttributeIndex;
+            _InternalVertexAttributeDesc.InitialDesc = _VertexAttributeDesc;
+            _InternalDescriptor.VertexDesc.AttributeDescs.push_back(_InternalVertexAttributeDesc);
+            
+            _VertexSize += _VertexAttributeDesc.AttributeSize;
+            ++_AttributeIndex;
+        }
+
+        _InternalDescriptor.VertexDesc.VertexSize = _VertexSize;
+        _InternalDescriptor.VertexDesc.Buffer = std::make_unique<ArrayBuffer>(_VertexSize * _InternalDescriptor.VerticesNum);
+        _AllocateVertices();
+        
+        for (const auto& _InstanceAttributeDesc : Descriptor.InstanceAttributeDescs)
+        {
+            InternalInstanceAttributeDescriptor _InternalInstanceAttributeDesc;
+            _InternalInstanceAttributeDesc.AttributeIndex = _AttributeIndex;
+            _InternalInstanceAttributeDesc.InitialDesc = _InstanceAttributeDesc;
+            _InternalInstanceAttributeDesc.Buffer = std::make_unique<ArrayBuffer>(_InstanceAttributeDesc.AttributeSize * _InstanceAttributeDesc.AttributesNum);
+            _AllocateInstanceAttributes(_InternalInstanceAttributeDesc.AttributeIndex);
+            
+            ++_AttributeIndex;
+        }
+
     }
 
     VertexArray(const VertexArray&) = delete;
@@ -226,65 +249,132 @@ public:
 
 private:
 
-    VertexArrayDescriptor _Descriptor;
+    struct InternalVertexAttributeDescriptor
+    {
+        VertexAttributeDescriptor InitialDesc;
+        UInt32 AttributeIndex;
+    };
 
-    ArrayBuffer _VertexBuffer;
-    std::vector<ArrayBuffer> _InstanceAttributeBuffers;
+    struct InternalVertexDescriptor
+    {
+        std::vector<InternalVertexAttributeDescriptor> AttributeDescs;
+        UInt32 VertexSize;
+        std::unique_ptr<ArrayBuffer> Buffer;
+    };
 
-    std::unordered_map<std::string, gl_attribute_list_anchor> _vertex_attribute_layout;
-    std::unordered_map<std::string, gl_attribute_list_anchor> _instance_attribute_layout;
+    struct InternalInstanceAttributeDescriptor
+    {
+        InstanceAttributeDescriptor InitialDesc;
+        UInt32 AttributeIndex;
+        std::unique_ptr<ArrayBuffer> Buffer;
+    };
+
+    struct InternalVertexArrayDescriptor
+    {
+        UInt32 VerticesNum;
+        InternalVertexDescriptor VertexDesc;
+        UInt32 InstancesNum;
+        std::vector<InternalInstanceAttributeDescriptor> InstanceAttributeDescs;
+    };
+
+    InternalVertexArrayDescriptor _InternalDescriptor;
 
 public:
-
-    void ReallocateVertices(UInt32 VerticesNum)
+   
+    /*
+    * so this func properly cause performance degradation
+    */
+    void ReallocateVertices(UInt32 VerticesNum) noexcept
     {
-        if (VerticesNum == _Descriptor.VerticesNum) return;
-        
-        _Descriptor.VerticesNum = VerticesNum;
-
+        if (VerticesNum == _InternalDescriptor.VerticesNum) return;
+        _InternalDescriptor.VerticesNum = VerticesNum;
+        _AllocateVertices();
     }
 
-    void FillVertices(UInt32 Offset, UInt8* Data, UInt32 VerticesNum)
+    /*
+    * VertexOffset + VerticesNum <= _InternalDescriptor.VerticesNum - 1
+    * 
+    */
+    void FillVertices(UInt32 VertexOffset, const UInt8* Data, UInt32 VerticesNum) noexcept
     {
+        const auto& _VertexBuffer = _InternalDescriptor.VertexDesc.Buffer;
+        if (!_VertexBuffer) return;
+        if (VertexOffset + VerticesNum > _InternalDescriptor.VerticesNum - 1) return;
 
+        const UInt32 _VertexSize = _InternalDescriptor.VertexDesc.VertexSize;
+        _VertexBuffer->Fill(VertexOffset * _VertexSize, Data, VerticesNum * _VertexSize);
     }
 
 public:
 
-    void ResetInstancesNum(UInt32 InstancesNum) 
-    {}
+    /*
+    * This func wont trigger memory reallocate
+    * instancesNum does not effect instanceAttributes memory
+    */
+    void ResetInstancesNum(UInt32 InstancesNum) noexcept
+    {
+        if (InstancesNum == _InternalDescriptor.InstancesNum) return;
+        _InternalDescriptor.InstancesNum = InstancesNum;
+    }
 
-    void ReallocateInstanceAttributes(UInt32 InstanceAttributesNum, UInt32 Divisor) 
-    {}
+    /*
+    * this func will trigger memory reallocation, every instance attribute are separated
+    * so this wont cause performance degradation
+    */
+    void ReallocateInstanceAttributes(UInt32 AttributeIndex, UInt32 InstanceAttributesNum, UInt32 Divisor)
+    {
+        const auto* _InstanceAttributeDesc = _FindInstanceAttributeDescriptor(AttributeIndex);
+        if (!_InstanceAttributeDesc || _InstanceAttributeDesc->Buffer) return;
 
-    void FillInstanceAttributes() 
-    {}
+        _AllocateInstanceAttributes(AttributeIndex);
+    }
+
+    void FillInstanceAttributes(UInt32 AttributeIndex, UInt32 AttributeOffset, const UInt8* Data, UInt32 AttributesNum)
+    {
+        if (!Data) return;
+        const auto* _InstanceAttributeDesc = _FindInstanceAttributeDescriptor(AttributeIndex);
+        if (!_InstanceAttributeDesc || _InstanceAttributeDesc->Buffer) return;
+        _InstanceAttributeDesc->Buffer->Fill(
+            AttributeOffset * _InstanceAttributeDesc->InitialDesc.AttributeSize,
+            Data, 
+            AttributesNum * _InstanceAttributeDesc->InitialDesc.AttributeSize
+        );
+    }
 
 public:
+
+    /*
+    * if return -1, not exist
+    */
+    Int32 GetVertexAttributeIndex(const std::string& Name) const 
+    {
+        for (const auto& _AttributeDesc : _InternalDescriptor.VertexDesc.AttributeDescs)
+        {
+            if (_AttributeDesc.InitialDesc.AttributeName == Name) return _AttributeDesc.AttributeIndex;
+        }
+        return -1;
+    }
+
+    /*
+    * if return -1, not exist
+    */
+    Int32 GetInstanceAttributeIndex(const std::string& AttributeName) const 
+    {
+        for (const auto& _AttributeDesc : _InternalDescriptor.InstanceAttributeDescs)
+        {
+            if (_AttributeDesc.InitialDesc.AttributeName == AttributeName) return _AttributeDesc.AttributeIndex;
+        }
+        return -1;
+    }
 
     UInt32 GetVerticesNum() const
     {
-        return _Descriptor.VerticesNum;
+        return _InternalDescriptor.VerticesNum;
     }
 
     UInt32 GetInstancesNum() const 
     {
-        return _Descriptor.InstancesNum;
-    }
-
-
-    std::uint8_t* data(std::int64_t offset, std::int64_t size)
-    {
-        return nullptr;
-    }
-
-    template<typename GLSL_TRANSPARENT_T>
-    const GLSL_TRANSPARENT_T* attribute(std::uint32_t index)
-    {
-        const auto* _data = reinterpret_cast<const GLSL_TRANSPARENT_T*>(
-                data(index * sizeof(GLSL_TRANSPARENT_T), sizeof(GLSL_TRANSPARENT_T))
-                );
-        return _data;
+        return _InternalDescriptor.InstancesNum;
     }
 
 public:
@@ -299,108 +389,121 @@ public:
         glBindVertexArray(0);
     }
 
-    void EnablePointers()
+    void EnablePointers() const
     {
-        UInt32 _AttributesCategoriesNum = _Descriptor.VertexDesc.AttributeDescriptors.size() + _Descriptor.InstanceAttributeDescs.size();
-        for (UInt32 _Index = 0; _Index < _AttributesCategoriesNum; ++_Index)
-        {
-            glEnableVertexAttribArray(_Index);
-        }
+        for (const auto& _VertexAttributeDesc : _InternalDescriptor.VertexDesc.AttributeDescs)
+            glEnableVertexAttribArray(_VertexAttributeDesc.AttributeIndex);
+
+        for (const auto& _InstanceAttributeDesc : _InternalDescriptor.InstanceAttributeDescs)
+            glEnableVertexAttribArray(_InstanceAttributeDesc.AttributeIndex);
     }
 
-    void DisablePointers()
+    void DisablePointers() const
     {
-        UInt32 _AttributesCategoriesNum = _Descriptor.VertexDesc.AttributeDescriptors.size() + _Descriptor.InstanceAttributeDescs.size();
-        for (UInt32 _Index = 0; _Index < _AttributesCategoriesNum; ++_Index)
-        {
-            glEnableVertexAttribArray(_Index);
-        }
-    }
+        for (const auto& _VertexAttributeDesc : _InternalDescriptor.VertexDesc.AttributeDescs)
+            glDisableVertexAttribArray(_VertexAttributeDesc.AttributeIndex);
 
-public:
-    /*
-    * @Param0 attribute_name
-    * @Param1 attribute_index
-    * @Parma2 attribute_value
-    */
-    void update_instance_attributes(const std::vector<std::tuple<std::string, std::int32_t, const glsl_transparent_t_meta*>>& list)
-    {
-        std::int64_t _mapped_memory_offset = 0;
-        std::int64_t _mapped_memory_size = 0;
-        //std::vector<std::pair<std::int64_t, const glsl_transparent_class*>> _baked_list;
-
-        for(const auto& _item : list)
-        {
-            /*auto _it = _instance_attribute_layout.find(std::get<0>(_item));
-            if(_it == _instance_attribute_layout.cend()) return;
-            std::int64_t _instance_attribute_list_offset = _it->second.offset;
-            std::int64_t _instance_attribute_offset = _instance_attribute_list_offset + std::get<1>(_item) * std::get<2>(_item)->clazz()->class_size;
-            _baked_list.push_back(std::make_pair(_instance_attribute_offset, std::get<2>(_item)));*/
-        }
-
-        //if(_instance_attribute_buffer)
-        //{
-        //    // _instance_attribute_buffer->execute_mutable_memory_handler(_mapped_memory_offset, _mapped_memory_size, 
-        //    // [&_baked_list](std::uint8_t* mapped_memory, std::int64_t size)
-        //    // {
-        //    //     for(const auto& _item : _baked_list)
-        //    //     {
-        //    //         std::memcpy(mapped_memory + _item.first, _item.second->stream(), _item.second->stream_size());
-        //    //     }
-        //    // });
-        //}
+        for (const auto& _InstanceAttributeDesc : _InternalDescriptor.InstanceAttributeDescs)
+            glDisableVertexAttribArray(_InstanceAttributeDesc.AttributeIndex);
     }
 
 private:
 
-    void _SetVertexPointers()
+    void _AllocateVertices()
     {
+        // calc total memory demond
+        UInt32 _TotalSize = _InternalDescriptor.VerticesNum * _InternalDescriptor.VertexDesc.VertexSize;
+        const auto& _VertexAttributeDescs = _InternalDescriptor.VertexDesc.AttributeDescs;
+        auto& _VertexBuffer = _InternalDescriptor.VertexDesc.Buffer;
+        _VertexBuffer = std::make_unique<ArrayBuffer>(_TotalSize);
+        if (!_VertexBuffer) return;
 
+        // set attribute pointers
+        Bind();
+        _VertexBuffer->Bind();
+        UInt32 _AttributeOffset = 0;
+        for (const auto& _VertexAttributeDesc : _VertexAttributeDescs)
+        {
+            _SetAttributePointer(_VertexAttributeDesc.AttributeIndex, 
+                _VertexAttributeDesc.InitialDesc.ComponentsNum, 
+                _VertexAttributeDesc.InitialDesc.ComponentType,
+                _VertexAttributeDesc.InitialDesc.AttributeSize,
+                _AttributeOffset);
+            // calc attribute offset
+            _AttributeOffset += _VertexAttributeDesc.InitialDesc.AttributeSize;
+        }
+        _VertexBuffer->Unbind();
+        Unbind();
     }
 
-    void _SetInstanceAttributePointers()
+    void _AllocateInstanceAttributes(UInt32 AttributeIndex)
     {
+        auto* _InstanceAttributeDesc = _FindInstanceAttributeDescriptor(AttributeIndex);
+        if (!_InstanceAttributeDesc) return;
 
+        UInt32 _TotalSize = _InstanceAttributeDesc->InitialDesc.AttributeSize * _InstanceAttributeDesc->InitialDesc.AttributesNum;
+        auto& _InstanceAttributeBuffer = _InstanceAttributeDesc->Buffer;
+        _InstanceAttributeBuffer = std::make_unique<ArrayBuffer>(_TotalSize);
+
+        Bind();
+        _InstanceAttributeBuffer->Bind();
+
+        _SetAttributePointer(AttributeIndex, 
+            _InstanceAttributeDesc->InitialDesc.ComponentsNum,
+            _InstanceAttributeDesc->InitialDesc.ComponentType,
+            _InstanceAttributeDesc->InitialDesc.AttributeSize,
+            0);
+        glVertexAttribDivisor(AttributeIndex, _InstanceAttributeDesc->InitialDesc.Divisor);
+
+        _InstanceAttributeBuffer->Unbind();
+        Unbind();
     }
 
-
-    void _SetAttributePointer(UInt32 Index, UInt32 ComponentsNum, AttributeComponentType ComponentType, UInt32 AttributeSize, UInt32 Offset)
+    void _SetAttributePointer(UInt32 AttributeIndex, UInt32 ComponentsNum, AttributeComponentType ComponentType, UInt32 AttributeSize, UInt32 Offset)
     {
         switch (ComponentType) 
         {
             case AttributeComponentType::INT:
             {
-                glVertexAttribIPointer(Index, ComponentsNum, GL_INT, AttributeSize, reinterpret_cast<const void*>(Offset));
+                glVertexAttribIPointer(AttributeIndex, ComponentsNum, GL_INT, AttributeSize, reinterpret_cast<const void*>(Offset));
             }
             break;
             case AttributeComponentType::UINT:
             {
-                glVertexAttribIPointer(Index, ComponentsNum, GL_UNSIGNED_INT, AttributeSize, reinterpret_cast<const void*>(Offset));
+                glVertexAttribIPointer(AttributeIndex, ComponentsNum, GL_UNSIGNED_INT, AttributeSize, reinterpret_cast<const void*>(Offset));
             }
             break;
             case AttributeComponentType::FLOAT:
             {
-                glVertexAttribPointer(Index, ComponentsNum, GL_FLOAT, GL_FALSE, AttributeSize, reinterpret_cast<const void*>(Offset));
+                glVertexAttribPointer(AttributeIndex, ComponentsNum, GL_FLOAT, GL_FALSE, AttributeSize, reinterpret_cast<const void*>(Offset));
             }
             break;
             case AttributeComponentType::UINT_TO_FLOAT:
             {
-                glVertexAttribPointer(Index, ComponentsNum, GL_UNSIGNED_INT, GL_TRUE, AttributeSize, reinterpret_cast<const void*>(Offset));
+                glVertexAttribPointer(AttributeIndex, ComponentsNum, GL_UNSIGNED_INT, GL_TRUE, AttributeSize, reinterpret_cast<const void*>(Offset));
             }
             break;
             case AttributeComponentType::DOUBLE:
             {
-                glVertexAttribLPointer(Index, ComponentsNum, GL_DOUBLE, AttributeSize, reinterpret_cast<const void*>(Offset));
+                glVertexAttribLPointer(AttributeIndex, ComponentsNum, GL_DOUBLE, AttributeSize, reinterpret_cast<const void*>(Offset));
             }
             break;
             default: break;
         }
     }
 
+    InternalInstanceAttributeDescriptor* _FindInstanceAttributeDescriptor(UInt32 AttributeIndex)
+    {
+        for (auto& _InternalInstanceAttributeDesc : _InternalDescriptor.InstanceAttributeDescs)
+        {
+            if (_InternalInstanceAttributeDesc.AttributeIndex == AttributeIndex) return &_InternalInstanceAttributeDesc;
+        }
+        return nullptr;
+    }
+
     void VertexArray::_generate_attribute_layout()
     {
-
-        const auto& _vertex_attribute_descriptors = _descriptor.get_vertex_attribute_descriptors();
+        /*const auto& _vertex_attribute_descriptors = _descriptor.get_vertex_attribute_descriptors();
         const auto& _instance_attribute_descriptors = _descriptor.get_instance_attribute_descriptors();
         const auto _vertices_count = _descriptor.get_vertices_count();
 
@@ -456,7 +559,7 @@ private:
             ++_index;
         }
 
-        _unbind_buffer(); unbind();
+        _unbind_buffer(); unbind();*/
     }
 
     bool is_pointer_enabled(std::uint32_t index)
@@ -498,6 +601,55 @@ private:
         }
     }
 
+
+public:
+
+    std::uint8_t* data(std::int64_t offset, std::int64_t size)
+    {
+        return nullptr;
+    }
+
+    template<typename GLSL_TRANSPARENT_T>
+    const GLSL_TRANSPARENT_T* attribute(std::uint32_t index)
+    {
+        const auto* _data = reinterpret_cast<const GLSL_TRANSPARENT_T*>(
+            data(index * sizeof(GLSL_TRANSPARENT_T), sizeof(GLSL_TRANSPARENT_T))
+            );
+        return _data;
+    }
+
+    /*
+    * @Param0 attribute_name
+    * @Param1 attribute_index
+    * @Parma2 attribute_value
+    */
+    void update_instance_attributes(const std::vector<std::tuple<std::string, std::int32_t, const glsl_transparent_t_meta*>>& list)
+    {
+        std::int64_t _mapped_memory_offset = 0;
+        std::int64_t _mapped_memory_size = 0;
+        //std::vector<std::pair<std::int64_t, const glsl_transparent_class*>> _baked_list;
+
+        for (const auto& _item : list)
+        {
+            /*auto _it = _instance_attribute_layout.find(std::get<0>(_item));
+            if(_it == _instance_attribute_layout.cend()) return;
+            std::int64_t _instance_attribute_list_offset = _it->second.offset;
+            std::int64_t _instance_attribute_offset = _instance_attribute_list_offset + std::get<1>(_item) * std::get<2>(_item)->clazz()->class_size;
+            _baked_list.push_back(std::make_pair(_instance_attribute_offset, std::get<2>(_item)));*/
+        }
+
+        //if(_instance_attribute_buffer)
+        //{
+        //    // _instance_attribute_buffer->execute_mutable_memory_handler(_mapped_memory_offset, _mapped_memory_size, 
+        //    // [&_baked_list](std::uint8_t* mapped_memory, std::int64_t size)
+        //    // {
+        //    //     for(const auto& _item : _baked_list)
+        //    //     {
+        //    //         std::memcpy(mapped_memory + _item.first, _item.second->stream(), _item.second->stream_size());
+        //    //     }
+        //    // });
+        //}
+    }
 };
 
 #endif

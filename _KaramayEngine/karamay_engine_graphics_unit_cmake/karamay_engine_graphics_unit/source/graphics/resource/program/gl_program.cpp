@@ -37,7 +37,6 @@ void gl_program::_enable()
 
 void gl_program::_call_commands()
 {
-	_commands_lambda();
 	std::cout << "[commands are launched.]" << std::endl;
 }
 
@@ -75,21 +74,7 @@ inline void gl_program::_set_transform_feedback_varyings()
 
 inline void gl_program::_bind_vertex_array()
 {
-	if (_vertex_array) {
-		// bind it into context
-		_vertex_array->bind();
 
-#ifdef _DEBUG
-		std::cout << "[vertex array is bound.]" << std::endl;
-#endif
-		// enable all vertex attribute pointers
-		_vertex_array->enable_pointers();
-		
-#ifdef _DEBUG
-		std::cout << "[vertex array pointers are enabled.]" << std::endl;
-#endif
-		
-	}
 }
 
 inline void gl_program::_bind_element_array_buffer()
@@ -106,16 +91,7 @@ inline void gl_program::_bind_element_array_buffer()
 
 inline void gl_program::_bind_transform_feedback()
 {
-	if (_transform_feedback)
-	{
-		// bind transform feedback to context
-		_transform_feedback->bind();
 
-#ifdef _DEBUG
-		std::cout << "[transform feedback is bound.]" << std::endl;
-#endif
-		
-	}
 }
 
 inline void gl_program::_bind_uniform_buffers()
@@ -192,23 +168,5 @@ inline void gl_program::_bind_atomic_counter_buffers()
 
 inline void gl_program::_bind_framebuffer()
 {
-	if (_framebuffer) // bind customized framebuffer
-	{
-		_framebuffer->bind();
-
-#ifdef _DEBUG
-		std::cout << "[custom framebuffer is bound.]" << std::endl;
-#endif
-
-	}
-	else // bind default framebuffer
-	{
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-#ifdef _DEBUG
-		std::cout << "[default framebuffer is bound.]" << std::endl;
-#endif
-
-	}
 		
 }

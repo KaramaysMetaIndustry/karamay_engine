@@ -529,19 +529,19 @@ public: // glGetProgramiv
     /*
      * returns a symbolic constant indicating the primitive type accepted as input to the geometry shader contained in program.
      * */
-    gl_primitive_type geometry_input_type() const noexcept{
+    PrimitiveMode geometry_input_type() const noexcept{
         GLint param;
         glGetProgramiv(_handle, GL_GEOMETRY_INPUT_TYPE, &param);
-        return static_cast<gl_primitive_type>(param);
+        return static_cast<PrimitiveMode>(param);
     }
 
     /*
      * returns a symbolic constant indicating the primitive type that will be output by the geometry shader contained in program.
      * */
-    gl_primitive_type geometry_output_type() const noexcept{
+    PrimitiveMode geometry_output_type() const noexcept{
         GLint param;
         glGetProgramiv(_handle, GL_GEOMETRY_OUTPUT_TYPE, &param);
-        return static_cast<gl_primitive_type>(param);
+        return static_cast<PrimitiveMode>(param);
     }
 
 public:
@@ -817,20 +817,6 @@ public:
 	 * start render processing
 	 */
 	void render(std::float_t delta_time);
-
-private:
-
-	std::vector<std::shared_ptr<gl_shader>> _shaders;
-
-	std::shared_ptr<gl_vertex_array> _vertex_array;
-
-	std::shared_ptr<gl_transform_feedback> _transform_feedback;
-
-	std::shared_ptr<gl_framebuffer> _framebuffer;
-	
-	static std::shared_ptr<gl_default_framebuffer> _default_framebuffer;
-	
-	std::function<void(void)> _commands_lambda;
 
 private:
 	//~ render begin

@@ -384,10 +384,6 @@ void test0()
 	// indices
 
 	auto _Launcher = std::make_shared<VertexLauncher>(PrimitiveMode::TRIANGLES);
-	_Launcher->ReallocateIndices(100);
-	_Launcher->FillVertices(0, nullptr, 1024);
-	_Launcher->FillInstanceAttributes("InstanceColor", 0, nullptr, 1);
-	_Launcher->FillIndices(3, { 12, 34, 22, 334,22, 43, 34 });
 
 
 	// shader program

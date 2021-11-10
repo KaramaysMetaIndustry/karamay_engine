@@ -68,7 +68,7 @@ private:
 	{
 		for (UInt32 Index = 0; Index < _TransformFeedbackBuffers.size(); ++Index)
 		{
-			glTransformFeedbackBufferRange(_handle, Index, _TransformFeedbackBuffers[Index].get_handle(), Offset, Size);
+			//glTransformFeedbackBufferRange(_handle, Index, _TransformFeedbackBuffers[Index].get_handle(), Offset, Size);
 		}
 
 	/*	if (Index < GL_MAX_TRANSFORM_FEEDBACK_BUFFERS && buffer)

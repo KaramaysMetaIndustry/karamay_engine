@@ -9,7 +9,7 @@
 */
 class ElementArrayBuffer final{
 public:
-
+    ElementArrayBuffer() {}
     ElementArrayBuffer(UInt32 IndicesNum) : 
         _Buffer(nullptr), _IndicesNum(IndicesNum)
     {
