@@ -210,7 +210,8 @@ struct gl_attribute_list_anchor
 class VertexArray final : public gl_object {
 public:
     VertexArray() : gl_object(gl_object_type::VERTEX_ARRAY_OBJ) {}
-    VertexArray(const VertexArrayDescriptor& descriptor) : gl_object(gl_object_type::VERTEX_ARRAY_OBJ)
+    VertexArray(const VertexArrayDescriptor& Descriptor) : 
+        gl_object(gl_object_type::VERTEX_ARRAY_OBJ)
     {
         glCreateVertexArrays(1, &_handle);
     }
@@ -227,8 +228,8 @@ private:
 
     VertexArrayDescriptor _Descriptor;
 
-    gl_array_buffer _VertexBuffer;
-    std::vector<gl_array_buffer> _InstanceAttributeBuffers;
+    ArrayBuffer _VertexBuffer;
+    std::vector<ArrayBuffer> _InstanceAttributeBuffers;
 
     std::unordered_map<std::string, gl_attribute_list_anchor> _vertex_attribute_layout;
     std::unordered_map<std::string, gl_attribute_list_anchor> _instance_attribute_layout;
@@ -237,6 +238,10 @@ public:
 
     void ReallocateVertices(UInt32 VerticesNum)
     {
+        if (VerticesNum == _Descriptor.VerticesNum) return;
+        
+        _Descriptor.VerticesNum = VerticesNum;
+
     }
 
     void FillVertices(UInt32 Offset, UInt8* Data, UInt32 VerticesNum)
@@ -246,16 +251,25 @@ public:
 
 public:
 
-    void ResetInstancesNum(UInt32 InstancesNum) {}
+    void ResetInstancesNum(UInt32 InstancesNum) 
+    {}
 
-    void ReallocateInstanceAttributes(UInt32 InstanceAttributesNum, UInt32 Divisor) {}
+    void ReallocateInstanceAttributes(UInt32 InstanceAttributesNum, UInt32 Divisor) 
+    {}
 
-    void FillInstanceAttributes() {}
+    void FillInstanceAttributes() 
+    {}
 
 public:
 
     UInt32 GetVerticesNum() const
     {
+        return _Descriptor.VerticesNum;
+    }
+
+    UInt32 GetInstancesNum() const 
+    {
+        return _Descriptor.InstancesNum;
     }
 
 
@@ -339,39 +353,54 @@ public:
 
 private:
 
-    void _SetPointer(gl_attribute_component::type attribute_component_type, std::uint32_t index, std::uint32_t components_count, std::uint32_t attribute_size, std::uint32_t offset)
+    void _SetVertexPointers()
     {
-        const auto _attribute_component_type_enum = gl_attribute_component::to_GLenum(attribute_component_type);
 
-        switch (attribute_component_type) {
-        case gl_attribute_component::type::INT:
+    }
+
+    void _SetInstanceAttributePointers()
+    {
+
+    }
+
+
+    void _SetAttributePointer(UInt32 Index, UInt32 ComponentsNum, AttributeComponentType ComponentType, UInt32 AttributeSize, UInt32 Offset)
+    {
+        switch (ComponentType) 
         {
-            glVertexAttribIPointer(index, components_count, _attribute_component_type_enum, attribute_size, reinterpret_cast<const void*>(offset));
-        }
-        break;
-        case gl_attribute_component::type::UINT:
-        {
-            glVertexAttribIPointer(index, components_count, _attribute_component_type_enum, attribute_size, reinterpret_cast<const void*>(offset));
-        }
-        break;
-        case gl_attribute_component::type::FLOAT:
-        {
-            glVertexAttribPointer(index, components_count, _attribute_component_type_enum, GL_FALSE, attribute_size, reinterpret_cast<const void*>(offset));
-        }
-        break;
-        case gl_attribute_component::type::DOUBLE:
-        {
-            glVertexAttribLPointer(index, components_count, _attribute_component_type_enum, attribute_size, reinterpret_cast<const void*>(offset));
-        }
-        break;
-        default: break;
+            case AttributeComponentType::INT:
+            {
+                glVertexAttribIPointer(Index, ComponentsNum, GL_INT, AttributeSize, reinterpret_cast<const void*>(Offset));
+            }
+            break;
+            case AttributeComponentType::UINT:
+            {
+                glVertexAttribIPointer(Index, ComponentsNum, GL_UNSIGNED_INT, AttributeSize, reinterpret_cast<const void*>(Offset));
+            }
+            break;
+            case AttributeComponentType::FLOAT:
+            {
+                glVertexAttribPointer(Index, ComponentsNum, GL_FLOAT, GL_FALSE, AttributeSize, reinterpret_cast<const void*>(Offset));
+            }
+            break;
+            case AttributeComponentType::UINT_TO_FLOAT:
+            {
+                glVertexAttribPointer(Index, ComponentsNum, GL_UNSIGNED_INT, GL_TRUE, AttributeSize, reinterpret_cast<const void*>(Offset));
+            }
+            break;
+            case AttributeComponentType::DOUBLE:
+            {
+                glVertexAttribLPointer(Index, ComponentsNum, GL_DOUBLE, AttributeSize, reinterpret_cast<const void*>(Offset));
+            }
+            break;
+            default: break;
         }
     }
 
     void VertexArray::_generate_attribute_layout()
     {
 
-       /* const auto& _vertex_attribute_descriptors = _descriptor.get_vertex_attribute_descriptors();
+        const auto& _vertex_attribute_descriptors = _descriptor.get_vertex_attribute_descriptors();
         const auto& _instance_attribute_descriptors = _descriptor.get_instance_attribute_descriptors();
         const auto _vertices_count = _descriptor.get_vertices_count();
 
@@ -427,7 +456,7 @@ private:
             ++_index;
         }
 
-        _unbind_buffer(); unbind();*/
+        _unbind_buffer(); unbind();
     }
 
     bool is_pointer_enabled(std::uint32_t index)

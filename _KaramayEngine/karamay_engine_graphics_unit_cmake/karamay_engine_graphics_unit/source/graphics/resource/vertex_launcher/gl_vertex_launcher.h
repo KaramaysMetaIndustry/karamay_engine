@@ -54,6 +54,8 @@ public:
 
 	PrimitiveMode GetPrimitiveMode() const { return _PrimitiveMode; }
 
+	UInt32 GetVerticesNum() const { return 0; };
+
 public:
 
 	// you must describ a vertex size
@@ -82,6 +84,7 @@ public:
 	void ResetInstancesNum(UInt32 InstancesNum)
 	{
 		if (!_VertexArray) return;
+		if (_VertexArray->GetInstancesNum() == InstancesNum) return;
 
 		_VertexArray->ResetInstancesNum(InstancesNum);
 
@@ -90,16 +93,16 @@ public:
 	// reallocate the name specified attributes, divisor decide the attributes' layout
 	void ReallocateInstanceAttributes(const std::string& InstanceAttributeName, UInt32 InstanceAttributesNum, UInt32 Divisor) 
 	{
-		if (_VertexArray)
-		{
-			_VertexArray->ReallocateInstanceAttributes(InstanceAttributesNum, Divisor);
-		}
+		if (!_VertexArray) return;
+		
+		_VertexArray->ReallocateInstanceAttributes(InstanceAttributesNum, Divisor);
 	}
 
 	// fill the instance attributes
 	// 
 	void FillInstanceAttributes(const std::string& InstanceAttributeName, UInt32 Offset, UInt8* Data, UInt32 InstanceAttributesNum) 
 	{
+		if (!_VertexArray) return;
 
 	}
 

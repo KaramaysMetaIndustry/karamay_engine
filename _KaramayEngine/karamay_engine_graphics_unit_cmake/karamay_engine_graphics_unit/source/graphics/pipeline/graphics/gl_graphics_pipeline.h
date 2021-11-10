@@ -398,23 +398,15 @@ struct gl_graphics_pipeline_descriptor{
     std::string OwnerRendererDir;
    
     // [must have] vertex stream which input into program by vertex puller
-    std::shared_ptr<VertexLauncher> vertex_launcher;
+    std::shared_ptr<VertexLauncher> VertexLauncher;
     // [must have] program body
     std::shared_ptr<glsl_graphics_pipeline_program> program;
     // [optional] transform feedback 
-    std::shared_ptr<gl_transform_feedback> transform_feedback;
+    std::shared_ptr<TransformFeedback> TransformFeedback;
     // [must have] where program final color output
     std::shared_ptr<gl_framebuffer> framebuffer;
     // [must have] pipeline state
     std::shared_ptr<gl_graphics_pipeline_state> state;
-
-    gl_graphics_pipeline_descriptor() : 
-        vertex_launcher(nullptr),
-        program(nullptr), 
-        transform_feedback(nullptr),
-        framebuffer(nullptr),
-        state(nullptr)
-    {}
 
 };
 

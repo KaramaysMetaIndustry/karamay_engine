@@ -9,11 +9,15 @@
 */
 class ElementArrayBuffer final{
 public:
-    ElementArrayBuffer() : _buffer(nullptr) {}
-    ElementArrayBuffer(std::int64_t size, std::uint8_t* data) : _buffer(nullptr)
+
+    ElementArrayBuffer(UInt32 IndicesNum) : 
+        _Buffer(nullptr), _IndicesNum(IndicesNum)
     {
-        _allocate(size, data);
+        _Allocate(IndicesNum * sizeof(UInt32));
     }
+
+    ElementArrayBuffer(const ElementArrayBuffer&) = delete;
+    ElementArrayBuffer& operator=(const ElementArrayBuffer&) = delete;
 
     ~ElementArrayBuffer() = default;
 
@@ -21,60 +25,54 @@ public:
 
     void Reallocate(UInt32 IndicesNum) 
     {
+        _IndicesNum = IndicesNum;
         const Int64 Size = sizeof(UInt32) * IndicesNum;
-
-        if (!_buffer || (_buffer && _buffer->size != Size))
-        {
-            _allocate(Size, nullptr);
-        }
+        _Allocate(Size);
     }
 
     void Fill(UInt32 Offset, const std::vector<UInt32>& Indices) 
     {
-        if (_buffer)
-        {
-            _buffer->execute_mapped_memory_writer(Offset, _buffer->size, [&](std::uint8_t* data, std::int64_t size) {
-                if (!data || size < 0) return;
-                std::memcpy(data, Indices.data(), size);
-                });
-        }
+        if (!_Buffer) return;
+        if (Offset + Indices.size() > _IndicesNum) return;
+
+        //_Buffer->execute_mapped_memory_writer()
+        
     }
+
+    UInt32 GetIndicesNum() const { return _IndicesNum; }
 
 public:
 
-    void Bind() noexcept
+    void Bind() const noexcept
     {
-        if(!_buffer) return;
+        if(!_Buffer) return;
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffer->get_handle());
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _Buffer->get_handle());
     }
 
-    void Unbind() noexcept
+    void Unbind() const noexcept
     {
-        if(!_buffer) return;
+        if(!_Buffer) return;
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
 private:
 
-    std::unique_ptr<gl_buffer> _buffer;
+    UInt32 _IndicesNum;
 
-    void _allocate(std::int64_t size, std::uint8_t* data = nullptr)
+    std::unique_ptr<gl_buffer> _Buffer;
+
+    void _Allocate(Int64 Size)
     {
-        if (!_buffer || (_buffer && _buffer->size != size))
-        {
-            gl_buffer_storage_options _options;
-            _options.is_client_storage = false;
-            _options.is_dynamic_storage = true;
-            _options.is_map_read = true;
-            _options.is_map_write = true;
-            _options.is_map_coherent = false;
-            _options.is_map_persistent = false;
-            _buffer = std::make_unique<gl_buffer>(_options, size);
-
-            fill(data);
-        }
+        gl_buffer_storage_options _options;
+        _options.is_client_storage = false;
+        _options.is_dynamic_storage = true;
+        _options.is_map_read = true;
+        _options.is_map_write = true;
+        _options.is_map_coherent = false;
+        _options.is_map_persistent = false;
+        _Buffer = std::make_unique<gl_buffer>(_options, Size);
     }
 
 };

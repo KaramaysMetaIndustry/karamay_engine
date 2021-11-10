@@ -3,7 +3,7 @@
 
 #include "graphics/resource/buffers/raw_buffer/gl_buffer.h"
 
-class gl_array_buffer final{
+class ArrayBuffer final{
 public:
 
 
