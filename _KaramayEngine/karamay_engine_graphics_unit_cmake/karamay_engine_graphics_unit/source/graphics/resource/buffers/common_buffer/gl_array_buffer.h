@@ -26,7 +26,18 @@ public:
 	{
 		if (!_Buffer) return;
 
-		//_Buffer->execute_mapped_memory_writer(Offset, Size, []() {})
+		_Buffer->execute_mapped_memory_writer(Offset, Size, [=](std::uint8_t* data, std::int64_t size){
+			std::memcpy(data, Data, Size);
+			});
+
+		_Buffer->execute_mapped_memory_reader(Offset, Size, [](const std::uint8_t* data, std::int64_t size) {
+			const float* _Floats = reinterpret_cast<const float*>(data);
+			for (int i = 0; i < size / sizeof(float); ++i)
+			{
+				std::cout << _Floats[i] << std::endl;
+			}
+
+			});
 	}
 
 public:

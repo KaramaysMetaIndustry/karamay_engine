@@ -207,9 +207,11 @@ public:
         // construct internal descriptor and intialize buffers
         _InternalDescriptor.InstancesNum = Descriptor.InstancesNum;
         _InternalDescriptor.VerticesNum = Descriptor.VerticesNum;
-
-        UInt32 _AttributeIndex = 0;
         
+        // attribute index
+        UInt32 _AttributeIndex = 0;
+
+        // construct internal vertex descriptor
         UInt32 _VertexSize = 0;
         for (const auto& _VertexAttributeDesc : Descriptor.VertexDesc.AttributeDescriptors)
         {
@@ -223,15 +225,17 @@ public:
         }
 
         _InternalDescriptor.VertexDesc.VertexSize = _VertexSize;
-        _InternalDescriptor.VertexDesc.Buffer = std::make_unique<ArrayBuffer>(_VertexSize * _InternalDescriptor.VerticesNum);
+        _InternalDescriptor.VertexDesc.Buffer = new ArrayBuffer(_VertexSize * _InternalDescriptor.VerticesNum);
         _AllocateVertices();
         
+        // construct instance attribues
         for (const auto& _InstanceAttributeDesc : Descriptor.InstanceAttributeDescs)
         {
             InternalInstanceAttributeDescriptor _InternalInstanceAttributeDesc;
             _InternalInstanceAttributeDesc.AttributeIndex = _AttributeIndex;
             _InternalInstanceAttributeDesc.InitialDesc = _InstanceAttributeDesc;
-            _InternalInstanceAttributeDesc.Buffer = std::make_unique<ArrayBuffer>(_InstanceAttributeDesc.AttributeSize * _InstanceAttributeDesc.AttributesNum);
+            _InternalInstanceAttributeDesc.Buffer = new ArrayBuffer(_InstanceAttributeDesc.AttributeSize * _InstanceAttributeDesc.AttributesNum);
+            _InternalDescriptor.InstanceAttributeDescs.push_back(_InternalInstanceAttributeDesc);
             _AllocateInstanceAttributes(_InternalInstanceAttributeDesc.AttributeIndex);
             
             ++_AttributeIndex;
@@ -259,14 +263,14 @@ private:
     {
         std::vector<InternalVertexAttributeDescriptor> AttributeDescs;
         UInt32 VertexSize;
-        std::unique_ptr<ArrayBuffer> Buffer;
+        ArrayBuffer* Buffer;
     };
 
     struct InternalInstanceAttributeDescriptor
     {
         InstanceAttributeDescriptor InitialDesc;
         UInt32 AttributeIndex;
-        std::unique_ptr<ArrayBuffer> Buffer;
+        ArrayBuffer* Buffer;
     };
 
     struct InternalVertexArrayDescriptor
@@ -299,7 +303,7 @@ public:
     {
         const auto& _VertexBuffer = _InternalDescriptor.VertexDesc.Buffer;
         if (!_VertexBuffer) return;
-        if (VertexOffset + VerticesNum > _InternalDescriptor.VerticesNum - 1) return;
+        if (VertexOffset + VerticesNum > _InternalDescriptor.VerticesNum) return;
 
         const UInt32 _VertexSize = _InternalDescriptor.VertexDesc.VertexSize;
         _VertexBuffer->Fill(VertexOffset * _VertexSize, Data, VerticesNum * _VertexSize);
@@ -415,7 +419,7 @@ private:
         UInt32 _TotalSize = _InternalDescriptor.VerticesNum * _InternalDescriptor.VertexDesc.VertexSize;
         const auto& _VertexAttributeDescs = _InternalDescriptor.VertexDesc.AttributeDescs;
         auto& _VertexBuffer = _InternalDescriptor.VertexDesc.Buffer;
-        _VertexBuffer = std::make_unique<ArrayBuffer>(_TotalSize);
+        _VertexBuffer = new ArrayBuffer(_TotalSize);
         if (!_VertexBuffer) return;
 
         // set attribute pointers
@@ -443,7 +447,7 @@ private:
 
         UInt32 _TotalSize = _InstanceAttributeDesc->InitialDesc.AttributeSize * _InstanceAttributeDesc->InitialDesc.AttributesNum;
         auto& _InstanceAttributeBuffer = _InstanceAttributeDesc->Buffer;
-        _InstanceAttributeBuffer = std::make_unique<ArrayBuffer>(_TotalSize);
+        _InstanceAttributeBuffer = new ArrayBuffer(_TotalSize);
 
         Bind();
         _InstanceAttributeBuffer->Bind();
@@ -501,67 +505,6 @@ private:
         return nullptr;
     }
 
-    void VertexArray::_generate_attribute_layout()
-    {
-        /*const auto& _vertex_attribute_descriptors = _descriptor.get_vertex_attribute_descriptors();
-        const auto& _instance_attribute_descriptors = _descriptor.get_instance_attribute_descriptors();
-        const auto _vertices_count = _descriptor.get_vertices_count();
-
-        for (const auto& _vertex_attribute_descriptor : _vertex_attribute_descriptors)
-        {
-            const auto _vertex_attribute_size = _vertex_attribute_descriptor.get_component_count() * gl_attribute_component::get_size(_vertex_attribute_descriptor.get_component_type());
-            _memory_demand += _vertex_attribute_size * _vertices_count;
-        }
-
-        for (const auto& _instance_attribute_descriptor : _instance_attribute_descriptors)
-        {
-            const auto _instance_attribute_size = _instance_attribute_descriptor.get_component_count() * gl_attribute_component::get_size(_instance_attribute_descriptor.get_component_type());
-            _memory_demand += _instance_attribute_size * _instance_attribute_descriptor.get_count();
-        }
-
-
-        std::uint32_t _index = 0;
-        std::uint32_t _offset = 0;
-
-        for (const auto& _vad : _vertex_attribute_descriptors)
-        {
-            const gl_attribute_component::type _component_type = _vad.get_component_type();
-            const auto _components_count = static_cast<GLint>(_vad.get_component_count());
-            const auto _attribute_size = _components_count * static_cast<GLint>(gl_attribute_component::get_size(_component_type));
-
-            _set_vertex_pointers(_component_type, _index, _components_count, _attribute_size, _offset);
-
-            for (std::uint32_t _sub_index = 0; _sub_index < _vertices_count; ++_sub_index)
-            {
-                _memory_layouts_map.emplace(_vad.get_name() + std::to_string(_sub_index), std::make_pair(_offset, _attribute_size));
-                _offset += _attribute_size;
-            }
-
-            ++_index;
-        }
-
-        for (const auto& _iad : _instance_attribute_descriptors) {
-            const auto _component_type = _iad.get_component_type();
-            const auto _components_count = static_cast<GLint>(_iad.get_component_count());
-            const auto _attribute_size = _components_count * static_cast<GLint>(gl_attribute_component::get_size(_component_type));
-            const auto _divisor = _iad.get_divisor();
-            const auto _count = _iad.get_count();
-
-            _set_vertex_pointers(_component_type, _index, _components_count, _attribute_size, _offset);
-            glVertexAttribDivisor(_index, _divisor);
-
-            for (std::uint32_t _sub_index = 0; _sub_index < _count; ++_sub_index)
-            {
-                _memory_layouts_map.emplace(_iad.get_name() + std::to_string(_sub_index), std::make_pair(_offset, _attribute_size));
-                _offset += _attribute_size;
-            }
-
-            ++_index;
-        }
-
-        _unbind_buffer(); unbind();*/
-    }
-
     bool is_pointer_enabled(std::uint32_t index)
     {
         Bind();
@@ -601,7 +544,6 @@ private:
         }
     }
 
-
 public:
 
     std::uint8_t* data(std::int64_t offset, std::int64_t size)
@@ -618,38 +560,6 @@ public:
         return _data;
     }
 
-    /*
-    * @Param0 attribute_name
-    * @Param1 attribute_index
-    * @Parma2 attribute_value
-    */
-    void update_instance_attributes(const std::vector<std::tuple<std::string, std::int32_t, const glsl_transparent_t_meta*>>& list)
-    {
-        std::int64_t _mapped_memory_offset = 0;
-        std::int64_t _mapped_memory_size = 0;
-        //std::vector<std::pair<std::int64_t, const glsl_transparent_class*>> _baked_list;
-
-        for (const auto& _item : list)
-        {
-            /*auto _it = _instance_attribute_layout.find(std::get<0>(_item));
-            if(_it == _instance_attribute_layout.cend()) return;
-            std::int64_t _instance_attribute_list_offset = _it->second.offset;
-            std::int64_t _instance_attribute_offset = _instance_attribute_list_offset + std::get<1>(_item) * std::get<2>(_item)->clazz()->class_size;
-            _baked_list.push_back(std::make_pair(_instance_attribute_offset, std::get<2>(_item)));*/
-        }
-
-        //if(_instance_attribute_buffer)
-        //{
-        //    // _instance_attribute_buffer->execute_mutable_memory_handler(_mapped_memory_offset, _mapped_memory_size, 
-        //    // [&_baked_list](std::uint8_t* mapped_memory, std::int64_t size)
-        //    // {
-        //    //     for(const auto& _item : _baked_list)
-        //    //     {
-        //    //         std::memcpy(mapped_memory + _item.first, _item.second->stream(), _item.second->stream_size());
-        //    //     }
-        //    // });
-        //}
-    }
 };
 
 #endif

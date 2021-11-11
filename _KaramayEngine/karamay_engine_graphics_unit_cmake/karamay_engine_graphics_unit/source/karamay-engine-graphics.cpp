@@ -368,7 +368,7 @@ void test0()
 
 	auto* window = new glfw_window();
 	window->load_context();
-	
+
 	std::cout << "GL_VERSION: " << glGetString(GL_VERSION) << std::endl;
 	glewInit();
 	glViewport(0, 0, window->get_framebuffer_width(), window->get_framebuffer_height());
@@ -383,7 +383,38 @@ void test0()
 	std::vector<glm::vec4> _raw_colors;
 	// indices
 
-	auto _Launcher = std::make_shared<VertexLauncher>(PrimitiveMode::TRIANGLES);
+	VertexArrayDescriptor _Desc;
+	_Desc.VerticesNum = 3;
+	_Desc.VertexDesc.AttributeDescriptors = {
+		{"Color", sizeof(glm::vec4), glm::vec4::length(), AttributeComponentType::FLOAT},
+		{"Position", sizeof(glm::vec3), glm::vec3::length(), AttributeComponentType::FLOAT},
+		{"UV", sizeof(glm::vec2), glm::vec2::length(), AttributeComponentType::FLOAT}
+	};
+
+	_Desc.InstancesNum = 10;
+	_Desc.InstanceAttributeDescs = {
+		{"InstancePositionOffset", sizeof(glm::vec3), glm::vec3::length(), AttributeComponentType::FLOAT, 10, 1}
+	};
+	VertexArray _VertexArray(_Desc);
+
+
+	struct VertexTest {
+		glm::vec4 Color;
+		glm::vec3 Position;
+		glm::vec2 UV;
+	};
+
+	std::vector<VertexTest> _Vertices = {
+		{glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec3(27.8f, 2.9f, 100.0f), glm::vec2(0.1f, 0.45f)},
+		{glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec3(27.8f, 2.9f, 100.0f), glm::vec2(0.1f, 0.45f)},
+		{glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec3(27.8f, 2.9f, 100.0f), glm::vec2(0.1f, 0.45f)}
+	};
+
+
+
+	_VertexArray.FillVertices(0, reinterpret_cast<const UInt8*>(_Vertices.data()), 3);
+	
+
 
 
 	// shader program
