@@ -166,7 +166,7 @@ public:
 
     void read(std::int64_t offset, std::int64_t data_size, void* out_data)
     {
-        if (offset < 0 || data_size < 0 || offset + data_size > size) return;
+        if (offset < 0 || data_size < 0 || offset + data_size > _Size) return;
 
         glGetNamedBufferSubData(_handle, offset, data_size, out_data);
     }
