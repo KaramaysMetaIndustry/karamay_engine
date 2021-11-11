@@ -22,22 +22,26 @@ public:
 		_Allocate(Size);
 	}
 
-	void Fill(UInt32 Offset, const UInt8* Data, UInt32 Size)
+	void Fill(UInt32 ByteOffset, const UInt8* BytesData, UInt32 BytesNum)
 	{
 		if (!_Buffer) return;
 
-		_Buffer->execute_mapped_memory_writer(Offset, Size, [=](std::uint8_t* data, std::int64_t size){
-			std::memcpy(data, Data, Size);
+		_Buffer->execute_mapped_memory_writer(ByteOffset, BytesNum, [=](std::uint8_t* data, std::int64_t size){
+			std::memcpy(data, BytesData, BytesNum);
 			});
 
-		_Buffer->execute_mapped_memory_reader(Offset, Size, [](const std::uint8_t* data, std::int64_t size) {
+		_Buffer->execute_mapped_memory_reader(ByteOffset, BytesNum, [](const std::uint8_t* data, std::int64_t size) {
 			const float* _Floats = reinterpret_cast<const float*>(data);
 			for (int i = 0; i < size / sizeof(float); ++i)
 			{
 				std::cout << _Floats[i] << std::endl;
 			}
-
 			});
+	}
+
+	const UInt8* Get(UInt8* ByteOffset, UInt32 BytesNum) const
+	{
+
 	}
 
 public:
@@ -66,7 +70,6 @@ private:
 		_options.is_map_coherent = false;
 		_options.is_map_persistent = false;
 		_Buffer = std::make_unique<gl_buffer>(_options, Size);
-
 	}
 
 };

@@ -225,7 +225,7 @@ public:
         }
 
         _InternalDescriptor.VertexDesc.VertexSize = _VertexSize;
-        _InternalDescriptor.VertexDesc.Buffer = new ArrayBuffer(_VertexSize * _InternalDescriptor.VerticesNum);
+        _InternalDescriptor.VertexDesc.Buffer = new ArrayBuffer(_InternalDescriptor.VerticesNum * _VertexSize);
         _AllocateVertices();
         
         // construct instance attribues
@@ -234,7 +234,7 @@ public:
             InternalInstanceAttributeDescriptor _InternalInstanceAttributeDesc;
             _InternalInstanceAttributeDesc.AttributeIndex = _AttributeIndex;
             _InternalInstanceAttributeDesc.InitialDesc = _InstanceAttributeDesc;
-            _InternalInstanceAttributeDesc.Buffer = new ArrayBuffer(_InstanceAttributeDesc.AttributeSize * _InstanceAttributeDesc.AttributesNum);
+            _InternalInstanceAttributeDesc.Buffer = new ArrayBuffer(_InstanceAttributeDesc.AttributesNum * _InstanceAttributeDesc.AttributeSize);
             _InternalDescriptor.InstanceAttributeDescs.push_back(_InternalInstanceAttributeDesc);
             _AllocateInstanceAttributes(_InternalInstanceAttributeDesc.AttributeIndex);
             

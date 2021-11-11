@@ -589,13 +589,6 @@ public:
         
     }
 
-public:
-    
-    void restart_primitive_index(std::uint32_t index)
-    {
-        glPrimitiveRestartIndex(index);
-    }
-
 private:
 
     void draw_arrays(std::int32_t vertex_index, std::int32_t vertices_count) noexcept
@@ -653,16 +646,10 @@ private:
     }
     void draw_elemnets_instanced_base_vertex(std::int32_t instances_count, std::int32_t base_vertex) {}
 
-    void draw_range_elements()
-    {
-        //glDrawRangeElements()
-    }
-
     void multi_draw_arrays()
     {
         //glMultiDrawArrays()
     }
-
     void mutl_draw_elements()
     {
         //glMultiDrawElements()

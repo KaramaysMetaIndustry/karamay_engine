@@ -23,33 +23,36 @@ enum class PrimitiveMode
 	PATCHES = GL_PATCHES
 };
 
+struct VertexLauncherDescriptor
+{
+	VertexArrayDescriptor VertexArrayDesc;
+	UInt32 IndicesNum;
+	UInt32 PrimitiveVerticesNum; // IndicesNum % PrimitiveVerticesNum == 0
+	PrimitiveMode Mode;
+};
 
 class VertexLauncher final 
 {
 public:
 
-	VertexLauncher(PrimitiveMode Mode) :
-		_PrimitiveMode(Mode),
+	VertexLauncher(const VertexLauncherDescriptor& Descriptor) :
+		_PrimitiveMode(Descriptor.Mode),
+		_PrimitiveVerticesNum(Descriptor.PrimitiveVerticesNum),
 		_VertexArray(nullptr), _ElementArrayBuffer(nullptr)
 	{
 		VertexArrayDescriptor _Desc;
-		_VertexArray = std::make_unique<VertexArray>(_Desc);
-		_ElementArrayBuffer = std::make_unique<ElementArrayBuffer>();
+		_VertexArray = new VertexArray(_Desc);
+		_ElementArrayBuffer = new ElementArrayBuffer();
 	}
 
 	VertexLauncher(const VertexLauncher&) = delete;
 	VertexLauncher& operator=(const VertexLauncher&) = delete;
 
 	~VertexLauncher()
-	{}
-
-private:
-
-	std::unique_ptr<VertexArray> _VertexArray;
-
-	std::unique_ptr<ElementArrayBuffer> _ElementArrayBuffer;
-	
-	PrimitiveMode _PrimitiveMode;
+	{
+		delete _VertexArray;
+		delete _ElementArrayBuffer;
+	}
 
 public:
 
@@ -61,20 +64,28 @@ public:
 
 public:
 
-	// you must describ a vertex size
+	// you must describe a vertex size
 	// you can only respecify a new VerticesNum, cause VertexSize, Layout can not be modified
 	// this action will consume quite time
 	void ReallocateVertices(UInt32 VerticesNum) noexcept
 	{
 		if (!_VertexArray) return;
+
 		_VertexArray->ReallocateVertices(VerticesNum);
 	}
 
 	// Offset unit is a Vertex Size
-	void FillVertices(UInt32 VertexOffset, const UInt8* Data, UInt32 VerticesNum) noexcept
+	void FillVertices(UInt32 VertexOffset, const UInt8* DataBytes, UInt32 VerticesNum) noexcept
 	{
 		if (!_VertexArray) return;
-		_VertexArray->FillVertices(VertexOffset, Data, VerticesNum);
+
+		_VertexArray->FillVertices(VertexOffset, DataBytes, VerticesNum);
+	}
+
+	// Get Vertices
+	const UInt8* GetVertices(UInt32 VertexOffset, UInt32 VerticesNum) const 
+	{
+		return nullptr;
 	}
 
 public:
@@ -83,6 +94,7 @@ public:
 	void ResetInstancesNum(UInt32 InstancesNum) noexcept
 	{
 		if (!_VertexArray) return;
+		
 		_VertexArray->ResetInstancesNum(InstancesNum);
 	}
 
@@ -90,15 +102,21 @@ public:
 	void ReallocateInstanceAttributes(UInt32 AttributeIndex, UInt32 InstanceAttributesNum, UInt32 Divisor) noexcept
 	{
 		if (!_VertexArray) return;
+		
 		_VertexArray->ReallocateInstanceAttributes(AttributeIndex, InstanceAttributesNum, Divisor);
 	}
 
 	// fill the instance attributes
-	// 
-	void FillInstanceAttributes(UInt32 AttributeIndex, UInt32 Offset, UInt8* Data, UInt32 InstanceAttributesNum) noexcept
+	void FillInstanceAttributes(UInt32 AttributeIndex, UInt32 InstanceAttributeOffset, UInt8* DataBytes, UInt32 InstanceAttributesNum) noexcept
 	{
 		if (!_VertexArray) return;
 
+		_VertexArray->FillInstanceAttributes(AttributeIndex, InstanceAttributeOffset, DataBytes, InstanceAttributesNum);
+	}
+
+	const UInt8* GetInstanceAttributes(UInt32 AttributeIndex, UInt32 InstanceAttributeOffset, UInt32 InstanceAttributesNum) const
+	{
+		return nullptr;
 	}
 
 public:
@@ -106,36 +124,75 @@ public:
 	// Indices only associates to PrimitiveMode
 	// PrimitiveMode will never change once lancher constructed
 	// IndicesNum % PrimitiveVerticesNum = 0
-	void ReallocateIndices(UInt32 IndicesNum)
+	void ReallocateIndices(UInt32 IndicesNum) noexcept
 	{
-		const UInt32 PrimitiveVerticesNum = 3;
-
 		if (!_ElementArrayBuffer) return;
-		if (IndicesNum % PrimitiveVerticesNum != 0) return;
+		if (IndicesNum % _PrimitiveVerticesNum != 0) return;
 		
 		_ElementArrayBuffer->Reallocate(IndicesNum);
 	}
 
-	void FillIndices(UInt32 Offset, const std::vector<UInt32>& Indices)
+	// Fill indices
+	void FillIndices(UInt32 IndexOffset, const UInt8* DataBytes, UInt32 IndicesNum)
 	{
 		if (!_ElementArrayBuffer) return;
 		
-		_ElementArrayBuffer->Fill(Offset, Indices);
+		//_ElementArrayBuffer->Fill(IndexOffset, Indices);
+	}
+
+	// Get indices data bytes
+	const UInt8* GetIndices(UInt32 IndexOffset, UInt32 IndicesNum) const 
+	{
+		return nullptr;
 	}
 
 public:
 
-	void Bind() noexcept
+	void Bind() const noexcept
 	{
 		_VertexArray->Bind();
 		_ElementArrayBuffer->Bind();
 	}
 
-	void Unbind() noexcept
+	void Unbind() const noexcept
 	{
 		_VertexArray->Unbind();
 		_ElementArrayBuffer->Unbind();
 	}
+
+public:
+
+	void DrawArrays(UInt32 VertexOffset, UInt32 VerticesNum, UInt32 InstancesNum, UInt32 InstanceOffset) const
+	{
+		glDrawArraysInstancedBaseInstance(static_cast<GLenum>(_PrimitiveMode), VertexOffset, VerticesNum, InstancesNum, InstanceOffset);
+	}
+
+	void DrawIndices(UInt32 InstancesNum, UInt32 VertexOffset, UInt32 InstanceOffset) const
+	{
+		glDrawElementsInstancedBaseVertexBaseInstance(static_cast<GLenum>(_PrimitiveMode), _PrimitiveVerticesNum, GL_UNSIGNED_INT, nullptr, InstancesNum, VertexOffset, InstanceOffset);
+	}
+
+	void DrawRangeIndices(UInt32 IndexOffset, UInt32 IndicesNum)
+	{
+		//glDrawRangeElementsBaseVertex(static_cast<GLenum>(_PrimitiveMode), IndexOffset, I)
+	}
+
+	void RestartPrimitiveIndex(UInt32 Index) const
+	{
+		glEnable(GL_PRIMITIVE_RESTART);
+		glPrimitiveRestartIndex(Index);
+		glDisable(GL_PRIMITIVE_RESTART);
+	}
+
+private:
+
+	VertexArray* _VertexArray;
+
+	ElementArrayBuffer* _ElementArrayBuffer;
+
+	PrimitiveMode _PrimitiveMode;
+
+	UInt32 _PrimitiveVerticesNum;
 
 };
 
