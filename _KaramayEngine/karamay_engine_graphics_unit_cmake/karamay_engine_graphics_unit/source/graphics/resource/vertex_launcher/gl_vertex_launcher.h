@@ -31,10 +31,10 @@ struct VertexLauncherDescriptor
 	PrimitiveMode Mode;
 };
 
-class VertexLauncher final 
+class VertexLauncher 
 {
 public:
-
+	VertexLauncher() {}
 	VertexLauncher(const VertexLauncherDescriptor& Descriptor) :
 		_PrimitiveMode(Descriptor.Mode),
 		_PrimitiveVerticesNum(Descriptor.PrimitiveVerticesNum),
@@ -133,7 +133,7 @@ public:
 	}
 
 	// Fill indices
-	void FillIndices(UInt32 IndexOffset, const UInt8* DataBytes, UInt32 IndicesNum)
+	void FillIndices(UInt32 IndexOffset, const UInt8* DataBytes, UInt32 IndicesNum) noexcept
 	{
 		if (!_ElementArrayBuffer) return;
 		
@@ -141,7 +141,7 @@ public:
 	}
 
 	// Get indices data bytes
-	const UInt8* GetIndices(UInt32 IndexOffset, UInt32 IndicesNum) const 
+	const UInt8* GetIndices(UInt32 IndexOffset, UInt32 IndicesNum) const noexcept
 	{
 		return nullptr;
 	}
@@ -193,6 +193,22 @@ private:
 	PrimitiveMode _PrimitiveMode;
 
 	UInt32 _PrimitiveVerticesNum;
+
+};
+
+
+template<typename VertexT, typename IndexT>
+class VertexLauncherProxy : protected VertexLauncher
+{
+
+public:
+
+	VertexLauncherProxy() {}
+
+	void FillVertices(UInt32 VertexOffset, const std::vector<VertexT>& Vertices) 
+	{
+		VertexLauncher::FillVertices(VertexOffset, Vertices.data(), Vertices.size());
+	}
 
 };
 

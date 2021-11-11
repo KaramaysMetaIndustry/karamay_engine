@@ -185,7 +185,7 @@ struct VertexArrayDescriptor
 };
 
 /*
- * Dynamic Storage : if required capacity is not enough,
+ * Dynamic Storage :
  *
  * [          ] [vertex*] [vertex*] [vertex*] [vertex*]
  * 
@@ -193,8 +193,6 @@ struct VertexArrayDescriptor
  * 
  * [InstanceAttribute*] [       ] [       ] [      ] [.......]
  * 
- *
- * Store Vertex Attributes & Instance Attributes
  *
  * */
 class VertexArray final : public gl_object {
@@ -208,7 +206,7 @@ public:
         _InternalDescriptor.InstancesNum = Descriptor.InstancesNum;
         _InternalDescriptor.VerticesNum = Descriptor.VerticesNum;
         
-        // attribute index
+        // allocate attribute indices
         UInt32 _AttributeIndex = 0;
 
         // construct internal vertex descriptor
@@ -240,7 +238,6 @@ public:
             
             ++_AttributeIndex;
         }
-
     }
 
     VertexArray(const VertexArray&) = delete;
@@ -287,6 +284,7 @@ public:
    
     /*
     * so this func properly cause performance degradation
+    * @VerticesNum(UInt32) : num of vertices you want to reallocate memory for, if it is the same as old num, just return.
     */
     void ReallocateVertices(UInt32 VerticesNum) noexcept
     {
@@ -297,7 +295,9 @@ public:
 
     /*
     * VertexOffset + VerticesNum <= _InternalDescriptor.VerticesNum - 1
-    * 
+    * @VertexOffset(UInt32) : 
+    * @Data(const UInt8*) :
+    * @VerticesNum(UInt32) :
     */
     void FillVertices(UInt32 VertexOffset, const UInt8* Data, UInt32 VerticesNum) noexcept
     {
@@ -307,6 +307,11 @@ public:
 
         const UInt32 _VertexSize = _InternalDescriptor.VertexDesc.VertexSize;
         _VertexBuffer->Fill(VertexOffset * _VertexSize, Data, VerticesNum * _VertexSize);
+    }
+
+    void HandleMappedVertices(UInt32 VertexOffset, UInt32 VerticesNum, const std::function<void(UInt8* MappedVertices, UInt32 VerticesNum)>& Handler)
+    {
+
     }
 
 public:
@@ -333,11 +338,15 @@ public:
         _AllocateInstanceAttributes(AttributeIndex);
     }
 
-    void FillInstanceAttributes(UInt32 AttributeIndex, UInt32 AttributeOffset, const UInt8* Data, UInt32 AttributesNum)
+    void FillInstanceAttributes(const std::string& InstanceAttributeName, UInt32 AttributeOffset, const UInt8* Data, UInt32 AttributesNum)
     {
         if (!Data) return;
+        Int32 AttributeIndex = GetVertexAttributeIndex(InstanceAttributeName);
+        if (AttributeIndex == -1) return;
+        
         const auto* _InstanceAttributeDesc = _FindInstanceAttributeDescriptor(AttributeIndex);
         if (!_InstanceAttributeDesc || _InstanceAttributeDesc->Buffer) return;
+
         _InstanceAttributeDesc->Buffer->Fill(
             AttributeOffset * _InstanceAttributeDesc->InitialDesc.AttributeSize,
             Data, 
@@ -345,16 +354,27 @@ public:
         );
     }
 
+    /*
+    * @AttributeIndex(UInt32) : Index the InstanceAttribute
+    * @AttributeOffset(UInt32) : 
+    * @AttributesNum(UInt32) :
+    * @Handler(const std::function<void(UInt8* MappedInstanceAttributes, UInt32 MappedInstancesAttributesNum)>&) : Memory Handler
+    */
+    void HandleMappedInstanceAttributes(UInt32 AttributeIndex, UInt32 AttributeOffset, UInt32 AttributesNum, const std::function<void(UInt8* MappedInstanceAttributes, UInt32 MappedInstancesAttributesNum)>& Handler)
+    {
+
+    }
+
 public:
 
     /*
     * if return -1, not exist
     */
-    Int32 GetVertexAttributeIndex(const std::string& Name) const 
+    Int32 GetVertexAttributeIndex(const std::string& VertexAttributeName) const 
     {
         for (const auto& _AttributeDesc : _InternalDescriptor.VertexDesc.AttributeDescs)
         {
-            if (_AttributeDesc.InitialDesc.AttributeName == Name) return _AttributeDesc.AttributeIndex;
+            if (_AttributeDesc.InitialDesc.AttributeName == VertexAttributeName) return _AttributeDesc.AttributeIndex;
         }
         return -1;
     }
@@ -440,6 +460,7 @@ private:
         Unbind();
     }
 
+    // allocate all instance attributes can only be used once
     void _AllocateInstanceAttributes(UInt32 AttributeIndex)
     {
         auto* _InstanceAttributeDesc = _FindInstanceAttributeDescriptor(AttributeIndex);

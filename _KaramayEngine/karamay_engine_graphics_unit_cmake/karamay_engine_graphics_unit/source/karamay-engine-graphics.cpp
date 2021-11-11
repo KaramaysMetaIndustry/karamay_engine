@@ -410,8 +410,6 @@ void test0()
 		{glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec3(27.8f, 2.9f, 100.0f), glm::vec2(0.1f, 0.45f)}
 	};
 
-
-
 	_VertexArray.FillVertices(0, reinterpret_cast<const UInt8*>(_Vertices.data()), 3);
 	
 
