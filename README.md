@@ -1,18 +1,14 @@
 # Karamays
 
-**The Karamays provide a whole solution for cloud gaming.**
+**Pipelines for OpenGL 4.6**
 
-## KaramayEngine
+**Cloud Graphics Engine Solution**
 
-cd _KaramayEngine
-
-
+**Hardware Optimized**
 
 
 
 
 
-## KaramayEngineShell
 
-cd _KaramayEngineShell
 
