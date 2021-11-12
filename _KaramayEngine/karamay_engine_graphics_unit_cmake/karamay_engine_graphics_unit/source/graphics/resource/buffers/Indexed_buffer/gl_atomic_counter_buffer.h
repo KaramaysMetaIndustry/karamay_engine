@@ -37,12 +37,12 @@ public:
         }
 
         // generate buffer
-        gl_buffer_storage_options _options{};
-        _buffer = std::make_unique<gl_buffer>(_options, _initialization_size);
+        BufferStorageOptions _Options{};
+        _buffer = std::make_unique<Buffer>(_Options, _initialization_size);
         if(_buffer) return;
 
         // upload data
-        _buffer->execute_mapped_memory_writer(
+        _buffer->ExecuteMappedMemoryWriter(
                 0,
                 _initialization_size,
                 [this](std::uint8_t* data, std::int64_t size)
@@ -89,7 +89,7 @@ public:
         {
             if(_layout.atomic_counter && _layout.atomic_counter->dirty)
             {
-                _buffer->execute_mapped_memory_writer(
+                _buffer->ExecuteMappedMemoryWriter(
                         _layout.offset,
                         4,
                         [_layout](std::uint8_t* data, std::int64_t size){
@@ -107,7 +107,7 @@ public:
         {
             if(_layout.atomic_counter && _layout.atomic_counter->dirty)
             {
-                _buffer->execute_mapped_memory_reader(
+                _buffer->ExecuteMappedMemoryReader(
                         _layout.offset,
                         4,
                         [_layout](const std::uint8_t* data, std::int64_t size){
@@ -119,7 +119,7 @@ public:
 
 private:
 
-    std::unique_ptr<gl_buffer> _buffer;
+    std::unique_ptr<Buffer> _buffer;
 
     std::vector<gl_atomic_counter_layout> _layouts;
 

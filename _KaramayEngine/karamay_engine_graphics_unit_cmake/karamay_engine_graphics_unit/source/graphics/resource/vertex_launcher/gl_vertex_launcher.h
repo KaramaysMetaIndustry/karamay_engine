@@ -111,7 +111,7 @@ public:
 	{
 		if (!_VertexArray) return;
 
-		_VertexArray->FillInstanceAttributes(AttributeIndex, InstanceAttributeOffset, DataBytes, InstanceAttributesNum);
+		_VertexArray->FillInstanceAttributes("", InstanceAttributeOffset, DataBytes, InstanceAttributesNum);
 	}
 
 	const UInt8* GetInstanceAttributes(UInt32 AttributeIndex, UInt32 InstanceAttributeOffset, UInt32 InstanceAttributesNum) const

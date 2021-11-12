@@ -43,12 +43,12 @@ public:
         }
 
         // create buffer
-        gl_buffer_storage_options _options{};
-        _buffer = std::make_unique<gl_buffer>(_options, _initialization_size);
+        BufferStorageOptions _Options{};
+        _buffer = std::make_unique<Buffer>(_Options, _initialization_size);
         if(!_buffer) return;
 
         // upload data
-        _buffer->execute_mapped_memory_writer(
+        _buffer->ExecuteMappedMemoryWriter(
                 0,
                 _initialization_size,
                 [this](std::uint8_t* data, std::int64_t size){
@@ -100,7 +100,7 @@ public:
             if(_layout.block && _layout.block->is_dirty)
             {
                 if(!_layout.block->data()) return;
-                _buffer->write(_layout.offset, _layout.block->data(), _layout.block->size());
+                _buffer->Write(_layout.offset, _layout.block->data(), _layout.block->size());
                 _layout.block->is_dirty = false;
             }
         }
@@ -110,9 +110,9 @@ public:
     {
         if(!_buffer) return;
 
-        _buffer->execute_mapped_memory_reader(
+        _buffer->ExecuteMappedMemoryReader(
                 0,
-                _buffer->size,
+                _buffer->GetBytesNum(),
                 [this](const uint8_t* data, std::int64_t size){
                     for(const auto& _layout : _layouts)
                     {
@@ -123,7 +123,7 @@ public:
 
 private:
 
-    std::unique_ptr<gl_buffer> _buffer;
+    std::unique_ptr<Buffer> _buffer;
 
     std::vector<gl_shader_storage_block_layout> _layouts;
 

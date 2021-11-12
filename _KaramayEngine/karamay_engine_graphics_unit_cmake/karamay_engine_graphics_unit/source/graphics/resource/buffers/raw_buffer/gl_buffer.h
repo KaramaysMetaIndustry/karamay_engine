@@ -166,7 +166,7 @@ public:
 
     const void* Read(Int64 ByteOffset, Int64 BytesNum)
     {
-        if (ByteOffset < 0 || BytesNum < 0 || ByteOffset + BytesNum > _Size) return;
+        if (ByteOffset < 0 || BytesNum < 0 || ByteOffset + BytesNum > _Size) return nullptr;
         void* _OutData = nullptr;
         glGetNamedBufferSubData(_handle, ByteOffset, BytesNum, _OutData);
         return _OutData;
@@ -241,9 +241,6 @@ public:
 
 public:
 
-    /*
-    * 
-    */
     void Clear(Int64 ByteOffset, const UInt8* Mask, Int64 BytesNum)
     {
         /*if (!data) return;
@@ -258,11 +255,17 @@ public:
      * You must sacrifice some flexibility to get rapid filling.
      * capacity % sizeof (data_mask) == 0
      * */
-    static void Copy(Buffer* Dest, Int64 DestByteOffset, Buffer* Src, Int64 SrcByteOffset, Int64 BytesNum)
+    static void Copy(const Buffer* Dest, Int64 DestByteOffset, const Buffer* Src, Int64 SrcByteOffset, Int64 BytesNum)
     {
         if (!Dest || !Src) return;
         glCopyNamedBufferSubData(Src->get_handle(), Dest->get_handle(), SrcByteOffset, DestByteOffset, BytesNum);
-    }    
+    }
+
+
+    Int64 GetBytesNum() const
+    {
+        return _Size;
+    }
 
 private:
 
@@ -324,11 +327,6 @@ private:
 
     const static std::int64_t BUFFER_AVAILABLE_MAX_CAPACITY;
 
-};
-
-class gl_dynamic_buffer final : public gl_object{
-public:
-    gl_dynamic_buffer() = default;
 };
 
 

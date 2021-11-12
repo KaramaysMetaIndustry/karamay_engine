@@ -447,47 +447,6 @@ void test0()
 
 
 
-
-	gl_buffer_storage_options _options;
-	_options.is_client_storage = false; // backing storage in client or server, server will be more fast
-	_options.is_dynamic_storage = false; // allow client directly send data to gpu
-	_options.is_map_read = true; // allow mapfunc read
-	_options.is_map_write = true; // allow mapfunc write
-	_options.is_map_coherent = false;
-	_options.is_map_persistent = false;
-
-	const std::int64_t _size = sizeof(glsl_vec4) * 10;
-	gl_buffer _buffer{ _options, _size };
-
-	_buffer.execute_mapped_memory_writer(0, _size, [](std::uint8_t* data, std::int64_t size) {
-		glm::vec4* _data = reinterpret_cast<glm::vec4*>(data);
-		std::int64_t _size = size / sizeof(glm::vec4);
-		if (!data || size < 0) return;
-
-		for (std::int32_t _idx = 0; _idx < _size; ++_idx)
-		{
-			std::cout << "add" << std::endl;
-			_data[_idx] = glm::vec4(1.0f, 1.2f, 1.3f,1.11f);
-		}
-		});
-
-	glm::vec4 a(0.0f);
-	//_buffer.write(0, reinterpret_cast<const std::uint8_t*>(&a), sizeof glm::vec4);
-	//_buffer.read(0, sizeof(glm::vec4), &a);
-	//std::cout << "direct get: " << a.x << ", " << a.y << ", " << a.z << ", " << a.w << std::endl;
-
-	_buffer.execute_mapped_memory_reader(0, _size, [](const std::uint8_t* data, std::int64_t size) {
-		const glm::vec4* _data = reinterpret_cast<const glm::vec4*>(data);
-		std::int64_t _size = size / sizeof(glm::vec4);
-		if (!data || size < 0) return;
-
-		for (std::int32_t _idx = 0; _idx < _size; ++_idx)
-		{
-			std::cout << _data[_idx].x << ", " << _data[_idx].y << ", " << _data[_idx].z << ", " << _data[_idx].w << std::endl;
-		}
-		});
-
-
 //	std::vector<glv::f32vec3> positions{
 //		glv::f32vec3(0.5f, 0.5f, 0.0f), //0
 //		glv::f32vec3(0.5f, -0.5f, 0.0f), //1

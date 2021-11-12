@@ -41,7 +41,7 @@ private:
 
     UInt32 _Binding;
 
-    std::unique_ptr<gl_buffer> _buffer;
+    std::unique_ptr<Buffer> _buffer;
 
 };
 

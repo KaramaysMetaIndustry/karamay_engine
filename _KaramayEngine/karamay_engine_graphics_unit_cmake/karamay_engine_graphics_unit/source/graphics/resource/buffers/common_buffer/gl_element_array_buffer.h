@@ -34,8 +34,6 @@ public:
     {
         if (!_Buffer) return;
         if (Offset + Indices.size() > _IndicesNum) return;
-
-        //_Buffer->execute_mapped_memory_writer()
         
     }
 
@@ -46,14 +44,12 @@ public:
     void Bind() const noexcept
     {
         if(!_Buffer) return;
-
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _Buffer->get_handle());
     }
 
     void Unbind() const noexcept
     {
         if(!_Buffer) return;
-
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
@@ -61,18 +57,18 @@ private:
 
     UInt32 _IndicesNum;
 
-    std::unique_ptr<gl_buffer> _Buffer;
+    std::unique_ptr<Buffer> _Buffer;
 
     void _Allocate(Int64 Size)
     {
-        gl_buffer_storage_options _options;
-        _options.is_client_storage = false;
-        _options.is_dynamic_storage = true;
-        _options.is_map_read = true;
-        _options.is_map_write = true;
-        _options.is_map_coherent = false;
-        _options.is_map_persistent = false;
-        _Buffer = std::make_unique<gl_buffer>(_options, Size);
+        BufferStorageOptions _Options;
+        _Options.ClientStorage = false;
+        _Options.DynamicStorage = true;
+        _Options.MapRead = true;
+        _Options.MapWrite = true;
+        _Options.MapCoherent = false;
+        _Options.MapPersistent = false;
+        _Buffer = std::make_unique<Buffer>(_Options, Size);
     }
 
 };

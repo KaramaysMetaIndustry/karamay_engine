@@ -3,7 +3,7 @@
 
 #include "graphics/resource/buffers/raw_buffer/gl_buffer.h"
 
-class gl_query_buffer
+class QueryBuffer
 {
 
 };

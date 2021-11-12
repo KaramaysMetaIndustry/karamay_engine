@@ -1282,7 +1282,7 @@ public:
 	~gl_texture_buffer() override = default;
 
 public:
-	void associate(const std::shared_ptr<gl_buffer>& buffer) noexcept
+	void associate(const std::shared_ptr<Buffer>& buffer) noexcept
 	{
 		if (!buffer) return;
 
@@ -1297,7 +1297,7 @@ public:
      * try to associate with a range of buffer
      *
      */
-	void associate(const std::shared_ptr<gl_buffer>& buffer, std::int32_t offset, std::int32_t length) noexcept
+	void associate(const std::shared_ptr<Buffer>& buffer, std::int32_t offset, std::int32_t length) noexcept
 	{
 
         glTextureBufferRange(_handle,
