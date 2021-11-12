@@ -7,14 +7,14 @@ class ArrayBuffer final
 {
 public:
 
-	ArrayBuffer(Int64 BytesNum)
-	{
-		_Allocate(BytesNum, nullptr);
-	}
-
-	ArrayBuffer(Int64 BytesNum, const UInt8* InitializationBytes)
+	ArrayBuffer(Int64 BytesNum, const UInt8* InitializationBytes = nullptr)
 	{
 		_Allocate(BytesNum, InitializationBytes);
+	}
+
+	ArrayBuffer(Int64 ElementSize, Int64 ElementsNum)
+	{
+		//_Allocate(BytesNum, InitializationBytes);
 	}
 
 	ArrayBuffer(const ArrayBuffer&) = delete;
@@ -29,7 +29,9 @@ public:
 		_Allocate(BytesNum, InitializationBytes);
 	}
 
-	void Fill(UInt32 ByteOffset, const UInt8* Bytes, UInt32 BytesNum)
+public:
+
+	void Write(UInt32 ByteOffset, const UInt8* Bytes, UInt32 BytesNum)
 	{
 		if (!_Buffer) return;
 
@@ -50,6 +52,11 @@ public:
 				}
 			}
 		);
+	}
+
+	const void* Read(Int64 ByteOffset, Int64 BytesNum)
+	{
+		return _Buffer ? _Buffer->Read(ByteOffset, BytesNum) : nullptr;
 	}
 
 public:

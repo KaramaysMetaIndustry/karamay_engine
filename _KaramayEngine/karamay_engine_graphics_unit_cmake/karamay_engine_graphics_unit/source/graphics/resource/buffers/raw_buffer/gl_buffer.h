@@ -197,6 +197,7 @@ public:
     using MappedMemoryHandler = std::function<void(UInt8*, Int64)>;
 
     /*
+    * Server -> Client : Client -> Server
     * advised for dispersed filling
      * execute a handler(which can read/write) on mapped memory (specified by offset and size)
      * mapped memory has valid content which come from GPU memory
@@ -217,6 +218,7 @@ public:
     using MappedMemoryWriter = std::function<void(UInt8*, Int64)>;
 
     /*
+    * Client -> Server
      * map a block of mutable memory, advised for whole block filling
      * then execute a handler you specified
      * @offset : mapped memory' offset to whole buffer
@@ -239,6 +241,7 @@ public:
     using MappedMemoryReader = std::function<void(const UInt8*, Int64)>;
 
     /*
+    * Server -> Client
     * advised for whole block reading
      * map a block of immutable memory
      * then execute a handler you specified (can not do any modification)

@@ -147,7 +147,27 @@ struct glsl_transparent_t_meta
     {}
 };
 
-enum class glsl_tranparent_type
+
+
+
+struct glsl_transparent_clazz
+{
+    
+};
+
+/*
+ * glsl transparent type
+ *
+ * */
+class glsl_transparent_t : public glsl_t{
+public:
+    virtual std::uint8_t* data();
+	virtual const std::uint8_t* data() const;
+	virtual const std::int64_t size() const;
+};
+
+
+enum class glsl_transparent_type
 {
     FLOAT = GL_FLOAT,
     FLOAT_VEC2 = GL_FLOAT_VEC2,
@@ -195,29 +215,11 @@ enum class glsl_tranparent_type
     DOUBLE_MAT4x3 = GL_DOUBLE_MAT4x3,
 };
 
-enum class glsl_transparent_component_type 
-{};
-
-
-struct glsl_transparent_clazz
+enum class glsl_transparent_component_type
 {
-    std::int32_t components_num;
-    glsl_tranparent_type type;
-    glsl_transparent_component_type component_type;
-    std::int32_t size;
-    std::int32_t component_size;
+
 };
 
-/*
- * glsl transparent type
- *
- * */
-class glsl_transparent_t : public glsl_t{
-public:
-    virtual std::uint8_t* data();
-	[[nodiscard]] virtual const std::uint8_t* data() const;
-	[[nodiscard]] virtual const std::int64_t size() const;
-};
 
 
 #define TOKEN_STR(__TOKEN__) #__TOKEN__

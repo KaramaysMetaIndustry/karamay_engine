@@ -8,11 +8,12 @@
 class TransformFeedback final : public gl_object{
 public:
 	TransformFeedback() = delete;
-	explicit TransformFeedback(const std::vector<std::string>& Varings) :
+	TransformFeedback(const std::vector<std::string>& Varings, UInt32 AcceptDataFrom) :
 		gl_object(gl_object_type::TRANSFORM_FEEDBACK_OBJ)
 	{
 		glCreateTransformFeedbacks(1, &_handle);
 	}
+
 	TransformFeedback(const TransformFeedback&) = delete;
 	TransformFeedback& operator=(const TransformFeedback&) = delete;
 
@@ -30,8 +31,8 @@ public:
 
 	void Unbind() const noexcept
 	{
-		//GLint handle;
-		//glGetIntegerv(GL_TRANSFORM_FEEDBACK_BINDING, &handle);
+		GLint handle;
+		glGetIntegerv(GL_TRANSFORM_FEEDBACK_BINDING, &handle);
 		glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
 	}
 
@@ -57,11 +58,16 @@ private:
 	
 	const std::vector<std::string> _Varyings;
 
-	std::vector<TransformFeedbackBuffer> _TransformFeedbackBuffers;
+	std::vector<UniquePtr<TransformFeedbackBuffer>> _TransformFeedbackBuffers;
 
 	void _Allocate()
 	{
 
+		for (const auto& _TransformFeedbackBuffer : _TransformFeedbackBuffers)
+		{
+			//glBindBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 0, 0, 1024);
+			glTransformFeedbackBufferRange(_handle, 0, 1, 0, 1024);
+		}
 	}
 
 	void _AssociateBuffer()

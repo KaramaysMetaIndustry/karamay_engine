@@ -8,10 +8,7 @@ struct gl_uniform_buffer_descriptor{
     std::vector<std::shared_ptr<glsl_uniform_block_t>> uniform_blocks;
 };
 
-/*
- * 不关心 block 自身的 layout
- * 关于 block 内存布局的问题应该在传入 buffer 之前处理好
- * */
+
 class gl_uniform_buffer final{
 public:
     struct gl_uniform_buffer_block_layout{

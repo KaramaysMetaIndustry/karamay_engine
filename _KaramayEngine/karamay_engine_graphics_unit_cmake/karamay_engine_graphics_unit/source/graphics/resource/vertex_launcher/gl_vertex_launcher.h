@@ -69,7 +69,6 @@ public:
 	void ReallocateVertexSlot(UInt32 VerticesNum) noexcept
 	{
 		if (!_VertexArray) return;
-
 		_VertexArray->ReallocateVertices(VerticesNum);
 	}
 
@@ -197,7 +196,6 @@ private:
 template<typename VertexT, typename IndexT>
 class VertexLauncherProxy : protected VertexLauncher
 {
-
 public:
 
 	VertexLauncherProxy() {}
