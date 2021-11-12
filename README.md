@@ -1,11 +1,10 @@
 # Karamays
 
-**Pipelines for OpenGL 4.6**
-
-**Cloud Graphics Engine Solution**
+**Graphics/Compute Pipelines for OpenGL 4.6**
 
 **Hardware Optimized**
 
+**Cloud Graphics Engine Solution**
 
 
 https://www.khronos.org/opengl/wiki/
