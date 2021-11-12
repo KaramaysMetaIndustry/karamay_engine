@@ -130,8 +130,8 @@ struct gl_buffer_map_access_options
 */
 class Buffer : public gl_object{
 public:
-    Buffer() = delete;
-    explicit Buffer(BufferStorageOptions StorageOptions, Int64 Size) :
+    
+    Buffer(BufferStorageOptions StorageOptions, Int64 Size) :
         gl_object(gl_object_type::BUFFER_OBJ),
         _StorageOptions(StorageOptions), _Size(Size)
     {
@@ -155,20 +155,21 @@ public:
     /*
     * write byte stream into buffer, this operation will affect GPU memory immediately
     */
-    void write(std::int64_t offset, const std::uint8_t* data, std::int64_t data_size)
+    void Write(Int64 BytesOffset, const UInt8* Bytes, Int64 BytesNum)
     {
         if (!_StorageOptions.DynamicStorage) return; // 
-        if (!data) return;
-        if (offset < 0 || data_size < 0 || offset + data_size > _Size) return;
+        if (!Bytes) return;
+        if (BytesOffset < 0 || BytesNum < 0 || BytesOffset + BytesNum > _Size) return;
 
-        glNamedBufferSubData(_handle, offset, data_size, data);
+        glNamedBufferSubData(_handle, BytesOffset, BytesNum, Bytes);
     }
 
-    void read(std::int64_t offset, std::int64_t data_size, void* out_data)
+    const void* Read(Int64 ByteOffset, Int64 BytesNum)
     {
-        if (offset < 0 || data_size < 0 || offset + data_size > _Size) return;
-
-        glGetNamedBufferSubData(_handle, offset, data_size, out_data);
+        if (ByteOffset < 0 || BytesNum < 0 || ByteOffset + BytesNum > _Size) return;
+        void* _OutData = nullptr;
+        glGetNamedBufferSubData(_handle, ByteOffset, BytesNum, _OutData);
+        return _OutData;
     }
 
 public:
@@ -257,12 +258,10 @@ public:
      * You must sacrifice some flexibility to get rapid filling.
      * capacity % sizeof (data_mask) == 0
      * */
-    void copy(std::int64_t offset, const std::shared_ptr<Buffer>& source, std::int64_t source_offset, std::int64_t data_size)
+    static void Copy(Buffer* Dest, Int64 DestByteOffset, Buffer* Src, Int64 SrcByteOffset, Int64 BytesNum)
     {
-        if (!source) return;
-        if (offset < 0 || source_offset < 0 || data_size < 0 || offset + data_size > size || source_offset + data_size > source->size) return;
-
-        glCopyNamedBufferSubData(source->get_handle(), _handle, source_offset, offset, data_size);
+        if (!Dest || !Src) return;
+        glCopyNamedBufferSubData(Src->get_handle(), Dest->get_handle(), SrcByteOffset, DestByteOffset, BytesNum);
     }    
 
 private:

@@ -7,42 +7,47 @@ class ArrayBuffer final
 {
 public:
 
-	ArrayBuffer(Int64 Size)
+	ArrayBuffer(Int64 BytesNum)
 	{
-		_Allocate(Size);
+		_Allocate(BytesNum);
 	}
 
-	~ArrayBuffer() 
-	{}
+	ArrayBuffer(const ArrayBuffer&) = delete;
+	ArrayBuffer& operator=(const ArrayBuffer&) = delete;
+
+	~ArrayBuffer() {}
 
 public:
 
-	void Reallocate(Int64 Size)
+	void Reallocate(Int64 BytesNum)
 	{
-		_Allocate(Size);
+		_Allocate(BytesNum);
 	}
 
 	void Fill(UInt32 ByteOffset, const UInt8* BytesData, UInt32 BytesNum)
 	{
 		if (!_Buffer) return;
 
-		_Buffer->execute_mapped_memory_writer(ByteOffset, BytesNum, [=](std::uint8_t* data, std::int64_t size){
-			std::memcpy(data, BytesData, BytesNum);
-			});
-
-		_Buffer->execute_mapped_memory_reader(ByteOffset, BytesNum, [](const std::uint8_t* data, std::int64_t size) {
-			const float* _Floats = reinterpret_cast<const float*>(data);
-			for (int i = 0; i < size / sizeof(float); ++i)
+		_Buffer->ExecuteMappedMemoryWriter(ByteOffset, BytesNum, 
+			[=](std::uint8_t* data, std::int64_t size)
 			{
-				std::cout << _Floats[i] << std::endl;
+				std::memcpy(data, BytesData, BytesNum);
 			}
-			});
+		);
+
+		_Buffer->ExecuteMappedMemoryReader(ByteOffset, BytesNum, 
+			[](const std::uint8_t* data, std::int64_t size) 
+			{
+				const float* _Floats = reinterpret_cast<const float*>(data);
+				for (int i = 0; i < size / sizeof(float); ++i)
+				{
+					std::cout << _Floats[i] << std::endl;
+				}
+			}
+		);
 	}
 
-	const UInt8* Get(UInt8* ByteOffset, UInt32 BytesNum) const
-	{
 
-	}
 
 public:
 
@@ -58,18 +63,18 @@ public:
 
 private:
 
-	std::unique_ptr<gl_buffer> _Buffer;
+	std::unique_ptr<Buffer> _Buffer;
 
 	void _Allocate(Int64 Size)
 	{
-		gl_buffer_storage_options _options;
-		_options.is_client_storage = false;
-		_options.is_dynamic_storage = true;
-		_options.is_map_read = true;
-		_options.is_map_write = true;
-		_options.is_map_coherent = false;
-		_options.is_map_persistent = false;
-		_Buffer = std::make_unique<gl_buffer>(_options, Size);
+		BufferStorageOptions _Options;
+		_Options.ClientStorage = false;
+		_Options.DynamicStorage = true;
+		_Options.MapRead = true;
+		_Options.MapWrite = true;
+		_Options.MapCoherent = false;
+		_Options.MapPersistent = false;
+		_Buffer = std::make_unique<Buffer>(_Options, Size);
 	}
 
 };
