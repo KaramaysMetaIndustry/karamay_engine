@@ -40,5 +40,14 @@ using Int16 = std::int16_t;
 using Int32 = std::int32_t;
 using Int64 = std::int64_t;
 
+template<class _Ty>
+using SharedPtr = std::shared_ptr<_Ty>;
+
+template<class _Ty>
+using WeakPtr = std::weak_ptr<_Ty>;
+
+template<class _Ty>
+using UniquePtr = std::unique_ptr<_Ty>;
+
 
 #endif

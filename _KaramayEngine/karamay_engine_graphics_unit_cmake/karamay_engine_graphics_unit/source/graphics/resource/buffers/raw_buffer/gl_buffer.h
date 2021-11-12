@@ -133,14 +133,27 @@ public:
     
     Buffer(BufferStorageOptions StorageOptions, Int64 Size) :
         gl_object(gl_object_type::BUFFER_OBJ),
-        _StorageOptions(StorageOptions), _Size(Size)
+        _StorageOptions(StorageOptions), _BytesNum(Size)
     {
         glCreateBuffers(1, &_handle);
         if (_handle != 0)
         {
-            glNamedBufferStorage(_handle, _Size, nullptr, _StorageOptions.Bitfield());
+            glNamedBufferStorage(_handle, _BytesNum, nullptr, _StorageOptions.Bitfield());
+        }
+
+    }
+
+    Buffer(BufferStorageOptions StorageOptions, Int64 Size, const UInt8* InitializationBytes) :
+        gl_object(gl_object_type::BUFFER_OBJ),
+        _StorageOptions(StorageOptions), _BytesNum(Size)
+    {
+        glCreateBuffers(1, &_handle);
+        if (_handle != 0)
+        {
+            glNamedBufferStorage(_handle, _BytesNum, InitializationBytes, _StorageOptions.Bitfield());
         }
     }
+        
     
     Buffer(const Buffer&) = delete;
     Buffer& operator=(const Buffer&) = delete;
@@ -152,21 +165,28 @@ public:
 
 public:
 
+    Int64 GetBytesNum() const
+    {
+        return _BytesNum;
+    }
+
+public:
+
     /*
     * write byte stream into buffer, this operation will affect GPU memory immediately
     */
-    void Write(Int64 BytesOffset, const UInt8* Bytes, Int64 BytesNum)
+    void Write(Int64 ByteOffset, const UInt8* Bytes, Int64 BytesNum) noexcept
     {
-        if (!_StorageOptions.DynamicStorage) return; // 
+        if (!_StorageOptions.DynamicStorage) return;
         if (!Bytes) return;
-        if (BytesOffset < 0 || BytesNum < 0 || BytesOffset + BytesNum > _Size) return;
+        if (ByteOffset < 0 || BytesNum < 0 || ByteOffset + BytesNum > _BytesNum) return;
 
-        glNamedBufferSubData(_handle, BytesOffset, BytesNum, Bytes);
+        glNamedBufferSubData(_handle, ByteOffset, BytesNum, Bytes);
     }
 
-    const void* Read(Int64 ByteOffset, Int64 BytesNum)
+    const void* Read(Int64 ByteOffset, Int64 BytesNum) const noexcept
     {
-        if (ByteOffset < 0 || BytesNum < 0 || ByteOffset + BytesNum > _Size) return nullptr;
+        if (ByteOffset < 0 || BytesNum < 0 || ByteOffset + BytesNum > _BytesNum) return nullptr;
         void* _OutData = nullptr;
         glGetNamedBufferSubData(_handle, ByteOffset, BytesNum, _OutData);
         return _OutData;
@@ -181,12 +201,12 @@ public:
      * execute a handler(which can read/write) on mapped memory (specified by offset and size)
      * mapped memory has valid content which come from GPU memory
      * also your bytes write into mapped memory can affect GPU memory
-     * [ ] (std::uint8_t* data, std::int64_t size) { }
+     * @Handler(std::function<void(UInt8* MappedMemory, Int64 BytesNum)>)
      * */
     void ExecuteMappedMemoryHandler(Int64 ByteOffset, Int64 BytesNum, const MappedMemoryHandler& Handler)
     {
         if (!_StorageOptions.MapWrite && !_StorageOptions.MapRead) return;
-        if (ByteOffset < 0 || BytesNum < 0 || ByteOffset + BytesNum > _Size) return;
+        if (ByteOffset < 0 || BytesNum < 0 || ByteOffset + BytesNum > _BytesNum) return;
         auto* _MappedMemory = reinterpret_cast<std::uint8_t*>(
                 glMapNamedBufferRange(_handle, ByteOffset, BytesNum, static_cast<GLenum>(BufferMapAccessFlag::MAP_WRITE_BIT))
         );
@@ -207,16 +227,13 @@ public:
     void ExecuteMappedMemoryWriter(Int64 ByteOffset, Int64 BytesNum, const MappedMemoryWriter& Writer)
     {
         if (!_StorageOptions.MapWrite) return;
-        if (ByteOffset <0 || BytesNum < 0 || ByteOffset + BytesNum > _Size) return;
+        if (ByteOffset <0 || BytesNum < 0 || ByteOffset + BytesNum > _BytesNum) return;
         auto* _MappedMemory = reinterpret_cast<std::uint8_t*>(
             glMapNamedBufferRange(_handle, ByteOffset, BytesNum, static_cast<GLenum>(BufferMapAccessFlag::MAP_WRITE_BIT))
         );
         if (_MappedMemory) Writer(_MappedMemory, BytesNum);
         glFlushMappedNamedBufferRange(_handle, ByteOffset, BytesNum);
         glUnmapNamedBuffer(_handle);
-        
-        //glMemoryBarrier();
-        //glFinish();
     }
 
     using MappedMemoryReader = std::function<void(const UInt8*, Int64)>;
@@ -231,7 +248,7 @@ public:
     void ExecuteMappedMemoryReader(Int64 ByteOffset, Int64 BytesNum, const MappedMemoryReader& Reader) const
     {
         if (!_StorageOptions.MapRead) return;
-        if (ByteOffset < 0 || BytesNum < 0 || ByteOffset + BytesNum > _Size) return;
+        if (ByteOffset < 0 || BytesNum < 0 || ByteOffset + BytesNum > _BytesNum) return;
         const auto* _MappedMemory = reinterpret_cast<const std::uint8_t*>(
                 glMapNamedBufferRange(_handle, ByteOffset, BytesNum, static_cast<GLenum>(BufferMapAccessFlag::MAP_READ_BIT))
         );
@@ -239,40 +256,35 @@ public:
         glUnmapNamedBuffer(_handle);
     }
 
-public:
-
-    void Clear(Int64 ByteOffset, const UInt8* Mask, Int64 BytesNum)
+    void Clear(Int64 ByteOffset, const UInt8* BytesMask, Int64 BytesNum)
     {
-        /*if (!data) return;
-        if (offset < 0 || data_size <0 || offset + data_size > size) return;
-        if (size % data_size != 0) return;*/
+        if (!BytesMask) return;
+        if (ByteOffset < 0 || BytesNum <0 || ByteOffset + BytesNum > _BytesNum) return;
+        if (BytesNum % BytesNum != 0) return;
         
-        glClearNamedBufferSubData(_handle, GL_R8UI, ByteOffset, BytesNum, GL_RED, GL_UNSIGNED_BYTE, Mask);
+        glClearNamedBufferSubData(_handle, GL_R8UI, ByteOffset, BytesNum, GL_RED, GL_UNSIGNED_BYTE, BytesMask);
     }
+
+public:
 
     /*
      * Mostly [Server -> Server]
      * You must sacrifice some flexibility to get rapid filling.
      * capacity % sizeof (data_mask) == 0
      * */
-    static void Copy(const Buffer* Dest, Int64 DestByteOffset, const Buffer* Src, Int64 SrcByteOffset, Int64 BytesNum)
+    static void Memcpy(const Buffer* Dest, Int64 DestByteOffset, const Buffer* Src, Int64 SrcByteOffset, Int64 BytesNum)
     {
         if (!Dest || !Src) return;
         glCopyNamedBufferSubData(Src->get_handle(), Dest->get_handle(), SrcByteOffset, DestByteOffset, BytesNum);
     }
 
 
-    Int64 GetBytesNum() const
-    {
-        return _Size;
-    }
-
 private:
 
     /*
      * Invalidate the whole buffers, data in buffers will become undefined.
      * */
-    inline void invalidate()
+    void _Invalidate()
     {
         glInvalidateBufferData(_handle);
     }
@@ -280,9 +292,9 @@ private:
     /*
      * grab another same buffers storage as new one
      * */
-    inline void invalidate(std::int64_t offset, std::int64_t size)
+    void _Invalidate(Int64 ByteOffset, Int64 BytesNum)
     {
-        glInvalidateBufferSubData(_handle, offset, size);
+        glInvalidateBufferSubData(_handle, ByteOffset, BytesNum);
     }
 
     inline std::int64_t _get_buffer_size() const
@@ -317,7 +329,7 @@ private:
 
     BufferStorageOptions _StorageOptions;
 
-    Int64 _Size;
+    Int64 _BytesNum;
 
     const static std::int64_t THEORETICAL_MAX_CAPACITY;
 

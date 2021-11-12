@@ -34,7 +34,6 @@ struct VertexLauncherDescriptor
 class VertexLauncher 
 {
 public:
-	VertexLauncher() {}
 	VertexLauncher(const VertexLauncherDescriptor& Descriptor) :
 		_PrimitiveMode(Descriptor.Mode),
 		_PrimitiveVerticesNum(Descriptor.PrimitiveVerticesNum),
@@ -67,7 +66,7 @@ public:
 	// you must describe a vertex size
 	// you can only respecify a new VerticesNum, cause VertexSize, Layout can not be modified
 	// this action will consume quite time
-	void ReallocateVertices(UInt32 VerticesNum) noexcept
+	void ReallocateVertexSlot(UInt32 VerticesNum) noexcept
 	{
 		if (!_VertexArray) return;
 
@@ -75,7 +74,7 @@ public:
 	}
 
 	// Offset unit is a Vertex Size
-	void FillVertices(UInt32 VertexOffset, const UInt8* DataBytes, UInt32 VerticesNum) noexcept
+	void FillVertexSlot(UInt32 VertexOffset, const UInt8* DataBytes, UInt32 VerticesNum) noexcept
 	{
 		if (!_VertexArray) return;
 
@@ -94,27 +93,26 @@ public:
 	void ResetInstancesNum(UInt32 InstancesNum) noexcept
 	{
 		if (!_VertexArray) return;
-		
 		_VertexArray->ResetInstancesNum(InstancesNum);
 	}
 
 	// reallocate the name specified attributes, divisor decide the attributes' layout
-	void ReallocateInstanceAttributes(UInt32 AttributeIndex, UInt32 InstanceAttributesNum, UInt32 Divisor) noexcept
+	void ReallocateInstanceAttributeSlot(const std::string& InstanceAttributeName, UInt32 InstanceAttributesNum, UInt32 Divisor) noexcept
 	{
 		if (!_VertexArray) return;
 		
-		_VertexArray->ReallocateInstanceAttributes(AttributeIndex, InstanceAttributesNum, Divisor);
+		//_VertexArray->ReallocateInstanceAttributes(AttributeIndex, InstanceAttributesNum, Divisor);
 	}
 
 	// fill the instance attributes
-	void FillInstanceAttributes(UInt32 AttributeIndex, UInt32 InstanceAttributeOffset, UInt8* DataBytes, UInt32 InstanceAttributesNum) noexcept
+	void FillInstanceAttributeSlot(const std::string& InstanceAttributeName, UInt32 InstanceAttributeOffset, UInt8* DataBytes, UInt32 InstanceAttributesNum) noexcept
 	{
 		if (!_VertexArray) return;
 
-		_VertexArray->FillInstanceAttributes("", InstanceAttributeOffset, DataBytes, InstanceAttributesNum);
+		_VertexArray->FillInstanceAttributes(InstanceAttributeName, InstanceAttributeOffset, DataBytes, InstanceAttributesNum);
 	}
 
-	const UInt8* GetInstanceAttributes(UInt32 AttributeIndex, UInt32 InstanceAttributeOffset, UInt32 InstanceAttributesNum) const
+	const UInt8* GetInstanceAttributes(const std::string& InstanceAttributeName, UInt32 InstanceAttributeOffset, UInt32 InstanceAttributesNum) const
 	{
 		return nullptr;
 	}
@@ -124,7 +122,7 @@ public:
 	// Indices only associates to PrimitiveMode
 	// PrimitiveMode will never change once lancher constructed
 	// IndicesNum % PrimitiveVerticesNum = 0
-	void ReallocateIndices(UInt32 IndicesNum) noexcept
+	void ReallocateIndexSlot(UInt32 IndicesNum, const UInt32* InitializationIndices = nullptr) noexcept
 	{
 		if (!_ElementArrayBuffer) return;
 		if (IndicesNum % _PrimitiveVerticesNum != 0) return;
@@ -132,8 +130,7 @@ public:
 		_ElementArrayBuffer->Reallocate(IndicesNum);
 	}
 
-	// Fill indices
-	void FillIndices(UInt32 IndexOffset, const UInt8* DataBytes, UInt32 IndicesNum) noexcept
+	void FillIndexSlot(UInt32 IndexOffset, const UInt32* Indices, UInt32 IndicesNum) noexcept
 	{
 		if (!_ElementArrayBuffer) return;
 		
@@ -141,7 +138,7 @@ public:
 	}
 
 	// Get indices data bytes
-	const UInt8* GetIndices(UInt32 IndexOffset, UInt32 IndicesNum) const noexcept
+	const UInt32* FetchIndices(UInt32 IndexOffset, UInt32 IndicesNum) const noexcept
 	{
 		return nullptr;
 	}

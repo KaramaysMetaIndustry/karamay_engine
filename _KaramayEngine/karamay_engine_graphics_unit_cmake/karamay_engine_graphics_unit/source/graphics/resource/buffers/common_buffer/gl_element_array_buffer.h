@@ -57,7 +57,7 @@ private:
 
     UInt32 _IndicesNum;
 
-    std::unique_ptr<Buffer> _Buffer;
+    UniquePtr<Buffer> _Buffer;
 
     void _Allocate(Int64 Size)
     {

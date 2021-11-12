@@ -411,8 +411,6 @@ void test0()
 	};
 
 	_VertexArray.FillVertices(0, reinterpret_cast<const UInt8*>(_Vertices.data()), 3);
-	
-
 
 
 	// shader program

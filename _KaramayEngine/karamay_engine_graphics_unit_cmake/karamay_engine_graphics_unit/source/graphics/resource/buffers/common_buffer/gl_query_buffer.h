@@ -5,7 +5,14 @@
 
 class QueryBuffer
 {
+public:
+	QueryBuffer() {}
 
+	~QueryBuffer() {}
+
+private:
+
+	UniquePtr<Buffer> _Buffer;
 };
 
 #endif
