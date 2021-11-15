@@ -310,7 +310,11 @@ private:
 
         UInt32 _TotalSize = _InstanceAttributeDesc->InitialDesc.AttributeSize * _InstanceAttributeDesc->InitialDesc.AttributesNum;
         auto& _InstanceAttributeBuffer = _InstanceAttributeDesc->Buffer;
-        _InstanceAttributeBuffer = new ArrayBuffer(_TotalSize);
+        
+        auto* NewBuffer = new ArrayBuffer(_TotalSize);
+        //Data Safe memcpy
+        //Buffer::Memcpy(NewBuffer->GetRaw(), 0, _InstanceAttributeBuffer->GetRaw(), 0, _InstanceAttributeBuffer->GetRaw()->GetBytesNum());
+        _InstanceAttributeBuffer = NewBuffer;
 
         Bind();
         _InstanceAttributeBuffer->Bind();

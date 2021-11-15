@@ -3,12 +3,12 @@
 
 #include "graphics/resource/buffers/raw_buffer/gl_buffer.h"
 
-class gl_draw_indirect_buffer final{
+class DrawIndirectBuffer final{
 public:
-	gl_draw_indirect_buffer()
+	DrawIndirectBuffer()
 	{}
 
-	~gl_draw_indirect_buffer() {}
+	~DrawIndirectBuffer() {}
 
 };
 

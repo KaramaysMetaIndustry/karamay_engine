@@ -12,7 +12,7 @@ struct gl_atomic_counter_buffer_descriptor{
     std::vector<std::shared_ptr<glsl_atomic_counter_t>> atomic_counters;
 };
 
-class gl_atomic_counter_buffer final {
+class AtomicCounterBuffer final {
 public:
     struct gl_atomic_counter_layout{
         std::uint32_t binding;
@@ -21,8 +21,8 @@ public:
     };
 
 public:
-    gl_atomic_counter_buffer() = delete;
-    explicit gl_atomic_counter_buffer(const gl_atomic_counter_buffer_descriptor& descriptor)
+    AtomicCounterBuffer() = delete;
+    explicit AtomicCounterBuffer(const gl_atomic_counter_buffer_descriptor& descriptor)
     {
         // generate atomic counters' layout infos
         std::int64_t _initialization_size = 0;
@@ -56,7 +56,7 @@ public:
         });
     }
 
-    ~gl_atomic_counter_buffer() = default;
+    ~AtomicCounterBuffer() = default;
 
 public:
 

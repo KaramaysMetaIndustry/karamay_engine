@@ -8,7 +8,7 @@ struct gl_shader_storage_buffer_descriptor{
     std::vector<std::shared_ptr<glsl_shader_storage_block_t>> shader_storage_blocks;
 };
 
-class gl_shader_storage_buffer final{
+class ShaderStorageBuffer final{
 public:
     struct gl_shader_storage_block_layout{
         std::uint32_t binding;
@@ -17,8 +17,8 @@ public:
     };
 
 public:
-    gl_shader_storage_buffer() = default;
-    explicit gl_shader_storage_buffer(const gl_shader_storage_buffer_descriptor& descriptor)
+    ShaderStorageBuffer() = default;
+    explicit ShaderStorageBuffer(const gl_shader_storage_buffer_descriptor& descriptor)
     {
         // generate uniform blocks' layout infos
         std::int64_t _initialization_size = 0;
@@ -63,10 +63,10 @@ public:
                 });
 
     }
-    gl_shader_storage_buffer(const gl_shader_storage_buffer&) = delete;
-    gl_shader_storage_buffer& operator=(const gl_shader_storage_buffer&) = delete;
+    ShaderStorageBuffer(const ShaderStorageBuffer&) = delete;
+    ShaderStorageBuffer& operator=(const ShaderStorageBuffer&) = delete;
 
-    ~gl_shader_storage_buffer() = default;
+    ~ShaderStorageBuffer() = default;
 
 public:
 
@@ -121,7 +121,15 @@ public:
                 });
     }
 
+    Buffer* GetRaw(UInt32 Index)
+    {
+        if (Index >= _Buffers.size()) return nullptr;
+        return _Buffers.at(Index).get();
+    }
+
 private:
+
+    std::vector<UniquePtr<Buffer>> _Buffers;
 
     std::unique_ptr<Buffer> _buffer;
 

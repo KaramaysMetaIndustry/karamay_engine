@@ -9,7 +9,7 @@ struct gl_uniform_buffer_descriptor{
 };
 
 
-class gl_uniform_buffer final{
+class UniformBuffer final{
 public:
     struct gl_uniform_buffer_block_layout{
         std::uint32_t binding;
@@ -19,8 +19,8 @@ public:
 
 public:
 
-    gl_uniform_buffer() = delete;
-    explicit gl_uniform_buffer(const gl_uniform_buffer_descriptor& descriptor)
+    UniformBuffer() = delete;
+    explicit UniformBuffer(const gl_uniform_buffer_descriptor& descriptor)
     {
         // generate uniform blocks' layout infos
         std::int64_t _initialization_size = 0;
@@ -64,12 +64,21 @@ public:
                     }
                 });
     }
-    gl_uniform_buffer(const gl_uniform_buffer&) = delete;
-    gl_uniform_buffer& operator=(const gl_uniform_buffer&) = delete;
+    UniformBuffer(const UniformBuffer&) = delete;
+    UniformBuffer& operator=(const UniformBuffer&) = delete;
 
-    ~gl_uniform_buffer() = default;
+    ~UniformBuffer() = default;
 
 public:
+
+    Buffer* GetRaw(UInt32 Index)
+    {
+        if (Index >= _Buffers.size())
+        {
+            return nullptr;
+        }
+        return _Buffers.at(Index).get();
+    }
 
     void bind() noexcept
     {
@@ -125,6 +134,8 @@ public:
     }
 
 private:
+
+    std::vector<UniquePtr<Buffer>> _Buffers;
 
     std::unique_ptr<Buffer> _buffer;
 

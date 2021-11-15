@@ -41,6 +41,11 @@ public:
 
 public:
 
+    Buffer* GetRaw()
+    {
+        return _Buffer.get();
+    }
+
     void Reallocate(UInt32 IndicesNum, const void* Indices = nullptr)
     {
         _IndicesNum = IndicesNum; _Allocate(IndicesNum);

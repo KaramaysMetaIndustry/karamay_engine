@@ -24,6 +24,11 @@ public:
 
 public:
 
+	Buffer* GetRaw()
+	{
+		return _Buffer.get();
+	}
+
 	void Reallocate(Int64 BytesNum, const UInt8* InitializationBytes = nullptr)
 	{
 		_Allocate(BytesNum, InitializationBytes);

@@ -3,12 +3,12 @@
 
 #include "graphics/resource/buffers/raw_buffer/gl_buffer.h"
 
-class gl_dispatch_indirect_buffer final{
+class DispachIndirectBuffer final{
 public:
-	gl_dispatch_indirect_buffer()
+	DispachIndirectBuffer()
 	{}
 
-	~gl_dispatch_indirect_buffer() {}
+	~DispachIndirectBuffer() {}
 
 };
 

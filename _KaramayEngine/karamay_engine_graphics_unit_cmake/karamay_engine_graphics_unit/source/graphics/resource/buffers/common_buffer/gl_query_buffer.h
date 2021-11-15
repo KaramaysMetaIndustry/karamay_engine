@@ -10,6 +10,13 @@ public:
 
 	~QueryBuffer() {}
 
+public:
+
+	Buffer* GetRaw()
+	{
+		return _Buffer.get();
+	}
+
 private:
 
 	UniquePtr<Buffer> _Buffer;

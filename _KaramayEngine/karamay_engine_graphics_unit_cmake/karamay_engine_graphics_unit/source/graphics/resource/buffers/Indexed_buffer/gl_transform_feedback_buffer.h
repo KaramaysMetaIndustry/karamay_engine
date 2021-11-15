@@ -21,7 +21,11 @@ public:
 
 public:
 
-    void Fill() {}
+    Buffer* GetRaw(UInt32 Index)
+    {
+        if (Index >= _Buffers.size()) return nullptr;
+        return _Buffers.at(Index).get();
+    }
 
 public:
 
@@ -42,6 +46,8 @@ private:
     UInt32 _Binding;
 
     std::unique_ptr<Buffer> _buffer;
+
+    std::vector<UniquePtr<Buffer>> _Buffers;
 
 };
 
