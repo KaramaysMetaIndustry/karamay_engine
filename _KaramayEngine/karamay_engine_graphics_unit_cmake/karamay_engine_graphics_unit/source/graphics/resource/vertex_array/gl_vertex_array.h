@@ -180,7 +180,6 @@ struct VertexArrayDescriptor
 {
     UInt32 VerticesNum; // 1024
     VertexDescriptor VertexDesc; // {...}
-    UInt32 InstancesNum; // 30
     std::vector<InstanceAttributeDescriptor> InstanceAttributeDescs; // {...}
 };
 
@@ -203,7 +202,6 @@ public:
         glCreateVertexArrays(1, &_handle);
 
         // construct internal descriptor and intialize buffers
-        _InternalDescriptor.InstancesNum = Descriptor.InstancesNum;
         _InternalDescriptor.VerticesNum = Descriptor.VerticesNum;
         
         // allocate attribute indices
@@ -274,7 +272,6 @@ private:
     {
         UInt32 VerticesNum;
         InternalVertexDescriptor VertexDesc;
-        UInt32 InstancesNum;
         std::vector<InternalInstanceAttributeDescriptor> InstanceAttributeDescs;
     };
 
@@ -306,7 +303,7 @@ public:
         if (VertexOffset + VerticesNum > _InternalDescriptor.VerticesNum) return;
 
         const UInt32 _VertexSize = _InternalDescriptor.VertexDesc.VertexSize;
-        _VertexBuffer->Fill(VertexOffset * _VertexSize, Data, VerticesNum * _VertexSize);
+       // _VertexBuffer->Fill(VertexOffset * _VertexSize, Data, VerticesNum * _VertexSize);
     }
 
     void HandleMappedVertices(UInt32 VertexOffset, UInt32 VerticesNum, const std::function<void(UInt8* MappedVertices, UInt32 VerticesNum)>& Handler)
@@ -315,16 +312,6 @@ public:
     }
 
 public:
-
-    /*
-    * This func wont trigger memory reallocate
-    * instancesNum does not effect instanceAttributes memory
-    */
-    void ResetInstancesNum(UInt32 InstancesNum) noexcept
-    {
-        if (InstancesNum == _InternalDescriptor.InstancesNum) return;
-        _InternalDescriptor.InstancesNum = InstancesNum;
-    }
 
     /*
     * this func will trigger memory reallocation, every instance attribute are separated
@@ -347,11 +334,11 @@ public:
         const auto* _InstanceAttributeDesc = _FindInstanceAttributeDescriptor(AttributeIndex);
         if (!_InstanceAttributeDesc || _InstanceAttributeDesc->Buffer) return;
 
-        _InstanceAttributeDesc->Buffer->Fill(
+       /* _InstanceAttributeDesc->Buffer->Fill(
             AttributeOffset * _InstanceAttributeDesc->InitialDesc.AttributeSize,
             Data, 
             AttributesNum * _InstanceAttributeDesc->InitialDesc.AttributeSize
-        );
+        );*/
     }
 
     /*
@@ -394,11 +381,6 @@ public:
     UInt32 GetVerticesNum() const
     {
         return _InternalDescriptor.VerticesNum;
-    }
-
-    UInt32 GetInstancesNum() const 
-    {
-        return _InternalDescriptor.InstancesNum;
     }
 
 public:

@@ -23,6 +23,22 @@ enum class PrimitiveMode
 	PATCHES = GL_PATCHES
 };
 
+struct DrawArraysIndirectCommand {
+	UInt32  count;
+	UInt32  primCount;
+	UInt32  first;
+	UInt32  baseInstance;
+};
+
+struct DrawElementsIndirectCommand {
+	UInt32 count;
+	UInt32 primCount;
+	UInt32 firstIndex;
+	UInt32 baseVertex;
+	UInt32 baseInstance;
+};
+
+
 struct VertexLauncherDescriptor
 {
 	VertexArrayDescriptor VertexArrayDesc;
@@ -59,8 +75,6 @@ public:
 
 	UInt32 GetVerticesNum() const { return _VertexArray ? _VertexArray->GetVerticesNum() : 0; }
 
-	UInt32 GetInstancesNum() const { return _VertexArray ?  _VertexArray->GetInstancesNum() : 0; }
-
 public:
 
 	// you must describe a vertex size
@@ -87,13 +101,6 @@ public:
 	}
 
 public:
-
-	// reset num of instances, this decide instance attributes' layout
-	void ResetInstancesNum(UInt32 InstancesNum) noexcept
-	{
-		if (!_VertexArray) return;
-		_VertexArray->ResetInstancesNum(InstancesNum);
-	}
 
 	// reallocate the name specified attributes, divisor decide the attributes' layout
 	void ReallocateInstanceAttributeSlot(const std::string& InstanceAttributeName, UInt32 InstanceAttributesNum, UInt32 Divisor) noexcept
@@ -158,28 +165,51 @@ public:
 
 public:
 
+	void DrawArrays(UInt32 VertexOffset, UInt32 VerticesNum) const
+	{
+		glDrawArrays(static_cast<GLenum>(_PrimitiveMode), VertexOffset, VerticesNum);
+	}
+
 	void DrawArrays(UInt32 VertexOffset, UInt32 VerticesNum, UInt32 InstancesNum, UInt32 InstanceOffset) const
 	{
+		//glDrawArraysInstanced();
 		glDrawArraysInstancedBaseInstance(static_cast<GLenum>(_PrimitiveMode), VertexOffset, VerticesNum, InstancesNum, InstanceOffset);
 	}
 
-	void DrawIndices(UInt32 InstancesNum, UInt32 VertexOffset, UInt32 InstanceOffset) const
+	void DrawArraysIndirect() const
+	{}
+
+
+	void DrawElements(UInt32 ElementOffset, UInt32 ElementsNum) const
 	{
-		glDrawElementsInstancedBaseVertexBaseInstance(static_cast<GLenum>(_PrimitiveMode), _PrimitiveVerticesNum, GL_UNSIGNED_INT, nullptr, InstancesNum, VertexOffset, InstanceOffset);
+		glDrawElementsBaseVertex(static_cast<GLenum>(_PrimitiveMode), ElementsNum, static_cast<GLenum>(_ElementArrayBuffer->GetElementType()), nullptr, ElementOffset);
 	}
 
-	void DrawRangeIndices(UInt32 IndexOffset, UInt32 IndicesNum)
+	void DrawElements(UInt32 ElementOffset, UInt32 ElementsNum, UInt32 InstancesNum, UInt32 InstanceOffset) const
 	{
-		//glDrawRangeElementsBaseVertex(static_cast<GLenum>(_PrimitiveMode), IndexOffset, I)
+		glDrawElementsInstancedBaseVertexBaseInstance(static_cast<GLenum>(_PrimitiveMode), ElementsNum, GL_UNSIGNED_INT, nullptr, InstancesNum, ElementOffset, InstanceOffset);
 	}
 
-	void RestartPrimitiveIndex(UInt32 Index) const
+	void DrawElementsIndirect() const {}
+
+
+	void MultiDrawArrays(const std::vector<std::pair<UInt32, UInt32>>& IndexIndexCu)
 	{
-		glEnable(GL_PRIMITIVE_RESTART);
-		glPrimitiveRestartIndex(Index);
-		glDisable(GL_PRIMITIVE_RESTART);
+		glMultiDrawArrays(static_cast<GLenum>(_PrimitiveMode), nullptr, nullptr, 10);
 	}
 
+	void MultiDrawElements()
+	{
+		//glMultiDrawElementsIndirect()
+	}
+
+	void DrawRangeElements(UInt32 IndexOffset, UInt32 IndicesNum)
+	{
+		glDrawRangeElementsBaseVertex(static_cast<GLenum>(_PrimitiveMode), )
+		
+	}
+
+	
 private:
 
 	VertexArray* _VertexArray;
