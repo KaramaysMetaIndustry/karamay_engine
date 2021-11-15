@@ -1,12 +1,12 @@
 ## karamay-engine
 
-java
+https://www.khronos.org/opengl/wiki/
 
+https://www.khronos.org/assets/uploads/developers/presentations/opengl46-quick-reference-card.pdf
 
+https://www.khronos.org/registry/OpenGL/specs/gl/glspec46.core.pdf
 
-## karamay-engine-graphics-core
-
-cpp
+https://www.khronos.org/registry/OpenGL-Refpages/gl4/
 
 
 
