@@ -9,7 +9,7 @@ class TransformFeedback final : public gl_object{
 public:
 	TransformFeedback() = delete;
 	TransformFeedback(const std::vector<std::string>& Varings, UInt32 AcceptDataFrom) :
-		gl_object(gl_object_type::TRANSFORM_FEEDBACK_OBJ)
+		gl_object(gl_object_type::TRANSFORM_FEEDBACK_OBJ), _State(TransformFeedbackState::End)
 	{
 		glCreateTransformFeedbacks(1, &_handle);
 	}
@@ -38,14 +38,57 @@ public:
 
 public:
 
-	// if do not have gs, only output stream 0
-	void Draw(PrimitiveMode Mode, UInt32 StreamIndex = 0) const noexcept
+	enum class TransformFeedbackState
+	{
+		Running,
+		Paused,
+		End
+	};
+
+	void BeginTransformFeedback(PrimitiveMode Mode)
+	{
+		if (_State == TransformFeedbackState::End)
+		{
+			glBeginTransformFeedback(static_cast<GLenum>(Mode));
+			_State = TransformFeedbackState::Running;
+		}
+	}
+
+	void PauseTransformFeedback()
+	{
+		if (_State == TransformFeedbackState::Running)
+		{
+			glPauseTransformFeedback();
+			_State = TransformFeedbackState::Paused;
+		}
+	}
+
+	void ResumeTransformFeedback()
+	{
+		if (_State == TransformFeedbackState::Paused)
+		{
+			glResumeTransformFeedback();
+			_State = TransformFeedbackState::Running;
+		}
+	}
+
+	void EndTransformFeedback()
+	{
+		if (_State == TransformFeedbackState::Running)
+		{
+			glEndTransformFeedback();
+			_State = TransformFeedbackState::End;
+		}
+	}
+
+public:
+
+	void Draw(PrimitiveMode Mode, UInt32 StreamIndex) const noexcept
 	{
 		glDrawTransformFeedbackStream(static_cast<GLenum>(Mode), _handle, StreamIndex);
 	}
 
-	// if do not have gs, only output stream 0
-	void DrawInstances(UInt32 InstancesNum, PrimitiveMode Mode, UInt32 StreamIndex = 0) const noexcept
+	void Draw(PrimitiveMode Mode, UInt32 StreamIndex, UInt32 InstancesNum) const noexcept
 	{
 		glDrawTransformFeedbackStreamInstanced(static_cast<GLenum>(Mode), _handle, StreamIndex, InstancesNum);
 	}
@@ -58,11 +101,12 @@ private:
 	
 	const std::vector<std::string> _Varyings;
 
+	TransformFeedbackState _State;
+
 	std::vector<UniquePtr<TransformFeedbackBuffer>> _TransformFeedbackBuffers;
 
 	void _Allocate()
 	{
-
 		for (const auto& _TransformFeedbackBuffer : _TransformFeedbackBuffers)
 		{
 			//glBindBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 0, 0, 1024);
@@ -82,7 +126,6 @@ private:
 			
 		}*/
 	}
-
 
 };
 
