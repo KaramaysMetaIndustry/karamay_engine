@@ -5,145 +5,6 @@
 #include "graphics/glsl/interface_block/glsl_in_block.h"
 #include "graphics/resource/buffers/common_buffer/gl_array_buffer.h"
 
-class gl_attribute_component
-{
-public:
-    enum class type : GLenum
-    {
-        UNKNOWN = 0,
-        INT = GL_INT,
-        UINT = GL_UNSIGNED_INT,
-        FLOAT = GL_FLOAT,
-        DOUBLE = GL_DOUBLE
-    };
-
-    static std::string to_string(type component_type)
-    {
-        switch(component_type)
-        {
-            case type::INT: return "INT";
-            case type::UINT: return "UINT";
-            case type::FLOAT: return "FLOAT";
-            case type::DOUBLE: return "DOUBLE";
-            default: return "UNKNOWN";
-        }
-    }
-
-    static type to_enum(const std::string& component_type)
-    {
-        if(component_type == "INT") return type::INT;
-        if(component_type == "UINT") return type::UINT;
-        if(component_type == "FLOAT") return type::FLOAT;
-        if(component_type == "DOUBLE") return type::DOUBLE;
-        return type::UNKNOWN;
-    }
-
-    static GLenum to_GLenum(type component_type)
-    {
-        return static_cast<GLenum>(component_type);
-    }
-
-    static std::uint32_t get_size(type component_type)
-    {
-        switch (component_type) {
-            case type::INT: return sizeof(std::int32_t);
-            case type::UINT: return sizeof(std::uint32_t);
-            case type::FLOAT: return sizeof(std::float_t);
-            case type::DOUBLE: return sizeof(std::double_t);
-            default: return 0;
-        }
-    }
-};
-
-class gl_attribute
-{
-    enum class type
-    {
-        UINT,UVEC2,UVEC3,UVEC4,
-        INT,IVEC2,IVEC3,IVEC4,
-        FLOAT,VEC2,VEC3,VEC4,
-        DOUBLE,DVEC2,DVEC3,DVEC4,
-
-        MAT2X2,MAT2X3,MAT2X4,MAT3X2,MAT3X3,MAT3X4,MAT4X2,MAT4X3,MAT4X4,
-        DMAT2X2,DMAT2X3,DMAT2X4,DMAT3X2,DMAT3X3,DMAT3X4,DMAT4X2,DMAT4X3,DMAT4X4,
-    };
-
-    static std::pair<gl_attribute_component::type, std::uint32_t> get_component_layout(gl_attribute::type attribute_type)
-    {
-        switch (attribute_type) {
-
-            case type::UINT:
-                return std::make_pair(gl_attribute_component::type::UINT, 1);
-            case type::UVEC2:
-                return std::make_pair(gl_attribute_component::type::UINT, 2);
-            case type::UVEC3:
-                return std::make_pair(gl_attribute_component::type::UINT, 3);
-            case type::UVEC4:
-                return std::make_pair(gl_attribute_component::type::UINT, 4);
-            case type::INT:
-                return std::make_pair(gl_attribute_component::type::INT, 1);
-            case type::IVEC2:
-                return std::make_pair(gl_attribute_component::type::INT, 2);
-            case type::IVEC3:
-                return std::make_pair(gl_attribute_component::type::INT, 3);
-            case type::IVEC4:
-                return std::make_pair(gl_attribute_component::type::INT, 4);
-            case type::FLOAT:
-                return std::make_pair(gl_attribute_component::type::FLOAT, 1);
-            case type::VEC2:
-                return std::make_pair(gl_attribute_component::type::FLOAT, 2);
-            case type::VEC3:
-                return std::make_pair(gl_attribute_component::type::FLOAT, 3);
-            case type::VEC4:
-                return std::make_pair(gl_attribute_component::type::FLOAT, 4);
-            case type::DOUBLE:
-                return std::make_pair(gl_attribute_component::type::DOUBLE, 1);
-            case type::DVEC2:
-                return std::make_pair(gl_attribute_component::type::DOUBLE, 2);
-            case type::DVEC3:
-                return std::make_pair(gl_attribute_component::type::DOUBLE, 3);
-            case type::DVEC4:
-                return std::make_pair(gl_attribute_component::type::DOUBLE, 4);
-            case type::MAT2X2:
-                return std::make_pair(gl_attribute_component::type::UINT, 1);
-            case type::MAT2X3:
-                return std::make_pair(gl_attribute_component::type::UINT, 1);
-            case type::MAT2X4:
-                return std::make_pair(gl_attribute_component::type::UINT, 1);
-            case type::MAT3X2:
-                return std::make_pair(gl_attribute_component::type::UINT, 1);
-            case type::MAT3X3:
-                return std::make_pair(gl_attribute_component::type::UINT, 1);
-            case type::MAT3X4:
-                return std::make_pair(gl_attribute_component::type::UINT, 1);
-            case type::MAT4X2:
-                return std::make_pair(gl_attribute_component::type::UINT, 1);
-            case type::MAT4X3:
-                return std::make_pair(gl_attribute_component::type::UINT, 1);
-            case type::MAT4X4:
-                return std::make_pair(gl_attribute_component::type::UINT, 1);
-            case type::DMAT2X2:
-                return std::make_pair(gl_attribute_component::type::UINT, 1);
-            case type::DMAT2X3:
-                return std::make_pair(gl_attribute_component::type::UINT, 1);
-            case type::DMAT2X4:
-                return std::make_pair(gl_attribute_component::type::UINT, 1);
-            case type::DMAT3X2:
-                return std::make_pair(gl_attribute_component::type::UINT, 1);
-            case type::DMAT3X3:
-                return std::make_pair(gl_attribute_component::type::UINT, 1);
-            case type::DMAT3X4:
-                return std::make_pair(gl_attribute_component::type::UINT, 1);
-            case type::DMAT4X2:
-                return std::make_pair(gl_attribute_component::type::UINT, 1);
-            case type::DMAT4X3:
-                return std::make_pair(gl_attribute_component::type::UINT, 1);
-            case type::DMAT4X4:
-                return std::make_pair(gl_attribute_component::type::UINT, 1);
-        }
-    }
-};
-
 enum class AttributeComponentType
 {
     UINT,
@@ -354,9 +215,6 @@ public:
 
 public:
 
-    /*
-    * if return -1, not exist
-    */
     Int32 GetVertexAttributeIndex(const std::string& VertexAttributeName) const 
     {
         for (const auto& _AttributeDesc : _InternalDescriptor.VertexDesc.AttributeDescs)
@@ -366,9 +224,6 @@ public:
         return -1;
     }
 
-    /*
-    * if return -1, not exist
-    */
     Int32 GetInstanceAttributeIndex(const std::string& AttributeName) const 
     {
         for (const auto& _AttributeDesc : _InternalDescriptor.InstanceAttributeDescs)
@@ -381,6 +236,11 @@ public:
     UInt32 GetVerticesNum() const
     {
         return _InternalDescriptor.VerticesNum;
+    }
+
+    UInt32 GetVertexSize() const
+    {
+        return _InternalDescriptor.VertexDesc.VertexSize;
     }
 
 public:

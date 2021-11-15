@@ -75,6 +75,14 @@ public:
 
 	UInt32 GetVerticesNum() const { return _VertexArray ? _VertexArray->GetVerticesNum() : 0; }
 
+	UInt32 GetVertexSize() const { return _VertexArray ? _VertexArray->GetVertexSize() : 0; }
+
+	UInt32 GetElementsNum() const { return _ElementArrayBuffer ? _ElementArrayBuffer->GetIndicesNum() : 0; }
+
+	ElementType GetElementType() const { return _ElementArrayBuffer ? _ElementArrayBuffer->GetElementType() : ElementType::NONE; }
+
+	UInt32 GetElementSize() const { return _ElementArrayBuffer ? _ElementArrayBuffer->GetIndexSize() : 0; }
+
 public:
 
 	// you must describe a vertex size
@@ -161,120 +169,6 @@ public:
 	{
 		if (_VertexArray) _VertexArray->Unbind();
 		if (_ElementArrayBuffer) _ElementArrayBuffer->Unbind();
-	}
-
-public:
-
-	void DrawArrays(UInt32 VertexOffset, UInt32 VerticesNum) const
-	{
-		if (!_VertexArray) return;
-		if (VertexOffset + VerticesNum >= _VertexArray->GetVerticesNum()) return;
-		
-		glDrawArrays(static_cast<GLenum>(_PrimitiveMode), VertexOffset, VerticesNum);
-	}
-
-	void DrawArrays(UInt32 VertexOffset, UInt32 VerticesNum, UInt32 InstancesNum, UInt32 InstanceOffset) const
-	{
-		if (!_VertexArray) return;
-		if (VertexOffset + VerticesNum >= _VertexArray->GetVerticesNum()) return;
-		if (InstanceOffset >= InstancesNum) return;
-
-		glDrawArraysInstancedBaseInstance(static_cast<GLenum>(_PrimitiveMode), VertexOffset, VerticesNum, InstancesNum, InstanceOffset);
-	}
-
-	void DrawArrays(const DrawArraysIndirectCommand& Command) const
-	{
-
-	}
-
-	void MultiDrawArrays(const std::vector<UInt32>& VertexOffsets, const std::vector<UInt32>& VerticesNums) const
-	{
-		if (!_VertexArray) return;
-		if (VertexOffsets.size() != VerticesNums.size()) return;
-
-		glMultiDrawArrays(static_cast<GLenum>(_PrimitiveMode), (const Int32*)VertexOffsets.data(), (const Int32*)VerticesNums.data(), VertexOffsets.size());
-	}
-
-	void MultiDrawArrays(const std::vector<DrawArraysIndirectCommand>& Commands) const
-	{
-		//glMultiDrawArraysIndirect();
-	}
-
-
-	void DrawElements(UInt32 ElementOffset, UInt32 ElementsNum) const
-	{
-		if (ElementOffset + ElementsNum >= _ElementArrayBuffer->GetIndicesNum()) return;
-
-		glDrawElements(
-			static_cast<GLenum>(_PrimitiveMode), 
-			ElementsNum, static_cast<GLenum>(_ElementArrayBuffer->GetElementType()), (void*)(_ElementArrayBuffer->GetIndexSize() * ElementOffset)
-		);
-	}
-
-	void DrawElements(UInt32 ElementOffset, UInt32 ElementsNum, UInt32 InstancesNum, UInt32 BaseInstance) const
-	{
-		glDrawElementsInstancedBaseInstance(
-			static_cast<GLenum>(_PrimitiveMode),
-			ElementsNum, static_cast<GLenum>(_ElementArrayBuffer->GetElementType()), (void*)(_ElementArrayBuffer->GetIndexSize() * ElementOffset), 
-			InstancesNum, BaseInstance
-		);
-	}
-
-	void DrawElements(UInt32 ElementOffset, UInt32 ElementsNum, UInt32 BaseVertex) const
-	{
-		glDrawElementsBaseVertex(
-			static_cast<GLenum>(_PrimitiveMode), 
-			ElementsNum, static_cast<GLenum>(_ElementArrayBuffer->GetElementType()), (void*)(_ElementArrayBuffer->GetIndexSize() * ElementOffset),
-			BaseVertex
-		);
-	}
-
-	void DrawElements(UInt32 ElementOffset, UInt32 ElementsNum, UInt32 BaseVertex, UInt32 InstancesNum, UInt32 BaseInstance) const
-	{
-		glDrawElementsInstancedBaseVertexBaseInstance(
-			static_cast<GLenum>(_PrimitiveMode), 
-			ElementsNum, static_cast<GLenum>(_ElementArrayBuffer->GetElementType()), (void*)(_ElementArrayBuffer->GetIndexSize() * ElementOffset),
-			InstancesNum, BaseVertex, BaseInstance
-		);
-	}
-
-	void DrawElements(const DrawElementsIndirectCommand& Command) const 
-	{
-		glDrawElementsIndirect(
-			static_cast<GLenum>(_PrimitiveMode), 
-			static_cast<GLenum>(_ElementArrayBuffer->GetElementType()), 
-			(const void*)&Command
-		);
-	}
-
-	void DrawRangeElements(UInt32 ElementStart, UInt32 ElementEnd, UInt32 ElementOffset, UInt32 ElementsNum, UInt32 BaseVertex) const
-	{
-		glDrawRangeElementsBaseVertex(
-			static_cast<GLenum>(_PrimitiveMode), 
-			ElementStart, ElementEnd, 
-			ElementsNum, static_cast<GLenum>(_ElementArrayBuffer->GetElementType()), (void*)(_ElementArrayBuffer->GetIndexSize() * ElementOffset), 
-			BaseVertex
-		);
-	}
-
-
-	void MultiDrawElements(const std::vector<UInt32>& ElementOffsets, std::vector<UInt32>& ElementsNums) const
-	{
-		glMultiDrawElements(
-			static_cast<GLenum>(_PrimitiveMode), (const Int32*)ElementsNums.data(), 
-			static_cast<GLenum>(_ElementArrayBuffer->GetElementType()), 
-			nullptr, ElementOffsets.size()
-		) ;
-	}
-
-	void MultiDrawElements(UInt32 BaseVertex) const
-	{
-		//glMultiDrawElementsBaseVertex()
-	}
-
-	void MultiDrawElements(const std::vector<DrawElementsIndirectCommand>& Commands) const
-	{
-		//glMultiDrawElementsIndirect();
 	}
 
 private:

@@ -13,34 +13,34 @@ struct glsl_graphics_pipeline_parameters
 	std::vector<std::shared_ptr<glsl_image_t>> images;
 };
 
-class glsl_graphics_pipeline_program final{
+class GraphicsPipelineProgram final{
 public:
 	
-	glsl_graphics_pipeline_program(const std::shared_ptr<glsl_vertex_shader>& vs, const std::shared_ptr<glsl_fragment_shader>& fs) :
+	GraphicsPipelineProgram(const std::shared_ptr<glsl_vertex_shader>& vs, const std::shared_ptr<glsl_fragment_shader>& fs) :
 		_vertex_shader(vs), _tessellation_shader(nullptr), _geometry_shader(nullptr), _fragment_shader(fs)
 	{
 		_collect_parameters();
 	}
-	glsl_graphics_pipeline_program(const std::shared_ptr<glsl_vertex_shader>& vs, const std::shared_ptr<glsl_tessellation_shader>& ts, const std::shared_ptr<glsl_fragment_shader>& fs) :
+	GraphicsPipelineProgram(const std::shared_ptr<glsl_vertex_shader>& vs, const std::shared_ptr<glsl_tessellation_shader>& ts, const std::shared_ptr<glsl_fragment_shader>& fs) :
 		_vertex_shader(vs), _tessellation_shader(ts), _geometry_shader(nullptr), _fragment_shader(fs)
 	{
 		_collect_parameters();
 	}
-	glsl_graphics_pipeline_program(const std::shared_ptr<glsl_vertex_shader>& vs, const std::shared_ptr<glsl_geometry_shader>& gs, const std::shared_ptr<glsl_fragment_shader>& fs) :
+	GraphicsPipelineProgram(const std::shared_ptr<glsl_vertex_shader>& vs, const std::shared_ptr<glsl_geometry_shader>& gs, const std::shared_ptr<glsl_fragment_shader>& fs) :
 		_vertex_shader(vs), _tessellation_shader(nullptr), _geometry_shader(gs), _fragment_shader(fs) 
 	{
 		_collect_parameters();
 	}
-	glsl_graphics_pipeline_program(const std::shared_ptr<glsl_vertex_shader>& vs, const std::shared_ptr<glsl_tessellation_shader>& ts, const std::shared_ptr<glsl_geometry_shader>& gs, const std::shared_ptr<glsl_fragment_shader>& fs) :
+	GraphicsPipelineProgram(const std::shared_ptr<glsl_vertex_shader>& vs, const std::shared_ptr<glsl_tessellation_shader>& ts, const std::shared_ptr<glsl_geometry_shader>& gs, const std::shared_ptr<glsl_fragment_shader>& fs) :
 		_vertex_shader(vs), _tessellation_shader(ts), _geometry_shader(gs), _fragment_shader(fs) 
 	{
 		_collect_parameters();
 	}
 
-	glsl_graphics_pipeline_program(const glsl_graphics_pipeline_program&) = delete;
-	glsl_graphics_pipeline_program& operator=(const glsl_graphics_pipeline_program&) = delete;
+	GraphicsPipelineProgram(const GraphicsPipelineProgram&) = delete;
+	GraphicsPipelineProgram& operator=(const GraphicsPipelineProgram&) = delete;
 
-	~glsl_graphics_pipeline_program() = default;
+	~GraphicsPipelineProgram() = default;
 
 public:
 	

@@ -391,7 +391,6 @@ void test0()
 		{"UV", sizeof(glm::vec2), glm::vec2::length(), AttributeComponentType::FLOAT}
 	};
 
-	_Desc.InstancesNum = 10;
 	_Desc.InstanceAttributeDescs = {
 		{"InstancePositionOffset", sizeof(glm::vec3), glm::vec3::length(), AttributeComponentType::FLOAT, 10, 1}
 	};
@@ -418,65 +417,59 @@ void test0()
 	auto _ts = std::make_shared<glsl_tessellation_shader>();
 	auto _gs = std::make_shared<glsl_geometry_shader>();
 	auto _fs = std::make_shared<glsl_fragment_shader>();
-
-	auto _program = std::make_shared<glsl_graphics_pipeline_program>(_vs, _ts, _gs, _fs);
 	
-	// framebuffer
-	auto _framebuffer = std::make_shared<gl_framebuffer>();
 
-	// state
-	auto _state = std::make_shared<gl_graphics_pipeline_state>();
-	_state->vertex_processing.post_vertex_processing.primitive_clipping.clip_control_depth_mode;
-	_state->vertex_assembly.primitive_restart.enabled;
-	_state->primitive_assembly.discard_all_primitives = false;
-	_state->fragment_processing.pre_fragment_operations.scissor_test.enabled = true;
-	_state->fragment_processing.post_fragment_operations.blending;
 
-	// pipeline
-	auto  _gp_des = std::make_shared<gl_graphics_pipeline_descriptor>();
+
+
+	SharedPtr<GraphicsPipelineState> _PipelineState = std::make_shared<GraphicsPipelineState>();
+	SharedPtr<VertexLauncher> _VertexLauncher = std::make_shared<VertexLauncher>();
+	SharedPtr<TransformFeedback> _TransformFeedback = std::make_shared<TransformFeedback>();
+	SharedPtr<GraphicsPipelineProgram> _GraphicsPipelineProgram = std::make_shared<GraphicsPipelineProgram>();
+	SharedPtr<Framebuffer> _RenderTarget = std::make_shared<Framebuffer>();
+
+	GraphicsPipelineDescriptor _GPDescriptor;
+	_GPDescriptor.Name = "StaticMeshVertexHandler";
+	_GPDescriptor.OwnerRendererDir = "/StaticMeshRenderer";
+	_GPDescriptor.State = _PipelineState;
+	_GPDescriptor.VertexLauncher = _VertexLauncher;
+	_GPDescriptor.TransformFeedback = _TransformFeedback;
+	_GPDescriptor.Program = _GraphicsPipelineProgram;
+	_GPDescriptor.RenderTarget = _RenderTarget;
+	GraphicsPipeline _GP(_GPDescriptor);
+
+	bool First = true;
+	for (;;)
+	{
+		//_VertexLauncher->ReallocateVertexSlot(_VertexLauncher->GetVerticesNum() * 2);
+		
+		// start to render
+		_GP.Enable();
+		_GP.BeginConditionalRender();
+
+		if (First)
+		{
+			_GP.BeginTransformFeedback();
+			_GP.DrawElements(0, 1024, 10, 0);
+			_GP.EndTransformFeedback();
+			First = false;
+		}
+
+		_GP.DrawTransformFeedback();
+
+		_GP.EndConditionalRender();
+		_GP.Disable();
+		// end rendering
+	}
 	
-	auto _test_pipeline = std::make_shared<gl_graphics_pipeline>(_gp_des);
-
-	_test_pipeline->enable();
-	//_test_pipeline->draw_indices();
-	//_test_pipeline->draw_arrays();
-	_test_pipeline->disable();
-
-
-
-
-//	std::vector<glv::f32vec3> positions{
-//		glv::f32vec3(0.5f, 0.5f, 0.0f), //0
-//		glv::f32vec3(0.5f, -0.5f, 0.0f), //1
-//		glv::f32vec3(-0.5f, -0.5f, 0.0f), //2
-//		glv::f32vec3(-0.5f, 0.5f, 0.0f) //3
-//	};
-//
-//	std::vector<glv::f32vec2> uvs{
-//		glv::f32vec2(1.0f, 1.0f),
-//		glv::f32vec2(1.0f, 0.0f),
-//		glv::f32vec2(0.0f, 0.0f),
-//		glv::f32vec2(0.0f, 1.0f)
-//	};
-//
-//	std::vector<glm::i16vec4> tests{
-//		glm::i16vec4(1, 0, 0, 1),
-//		glm::i16vec4(0, 1, 0, 1),
-//		glm::i16vec4(0, 0, 1, 1),
-//		glm::i16vec4(0, 1, 0, 1)
-//	};
-
+	
 	std::vector<glm::uint32> indices{
 		0, 1, 3, // polygon0
 		1, 2, 3 // polygon1
 	};
 
-
-	// uniforms
-	// textures
-
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //GL_FILL GL_POINT
-	//glFrontFace(GL_CW);//default ��ʱ�� GL_CW ˳ʱ��
+	//glFrontFace(GL_CW);//default GL_CW
 
 	//glEnable(GL_COLOR_BUFFER_BIT);
 	//glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
@@ -509,24 +502,6 @@ void test0()
 		
 		window->tick(0.0f);
 
-//		if(i%2 == 0)
-//        {
-//            _va->update_attribute("position", 2, v0);
-//        }else{
-//            _va->update_attribute("position", 2, v2);
-//		}
-//
-//		_va->set_vertices_count(3);
-
-
-
-		/*ubod->clear_uniforms();
-		ubod->add_uniforms({
-			create_uniform("color", glu_f32vec4(w, 0.0f, 0.0f, 1.0f)),
-			create_uniform("pos", glu_f32vec3(0.0f, 0.0f, 0.0f)),
-			create_uniform("text", glu_f32vec4(0.0f, 0.0f, 0.0f, 1.0f))
-			});
-		w += 0.001f;*/
 	}
 }
 //

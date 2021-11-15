@@ -87,7 +87,7 @@ enum class gl_clip_control_depth_mode : GLenum
 /*
  * for dynamical modifying
  * */
-struct gl_graphics_pipeline_state
+struct GraphicsPipelineState
 {
     struct gl_vertex_assembly
     {
@@ -391,220 +391,274 @@ struct gl_graphics_pipeline_state
 /*
  * descriptor for graphics pipeline construction
  * */
-struct gl_graphics_pipeline_descriptor{
-    // pipeline name
+struct GraphicsPipelineDescriptor{
     std::string Name;
-    // renderer dir
     std::string OwnerRendererDir;
-   
     // [must have] vertex stream which input into program by vertex puller
-    std::shared_ptr<VertexLauncher> VertexLauncher;
+   SharedPtr<VertexLauncher> VertexLauncher;
     // [must have] program body
-    std::shared_ptr<glsl_graphics_pipeline_program> program;
+    SharedPtr<GraphicsPipelineProgram> Program;
     // [optional] transform feedback 
-    std::shared_ptr<TransformFeedback> TransformFeedback;
+    SharedPtr<TransformFeedback> TransformFeedback;
     // [must have] where program final color output
-    std::shared_ptr<gl_framebuffer> framebuffer;
+    SharedPtr<Framebuffer> RenderTarget;
     // [must have] pipeline state
-    std::shared_ptr<gl_graphics_pipeline_state> state;
-
+    SharedPtr<GraphicsPipelineState> State;
 };
 
 /*
  * graphics pipeline
  * vertex shader [+ tessellation control shader + tessellation evaluation shader] [+ geometry shader] + fragment shader
  * */
-class gl_graphics_pipeline{
+class GraphicsPipeline{
 public:
-    gl_graphics_pipeline() = default;
-    gl_graphics_pipeline(const std::shared_ptr<gl_graphics_pipeline_descriptor>& desc)
+    GraphicsPipeline() = default;
+    GraphicsPipeline(const GraphicsPipelineDescriptor& Descriptor)
     {
-        try
-        {
-            if (!_validate_descriptor(desc) || !_construct(desc)) {
-                throw std::exception("desc is not validate");
-            }
-        }
-        catch (const std::exception& e)
-        {
-            std::cerr << e.what() << std::endl;
-        }
     }
-    gl_graphics_pipeline(const gl_graphics_pipeline&) = delete;
-    gl_graphics_pipeline& operator=(const gl_graphics_pipeline&) = delete;
+    GraphicsPipeline(const GraphicsPipeline&) = delete;
+    GraphicsPipeline& operator=(const GraphicsPipeline&) = delete;
 
-    ~gl_graphics_pipeline() = default;
+    ~GraphicsPipeline() = default;
    
 public:
 
-    void enable() noexcept
+    /*
+    * Make sure all commands for this pipeline can work.
+    * Between this range, many commands can be called.
+    */
+    void Enable() noexcept
     {
-        if (!_program) return;
-        _program->enable();
-        _bind_resources();
-    }
-
-    void disable() noexcept
-    {
-        if (!_program) return;
-        _unbind_resources();
-        _program->disable();
-    }
-
-public:
-
-    void DrawTransformFeedbackStream()
-    {
-        _descriptor->TransformFeedback->Draw(PrimitiveMode::LINES, 0);
-    }
-
-
-private:
-
-    bool _validate_descriptor(const std::shared_ptr<gl_graphics_pipeline_descriptor>& descriptor)
-    {
-        /*if (!descriptor) return false;
-
-        if (!descriptor->program.vertex_shader || !descriptor->program.fragment_shader)
-        {
-            std::cerr << "graphics pipeline program must have vertex and fragment stage impl." << std::endl;
-            return false;
-        }
-
-        if (!descriptor->attributes || !descriptor->framebuffer || !descriptor->state)
-        {
-            std::cerr << "graphics pipeline must have state, attributes and framebuffer." << std::endl;
-            return false;
-        }*/
-        return false;
+        if (!_Program) return;
+        _Program->enable();
+        _BindResources();
     }
 
     /*
-     * generate shader code
-     * create program object, compile shaders and attach them to program
-     * pre-link actions:
-     * link program
-     * query resource state info
-     * generate resource
-     * */
-    bool _construct(const std::shared_ptr<gl_graphics_pipeline_descriptor>& descriptor) noexcept
+    * Make sure all commands for this pipeline can not work.
+    * Clear all context.
+    */
+    void Disable() noexcept
     {
-        //if (!descriptor) return false;
+        if (!_Program) return;
+        _UnbindResources();
+        _Program->disable();
+    }
 
-        //// generate shader code
-        //// load and complie shaders
-        //std::vector<std::shared_ptr<glsl_shader>> _glsl_shaders;
-        //std::vector<std::shared_ptr<gl_shader>> _shaders;
-        //
-        //const std::string _pipeline_dir = descriptor->owner_renderer_dir + descriptor->name + "/";
+public: // non-draw commands 
 
-        //const auto& _glsl_vs = descriptor->program.vertex_shader;
-        //if (_glsl_vs)
-        //{
-        //    const std::string _vs_path = _pipeline_dir + descriptor->name + ".vs";
-        //    auto _vs = std::make_shared<gl_shader>(gl_shader_type::VERTEX_SHADER, _vs_path);
-        //    if (!_vs)
-        //    {
-        //        std::cerr << "vertex shader create fail" << std::endl;
-        //        return false;
-        //    }
-        //    _shaders.push_back(_vs);
-        //    _glsl_shaders.push_back(_glsl_vs);
-        //}
+    void BeginTransformFeedback()
+    {
+        auto _VertexLauncher = _Descriptor.VertexLauncher;
+        auto _TransformFeedback = _Descriptor.TransformFeedback;
 
-        //const auto& _glsl_tess = descriptor->program.tessellation_shader;
-        //if (_glsl_tess)
-        //{
-        //    const std::string _tesc_path = _pipeline_dir + descriptor->name + ".tesc";
-        //    const std::string _tese_path = _pipeline_dir + descriptor->name + ".tese";
+        if (!_VertexLauncher || !_TransformFeedback) return;
+        PrimitiveMode _TransformFeedbackPrimitiveMode = _VertexLauncher->GetPrimitiveMode();
+        _TransformFeedback->BeginTransformFeedback(_TransformFeedbackPrimitiveMode);
+    }
 
-        //    auto _tesc = std::make_shared<gl_shader>(gl_shader_type::TESS_CONTROL_SHADER, _tesc_path);
-        //    auto _tese = std::make_shared<gl_shader>(gl_shader_type::TESS_EVALUATION_SHADER, _tese_path);
+    void PauseTransformFeedback()
+    {
+        auto _VertexLauncher = _Descriptor.VertexLauncher;
+        auto _TransformFeedback = _Descriptor.TransformFeedback;
 
-        //    if (!_tesc || !_tese)
-        //    {
-        //        std::cerr << "tessellation shader create fail" << std::endl;
-        //        return false;
-        //    }
-        //    _shaders.push_back(_tesc);
-        //    _shaders.push_back(_tese);
-        //    _glsl_shaders.push_back(_glsl_tess);
-        //}
+        if (!_VertexLauncher || !_TransformFeedback) return;
+        _TransformFeedback->PauseTransformFeedback();
+    }
 
-        //const auto& _glsl_gs = descriptor->program.geometry_shader;
-        //if (_glsl_gs)
-        //{
-        //    const std::string _gs_path = _pipeline_dir + descriptor->name + ".gs";
-        //    auto _gs = std::make_shared<gl_shader>(gl_shader_type::GEOMETRY_SHADER, _gs_path);
-        //    if (!_gs)
-        //    {
-        //        std::cerr << "geometry shader create fail" << std::endl;
-        //        return false;
-        //    }
-        //    _shaders.push_back(_gs);
-        //    _glsl_shaders.push_back(_glsl_gs);
-        //}
+    void ResumeTransformFeedback()
+    {
+        auto _VertexLauncher = _Descriptor.VertexLauncher;
+        auto _TransformFeedback = _Descriptor.TransformFeedback;
 
-        //const auto& _glsl_fs = descriptor->program.fragment_shader;
-        //if (_glsl_fs)
-        //{
-        //    const std::string _fs_path(_pipeline_dir + descriptor->name + ".fs");
-        //    auto _fs = std::make_shared<gl_shader>(gl_shader_type::FRAGMENT_SHADER, _fs_path);
-        //    if (!_fs)
-        //    {
-        //        std::cerr << "fragment shader create fail" << std::endl;
-        //        return false;
-        //    }
-        //    _shaders.push_back(_fs);
-        //    _glsl_shaders.push_back(_glsl_fs);
-        //}
+        if (!_VertexLauncher || !_TransformFeedback) return;
+        _TransformFeedback->ResumeTransformFeedback();
+    }
 
-        //// construct shader program
-        //_program = std::make_unique<gl_program>();
-        //if (!_program) return false;
-        //_program->construct(_shaders);
+    void EndTransformFeedback()
+    {
+        auto _VertexLauncher = _Descriptor.VertexLauncher;
+        auto _TransformFeedback = _Descriptor.TransformFeedback;
 
-        // query state settings and generate settings cache
-       // _program->get_resource();
-        //std::uint32_t _index = 0;
-        //_program->get_resource_index(gl_program_interface::ATOMIC_COUNTER_BUFFER, "test", _index);
-        
-        // generate resources
-        //{
-        //    // collect
-        //    std::vector<std::shared_ptr<glsl_uniform_block_t>> _uniform_blocks;
-        //    std::vector<std::shared_ptr<glsl_shader_storage_block_t>> _shader_storage_blocks;
-        //    std::vector<std::shared_ptr<glsl_atomic_counter_t>> _atomic_counters;
-        //    for (const auto& _glsl_shader : _glsl_shaders)
-        //    {
-        //    }
+        if (!_VertexLauncher || !_TransformFeedback) return;
+        _TransformFeedback->EndTransformFeedback();
+    }
 
-        //    // create buffer
-        //    if (_uniform_blocks.size() != 0)
-        //    {
-        //        _uniform_buffer = std::make_unique<gl_uniform_buffer>(gl_uniform_buffer_descriptor{ _uniform_blocks });
-        //    }
+    void BeginConditionalRender()
+    {
+        glBeginConditionalRender(0, GL_QUERY_WAIT);
+    }
 
-        //    // create buffer
-        //    if (_shader_storage_blocks.size() != 0)
-        //    {
-        //        _shader_storage_buffer = std::make_unique<gl_shader_storage_buffer>(gl_shader_storage_buffer_descriptor{ _shader_storage_blocks });
-        //    }
+    void EndConditionalRender()
+    {
+        glEndConditionalRender();
+    }
 
-        //    // create buffer
-        //    if (_atomic_counters.size() != 0)
-        //    {
-        //        _atomic_counter_buffer = std::make_unique<gl_atomic_counter_buffer>(gl_atomic_counter_buffer_descriptor{ _atomic_counters });
-        //    }
-        //}
-return false;
+public: // draw commands
+
+    void DrawArrays(UInt32 VertexOffset, UInt32 VerticesNum) const
+    {
+        auto _VertexLauncher = _Descriptor.VertexLauncher;
+
+        if (!_VertexLauncher) return;
+        if (VertexOffset + VerticesNum >= _VertexLauncher->GetVerticesNum()) return;
+
+        glDrawArrays(static_cast<GLenum>(_VertexLauncher->GetPrimitiveMode()), VertexOffset, VerticesNum);
+    }
+
+    void DrawArrays(UInt32 VertexOffset, UInt32 VerticesNum, UInt32 InstancesNum, UInt32 InstanceOffset) const
+    {
+        auto _VertexLauncher = _Descriptor.VertexLauncher;
+
+        if (!_VertexLauncher) return;
+        if (VertexOffset + VerticesNum >= _VertexLauncher->GetVerticesNum()) return;
+        if (InstanceOffset >= InstancesNum) return;
+
+        glDrawArraysInstancedBaseInstance(static_cast<GLenum>(_VertexLauncher->GetPrimitiveMode()), VertexOffset, VerticesNum, InstancesNum, InstanceOffset);
+    }
+
+    void MultiDrawArrays(const std::vector<UInt32>& VertexOffsets, const std::vector<UInt32>& VerticesNums) const
+    {
+        auto _VertexLauncher = _Descriptor.VertexLauncher;
+
+        if (!_VertexLauncher) return;
+        if (VertexOffsets.size() != VerticesNums.size()) return;
+
+        glMultiDrawArrays(static_cast<GLenum>(_VertexLauncher->GetPrimitiveMode()), 
+            (const Int32*)VertexOffsets.data(), (const Int32*)VerticesNums.data(), VertexOffsets.size()
+        );
+    }
+
+    
+    void DrawElements(UInt32 ElementOffset, UInt32 ElementsNum) const
+    {
+        auto _VertexLauncher = _Descriptor.VertexLauncher;
+
+        if (ElementOffset + ElementsNum >= _VertexLauncher->GetElementsNum()) return;
+
+        glDrawElements(
+            static_cast<GLenum>(_VertexLauncher->GetPrimitiveMode()),
+            ElementsNum, static_cast<GLenum>(_VertexLauncher->GetElementType()), 
+            (void*)(_VertexLauncher->GetElementSize() * ElementOffset)
+        );
+    }
+
+    void DrawElements(UInt32 ElementOffset, UInt32 ElementsNum, UInt32 InstancesNum, UInt32 BaseInstance) const
+    {
+        auto _VertexLauncher = _Descriptor.VertexLauncher;
+
+        glDrawElementsInstancedBaseInstance(
+            static_cast<GLenum>(_VertexLauncher->GetPrimitiveMode()),
+            ElementsNum, static_cast<GLenum>(_VertexLauncher->GetElementType()), (void*)(_VertexLauncher->GetElementSize() * ElementOffset),
+            InstancesNum, BaseInstance
+        );
+    }
+
+    void DrawElements(UInt32 ElementOffset, UInt32 ElementsNum, UInt32 BaseVertex) const
+    {
+        auto _VertexLauncher = _Descriptor.VertexLauncher;
+
+        glDrawElementsBaseVertex(
+            static_cast<GLenum>(_VertexLauncher->GetPrimitiveMode()),
+            ElementsNum, static_cast<GLenum>(_VertexLauncher->GetElementType()), (void*)(_VertexLauncher->GetElementSize() * ElementOffset),
+            BaseVertex
+        );
+    }
+
+    void DrawElements(UInt32 ElementOffset, UInt32 ElementsNum, UInt32 BaseVertex, UInt32 InstancesNum, UInt32 BaseInstance) const
+    {
+        auto _VertexLauncher = _Descriptor.VertexLauncher;
+
+        glDrawElementsInstancedBaseVertexBaseInstance(
+            static_cast<GLenum>(_VertexLauncher->GetPrimitiveMode()),
+            ElementsNum, static_cast<GLenum>(_VertexLauncher->GetElementType()), (void*)(_VertexLauncher->GetElementSize() * ElementOffset),
+            InstancesNum, BaseVertex, BaseInstance
+        );
+    }
+
+    void DrawRangeElements(UInt32 ElementStart, UInt32 ElementEnd, UInt32 ElementOffset, UInt32 ElementsNum, UInt32 BaseVertex) const
+    {
+        auto _VertexLauncher = _Descriptor.VertexLauncher;
+
+        glDrawRangeElementsBaseVertex(
+            static_cast<GLenum>(_VertexLauncher->GetPrimitiveMode()),
+            ElementStart, ElementEnd,
+            ElementsNum, static_cast<GLenum>(_VertexLauncher->GetElementType()), (void*)(_VertexLauncher->GetElementSize() * ElementOffset),
+            BaseVertex
+        );
+    }
+
+    void MultiDrawElements(const std::vector<UInt32>& ElementOffsets, std::vector<UInt32>& ElementsNums) const
+    {
+        auto _VertexLauncher = _Descriptor.VertexLauncher;
+
+        glMultiDrawElements(
+            static_cast<GLenum>(_VertexLauncher->GetPrimitiveMode()), (const Int32*)ElementsNums.data(),
+            static_cast<GLenum>(_VertexLauncher->GetElementType()),
+            nullptr, ElementOffsets.size()
+        );
+    }
+
+    void MultiDrawElements(UInt32 BaseVertex) const
+    {
+        //glMultiDrawElementsBaseVertex()
+    }
+
+
+    void DrawArrays(const DrawArraysIndirectCommand& Command) const
+    {
+
+    }
+
+    void MultiDrawArrays(const std::vector<DrawArraysIndirectCommand>& Commands) const
+    {
+        //glMultiDrawArraysIndirect();
+    }
+
+    void DrawElements(const DrawElementsIndirectCommand& Command) const
+    {
+        auto _VertexLauncher = _Descriptor.VertexLauncher;
+
+        glDrawElementsIndirect(
+            static_cast<GLenum>(_VertexLauncher->GetPrimitiveMode()),
+            static_cast<GLenum>(_VertexLauncher->GetElementType()),
+            (const void*)&Command
+        );
+    }
+
+    void MultiDrawElements(const std::vector<DrawElementsIndirectCommand>& Commands) const
+    {
+        //glMultiDrawElementsIndirect();
+    }
+
+
+    void DrawTransformFeedback(UInt32 StreamIndex = 0)
+    {
+        auto _VertexLauncher = _Descriptor.VertexLauncher;
+        auto _TransformFeedback = _Descriptor.TransformFeedback;
+
+        if (!_VertexLauncher || !_TransformFeedback) return;
+
+        PrimitiveMode _TransformFeedbackPrimitiveMode = _VertexLauncher->GetPrimitiveMode();
+        _TransformFeedback->Draw(_TransformFeedbackPrimitiveMode, StreamIndex);
+    }
+
+    void DrawTransformFeedback(UInt32 StreamIndex, UInt32 InstancesNum)
+    {
+        auto _VertexLauncher = _Descriptor.VertexLauncher;
+        auto _TransformFeedback = _Descriptor.TransformFeedback;
+
+        if (!_VertexLauncher || !_TransformFeedback) return;
+
+        PrimitiveMode _TransformFeedbackPrimitiveMode = _VertexLauncher->GetPrimitiveMode();
+        _TransformFeedback->Draw(_TransformFeedbackPrimitiveMode, StreamIndex, InstancesNum);
     }
 
 private:
-    
-    std::shared_ptr<const gl_graphics_pipeline_descriptor> _descriptor;
 
-    std::unique_ptr<gl_program> _program;
+    GraphicsPipelineDescriptor _Descriptor;
+
+    UniquePtr<gl_program> _Program;
 
     struct gl_graphics_pipeline_resource_pool{
         std::unique_ptr<gl_uniform_buffer> uniform_buffer;
@@ -615,15 +669,15 @@ private:
 
 private:
 
-    void _bind_resources()
+    void _BindResources()
     {
-        if (_descriptor && _descriptor->VertexLauncher && _descriptor->program && _descriptor->framebuffer && _descriptor->state)
+        if (_Descriptor.VertexLauncher && _Descriptor.Program && _Descriptor.RenderTarget && _Descriptor.State)
         {
             // bind vertex launcher
-            _descriptor->VertexLauncher->Bind();
+            _Descriptor.VertexLauncher->Bind();
 
             // bind program parameters
-            const auto& _program_parameters = _descriptor->program->parameters();
+            const auto& _program_parameters = _Descriptor.Program->parameters();
             for (const auto& _image : _program_parameters.images)
             {
                 if(_image) _image->bind();
@@ -649,20 +703,20 @@ private:
            
 
             // bind framebuffer
-            _descriptor->framebuffer->bind();
+            _Descriptor.RenderTarget->bind();
 
             // set state
-            _descriptor->state->set();
+            _Descriptor.State->set();
         }
  
     }
 
-    void _unbind_resources()
+    void _UnbindResources()
     {
 
     }
 
-    void flush_resources()
+    void FlushResources()
     {
         GLint MaxVertexAtomicCounterBuffers(0);
         GLint MaxControlAtomicCounterBuffers(0);
@@ -677,11 +731,6 @@ private:
         glGetIntegerv(GL_MAX_GEOMETRY_ATOMIC_COUNTER_BUFFERS, &MaxGeometryAtomicCounterBuffers);
         glGetIntegerv(GL_MAX_FRAGMENT_ATOMIC_COUNTER_BUFFERS, &MaxFragmentAtomicCounterBuffers);
         glGetIntegerv(GL_MAX_COMBINED_ATOMIC_COUNTER_BUFFERS, &MaxCombinedAtomicCounterBuffers);
-    }
-
-    bool _check_shader_ext(const std::string& path, const std::string& ext)
-    {
-        return path.substr(path.find_first_of('.')) == ext;
     }
 
 };
