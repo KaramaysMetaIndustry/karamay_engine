@@ -24,17 +24,10 @@ public:
 
 public:
 
-	Buffer* GetRaw()
-	{
-		return _Buffer.get();
-	}
-
 	void Reallocate(Int64 BytesNum, const UInt8* InitializationBytes = nullptr)
 	{
 		_Allocate(BytesNum, InitializationBytes);
 	}
-
-public:
 
 	void Write(UInt32 ByteOffset, const UInt8* Bytes, UInt32 BytesNum)
 	{
@@ -62,6 +55,11 @@ public:
 	const void* Read(Int64 ByteOffset, Int64 BytesNum)
 	{
 		return _Buffer ? _Buffer->Read(ByteOffset, BytesNum) : nullptr;
+	}
+
+	const Buffer* GetRaw() const
+	{
+		return _Buffer.get();
 	}
 
 public:

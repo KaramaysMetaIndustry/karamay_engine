@@ -50,111 +50,132 @@ struct VertexLauncherDescriptor
 class VertexLauncher 
 {
 public:
+
+	using ElementSlotWriter = ElementArrayBuffer::ElementBufferWriter;
+	using ElementSlotReader = ElementArrayBuffer::ElementBufferReader;
+	using ElementSlotHandler = ElementArrayBuffer::ElementBufferHandler;
+
+
 	VertexLauncher(const VertexLauncherDescriptor& Descriptor) :
 		_PrimitiveMode(Descriptor.Mode),
 		_PrimitiveVerticesNum(Descriptor.PrimitiveVerticesNum),
 		_VertexArray(nullptr), _ElementArrayBuffer(nullptr)
 	{
-		VertexArrayDescriptor _Desc;
-		_VertexArray = new VertexArray(_Desc);
-		_ElementArrayBuffer = new ElementArrayBuffer();
 	}
 
 	VertexLauncher(const VertexLauncher&) = delete;
 	VertexLauncher& operator=(const VertexLauncher&) = delete;
 
-	~VertexLauncher()
-	{
-		delete _VertexArray;
-		delete _ElementArrayBuffer;
-	}
-
+	~VertexLauncher() = default;
+	
 public:
-
-	PrimitiveMode GetPrimitiveMode() const { return _PrimitiveMode; }
 
 	UInt32 GetVerticesNum() const { return _VertexArray ? _VertexArray->GetVerticesNum() : 0; }
 
 	UInt32 GetVertexSize() const { return _VertexArray ? _VertexArray->GetVertexSize() : 0; }
 
-	UInt32 GetElementsNum() const { return _ElementArrayBuffer ? _ElementArrayBuffer->GetIndicesNum() : 0; }
+	/*
+	* you must describe a vertex size
+	* you can only respecify a new VerticesNum, cause VertexSize, Layout can not be modified
+	* this action will consume quite time
+	*/
+	void ReallocateVertexSlot(UInt32 VerticesNum, const void* InitialVertices = nullptr) noexcept
+	{
+		if (!_VertexArray) return;
+		_VertexArray->ReallocateVertexSlot(VerticesNum);
+	}
 
+
+	void WriteToVertexSlot(UInt32 VertexOffset, UInt32 VerticesNum, const VertexArray::VertexSlotWriter& Writer)
+	{}
+
+	void ReadFromVertexSlot(UInt32 VertexOffset, UInt32 VerticesNum, const VertexArray::VertexSlotReader& Reader)
+	{}
+
+	void HandleVertexSlot(UInt32 VertexOffset, UInt32 VerticesNum, const VertexArray::VertexSlotHandler& Handler)
+	{}
+
+public:
+
+	UInt32 GetInstanceAttributesNum(const std::string& InstanceAttributeName) const {}
+
+	UInt32 GetInstanceAttributeSize(const std::string& InstanceAttributeName) const {}
+
+	/* reallocate the name specified attributes, divisor decide the attributes' layout */ 
+	void ReallocateInstanceAttributeSlot(const std::string& InstanceAttributeName, UInt32 InstanceAttributesNum, UInt32 Divisor, const void* InitialInstanceAttributes) noexcept
+	{
+		if (!_VertexArray) return;
+
+	}
+
+	void WriteToInstanceAttributeSlot(const std::string& InstanceAttributeName, UInt32 InstanceAttributeOffset, UInt32 InstanceAttributesNum)
+	{}
+
+	void ReadFromInstanceAttributeSlot(const std::string& InstanceAttributeName, UInt32 InstanceAttributeOffset, UInt32 InstanceAttributesNum)
+	{}
+
+	void HandleInstanceAttributeSlot(const std::string& InstanceAttributeName, UInt32 InstanceAttributeOffset, UInt32 InstanceAttributesNum)
+	{}
+
+public:
+
+	/* Get elements num.*/
+	UInt32 GetElementsNum() const { return _ElementArrayBuffer ? _ElementArrayBuffer->GetElementsNum() : 0; }
+	
+	/* Get element size.*/
+	UInt32 GetElementSize() const { return _ElementArrayBuffer ? _ElementArrayBuffer->GetElementSize() : 0; }
+
+	/* Get element type.*/
 	ElementType GetElementType() const { return _ElementArrayBuffer ? _ElementArrayBuffer->GetElementType() : ElementType::NONE; }
 
-	UInt32 GetElementSize() const { return _ElementArrayBuffer ? _ElementArrayBuffer->GetIndexSize() : 0; }
-
-public:
-
-	// you must describe a vertex size
-	// you can only respecify a new VerticesNum, cause VertexSize, Layout can not be modified
-	// this action will consume quite time
-	void ReallocateVertexSlot(UInt32 VerticesNum) noexcept
-	{
-		if (!_VertexArray) return;
-		_VertexArray->ReallocateVertices(VerticesNum);
-	}
-
-	// Offset unit is a Vertex Size
-	void FillVertexSlot(UInt32 VertexOffset, const UInt8* DataBytes, UInt32 VerticesNum) noexcept
-	{
-		if (!_VertexArray) return;
-
-		_VertexArray->FillVertices(VertexOffset, DataBytes, VerticesNum);
-	}
-
-	// Get Vertices
-	const UInt8* GetVertices(UInt32 VertexOffset, UInt32 VerticesNum) const 
-	{
-		return nullptr;
-	}
-
-public:
-
-	// reallocate the name specified attributes, divisor decide the attributes' layout
-	void ReallocateInstanceAttributeSlot(const std::string& InstanceAttributeName, UInt32 InstanceAttributesNum, UInt32 Divisor) noexcept
-	{
-		if (!_VertexArray) return;
-		
-		//_VertexArray->ReallocateInstanceAttributes(AttributeIndex, InstanceAttributesNum, Divisor);
-	}
-
-	// fill the instance attributes
-	void FillInstanceAttributeSlot(const std::string& InstanceAttributeName, UInt32 InstanceAttributeOffset, UInt8* DataBytes, UInt32 InstanceAttributesNum) noexcept
-	{
-		if (!_VertexArray) return;
-
-		_VertexArray->FillInstanceAttributes(InstanceAttributeName, InstanceAttributeOffset, DataBytes, InstanceAttributesNum);
-	}
-
-	const UInt8* GetInstanceAttributes(const std::string& InstanceAttributeName, UInt32 InstanceAttributeOffset, UInt32 InstanceAttributesNum) const
-	{
-		return nullptr;
-	}
-
-public:
-
-	// Indices only associates to PrimitiveMode
-	// PrimitiveMode will never change once lancher constructed
-	// IndicesNum % PrimitiveVerticesNum = 0
-	void ReallocateIndexSlot(UInt32 IndicesNum, const UInt32* InitializationIndices = nullptr) noexcept
+	/*
+	* Indices only associates to PrimitiveMode
+	* PrimitiveMode will never change once lancher constructed
+	* IndicesNum % PrimitiveVerticesNum = 0
+	*/
+	void ReallocateElementSlot(UInt32 ElementsNum, const void* InitialElements = nullptr) noexcept
 	{
 		if (!_ElementArrayBuffer) return;
-		if (IndicesNum % _PrimitiveVerticesNum != 0) return;
+		if (ElementsNum % _PrimitiveVerticesNum != 0) return;
 		
-		_ElementArrayBuffer->Reallocate(IndicesNum);
+		_ElementArrayBuffer->Reallocate(ElementsNum, InitialElements);
 	}
 
-	void FillIndexSlot(UInt32 IndexOffset, const UInt32* Indices, UInt32 IndicesNum) noexcept
+	void WriteToElementSlot(UInt32 ElementOffset, UInt32 ElementsNum, const ElementSlotWriter& Writer) 
 	{
 		if (!_ElementArrayBuffer) return;
-		
-		//_ElementArrayBuffer->Fill(IndexOffset, Indices);
+		_ElementArrayBuffer->WriteToElementBuffer(ElementOffset, ElementsNum, Writer);
 	}
 
-	// Get indices data bytes
-	const UInt32* FetchIndices(UInt32 IndexOffset, UInt32 IndicesNum) const noexcept
+	void ReadFromElementSlot(UInt32 ElementOffset, UInt32 ElementsNum, const ElementSlotReader& Reader) 
 	{
-		return nullptr;
+		if (!_ElementArrayBuffer) return;
+		_ElementArrayBuffer->ReadFromElementBuffer(ElementOffset, ElementsNum, Reader);
+	}
+
+	/*
+	* Map the element slot as Client memory, it will copy data from Server, after handling over, then copy back to Server
+	* ElementOffset(UInt32)
+	* ElementsNum(UInt32)
+	* Handler([](void* MappedMemory, UInt32 ElementsNum) {})
+	*/
+	void HandleElementSlot(UInt32 ElementOffset, UInt32 ElementsNum, const ElementSlotHandler& Handler) 
+	{
+		if (!_ElementArrayBuffer) return;
+
+		_ElementArrayBuffer->HandleElementBuffer(ElementOffset, ElementsNum, Handler);
+	}
+
+	void SetPrimitiveRestartFlagElement(UInt32 ElementOffset)
+	{
+		if (!_ElementArrayBuffer) return;
+
+		_ElementArrayBuffer->SetPrimitiveRestartFlagElement(ElementOffset);
+	}
+
+	const std::vector<UInt32>& GetPrimitiveRestartFlagElementIndices() const 
+	{
+
 	}
 
 public:
@@ -171,15 +192,19 @@ public:
 		if (_ElementArrayBuffer) _ElementArrayBuffer->Unbind();
 	}
 
+public:
+
+	PrimitiveMode GetPrimitiveMode() const { return _PrimitiveMode; }
+
 private:
 
 	PrimitiveMode _PrimitiveMode;
 
 	UInt32 _PrimitiveVerticesNum;
 
-	VertexArray* _VertexArray;
+	UniquePtr<VertexArray> _VertexArray;
 
-	ElementArrayBuffer* _ElementArrayBuffer;
+	UniquePtr<ElementArrayBuffer> _ElementArrayBuffer;
 	
 };
 

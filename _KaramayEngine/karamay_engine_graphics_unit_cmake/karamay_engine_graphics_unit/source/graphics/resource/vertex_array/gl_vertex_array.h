@@ -144,33 +144,29 @@ public:
     * so this func properly cause performance degradation
     * @VerticesNum(UInt32) : num of vertices you want to reallocate memory for, if it is the same as old num, just return.
     */
-    void ReallocateVertices(UInt32 VerticesNum) noexcept
+    void ReallocateVertexSlot(UInt32 VerticesNum) noexcept
     {
         if (VerticesNum == _InternalDescriptor.VerticesNum) return;
         _InternalDescriptor.VerticesNum = VerticesNum;
         _AllocateVertices();
     }
 
-    /*
-    * VertexOffset + VerticesNum <= _InternalDescriptor.VerticesNum - 1
-    * @VertexOffset(UInt32) : 
-    * @Data(const UInt8*) :
-    * @VerticesNum(UInt32) :
-    */
-    void FillVertices(UInt32 VertexOffset, const UInt8* Data, UInt32 VerticesNum) noexcept
-    {
-        const auto& _VertexBuffer = _InternalDescriptor.VertexDesc.Buffer;
-        if (!_VertexBuffer) return;
-        if (VertexOffset + VerticesNum > _InternalDescriptor.VerticesNum) return;
+    using VertexSlotWriter = std::function<void(void*, UInt32)>;
 
-        const UInt32 _VertexSize = _InternalDescriptor.VertexDesc.VertexSize;
-       // _VertexBuffer->Fill(VertexOffset * _VertexSize, Data, VerticesNum * _VertexSize);
+    void WriteToVertexSlot(UInt32 VertexOffset, UInt32 VerticesNum, const VertexSlotWriter& Writer)
+    {
+        
     }
 
-    void HandleMappedVertices(UInt32 VertexOffset, UInt32 VerticesNum, const std::function<void(UInt8* MappedVertices, UInt32 VerticesNum)>& Handler)
-    {
+    using VertexSlotReader = std::function<void(const void*, UInt32)>;
 
-    }
+    void ReadFromVertexSlot(UInt32 VertexOffset, UInt32 VerticesNum, const VertexSlotReader& Reader)
+    {}
+
+    using VertexSlotHandler = std::function<void(void*, UInt32)>;
+
+    void HandleVertexSlot(UInt32 VertexOffset, UInt32 VerticesNum, const VertexSlotHandler& Handler)
+    {}
 
 public:
 

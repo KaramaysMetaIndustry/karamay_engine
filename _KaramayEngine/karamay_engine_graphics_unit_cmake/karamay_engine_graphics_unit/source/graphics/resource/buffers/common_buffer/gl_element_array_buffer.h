@@ -17,21 +17,26 @@ enum class ElementType
 */
 class ElementArrayBuffer final{
 public:
+    using ElementBufferWriter = std::function<void(void*, UInt32)>;
+    using ElementBufferReader = std::function<void(const void*, UInt32)>;
+    using ElementBufferHandler = std::function<void(void*, UInt32)>;
+
+
     ElementArrayBuffer() {}
-    ElementArrayBuffer(ElementType Type, UInt32 IndicesNum) :
+    ElementArrayBuffer(ElementType Type, UInt32 ElementsNum, const void* InitialElements) :
         _Buffer(nullptr), 
         _ElementType(Type),
-        _IndicesNum(IndicesNum)
+        _ElementSize(ElementsNum)
     {
         switch (Type)
         {
-            case ElementType::UNSIGNED_BYTE: _IndexSize = sizeof(UInt8); break;
-            case ElementType::UNSIGNED_SHORT: _IndexSize = sizeof(UInt16); break;
-            case ElementType::UNSIGNED_INT: _IndexSize = sizeof(UInt32); break;
+            case ElementType::UNSIGNED_BYTE: _ElementSize = sizeof(UInt8); break;
+            case ElementType::UNSIGNED_SHORT: _ElementSize = sizeof(UInt16); break;
+            case ElementType::UNSIGNED_INT: _ElementSize = sizeof(UInt32); break;
             default: break;
         }
 
-        _Allocate(IndicesNum);
+        _Allocate(ElementsNum, InitialElements);
     }
 
     ElementArrayBuffer(const ElementArrayBuffer&) = delete;
@@ -40,25 +45,54 @@ public:
     ~ElementArrayBuffer() = default;
 
 public:
+    
+    UInt32 GetElementsNum() const { return _ElementsNum; }
 
-    Buffer* GetRaw()
+    UInt32 GetElementSize() const { return _ElementSize; }
+
+    ElementType GetElementType() const { return _ElementType; }
+
+    void Reallocate(UInt32 ElementsNum, const void* InitialElements)
     {
-        return _Buffer.get();
+        _ElementsNum = ElementsNum; 
+        _Allocate(ElementsNum, InitialElements);
     }
 
-    void Reallocate(UInt32 IndicesNum, const void* Indices = nullptr)
+    void WriteToElementBuffer(UInt32 ElementOffset, UInt32 ElementsNum, const ElementBufferWriter& Writer)
     {
-        _IndicesNum = IndicesNum; _Allocate(IndicesNum);
+        _Buffer->ExecuteMappedMemoryWriter(ElementOffset * _ElementSize, ElementsNum * _ElementSize,
+            [&](UInt8* MappedMemory, Int64 BytesNum)
+            {
+                if (!MappedMemory) return;
+                Writer(MappedMemory, BytesNum / _ElementSize);
+            }
+        );
     }
 
-    void Fill(UInt32 IndexOffset, const void* Indices, UInt32 IndicesNum) 
+    void ReadFromElementBuffer(UInt32 ElementOffset, UInt32 ElementsNum, const ElementBufferReader& Reader)
     {
-        if (!_Buffer) return;
+        _Buffer->ExecuteMappedMemoryReader(ElementOffset * _ElementSize, ElementsNum * _ElementSize, 
+            [&](const UInt8* MappedMemory, Int64 BytesNum) 
+            {
+                if (!MappedMemory) return;
+                Reader(MappedMemory, BytesNum / _ElementSize);
+            }
+        );
     }
 
-    void FillPrimitiveRestartFlagIndex(UInt32 IndexOffset)
+    void HandleElementBuffer(UInt32 ElementOffset, UInt32 ElementsNum, const ElementBufferHandler& Handler)
     {
-        if (!_Buffer) return;
+        _Buffer->ExecuteMappedMemoryHandler(ElementOffset * _ElementSize, ElementsNum * _ElementSize,
+            [&](UInt8* MappedMemory, Int64 BytesNum)
+            {
+                if (!MappedMemory) return;
+                Handler(MappedMemory, BytesNum / _ElementSize);
+            }
+        );
+    }
+
+    void SetPrimitiveRestartFlagElement(UInt32 ElementOffset)
+    {
 
     }
 
@@ -66,17 +100,6 @@ public:
     { 
         return _PrimitiveRestartFlagIndexOffsets; 
     }
-
-    const void* FetchIndices(UInt32 IndexOffset, UInt32 IndicesNum) const
-    {
-        return nullptr;
-    }
-
-    UInt32 GetIndicesNum() const { return _IndicesNum; }
-
-    UInt32 GetIndexSize() const { return _IndexSize; }
-
-    ElementType GetElementType() const { return _ElementType; }
 
     void RestartPrimitive() const
     {
@@ -100,17 +123,24 @@ public:
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
+public:
+
+    Buffer* GetRaw()
+    {
+        return _Buffer.get();
+    }
+
 private:
 
     ElementType _ElementType;
 
-    UInt32 _IndexSize, _IndicesNum;
+    UInt32 _ElementSize, _ElementsNum;
 
     std::vector<UInt32> _PrimitiveRestartFlagIndexOffsets;
 
     UniquePtr<Buffer> _Buffer;
 
-    void _Allocate(UInt32 IndicesNum)
+    void _Allocate(UInt32 ElementsNum, const void* InitialElements)
     {
         BufferStorageOptions _Options;
         _Options.ClientStorage = false;
@@ -119,7 +149,7 @@ private:
         _Options.MapWrite = true;
         _Options.MapCoherent = false;
         _Options.MapPersistent = false;
-        _Buffer = std::make_unique<Buffer>(_Options, IndicesNum * _IndexSize);
+        _Buffer = std::make_unique<Buffer>(_Options, ElementsNum * _ElementSize);
     }
 
 };
