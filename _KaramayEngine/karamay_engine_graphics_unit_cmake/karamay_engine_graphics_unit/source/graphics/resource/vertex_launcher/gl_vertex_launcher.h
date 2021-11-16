@@ -4,7 +4,7 @@
 #include "graphics/resource/vertex_array/gl_vertex_array.h"
 #include "graphics/resource/buffers/common_buffer/gl_element_array_buffer.h"
 
-enum class PrimitiveMode
+enum class gl_primitive_mode
 {
 	POINTS = GL_POINTS,
 
@@ -24,187 +24,197 @@ enum class PrimitiveMode
 };
 
 struct DrawArraysIndirectCommand {
-	UInt32  count;
-	UInt32  primCount;
-	UInt32  first;
-	UInt32  baseInstance;
+	uint32  count;
+	uint32  primCount;
+	uint32  first;
+	uint32  baseInstance;
 };
 
 struct DrawElementsIndirectCommand {
-	UInt32 count;
-	UInt32 primCount;
-	UInt32 firstIndex;
-	UInt32 baseVertex;
-	UInt32 baseInstance;
+	uint32 count;
+	uint32 primCount;
+	uint32 firstIndex;
+	uint32 baseVertex;
+	uint32 baseInstance;
 };
 
 
-struct VertexLauncherDescriptor
+struct gl_vertex_launcher_descriptor
 {
-	VertexArrayDescriptor VertexArrayDesc;
-	UInt32 IndicesNum;
-	UInt32 PrimitiveVerticesNum; // IndicesNum % PrimitiveVerticesNum == 0
-	PrimitiveMode Mode;
+	gl_primitive_mode primitive_mode;
+	uint32 primitive_vertices_num; // IndicesNum % PrimitiveVerticesNum == 0
+	gl_vertex_array_descriptor vertex_array_descriptor;
+	uint32 elements_num;
 };
 
-class VertexLauncher 
+class gl_vertex_launcher 
 {
 public:
+	using vertex_slot_reader = gl_vertex_array::vertex_slot_reader;
+	using vertex_slot_writer = gl_vertex_array::vertex_slot_writer;
+	using vertex_slot_handler = gl_vertex_array::vertex_slot_handler;
+	using instance_attribute_slot_reader = gl_vertex_array::instance_attribute_slot_reader;
+	using instance_attribute_slot_writer = gl_vertex_array::instance_attribute_slot_writer;
+	using instance_attribute_slot_handler = gl_vertex_array::instance_attribute_slot_handler;
+	using element_slot_reader = gl_element_array_buffer::element_buffer_reader;
+	using element_slot_writer = gl_element_array_buffer::element_buffer_writer;
+	using element_slot_handler = gl_element_array_buffer::element_buffer_handler;
+	
+	gl_vertex_launcher() = delete;
+	gl_vertex_launcher(const gl_vertex_launcher_descriptor& descriptor) :
+		_primitive_mode(descriptor.primitive_mode),
+		_primitive_vertices_num(descriptor.primitive_vertices_num),
+		_vertex_array(nullptr), _element_array_buffer(nullptr)
+	{}
 
-	using ElementSlotWriter = ElementArrayBuffer::ElementBufferWriter;
-	using ElementSlotReader = ElementArrayBuffer::ElementBufferReader;
-	using ElementSlotHandler = ElementArrayBuffer::ElementBufferHandler;
+	gl_vertex_launcher(const gl_vertex_launcher&) = delete;
+	gl_vertex_launcher& operator=(const gl_vertex_launcher&) = delete;
 
-
-	VertexLauncher(const VertexLauncherDescriptor& Descriptor) :
-		_PrimitiveMode(Descriptor.Mode),
-		_PrimitiveVerticesNum(Descriptor.PrimitiveVerticesNum),
-		_VertexArray(nullptr), _ElementArrayBuffer(nullptr)
-	{
-	}
-
-	VertexLauncher(const VertexLauncher&) = delete;
-	VertexLauncher& operator=(const VertexLauncher&) = delete;
-
-	~VertexLauncher() = default;
+	~gl_vertex_launcher() = default;
 	
 public:
 
-	UInt32 GetVerticesNum() const { return _VertexArray ? _VertexArray->GetVerticesNum() : 0; }
+	uint32 get_vertices_num() const { return _vertex_array ? _vertex_array->get_vertices_num() : 0; }
 
-	UInt32 GetVertexSize() const { return _VertexArray ? _VertexArray->GetVertexSize() : 0; }
+	uint32 get_vertex_size() const { return _vertex_array ? _vertex_array->get_vertex_size() : 0; }
 
 	/*
 	* you must describe a vertex size
 	* you can only respecify a new VerticesNum, cause VertexSize, Layout can not be modified
 	* this action will consume quite time
 	*/
-	void ReallocateVertexSlot(UInt32 VerticesNum, const void* InitialVertices = nullptr) noexcept
+	void reallocate_vertex_slot(uint32 vertices_num, const void* initial_vertices = nullptr) noexcept
 	{
-		if (!_VertexArray) return;
-		_VertexArray->ReallocateVertexSlot(VerticesNum);
+		if (!_vertex_array) return;
+		_vertex_array->reallocate_vertex_slot(vertices_num);
 	}
 
+	const void* read_vertex_slot(uint32 vertex_offset, uint32 vertices_num)
+	{
+		return _vertex_array ? _vertex_array->read_vertex_slot(vertex_offset, vertices_num) : nullptr;
+	}
 
-	void WriteToVertexSlot(UInt32 VertexOffset, UInt32 VerticesNum, const VertexArray::VertexSlotWriter& Writer)
+	void write_vertex_slot(uint32 vertex_offset, uint32 vertices_num, const void* vertices) 
+	{
+		if (!_vertex_array) return;
+
+		_vertex_array->write_vertex_slot(vertex_offset, vertices_num, vertices);
+ 	}
+
+	void execute_mapped_vertex_slot_reader(uint32 vertex_offset, uint32 vertices_num, const vertex_slot_reader& reader)
+	{
+
+	}
+
+	void execute_mapped_vertex_slot_writer(uint32 vertex_offset, uint32 vertices_num, const vertex_slot_writer& writer)
 	{}
 
-	void ReadFromVertexSlot(UInt32 VertexOffset, UInt32 VerticesNum, const VertexArray::VertexSlotReader& Reader)
-	{}
-
-	void HandleVertexSlot(UInt32 VertexOffset, UInt32 VerticesNum, const VertexArray::VertexSlotHandler& Handler)
+	void execute_mapped_vertex_slot_handler(uint32 vertex_offset, uint32 vertices_num, const vertex_slot_handler& handler)
 	{}
 
 public:
 
-	UInt32 GetInstanceAttributesNum(const std::string& InstanceAttributeName) const {}
+	uint32 get_instance_attributes_num(const std::string& attribute_name) const {}
 
-	UInt32 GetInstanceAttributeSize(const std::string& InstanceAttributeName) const {}
+	uint32 get_instance_attribute_size(const std::string& attribute_name) const {}
 
-	/* reallocate the name specified attributes, divisor decide the attributes' layout */ 
-	void ReallocateInstanceAttributeSlot(const std::string& InstanceAttributeName, UInt32 InstanceAttributesNum, UInt32 Divisor, const void* InitialInstanceAttributes) noexcept
+	void reallocate_instance_attribute_slot(const std::string& attribute_name, uint32 attributes_num, uint32 divisor, const void* initial_attributes) noexcept
 	{
-		if (!_VertexArray) return;
-
+		if (!_vertex_array) return;
+		_vertex_array->reallocate_instance_attribute_slot(0, attributes_num, divisor, initial_attributes);
 	}
 
-	void WriteToInstanceAttributeSlot(const std::string& InstanceAttributeName, UInt32 InstanceAttributeOffset, UInt32 InstanceAttributesNum)
+	const void* read_instance_attribute_slot() {}
+
+	void write_instance_attribute_slot() {}
+
+	void execute_mapped_instance_attribute_slot_reader(const std::string& attribute_name, uint32 attribute_offset, uint32 attributes_num, const instance_attribute_slot_reader& reader)
 	{}
 
-	void ReadFromInstanceAttributeSlot(const std::string& InstanceAttributeName, UInt32 InstanceAttributeOffset, UInt32 InstanceAttributesNum)
+	void execute_mapped_instance_attribute_slot_writer(const std::string& attribute_name, uint32 attribute_offset, uint32 attributes_num, const instance_attribute_slot_writer& writer)
 	{}
 
-	void HandleInstanceAttributeSlot(const std::string& InstanceAttributeName, UInt32 InstanceAttributeOffset, UInt32 InstanceAttributesNum)
+	void execute_mapped_instance_attribute_slot_handler(const std::string& attribute_name, uint32 attribute_offset, uint32 attributes_num, const instance_attribute_slot_handler& handler)
 	{}
 
 public:
 
-	/* Get elements num.*/
-	UInt32 GetElementsNum() const { return _ElementArrayBuffer ? _ElementArrayBuffer->GetElementsNum() : 0; }
+	uint32 get_elements_num() const { return _element_array_buffer ? _element_array_buffer->get_elements_num() : 0; }
 	
-	/* Get element size.*/
-	UInt32 GetElementSize() const { return _ElementArrayBuffer ? _ElementArrayBuffer->GetElementSize() : 0; }
+	uint32 get_element_size() const { return _element_array_buffer ? _element_array_buffer->get_element_size() : 0; }
 
-	/* Get element type.*/
-	ElementType GetElementType() const { return _ElementArrayBuffer ? _ElementArrayBuffer->GetElementType() : ElementType::NONE; }
+	gl_element_type get_element_type() const { return _element_array_buffer ? _element_array_buffer->get_element_type() : gl_element_type::NONE; }
 
 	/*
 	* Indices only associates to PrimitiveMode
 	* PrimitiveMode will never change once lancher constructed
 	* IndicesNum % PrimitiveVerticesNum = 0
 	*/
-	void ReallocateElementSlot(UInt32 ElementsNum, const void* InitialElements = nullptr) noexcept
+	void reallocate_element_slot(uint32 elements_num, const void* initial_elements = nullptr) noexcept
 	{
-		if (!_ElementArrayBuffer) return;
-		if (ElementsNum % _PrimitiveVerticesNum != 0) return;
+		if (!_element_array_buffer) return;
+		if (elements_num % _primitive_vertices_num != 0) return;
 		
-		_ElementArrayBuffer->Reallocate(ElementsNum, InitialElements);
+		_element_array_buffer->reallocate(elements_num, initial_elements);
 	}
 
-	void WriteToElementSlot(UInt32 ElementOffset, UInt32 ElementsNum, const ElementSlotWriter& Writer) 
+	void execute_mapped_element_slot_reader(uint32 element_offset, uint32 elements_num, const element_slot_reader& reader)
 	{
-		if (!_ElementArrayBuffer) return;
-		_ElementArrayBuffer->WriteToElementBuffer(ElementOffset, ElementsNum, Writer);
+		if (!_element_array_buffer) return;
+		_element_array_buffer->execute_mapped_element_buffer_reader(element_offset, elements_num, reader);
 	}
 
-	void ReadFromElementSlot(UInt32 ElementOffset, UInt32 ElementsNum, const ElementSlotReader& Reader) 
+	void execute_mapped_element_slot_writer(uint32 element_offset, uint32 elements_num, const element_slot_writer& writer)
 	{
-		if (!_ElementArrayBuffer) return;
-		_ElementArrayBuffer->ReadFromElementBuffer(ElementOffset, ElementsNum, Reader);
+		if (!_element_array_buffer) return;
+		_element_array_buffer->execute_mapped_element_buffer_writer(element_offset, elements_num, writer);
 	}
 
-	/*
-	* Map the element slot as Client memory, it will copy data from Server, after handling over, then copy back to Server
-	* ElementOffset(UInt32)
-	* ElementsNum(UInt32)
-	* Handler([](void* MappedMemory, UInt32 ElementsNum) {})
-	*/
-	void HandleElementSlot(UInt32 ElementOffset, UInt32 ElementsNum, const ElementSlotHandler& Handler) 
+	void execute_mapped_element_slot_handler(uint32 element_offset, uint32 elements_num, const element_slot_handler& handler)
 	{
-		if (!_ElementArrayBuffer) return;
-
-		_ElementArrayBuffer->HandleElementBuffer(ElementOffset, ElementsNum, Handler);
+		if (!_element_array_buffer) return;
+		_element_array_buffer->execute_mapped_element_buffer_handler(element_offset, elements_num, handler);
 	}
 
-	void SetPrimitiveRestartFlagElement(UInt32 ElementOffset)
+	void set_primitive_restart_flag_element(uint32 element_offset)
 	{
-		if (!_ElementArrayBuffer) return;
+		if (!_element_array_buffer) return;
 
-		_ElementArrayBuffer->SetPrimitiveRestartFlagElement(ElementOffset);
+		_element_array_buffer->set_primitive_restart_flag_element(element_offset);
 	}
 
-	const std::vector<UInt32>& GetPrimitiveRestartFlagElementIndices() const 
+	const std::vector<uint32>& get_primitive_restart_flag_element_indices() const
 	{
 
 	}
 
 public:
 
-	void Bind() const noexcept
+	void bind() const noexcept
 	{
-		if(_VertexArray) _VertexArray->Bind();
-		if(_ElementArrayBuffer) _ElementArrayBuffer->Bind();
+		if(_vertex_array) _vertex_array->bind();
+		if(_element_array_buffer) _element_array_buffer->bind();
 	}
 
-	void Unbind() const noexcept
+	void unbind() const noexcept
 	{
-		if (_VertexArray) _VertexArray->Unbind();
-		if (_ElementArrayBuffer) _ElementArrayBuffer->Unbind();
+		if (_vertex_array) _vertex_array->unbind();
+		if (_element_array_buffer) _element_array_buffer->unbind();
 	}
 
 public:
 
-	PrimitiveMode GetPrimitiveMode() const { return _PrimitiveMode; }
+	gl_primitive_mode get_primitive_mode() const { return _primitive_mode; }
 
 private:
 
-	PrimitiveMode _PrimitiveMode;
+	gl_primitive_mode _primitive_mode;
 
-	UInt32 _PrimitiveVerticesNum;
+	uint32 _primitive_vertices_num;
 
-	UniquePtr<VertexArray> _VertexArray;
+	std::unique_ptr<gl_vertex_array> _vertex_array;
 
-	UniquePtr<ElementArrayBuffer> _ElementArrayBuffer;
+	std::unique_ptr<gl_element_array_buffer> _element_array_buffer;
 	
 };
 

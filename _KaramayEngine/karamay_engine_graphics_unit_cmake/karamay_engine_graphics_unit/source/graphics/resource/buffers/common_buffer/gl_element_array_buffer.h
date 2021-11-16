@@ -4,7 +4,7 @@
 #include "graphics/resource/buffers/raw_buffer/gl_buffer.h"
 
 
-enum class ElementType
+enum class gl_element_type
 {
     NONE,
     UNSIGNED_BYTE = GL_UNSIGNED_BYTE,
@@ -12,98 +12,121 @@ enum class ElementType
     UNSIGNED_INT = GL_UNSIGNED_INT
 };
 
-/*
-* dynamic storage
-*/
-class ElementArrayBuffer final{
+class gl_element_array_buffer final{
 public:
-    using ElementBufferWriter = std::function<void(void*, UInt32)>;
-    using ElementBufferReader = std::function<void(const void*, UInt32)>;
-    using ElementBufferHandler = std::function<void(void*, UInt32)>;
+    using element_buffer_writer = std::function<void(void*, uint32)>;
+    using element_buffer_reader = std::function<void(const void*, uint32)>;
+    using element_buffer_handler = std::function<void(void*, uint32)>;
 
-
-    ElementArrayBuffer() {}
-    ElementArrayBuffer(ElementType Type, UInt32 ElementsNum, const void* InitialElements) :
-        _Buffer(nullptr), 
-        _ElementType(Type),
-        _ElementSize(ElementsNum)
+    gl_element_array_buffer() = delete;
+    gl_element_array_buffer(gl_element_type element_type, uint32 elements_num, const void* initial_elements = nullptr) :                                                                            
+        _raw_buffer(nullptr), 
+        _element_type(element_type),
+        _element_size(0),
+        _elements_num(elements_num)
     {
-        switch (Type)
+        switch (_element_type)
         {
-            case ElementType::UNSIGNED_BYTE: _ElementSize = sizeof(UInt8); break;
-            case ElementType::UNSIGNED_SHORT: _ElementSize = sizeof(UInt16); break;
-            case ElementType::UNSIGNED_INT: _ElementSize = sizeof(UInt32); break;
+            case gl_element_type::UNSIGNED_BYTE: _element_size = sizeof(uint8); break;
+            case gl_element_type::UNSIGNED_SHORT: _element_size = sizeof(uint16); break;
+            case gl_element_type::UNSIGNED_INT: _element_size = sizeof(uint32); break;
             default: break;
         }
-
-        _Allocate(ElementsNum, InitialElements);
+        _allocate(_elements_num, initial_elements);
     }
 
-    ElementArrayBuffer(const ElementArrayBuffer&) = delete;
-    ElementArrayBuffer& operator=(const ElementArrayBuffer&) = delete;
+    gl_element_array_buffer(const gl_element_array_buffer&) = delete;
+    gl_element_array_buffer& operator=(const gl_element_array_buffer&) = delete;
 
-    ~ElementArrayBuffer() = default;
+    ~gl_element_array_buffer() = default;
 
 public:
-    
-    UInt32 GetElementsNum() const { return _ElementsNum; }
 
-    UInt32 GetElementSize() const { return _ElementSize; }
+    const gl_buffer* get_raw() const { return _raw_buffer.get(); }
 
-    ElementType GetElementType() const { return _ElementType; }
+    uint32 get_elements_num() const { return _elements_num; }
 
-    void Reallocate(UInt32 ElementsNum, const void* InitialElements)
+    uint32 get_element_size() const { return _element_size; }
+
+    gl_element_type get_element_type() const { return _element_type; }
+
+public:
+
+    void reallocate(uint32 elements_num, const void* initial_elements)
     {
-        _ElementsNum = ElementsNum; 
-        _Allocate(ElementsNum, InitialElements);
+        if (!initial_elements) return;
+
+        _elements_num = elements_num;
+        _allocate(elements_num, initial_elements);
     }
 
-    void WriteToElementBuffer(UInt32 ElementOffset, UInt32 ElementsNum, const ElementBufferWriter& Writer)
+    void write(uint32 element_offset, uint32 elements_num, const void* elements) 
     {
-        _Buffer->ExecuteMappedMemoryWriter(ElementOffset * _ElementSize, ElementsNum * _ElementSize,
-            [&](UInt8* MappedMemory, Int64 BytesNum)
+        if (!_raw_buffer || !elements) return;
+
+        _raw_buffer->write(element_offset * _element_size, elements, elements_num * _element_size);
+    }
+
+    const void* read(uint32 element_offset, uint32 elements_num) const
+    {
+        return _raw_buffer? _raw_buffer->read(element_offset * _element_size, elements_num * _element_size) : nullptr;
+    }
+
+    void execute_mapped_element_buffer_reader(uint32 element_offset, uint32 elements_num, const element_buffer_reader& reader)
+    {
+        if (!_raw_buffer) return;
+
+        _raw_buffer->execute_mapped_memory_reader(element_offset * _element_size, elements_num * _element_size,
+            [&reader, this](const void* mapped_memory, int64 bytes_num)
             {
-                if (!MappedMemory) return;
-                Writer(MappedMemory, BytesNum / _ElementSize);
+                if (!mapped_memory) return;
+                reader(mapped_memory, bytes_num / _element_size);
             }
         );
     }
 
-    void ReadFromElementBuffer(UInt32 ElementOffset, UInt32 ElementsNum, const ElementBufferReader& Reader)
+    void execute_mapped_element_buffer_writer(uint32 element_offset, uint32 elements_num, const element_buffer_writer& writer)
     {
-        _Buffer->ExecuteMappedMemoryReader(ElementOffset * _ElementSize, ElementsNum * _ElementSize, 
-            [&](const UInt8* MappedMemory, Int64 BytesNum) 
+        if (!_raw_buffer) return;
+
+        _raw_buffer->execute_mapped_memory_writer(element_offset * _element_size, elements_num * _element_size,
+            [&writer, this](void* mapped_memory, int64 bytes_num)
             {
-                if (!MappedMemory) return;
-                Reader(MappedMemory, BytesNum / _ElementSize);
+                if (!mapped_memory) return;
+                writer(mapped_memory, bytes_num / _element_size);
             }
         );
     }
 
-    void HandleElementBuffer(UInt32 ElementOffset, UInt32 ElementsNum, const ElementBufferHandler& Handler)
+    void execute_mapped_element_buffer_handler(uint32 element_offset, uint32 elements_num, const element_buffer_handler& handler)
     {
-        _Buffer->ExecuteMappedMemoryHandler(ElementOffset * _ElementSize, ElementsNum * _ElementSize,
-            [&](UInt8* MappedMemory, Int64 BytesNum)
+        if (!_raw_buffer) return;
+
+        _raw_buffer->execute_mapped_memory_handler(element_offset * _element_size, elements_num * _element_size,
+            [&handler, this](void* mapped_memory, int64 bytes_num)
             {
-                if (!MappedMemory) return;
-                Handler(MappedMemory, BytesNum / _ElementSize);
+                if (!mapped_memory) return;
+                handler(mapped_memory, bytes_num / _element_size);
             }
         );
     }
 
-    void SetPrimitiveRestartFlagElement(UInt32 ElementOffset)
+    void set_primitive_restart_flag_element(uint32 element_offset)
     {
+        if (!_raw_buffer) return;
 
+        _raw_buffer->write(element_offset * _element_size, nullptr, _element_size);
+        _primitive_restart_flag_element_indices.push_back(element_offset);
     }
 
-    const std::vector<UInt32>& GetPrimitiveRestartFlagIndexOffsets() const 
+    const std::vector<uint32>& get_primitive_restart_flag_element_offsets() const
     { 
-        return _PrimitiveRestartFlagIndexOffsets; 
+        return _primitive_restart_flag_element_indices;
     }
 
-    void RestartPrimitive() const
+    void restart_primitive() const
     {
-        if (_PrimitiveRestartFlagIndexOffsets.size() == 0) return;
+        if (_primitive_restart_flag_element_indices.size() == 0) return;
         glEnable(GL_PRIMITIVE_RESTART);
         glPrimitiveRestartIndex(0xFFF);
         glDisable(GL_PRIMITIVE_RESTART);
@@ -111,45 +134,48 @@ public:
 
 public:
 
-    void Bind() const noexcept
+    void bind() const noexcept
     {
-        if(!_Buffer) return;
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _Buffer->get_handle());
+        if(!_raw_buffer) return;
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _raw_buffer->get_handle());
     }
 
-    void Unbind() const noexcept
+    void unbind() const noexcept
     {
-        if(!_Buffer) return;
+        if(!_raw_buffer) return;
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    }
-
-public:
-
-    Buffer* GetRaw()
-    {
-        return _Buffer.get();
     }
 
 private:
 
-    ElementType _ElementType;
+    gl_element_type _element_type;
 
-    UInt32 _ElementSize, _ElementsNum;
+    uint32 _element_size;
 
-    std::vector<UInt32> _PrimitiveRestartFlagIndexOffsets;
+    uint32 _elements_num;
 
-    UniquePtr<Buffer> _Buffer;
+    std::vector<uint32> _primitive_restart_flag_element_indices;
 
-    void _Allocate(UInt32 ElementsNum, const void* InitialElements)
+    std::unique_ptr<gl_buffer> _raw_buffer;
+
+    void _allocate(uint32 elements_num, const void* initial_elements)
     {
-        BufferStorageOptions _Options;
-        _Options.ClientStorage = false;
-        _Options.DynamicStorage = true;
-        _Options.MapRead = true;
-        _Options.MapWrite = true;
-        _Options.MapCoherent = false;
-        _Options.MapPersistent = false;
-        _Buffer = std::make_unique<Buffer>(_Options, ElementsNum * _ElementSize);
+        if (_raw_buffer)
+        {
+            gl_buffer* _new_buffer = new gl_buffer(_raw_buffer->get_buffer_storage_options(), elements_num * _element_size);
+            int64 _bytes_num = _raw_buffer->get_bytes_num() > _new_buffer->get_bytes_num() ? _new_buffer->get_bytes_num() : _raw_buffer->get_bytes_num();
+            gl_buffer::memcpy(_new_buffer, 0, _raw_buffer.get(), 0, _bytes_num);
+            _raw_buffer.reset(_new_buffer);
+        } else {
+            gl_buffer_storage_options _options;
+            _options.client_storage = false;
+            _options.dynamic_storage = true;
+            _options.map_read = true;
+            _options.map_write = true;
+            _options.map_coherent = false;
+            _options.map_persistent = false;
+            _raw_buffer = std::make_unique<gl_buffer>(_options, elements_num * _element_size);
+        }
     }
 
 };

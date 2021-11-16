@@ -3,96 +3,74 @@
 
 #include "graphics/resource/buffers/raw_buffer/gl_buffer.h"
 
-class ArrayBuffer final
+class gl_array_buffer final
 {
 public:
 
-	ArrayBuffer(Int64 BytesNum, const UInt8* InitializationBytes = nullptr)
+	gl_array_buffer(int64 bytes_num, const void* initial_data = nullptr)
 	{
-		_Allocate(BytesNum, InitializationBytes);
+		_allocate(bytes_num, initial_data);
 	}
 
-	ArrayBuffer(Int64 ElementSize, Int64 ElementsNum)
-	{
-		//_Allocate(BytesNum, InitializationBytes);
-	}
+	gl_array_buffer(const gl_array_buffer&) = delete;
+	gl_array_buffer& operator=(const gl_array_buffer&) = delete;
 
-	ArrayBuffer(const ArrayBuffer&) = delete;
-	ArrayBuffer& operator=(const ArrayBuffer&) = delete;
-
-	~ArrayBuffer() {}
+	~gl_array_buffer() = default;
 
 public:
 
-	void Reallocate(Int64 BytesNum, const UInt8* InitializationBytes = nullptr)
+	void reallocate(int64 bytes_num, const void* initial_data = nullptr)
 	{
-		_Allocate(BytesNum, InitializationBytes);
+		_allocate(bytes_num, initial_data);
 	}
 
-	void Write(UInt32 ByteOffset, const UInt8* Bytes, UInt32 BytesNum)
+	void write(int64 byte_offset, const void* data, int64 bytes_num)
 	{
-		if (!_Buffer) return;
-
-		_Buffer->ExecuteMappedMemoryWriter(ByteOffset, BytesNum, 
-			[=](std::uint8_t* data, std::int64_t size)
-			{
-				std::memcpy(data, Bytes, BytesNum);
-			}
-		);
-
-		_Buffer->ExecuteMappedMemoryReader(ByteOffset, BytesNum, 
-			[](const std::uint8_t* data, std::int64_t size) 
-			{
-				const float* _Floats = reinterpret_cast<const float*>(data);
-				for (int i = 0; i < size / sizeof(float); ++i)
-				{
-					std::cout << _Floats[i] << std::endl;
-				}
-			}
-		);
+		if (!_raw_buffer) return;
+		_raw_buffer->write(byte_offset, data, bytes_num);
 	}
 
-	const void* Read(Int64 ByteOffset, Int64 BytesNum)
+	const void* read(int64 byte_offset, int64 bytes_num) const
 	{
-		return _Buffer ? _Buffer->Read(ByteOffset, BytesNum) : nullptr;
+		return _raw_buffer ? _raw_buffer->read(byte_offset, bytes_num) : nullptr;
 	}
 
-	const Buffer* GetRaw() const
+	const gl_buffer* get_raw() const
 	{
-		return _Buffer.get();
+		return _raw_buffer.get();
 	}
 
 public:
 
-	void Bind() const noexcept
+	void bind() const noexcept
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, _Buffer->get_handle());
+		glBindBuffer(GL_ARRAY_BUFFER, _raw_buffer->get_handle());
 	}
 
-	void Unbind() const noexcept
+	void unbind() const noexcept
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
 private:
 
-	UniquePtr<Buffer> _Buffer;
+	std::unique_ptr<gl_buffer> _raw_buffer;
 
-	void _Allocate(Int64 Size, const UInt8* InitializationBytes)
+	void _allocate(int64 bytes_num, const void* initial_data)
 	{
-		BufferStorageOptions _Options;
-		_Options.ClientStorage = false;
-		_Options.DynamicStorage = true;
-		_Options.MapRead = true;
-		_Options.MapWrite = true;
-		_Options.MapCoherent = false;
-		_Options.MapPersistent = false;
-		if (InitializationBytes)
+		gl_buffer_storage_options _options;
+		_options.client_storage = false;
+		_options.dynamic_storage = true;
+		_options.map_read = true;
+		_options.map_write = true;
+		_options.map_coherent = false;
+		_options.map_persistent = false;
+		if (initial_data)
 		{
-			_Buffer = std::make_unique<Buffer>(_Options, Size, InitializationBytes);
+			_raw_buffer = std::make_unique<gl_buffer>(_options, bytes_num, initial_data);
 		}
 		else {
-			_Buffer = std::make_unique<Buffer>(_Options, Size);
+			_raw_buffer = std::make_unique<gl_buffer>(_options, bytes_num);
 		}
 	}
 
