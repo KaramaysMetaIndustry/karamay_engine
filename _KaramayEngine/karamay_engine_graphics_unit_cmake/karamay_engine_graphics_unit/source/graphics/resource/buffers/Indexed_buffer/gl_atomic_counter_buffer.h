@@ -5,14 +5,13 @@
 #include "graphics/glsl/opaque_t/glsl_atomic_counter.h"
 
 /*
- * constructed by pipeline
  *
- * */
+ */
 struct gl_atomic_counter_buffer_descriptor{
     std::vector<std::shared_ptr<glsl_atomic_counter_t>> atomic_counters;
 };
 
-class AtomicCounterBuffer final {
+class gl_atomic_counter_buffer final {
 public:
     struct gl_atomic_counter_layout{
         std::uint32_t binding;
@@ -21,8 +20,8 @@ public:
     };
 
 public:
-    AtomicCounterBuffer() = delete;
-    explicit AtomicCounterBuffer(const gl_atomic_counter_buffer_descriptor& descriptor)
+    gl_atomic_counter_buffer() = delete;
+    explicit gl_atomic_counter_buffer(const gl_atomic_counter_buffer_descriptor& descriptor)
     {
         // generate atomic counters' layout infos
         std::int64_t _initialization_size = 0;
@@ -37,26 +36,36 @@ public:
         }
 
         // generate buffer
-        BufferStorageOptions _Options{};
-        _buffer = std::make_unique<Buffer>(_Options, _initialization_size);
+        gl_buffer_storage_options _options;
+        _options.client_storage = true; // allow backup to client
+        _options.dynamic_storage = true; // allow dynamic change
+        _options.map_read = true; // allow map read
+        _options.map_write = true; // allow map write
+        _options.map_persistent = true; // allow shader access when mapped
+        _options.map_coherent = true; // allow shader access keep coherent with client operation when mapped
+
+        _buffer = std::make_unique<gl_buffer>(_options, _initialization_size);
         if(_buffer) return;
 
         // upload data
-        _buffer->ExecuteMappedMemoryWriter(
+        _buffer->execute_mapped_memory_writer(
                 0,
                 _initialization_size,
-                [this](std::uint8_t* data, std::int64_t size)
+                [this](void* data, std::int64_t size)
         {
             if(!data || size < 0) return;
             //std::memset(data, 0, size); //no padding
             for(const auto& _layout : _layouts)
             {
-                std::memcpy(data + _layout.offset, _layout.atomic_counter->data(), 4);
+                //std::memcpy(data + _layout.offset, _layout.atomic_counter->data(), 4);
             }
         });
     }
 
-    ~AtomicCounterBuffer() = default;
+    gl_atomic_counter_buffer(const gl_atomic_counter_buffer&) = delete;
+    gl_atomic_counter_buffer& operator=(const gl_atomic_counter_buffer&) = delete;
+
+    ~gl_atomic_counter_buffer() = default;
 
 public:
 
@@ -89,10 +98,10 @@ public:
         {
             if(_layout.atomic_counter && _layout.atomic_counter->dirty)
             {
-                _buffer->ExecuteMappedMemoryWriter(
+                _buffer->execute_mapped_memory_writer(
                         _layout.offset,
                         4,
-                        [_layout](std::uint8_t* data, std::int64_t size){
+                        [_layout](void* data, int64 size){
                             std::memcpy(data, _layout.atomic_counter->data(), 4);
                         });
             }
@@ -107,10 +116,10 @@ public:
         {
             if(_layout.atomic_counter && _layout.atomic_counter->dirty)
             {
-                _buffer->ExecuteMappedMemoryReader(
+                _buffer->execute_mapped_memory_reader(
                         _layout.offset,
                         4,
-                        [_layout](const std::uint8_t* data, std::int64_t size){
+                        [_layout](const void* data, std::int64_t size){
                             std::memcpy(_layout.atomic_counter->data(), data, 4);
                         });
             }
@@ -119,7 +128,7 @@ public:
 
 private:
 
-    std::unique_ptr<Buffer> _buffer;
+    std::unique_ptr<gl_buffer> _buffer;
 
     std::vector<gl_atomic_counter_layout> _layouts;
 

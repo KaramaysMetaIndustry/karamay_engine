@@ -32,7 +32,15 @@ public:
             case gl_element_type::UNSIGNED_INT: _element_size = sizeof(uint32); break;
             default: break;
         }
-        _allocate(_elements_num, initial_elements);
+
+        gl_buffer_storage_options _options;
+        _options.client_storage = false; // index buffer must keep fast
+        _options.dynamic_storage = true; // allow dynamic change
+        _options.map_read = true; // allow map read
+        _options.map_write = true; // allow map write
+        _options.map_persistent = false; // shader wont operate it
+        _options.map_coherent = false; // shader wont operate it
+        _raw_buffer = std::make_unique<gl_buffer>(_options, elements_num * _element_size);
     }
 
     gl_element_array_buffer(const gl_element_array_buffer&) = delete;
@@ -52,12 +60,10 @@ public:
 
 public:
 
-    void reallocate(uint32 elements_num, const void* initial_elements)
+    void reallocate(uint32 elements_num, const void* initial_elements = nullptr)
     {
-        if (!initial_elements) return;
-
         _elements_num = elements_num;
-        _allocate(elements_num, initial_elements);
+        _raw_buffer->reallocate(elements_num * _element_size, initial_elements);
     }
 
     void write(uint32 element_offset, uint32 elements_num, const void* elements) 
@@ -157,26 +163,6 @@ private:
     std::vector<uint32> _primitive_restart_flag_element_indices;
 
     std::unique_ptr<gl_buffer> _raw_buffer;
-
-    void _allocate(uint32 elements_num, const void* initial_elements)
-    {
-        if (_raw_buffer)
-        {
-            gl_buffer* _new_buffer = new gl_buffer(_raw_buffer->get_buffer_storage_options(), elements_num * _element_size);
-            int64 _bytes_num = _raw_buffer->get_bytes_num() > _new_buffer->get_bytes_num() ? _new_buffer->get_bytes_num() : _raw_buffer->get_bytes_num();
-            gl_buffer::memcpy(_new_buffer, 0, _raw_buffer.get(), 0, _bytes_num);
-            _raw_buffer.reset(_new_buffer);
-        } else {
-            gl_buffer_storage_options _options;
-            _options.client_storage = false;
-            _options.dynamic_storage = true;
-            _options.map_read = true;
-            _options.map_write = true;
-            _options.map_coherent = false;
-            _options.map_persistent = false;
-            _raw_buffer = std::make_unique<gl_buffer>(_options, elements_num * _element_size);
-        }
-    }
 
 };
 

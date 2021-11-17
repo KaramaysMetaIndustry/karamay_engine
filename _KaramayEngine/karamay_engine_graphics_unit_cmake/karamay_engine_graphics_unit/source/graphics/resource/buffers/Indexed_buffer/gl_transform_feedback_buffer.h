@@ -11,43 +11,39 @@ enum class gl_transform_feedback_buffer_mode
 };
 
 // 0xFC807e12026BedD66DD1f6e853fd93beBEA66558
-class TransformFeedbackBuffer {
+class gl_transform_feedback_buffer {
 public:
-    TransformFeedbackBuffer() = delete;
-    explicit TransformFeedbackBuffer(UInt32 Binding) : _Binding(Binding)
+    gl_transform_feedback_buffer() = delete;
+    explicit gl_transform_feedback_buffer()
     {}
 
-    ~TransformFeedbackBuffer() = default;
+    gl_transform_feedback_buffer(const gl_transform_feedback_buffer&) = delete;
+    gl_transform_feedback_buffer& operator=(const gl_transform_feedback_buffer&) = delete;
+
+    ~gl_transform_feedback_buffer() = default;
 
 public:
 
-    Buffer* GetRaw(UInt32 Index)
+    void bind() noexcept
     {
-        if (Index >= _Buffers.size()) return nullptr;
-        return _Buffers.at(Index).get();
+        uint32 _binding = 0;
+        for (const auto& _raw_buffer : _raw_buffers)
+        {
+            glBindBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, _binding, _buffer->get_handle(), 0, 100); ++_binding;
+        }
+        
     }
 
-public:
-
-    void Bind() noexcept
+    void unbind() noexcept
     {
-        if(!_buffer) return;
-        glBindBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, _Binding, _buffer->get_handle(), 0, 100);
-    }
-
-    void Unbind() noexcept
-    {
-        if(!_buffer) return;
         glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);
     }
 
 private:
 
-    UInt32 _Binding;
+    std::unique_ptr<gl_buffer> _buffer;
 
-    std::unique_ptr<Buffer> _buffer;
-
-    std::vector<UniquePtr<Buffer>> _Buffers;
+    std::vector<std::unique_ptr<gl_buffer>> _raw_buffers;
 
 };
 

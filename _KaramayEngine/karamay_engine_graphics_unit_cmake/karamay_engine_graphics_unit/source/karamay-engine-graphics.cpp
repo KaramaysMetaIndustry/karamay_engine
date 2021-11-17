@@ -383,18 +383,18 @@ void test0()
 	std::vector<glm::vec4> _raw_colors;
 	// indices
 
-	VertexArrayDescriptor _Desc;
-	_Desc.VerticesNum = 3;
-	_Desc.VertexDesc.AttributeDescriptors = {
-		{"Color", sizeof(glm::vec4), glm::vec4::length(), AttributeComponentType::FLOAT},
-		{"Position", sizeof(glm::vec3), glm::vec3::length(), AttributeComponentType::FLOAT},
-		{"UV", sizeof(glm::vec2), glm::vec2::length(), AttributeComponentType::FLOAT}
+	gl_vertex_array_descriptor _desc;
+	_desc.vertices_num = 3;
+	_desc.vertex_descriptor.attribute_descriptors = {
+		{"color", sizeof(glm::vec4), glm::vec4::length(), gl_attribute_component_type::FLOAT},
+		{"position", sizeof(glm::vec3), glm::vec3::length(), gl_attribute_component_type::FLOAT},
+		{"uv", sizeof(glm::vec2), glm::vec2::length(), gl_attribute_component_type::FLOAT}
 	};
 
-	_Desc.InstanceAttributeDescs = {
-		{"InstancePositionOffset", sizeof(glm::vec3), glm::vec3::length(), AttributeComponentType::FLOAT, 10, 1}
+	_desc.instance_attribute_descriptors = {
+		{"instance_position_offset", sizeof(glm::vec3), glm::vec3::length(), gl_attribute_component_type::FLOAT, 10, 1}
 	};
-	VertexArray _VertexArray(_Desc);
+	gl_vertex_array _va(_desc);
 
 
 	struct VertexTest {
@@ -409,8 +409,6 @@ void test0()
 		{glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec3(27.8f, 2.9f, 100.0f), glm::vec2(0.1f, 0.45f)}
 	};
 
-	_VertexArray.FillVertices(0, reinterpret_cast<const UInt8*>(_Vertices.data()), 3);
-
 
 	// shader program
 	auto _vs = std::make_shared<glsl_vertex_shader>();
@@ -419,24 +417,21 @@ void test0()
 	auto _fs = std::make_shared<glsl_fragment_shader>();
 	
 
+	auto _pipeline_state = std::make_shared<GraphicsPipelineState>();
+	auto _vertex_launcher = std::make_shared<gl_vertex_launcher>();
+	auto _transform_feedback = std::make_shared<TransformFeedback>();
+	auto _glsl_graphics_pipeline_program = std::make_shared<GraphicsPipelineProgram>();
+	auto _render_target = std::make_shared<Framebuffer>();
 
-
-
-	SharedPtr<GraphicsPipelineState> _PipelineState = std::make_shared<GraphicsPipelineState>();
-	SharedPtr<VertexLauncher> _VertexLauncher = std::make_shared<VertexLauncher>();
-	SharedPtr<TransformFeedback> _TransformFeedback = std::make_shared<TransformFeedback>();
-	SharedPtr<GraphicsPipelineProgram> _GraphicsPipelineProgram = std::make_shared<GraphicsPipelineProgram>();
-	SharedPtr<Framebuffer> _RenderTarget = std::make_shared<Framebuffer>();
-
-	GraphicsPipelineDescriptor _GPDescriptor;
-	_GPDescriptor.Name = "StaticMeshVertexHandler";
-	_GPDescriptor.OwnerRendererDir = "/StaticMeshRenderer";
-	_GPDescriptor.State = _PipelineState;
-	_GPDescriptor.VertexLauncher = _VertexLauncher;
-	_GPDescriptor.TransformFeedback = _TransformFeedback;
-	_GPDescriptor.Program = _GraphicsPipelineProgram;
-	_GPDescriptor.RenderTarget = _RenderTarget;
-	GraphicsPipeline _GP(_GPDescriptor);
+	GraphicsPipelineDescriptor _gp_desc;
+	_gp_desc.Name = "StaticMeshVertexHandler";
+	_gp_desc.OwnerRendererDir = "/StaticMeshRenderer";
+	_gp_desc.State = _pipeline_state;
+	_gp_desc.VertexLauncher = _vertex_launcher;
+	_gp_desc.TransformFeedback = _transform_feedback;
+	_gp_desc.Program = _glsl_graphics_pipeline_program;
+	_gp_desc.RenderTarget = _render_target;
+	GraphicsPipeline _GP(_gp_desc);
 
 	bool First = true;
 	for (;;)

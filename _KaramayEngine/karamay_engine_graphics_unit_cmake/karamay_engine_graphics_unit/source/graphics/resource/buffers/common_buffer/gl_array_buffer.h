@@ -7,9 +7,17 @@ class gl_array_buffer final
 {
 public:
 
-	gl_array_buffer(int64 bytes_num, const void* initial_data = nullptr)
+	gl_array_buffer(int64 bytes_num, const void* initial_data = nullptr) :
+		_raw_buffer(nullptr)
 	{
-		_allocate(bytes_num, initial_data);
+		gl_buffer_storage_options _options;
+		_options.client_storage = false; // vertex buffer must always store at GPU to keep fast
+		_options.dynamic_storage = true; // allow dynamic change
+		_options.map_read = true; // allow map read
+		_options.map_write = true; // allow map write
+		_options.map_persistent = true; // shader wont operate it 
+		_options.map_coherent = true; // shader wont operate it
+		_raw_buffer = std::make_unique<gl_buffer>(_options, bytes_num, initial_data);
 	}
 
 	gl_array_buffer(const gl_array_buffer&) = delete;
@@ -21,7 +29,7 @@ public:
 
 	void reallocate(int64 bytes_num, const void* initial_data = nullptr)
 	{
-		_allocate(bytes_num, initial_data);
+		_raw_buffer->reallocate(bytes_num, initial_data);
 	}
 
 	void write(int64 byte_offset, const void* data, int64 bytes_num)
@@ -34,6 +42,13 @@ public:
 	{
 		return _raw_buffer ? _raw_buffer->read(byte_offset, bytes_num) : nullptr;
 	}
+
+	void execute_mapped_memory_reader(int64 byte_offset, int64 bytes_num) {}
+
+	void execute_mapped_memory_writer() {}
+	
+	void execute_mapped_memory_handler() {}
+
 
 	const gl_buffer* get_raw() const
 	{
@@ -55,24 +70,6 @@ public:
 private:
 
 	std::unique_ptr<gl_buffer> _raw_buffer;
-
-	void _allocate(int64 bytes_num, const void* initial_data)
-	{
-		gl_buffer_storage_options _options;
-		_options.client_storage = false;
-		_options.dynamic_storage = true;
-		_options.map_read = true;
-		_options.map_write = true;
-		_options.map_coherent = false;
-		_options.map_persistent = false;
-		if (initial_data)
-		{
-			_raw_buffer = std::make_unique<gl_buffer>(_options, bytes_num, initial_data);
-		}
-		else {
-			_raw_buffer = std::make_unique<gl_buffer>(_options, bytes_num);
-		}
-	}
 
 };
 

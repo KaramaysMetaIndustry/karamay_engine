@@ -8,7 +8,7 @@ struct gl_shader_storage_buffer_descriptor{
     std::vector<std::shared_ptr<glsl_shader_storage_block_t>> shader_storage_blocks;
 };
 
-class ShaderStorageBuffer final{
+class gl_shader_storage_buffer final{
 public:
     struct gl_shader_storage_block_layout{
         std::uint32_t binding;
@@ -17,8 +17,8 @@ public:
     };
 
 public:
-    ShaderStorageBuffer() = default;
-    explicit ShaderStorageBuffer(const gl_shader_storage_buffer_descriptor& descriptor)
+    gl_shader_storage_buffer() = default;
+    explicit gl_shader_storage_buffer(const gl_shader_storage_buffer_descriptor& descriptor)
     {
         // generate uniform blocks' layout infos
         std::int64_t _initialization_size = 0;
@@ -43,30 +43,37 @@ public:
         }
 
         // create buffer
-        BufferStorageOptions _Options{};
-        _buffer = std::make_unique<Buffer>(_Options, _initialization_size);
+        gl_buffer_storage_options _options;
+        _options.client_storage = true; // allow backup to client
+        _options.dynamic_storage = true; // allow dynamic change
+        _options.map_read = true; // allow map read
+        _options.map_write = true; // allow map write
+        _options.map_persistent = true; // allow shader access when mapped
+        _options.map_coherent = true; // allow shader access keep coherent with client operation when mapped
+
+        _buffer = std::make_unique<gl_buffer>(_options, _initialization_size);
         if(!_buffer) return;
 
         // upload data
-        _buffer->ExecuteMappedMemoryWriter(
+        _buffer->execute_mapped_memory_writer(
                 0,
                 _initialization_size,
-                [this](std::uint8_t* data, std::int64_t size){
+                [this](void* data, std::int64_t size){
                     if(!data || size < 0) return;
                     // make sure the padding initialized by zero
                     std::memset(data, 0, size);
                     // fill the block data
                     for(const auto& _layout : _layouts)
                     {
-                        std::memcpy(data + _layout.offset, _layout.block->data(), _layout.block->size());
+                        //std::memcpy(data + _layout.offset, _layout.block->data(), _layout.block->size());
                     }
                 });
 
     }
-    ShaderStorageBuffer(const ShaderStorageBuffer&) = delete;
-    ShaderStorageBuffer& operator=(const ShaderStorageBuffer&) = delete;
+    gl_shader_storage_buffer(const gl_shader_storage_buffer&) = delete;
+    gl_shader_storage_buffer& operator=(const gl_shader_storage_buffer&) = delete;
 
-    ~ShaderStorageBuffer() = default;
+    ~gl_shader_storage_buffer() = default;
 
 public:
 
@@ -100,7 +107,7 @@ public:
             if(_layout.block && _layout.block->is_dirty)
             {
                 if(!_layout.block->data()) return;
-                _buffer->Write(_layout.offset, _layout.block->data(), _layout.block->size());
+                _buffer->write(_layout.offset, _layout.block->data(), _layout.block->size());
                 _layout.block->is_dirty = false;
             }
         }
@@ -110,28 +117,21 @@ public:
     {
         if(!_buffer) return;
 
-        _buffer->ExecuteMappedMemoryReader(
+        _buffer->execute_mapped_memory_reader(
                 0,
-                _buffer->GetBytesNum(),
-                [this](const uint8_t* data, std::int64_t size){
+                _buffer->get_bytes_num(),
+                [this](const void* data, std::int64_t size){
                     for(const auto& _layout : _layouts)
                     {
-                        std::memcpy(_layout.block->data(), data + _layout.offset, _layout.block->size());
+                        //std::memcpy(_layout.block->data(), data + _layout.offset, _layout.block->size());
                     }
                 });
     }
 
-    Buffer* GetRaw(UInt32 Index)
-    {
-        if (Index >= _Buffers.size()) return nullptr;
-        return _Buffers.at(Index).get();
-    }
 
 private:
 
-    std::vector<UniquePtr<Buffer>> _Buffers;
-
-    std::unique_ptr<Buffer> _buffer;
+    std::unique_ptr<gl_buffer> _buffer;
 
     std::vector<gl_shader_storage_block_layout> _layouts;
 

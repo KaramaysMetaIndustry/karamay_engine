@@ -99,27 +99,27 @@ struct gl_buffer_storage_options
 
 struct gl_buffer_map_access_options
 {
-    bool is_map_read;
-    bool is_map_write;
-    bool is_map_presistent;
-    bool is_map_coherent;
-    bool is_map_invalidate_range;
-    bool is_map_invalidate_buffer;
-    bool is_map_flush_explicit;
-    bool is_map_unsynchronized;
+    bool map_read;
+    bool map_write;
+    bool map_presistent;
+    bool map_coherent;
+    bool map_invalidate_range;
+    bool map_invalidate_buffer;
+    bool map_flush_explicit;
+    bool map_unsynchronized;
 
     std::uint32_t bitfield()
     {
         std::uint32_t _access_flags = 0;
 
-        if (is_map_read) _access_flags |= GL_MAP_READ_BIT;
-        if (is_map_write) _access_flags |= GL_MAP_WRITE_BIT;
-        if (is_map_presistent) _access_flags |= GL_MAP_PERSISTENT_BIT;
-        if (is_map_coherent) _access_flags |= GL_MAP_COHERENT_BIT;
-        if (is_map_invalidate_range) _access_flags |= GL_MAP_INVALIDATE_RANGE_BIT;
-        if (is_map_invalidate_buffer) _access_flags |= GL_MAP_INVALIDATE_BUFFER_BIT;
-        if (is_map_flush_explicit) _access_flags |= GL_MAP_FLUSH_EXPLICIT_BIT;
-        if (is_map_unsynchronized) _access_flags |= GL_MAP_UNSYNCHRONIZED_BIT;
+        if (map_read) _access_flags |= GL_MAP_READ_BIT;
+        if (map_write) _access_flags |= GL_MAP_WRITE_BIT;
+        if (map_presistent) _access_flags |= GL_MAP_PERSISTENT_BIT;
+        if (map_coherent) _access_flags |= GL_MAP_COHERENT_BIT;
+        if (map_invalidate_range) _access_flags |= GL_MAP_INVALIDATE_RANGE_BIT;
+        if (map_invalidate_buffer) _access_flags |= GL_MAP_INVALIDATE_BUFFER_BIT;
+        if (map_flush_explicit) _access_flags |= GL_MAP_FLUSH_EXPLICIT_BIT;
+        if (map_unsynchronized) _access_flags |= GL_MAP_UNSYNCHRONIZED_BIT;
 
         return _access_flags;
     }
@@ -151,6 +151,30 @@ public:
     }
 
 public:
+
+    void reallocate(int64 bytes_num, const void* initial_data = nullptr)
+    {
+        uint32 _new_handle = 0;
+        glCreateBuffers(1, &_handle);
+        glNamedBufferStorage(_new_handle, bytes_num, initial_data, _buffer_storage_options.bitfield());
+        glCopyNamedBufferSubData(_handle, _new_handle, 0, 0, bytes_num > _bytes_num ? _bytes_num : bytes_num);
+        glDeleteBuffers(1, &_handle);
+        _handle = _new_handle;
+        _bytes_num = bytes_num;
+    }
+
+    void reallocate(gl_buffer_storage_options options, int64 bytes_num, const void* initial_data = nullptr)
+    {
+        uint32 _new_handle = 0;
+        glCreateBuffers(1, &_handle);
+        glNamedBufferStorage(_new_handle, bytes_num, initial_data, options.bitfield());
+        glCopyNamedBufferSubData(_handle, _new_handle, 0, 0, bytes_num > _bytes_num ? _bytes_num : bytes_num);
+        glDeleteBuffers(1, &_handle);
+        _handle = _new_handle;
+        _bytes_num = bytes_num;
+        _buffer_storage_options = options;
+    }
+
 
     /*
     * client [ N ] => server [ N ] 
@@ -189,12 +213,35 @@ public:
      * */
     void execute_mapped_memory_reader(int64 byte_offset, int64 bytes_num, const mapped_memory_reader& reader) const
     {
+        // if map_read is not set, this func can not be used
         if (!_buffer_storage_options.map_read) return;
+        // check the parameters range
         if (byte_offset < 0 || byte_offset < 0 || byte_offset + byte_offset > _bytes_num) return;
-        const auto* _mapped_memory = reinterpret_cast<const void*>(
-            glMapNamedBufferRange(_handle, byte_offset, bytes_num, static_cast<GLenum>(gl_buffer_map_access_flag::MAP_READ_BIT))
-            );
-        if (_mapped_memory) reader(_mapped_memory, bytes_num);
+
+        // construct the access options
+        gl_buffer_map_access_options _access_options;
+        _access_options.map_read = true;
+
+        if (_buffer_storage_options.map_persistent)
+        {
+            // if persistent and not coherent, we should set memory barrier manually to make sure
+            if (!_buffer_storage_options.map_coherent)
+            {
+                glMemoryBarrier(GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT);
+            }
+            // if server can write this buffer when mapped by client, you need to sync result when you want to read it
+            auto sync = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0); //glFinish();
+            //glWaitSync(sync, 0, 1000);
+            //glClientWaitSync(sync, 0, 1000);
+        }
+
+        const void* _mapped_memory = glMapNamedBufferRange(_handle, byte_offset, bytes_num, _access_options.bitfield());
+
+        if (_mapped_memory) 
+        {
+            reader(_mapped_memory, bytes_num);
+        } 
+        
         glUnmapNamedBuffer(_handle);
     }
 
@@ -204,18 +251,37 @@ public:
      * then execute a handler you specified
      * @offset : mapped memory' offset to whole buffer
      * @size : mapped memory' size
-     * @writer : [ ] (std::uint8_t* data, std::int64_t size) {}
+     * @writer : [ ] (void* mapped_memory, int64 size) {}
      * @should_async : if true, this func will not ensure the operation to buffer will work when it end, if false ..
      * */
     void execute_mapped_memory_writer(int64 byte_offset, int64 bytes_num, const mapped_memory_writer& writer)
     {
+        // if the buffer storage option does not have map_write true, this func can not use
         if (!_buffer_storage_options.map_write) return;
+        // check the parameters range
         if (byte_offset <0 || bytes_num < 0 || byte_offset + bytes_num > _bytes_num) return;
-        auto* _mapped_memory = reinterpret_cast<void*>(
-            glMapNamedBufferRange(_handle, byte_offset, bytes_num, static_cast<GLenum>(gl_buffer_map_access_flag::MAP_WRITE_BIT))
-        );
-        if (_mapped_memory) writer(_mapped_memory, bytes_num);
-        glFlushMappedNamedBufferRange(_handle, byte_offset, bytes_num);
+
+        // construct access options bitfield
+        gl_buffer_map_access_options _access_options;
+        _access_options.map_write = true;
+
+        // if persistent and not coherent, we must manually set memory barrier to make sure next writing safe
+        if (_buffer_storage_options.map_persistent && !_buffer_storage_options.map_coherent)
+        {
+            glMemoryBarrier(GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT);
+        }
+
+        // map the buffer memory from GPU
+        void* _mapped_memory = glMapNamedBufferRange(_handle, byte_offset, bytes_num, _access_options.bitfield());
+
+        // make sure the pointer is valid
+        if (_mapped_memory) 
+        {
+            writer(_mapped_memory, bytes_num);
+        }
+
+        //glFlushMappedNamedBufferRange(_handle, byte_offset, bytes_num);
+        // unmap the buffer memory
         glUnmapNamedBuffer(_handle);
     }
 
@@ -231,10 +297,28 @@ public:
     void execute_mapped_memory_handler(int64 byte_offset, int64 bytes_num, const mapped_memory_handler& handler)
     {
         if (!_buffer_storage_options.map_write || !_buffer_storage_options.map_read) return;
+
         if (byte_offset < 0 || bytes_num < 0 || byte_offset + bytes_num > _bytes_num) return;
 
+        gl_buffer_map_access_options _access_options;
+        _access_options.map_write = true;
+        _access_options.map_read = true;
+
+        if (_buffer_storage_options.map_persistent)
+        {
+            if (!_buffer_storage_options.map_coherent)
+            {
+                glMemoryBarrier(GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT);
+            }
+            glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+            if (!_buffer_storage_options.map_coherent)
+            {
+                glMemoryBarrier(GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT);
+            }
+        }
+
         auto* _mapped_memory = reinterpret_cast<void*>(
-            glMapNamedBufferRange(_handle, byte_offset, bytes_num, static_cast<GLenum>(gl_buffer_map_access_flag::MAP_WRITE_BIT))
+            glMapNamedBufferRange(_handle, byte_offset, bytes_num, _access_options.bitfield())
             );
 
         if (_mapped_memory) handler(_mapped_memory, bytes_num);

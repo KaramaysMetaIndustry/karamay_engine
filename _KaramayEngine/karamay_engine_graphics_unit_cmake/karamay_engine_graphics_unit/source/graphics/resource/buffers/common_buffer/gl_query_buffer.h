@@ -3,23 +3,34 @@
 
 #include "graphics/resource/buffers/raw_buffer/gl_buffer.h"
 
-class QueryBuffer
+class gl_query_buffer
 {
 public:
-	QueryBuffer() {}
+	gl_query_buffer() {}
 
-	~QueryBuffer() {}
+	~gl_query_buffer() {}
 
 public:
 
-	Buffer* GetRaw()
+	gl_buffer* get_raw()
 	{
-		return _Buffer.get();
+		return _raw_buffer.get();
 	}
+
+	void bind()
+	{
+		glBindBuffer(GL_QUERY_BUFFER, _raw_buffer->get_handle());
+	}
+
+	void unbind()
+	{
+		glBindBuffer(GL_QUERY_BUFFER, 0);
+	}
+
 
 private:
 
-	UniquePtr<Buffer> _Buffer;
+	std::unique_ptr<gl_buffer> _raw_buffer;
 };
 
 #endif
