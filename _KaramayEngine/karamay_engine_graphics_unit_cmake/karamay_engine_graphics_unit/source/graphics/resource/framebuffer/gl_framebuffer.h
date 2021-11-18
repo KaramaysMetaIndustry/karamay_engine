@@ -14,17 +14,17 @@ public:
     virtual void unbind() = 0;
 };
 
-class Framebuffer final : public gl_framebuffer_base{
+class gLframebuffer final : public gl_framebuffer_base{
 public:
-    Framebuffer()
+    gLframebuffer()
     {
         glCreateFramebuffers(1, &_handle);
     }
 
-    Framebuffer(const Framebuffer&) = delete;
-    Framebuffer& operator=(const Framebuffer&) = delete;
+    gLframebuffer(const gLframebuffer&) = delete;
+    gLframebuffer& operator=(const gLframebuffer&) = delete;
 
-    ~Framebuffer() override
+    ~gLframebuffer() override
     {
         glDeleteFramebuffers(1, &_handle);
     }

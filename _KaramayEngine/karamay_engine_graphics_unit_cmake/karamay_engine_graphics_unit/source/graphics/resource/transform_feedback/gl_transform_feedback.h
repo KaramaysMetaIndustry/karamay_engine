@@ -5,31 +5,32 @@
 #include "graphics/resource/buffers/indexed_buffer/gl_transform_feedback_buffer.h"
 #include "graphics/resource/vertex_launcher/gl_vertex_launcher.h"
 
-class TransformFeedback final : public gl_object{
+class gl_transform_feedback final : public gl_object{
 public:
-	TransformFeedback() = delete;
-	TransformFeedback(const std::vector<std::string>& Varings, UInt32 AcceptDataFrom) :
-		gl_object(gl_object_type::TRANSFORM_FEEDBACK_OBJ), _State(TransformFeedbackState::End)
+	gl_transform_feedback() = delete;
+	gl_transform_feedback(const std::vector<std::string>& Varings, uint32 AcceptDataFrom) :
+		gl_object(gl_object_type::TRANSFORM_FEEDBACK_OBJ), 
+		_State(TransformFeedbackState::End)
 	{
 		glCreateTransformFeedbacks(1, &_handle);
 	}
 
-	TransformFeedback(const TransformFeedback&) = delete;
-	TransformFeedback& operator=(const TransformFeedback&) = delete;
+	gl_transform_feedback(const gl_transform_feedback&) = delete;
+	gl_transform_feedback& operator=(const gl_transform_feedback&) = delete;
 
-	~TransformFeedback() override
+	~gl_transform_feedback() override
 	{
 		glDeleteTransformFeedbacks(1, &_handle);
 	}
 
 public:
 
-	void Bind() const noexcept
+	void bind() const noexcept
 	{
 		glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, _handle);
 	}
 
-	void Unbind() const noexcept
+	void unbind() const noexcept
 	{
 		GLint handle;
 		glGetIntegerv(GL_TRANSFORM_FEEDBACK_BINDING, &handle);
@@ -45,16 +46,16 @@ public:
 		End
 	};
 
-	void BeginTransformFeedback(PrimitiveMode Mode)
+	void begin_transform_feedback(gl_primitive_mode mode)
 	{
 		if (_State == TransformFeedbackState::End)
 		{
-			glBeginTransformFeedback(static_cast<GLenum>(Mode));
+			glBeginTransformFeedback(static_cast<GLenum>(mode));
 			_State = TransformFeedbackState::Running;
 		}
 	}
 
-	void PauseTransformFeedback()
+	void pause_transform_feedback()
 	{
 		if (_State == TransformFeedbackState::Running)
 		{
@@ -63,7 +64,7 @@ public:
 		}
 	}
 
-	void ResumeTransformFeedback()
+	void resume_transform_feedback()
 	{
 		if (_State == TransformFeedbackState::Paused)
 		{
@@ -72,7 +73,7 @@ public:
 		}
 	}
 
-	void EndTransformFeedback()
+	void end_transform_feedback()
 	{
 		if (_State == TransformFeedbackState::Running)
 		{
@@ -83,14 +84,14 @@ public:
 
 public:
 
-	void Draw(PrimitiveMode Mode, UInt32 StreamIndex) const noexcept
+	void draw(gl_primitive_mode mode, uint32 stream_index) const noexcept
 	{
-		glDrawTransformFeedbackStream(static_cast<GLenum>(Mode), _handle, StreamIndex);
+		glDrawTransformFeedbackStream(static_cast<GLenum>(mode), _handle, stream_index);
 	}
 
-	void Draw(PrimitiveMode Mode, UInt32 StreamIndex, UInt32 InstancesNum) const noexcept
+	void draw(gl_primitive_mode mode, uint32 stream_index, uint32 intsances_num) const noexcept
 	{
-		glDrawTransformFeedbackStreamInstanced(static_cast<GLenum>(Mode), _handle, StreamIndex, InstancesNum);
+		glDrawTransformFeedbackStreamInstanced(static_cast<GLenum>(mode), _handle, stream_index, intsances_num);
 	}
 
 public:
@@ -103,7 +104,7 @@ private:
 
 	TransformFeedbackState _State;
 
-	std::vector<UniquePtr<TransformFeedbackBuffer>> _TransformFeedbackBuffers;
+	std::vector<std::unique_ptr<gl_transform_feedback_buffer>> _TransformFeedbackBuffers;
 
 	void _Allocate()
 	{
@@ -116,7 +117,7 @@ private:
 
 	void _AssociateBuffer()
 	{
-		for (UInt32 Index = 0; Index < _TransformFeedbackBuffers.size(); ++Index)
+		for (uint32 Index = 0; Index < _TransformFeedbackBuffers.size(); ++Index)
 		{
 			//glTransformFeedbackBufferRange(_handle, Index, _TransformFeedbackBuffers[Index].get_handle(), Offset, Size);
 		}

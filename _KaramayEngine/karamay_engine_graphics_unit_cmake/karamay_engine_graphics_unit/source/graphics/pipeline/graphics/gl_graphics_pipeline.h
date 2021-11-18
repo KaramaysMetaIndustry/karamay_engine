@@ -87,7 +87,7 @@ enum class gl_clip_control_depth_mode : GLenum
 /*
  * for dynamical modifying
  * */
-struct GraphicsPipelineState
+struct gl_graphics_pipeline_state
 {
     struct gl_vertex_assembly
     {
@@ -385,41 +385,40 @@ struct GraphicsPipelineState
         glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
     }
 
-    void reset();
 };
 
 /*
  * descriptor for graphics pipeline construction
  * */
-struct GraphicsPipelineDescriptor{
-    std::string Name;
-    std::string OwnerRendererDir;
+struct gl_graphics_pipeline_descriptor{
+    std::string name;
+    std::string owner_renderer_dir;
     // [must have] vertex stream which input into program by vertex puller
-   SharedPtr<VertexLauncher> VertexLauncher;
+   std::shared_ptr<gl_vertex_launcher> vertex_launcher;
     // [must have] program body
-    SharedPtr<GraphicsPipelineProgram> Program;
+   std::shared_ptr<glsl_graphics_pipeline_program> glsl_program;
     // [optional] transform feedback 
-    SharedPtr<TransformFeedback> TransformFeedback;
+   std::shared_ptr<gl_transform_feedback> transform_feedback;
     // [must have] where program final color output
-    SharedPtr<Framebuffer> RenderTarget;
+   std::shared_ptr<gLframebuffer> framebuffer;
     // [must have] pipeline state
-    SharedPtr<GraphicsPipelineState> State;
+   std::shared_ptr<gl_graphics_pipeline_state> state;
 };
 
 /*
  * graphics pipeline
  * vertex shader [+ tessellation control shader + tessellation evaluation shader] [+ geometry shader] + fragment shader
  * */
-class GraphicsPipeline{
+class gl_graphics_pipeline{
 public:
-    GraphicsPipeline() = default;
-    GraphicsPipeline(const GraphicsPipelineDescriptor& Descriptor)
+    gl_graphics_pipeline() = default;
+    gl_graphics_pipeline(const gl_graphics_pipeline_descriptor& descriptor)
     {
     }
-    GraphicsPipeline(const GraphicsPipeline&) = delete;
-    GraphicsPipeline& operator=(const GraphicsPipeline&) = delete;
+    gl_graphics_pipeline(const gl_graphics_pipeline&) = delete;
+    gl_graphics_pipeline& operator=(const gl_graphics_pipeline&) = delete;
 
-    ~GraphicsPipeline() = default;
+    ~gl_graphics_pipeline() = default;
    
 public:
 
@@ -427,7 +426,7 @@ public:
     * Make sure all commands for this pipeline can work.
     * Between this range, many commands can be called.
     */
-    void Enable() noexcept
+    void enable() noexcept
     {
         if (!_Program) return;
         _Program->enable();
@@ -438,7 +437,7 @@ public:
     * Make sure all commands for this pipeline can not work.
     * Clear all context.
     */
-    void Disable() noexcept
+    void disable() noexcept
     {
         if (!_Program) return;
         _UnbindResources();
@@ -449,7 +448,7 @@ public: // non-draw commands
 
     void BeginTransformFeedback()
     {
-        auto _VertexLauncher = _Descriptor.VertexLauncher;
+        auto _VertexLauncher = _Descriptor.vertex_launcher;
         auto _TransformFeedback = _Descriptor.TransformFeedback;
 
         if (!_VertexLauncher || !_TransformFeedback) return;
@@ -643,20 +642,20 @@ public: // draw commands
         _TransformFeedback->Draw(_TransformFeedbackPrimitiveMode, StreamIndex);
     }
 
-    void DrawTransformFeedback(UInt32 StreamIndex, UInt32 InstancesNum)
+    void draw_transform_feedback(uint32 stream_index, uint32 instances_num)
     {
-        auto _VertexLauncher = _Descriptor.VertexLauncher;
-        auto _TransformFeedback = _Descriptor.TransformFeedback;
+        auto _vertex_launcher = _descriptor.vertex_launcher;
+        auto _transform_feedback = _descriptor.transform_feedback;
 
-        if (!_VertexLauncher || !_TransformFeedback) return;
+        if (!_vertex_launcher || !_transform_feedback) return;
 
-        PrimitiveMode _TransformFeedbackPrimitiveMode = _VertexLauncher->GetPrimitiveMode();
-        _TransformFeedback->Draw(_TransformFeedbackPrimitiveMode, StreamIndex, InstancesNum);
+        gl_primitive_mode _TransformFeedbackPrimitiveMode = _vertex_launcher->get_primitive_mode();
+        _transform_feedback->draw(_TransformFeedbackPrimitiveMode, stream_index, instances_num);
     }
 
 private:
 
-    GraphicsPipelineDescriptor _Descriptor;
+    gl_graphics_pipeline_descriptor _descriptor;
 
     UniquePtr<gl_program> _Program;
 
