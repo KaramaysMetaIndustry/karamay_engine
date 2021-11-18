@@ -15,7 +15,7 @@ struct glsl_graphics_pipeline_parameters
 
 class glsl_graphics_pipeline_program final{
 public:
-	
+	glsl_graphics_pipeline_program() = default;
 	glsl_graphics_pipeline_program(const std::shared_ptr<glsl_vertex_shader>& vs, const std::shared_ptr<glsl_fragment_shader>& fs) :
 		_vertex_shader(vs), _tessellation_shader(nullptr), _geometry_shader(nullptr), _fragment_shader(fs)
 	{

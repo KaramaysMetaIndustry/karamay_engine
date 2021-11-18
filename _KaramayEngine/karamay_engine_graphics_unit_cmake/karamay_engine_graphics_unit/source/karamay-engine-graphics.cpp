@@ -440,7 +440,7 @@ void test0()
 		
 		// start to render
 		_gp.enable();
-		_gp.BeginConditionalRender();
+		_gp.begin_conditional_render();
 
 		if (first)
 		{
@@ -452,7 +452,7 @@ void test0()
 
 		_gp.draw_transform_feedback();
 
-		_gp.EndConditionalRender();
+		_gp.end_conditional_render();
 		_gp.disable();
 		// end rendering
 	}

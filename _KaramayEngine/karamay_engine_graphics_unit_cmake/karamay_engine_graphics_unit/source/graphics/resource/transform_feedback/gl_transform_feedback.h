@@ -7,7 +7,7 @@
 
 class gl_transform_feedback final : public gl_object{
 public:
-	gl_transform_feedback() = delete;
+	gl_transform_feedback() : gl_object(gl_object_type::TRANSFORM_FEEDBACK_OBJ) {};
 	gl_transform_feedback(const std::vector<std::string>& Varings, uint32 AcceptDataFrom) :
 		gl_object(gl_object_type::TRANSFORM_FEEDBACK_OBJ), 
 		_State(TransformFeedbackState::End)

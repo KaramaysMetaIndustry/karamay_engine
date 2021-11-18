@@ -21,7 +21,7 @@ public:
 
 	~gl_fence()
 	{
-		glDeleteSync()
+		glDeleteSync(_sync);
 	}
 
 public:

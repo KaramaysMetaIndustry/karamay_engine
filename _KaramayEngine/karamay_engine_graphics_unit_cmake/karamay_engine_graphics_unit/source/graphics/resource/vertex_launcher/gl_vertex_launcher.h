@@ -60,7 +60,7 @@ public:
 	using element_slot_writer = gl_element_array_buffer::element_buffer_writer;
 	using element_slot_handler = gl_element_array_buffer::element_buffer_handler;
 	
-	gl_vertex_launcher() = delete;
+	gl_vertex_launcher() = default;
 	gl_vertex_launcher(const gl_vertex_launcher_descriptor& descriptor) :
 		_primitive_mode(descriptor.primitive_mode),
 		_primitive_vertices_num(descriptor.primitive_vertices_num),
@@ -216,21 +216,6 @@ private:
 
 	std::unique_ptr<gl_element_array_buffer> _element_array_buffer;
 	
-};
-
-
-template<typename VertexT, typename IndexT>
-class VertexLauncherProxy : protected VertexLauncher
-{
-public:
-
-	VertexLauncherProxy() {}
-
-	void FillVertices(UInt32 VertexOffset, const std::vector<VertexT>& Vertices) 
-	{
-		VertexLauncher::FillVertices(VertexOffset, Vertices.data(), Vertices.size());
-	}
-
 };
 
 

@@ -65,7 +65,6 @@ private:
         std::unique_ptr<gl_uniform_buffer> uniform_buffer;
         std::unique_ptr<gl_shader_storage_buffer> shader_storage_buffer;
         std::unique_ptr<gl_atomic_counter_buffer> atomic_counter_buffer;
-        std::unique_ptr<gl_dispatch_indirect_buffer> dispatch_indirect_buffer;
     } _resource_pool;
 
 

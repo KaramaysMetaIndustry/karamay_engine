@@ -529,19 +529,19 @@ public: // glGetProgramiv
     /*
      * returns a symbolic constant indicating the primitive type accepted as input to the geometry shader contained in program.
      * */
-    PrimitiveMode geometry_input_type() const noexcept{
+    gl_primitive_mode geometry_input_type() const noexcept{
         GLint param;
         glGetProgramiv(_handle, GL_GEOMETRY_INPUT_TYPE, &param);
-        return static_cast<PrimitiveMode>(param);
+        return static_cast<gl_primitive_mode>(param);
     }
 
     /*
      * returns a symbolic constant indicating the primitive type that will be output by the geometry shader contained in program.
      * */
-    PrimitiveMode geometry_output_type() const noexcept{
+    gl_primitive_mode geometry_output_type() const noexcept{
         GLint param;
         glGetProgramiv(_handle, GL_GEOMETRY_OUTPUT_TYPE, &param);
-        return static_cast<PrimitiveMode>(param);
+        return static_cast<gl_primitive_mode>(param);
     }
 
 public:

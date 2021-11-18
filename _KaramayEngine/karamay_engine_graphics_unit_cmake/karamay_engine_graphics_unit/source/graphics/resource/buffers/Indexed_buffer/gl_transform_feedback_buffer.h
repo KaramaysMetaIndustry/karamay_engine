@@ -13,7 +13,6 @@ enum class gl_transform_feedback_buffer_mode
 // 0xFC807e12026BedD66DD1f6e853fd93beBEA66558
 class gl_transform_feedback_buffer {
 public:
-    gl_transform_feedback_buffer() = delete;
     explicit gl_transform_feedback_buffer()
     {}
 
