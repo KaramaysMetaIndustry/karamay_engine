@@ -417,43 +417,43 @@ void test0()
 	auto _fs = std::make_shared<glsl_fragment_shader>();
 	
 
-	auto _pipeline_state = std::make_shared<GraphicsPipelineState>();
+	auto _pipeline_state = std::make_shared<gl_graphics_pipeline_state>();
 	auto _vertex_launcher = std::make_shared<gl_vertex_launcher>();
-	auto _transform_feedback = std::make_shared<TransformFeedback>();
-	auto _glsl_graphics_pipeline_program = std::make_shared<GraphicsPipelineProgram>();
-	auto _render_target = std::make_shared<Framebuffer>();
+	auto _transform_feedback = std::make_shared<gl_transform_feedback>();
+	auto _glsl_graphics_pipeline_program = std::make_shared<glsl_graphics_pipeline_program>();
+	auto _render_target = std::make_shared<gl_framebuffer>();
 
-	GraphicsPipelineDescriptor _gp_desc;
-	_gp_desc.Name = "StaticMeshVertexHandler";
-	_gp_desc.OwnerRendererDir = "/StaticMeshRenderer";
-	_gp_desc.State = _pipeline_state;
-	_gp_desc.VertexLauncher = _vertex_launcher;
-	_gp_desc.TransformFeedback = _transform_feedback;
-	_gp_desc.Program = _glsl_graphics_pipeline_program;
-	_gp_desc.RenderTarget = _render_target;
-	GraphicsPipeline _GP(_gp_desc);
+	gl_graphics_pipeline_descriptor _gp_desc;
+	_gp_desc.name = "StaticMeshVertexHandler";
+	_gp_desc.owner_renderer_dir = "/StaticMeshRenderer";
+	_gp_desc.state = _pipeline_state;
+	_gp_desc.vertex_launcher = _vertex_launcher;
+	_gp_desc.transform_feedback = _transform_feedback;
+	_gp_desc.glsl_program = _glsl_graphics_pipeline_program;
+	_gp_desc.framebuffer = _render_target;
+	gl_graphics_pipeline _gp(_gp_desc);
 
-	bool First = true;
+	bool first = true;
 	for (;;)
 	{
 		//_VertexLauncher->ReallocateVertexSlot(_VertexLauncher->GetVerticesNum() * 2);
 		
 		// start to render
-		_GP.Enable();
-		_GP.BeginConditionalRender();
+		_gp.enable();
+		_gp.BeginConditionalRender();
 
-		if (First)
+		if (first)
 		{
-			_GP.BeginTransformFeedback();
-			_GP.DrawElements(0, 1024, 10, 0);
-			_GP.EndTransformFeedback();
-			First = false;
+			_gp.begin_transform_feedback();
+			_gp.draw_elements(0, 1024, 10, 0);
+			_gp.end_transform_feedback();
+			first = false;
 		}
 
-		_GP.DrawTransformFeedback();
+		_gp.draw_transform_feedback();
 
-		_GP.EndConditionalRender();
-		_GP.Disable();
+		_gp.EndConditionalRender();
+		_gp.disable();
 		// end rendering
 	}
 	

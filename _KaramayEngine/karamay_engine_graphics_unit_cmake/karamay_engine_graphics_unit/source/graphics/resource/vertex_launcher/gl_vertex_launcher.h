@@ -23,14 +23,14 @@ enum class gl_primitive_mode
 	PATCHES = GL_PATCHES
 };
 
-struct DrawArraysIndirectCommand {
+struct gl_draw_arrays_indirect_command {
 	uint32  count;
 	uint32  primCount;
 	uint32  first;
 	uint32  baseInstance;
 };
 
-struct DrawElementsIndirectCommand {
+struct gl_draw_elements_indirect_command {
 	uint32 count;
 	uint32 primCount;
 	uint32 firstIndex;

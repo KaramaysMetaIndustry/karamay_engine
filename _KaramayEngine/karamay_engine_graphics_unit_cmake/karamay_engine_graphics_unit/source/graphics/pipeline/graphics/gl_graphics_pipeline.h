@@ -2,6 +2,7 @@
 #define GRAPHICS_PIPELINE_H
 
 #include "graphics/glsl/glsl_program.h"
+#include "graphics/resource/sync/gl_sync.h"
 #include "graphics/resource/program/gl_program.h"
 #include "graphics/resource/vertex_launcher/gl_vertex_launcher.h"
 #include "graphics/resource/buffers/Indexed_buffer/gl_uniform_buffer.h"
@@ -394,15 +395,15 @@ struct gl_graphics_pipeline_descriptor{
     std::string name;
     std::string owner_renderer_dir;
     // [must have] vertex stream which input into program by vertex puller
-   std::shared_ptr<gl_vertex_launcher> vertex_launcher;
+    std::shared_ptr<gl_vertex_launcher> vertex_launcher;
     // [must have] program body
-   std::shared_ptr<glsl_graphics_pipeline_program> glsl_program;
+    std::shared_ptr<glsl_graphics_pipeline_program> glsl_program;
     // [optional] transform feedback 
-   std::shared_ptr<gl_transform_feedback> transform_feedback;
+    std::shared_ptr<gl_transform_feedback> transform_feedback;
     // [must have] where program final color output
-   std::shared_ptr<gLframebuffer> framebuffer;
+    std::shared_ptr<gLframebuffer> framebuffer;
     // [must have] pipeline state
-   std::shared_ptr<gl_graphics_pipeline_state> state;
+    std::shared_ptr<gl_graphics_pipeline_state> state;
 };
 
 /*
@@ -428,9 +429,9 @@ public:
     */
     void enable() noexcept
     {
-        if (!_Program) return;
-        _Program->enable();
-        _BindResources();
+        if (!_program) return;
+        _program->enable();
+        _bind_resources();
     }
 
     /*
@@ -439,48 +440,48 @@ public:
     */
     void disable() noexcept
     {
-        if (!_Program) return;
-        _UnbindResources();
-        _Program->disable();
+        if (!_program) return;
+        _unbind_resources();
+        _program->disable();
     }
 
 public: // non-draw commands 
 
-    void BeginTransformFeedback()
+    void begin_transform_feedback()
     {
-        auto _VertexLauncher = _Descriptor.vertex_launcher;
-        auto _TransformFeedback = _Descriptor.TransformFeedback;
+        auto _vertex_launcher = _descriptor.vertex_launcher;
+        auto _transform_feedback = _descriptor.transform_feedback;
 
-        if (!_VertexLauncher || !_TransformFeedback) return;
-        PrimitiveMode _TransformFeedbackPrimitiveMode = _VertexLauncher->GetPrimitiveMode();
-        _TransformFeedback->BeginTransformFeedback(_TransformFeedbackPrimitiveMode);
+        if (!_vertex_launcher || !_transform_feedback) return;
+        gl_primitive_mode _TransformFeedbackPrimitiveMode = _vertex_launcher->get_primitive_mode();
+        _transform_feedback->begin_transform_feedback(_TransformFeedbackPrimitiveMode);
     }
 
-    void PauseTransformFeedback()
+    void pause_transform_feedback()
     {
-        auto _VertexLauncher = _Descriptor.VertexLauncher;
-        auto _TransformFeedback = _Descriptor.TransformFeedback;
+        auto _vertex_launcher = _descriptor.vertex_launcher;
+        auto _transform_feedback = _descriptor.transform_feedback;
 
-        if (!_VertexLauncher || !_TransformFeedback) return;
-        _TransformFeedback->PauseTransformFeedback();
+        if (!_vertex_launcher || !_transform_feedback) return;
+        _transform_feedback->pause_transform_feedback();
     }
 
-    void ResumeTransformFeedback()
+    void resume_transform_feedback()
     {
-        auto _VertexLauncher = _Descriptor.VertexLauncher;
-        auto _TransformFeedback = _Descriptor.TransformFeedback;
+        auto _vertex_launcher = _descriptor.vertex_launcher;
+        auto _transform_feedback = _descriptor.transform_feedback;
 
-        if (!_VertexLauncher || !_TransformFeedback) return;
-        _TransformFeedback->ResumeTransformFeedback();
+        if (!_vertex_launcher || !_transform_feedback) return;
+        _transform_feedback->resume_transform_feedback();
     }
 
-    void EndTransformFeedback()
+    void end_transform_feedback()
     {
-        auto _VertexLauncher = _Descriptor.VertexLauncher;
-        auto _TransformFeedback = _Descriptor.TransformFeedback;
+        auto _vertex_launcher = _descriptor.vertex_launcher;
+        auto _transform_feedback = _descriptor.transform_feedback;
 
-        if (!_VertexLauncher || !_TransformFeedback) return;
-        _TransformFeedback->EndTransformFeedback();
+        if (!_vertex_launcher || !_transform_feedback) return;
+        _transform_feedback->end_transform_feedback();
     }
 
     void BeginConditionalRender()
@@ -493,190 +494,213 @@ public: // non-draw commands
         glEndConditionalRender();
     }
 
-public: // draw commands
+public:
 
-    void DrawArrays(UInt32 VertexOffset, UInt32 VerticesNum) const
+    /*
+    * draw vertex array by vertex_offset and vertices_num
+    */
+    std::shared_ptr<gl_fence> draw_arrays(uint32 vertex_offset, uint32 vertices_num) const
     {
-        auto _VertexLauncher = _Descriptor.VertexLauncher;
-
-        if (!_VertexLauncher) return;
-        if (VertexOffset + VerticesNum >= _VertexLauncher->GetVerticesNum()) return;
-
-        glDrawArrays(static_cast<GLenum>(_VertexLauncher->GetPrimitiveMode()), VertexOffset, VerticesNum);
+        auto _vertex_launcher = _descriptor.vertex_launcher;
+        if (!_vertex_launcher || vertex_offset + vertices_num >= _vertex_launcher->get_vertices_num()) return;
+        glDrawArrays(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), vertex_offset, vertices_num);
+        return std::make_shared<gl_fence>();
     }
 
-    void DrawArrays(UInt32 VertexOffset, UInt32 VerticesNum, UInt32 InstancesNum, UInt32 InstanceOffset) const
+    /*
+    * draw vertex array by vertex_offset and vertices_num
+    * draw number of instances, and specify where instance attribute will effect vertex 
+    */
+    std::shared_ptr<gl_fence> draw_arrays(uint32 vertex_offset, uint32 vertices_num, uint32 instances_num, uint32 base_instance) const
     {
-        auto _VertexLauncher = _Descriptor.VertexLauncher;
+        auto _vertex_launcher = _descriptor.vertex_launcher;
 
-        if (!_VertexLauncher) return;
-        if (VertexOffset + VerticesNum >= _VertexLauncher->GetVerticesNum()) return;
-        if (InstanceOffset >= InstancesNum) return;
+        if (!_vertex_launcher) return;
+        if (vertex_offset + vertices_num >= _vertex_launcher->get_vertices_num()) return;
+        if (base_instance >= instances_num) return;
 
-        glDrawArraysInstancedBaseInstance(static_cast<GLenum>(_VertexLauncher->GetPrimitiveMode()), VertexOffset, VerticesNum, InstancesNum, InstanceOffset);
+        glDrawArraysInstancedBaseInstance(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), vertex_offset, vertices_num, instances_num, base_instance);
+        return std::make_shared<gl_fence>();
     }
-
-    void MultiDrawArrays(const std::vector<UInt32>& VertexOffsets, const std::vector<UInt32>& VerticesNums) const
-    {
-        auto _VertexLauncher = _Descriptor.VertexLauncher;
-
-        if (!_VertexLauncher) return;
-        if (VertexOffsets.size() != VerticesNums.size()) return;
-
-        glMultiDrawArrays(static_cast<GLenum>(_VertexLauncher->GetPrimitiveMode()), 
-            (const Int32*)VertexOffsets.data(), (const Int32*)VerticesNums.data(), VertexOffsets.size()
-        );
-    }
-
     
-    void DrawElements(UInt32 ElementOffset, UInt32 ElementsNum) const
+    /*
+    * draw vertex array by indrect command
+    */
+    std::shared_ptr<gl_fence> draw_arrays(const gl_draw_arrays_indirect_command& command) const
     {
-        auto _VertexLauncher = _Descriptor.VertexLauncher;
 
-        if (ElementOffset + ElementsNum >= _VertexLauncher->GetElementsNum()) return;
+        return std::make_shared<gl_fence>();
+    }
+
+    /*
+    * multi draw vertex array by vertex_offset and vertices_num pairs
+    * multi drawing can not support instanced drawing.
+    */
+    std::shared_ptr<gl_fence> multi_draw_arrays(const std::vector<uint32>& vertex_offsets, const std::vector<uint32>& vertices_nums) const
+    {
+        auto _vertex_launcher = _descriptor.vertex_launcher;
+        if (!_vertex_launcher) return;
+        if (vertex_offsets.size() != vertices_nums.size()) return;
+        glMultiDrawArrays(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            (const int32*)vertex_offsets.data(), (const int32*)vertices_nums.data(), vertex_offsets.size()
+        );
+        return std::make_shared<gl_fence>();
+    }
+
+    /*
+    * multi draw vertex array by indrect command
+    */
+    std::shared_ptr<gl_fence> multi_draw_arrays(const std::vector<gl_draw_arrays_indirect_command>& commands) const
+    {
+        //glMultiDrawArraysIndirect()
+
+        return std::make_shared<gl_fence>();
+    }
+
+    /*
+    * draw vertex array according to element array by element_offset and elements_num
+    */
+    std::shared_ptr<gl_fence> draw_elements(uint32 element_offset, uint32 elements_num) const
+    {
+        auto _vertex_launcher = _descriptor.vertex_launcher;
+        if (element_offset + elements_num >= _vertex_launcher->get_elements_num()) return;
 
         glDrawElements(
-            static_cast<GLenum>(_VertexLauncher->GetPrimitiveMode()),
-            ElementsNum, static_cast<GLenum>(_VertexLauncher->GetElementType()), 
-            (void*)(_VertexLauncher->GetElementSize() * ElementOffset)
+            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            elements_num, static_cast<GLenum>(_vertex_launcher->get_element_type()),
+            (void*)(_vertex_launcher->get_element_size() * element_offset)
         );
+        return std::make_shared<gl_fence>();
     }
 
-    void DrawElements(UInt32 ElementOffset, UInt32 ElementsNum, UInt32 InstancesNum, UInt32 BaseInstance) const
+    std::shared_ptr<gl_fence> draw_elements(uint32 element_offset, uint32 elements_num, uint32 instances_num, uint32 base_instance) const
     {
-        auto _VertexLauncher = _Descriptor.VertexLauncher;
-
+        auto _vertex_launcher = _descriptor.vertex_launcher;
+        if (!_vertex_launcher) return;
         glDrawElementsInstancedBaseInstance(
-            static_cast<GLenum>(_VertexLauncher->GetPrimitiveMode()),
-            ElementsNum, static_cast<GLenum>(_VertexLauncher->GetElementType()), (void*)(_VertexLauncher->GetElementSize() * ElementOffset),
-            InstancesNum, BaseInstance
+            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            elements_num, static_cast<GLenum>(_vertex_launcher->get_element_type()), (void*)(_vertex_launcher->get_element_size() * element_offset),
+            instances_num, base_instance
         );
+        return std::make_shared<gl_fence>();
     }
 
-    void DrawElements(UInt32 ElementOffset, UInt32 ElementsNum, UInt32 BaseVertex) const
+    std::shared_ptr<gl_fence> draw_elements(uint32 element_offset, uint32 elements_num, uint32 base_vertex) const
     {
-        auto _VertexLauncher = _Descriptor.VertexLauncher;
+        auto _vertex_launcher = _descriptor.vertex_launcher;
+        if (!_vertex_launcher) return;
 
         glDrawElementsBaseVertex(
-            static_cast<GLenum>(_VertexLauncher->GetPrimitiveMode()),
-            ElementsNum, static_cast<GLenum>(_VertexLauncher->GetElementType()), (void*)(_VertexLauncher->GetElementSize() * ElementOffset),
-            BaseVertex
+            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            elements_num, static_cast<GLenum>(_vertex_launcher->get_element_type()), (void*)(_vertex_launcher->get_element_size() * element_offset),
+            base_vertex
         );
+        return std::make_shared<gl_fence>();
     }
 
-    void DrawElements(UInt32 ElementOffset, UInt32 ElementsNum, UInt32 BaseVertex, UInt32 InstancesNum, UInt32 BaseInstance) const
+    std::shared_ptr<gl_fence> draw_elements(uint32 element_offset, uint32 elements_num, uint32 base_vertex, uint32 instances_num, uint32 base_instance) const
     {
-        auto _VertexLauncher = _Descriptor.VertexLauncher;
+        auto _vertex_launcher = _descriptor.vertex_launcher;
+        if (!_vertex_launcher) return;
 
         glDrawElementsInstancedBaseVertexBaseInstance(
-            static_cast<GLenum>(_VertexLauncher->GetPrimitiveMode()),
-            ElementsNum, static_cast<GLenum>(_VertexLauncher->GetElementType()), (void*)(_VertexLauncher->GetElementSize() * ElementOffset),
-            InstancesNum, BaseVertex, BaseInstance
+            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            elements_num, static_cast<GLenum>(_vertex_launcher->get_element_type()), (void*)(_vertex_launcher->get_element_size() * element_offset),
+            instances_num, base_vertex, base_instance
         );
+        return std::make_shared<gl_fence>();
     }
 
-    void DrawRangeElements(UInt32 ElementStart, UInt32 ElementEnd, UInt32 ElementOffset, UInt32 ElementsNum, UInt32 BaseVertex) const
+    std::shared_ptr<gl_fence> draw_elements(const gl_draw_elements_indirect_command& command) const
     {
-        auto _VertexLauncher = _Descriptor.VertexLauncher;
-
-        glDrawRangeElementsBaseVertex(
-            static_cast<GLenum>(_VertexLauncher->GetPrimitiveMode()),
-            ElementStart, ElementEnd,
-            ElementsNum, static_cast<GLenum>(_VertexLauncher->GetElementType()), (void*)(_VertexLauncher->GetElementSize() * ElementOffset),
-            BaseVertex
-        );
-    }
-
-    void MultiDrawElements(const std::vector<UInt32>& ElementOffsets, std::vector<UInt32>& ElementsNums) const
-    {
-        auto _VertexLauncher = _Descriptor.VertexLauncher;
-
-        glMultiDrawElements(
-            static_cast<GLenum>(_VertexLauncher->GetPrimitiveMode()), (const Int32*)ElementsNums.data(),
-            static_cast<GLenum>(_VertexLauncher->GetElementType()),
-            nullptr, ElementOffsets.size()
-        );
-    }
-
-    void MultiDrawElements(UInt32 BaseVertex) const
-    {
-        //glMultiDrawElementsBaseVertex()
-    }
-
-
-    void DrawArrays(const DrawArraysIndirectCommand& Command) const
-    {
-
-    }
-
-    void MultiDrawArrays(const std::vector<DrawArraysIndirectCommand>& Commands) const
-    {
-        //glMultiDrawArraysIndirect();
-    }
-
-    void DrawElements(const DrawElementsIndirectCommand& Command) const
-    {
-        auto _VertexLauncher = _Descriptor.VertexLauncher;
+        auto _vertex_launcher = _descriptor.vertex_launcher;
 
         glDrawElementsIndirect(
-            static_cast<GLenum>(_VertexLauncher->GetPrimitiveMode()),
-            static_cast<GLenum>(_VertexLauncher->GetElementType()),
-            (const void*)&Command
+            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            static_cast<GLenum>(_vertex_launcher->get_element_type()),
+            (const void*)&command
         );
+
+        return std::make_shared<gl_fence>();
     }
 
-    void MultiDrawElements(const std::vector<DrawElementsIndirectCommand>& Commands) const
+    std::shared_ptr<gl_fence> draw_range_elements(uint32 element_start, uint32 element_end, uint32 element_offset, uint32 elements_num, uint32 base_vertex) const
     {
-        //glMultiDrawElementsIndirect();
+        auto _vertex_launcher = _descriptor.vertex_launcher;
+        if (!_vertex_launcher) return;
+
+        glDrawRangeElementsBaseVertex(
+            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            element_start, element_end,
+            elements_num, static_cast<GLenum>(_vertex_launcher->get_element_type()), (void*)(_vertex_launcher->get_element_size() * element_offset),
+            base_vertex
+        );
+        return std::make_shared<gl_fence>();
     }
 
-
-    void DrawTransformFeedback(UInt32 StreamIndex = 0)
+    std::shared_ptr<gl_fence> multi_draw_elements(const std::vector<uint32>& element_offsets, std::vector<uint32>& elements_nums) const
     {
-        auto _VertexLauncher = _Descriptor.VertexLauncher;
-        auto _TransformFeedback = _Descriptor.TransformFeedback;
+        auto _vertex_launcher = _descriptor.vertex_launcher;
+        if (!_vertex_launcher) return;
 
-        if (!_VertexLauncher || !_TransformFeedback) return;
-
-        PrimitiveMode _TransformFeedbackPrimitiveMode = _VertexLauncher->GetPrimitiveMode();
-        _TransformFeedback->Draw(_TransformFeedbackPrimitiveMode, StreamIndex);
+        glMultiDrawElements(
+            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), (const int32*)elements_nums.data(),
+            static_cast<GLenum>(_vertex_launcher->get_element_type()),
+            nullptr, element_offsets.size()
+        );
+        return std::make_shared<gl_fence>();
     }
 
-    void draw_transform_feedback(uint32 stream_index, uint32 instances_num)
+    std::shared_ptr<gl_fence> multi_draw_elements(const std::vector<gl_draw_elements_indirect_command>& commands) const
+    {
+
+        return std::make_shared<gl_fence>();
+    }
+
+
+    std::shared_ptr<gl_fence> draw_transform_feedback(uint32 stream_Index = 0)
     {
         auto _vertex_launcher = _descriptor.vertex_launcher;
         auto _transform_feedback = _descriptor.transform_feedback;
-
         if (!_vertex_launcher || !_transform_feedback) return;
+        _transform_feedback->draw(_vertex_launcher->get_primitive_mode(), stream_Index);
+        return std::make_shared<gl_fence>();
+    }
 
+    std::shared_ptr<gl_fence> draw_transform_feedback(uint32 stream_index, uint32 instances_num)
+    {
+        auto _vertex_launcher = _descriptor.vertex_launcher;
+        auto _transform_feedback = _descriptor.transform_feedback;
+        if (!_vertex_launcher || !_transform_feedback) return;
         gl_primitive_mode _TransformFeedbackPrimitiveMode = _vertex_launcher->get_primitive_mode();
         _transform_feedback->draw(_TransformFeedbackPrimitiveMode, stream_index, instances_num);
+
+        return std::make_shared<gl_fence>();
     }
 
 private:
 
     gl_graphics_pipeline_descriptor _descriptor;
 
-    UniquePtr<gl_program> _Program;
+    std::unique_ptr<gl_program> _program;
 
     struct gl_graphics_pipeline_resource_pool{
         std::unique_ptr<gl_uniform_buffer> uniform_buffer;
         std::unique_ptr<gl_shader_storage_buffer> shader_storage_buffer;
         std::unique_ptr<gl_atomic_counter_buffer> atomic_counter_buffer;
-        std::unique_ptr<gl_draw_indirect_buffer> draw_indirect_buffer;
     } _resource_pool;
 
 private:
 
-    void _BindResources()
+    void _bind_resources()
     {
-        if (_Descriptor.VertexLauncher && _Descriptor.Program && _Descriptor.RenderTarget && _Descriptor.State)
+        if (_descriptor.vertex_launcher && _descriptor.glsl_program && _descriptor.framebuffer && _descriptor.state)
         {
             // bind vertex launcher
-            _Descriptor.VertexLauncher->Bind();
+            _descriptor.vertex_launcher->bind();
 
             // bind program parameters
-            const auto& _program_parameters = _Descriptor.Program->parameters();
+            const auto& _program_parameters = _descriptor.glsl_program->parameters();
             for (const auto& _image : _program_parameters.images)
             {
                 if(_image) _image->bind();
@@ -702,15 +726,15 @@ private:
            
 
             // bind framebuffer
-            _Descriptor.RenderTarget->bind();
+            _descriptor.framebuffer->bind();
 
             // set state
-            _Descriptor.State->set();
+            _descriptor.state->set();
         }
  
     }
 
-    void _UnbindResources()
+    void _unbind_resources()
     {
 
     }
@@ -785,11 +809,11 @@ struct gl_vertex_processing_pipeline_descriptor
     // pipeline state
     std::shared_ptr<gl_vertex_processing_pipeline_state> state;
     // vertex stream which input into program by vertex puller
-    std::shared_ptr<VertexLauncher> vertex_launcher;
+    std::shared_ptr<gl_vertex_launcher> vertex_launcher;
     // program body
     std::shared_ptr<glsl_vertex_processing_pipeline_program> program;
     // must have transform feedback 
-    std::shared_ptr<TransformFeedback> transform_feedback;
+    std::shared_ptr<gl_transform_feedback> transform_feedback;
 };
 
 /*
