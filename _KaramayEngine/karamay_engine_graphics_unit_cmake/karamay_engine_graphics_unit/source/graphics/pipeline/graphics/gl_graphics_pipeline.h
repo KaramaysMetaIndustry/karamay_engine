@@ -809,13 +809,12 @@ struct gl_vertex_processing_pipeline_descriptor
     std::string name;
     // renderer dir
     std::string owner_renderer_dir;
-
     // pipeline state
     std::shared_ptr<gl_vertex_processing_pipeline_state> state;
     // vertex stream which input into program by vertex puller
     std::shared_ptr<gl_vertex_launcher> vertex_launcher;
     // program body
-    std::shared_ptr<glsl_vertex_processing_pipeline_program> program;
+    std::shared_ptr<glsl_vertex_processing_pipeline_program> program; 
     // must have transform feedback 
     std::shared_ptr<gl_transform_feedback> transform_feedback;
 };

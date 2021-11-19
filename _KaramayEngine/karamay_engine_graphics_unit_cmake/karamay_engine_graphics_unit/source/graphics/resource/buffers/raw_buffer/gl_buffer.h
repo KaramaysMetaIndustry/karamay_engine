@@ -310,7 +310,8 @@ public:
             {
                 glMemoryBarrier(GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT);
             }
-            glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+            std::unique_ptr<gl_fence> _fence;
+            _fence->client_wait(100);
             if (!_buffer_storage_options.map_coherent)
             {
                 glMemoryBarrier(GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT);

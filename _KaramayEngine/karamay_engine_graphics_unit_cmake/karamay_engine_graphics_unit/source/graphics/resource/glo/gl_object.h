@@ -2,6 +2,7 @@
 #define GL_OBJECT_H
 
 #include "graphics/glsl/glsl_class.h"
+#include "graphics/resource/sync/gl_sync.h"
 
 enum gl_error : GLenum
 {

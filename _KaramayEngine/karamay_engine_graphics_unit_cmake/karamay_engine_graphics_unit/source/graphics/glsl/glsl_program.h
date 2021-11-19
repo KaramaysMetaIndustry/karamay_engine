@@ -40,6 +40,7 @@ public:
 	glsl_graphics_pipeline_program(const glsl_graphics_pipeline_program&) = delete;
 	glsl_graphics_pipeline_program& operator=(const glsl_graphics_pipeline_program&) = delete;
 
+
 	~glsl_graphics_pipeline_program() = default;
 
 public:
