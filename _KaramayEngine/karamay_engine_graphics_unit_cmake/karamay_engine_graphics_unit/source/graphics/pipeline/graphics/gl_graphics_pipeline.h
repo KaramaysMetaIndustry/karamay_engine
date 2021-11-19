@@ -412,7 +412,6 @@ struct gl_graphics_pipeline_descriptor{
  * */
 class gl_graphics_pipeline{
 public:
-    gl_graphics_pipeline() = default;
     gl_graphics_pipeline(const gl_graphics_pipeline_descriptor& descriptor)
     {
     }

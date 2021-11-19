@@ -40,7 +40,7 @@ public:
 
 	const void* read(int64 byte_offset, int64 bytes_num) const
 	{
-		return _raw_buffer ? _raw_buffer->read(byte_offset, bytes_num) : nullptr;
+		return nullptr;
 	}
 
 	void execute_mapped_memory_reader(int64 byte_offset, int64 bytes_num) {}

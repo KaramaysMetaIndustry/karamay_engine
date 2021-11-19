@@ -6,7 +6,7 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../dependencies/stb/stb_image.h"
-#include "graphics/pipeline/graphics/gl_graphics_pipeline.h"
+#include "renderers/gl_test_renderer.h"
 
 
 
@@ -378,126 +378,20 @@ void test0()
 	glDebugMessageCallback(MessageCallback, 0);
 #endif 
 
-	// vetex launcher
-	// vertices
-	std::vector<glm::vec4> _raw_colors;
-	// indices
-
-	gl_vertex_array_descriptor _desc;
-	_desc.vertices_num = 3;
-	_desc.vertex_descriptor.attribute_descriptors = {
-		{"color", sizeof(glm::vec4), glm::vec4::length(), gl_attribute_component_type::FLOAT},
-		{"position", sizeof(glm::vec3), glm::vec3::length(), gl_attribute_component_type::FLOAT},
-		{"uv", sizeof(glm::vec2), glm::vec2::length(), gl_attribute_component_type::FLOAT}
-	};
-
-	_desc.instance_attribute_descriptors = {
-		{"instance_position_offset", sizeof(glm::vec3), glm::vec3::length(), gl_attribute_component_type::FLOAT, 10, 1}
-	};
-	gl_vertex_array _va(_desc);
-
-
-	struct VertexTest {
-		glm::vec4 Color;
-		glm::vec3 Position;
-		glm::vec2 UV;
-	};
-
-	std::vector<VertexTest> _Vertices = {
-		{glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec3(27.8f, 2.9f, 100.0f), glm::vec2(0.1f, 0.45f)},
-		{glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec3(27.8f, 2.9f, 100.0f), glm::vec2(0.1f, 0.45f)},
-		{glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec3(27.8f, 2.9f, 100.0f), glm::vec2(0.1f, 0.45f)}
-	};
-
-
-	// shader program
-	auto _vs = std::make_shared<glsl_vertex_shader>();
-	auto _ts = std::make_shared<glsl_tessellation_shader>();
-	auto _gs = std::make_shared<glsl_geometry_shader>();
-	auto _fs = std::make_shared<glsl_fragment_shader>();
-	
-
-	auto _pipeline_state = std::make_shared<gl_graphics_pipeline_state>();
-	auto _vertex_launcher = std::make_shared<gl_vertex_launcher>();
-	auto _transform_feedback = std::make_shared<gl_transform_feedback>();
-	auto _glsl_graphics_pipeline_program = std::make_shared<glsl_graphics_pipeline_program>();
-	auto _render_target = std::make_shared<gl_framebuffer>();
-
-	gl_graphics_pipeline_descriptor _gp_desc;
-	_gp_desc.name = "StaticMeshVertexHandler";
-	_gp_desc.owner_renderer_dir = "/StaticMeshRenderer";
-	_gp_desc.state = _pipeline_state;
-	_gp_desc.vertex_launcher = _vertex_launcher;
-	_gp_desc.transform_feedback = _transform_feedback;
-	_gp_desc.glsl_program = _glsl_graphics_pipeline_program;
-	_gp_desc.framebuffer = _render_target;
-	gl_graphics_pipeline _gp(_gp_desc);
-
-	bool first = true;
-	for (;;)
+	gl_test_renderer _test_renderer;
+	_test_renderer.initialize();
+	uint32 _frame_count = 0;
+	while (!_test_renderer.should_exit())
 	{
-		//_VertexLauncher->ReallocateVertexSlot(_VertexLauncher->GetVerticesNum() * 2);
-		
-		// start to render
-		_gp.enable();
-		_gp.begin_conditional_render();
-
-		if (first)
-		{
-			_gp.begin_transform_feedback();
-			_gp.draw_elements(0, 1024, 10, 0);
-			_gp.end_transform_feedback();
-			first = false;
-		}
-
-		_gp.draw_transform_feedback();
-
-		_gp.end_conditional_render();
-		_gp.disable();
-		// end rendering
-	}
-	
-	
-	std::vector<glm::uint32> indices{
-		0, 1, 3, // polygon0
-		1, 2, 3 // polygon1
-	};
-
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //GL_FILL GL_POINT
-	//glFrontFace(GL_CW);//default GL_CW
-
-	//glEnable(GL_COLOR_BUFFER_BIT);
-	//glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	//glEnable(GL_ACCUM_BUFFER_BIT);
-	//glClearAccum(1.0f, 0.2f, 1.0f, 1.0f);
-
-	// when current frag-z < 1.0, keep it
-	// fragShader write its z value before working
-	//glEnable(GL_DEPTH_TEST);
-	//glDepthFunc(GL_LESS);
-	//glDepthMask(GL_TRUE);
-	//glClearDepth(1.0f);
-
-	//glEnable(GL_STENCIL_TEST);
-	//glStencilFunc(GL_ALWAYS, 1, 0xFF);
-	//glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-	//glStencilMask(GL_TRUE);
-	//glClearStencil(0);
-
-
-
-	int i = 10;
-
-	while (i--)
-	{
-		
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glClear(GL_COLOR_BUFFER_BIT);
-		
 		window->tick(0.0f);
 
+		if (_frame_count == 100)
+			_test_renderer.set_exit(true);
+
+		_test_renderer.render(1.0f);
+		++_frame_count;
 	}
+
 }
 //
 //void test1()

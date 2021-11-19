@@ -180,25 +180,30 @@ public:
     * client [ N ] => server [ N ] 
     * write byte stream into buffer
     */
-    void write(int64 byte_offset, const void* bytes, int64 bytes_num) noexcept
+    std::shared_ptr<gl_fence> write(int64 byte_offset, const void* bytes, int64 bytes_num, bool syncable = false) noexcept
     {
-        if (!_buffer_storage_options.dynamic_storage) return;
-        if (!bytes) return;
-        if (byte_offset < 0 || bytes_num < 0 || byte_offset + bytes_num > _bytes_num) return;
+        if (!_buffer_storage_options.dynamic_storage) return nullptr;
+        if (!bytes) return nullptr;
+        if (byte_offset < 0 || bytes_num < 0 || byte_offset + bytes_num > _bytes_num) return nullptr;
 
         glNamedBufferSubData(_handle, byte_offset, bytes_num, bytes);
+
+        if (syncable)
+            return std::make_shared<gl_fence>();
+        return nullptr;
     }
 
     /*
     * server [ N ] => client [ N ]
     * read byte stream from buffer
     */
-    const void* read(int64 byte_offset, int64 bytes_num) const noexcept
+    std::shared_ptr<gl_fence> read(int64 byte_offset, int64 bytes_num, void* _out_data, bool syncable = false) const noexcept
     {
-        void* _out_data = nullptr;
-        if (byte_offset < 0 || bytes_num < 0 || byte_offset + bytes_num > _bytes_num) return _out_data;
+        if (byte_offset < 0 || bytes_num < 0 || byte_offset + bytes_num > _bytes_num) return nullptr;
         glGetNamedBufferSubData(_handle, byte_offset, bytes_num, _out_data);
-        return _out_data;
+        if (syncable)
+            return std::make_shared<gl_fence>();
+        return nullptr;
     }
 
 public:
@@ -211,12 +216,12 @@ public:
      * @ task void(mapped_memory_block, mapped_memory_block_size)
      * [ ] (const std::uint8_t* data, std::int64_t size) { }
      * */
-    void execute_mapped_memory_reader(int64 byte_offset, int64 bytes_num, const mapped_memory_reader& reader) const
+    std::shared_ptr<gl_fence> execute_mapped_memory_reader(int64 byte_offset, int64 bytes_num, const mapped_memory_reader& reader, bool syncable = false) const
     {
         // if map_read is not set, this func can not be used
-        if (!_buffer_storage_options.map_read) return;
+        if (!_buffer_storage_options.map_read) return nullptr;
         // check the parameters range
-        if (byte_offset < 0 || byte_offset < 0 || byte_offset + byte_offset > _bytes_num) return;
+        if (byte_offset < 0 || byte_offset < 0 || byte_offset + byte_offset > _bytes_num) return nullptr;
 
         // construct the access options
         gl_buffer_map_access_options _access_options;
@@ -243,6 +248,10 @@ public:
         } 
         
         glUnmapNamedBuffer(_handle);
+
+        if (syncable)
+            return std::make_shared<gl_fence>();
+        return nullptr;
     }
 
     /*
@@ -254,12 +263,12 @@ public:
      * @writer : [ ] (void* mapped_memory, int64 size) {}
      * @should_async : if true, this func will not ensure the operation to buffer will work when it end, if false ..
      * */
-    void execute_mapped_memory_writer(int64 byte_offset, int64 bytes_num, const mapped_memory_writer& writer)
+    std::shared_ptr<gl_fence> execute_mapped_memory_writer(int64 byte_offset, int64 bytes_num, const mapped_memory_writer& writer, bool syncable = false)
     {
         // if the buffer storage option does not have map_write true, this func can not use
-        if (!_buffer_storage_options.map_write) return;
+        if (!_buffer_storage_options.map_write) return nullptr;
         // check the parameters range
-        if (byte_offset <0 || bytes_num < 0 || byte_offset + bytes_num > _bytes_num) return;
+        if (byte_offset <0 || bytes_num < 0 || byte_offset + bytes_num > _bytes_num) return nullptr;
 
         // construct access options bitfield
         gl_buffer_map_access_options _access_options;
@@ -283,6 +292,10 @@ public:
         //glFlushMappedNamedBufferRange(_handle, byte_offset, bytes_num);
         // unmap the buffer memory
         glUnmapNamedBuffer(_handle);
+
+        if (syncable)
+            return std::make_shared<gl_fence>();
+        return nullptr;
     }
 
     /*
@@ -293,12 +306,12 @@ public:
      * mapped memory has valid content which come from GPU memory
      * also your bytes write into mapped memory can affect GPU memory
      * @Handler(std::function<void(UInt8* MappedMemory, Int64 BytesNum)>)
+     * syncable : if true, return a fence to confirm whether this action has been finished, if false, return nullptr
      * */
-    void execute_mapped_memory_handler(int64 byte_offset, int64 bytes_num, const mapped_memory_handler& handler)
+    std::shared_ptr<gl_fence> execute_mapped_memory_handler(int64 byte_offset, int64 bytes_num, const mapped_memory_handler& handler, bool syncable = false)
     {
-        if (!_buffer_storage_options.map_write || !_buffer_storage_options.map_read) return;
-
-        if (byte_offset < 0 || bytes_num < 0 || byte_offset + bytes_num > _bytes_num) return;
+        if (!_buffer_storage_options.map_write || !_buffer_storage_options.map_read) return nullptr;
+        if (byte_offset < 0 || bytes_num < 0 || byte_offset + bytes_num > _bytes_num) return nullptr;
 
         gl_buffer_map_access_options _access_options;
         _access_options.map_write = true;
@@ -310,8 +323,6 @@ public:
             {
                 glMemoryBarrier(GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT);
             }
-            std::unique_ptr<gl_fence> _fence;
-            _fence->client_wait(100);
             if (!_buffer_storage_options.map_coherent)
             {
                 glMemoryBarrier(GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT);
@@ -325,6 +336,10 @@ public:
         if (_mapped_memory) handler(_mapped_memory, bytes_num);
 
         glUnmapNamedBuffer(_handle);
+
+        if (syncable) 
+            return std::make_shared<gl_fence>();
+        return nullptr;
     }
 
     /*
@@ -333,25 +348,32 @@ public:
      * You must sacrifice some flexibility to get rapid filling.
      * capacity % sizeof (data_mask) == 0
      */
-    void clear(int64 byte_offset, const void* mask, int64 bytes_num)
+    std::shared_ptr<gl_fence> clear(int64 byte_offset, const void* mask, int64 bytes_num, bool syncable = false)
     {
         //if (!_buffer_storage_options.dynamic_storage) return;
-        if (!mask) return;
-        if (byte_offset < 0 || bytes_num < 0 || byte_offset + bytes_num > _bytes_num) return;
-        if (bytes_num % _bytes_num != 0) return;
+        if (!mask) return nullptr;
+        if (byte_offset < 0 || bytes_num < 0 || byte_offset + bytes_num > _bytes_num) return nullptr;
+        if (bytes_num % _bytes_num != 0) return nullptr;
         
         glClearNamedBufferSubData(_handle, GL_R8UI, byte_offset, bytes_num, GL_RED, GL_UNSIGNED_BYTE, mask);
+        if(syncable)
+            return std::make_shared<gl_fence>();
+        return nullptr;
     }
  
     /*
     * server => server
     * memcpy from src buffer
     */
-    void memcpy(int64 dest_byte_offset, const gl_buffer* src, int64 src_byte_offset, int64 bytes_num)
+    std::shared_ptr<gl_fence> memcpy(int64 dest_byte_offset, const gl_buffer* src, int64 src_byte_offset, int64 bytes_num, bool syncable = false)
     {
         //if (!_buffer_storage_options.dynamic_storage) return;
-        if (!src) return;
+        if (!src) return nullptr;
         glCopyNamedBufferSubData(src->get_handle(), _handle, src_byte_offset, dest_byte_offset, bytes_num);
+
+        if (syncable)
+            return std::make_shared<gl_fence>();
+        return nullptr;
     }
 
 public:

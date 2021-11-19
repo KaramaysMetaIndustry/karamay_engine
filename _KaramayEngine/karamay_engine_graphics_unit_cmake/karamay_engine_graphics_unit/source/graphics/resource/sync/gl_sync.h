@@ -21,18 +21,25 @@ public:
 
 	~gl_fence()
 	{
+		glClientWaitSync(_sync, GL_SYNC_FLUSH_COMMANDS_BIT, 0);
 		glDeleteSync(_sync);
 	}
 
 public:
 
+	// 阻塞cpu当前线程，等待信号
 	gl_sync_result client_wait(uint32 timeout)
 	{
+		// GL_SYNC_FLUSH_COMMANDS_BIT make sure sync obj has been in command queue
+		// glFlush();
 		return static_cast<gl_sync_result>(glClientWaitSync(_sync, GL_SYNC_FLUSH_COMMANDS_BIT, timeout));
 	}
 
+	// cpu立即返回，阻塞gpu队列，无法再向GPU命令队列中添加新的命令，等待信号
 	void server_wait()
 	{
+		glFlush(); // make sure you have flush all commands to gpu(make sure sync obj has been in the command queue)
+		// this func does not have GL_SYNC_FLUSH_COMMANDS_BIT bitfield 避免死锁
 		glWaitSync(_sync, 0, 0);
 	}
 

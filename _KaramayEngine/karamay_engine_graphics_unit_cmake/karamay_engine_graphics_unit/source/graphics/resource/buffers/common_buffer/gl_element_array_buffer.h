@@ -75,7 +75,7 @@ public:
 
     const void* read(uint32 element_offset, uint32 elements_num) const
     {
-        return _raw_buffer? _raw_buffer->read(element_offset * _element_size, elements_num * _element_size) : nullptr;
+        return nullptr;
     }
 
     void execute_mapped_element_buffer_reader(uint32 element_offset, uint32 elements_num, const element_buffer_reader& reader)

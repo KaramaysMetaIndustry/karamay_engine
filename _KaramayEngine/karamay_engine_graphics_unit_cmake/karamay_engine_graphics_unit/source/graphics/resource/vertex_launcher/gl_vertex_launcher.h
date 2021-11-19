@@ -59,8 +59,7 @@ public:
 	using element_slot_reader = gl_element_array_buffer::element_buffer_reader;
 	using element_slot_writer = gl_element_array_buffer::element_buffer_writer;
 	using element_slot_handler = gl_element_array_buffer::element_buffer_handler;
-	
-	gl_vertex_launcher() = default;
+
 	gl_vertex_launcher(const gl_vertex_launcher_descriptor& descriptor) :
 		_primitive_mode(descriptor.primitive_mode),
 		_primitive_vertices_num(descriptor.primitive_vertices_num),
