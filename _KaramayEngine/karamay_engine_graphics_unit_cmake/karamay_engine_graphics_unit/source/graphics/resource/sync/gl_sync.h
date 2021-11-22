@@ -43,6 +43,16 @@ public:
 		glWaitSync(_sync, 0, 0);
 	}
 
+	void query()
+	{
+		//glGetSynciv();
+	}
+
+	bool check()
+	{
+		return glIsSync(_sync);
+	}
+
 private:
 
 	GLsync _sync;

@@ -9,8 +9,6 @@
 #include "renderers/gl_test_renderer.h"
 
 
-
-
 float vertices[] = {
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f, //0
 		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
@@ -212,7 +210,6 @@ struct gl_texture_pixels
 
 	std::uint32_t format;
 
-
 	gl_texture_pixels(const std::string& path)
 	{
 		stbi_set_flip_vertically_on_load(true);
@@ -240,11 +237,9 @@ void test0();
 
 int main()
 {
-	
 	//karamay_lua::load();
 	test0();
 }
-
 
 enum class gl_debug_type : GLenum
 {
@@ -276,7 +271,6 @@ enum class gl_debug_severity : GLenum
     SEVERITY_MEDIUM = GL_DEBUG_SEVERITY_MEDIUM, // 中级
     SEVERITY_NOTIFICATION = GL_DEBUG_SEVERITY_NOTIFICATION, // 通知
 };
-
 
 void GLAPIENTRY
 MessageCallback( GLenum source,
@@ -365,11 +359,13 @@ MessageCallback( GLenum source,
 
 void test0()
 {
-
 	auto* window = new glfw_window();
 	window->load_context();
-
-	std::cout << "GL_VERSION: " << glGetString(GL_VERSION) << std::endl;
+    std::cout << "VENDOR: " << glGetString(GL_VENDOR) << std::endl;
+	std::cout << "VERSION: " << glGetString(GL_VERSION) << std::endl;
+	std::cout << "RENDERER: " << glGetString(GL_RENDERER) << std::endl;
+	std::cout << "SHADING_LANGUAGE_VERSION: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+	//std::cout << "GL_EXTENSIONS: " << glGetString(GL_EXTENSIONS) << std::endl;
 	glewInit();
 	glViewport(0, 0, window->get_framebuffer_width(), window->get_framebuffer_height());
 
@@ -392,7 +388,6 @@ void test0()
 
 		++_frame_count;
 	}
-
 }
 //
 //void test1()

@@ -73,8 +73,8 @@ public:
         _internal_descriptor.vertices_num = descriptor.vertices_num;
         
         uint32 _attribute_index = 0;
-
         uint32 _vertex_size = 0;
+
         for (const auto& _vertex_attribute_descriptor : descriptor.vertex_descriptor.attribute_descriptors)
         {
             gl_internal_vertex_attribute_descriptor _internal_vertex_attribute_descriptor;

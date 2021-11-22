@@ -43,30 +43,31 @@ public:
 
 public:
 
-    void color(std::uint32_t attachment_index, const std::shared_ptr<gl_renderbuffer>& renderbuffer)
+    void set_color_attachment(uint32 attachment_index, const std::shared_ptr<gl_renderbuffer>& renderbuffer)
     {
         if (!renderbuffer || attachment_index >= GL_MAX_COLOR_ATTACHMENTS) return;
         glNamedFramebufferRenderbuffer(_handle, GL_COLOR_ATTACHMENT0 + attachment_index, GL_RENDERBUFFER, renderbuffer->get_handle());
     }
-    
-    void depth(const std::shared_ptr<gl_renderbuffer>& renderbuffer)
+    void set_depth_attchment(const std::shared_ptr<gl_renderbuffer>& renderbuffer)
     {
         if (!renderbuffer) return;
         glNamedFramebufferRenderbuffer(_handle, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderbuffer->get_handle());
     }
-
-    void stencil(const std::shared_ptr<gl_renderbuffer>& renderbuffer)
+    void set_stencil_attachment(const std::shared_ptr<gl_renderbuffer>& renderbuffer)
     {
         if (!renderbuffer) return;
         glNamedFramebufferRenderbuffer(_handle, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer->get_handle());
     }
-
-    void depth_stencil(const std::shared_ptr<gl_renderbuffer>& renderbuffer)
+    void set_depth_stencil(const gl_renderbuffer* renderbuffer)
     {
         if (renderbuffer)
         {
             glNamedFramebufferRenderbuffer(_handle, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer->get_handle());
         }
+    }
+
+    void set_color_attachment()
+    {
     }
 
 public:
@@ -88,15 +89,29 @@ public:
 
 public:
 
-    void read_color(int attachment_index, GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void* pixels);
-    void read_depth(GLint x, GLint y, GLsizei width, GLsizei height, GLenum type, void* pixels);
-    void read_stencil(GLint x, GLint y, GLsizei width, GLsizei height, GLenum type, void* pixels);
-    void read_depth_stencil(GLint x, GLint y, GLsizei width, GLsizei height, GLenum type, void* pixels);
+    void read_pixels(int32 x, int32 y, int32 width, int32 height)
+    {
+        
+        glReadPixels(x, y, width, height, 0, 0, nullptr);
+    }
 
-    void draw_color(int attachment_index, GLsizei width, GLsizei height, GLenum format, GLenum type, const void* pixels);
-    void draw_depth(GLsizei width, GLsizei height, GLenum type, const void* pixels);
-    void draw_stencil(GLsizei width, GLsizei height, GLenum type, const void* pixels);
-    void draw_depth_stencil(GLsizei width, GLsizei height, GLenum type, const void* pixels);
+    void clamp_color()
+    {
+        //glClampColor();
+    }
+
+    void blit(int32 src_x0, int32 src_y0, int32 src_x1, int32 src_y1, gl_framebuffer* dst_framebuffer, int32 dst_x0, int32 dst_y0, int32 dst_x1, int32 dst_y1)
+    {
+        glBlitNamedFramebuffer(_handle, dst_framebuffer->get_handle(),
+            src_x0, src_y0, src_x1, src_y1, dst_x0, dst_y0, dst_x1, dst_y1, 
+            GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT, 
+            GL_NEAREST); // GL_LINEAR
+    }
+
+    void copy_to()
+    {
+        //glCopyTextureSubImage2D()
+    }
 
     void check_status()
     {

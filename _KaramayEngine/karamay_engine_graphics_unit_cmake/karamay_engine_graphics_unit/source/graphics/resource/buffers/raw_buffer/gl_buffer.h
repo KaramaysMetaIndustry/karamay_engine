@@ -44,8 +44,8 @@ enum class gl_buffer_map_access_flag : GLenum
     MAP_COHERENT_BIT = GL_MAP_COHERENT_BIT,
     MAP_INVALIDATE_RANGE_BIT = GL_MAP_INVALIDATE_RANGE_BIT,
     MAP_INVALIDATE_BUFFER_BIT = GL_MAP_INVALIDATE_BUFFER_BIT,
-    MAP_FLUSH_EXPLICIT_BIT = GL_MAP_FLUSH_EXPLICIT_BIT,
-    MAP_UNSYNCHRONIZED_BIT = GL_MAP_UNSYNCHRONIZED_BIT
+    MAP_FLUSH_EXPLICIT_BIT = GL_MAP_FLUSH_EXPLICIT_BIT, // if true, gl will flush data from client to server until you explicitly called glFlushMapRanage()
+    MAP_UNSYNCHRONIZED_BIT = GL_MAP_UNSYNCHRONIZED_BIT // if true, do not sync when you map the buffer, the operation will be undefined
 };
 
 enum class gl_buffer_memory_barrier_flag : GLenum
