@@ -94,6 +94,8 @@ public:
     {
         if(!_buffer) return;
 
+        glMemoryBarrierByRegion(GL_ATOMIC_COUNTER_BARRIER_BIT);
+
         for(const auto& _layout : _layouts)
         {
             if(_layout.atomic_counter && _layout.atomic_counter->dirty)

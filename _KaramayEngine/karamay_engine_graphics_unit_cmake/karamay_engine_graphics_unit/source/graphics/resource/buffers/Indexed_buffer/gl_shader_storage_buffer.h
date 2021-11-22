@@ -102,6 +102,7 @@ public:
     {
         if(!_buffer) return;
 
+        glMemoryBarrierByRegion(GL_SHADER_STORAGE_BARRIER_BIT);
         for(const auto& _layout : _layouts)
         {
             if(_layout.block && _layout.block->is_dirty)

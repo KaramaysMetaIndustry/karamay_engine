@@ -268,7 +268,7 @@ public:
         // if the buffer storage option does not have map_write true, this func can not use
         if (!_buffer_storage_options.map_write) return nullptr;
         // check the parameters range
-        if (byte_offset <0 || bytes_num < 0 || byte_offset + bytes_num > _bytes_num) return nullptr;
+        if (byte_offset < 0 || bytes_num < 0 || byte_offset + bytes_num > _bytes_num) return nullptr;
 
         // construct access options bitfield
         gl_buffer_map_access_options _access_options;
@@ -350,7 +350,6 @@ public:
      */
     std::shared_ptr<gl_fence> clear(int64 byte_offset, const void* mask, int64 bytes_num, bool syncable = false)
     {
-        //if (!_buffer_storage_options.dynamic_storage) return;
         if (!mask) return nullptr;
         if (byte_offset < 0 || bytes_num < 0 || byte_offset + bytes_num > _bytes_num) return nullptr;
         if (bytes_num % _bytes_num != 0) return nullptr;
@@ -365,11 +364,10 @@ public:
     * server => server
     * memcpy from src buffer
     */
-    std::shared_ptr<gl_fence> memcpy(int64 dest_byte_offset, const gl_buffer* src, int64 src_byte_offset, int64 bytes_num, bool syncable = false)
+    std::shared_ptr<gl_fence> memcpy(int64 destination_byte_offset, const gl_buffer* source, int64 source_byte_offset, int64 bytes_num, bool syncable = false)
     {
-        //if (!_buffer_storage_options.dynamic_storage) return;
-        if (!src) return nullptr;
-        glCopyNamedBufferSubData(src->get_handle(), _handle, src_byte_offset, dest_byte_offset, bytes_num);
+        if (!source) return nullptr;
+        glCopyNamedBufferSubData(source->get_handle(), _handle, source_byte_offset, destination_byte_offset, bytes_num);
 
         if (syncable)
             return std::make_shared<gl_fence>();

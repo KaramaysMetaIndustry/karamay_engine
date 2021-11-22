@@ -66,15 +66,19 @@ public:
         _raw_buffer->reallocate(elements_num * _element_size, initial_elements);
     }
 
-    void write(uint32 element_offset, uint32 elements_num, const void* elements) 
+    void write(uint32 element_offset, uint32 elements_num, const void* elements, bool wait = false) 
     {
         if (!_raw_buffer || !elements) return;
+
+        if (wait) glMemoryBarrier(GL_ELEMENT_ARRAY_BARRIER_BIT);
 
         _raw_buffer->write(element_offset * _element_size, elements, elements_num * _element_size);
     }
 
-    const void* read(uint32 element_offset, uint32 elements_num) const
+    const void* read(uint32 element_offset, uint32 elements_num, bool wait = false) const
     {
+        if (wait) glMemoryBarrier(GL_ELEMENT_ARRAY_BARRIER_BIT);
+
         return nullptr;
     }
 
@@ -107,6 +111,9 @@ public:
     void execute_mapped_element_buffer_handler(uint32 element_offset, uint32 elements_num, const element_buffer_handler& handler)
     {
         if (!_raw_buffer) return;
+
+        // make sure shaders are finished writing to element_array_buffer
+        glMemoryBarrier(GL_ELEMENT_ARRAY_BARRIER_BIT);
 
         _raw_buffer->execute_mapped_memory_handler(element_offset * _element_size, elements_num * _element_size,
             [&handler, this](void* mapped_memory, int64 bytes_num)

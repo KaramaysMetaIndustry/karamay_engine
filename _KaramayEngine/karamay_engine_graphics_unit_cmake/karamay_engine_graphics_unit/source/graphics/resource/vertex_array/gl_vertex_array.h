@@ -193,10 +193,14 @@ public:
     }
 
     void execute_mapped_instance_attribute_slot_reader()
-    {}
+    {
+        glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT);
+
+    }
 
     void execute_mapped_instance_attribute_slot_handler()
-    {}
+    {
+    }
 
 public:
 

@@ -389,6 +389,7 @@ void test0()
 			_test_renderer.set_exit(true);
 
 		_test_renderer.render(1.0f);
+
 		++_frame_count;
 	}
 

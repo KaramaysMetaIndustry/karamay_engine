@@ -38,6 +38,12 @@ public:
         glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);
     }
 
+
+    void download()
+    {
+        glMemoryBarrier(GL_TRANSFORM_FEEDBACK_BARRIER_BIT);
+    }
+
 private:
 
     std::unique_ptr<gl_buffer> _buffer;

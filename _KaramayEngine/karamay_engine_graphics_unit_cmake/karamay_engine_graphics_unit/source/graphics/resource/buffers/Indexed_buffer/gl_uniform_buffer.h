@@ -104,6 +104,8 @@ public:
     {
         if(!_buffer) return;
 
+        glMemoryBarrierByRegion(GL_UNIFORM_BARRIER_BIT);
+
         for(const auto& _layout : _layouts)
         {
             if(_layout.block && _layout.block->is_dirty)
