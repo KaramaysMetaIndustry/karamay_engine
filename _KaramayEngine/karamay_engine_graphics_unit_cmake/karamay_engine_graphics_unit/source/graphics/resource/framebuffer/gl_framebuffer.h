@@ -83,7 +83,6 @@ public:
 
     }
 
-
 private:
 
     std::vector<std::unique_ptr<gl_texture_2d_t>> colors_attachments;
