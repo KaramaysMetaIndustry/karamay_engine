@@ -377,40 +377,6 @@ private:
 	}
 
 };
-// no mipmaps
-class gl_texture_buffer : public gl_texture_t
-{
-public:
-	gl_texture_buffer(gl_buffer* buffer, gl_texture_internal_format internal_format)
-	{
-		glCreateTextures(GL_TEXTURE_BUFFER, 1, &_handle);
-		_allocate(buffer, internal_format);
-	}
-
-	gl_texture_buffer(const gl_texture_buffer&) = delete;
-	gl_texture_buffer& operator=(const gl_texture_buffer&) = delete;
-
-	~gl_texture_buffer()
-	{
-		glDeleteTextures(1, &_handle);
-	}
-
-public:
-
-	void reallocate(gl_buffer* buffer, gl_texture_internal_format internal_format)
-	{
-		_allocate(buffer, internal_format);
-	}
-
-private:
-
-	void _allocate(gl_buffer* buffer, gl_texture_internal_format internal_format)
-	{
-		glTextureBuffer(_handle, static_cast<GLenum>(internal_format), buffer->get_handle());
-	}
-
-};
-
 // mipmaps
 class gl_texture_2d : public gl_texture_t
 {
@@ -620,7 +586,6 @@ private:
 	}
 
 };
-
 // mipmaps
 class gl_texture_cube_array : public gl_texture_t
 {
@@ -811,7 +776,6 @@ private:
 	}
 
 };
-
 // mipmaps
 class gl_texture_3d : public gl_texture_t
 {
@@ -884,6 +848,39 @@ private:
 	{
 		glCreateTextures(GL_TEXTURE_3D, 1, &_handle);
 		glTextureStorage3D(_handle, _mipmaps_num, static_cast<GLenum>(_internal_format), _width, _height, _depth);
+	}
+
+};
+// no mipmaps
+class gl_texture_buffer : public gl_texture_t
+{
+public:
+	gl_texture_buffer(gl_buffer* buffer, gl_texture_internal_format internal_format)
+	{
+		glCreateTextures(GL_TEXTURE_BUFFER, 1, &_handle);
+		_allocate(buffer, internal_format);
+	}
+
+	gl_texture_buffer(const gl_texture_buffer&) = delete;
+	gl_texture_buffer& operator=(const gl_texture_buffer&) = delete;
+
+	~gl_texture_buffer()
+	{
+		glDeleteTextures(1, &_handle);
+	}
+
+public:
+
+	void reallocate(gl_buffer* buffer, gl_texture_internal_format internal_format)
+	{
+		_allocate(buffer, internal_format);
+	}
+
+private:
+
+	void _allocate(gl_buffer* buffer, gl_texture_internal_format internal_format)
+	{
+		glTextureBuffer(_handle, static_cast<GLenum>(internal_format), buffer->get_handle());
 	}
 
 };
