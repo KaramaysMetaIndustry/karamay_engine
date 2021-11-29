@@ -46,6 +46,12 @@ enum class gl_image_access_mode : GLenum
     READ_WRITE = GL_READ_WRITE
 };
 
+enum class gl_image_unit_format : GLenum
+{
+
+};
+
+
 /*
  * layout(FormatLayoutQualifier) uniform [MemoryQualifier] image IMAGE_NAME[10];
  *
@@ -58,15 +64,7 @@ enum class gl_image_access_mode : GLenum
  * */
 class glsl_image_t : public glsl_texture_handler_t {
 public:
-    glsl_image_t() = delete;
-    glsl_image_t(glsl_image_format_layout_qualifier format_layout_qualifier, glsl_image_memory_qualifier memory_qualifier, const char* type_name, const char* value_name) :
-            _type_name(type_name),
-            _value_name(value_name),
-            _format_layout_qualifier(format_layout_qualifier),
-            _memory_qualifier(memory_qualifier),
-            _image_format(transfer_format_layout_qualifier(format_layout_qualifier)),
-            _access_mode(transfer_memory_qualifier(memory_qualifier))
-    {}
+    glsl_image_t();
 
     glsl_image_t(const glsl_image_t&) = delete;
     glsl_image_t& operator=(const glsl_image_t&) = delete;
@@ -81,101 +79,56 @@ protected:
     const gl_image_format _image_format;
     const gl_image_access_mode _access_mode;
 
-private:
-
-    static gl_image_access_mode transfer_memory_qualifier(glsl_image_memory_qualifier memory_qualifier)
-    {
-    }
-
-    static gl_image_format transfer_format_layout_qualifier(glsl_image_format_layout_qualifier format_layout_qualifier)
-    {
-    }
-
 };
 
-class glsl_image1D : public glsl_image_t{
+class glsl_image1D : public glsl_image_t
+{
 public:
-    glsl_image1D() = delete;
-    glsl_image1D(
-            glsl_image_format_layout_qualifier format_layout_qualifier,
-            glsl_image_memory_qualifier memory_qualifier,
-            const std::string& name
-    ) :
-            glsl_image_t(format_layout_qualifier, memory_qualifier, "image1D", name.c_str())
-    {}
+    glsl_image1D(int32 mipmap_index, std::shared_ptr<gl_texture_1d> texture_1d, gl_image_access_mode access_mode, gl_image_unit_format unit_format)
+    {
+        _mipmap_index = mipmap_index;
+        _texture_1d = texture_1d;
+        _access_mode = access_mode;
+        _unit_format = unit_format;
+    }
 
     glsl_image1D(const glsl_image1D&) = delete;
     glsl_image1D& operator=(const glsl_image1D&) = delete;
 
-    ~glsl_image1D() = default;
+    ~glsl_image1D() {}
 
-    std::shared_ptr<gl_texture_1d_t> texture_1d;
-    std::int32_t mipmap_index;
+public:
 
-    void bind() override
+    void bind(uint32 unit)
     {
-
-//        check_and_log(texture_1d, "do not have texture resource.")
-//        check_and_log(texture_1d->exists(mipmap_index), "the mipmap_index specified  does not exist.")
-//        check_and_log(texture_1d->format() != _image_format,"the texture format does not fit to image format specified.")
-
-        glBindImageTexture(0, // unit
-                           texture_1d->get_handle(), mipmap_index, // mipmap
-                           GL_TRUE, 0, // not an array or whole array
-                           static_cast<GLenum>(_access_mode), // access
-                           static_cast<GLenum>(texture_1d->format()) // format
-        );
+        glBindImageTexture(unit, _texture_1d->get_handle(), _mipmap_index, GL_FALSE, 0, static_cast<GLenum>(_access_mode), static_cast<GLenum>(_unit_format));
     }
 
-    void unbind() override
+    void unbind()
     {
-        if(!texture_1d) return;
+
     }
+
+private:
+
+    int32 _mipmap_index;
+    
+    std::shared_ptr<gl_texture_1d> _texture_1d;
+
+    gl_image_access_mode _access_mode;
+
+    gl_image_unit_format _unit_format;
 
 };
 
 class glsl_image1DArray : private glsl_image_t{
 public:
-    struct glsl_image1DArrayResource{
-        std::shared_ptr<gl_texture_1d_array_t> texture_1d_array;
-        std::int32_t mipmap_index;
-        glsl_image1DArrayResource() : texture_1d_array(nullptr), mipmap_index(0){}
-    }resource;
-
-    glsl_image1DArray() = delete;
-    glsl_image1DArray(
-            glsl_image_format_layout_qualifier format_layout_qualifier,
-            glsl_image_memory_qualifier memory_qualifier,
-            const char* value_name
-    ):
-            glsl_image_t(
-                    format_layout_qualifier,
-                    memory_qualifier,
-                    "image1DArray",
-                    value_name
-            )
-    {}
+    glsl_image1DArray();
 
     glsl_image1DArray(const glsl_image1DArray&) = delete;
     glsl_image1DArray& operator=(const glsl_image1DArray&) = delete;
 
     ~glsl_image1DArray() = default;
-
-    void bind() override
-    {
-        if(!resource.texture_1d_array) return;
-        glBindImageTexture(0,
-                           resource.texture_1d_array->get_handle(), resource.mipmap_index,
-                           GL_TRUE, 0,
-                           static_cast<GLenum>(_access_mode),
-                           static_cast<GLenum>(resource.texture_1d_array->format())
-        );
-    }
-
-    void unbind() override
-    {
-        if(!resource.texture_1d_array) return;
-    }
 
 };
 

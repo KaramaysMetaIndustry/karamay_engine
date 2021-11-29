@@ -85,9 +85,9 @@ public:
 
 private:
 
-    std::vector<std::unique_ptr<gl_texture_2d_t>> colors_attachments;
-    std::unique_ptr<gl_texture_2d_t> depth_component;
-    std::unique_ptr<gl_texture_2d_t> stencil_component;
+    std::vector<std::unique_ptr<gl_texture_2d>> colors_attachments;
+    std::unique_ptr<gl_texture_2d> depth_component;
+    std::unique_ptr<gl_texture_2d> stencil_component;
 
 public:
 
@@ -108,7 +108,7 @@ public:
         if (!renderbuffer || attachment_index >= GL_MAX_COLOR_ATTACHMENTS) return;
         glNamedFramebufferRenderbuffer(_handle, GL_COLOR_ATTACHMENT0 + attachment_index, GL_RENDERBUFFER, renderbuffer->get_handle());
     }
-    void set_color_attachment(uint32 attachment_index, const std::shared_ptr<gl_texture_2d_t> texture_2d)
+    void set_color_attachment(uint32 attachment_index, const std::shared_ptr<gl_texture_2d> texture_2d)
     {
         glNamedFramebufferTexture(_handle, GL_COLOR_ATTACHMENT0 + attachment_index, texture_2d->get_handle(), 0);
     }

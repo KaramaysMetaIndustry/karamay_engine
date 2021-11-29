@@ -152,7 +152,7 @@ enum class gl_memory_region_barrier : GLenum
 
 class gl_object{
 protected:
-    gl_object() = delete;
+    gl_object() {}
 	gl_object(gl_object_type object_type) : _handle(0), _type(object_type)
 	{}
 	

@@ -419,7 +419,7 @@ public:
     gl_graphics_pipeline& operator=(const gl_graphics_pipeline&) = delete;
 
     ~gl_graphics_pipeline() = default;
-   
+
 public:
 
     /*
@@ -706,11 +706,11 @@ private:
             const auto& _program_parameters = _descriptor.glsl_program->parameters();
             for (const auto& _image : _program_parameters.images)
             {
-                if(_image) _image->bind();
             }
             for (const auto& _sampler : _program_parameters.samplers)
             {
-                if (_sampler) _sampler->bind();
+                _sampler->bind();
+                //glUniform1ui(glGetUniformLocation(_program->get_handle(), _sampler->get_var_token().c_str()), _sampler->get_unit());
             }
             if (_resource_pool.uniform_buffer)
             {

@@ -206,7 +206,7 @@ struct gl_texture_parameters{
  * */
 class gl_texture_t : public gl_object{
 public:
-    gl_texture_t() = delete;
+	gl_texture_t() {}
 
 protected:
 
@@ -225,8 +225,6 @@ protected:
 	}
 
 public:
-
-    virtual gl_image_format format() const = 0;
 
 	inline void bind()
 	{
@@ -249,10 +247,10 @@ protected:
 
 };
 
+// mipmaps
 class gl_texture_1d : public gl_texture_t {
 public:
-	gl_texture_1d(int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, const gl_texture_parameters& parameters) :
-		gl_texture_t(gl_texture_type::TEXTURE_1D, parameters)
+	gl_texture_1d(int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width)
 	{
 		_allocate(mipmaps_num, internal_format, width);
 	}
@@ -265,16 +263,12 @@ public:
 		glDeleteTextures(1, &_handle);
 	}
 
-private:
-
-	int32 _mipmaps_num;
-
 public:
 
-	void reallocate(int32 level, gl_texture_internal_format internal_format, int32 width)
+	void reallocate(int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width)
 	{
 		glDeleteTextures(1, &_handle);
-		_allocate(level, internal_format, width);
+		_allocate(mipmaps_num, internal_format, width);
 	}
 
 	void fill(int32 mipmap_index, int32 x_offset, int32 width, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, const void* pixels)
@@ -282,34 +276,63 @@ public:
 		glTextureSubImage1D(_handle, mipmap_index, x_offset, width, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), pixels);
 	}
 
-	void generate_mipmaps()
+	void fetch(int32 mipmap_index, int32 x_offset, int32 width, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, int32 size, void* pixels)
+	{
+		glGetTextureSubImage(_handle, mipmap_index, x_offset, 0, 0, width, 1, 1, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), size, pixels);
+	}
+
+	void copy()
+	{
+		//glCopyTextureSubImage1D();
+	}
+
+	void build_mipmaps()
 	{
 		glBindTexture(GL_TEXTURE_1D, _handle);
 		glGenerateMipmap(GL_TEXTURE_1D);
 		glBindTexture(GL_TEXTURE_1D, 0);
 	}
 
+public:
+
 	int32 get_mipmaps_num() const { return _mipmaps_num; }
 	
-private:
+	int32 get_width() const { return _width; }
 
-	void _allocate(int32 level, gl_texture_internal_format internal_format, int32 width)
+	gl_texture_internal_format get_internal_format() const { return _internal_format; }
+
+private:
+	
+	int32 _mipmaps_num;
+
+	int32 _width;
+
+	gl_texture_internal_format _internal_format;
+
+	void _allocate(int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width)
 	{
-		glTextureStorage1D(_handle, level, static_cast<GLenum>(internal_format), width);
+		glTextureStorage1D(_handle, mipmaps_num, static_cast<GLenum>(internal_format), width);
+		_mipmaps_num = mipmaps_num;
+		_width = width;
+		_internal_format = internal_format;
 	}
 
 };
+// mipmaps
 class gl_texture_1d_array : public gl_texture_t{
 public:
-    explicit gl_texture_1d_array(const gl_texture_parameters& parameters) :
-        gl_texture_t(gl_texture_type::TEXTURE_1D_ARRAY, parameters)
-    {}
+    gl_texture_1d_array(int32 elements_num, int32 mipmaps_num, int32 width, gl_texture_internal_format internal_format)
+    {
+		_allocate(elements_num, mipmaps_num, width, internal_format);
+	}
 
-private:
+	gl_texture_1d_array(const gl_texture_1d_array&) = delete;
+	gl_texture_1d_array& operator=(const gl_texture_1d_array&) = delete;
 
-	int32 _mipmaps_num;
-
-	int32 _elements_num;
+	~gl_texture_1d_array()
+	{
+		glDeleteTextures(1, &_handle);
+	}
 
 public:
 
@@ -324,93 +347,483 @@ public:
 		glTextureSubImage2D(_handle, mipmap_index, x_offset, element_index, width, 1, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), pixels);
 	}
 
-    void generate_mipmaps(std::uint32_t target)
+	void fetch(int32 element_index, int32 mipmap_index, int32 x_offset, int32 width, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, int32 size, void* pixels)
+	{
+		glGetTextureSubImage(_handle, mipmap_index, x_offset, element_index, 0, width, 1, 1, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), size, pixels);
+	}
+
+    void build_mipmaps()
     {
         glBindTexture(GL_TEXTURE_1D_ARRAY, _handle);
         glGenerateMipmap(GL_TEXTURE_1D_ARRAY);
         glBindTexture(GL_TEXTURE_1D_ARRAY, 0);
     }
 
+public:
+
 	int32 get_mipmaps_num() const { return _mipmaps_num; }
 
 	int32 get_elements_num() const { return _elements_num; }
 
-
 private:
+
+	int32 _mipmaps_num;
+
+	int32 _elements_num;
 
 	void _allocate(int32 elements_num, int32 mipmaps_num, int32 width, gl_texture_internal_format internal_format)
 	{
 		glTextureStorage2D(_handle, mipmaps_num, static_cast<GLenum>(internal_format), width, elements_num);
 	}
+
 };
-class gl_texture_2d : public gl_texture_t{
-protected:
-    explicit gl_texture_2d(const gl_texture_parameters& parameters) :
-        gl_texture_t(gl_texture_type::TEXTURE_2D, parameters)
-    {}
+// no mipmaps
+class gl_texture_buffer : public gl_texture_t
+{
+public:
+	gl_texture_buffer(gl_buffer* buffer, gl_texture_internal_format internal_format)
+	{
+		glCreateTextures(GL_TEXTURE_BUFFER, 1, &_handle);
+		_allocate(buffer, internal_format);
+	}
+
+	gl_texture_buffer(const gl_texture_buffer&) = delete;
+	gl_texture_buffer& operator=(const gl_texture_buffer&) = delete;
+
+	~gl_texture_buffer()
+	{
+		glDeleteTextures(1, &_handle);
+	}
 
 public:
-    [[nodiscard]] virtual std::int32_t mipmaps_count() const = 0;
+
+	void reallocate(gl_buffer* buffer, gl_texture_internal_format internal_format)
+	{
+		_allocate(buffer, internal_format);
+	}
+
+private:
+
+	void _allocate(gl_buffer* buffer, gl_texture_internal_format internal_format)
+	{
+		glTextureBuffer(_handle, static_cast<GLenum>(internal_format), buffer->get_handle());
+	}
 
 };
-class gl_texture_2d_array : public gl_texture_t{
-protected:
-    explicit gl_texture_2d_array(const gl_texture_parameters& parameters) :
-        gl_texture_t(gl_texture_type::TEXTURE_2D_ARRAY,parameters)
-    {}
 
-    [[nodiscard]] virtual std::int32_t mipmaps_count() const = 0;
-    [[nodiscard]] virtual std::int32_t elements_count() const = 0;
-};
-class gl_texture_rectangle : public gl_texture_t{
-protected:
-    explicit gl_texture_rectangle(const gl_texture_parameters& parameters) :
-        gl_texture_t(gl_texture_type::TEXTURE_RECTANGLE, parameters)
-    {}
-
-};
-class gl_texture_cube : public gl_texture_t{
-protected:
-    explicit gl_texture_cube(const gl_texture_parameters& parameters) :
-        gl_texture_t(gl_texture_type::TEXTURE_CUBE_MAP, parameters)
-    {}
-
-};
-class gl_texture_cube_array : public gl_texture_t{
-protected:
-    explicit gl_texture_cube_array(const gl_texture_parameters& parameters) :
-        gl_texture_t(gl_texture_type::TEXTURE_CUBE_MAP_ARRAY, parameters)
-    {}
-
-};
-class gl_texture_3d : public gl_texture_t{
-protected:
-    explicit gl_texture_3d(const gl_texture_parameters& parameters) :
-        gl_texture_t(gl_texture_type::TEXTURE_3D, parameters)
-    {}
-
-};
-class gl_texture_2d_multisample : public gl_texture_t{
-protected:
-    explicit gl_texture_2d_multisample(const gl_texture_parameters& parameters) :
-        gl_texture_t(gl_texture_type::TEXTURE_2D_MULTISAMPLE, parameters)
-    {}
-
-};
-class gl_texture_2d_multisample_array : public gl_texture_t{
-protected:
-    explicit gl_texture_2d_multisample_array(const gl_texture_parameters& parameters) :
-        gl_texture_t(gl_texture_type::TEXTURE_2D_MULTISAMPLE_ARRAY, parameters)
-    {}
-
-};
-class gl_texture_buffer : public gl_texture_t{
-protected:
-    explicit gl_texture_buffer(const gl_texture_parameters& parameters) :
-        gl_texture_t(gl_texture_type::TEXTURE_BUFFER, parameters)
+// mipmaps
+class gl_texture_2d : public gl_texture_t
+{
+public:
+    gl_texture_2d(int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, int32 height)
     {
-        std::vector<int> a;
-    }
+		_allocate(mipmaps_num, internal_format, width, height);
+	}
+
+	gl_texture_2d(const gl_texture_2d&) = delete;
+	gl_texture_2d& operator=(const gl_texture_2d&) = delete;
+
+	~gl_texture_2d()
+	{
+		glDeleteTextures(1, &_handle);
+	}
+
+public:
+
+	void reallocate(int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, int32 height)
+	{
+		glDeleteTextures(1, &_handle);
+		_allocate(mipmaps_num, internal_format, width, height);
+	}
+
+	void fill(int32 mipmap_index, int32 x_offset, int32 y_offset, int32 width, int32 height, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, const void* pixels)
+	{
+		if (!pixels) return;
+		glTextureSubImage2D(_handle, mipmap_index, x_offset, y_offset, width, height, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), pixels);
+	}
+	
+	void fetch(int32 mipmap_index, int32 x_offset, int32 y_offset, int32 width, int32 height, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, int32 size, void* pixels)
+	{
+		glGetTextureSubImage(_handle, mipmap_index, x_offset, y_offset, 0, width, height, 1, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), size, pixels);
+	}
+
+	void build_mipmaps()
+	{
+		glGenerateTextureMipmap(_handle);
+	}
+
+	int32 get_width(int32 mipmap_index)
+	{
+		int32 _width = 0;
+		glGetTextureLevelParameteriv(_handle, mipmap_index, GL_TEXTURE_WIDTH, &_width);
+		return _width;
+	}
+
+	int32 get_height(int32 mipmap_index)
+	{
+		int32 _height = 0;
+		glGetTextureLevelParameteriv(_handle, mipmap_index, GL_TEXTURE_HEIGHT , &_height);
+		return _height;
+	}
+
+	int32 get_depth(int32 mipmap_index)
+	{
+		int32 _depth = 0;
+		glGetTextureLevelParameteriv(_handle, mipmap_index, GL_TEXTURE_DEPTH, &_depth);
+		return _depth;
+	}
+
+private:
+
+	void _allocate(int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, int32 height)
+	{
+		glCreateTextures(GL_TEXTURE_2D, 1, &_handle);
+		glTextureStorage2D(_handle, mipmaps_num, static_cast<GLenum>(internal_format), width, height);
+	}
+
+};
+// mipmaps
+class gl_texture_2d_array : public gl_texture_t
+{
+public:
+    gl_texture_2d_array(int32 elements_num, int32 mipmaps_num, int32 width, int32 height, gl_texture_internal_format internal_format)
+    {
+		_allocate(elements_num, mipmaps_num, width, height, internal_format);
+	}
+
+	gl_texture_2d_array(const gl_texture_2d_array&) = delete;
+	gl_texture_2d_array& operator=(const gl_texture_2d_array&) = delete;
+
+	~gl_texture_2d_array()
+	{
+		glDeleteTextures(1, &_handle);
+	}
+
+public:
+
+	void reallocate(int32 elements_num, int32 mipmaps_num, int32 width, int32 height, gl_texture_internal_format internal_format)
+	{
+		glDeleteTextures(1, &_handle);
+		_allocate(elements_num, mipmaps_num, width, height, internal_format);
+	}
+
+	void fill(int32 element_index, int32 mipmap_index, int32 x_offset, int32 y_offset, int32 width, int32 height, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, const void* pixels)
+	{
+		glTextureSubImage3D(_handle, mipmap_index, x_offset, y_offset, element_index, width, height, 1, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), pixels);
+	}
+
+	void fetch(int32 element_index, int32 mipmap_index, int32 x_offset, int32 y_offset, int32 width, int32 height, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, int32 size, void* pixels)
+	{
+		glGetTextureSubImage(_handle, mipmap_index, x_offset, y_offset, element_index, width, height, 1, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), size, pixels);
+	}
+
+	void build_mipmaps()
+	{
+		glBindTexture(GL_TEXTURE_2D_ARRAY, _handle);
+		glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+		glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
+	}
+
+private:
+
+	void _allocate(int32 elements_num, int32 mipmaps_num, int32 width, int32 height, gl_texture_internal_format internal_format)
+	{
+		glCreateTextures(GL_TEXTURE_2D_ARRAY, 1, &_handle);
+		glTextureStorage3D(_handle, mipmaps_num, static_cast<GLenum>(internal_format), width, height, elements_num);
+	}
+
+};
+// mipmaps
+class gl_texture_cube : public gl_texture_t{
+public:
+    gl_texture_cube()
+    {
+
+	}
+
+	~gl_texture_cube()
+	{
+		glDeleteTextures(1, &_handle);
+	}
+
+public:
+
+	void reallocate(int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, int32 height)
+	{
+		glDeleteTextures(1, &_handle);
+		_allocate(mipmaps_num, internal_format, width, height);
+	}
+
+	void fill()
+	{
+		//glTextureSubImage3D(_handle, )
+	}
+
+	void build_mipmaps()
+	{
+		glBindTexture(GL_TEXTURE_CUBE_MAP, _handle);
+		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+	}
+
+private:
+
+	void _allocate(int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, int32 height)
+	{
+		glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &_handle);
+		glTextureStorage3D(_handle, mipmaps_num, static_cast<GLenum>(internal_format), width, height, 6);
+	}
+
+};
+// mipmaps
+class gl_texture_cube_array : public gl_texture_t{
+public:
+    gl_texture_cube_array(int32 elements_num, int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, int32 height, const gl_texture_parameters& parameters) :
+        gl_texture_t(gl_texture_type::TEXTURE_CUBE_MAP_ARRAY, parameters)
+    {
+		_allocate(elements_num, mipmaps_num, internal_format, width, height);
+	}
+
+	gl_texture_cube_array(const gl_texture_cube_array&) = delete;
+	gl_texture_cube_array& operator=(const gl_texture_cube_array&) = delete;
+
+	~gl_texture_cube_array()
+	{
+		glDeleteTextures(1, &_handle);
+	}
+
+public:
+
+	void reallocate(int32 elements_num, int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, int32 height)
+	{
+		glDeleteTextures(1, &_handle);
+		_allocate(elements_num, mipmaps_num, internal_format, width, height);
+	}
+
+	void fill(int32 element_index, int32 face_index, int32 mipmap_index, int32 x_offset, int32 y_offset, int32 width, int32 height)
+	{
+		//glTextureSubImage3D(_handle, mipmap_index, x_offset, y_offset, )
+	}
+
+	void build_mipmaps()
+	{
+		glBindTexture(GL_TEXTURE_CUBE_MAP_ARRAY, _handle);
+		glGenerateMipmap(GL_TEXTURE_CUBE_MAP_ARRAY);
+		glBindTexture(GL_TEXTURE_CUBE_MAP_ARRAY, 0);
+	}
+
+private:
+
+	void _allocate(int32 elements_num, int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, int32 height)
+	{
+		glCreateTextures(GL_TEXTURE_CUBE_MAP_ARRAY, 1, &_handle);
+		glTextureStorage3D(_handle, mipmaps_num, static_cast<GLenum>(internal_format), width, height, elements_num * 6);
+	}
+
+};
+// no mipmaps
+class gl_texture_rectangle : public gl_texture_t {
+public:
+	gl_texture_rectangle(int32 width, int32 height, gl_texture_internal_format internal_format)
+	{
+		_allocate(width, height, internal_format);
+	}
+
+	gl_texture_rectangle(const gl_texture_rectangle&) = delete;
+	gl_texture_rectangle& operator=(const gl_texture_rectangle&) = delete;
+
+	~gl_texture_rectangle()
+	{
+		glDeleteTextures(1, &_handle);
+	}
+
+public:
+
+	void reallocate(int32 width, int32 height, gl_texture_internal_format internal_format)
+	{
+		glDeleteTextures(1, &_handle);
+		_allocate(width, height, internal_format);
+	}
+
+	void fill(int32 x_offset, int32 y_offset, int32 width, int32 height, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, const void* pixels)
+	{
+		glTextureSubImage2D(_handle, 0, x_offset, y_offset, width, height, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), pixels);
+	}
+
+	void fetch(int32 x_offset, int32 y_offset, int32 width, int32 height, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, int32 size, void* pixels)
+	{
+		glGetTextureSubImage(_handle, 0, x_offset, y_offset, 0, width, height, 1, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), size, pixels);
+	}
+
+private:
+
+	void _allocate(int32 width, int32 height, gl_texture_internal_format internal_format)
+	{
+		glCreateTextures(GL_TEXTURE_RECTANGLE, 1, &_handle);
+		glTextureStorage2D(_handle, 1, static_cast<GLenum>(internal_format), width, height);
+	}
+
+};
+// no mipmaps
+class gl_texture_2d_multisample : public gl_texture_t
+{
+public:
+	gl_texture_2d_multisample(int32 samples_num, gl_texture_internal_format internal_format, int32 width, int32 height, bool fixed_sample_locations)
+	{
+		_allocate(samples_num, internal_format, width, height, fixed_sample_locations);
+	}
+
+	gl_texture_2d_multisample(const gl_texture_2d_multisample&) = delete;
+	gl_texture_2d_multisample& operator=(const gl_texture_2d_multisample&) = delete;
+
+	~gl_texture_2d_multisample()
+	{
+		glDeleteTextures(1, &_handle);
+	}
+
+public:
+
+	void reallocate(int32 samples_num, gl_texture_internal_format internal_format, int32 width, int32 height, bool fixed_sample_locations)
+	{
+		glDeleteTextures(1, &_handle);
+		_allocate(samples_num, internal_format, width, height, fixed_sample_locations);
+	}
+
+	void fill(int32 x_offset, int32 y_offset, int32 width, int32 height, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, const void* pixels)
+	{
+		glTextureSubImage2D(_handle, 0, x_offset, y_offset, width, height, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), pixels);
+	}
+
+	//void fetch(int32 x_offset, int32 y_offset, int32 width, int32 height, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, int32 size, void* pixels)
+	//{
+	//	glGetTextureSubImage(_handle, 0, x_offset, y_offset, 0, width, height, 1, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), size, pixels);
+	//}
+
+private:
+
+	void _allocate(int32 samples_num, gl_texture_internal_format internal_format, int32 width, int32 height, bool fixed_sample_locations)
+	{
+		glCreateTextures(GL_TEXTURE_2D_MULTISAMPLE, 1, &_handle);
+		glTextureStorage2DMultisample(_handle, samples_num, static_cast<GLenum>(internal_format), width, height, fixed_sample_locations);
+	}
+
+};
+// no mipmaps
+class gl_texture_2d_multisample_array : public gl_texture_t
+{
+public:
+	gl_texture_2d_multisample_array(int32 elements_num, int32 samples_num, gl_texture_internal_format internal_format, int32 width, int32 height, bool fixed_sample_locations)
+	{
+		_allocate(elements_num, samples_num, internal_format, width, height, fixed_sample_locations);
+	}
+
+	gl_texture_2d_multisample_array(const gl_texture_2d_multisample_array&) = delete;
+	gl_texture_2d_multisample_array& operator=(const gl_texture_2d_multisample_array&) = delete;
+
+	~gl_texture_2d_multisample_array()
+	{
+		glDeleteTextures(1, &_handle);
+	}
+
+public:
+
+	void reallocate(int32 elements_num, int32 samples_num, gl_texture_internal_format internal_format, int32 width, int32 height, bool fixed_sample_locations)
+	{
+		glDeleteTextures(1, &_handle);
+		_allocate(elements_num, samples_num, internal_format, width, height, fixed_sample_locations);
+	}
+
+	void fill(int32 element_index, int32 x_offset, int32 y_offset, int32 width, int32 height, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, const void* pixels)
+	{
+		glTextureSubImage3D(_handle, 0, x_offset, y_offset, element_index, width, height, 1, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), pixels);
+	}
+
+private:
+
+	void _allocate(int32 elements_num, int32 samples_num, gl_texture_internal_format internal_format, int32 width, int32 height, bool fixed_sample_locations)
+	{
+		glCreateTextures(GL_TEXTURE_2D_MULTISAMPLE_ARRAY, 1, &_handle);
+		glTextureStorage3DMultisample(_handle, samples_num, static_cast<GLenum>(internal_format), width, height, elements_num, fixed_sample_locations);
+	}
+
+};
+
+// mipmaps
+class gl_texture_3d : public gl_texture_t
+{
+public:
+	gl_texture_3d(int32 mipmaps_num, int32 width, int32 height, int32 depth, gl_texture_internal_format internal_format) :
+		_mipmaps_num(mipmaps_num),
+		_width(width), _height(height), _depth(depth),
+		_internal_format(internal_format)
+    {
+		_allocate();
+	}
+
+	gl_texture_3d(const gl_texture_3d&) = delete;
+	gl_texture_3d& operator=(const gl_texture_3d&) = delete;
+
+	~gl_texture_3d()
+	{
+		glDeleteTextures(1, &_handle);
+	}
+
+public:
+
+	void reallocate(int32 mipmaps_num, int32 width, int32 height, int32 depth, gl_texture_internal_format internal_format)
+	{
+		glDeleteTextures(1, &_handle);
+		_mipmaps_num = mipmaps_num;
+		_width = width;
+		_height = height;
+		_width = width;
+		_internal_format = internal_format;
+		_allocate();
+	}
+
+	void fill(int32 mipmap_index, int32 x_offset, int32 y_offset, int32 z_offset, int32 width, int32 height, int32 depth, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, const void* pixels)
+	{
+		glTextureSubImage3D(_handle, mipmap_index, x_offset, y_offset, z_offset, width, height, depth, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), pixels);
+	}
+
+	void fetch(int32 mipmap_index, int32 x_offset, int32 y_offset, int32 z_offset, int32 width, int32 height, int32 depth, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, int32 size, void* pixels)
+	{
+		glGetTextureSubImage(_handle, mipmap_index, x_offset, y_offset, z_offset, width, height, depth, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), size, pixels);
+	}
+
+	void build_mipmaps()
+	{
+		glBindTexture(GL_TEXTURE_3D, _handle);
+		glGenerateMipmap(GL_TEXTURE_3D);
+		glBindTexture(GL_TEXTURE_3D, 0);
+	}
+
+public:
+
+	int32 get_mipmaps_num() const { return _mipmaps_num; }
+
+	int32 get_width() const { return _width; }
+
+	int32 get_height() const { return _height; }
+
+	int32 get_depth() const { return _height; }
+
+	gl_texture_internal_format get_internal_format() const { return _internal_format; }
+
+private:
+	
+	int32 _mipmaps_num;
+	
+	int32 _width, _height, _depth;
+	
+	gl_texture_internal_format _internal_format;
+
+	void _allocate()
+	{
+		glCreateTextures(GL_TEXTURE_3D, 1, &_handle);
+		glTextureStorage3D(_handle, _mipmaps_num, static_cast<GLenum>(_internal_format), _width, _height, _depth);
+	}
+
 };
 
 //template<

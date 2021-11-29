@@ -52,6 +52,78 @@ public:
 	const std::shared_ptr<glsl_geometry_shader>& gs() const { return _geometry_shader; }
 	const std::shared_ptr<glsl_fragment_shader>& fs() const { return _fragment_shader; }
 
+
+private:
+
+	std::vector<glsl_sampler1D*> _sampler1Ds;
+	std::vector<glsl_sampler1DArray*> _sampler1DArrays;
+	std::vector<glsl_sampler1DShadow*> _sampler1DShadows;
+	std::vector<glsl_sampler1DArrayShadow*> _sampler1DArrayShadows;
+	std::vector<glsl_sampler2D*> _sampler2Ds;
+	std::vector<glsl_sampler2DArray*> _sampler2DArrays;
+	std::vector<glsl_sampler2DShadow*> _sampler2DShadows;
+	std::vector<glsl_sampler2DArrayShadow*> _sampler2DArrayShadows;
+	std::vector<glsl_sampler2DMS*> _sampler2DMSs;
+	std::vector<glsl_sampler2DMSArray*> _sampler2DMSArrays;
+	std::vector<glsl_samplerCube*> _samplerCubes;
+	std::vector<glsl_samplerCubeArray*> _samplerCubeArrays;
+	std::vector<glsl_samplerCubeShadow*> _samplerCubeShadows;
+	std::vector<glsl_samplerCubeArrayShadow*> _samplerCubeArrayShadows;
+	std::vector<glsl_sampler2DRect*> _sampler2DRects;
+	std::vector<glsl_sampler2DRectShadow*> _sampler2DRectShadows;
+	std::vector<glsl_samplerBuffer*> _samplerBuffers;
+
+public:
+
+	glsl_sampler1D* sampler1D(const std::string& name)
+	{
+		auto* _sampler1D = new glsl_sampler1D(_sampler1Ds.size() - 1, name);
+		_sampler1Ds.push_back(_sampler1D);
+		return _sampler1D;
+	}
+	glsl_sampler1DArray* sampler1DArray() {}
+	glsl_sampler1DShadow* sampler1DShadow() {}
+	glsl_sampler1DArrayShadow* sampler1DArrayShadow() {}
+	glsl_sampler2D* sampler2D() {}
+	glsl_sampler2DArray* sampler2DArray() {}
+	glsl_sampler2DShadow* sampler2DShadow() {}
+	glsl_sampler2DArrayShadow* sampler2DArrayShadow() {}
+	glsl_sampler2DMS* sampler2DMS() {}
+	glsl_sampler2DMSArray* sampler2DMSArray() {}
+	glsl_samplerCube* samplerCube() {}
+	glsl_samplerCubeArray* samplerCubeArray() {}
+	glsl_samplerCubeShadow* samplerCubeShadow() {}
+	glsl_samplerCubeArrayShadow* samplerCubeArrayShadow() {}
+	glsl_sampler2DRect* sampler2DRect() {}
+	glsl_sampler2DRectShadow* sampler2DRectShadow() {}
+	glsl_samplerBuffer* samplerBuffer() {}
+
+	/*glsl_sampler1D* sampler1D() {}
+	glsl_sampler1DArray* sampler1DArray() {}
+	glsl_sampler1DShadow* sampler1DShadow() {}
+	glsl_sampler1DArrayShadow* sampler1DArrayShadow() {}
+	glsl_sampler2D* sampler2D() {}
+	glsl_sampler2DArray* sampler2DArray() {}
+	glsl_sampler2DShadow* sampler2DShadow() {}
+	glsl_sampler2DArrayShadow* sampler2DArrayShadow() {}
+	glsl_sampler2DMS* sampler2DMS() {}
+	glsl_sampler2DMSArray* sampler2DMSArray() {}
+	glsl_samplerCube* samplerCube() {}
+	glsl_samplerCubeArray* samplerCubeArray() {}
+	glsl_samplerCubeShadow* samplerCubeShadow() {}
+	glsl_samplerCubeArrayShadow* samplerCubeArrayShadow() {}
+	glsl_sampler2DRect* sampler2DRect() {}
+	glsl_sampler2DRectShadow* sampler2DRectShadow() {}
+	glsl_samplerBuffer* samplerBuffer() {}*/
+
+private:
+
+	std::vector<glsl_image1D*> _image1Ds;
+	std::vector<glsl_image1DArray*> _image1DArrays;
+
+public:
+
+
 private:
 
 	// must have impl

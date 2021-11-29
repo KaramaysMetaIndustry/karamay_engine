@@ -147,9 +147,6 @@ struct glsl_transparent_t_meta
     {}
 };
 
-
-
-
 struct glsl_transparent_clazz
 {
     
@@ -286,9 +283,6 @@ class glsl_opaque_t : public glsl_t{
  * sampler/image
  * */
 class glsl_texture_handler_t : glsl_opaque_t{
-public:
-    virtual void bind() = 0;
-    virtual void unbind() = 0;
 };
 
 enum class glsl_storage_qualifier
