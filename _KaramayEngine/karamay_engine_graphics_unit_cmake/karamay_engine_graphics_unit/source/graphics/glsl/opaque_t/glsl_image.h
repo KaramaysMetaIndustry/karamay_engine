@@ -132,183 +132,39 @@ public:
 
 };
 
-
-//
-//class glsl_image2D : private glsl_image_t {
-//public:
-//    glsl_image2D(glsl_image_memory_qualifier memory_qualifier, std::string&& value_name) :
-//        _value_name(std::move(value_name))
-//    {
-//    }
-//
-//public:
-//
-//    struct glsl_image2DResource
-//    {
-//        std::shared_ptr<gl_texture_2d_base> texture_2d;
-//
-//        std::int32_t mipmap_index;
-//
-//        glsl_image2DResource() : texture_2d(nullptr), mipmap_index(0){}
-//
-//    } resource;
-//
-//private:
-//
-//    void bind() override
-//    {
-//        std::uint32_t _unit = 0;
-//        glBindImageTexture(GL_TEXTURE0 + _unit,
-//                           resource.texture_2d->get_handle(),
-//                           resource.mipmap_index, false, 0,
-//                           static_cast<GLenum>(transfer(_memory_qualifier)),
-//                           static_cast<GLenum>(resource.texture_2d->format())
-//                           );
-//    }
-//
-//    void unbind() override
-//    {
-//        glBindImageTexture(GL_TEXTURE0, 0, resource.mipmap_index, false, 0, 1, 1);
-//    }
-//
-//private:
-//
-//    std::string _value_name;
-//
-//    glsl_image_memory_qualifier _memory_qualifier;
-//
-//};
-//
-//class glsl_image2DArray : public glsl_image_t{
-//public:
-//    glsl_image2DArray(glsl_image_layout_format_qualifier layout_format, glsl_image_memory_qualifier memory, std::string&& value_name)
-//    {}
-//
-//    struct glsl_image2DArrayResource
-//    {
-//        std::shared_ptr<gl_texture_2d_array_base> texture_2d_array;
-//        std::int32_t mipmap_index;
-//
-//        glsl_image2DArrayResource() :
-//            texture_2d_array(nullptr), mipmap_index(0) {}
-//
-//        bool check()
-//        {
-//            if(texture_2d_array && mipmap_index >= 0 && mipmap_index < texture_2d_array->mipmaps_count())
-//                return true;
-//            return false;
-//        }
-//    } resource;
-//
-//private:
-//
-//    void bind() override
-//    {
-//        if(!resource.check()) return;
-//        for(std::int32_t _idx = 0; _idx < resource.texture_2d_array->elements_count(); ++_idx)
-//        {
-//            glBindImageTexture(GL_TEXTURE0, resource.texture_2d_array->get_handle(), resource.mipmap_index, true, _idx, 1, 1);
-//        }
-//    }
-//
-//    void unbind() override {}
-//
-//};
-//
-//class glsl_imageCube : private glsl_image_t{
-//public:
-//    glsl_imageCube()
-//    {}
-//
-//    struct glsl_imageCubeResource
-//    {
-//        std::shared_ptr<gl_texture_cube_base> texture_cube;
-//        std::int32_t mipmap_index;
-//        glsl_imageCubeResource() : texture_cube(nullptr), mipmap_index(0) {}
-//    } resource;
-//
-//};
-//
-//class glsl_imageCubeArray : private glsl_image_t {
-//public:
-//    glsl_imageCubeArray()
-//    {}
-//
-//    struct glsl_imageCubeArrayResource
-//    {
-//        std::shared_ptr<gl_texture_cube_array_base> texture_cube_array;
-//        std::int32_t mipmap_index;
-//    } resource;
-//};
-//
-//class glsl_image2DMS : private glsl_image_t
-//{
-//
-//    struct glsl_image2DMSResource
-//    {
-//        std::shared_ptr<gl_texture_2d_multisample_base> texture_2d_multisample;
-//    } resource;
-//
-//};
-//
-//class glsl_image2DMSArray : private glsl_image_t
-//{
-//    struct glsl_image2DMSArrayResource
-//    {
-//        std::shared_ptr<gl_texture_2d_multisample_array_base> texture_2d_multisample_array;
-//    } resource;
-//};
-//
-//class glsl_image2DRect : private glsl_image_t
-//{
-//    struct glsl_image2DRectResource
-//    {
-//        std::shared_ptr<gl_texture_rectangle_base> texture_rectangle;
-//    } resource;
-//};
-//
-//class glsl_image3D : private glsl_image_t
-//{
-//    struct glsl_image3DResource
-//    {
-//        std::shared_ptr<gl_texture_3d_base> texture_3d;
-//        std::int32_t mipmap_index;
-//    } resource;
-//};
-//
-//class glsl_imageBuffer : private glsl_image_t
-//{
-//
-//    struct glsl_imageBufferResource
-//    {
-//        std::shared_ptr<gl_texture_buffer_base> texture_buffer;
-//    } resource;
-//};
+class glsl_image2D {};
+class glsl_image2DArray {};
+class glsl_imageCube {};
+class glsl_imageCubeArray {};
+class glsl_image2DMS {};
+class glsl_image2DMSArray {};
+class glsl_image2DRect {};
+class glsl_image3D {};
+class glsl_imageBuffer {};
 
 
+class glsl_iimage1D {};
+class glsl_iimage1DArray {};
+class glsl_iimage2D {};
+class glsl_iimage2DArray {};
+class glsl_iimageCube {};
+class glsl_iimageCubeArray {};
+class glsl_iimage2DMS {};
+class glsl_iimage2DMSArray {};
+class glsl_iimage2DRect {};
+class glsl_iimage3D {};
+class glsl_iimageBuffer {};
 
-//DEFINE_GLSL_IMAGE_T(iimage1D)
-//DEFINE_GLSL_IMAGE_T(iimage1DArray)
-//DEFINE_GLSL_IMAGE_T(iimage2D)
-//DEFINE_GLSL_IMAGE_T(iimage2DArray)
-//DEFINE_GLSL_IMAGE_T(iimageCube)
-//DEFINE_GLSL_IMAGE_T(iimageCubeArray)
-//DEFINE_GLSL_IMAGE_T(iimage2DMS)
-//DEFINE_GLSL_IMAGE_T(iimage2DMSArray)
-//DEFINE_GLSL_IMAGE_T(iimage2DRect)
-//DEFINE_GLSL_IMAGE_T(iimage3D)
-//DEFINE_GLSL_IMAGE_T(iimageBuffer)
-
-//DEFINE_GLSL_IMAGE_T(uimage1D)
-//DEFINE_GLSL_IMAGE_T(uimage1DArray)
-//DEFINE_GLSL_IMAGE_T(uimage2D)
-//DEFINE_GLSL_IMAGE_T(uimage2DArray)
-//DEFINE_GLSL_IMAGE_T(uimageCube)
-//DEFINE_GLSL_IMAGE_T(uimageCubeArray)
-//DEFINE_GLSL_IMAGE_T(uimage2DMS)
-//DEFINE_GLSL_IMAGE_T(uimage2DMSArray)
-//DEFINE_GLSL_IMAGE_T(uimage2DRect)
-//DEFINE_GLSL_IMAGE_T(uimage3D)
-//DEFINE_GLSL_IMAGE_T(uimageBuffer)
+class glsl_uimage1D {};
+class glsl_uimage1DArray {};
+class glsl_uimage2D {};
+class glsl_uimage2DArray {};
+class glsl_uimageCube {};
+class glsl_uimageCubeArray {};
+class glsl_uimage2DMS {};
+class glsl_uimage2DMSArray {};
+class glsl_uimage2DRect {};
+class glsl_uimage3D {};
+class glsl_uimageBuffer {};
 
 #endif

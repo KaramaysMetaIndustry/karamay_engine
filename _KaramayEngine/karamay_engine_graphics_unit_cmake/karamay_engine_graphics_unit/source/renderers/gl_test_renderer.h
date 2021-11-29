@@ -35,44 +35,24 @@ public:
 			glm::vec4(0.71f, 0.15f, 0.23f, 0.25f)
 		};
 
-		gl_texture_2d* diffuse_texture = new gl_texture_2d(2, gl_texture_internal_format::F_RGBA32, 2, 2);
-		diffuse_texture->fill(0, 0, 0, 2, 2, gl_texture_pixel_format::RGBA, gl_texture_pixel_type::FLOAT, _pixels.data());
-		diffuse_texture->build_mipmaps();
-
-		
-
-		int32 _mipmap_index = 1;
-		std::cout << "mipmap : " << _mipmap_index << std::endl;
-		std::cout << "width : " << diffuse_texture->get_width(_mipmap_index) << " height : " << diffuse_texture->get_height(_mipmap_index) << " depth : " << diffuse_texture->get_depth(_mipmap_index) << std::endl;
+		gl_texture_cube* diff_tex_cube = new gl_texture_cube(2, gl_texture_internal_format::F_RGBA32, 2, 2);
+		diff_tex_cube->fill(gl_cube_face_index::POSITIVE_X, 0, 0, 0, 2, 2, gl_texture_pixel_format::RGBA, gl_texture_pixel_type::FLOAT, _pixels.data());
+		diff_tex_cube->build_mipmaps();
 
 		std::vector<glm::vec4> _out_pixels;
 		_out_pixels.resize(4);
 
-
 		for (const auto& _pixel : _out_pixels)
 		{
 			std::cout << _pixel.r << "," << _pixel.g << "," << _pixel.b << "," << _pixel.a << std::endl;
 		}
 
-		gl_texture_2d_multisample* diffuse_texture_ms = new gl_texture_2d_multisample(1, gl_texture_internal_format::F_RGBA32, 2, 2, true);
-		diffuse_texture_ms->fill(0, 0, 2, 2, gl_texture_pixel_format::RGBA, gl_texture_pixel_type::FLOAT, _pixels.data());
-
-		glsl_sampler2D* diffuse_map = new glsl_sampler2D(0, "diffuse_map");
-		diffuse_map->associate_texture_2d(diffuse_texture);
-		auto atx = diffuse_map->get_texture_2d();
-		//atx->reallocate(2, gl_texture_internal_format::F_RGBA32, 2, 2);
-		//atx->fetch(1, 0, 0, 1, 1, gl_texture_pixel_format::RGBA, gl_texture_pixel_type::FLOAT, _out_pixels.size() * sizeof(glm::vec4), _out_pixels.data());
+		diff_tex_cube->fetch(gl_cube_face_index::POSITIVE_X, 1, 0, 0, 1, 1, gl_texture_pixel_format::RGBA, gl_texture_pixel_type::FLOAT, 1 * sizeof(glm::vec4), _out_pixels.data());
 
 		for (const auto& _pixel : _out_pixels)
 		{
 			std::cout << _pixel.r << "," << _pixel.g << "," << _pixel.b << "," << _pixel.a << std::endl;
 		}
-
-
-
-
-
-
 
 
 		gl_graphics_pipeline_descriptor _desc;

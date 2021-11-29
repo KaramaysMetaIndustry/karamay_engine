@@ -388,6 +388,15 @@ struct gl_graphics_pipeline_state
 
 };
 
+class gl_render_target
+{
+public:
+
+private:
+    gl_framebuffer* framebuffer;
+
+};
+
 /*
  * descriptor for graphics pipeline construction
  * */
@@ -410,15 +419,38 @@ struct gl_graphics_pipeline_descriptor{
  * graphics pipeline
  * vertex shader [+ tessellation control shader + tessellation evaluation shader] [+ geometry shader] + fragment shader
  * */
-class gl_graphics_pipeline{
+class gl_graphics_pipeline
+{
 public:
     gl_graphics_pipeline(const gl_graphics_pipeline_descriptor& descriptor)
-    {
-    }
+    {}
     gl_graphics_pipeline(const gl_graphics_pipeline&) = delete;
     gl_graphics_pipeline& operator=(const gl_graphics_pipeline&) = delete;
 
-    ~gl_graphics_pipeline() = default;
+    ~gl_graphics_pipeline()
+    {
+        if (!_vertex_launcher) delete _vertex_launcher;
+
+    }
+
+private:
+
+    gl_vertex_launcher* _vertex_launcher;
+
+    glsl_graphics_pipeline_program* _program;
+
+    gl_render_target* _render_target;
+
+public:
+
+    gl_vertex_launcher* vertex_launcher()
+    {
+        return _vertex_launcher;
+    }
+
+    glsl_graphics_pipeline_program* program() { return _program; }
+
+    gl_render_target* render_target() { return _render_target; }
 
 public:
 
@@ -429,8 +461,6 @@ public:
     void enable() noexcept
     {
         if (!_program) return;
-        _program->enable();
-        _bind_resources();
     }
 
     /*
@@ -440,8 +470,6 @@ public:
     void disable() noexcept
     {
         if (!_program) return;
-        _unbind_resources();
-        _program->disable();
     }
 
 public: // non-draw commands 
@@ -660,7 +688,6 @@ public:
         return std::make_shared<gl_fence>();
     }
 
-
     std::shared_ptr<gl_fence> draw_transform_feedback(uint32 stream_Index = 0)
     {
         auto _vertex_launcher = _descriptor.vertex_launcher;
@@ -685,8 +712,6 @@ private:
 
     gl_graphics_pipeline_descriptor _descriptor;
 
-    std::unique_ptr<gl_program> _program;
-
     struct gl_graphics_pipeline_resource_pool{
         std::unique_ptr<gl_uniform_buffer> uniform_buffer;
         std::unique_ptr<gl_shader_storage_buffer> shader_storage_buffer;
@@ -695,69 +720,6 @@ private:
 
 private:
 
-    void _bind_resources()
-    {
-        if (_descriptor.vertex_launcher && _descriptor.glsl_program && _descriptor.framebuffer && _descriptor.state)
-        {
-            // bind vertex launcher
-            _descriptor.vertex_launcher->bind();
-
-            // bind program parameters
-            const auto& _program_parameters = _descriptor.glsl_program->parameters();
-            for (const auto& _image : _program_parameters.images)
-            {
-            }
-            for (const auto& _sampler : _program_parameters.samplers)
-            {
-                _sampler->bind();
-                //glUniform1ui(glGetUniformLocation(_program->get_handle(), _sampler->get_var_token().c_str()), _sampler->get_unit());
-            }
-            if (_resource_pool.uniform_buffer)
-            {
-                _resource_pool.uniform_buffer->bind();
-            }
-            if (_resource_pool.shader_storage_buffer)
-            {
-                _resource_pool.shader_storage_buffer->bind();
-            }
-            if (_resource_pool.atomic_counter_buffer)
-            {
-                _resource_pool.atomic_counter_buffer->bind();
-            }
-           
-            // bind transform feedback
-           
-
-            // bind framebuffer
-            _descriptor.framebuffer->bind();
-
-            // set state
-            _descriptor.state->set();
-        }
- 
-    }
-
-    void _unbind_resources()
-    {
-
-    }
-
-    void FlushResources()
-    {
-        GLint MaxVertexAtomicCounterBuffers(0);
-        GLint MaxControlAtomicCounterBuffers(0);
-        GLint MaxEvaluationAtomicCounterBuffers(0);
-        GLint MaxGeometryAtomicCounterBuffers(0);
-        GLint MaxFragmentAtomicCounterBuffers(0);
-        GLint MaxCombinedAtomicCounterBuffers(0);
-
-        glGetIntegerv(GL_MAX_VERTEX_ATOMIC_COUNTER_BUFFERS, &MaxVertexAtomicCounterBuffers);
-        glGetIntegerv(GL_MAX_TESS_CONTROL_ATOMIC_COUNTER_BUFFERS, &MaxControlAtomicCounterBuffers);
-        glGetIntegerv(GL_MAX_TESS_EVALUATION_ATOMIC_COUNTER_BUFFERS, &MaxEvaluationAtomicCounterBuffers);
-        glGetIntegerv(GL_MAX_GEOMETRY_ATOMIC_COUNTER_BUFFERS, &MaxGeometryAtomicCounterBuffers);
-        glGetIntegerv(GL_MAX_FRAGMENT_ATOMIC_COUNTER_BUFFERS, &MaxFragmentAtomicCounterBuffers);
-        glGetIntegerv(GL_MAX_COMBINED_ATOMIC_COUNTER_BUFFERS, &MaxCombinedAtomicCounterBuffers);
-    }
 
 };
 

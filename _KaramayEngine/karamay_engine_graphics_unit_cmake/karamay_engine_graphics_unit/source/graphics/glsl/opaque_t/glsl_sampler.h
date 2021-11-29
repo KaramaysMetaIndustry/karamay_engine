@@ -5,26 +5,28 @@
 #include "graphics/resource/texture/gl_texture.h"
 #include "graphics/resource/sampler/gl_sampler.h"
 
-class glsl_sampler_t : public glsl_texture_handler_t
+class glsl_sampler_t 
 {
 protected:
     glsl_sampler_t() = delete;
-    glsl_sampler_t(uint32 uint, const std::string& type_token, const std::string var_token) :
+    glsl_sampler_t(uint32 binding, const std::string& type_token, const std::string var_token) :
         _texture(nullptr),
         _sampler(nullptr),
-        _unit(uint)
+        _binding(binding)
     {
         _token = "layout(binding = 0) sampler2D diffuse;";
     }
 
-    void associate_texture(gl_texture_t* texture) 
-    { 
-        _texture = texture; 
+protected:
+
+    virtual void set_texture(gl_texture_t* texture)
+    {
+        _texture = texture;
     }
-    
-    gl_texture_t* get_texture() const 
-    { 
-        return _texture; 
+
+    gl_texture_t* get_texture() const
+    {
+        return _texture;
     }
 
 public:
@@ -34,14 +36,14 @@ public:
         _sampler = sampler;
     }
 
-    gl_sampler* get_sampler() const 
-    { 
+    gl_sampler* get_sampler() const
+    {
         return _sampler;
     }
 
     const std::string& get_token() const { return _token; }
 
-    uint32 get_unit() const { return _unit; }
+    uint32 get_unit() const { return _binding; }
 
     const std::string& get_var_token() const { return _var_token; }
 
@@ -55,47 +57,104 @@ public:
             return;
         }
 
-        glBindTextureUnit(_unit, _texture->get_handle());
-        std::cout << "bind texture at the unit " << _unit << std::endl;
+        glBindTextureUnit(_binding, _texture->get_handle());
+        std::cout << "bind texture at the unit " << _binding << std::endl;
 
         if (_sampler)
         {
-            _sampler->bind(_unit);
-            std::cout << "bind sampler at the unit " << _unit << std::endl;
+            _sampler->bind(_binding);
+            std::cout << "bind sampler at the unit " << _binding << std::endl;
         }
 
     }
 
     void unbind()
     {
-        glBindTextureUnit(_unit, 0);
+        glBindTextureUnit(_binding, 0);
 
         if (_sampler)
         {
-            _sampler->unbind(_unit);
+            _sampler->unbind(_binding);
         }
     }
 
 private:
 
     gl_texture_t* _texture;
-
     gl_sampler* _sampler;
-
-    uint32 _unit;
-
+    uint32 _binding;
     std::string _token;
-
     std::string _var_token;
+};
+
+class glsl_sampler : public glsl_sampler_t
+{
+public:
+    glsl_sampler(uint32 binding, const std::string& type_name, const std::string& var_name) : glsl_sampler_t(binding, type_name, var_name) {}
+
+protected:
+
+    void set_texture(gl_texture_t* texture) override
+    {
+        if (!_check_format(texture))
+        {
+            std::cerr << "internal format must be float about." << std::endl;
+            return;
+        }
+        glsl_sampler_t::set_texture(texture);
+    }
+
+    bool _check_format(gl_texture_t* texture)
+    {
+        switch (texture->get_internal_format())
+        {
+        case gl_texture_internal_format::F_R11_G11_B10: return true;
+        case gl_texture_internal_format::F_R32: return true;
+        case gl_texture_internal_format::F_RG32: return true;
+        case gl_texture_internal_format::F_RGB32: return true;
+        case gl_texture_internal_format::F_RGBA32: return true;
+        case gl_texture_internal_format::NOR_I_R16: return true;
+        case gl_texture_internal_format::NOR_I_R8: return true;
+        case gl_texture_internal_format::NOR_I_RG16: return true;
+        case gl_texture_internal_format::NOR_I_RG8: return true;
+        case gl_texture_internal_format::NOR_I_RGB16: return true;
+        case gl_texture_internal_format::NOR_I_RGB8: return true;
+        case gl_texture_internal_format::NOR_I_RGBA16: return true;
+        case gl_texture_internal_format::NOR_I_RGBA8: return true;
+        case gl_texture_internal_format::NOR_UI_R16: return true;
+        case gl_texture_internal_format::NOR_UI_R3_G3_B2: return true;
+        case gl_texture_internal_format::NOR_UI_R5_G6_B5: return true;
+        case gl_texture_internal_format::NOR_UI_R8: return true;
+        case gl_texture_internal_format::NOR_UI_RG16: return true;
+        case gl_texture_internal_format::NOR_UI_RG8: return true;
+        case gl_texture_internal_format::NOR_UI_RGB10_A2: return true;
+        case gl_texture_internal_format::NOR_UI_RGB16: return true;
+        case gl_texture_internal_format::NOR_UI_RGB5_A1: return true;
+        case gl_texture_internal_format::NOR_UI_RGB8: return true;
+        case gl_texture_internal_format::NOR_UI_RGBA16: return true;
+        case gl_texture_internal_format::NOR_UI_RGBA2: return true;
+        case gl_texture_internal_format::NOR_UI_RGBA4: return true;
+        case gl_texture_internal_format::NOR_UI_RGBA8: return true;
+        case gl_texture_internal_format::NOR_UI_SRGB8: return true;
+        case gl_texture_internal_format::NOR_UI_SRGB8_ALPHA8: return true;
+        default: return false;
+        }
+    }
 
 };
 
+class glsl_samplerShadow : public glsl_sampler {};
 
-class glsl_sampler1D : public glsl_sampler_t
+class glsl_isampler : public glsl_sampler_t{};
+
+class glsl_usampler :public glsl_sampler_t{};
+
+
+class glsl_sampler1D : public glsl_sampler
 {
 public:
     glsl_sampler1D(uint32 unit, const std::string& var_token) 
-        : glsl_sampler_t(unit, "sampler1D", var_token) 
+        : glsl_sampler(unit, "sampler1D", var_token) 
     {}
 
     glsl_sampler1D(const glsl_sampler1D&) = delete;
@@ -105,28 +164,17 @@ public:
 
 public:
 
-    void associate_texture_1d(gl_texture_1d* texture)
-    {
-        associate_texture(texture);
-    }
+    void set_texture_1d(gl_texture_1d* texture) { set_texture(texture); }
 
-    gl_texture_1d* get_texture_1d() const
-    {
-        return dynamic_cast<gl_texture_1d*>(get_texture());
-    }
+    gl_texture_1d* get_texture_1d() const { return dynamic_cast<gl_texture_1d*>(get_texture()); }
 
 };
 
-class glsl_sampler1DShadow : public glsl_sampler1D 
-{
-
-};
-
-class glsl_sampler1DArray : public glsl_sampler_t
+class glsl_sampler1DArray : public glsl_sampler
 {
 public:
     glsl_sampler1DArray(uint32 unit, const std::string& var_token) 
-        : glsl_sampler_t(unit, "sampler1DArray", var_token) 
+        : glsl_sampler(unit, "sampler1DArray", var_token) 
     {}
 
     glsl_sampler1DArray(const glsl_sampler1DArray&) = delete;
@@ -136,20 +184,9 @@ public:
 
 public:
 
-    void associate_texture_1d_array(gl_texture_1d_array* texture)
-    {
-        associate_texture(texture);
-    }
+    void set_texture_1d_array(gl_texture_1d_array* texture) { set_texture(texture); }
 
-    gl_texture_1d_array* get_texture_1d_array() const
-    {
-        return dynamic_cast<gl_texture_1d_array*>(get_texture());
-    }
-
-};
-
-class glsl_sampler1DArrayShadow : public glsl_sampler1DArray 
-{
+    gl_texture_1d_array* get_texture_1d_array() const { return dynamic_cast<gl_texture_1d_array*>(get_texture()); }
 
 };
 
@@ -167,19 +204,11 @@ public:
 
 public:
 
-    void associate_texture_2d(gl_texture_2d* texture)
-    {
-        associate_texture(texture);
-    }
+    void set_texture_2d(gl_texture_2d* texture) { set_texture(texture); }
 
-    gl_texture_2d* get_texture_2d() const
-    {
-        return dynamic_cast<gl_texture_2d*>(get_texture());
-    }
+    gl_texture_2d* get_texture_2d() const { return dynamic_cast<gl_texture_2d*>(get_texture()); }
+
 };
-
-class glsl_sampler2DShadow : public glsl_sampler2D 
-{};
 
 class glsl_sampler2DArray : public glsl_sampler_t
 {
@@ -195,20 +224,11 @@ public:
 
 public:
 
-    void associate_texture_2d_array(gl_texture_2d_array* texture)
-    {
-        associate_texture(texture);
-    }
+    void set_texture_2d_array(gl_texture_2d_array* texture) { set_texture(texture); }
 
-    gl_texture_2d_array* get_texture_2d_array() const
-    {
-        return dynamic_cast<gl_texture_2d_array*>(get_texture());
-    }
+    gl_texture_2d_array* get_texture_2d_array() const { return dynamic_cast<gl_texture_2d_array*>(get_texture()); }
 
 };
-
-class glsl_sampler2DArrayShadow : public glsl_sampler2DArray 
-{};
 
 class glsl_sampler2DMS : public glsl_sampler_t
 {
@@ -225,15 +245,9 @@ public:
 
 public:
 
-    void associate_texture_2d_multisample(gl_texture_2d_multisample* texture)
-    {
-        associate_texture(texture);
-    }
+    void set_texture_2d_multisample(gl_texture_2d_multisample* texture) { set_texture(texture); }
 
-    gl_texture_2d_multisample* get_texture_2d_multisample() const
-    {
-        return dynamic_cast<gl_texture_2d_multisample*>(get_texture());
-    }
+    gl_texture_2d_multisample* get_texture_2d_multisample() const { return dynamic_cast<gl_texture_2d_multisample*>(get_texture()); }
 
 };
 
@@ -251,15 +265,9 @@ public:
 
 public:
 
-    void associate_texture_2d_multisample_array(gl_texture_2d_multisample_array* texture)
-    {
-        associate_texture(texture);
-    }
+    void set_texture_2d_multisample_array(gl_texture_2d_multisample_array* texture) { set_texture(texture); }
 
-    gl_texture_2d_multisample_array* get_texture_2d_multisample_array() const
-    {
-        return dynamic_cast<gl_texture_2d_multisample_array*>(get_texture());
-    }
+    gl_texture_2d_multisample_array* get_texture_2d_multisample_array() const { return dynamic_cast<gl_texture_2d_multisample_array*>(get_texture()); }
 
 };
 
@@ -276,20 +284,11 @@ public:
 
 public:
 
-    void associate_texture_cube(gl_texture_cube* texture)
-    {
-        associate_texture(texture);
-    }
+    void set_texture_cube(gl_texture_cube* texture) { set_texture(texture); }
 
-    gl_texture_cube* get_texture_cube() const
-    {
-        return dynamic_cast<gl_texture_cube*>(get_texture());
-    }
+    gl_texture_cube* get_texture_cube() const { return dynamic_cast<gl_texture_cube*>(get_texture()); }
 
 };
-
-class glsl_samplerCubeShadow : public glsl_samplerCube 
-{};
 
 class glsl_samplerCubeArray : public glsl_sampler_t {
 public:
@@ -304,19 +303,11 @@ public:
 
 public:
 
-    void associate_texture_cube_array(gl_texture_cube_array* texture)
-    {
-        associate_texture(texture);
-    }
+    void set_texture_cube_array(gl_texture_cube_array* texture) { set_texture(texture); }
 
-    gl_texture_cube_array* get_texture_cube_array() const
-    {
-        return dynamic_cast<gl_texture_cube_array*>(get_texture());
-    }
+    gl_texture_cube_array* get_texture_cube_array() const { return dynamic_cast<gl_texture_cube_array*>(get_texture()); }
+
 };
-
-class glsl_samplerCubeArrayShadow : public glsl_samplerCubeArray 
-{};
 
 class glsl_sampler2DRect : public glsl_sampler_t{
 public:
@@ -331,20 +322,11 @@ public:
 
 public:
 
-    void associate_texture_rectangle(gl_texture_rectangle* texture)
-    {
-        associate_texture(texture);
-    }
+    void set_texture_rectangle(gl_texture_rectangle* texture) { set_texture(texture); }
 
-    gl_texture_rectangle* get_texture_rectangle() const
-    {
-        return dynamic_cast<gl_texture_rectangle*>(get_texture());
-    }
+    gl_texture_rectangle* get_texture_rectangle() const { return dynamic_cast<gl_texture_rectangle*>(get_texture()); }
 
 };
-
-class glsl_sampler2DRectShadow : public glsl_sampler2DRect 
-{};
 
 class glsl_sampler3D : public glsl_sampler_t 
 {
@@ -360,15 +342,9 @@ public:
 
 public:
 
-    void associate_texture_3d(gl_texture_3d* texture)
-    {
-        associate_texture(texture);
-    }
+    void set_texture_3d(gl_texture_3d* texture) { set_texture(texture); }
 
-    gl_texture_3d* get_texture_3d() const
-    {
-        return dynamic_cast<gl_texture_3d*>(get_texture());
-    }
+    gl_texture_3d* get_texture_3d() const { return dynamic_cast<gl_texture_3d*>(get_texture()); }
 
 };
 
@@ -386,56 +362,56 @@ public:
 
 public:
 
-    void associate_texture_buffer(gl_texture_buffer* texture)
-    {
-        associate_texture(texture);
-    }
+    void set_texture_buffer(gl_texture_buffer* texture) { set_texture(texture); }
 
-    gl_texture_buffer* get_texture_buffer() const
-    {
-        return dynamic_cast<gl_texture_buffer*>(get_texture());
-    }
+    gl_texture_buffer* get_texture_buffer() const { return dynamic_cast<gl_texture_buffer*>(get_texture()); }
 
 };
 
 
+class glsl_sampler1DShadow : public glsl_samplerShadow
+{
 
-//DEFINE_GLSL_SAMPLER_T(isampler1D)
-//DEFINE_GLSL_SAMPLER_T(isampler1DArray)
-//DEFINE_GLSL_SAMPLER_T(isampler2D)
-//DEFINE_GLSL_SAMPLER_T(isampler2DArray)
-//DEFINE_GLSL_SAMPLER_T(isampler2DRect)
-//DEFINE_GLSL_SAMPLER_T(isampler2DMS)
-//DEFINE_GLSL_SAMPLER_T(isampler2DMSArray)
-//DEFINE_GLSL_SAMPLER_T(isampler3D)
-//DEFINE_GLSL_SAMPLER_T(isamplerCube)
-//DEFINE_GLSL_SAMPLER_T(isamplerCubeArray)
-//DEFINE_GLSL_SAMPLER_T(isamplerBuffer)
-//DEFINE_GLSL_SAMPLER_T(isampler1DShadow)
-//DEFINE_GLSL_SAMPLER_T(isampler2DShadow)
-//DEFINE_GLSL_SAMPLER_T(isampler2DRectShadow)
-//DEFINE_GLSL_SAMPLER_T(isampler1DArrayShadow)
-//DEFINE_GLSL_SAMPLER_T(isampler2DArrayShadow)
-//DEFINE_GLSL_SAMPLER_T(isamplerCubeShadow)
-//DEFINE_GLSL_SAMPLER_T(isamplerCubeArrayShadow)
+};
+class glsl_sampler1DArrayShadow : public glsl_samplerShadow
+{
 
-//DEFINE_GLSL_SAMPLER_T(usampler1D)
-//DEFINE_GLSL_SAMPLER_T(usampler1DArray)
-//DEFINE_GLSL_SAMPLER_T(usampler2D)
-//DEFINE_GLSL_SAMPLER_T(usampler2DArray)
-//DEFINE_GLSL_SAMPLER_T(usampler2DRect)
-//DEFINE_GLSL_SAMPLER_T(usampler2DMS)
-//DEFINE_GLSL_SAMPLER_T(usampler2DMSArray)
-//DEFINE_GLSL_SAMPLER_T(usampler3D)
-//DEFINE_GLSL_SAMPLER_T(usamplerCube)
-//DEFINE_GLSL_SAMPLER_T(usamplerCubeArray)
-//DEFINE_GLSL_SAMPLER_T(usamplerBuffer)
-//DEFINE_GLSL_SAMPLER_T(usampler1DShadow)
-//DEFINE_GLSL_SAMPLER_T(usampler2DShadow)
-//DEFINE_GLSL_SAMPLER_T(usampler2DRectShadow)
-//DEFINE_GLSL_SAMPLER_T(usampler1DArrayShadow)
-//DEFINE_GLSL_SAMPLER_T(usampler2DArrayShadow)
-//DEFINE_GLSL_SAMPLER_T(usamplerCubeShadow)
-//DEFINE_GLSL_SAMPLER_T(usamplerCubeArrayShadow)
+};
+class glsl_sampler2DShadow : public glsl_samplerShadow
+{};
+class glsl_sampler2DArrayShadow : public glsl_samplerShadow
+{};
+class glsl_samplerCubeShadow : public glsl_samplerShadow
+{};
+class glsl_samplerCubeArrayShadow : public glsl_samplerShadow
+{};
+class glsl_sampler2DRectShadow : public glsl_samplerShadow
+{};
+
+
+
+class glsl_isampler1D : public glsl_isampler {};
+class glsl_isampler1DArray : public glsl_isampler {};
+class glsl_isampler2D : public glsl_isampler {};
+class glsl_isampler2DArray : public glsl_isampler {};
+class glsl_isampler2DRect : public glsl_isampler {};
+class glsl_isampler2DMS : public glsl_isampler {};
+class glsl_isampler2DMSArray : public glsl_isampler {};
+class glsl_isamplerCube : public glsl_isampler {};
+class glsl_isamplerCubeArray : public glsl_isampler {};
+class glsl_isampler3D : public glsl_isampler {};
+class glsl_isamplerBuffer : public glsl_isampler {};
+
+class glsl_usampler1D : public glsl_usampler {};
+class glsl_usampler1DArray : public glsl_usampler {};
+class glsl_usampler2D : public glsl_usampler {};
+class glsl_usampler2DArray : public glsl_usampler {};
+class glsl_usampler2DRect : public glsl_usampler {};
+class glsl_usampler2DMS : public glsl_usampler {};
+class glsl_usampler2DMSArray : public glsl_usampler {};
+class glsl_usamplerCube : public glsl_usampler {};
+class glsl_usamplerCubeArray : public glsl_usampler {};
+class glsl_usampler3D : public glsl_usampler {};
+class glsl_usamplerBuffer : public glsl_usampler {};
 
 #endif
