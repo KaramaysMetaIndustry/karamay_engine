@@ -35,9 +35,15 @@ public:
 			glm::vec4(0.71f, 0.15f, 0.23f, 0.25f)
 		};
 
-		gl_texture_cube* diff_tex_cube = new gl_texture_cube(2, gl_texture_internal_format::F_RGBA32, 2, 2);
-		diff_tex_cube->fill(gl_cube_face_index::POSITIVE_X, 0, 0, 0, 2, 2, gl_texture_pixel_format::RGBA, gl_texture_pixel_type::FLOAT, _pixels.data());
-		diff_tex_cube->build_mipmaps();
+		gl_texture_cube_array* diff_tex_cubes = new gl_texture_cube_array(2, 2, gl_texture_internal_format::F_RGBA32, 2, 2);
+		diff_tex_cubes->fill(0, gl_cube_face_index::POSITIVE_X, 0, 0, 0, 2, 2, gl_texture_pixel_format::RGBA, gl_texture_pixel_type::FLOAT, _pixels.data());
+		diff_tex_cubes->fill(0, gl_cube_face_index::POSITIVE_Y, 0, 0, 0, 2, 2, gl_texture_pixel_format::RGBA, gl_texture_pixel_type::FLOAT, _pixels.data());
+		diff_tex_cubes->fill(0, gl_cube_face_index::POSITIVE_Z, 0, 0, 0, 2, 2, gl_texture_pixel_format::RGBA, gl_texture_pixel_type::FLOAT, _pixels.data());
+		diff_tex_cubes->fill(0, gl_cube_face_index::NEGATIVE_X, 0, 0, 0, 2, 2, gl_texture_pixel_format::RGBA, gl_texture_pixel_type::FLOAT, _pixels.data());
+		diff_tex_cubes->fill(0, gl_cube_face_index::NEGATIVE_Y, 0, 0, 0, 2, 2, gl_texture_pixel_format::RGBA, gl_texture_pixel_type::FLOAT, _pixels.data());
+		diff_tex_cubes->fill(0, gl_cube_face_index::NEGATIVE_Z, 0, 0, 0, 1, 2, gl_texture_pixel_format::RGBA, gl_texture_pixel_type::FLOAT, _pixels.data());
+		
+		diff_tex_cubes->build_mipmaps();
 
 		std::vector<glm::vec4> _out_pixels;
 		_out_pixels.resize(4);
@@ -47,7 +53,7 @@ public:
 			std::cout << _pixel.r << "," << _pixel.g << "," << _pixel.b << "," << _pixel.a << std::endl;
 		}
 
-		diff_tex_cube->fetch(gl_cube_face_index::POSITIVE_X, 1, 0, 0, 1, 1, gl_texture_pixel_format::RGBA, gl_texture_pixel_type::FLOAT, 1 * sizeof(glm::vec4), _out_pixels.data());
+		diff_tex_cubes->fetch(0, gl_cube_face_index::NEGATIVE_Z, 0, 0, 0, 2, 2, gl_texture_pixel_format::RGBA, gl_texture_pixel_type::FLOAT, 4 * sizeof(glm::vec4), _out_pixels.data());
 
 		for (const auto& _pixel : _out_pixels)
 		{

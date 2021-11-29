@@ -204,11 +204,11 @@ struct gl_texture_parameters{
  * a texture combined with storage, texture parameters, sampler parameters
  * and sampler parameters can bind a sampler object to overwrite
  * */
-class gl_texture_t : public gl_object{
+class gl_texture_t : public gl_object
+{
 public:
-	gl_texture_t() 
-	{
-	}
+	gl_texture_t()
+	{}
 
     gl_texture_t(gl_texture_type type, const gl_texture_parameters& parameters):
 		gl_object(gl_object_type::TEXTURE_OBJ),
@@ -250,7 +250,8 @@ protected:
 };
 
 // mipmaps
-class gl_texture_1d : public gl_texture_t {
+class gl_texture_1d : public gl_texture_t 
+{
 public:
 	gl_texture_1d(int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width)
 	{
@@ -319,7 +320,8 @@ private:
 
 };
 // mipmaps
-class gl_texture_1d_array : public gl_texture_t{
+class gl_texture_1d_array : public gl_texture_t
+{
 public:
     gl_texture_1d_array(int32 elements_num, int32 mipmaps_num, int32 width, gl_texture_internal_format internal_format)
     {
@@ -530,12 +532,16 @@ private:
 
 };
 // mipmaps
-class gl_texture_cube : public gl_texture_t{
+class gl_texture_cube : public gl_texture_t
+{
 public:
     gl_texture_cube(int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, int32 height)
     {
 		_allocate(mipmaps_num, internal_format, width, height);
 	}
+
+	gl_texture_cube(const gl_texture_cube&) = delete;
+	gl_texture_cube& operator=(const gl_texture_cube&) = delete;
 
 	~gl_texture_cube()
 	{
@@ -555,12 +561,23 @@ public:
 		glBindTexture(GL_TEXTURE_CUBE_MAP, _handle);
 		glTexSubImage2D(static_cast<GLenum>(face_index), mipmap_index, x_offset, y_offset, width, height, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), pixels);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-		//glTextureSubImage3D(_handle, mipmap_index, x_offset, y_offset, _cast_face_index(face_index), width, height, 1, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), pixels);
+	}
+
+	void fill(int32 face_index, int32 mipmap_index, int32 x_offset, int32 y_offset, int32 width, int32 height, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, const void* pixels)
+	{
+		glBindTexture(GL_TEXTURE_CUBE_MAP, _handle);
+		glTexSubImage2D(static_cast<GLenum>(_cast_face_index(face_index)), mipmap_index, x_offset, y_offset, width, height, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), pixels);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	}
 
 	void fetch(gl_cube_face_index face_index, int32 mipmap_index, int32 x_offset, int32 y_offset, int32 width, int32 height, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, int32 size, void* pixels)
 	{
 		glGetTextureSubImage(_handle, mipmap_index, x_offset, y_offset, _cast_face_index(face_index), width, height, 1, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), size, pixels);
+	}
+
+	void fetch(int32 face_index, int32 mipmap_index, int32 x_offset, int32 y_offset, int32 width, int32 height, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, int32 size, void* pixels)
+	{
+		glGetTextureSubImage(_handle, mipmap_index, x_offset, y_offset, face_index, width, height, 1, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), size, pixels);
 	}
 
 	void build_mipmaps()
@@ -583,6 +600,19 @@ private:
 		}
 	}
 
+	static gl_cube_face_index _cast_face_index(int32 face_index)
+	{
+		switch (face_index)
+		{
+		case 0: return gl_cube_face_index::POSITIVE_X;
+		case 1: return gl_cube_face_index::NEGATIVE_X;
+		case 2: return gl_cube_face_index::POSITIVE_Y;
+		case 3: return gl_cube_face_index::NEGATIVE_Y;
+		case 4: return gl_cube_face_index::POSITIVE_Z;
+		case 5: return gl_cube_face_index::NEGATIVE_Z;
+		}
+	}
+
 	void _allocate(int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, int32 height)
 	{
 		glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &_handle);
@@ -591,13 +621,11 @@ private:
 
 };
 
-
-
 // mipmaps
-class gl_texture_cube_array : public gl_texture_t{
+class gl_texture_cube_array : public gl_texture_t
+{
 public:
-    gl_texture_cube_array(int32 elements_num, int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, int32 height, const gl_texture_parameters& parameters) :
-        gl_texture_t(gl_texture_type::TEXTURE_CUBE_MAP_ARRAY, parameters)
+    gl_texture_cube_array(int32 elements_num, int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, int32 height)
     {
 		_allocate(elements_num, mipmaps_num, internal_format, width, height);
 	}
@@ -621,6 +649,11 @@ public:
 	void fill(int32 element_index, gl_cube_face_index face_index, int32 mipmap_index, int32 x_offset, int32 y_offset, int32 width, int32 height, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, const void* pixels)
 	{
 		glTextureSubImage3D(_handle, mipmap_index, x_offset, y_offset, element_index + _cast_face_index(face_index), width, height, 1, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), pixels);
+	}
+
+	void fill(int32 element_index, int32 face_index, int32 mipmap_index, int32 x_offset, int32 y_offset, int32 width, int32 height, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, const void* pixels)
+	{
+		glTextureSubImage3D(_handle, mipmap_index, x_offset, y_offset, element_index + face_index, width, height, 1, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), pixels);
 	}
 
 	void fetch(int32 element_index, gl_cube_face_index face_index, int32 mipmap_index, int32 x_offset, int32 y_offset, int32 width, int32 height, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, int32 size, void* pixels)
@@ -657,7 +690,8 @@ private:
 
 };
 // no mipmaps
-class gl_texture_rectangle : public gl_texture_t {
+class gl_texture_rectangle : public gl_texture_t 
+{
 public:
 	gl_texture_rectangle(int32 width, int32 height, gl_texture_internal_format internal_format)
 	{
