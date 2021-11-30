@@ -28,32 +28,31 @@ public:
 				std::memcpy(mapped_elements, indices, 6 * sizeof(uint32));
 			});
 
-		std::vector<glm::vec3> _pixels = {
-			glm::vec3(0.232f, 0.15f, 0.23f), 
-			glm::vec3(0.223f, 0.15f, 0.23f), 
-			glm::vec3(0.98f, 0.15f, 0.23f), 
-			glm::vec3(0.71f, 0.15f, 0.23f)
+		std::vector<glm::u8vec4> _pixels = {
+			glm::u8vec4(2,2,3, 88), 
+			glm::u8vec4(134,2,73, 88), 
+			glm::u8vec4(134,5,83, 88),
+			glm::u8vec4(12,2,63, 88),
+			glm::u8vec4(12,2,64, 88)
 		};
+
+		gl_texture_rectangle* diff_rect = new gl_texture_rectangle(1, 5, gl_texture_internal_format::NOR_UI_RG8);
+		diff_rect->fill(0, 0, 1, 5, gl_texture_pixel_format::RGBA, gl_texture_pixel_type::UBYTE, _pixels.data());
 		
-
-		gl_texture_rectangle* diff_rect = new gl_texture_rectangle(2, 2, gl_texture_internal_format::F_RGB32);
-		diff_rect->fill(0, 0, 2, 2, gl_texture_pixel_format::RGB, gl_texture_pixel_type::FLOAT, _pixels.data());
-
-		std::vector<glm::vec3> _out_pixels;
-		_out_pixels.resize(4);
+		std::vector<glm::u8vec4> _out_pixels;
+		_out_pixels.resize(5);
 
 		for (const auto& _pixel : _out_pixels)
 		{
-			std::cout << _pixel.r << "," << _pixel.g << "," << _pixel.b << std::endl;
+			std::cout << (uint32)_pixel.r << "," << (uint32)_pixel.g << "," << (uint32)_pixel.b << "," <<(uint32)_pixel.a << std::endl;
 		}
 
-		diff_rect->fetch(0, 0, 2, 2, gl_texture_pixel_format::RGB, gl_texture_pixel_type::FLOAT, 4 * sizeof(glm::vec3), _out_pixels.data());
+		diff_rect->fetch(0, 0, 1, 5, gl_texture_pixel_format::RGBA, gl_texture_pixel_type::UBYTE, 20, _out_pixels.data());
 
 		for (const auto& _pixel : _out_pixels)
 		{
-			std::cout << _pixel.r << "," << _pixel.g << "," << _pixel.b << std::endl;
+			std::cout << (uint32)_pixel.r << "," << (uint32)_pixel.g << "," << (uint32)_pixel.b << "," << (uint32)_pixel.a << std::endl;
 		}
-
 
 		gl_graphics_pipeline_descriptor _desc;
 		_desc.name = "mesh_pipeline";

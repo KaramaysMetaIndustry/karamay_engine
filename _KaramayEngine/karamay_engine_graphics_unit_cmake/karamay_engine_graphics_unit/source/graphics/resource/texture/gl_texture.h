@@ -60,86 +60,93 @@ enum class gl_texture_type : GLenum
 
 };
 
+
 enum class gl_texture_internal_format : GLenum
 {
-	NOR_UI_R8 = GL_R8,
-	NOR_UI_R16 = GL_R16,
-	NOR_UI_RG8 = GL_RG8,
-	NOR_UI_RG16 = GL_RG16,
-	NOR_UI_RGB8 = GL_RGB8,
-	NOR_UI_RGB16 = GL_RGB16,
-	NOR_UI_RGBA8 = GL_RGBA8,
-	NOR_UI_RGBA16 = GL_RGBA16,
-
-	NOR_I_R8 = GL_R8_SNORM,
-	NOR_I_R16 = GL_R16_SNORM,
-	NOR_I_RG8 = GL_RG8_SNORM,
-	NOR_I_RG16 = GL_RG16_SNORM,
-	NOR_I_RGB8 = GL_RGB8_SNORM,
-	NOR_I_RGB16 = GL_RGB16_SNORM,
-	NOR_I_RGBA8 = GL_RGBA8_SNORM,
-	NOR_I_RGBA16 = GL_RGBA16_SNORM,
-
 	//	F_R16 = GL_R16F,
 	//	F_RG16 = GL_RG16F,
 	//	F_RGB16 = GL_RGB16F,
 	//	F_RGBA16 = GL_RGBA16F,
-	F_R32 = GL_R32F,
-	F_RG32 = GL_RG32F,
-	F_RGB32 = GL_RGB32F,
-	F_RGBA32 = GL_RGBA32F,
+	F_R32 = GL_R32F, // R + FLOAT
+	F_RG32 = GL_RG32F, // RG + FLOAT
+	F_RGB32 = GL_RGB32F, // RGB + FLOAT
+	F_RGBA32 = GL_RGBA32F, // RGBA + FLOAT
 
-	I_R8 = GL_R8I,
-	I_R16 = GL_R16I,
-	I_R32 = GL_R32I,
-	I_RG8 = GL_RG8I,
-	I_RG16 = GL_RG16I,
-	I_RG32 = GL_RG32I,
-	I_RGB8 = GL_RGB8I,
-	I_RGB16 = GL_RGB16I,
-	I_RGB32 = GL_RGB32I,
-	I_RGBA8 = GL_RGBA8I,
-	I_RGBA16 = GL_RGBA16I,
-	I_RGBA32 = GL_RGBA32I,
+	I_R8 = GL_R8I, // R + BYTE
+	I_R16 = GL_R16I, // R + SHORT
+	I_R32 = GL_R32I, // R + INT
+	I_RG8 = GL_RG8I, // RG + BYTE
+	I_RG16 = GL_RG16I, // RG + SHORT
+	I_RG32 = GL_RG32I, // RG + INT
+	I_RGB8 = GL_RGB8I, // RGB + BYTE
+	I_RGB16 = GL_RGB16I, // RGB + SHORT
+	I_RGB32 = GL_RGB32I, // RGB + INT
+	I_RGBA8 = GL_RGBA8I, // RGBA + BYTE
+	I_RGBA16 = GL_RGBA16I, // RGBA + SHORT
+	I_RGBA32 = GL_RGBA32I, // RGBA + INT
 
-	UI_R8 = GL_R8UI,
-	UI_R16 = GL_R16UI,
-	UI_R32 = GL_R32UI,
-	UI_RG8 = GL_RG8UI,
-	UI_RG16 = GL_RG16UI,
-	UI_RG32 = GL_RG32UI,
-	UI_RGB8 = GL_RGB8UI,
-	UI_RGB16 = GL_RGB16UI,
-	UI_RGB32 = GL_RGB32UI,
-	UI_RGBA8 = GL_RGBA8UI,
-	UI_RGBA16 = GL_RGBA16UI,
-	UI_RGBA32 = GL_RGBA32UI,
+	UI_R8 = GL_R8UI, // R + UBYTE
+	UI_R16 = GL_R16UI, // R + USHORT
+	UI_R32 = GL_R32UI, // R + UINT
+	UI_RG8 = GL_RG8UI, // RG + UBYTE
+	UI_RG16 = GL_RG16UI, // RG + USHORT
+	UI_RG32 = GL_RG32UI, // RG + UINT
+	UI_RGB8 = GL_RGB8UI,  // RGB + UBYTE
+	UI_RGB16 = GL_RGB16UI, // RGB + USHORT
+	UI_RGB32 = GL_RGB32UI, // RGB + UINT
+	UI_RGBA8 = GL_RGBA8UI, // RGBA + UBYTE
+	UI_RGBA16 = GL_RGBA16UI, // RGBA + USHORT
+	UI_RGBA32 = GL_RGBA32UI, // RGBA + UINT
 
-	NOR_UI_R3_G3_B2 = GL_R3_G3_B2,
+	NOR_I_R8 = GL_R8_SNORM, // R + BYTE
+	NOR_UI_R8 = GL_R8, // R + UBYTE
+	NOR_I_R16 = GL_R16_SNORM, // R + SHORT
+	NOR_UI_R16 = GL_R16, // R + USHORT
+	NOR_I_RG8 = GL_RG8_SNORM, // RG + BYTE
+	NOR_UI_RG8 = GL_RG8, // RG + UBYTE
+	NOR_I_RG16 = GL_RG16_SNORM, // RG + SHORT
+	NOR_UI_RG16 = GL_RG16, // RG + USHORT
+	NOR_I_RGB8 = GL_RGB8_SNORM, // RGB + BYTE
+	NOR_UI_RGB8 = GL_RGB8, // RGB + UBYTE
+	NOR_I_RGB16 = GL_RGB16_SNORM, // RGB + SHORT
+	NOR_UI_RGB16 = GL_RGB16, // RGB + USHORT
+	NOR_I_RGBA8 = GL_RGBA8_SNORM, // RGBA + BYTE
+	NOR_UI_RGBA8 = GL_RGBA8, // RGBA + UBYTE
+	NOR_I_RGBA16 = GL_RGBA16_SNORM, // RGBA + SHORT
+	NOR_UI_RGBA16 = GL_RGBA16, // RGBA + USHORT
+	
+
+	
+
 	//NOR_UI_RGB4 = GL_RGB4,
 	//NOR_UI_RGB5 = GL_RGB5,
-	NOR_UI_R5_G6_B5 = GL_RGB565,
+	NOR_UI_R5_G6_B5 = GL_RGB565, // RGB + USHORT_5_6_5
 	//NOR_UI_RGB10 = GL_RGB10,
 	//NOR_UI_RGB12 = GL_RGB12,
-	NOR_UI_RGBA2 = GL_RGBA2,
-	NOR_UI_RGBA4 = GL_RGBA4,
-	NOR_UI_RGB5_A1 = GL_RGB5_A1,
-	NOR_UI_RGB10_A2 = GL_RGB10_A2,
+	//NOR_UI_RGBA2 = GL_RGBA2,
+	NOR_UI_RGBA4 = GL_RGBA4, // RGBA + USHORT_4_4_4_4
+	NOR_UI_RGB5_A1 = GL_RGB5_A1, // RGBA + USHORT_5_5_5_1
+	NOR_UI_RGB10_A2 = GL_RGB10_A2, // RGBA + UINT_10_10_10_2
 	//NOR_UI_RGBA12 = GL_RGBA12,
-	NOR_UI_SRGB8 = GL_SRGB8,
-	NOR_UI_SRGB8_ALPHA8 = GL_SRGB8_ALPHA8,
-	UI_RGB10_A2 = GL_RGB10_A2UI,
-	F_R11_G11_B10 = GL_R11F_G11F_B10F,
-	RGB9_E5 = GL_RGB9_E5,
 
-	// base format
-	STENCIL_INDEX = GL_STENCIL_INDEX,
-	DEPTH_COMPONENT = GL_DEPTH_COMPONENT,
-	DEPTH_STENCIL = GL_DEPTH_STENCIL,
-	/*r = GL_RED,
-	rg = GL_RG,
-	rgb = GL_RGB,
-	rgba = GL_RGBA,*/
+	NOR_UI_SRGB8 = GL_SRGB8, // 
+	NOR_UI_SRGB8_ALPHA8 = GL_SRGB8_ALPHA8, // 
+	
+	UI_RGB10_A2 = GL_RGB10_A2UI, //
+	F_R11_G11_B10 = GL_R11F_G11F_B10F, // 
+	RGB9_E5 = GL_RGB9_E5, // 
+
+	// depth stencil
+	DEPTH_COMPONENT16 = GL_DEPTH_COMPONENT16,
+	DEPTH_COMPONENT24 = GL_DEPTH_COMPONENT24,
+	DEPTH_COMPONENT32 = GL_DEPTH_COMPONENT32,
+	DEPTH_COMPONENT32F = GL_DEPTH_COMPONENT32F,
+	DPETH24_STENCIL8 = GL_DEPTH24_STENCIL8,
+	DPETH32F_STENCIL8 = GL_DEPTH32F_STENCIL8,
+	STENCIL_INDEX1 = GL_STENCIL_INDEX1,
+	STENCIL_INDEX4 = GL_STENCIL_INDEX4,
+	STENCIL_INDEX8 = GL_STENCIL_INDEX8,
+	STENCIL_INDEX16 = GL_STENCIL_INDEX16,
 
 	// compressed format
 	COMPRESSED_R = GL_COMPRESSED_RED,
@@ -148,41 +155,82 @@ enum class gl_texture_internal_format : GLenum
 	COMPRESSED_RGBA = GL_COMPRESSED_RGBA,
 	COMPRESSED_SRGB = GL_COMPRESSED_SRGB,
 	COMPRESSED_SRGB_ALPHA = GL_COMPRESSED_SRGB_ALPHA,
+	COMPRESSED_RED_RGTC1 = GL_COMPRESSED_RED_RGTC1,
+	COMPRESSED_SIGNED_RED_RGTC1 = GL_COMPRESSED_SIGNED_RED_RGTC1,
+	COMPRESSED_RG_RGTC2 = GL_COMPRESSED_RG_RGTC2,
+	COMPRESSED_SIGNED_RG_RGTC2 = GL_COMPRESSED_SIGNED_RG_RGTC2,
+	COMPRESSED_RGBA_BPTC_UNORM = GL_COMPRESSED_RGBA_BPTC_UNORM,
+	COMPRESSED_SRGB_ALPHA_BPTC_UNORM = GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM,
+	COMPRESSED_RGB_BPTC_SIGNED_FLOAT = GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT,
+	COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT = GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT,
+	COMPRESSED_RGB8_ETC2 = GL_COMPRESSED_RGB8_ETC2,
+	COMPRESSED_SRGB8_ETC2 = GL_COMPRESSED_SRGB8_ETC2,
+	COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2 = GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2,
+	COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2 = GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2,
+	COMPRESSED_RGBA8_ETC2_EAC = GL_COMPRESSED_RGBA8_ETC2_EAC,
+	COMPRESSED_SRGB8_ALPHA8_ETC2_EAC = GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC,
+	COMPRESSED_R11_EAC = GL_COMPRESSED_R11_EAC,
+	COMPRESSED_SIGNED_R11_EAC = GL_COMPRESSED_SIGNED_R11_EAC,
+	COMPRESSED_RG11_EAC = GL_COMPRESSED_RG11_EAC,
+	COMPRESSED_SIGNED_RG11_EAC = GL_COMPRESSED_SIGNED_RG11_EAC
 };
 
 enum class gl_texture_pixel_format : GLenum
 {
-	RED = GL_RED,
+	STENCIL_INDEX = GL_STENCIL_INDEX,
+	DEPTH_COMPONENT = GL_DEPTH_COMPONENT,
+	DEPTH_STENCIL = GL_DEPTH_STENCIL,
+
+	R = GL_RED,
+	G = GL_GREEN,
+	B = GL_BLUE,
 	RG = GL_RG,
 	RGB = GL_RGB,
-	BGR = GL_BGR,
 	RGBA = GL_RGBA,
-	DEPTH_COMPONENT = GL_DEPTH_COMPONENT,
-	STENCIL_INDEX = GL_STENCIL_INDEX
+	BGR = GL_BGR,
+	BGRA = GL_BGRA,
+
+	R_INTEGER = GL_RED_INTEGER,
+	G_INTEGER = GL_GREEN_INTEGER,
+	B_INTEGER = GL_BLUE_INTEGER,
+	RG_INTEGER = GL_RG_INTEGER,
+	RGB_INTEGER = GL_RGB_INTEGER,
+	RGBA_INTEGER = GL_RGBA_INTEGER,
+	BGR_INTEGER = GL_BGR_INTEGER,
+	BGRA_INTEGER = GL_BGRA_INTEGER
 };
 
 enum class gl_texture_pixel_type : GLenum
 {
-	UNSIGNED_BYTE = GL_UNSIGNED_BYTE,
+	UBYTE = GL_UNSIGNED_BYTE,
 	BYTE = GL_BYTE,
-	UNSIGNED_SHORT = GL_UNSIGNED_SHORT,
+	USHORT = GL_UNSIGNED_SHORT,
 	SHORT = GL_SHORT,
-	UNSIGNED_INT = GL_UNSIGNED_INT,
+	UINT = GL_UNSIGNED_INT,
 	INT = GL_INT,
+
 	FLOAT = GL_FLOAT,
-	UNSIGNED_BYTE_3_3_2 = GL_UNSIGNED_BYTE_3_3_2,
-	UNSIGNED_BYTE_2_3_3_REV = GL_UNSIGNED_BYTE_2_3_3_REV,
-	UNSIGNED_SHORT_5_6_5 = GL_UNSIGNED_SHORT_5_6_5,
-	UNSIGNED_SHORT_5_6_5_REV = GL_UNSIGNED_SHORT_5_6_5_REV,
-	UNSIGNED_SHORT_4_4_4_4 = GL_UNSIGNED_SHORT_4_4_4_4,
-	UNSIGNED_SHORT_4_4_4_4_REV = GL_UNSIGNED_SHORT_4_4_4_4_REV,
-	UNSIGNED_SHORT_5_5_5_1 = GL_UNSIGNED_SHORT_5_5_5_1,
-	UNSIGNED_SHORT_1_5_5_5_REV = GL_UNSIGNED_SHORT_1_5_5_5_REV,
-	UNSIGNED_INT_8_8_8_8 = GL_UNSIGNED_INT_8_8_8_8,
-	UNSIGNED_INT_8_8_8_8_REV = GL_UNSIGNED_INT_8_8_8_8_REV,
-	UNSIGNED_INT_10_10_10_2 = GL_UNSIGNED_INT_10_10_10_2,
-	UNSIGNED_INT_2_10_10_10_REV = GL_UNSIGNED_INT_2_10_10_10_REV
+	
+	UBYTE_3_3_2 = GL_UNSIGNED_BYTE_3_3_2,
+	UBYTE_2_3_3_REV = GL_UNSIGNED_BYTE_2_3_3_REV,
+
+	USHORT_5_6_5 = GL_UNSIGNED_SHORT_5_6_5,
+	USHORT_5_6_5_REV = GL_UNSIGNED_SHORT_5_6_5_REV,
+	
+	USHORT_4_4_4_4 = GL_UNSIGNED_SHORT_4_4_4_4,
+	USHORT_4_4_4_4_REV = GL_UNSIGNED_SHORT_4_4_4_4_REV,
+	
+	USHORT_5_5_5_1 = GL_UNSIGNED_SHORT_5_5_5_1,
+	USHORT_1_5_5_5_REV = GL_UNSIGNED_SHORT_1_5_5_5_REV,
+	
+	UINT_8_8_8_8 = GL_UNSIGNED_INT_8_8_8_8,
+	UINT_8_8_8_8_REV = GL_UNSIGNED_INT_8_8_8_8_REV,
+	
+	UINT_10_10_10_2 = GL_UNSIGNED_INT_10_10_10_2,
+	UINT_2_10_10_10_REV = GL_UNSIGNED_INT_2_10_10_10_REV
 };
+
+
 
 /*
  * texture parameters
@@ -374,6 +422,52 @@ private:
 	void _allocate(int32 elements_num, int32 mipmaps_num, int32 width, gl_texture_internal_format internal_format)
 	{
 		glTextureStorage2D(_handle, mipmaps_num, static_cast<GLenum>(internal_format), width, elements_num);
+	}
+
+};
+// no mipmaps
+class gl_texture_buffer : public gl_texture_t
+{
+public:
+	gl_texture_buffer(gl_buffer* buffer, gl_texture_internal_format internal_format)
+	{
+		glCreateTextures(GL_TEXTURE_BUFFER, 1, &_handle);
+		_allocate(buffer, internal_format);
+	}
+
+	gl_texture_buffer(const gl_texture_buffer&) = delete;
+	gl_texture_buffer& operator=(const gl_texture_buffer&) = delete;
+
+	~gl_texture_buffer()
+	{
+		glDeleteTextures(1, &_handle);
+	}
+
+public:
+
+	void reallocate(gl_buffer* buffer, gl_texture_internal_format internal_format)
+	{
+		_allocate(buffer, internal_format);
+	}
+
+public:
+
+	int32 get_width()
+	{
+		if (_buffer)
+		{
+			return _buffer->get_bytes_num();
+		}
+		return 0;
+	}
+
+private:
+
+	gl_buffer* _buffer;
+
+	void _allocate(gl_buffer* buffer, gl_texture_internal_format internal_format)
+	{
+		glTextureBuffer(_handle, static_cast<GLenum>(internal_format), buffer->get_handle());
 	}
 
 };
@@ -723,11 +817,6 @@ public:
 		_allocate(samples_num, internal_format, width, height, fixed_sample_locations);
 	}
 
-	void fill(int32 x_offset, int32 y_offset, int32 width, int32 height, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, const void* pixels)
-	{
-		glTextureSubImage2D(_handle, 0, x_offset, y_offset, width, height, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), pixels);
-	}
-
 private:
 
 	void _allocate(int32 samples_num, gl_texture_internal_format internal_format, int32 width, int32 height, bool fixed_sample_locations)
@@ -760,11 +849,6 @@ public:
 	{
 		glDeleteTextures(1, &_handle);
 		_allocate(elements_num, samples_num, internal_format, width, height, fixed_sample_locations);
-	}
-
-	void fill(int32 element_index, int32 x_offset, int32 y_offset, int32 width, int32 height, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, const void* pixels)
-	{
-		glTextureSubImage3D(_handle, 0, x_offset, y_offset, element_index, width, height, 1, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), pixels);
 	}
 
 private:
@@ -848,39 +932,6 @@ private:
 	{
 		glCreateTextures(GL_TEXTURE_3D, 1, &_handle);
 		glTextureStorage3D(_handle, _mipmaps_num, static_cast<GLenum>(_internal_format), _width, _height, _depth);
-	}
-
-};
-// no mipmaps
-class gl_texture_buffer : public gl_texture_t
-{
-public:
-	gl_texture_buffer(gl_buffer* buffer, gl_texture_internal_format internal_format)
-	{
-		glCreateTextures(GL_TEXTURE_BUFFER, 1, &_handle);
-		_allocate(buffer, internal_format);
-	}
-
-	gl_texture_buffer(const gl_texture_buffer&) = delete;
-	gl_texture_buffer& operator=(const gl_texture_buffer&) = delete;
-
-	~gl_texture_buffer()
-	{
-		glDeleteTextures(1, &_handle);
-	}
-
-public:
-
-	void reallocate(gl_buffer* buffer, gl_texture_internal_format internal_format)
-	{
-		_allocate(buffer, internal_format);
-	}
-
-private:
-
-	void _allocate(gl_buffer* buffer, gl_texture_internal_format internal_format)
-	{
-		glTextureBuffer(_handle, static_cast<GLenum>(internal_format), buffer->get_handle());
 	}
 
 };

@@ -122,7 +122,7 @@ protected:
         case gl_texture_internal_format::NOR_I_RGBA16: return true;
         case gl_texture_internal_format::NOR_I_RGBA8: return true;
         case gl_texture_internal_format::NOR_UI_R16: return true;
-        case gl_texture_internal_format::NOR_UI_R3_G3_B2: return true;
+        //case gl_texture_internal_format::NOR_UI_R3_G3_B2: return true;
         case gl_texture_internal_format::NOR_UI_R5_G6_B5: return true;
         case gl_texture_internal_format::NOR_UI_R8: return true;
         case gl_texture_internal_format::NOR_UI_RG16: return true;
@@ -132,7 +132,7 @@ protected:
         case gl_texture_internal_format::NOR_UI_RGB5_A1: return true;
         case gl_texture_internal_format::NOR_UI_RGB8: return true;
         case gl_texture_internal_format::NOR_UI_RGBA16: return true;
-        case gl_texture_internal_format::NOR_UI_RGBA2: return true;
+        //case gl_texture_internal_format::NOR_UI_RGBA2: return true;
         case gl_texture_internal_format::NOR_UI_RGBA4: return true;
         case gl_texture_internal_format::NOR_UI_RGBA8: return true;
         case gl_texture_internal_format::NOR_UI_SRGB8: return true;
