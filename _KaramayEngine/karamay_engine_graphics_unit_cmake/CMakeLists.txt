@@ -554,7 +554,7 @@ karamay_engine_graphics_unit/source/graphics/glsl/glsl_shader.h
 "karamay_engine_graphics_unit/source/graphics/glsl/interface_block/glsl_in_block.h"
  "karamay_engine_graphics_unit/source/graphics/resource/query/gl_query.h" 
  "karamay_engine_graphics_unit/source/graphics/resource/query/gl_query.cpp" 
- "karamay_engine_graphics_unit/source/graphics/glsl/glsl_program.h"   )
+ "karamay_engine_graphics_unit/source/graphics/glsl/glsl_program.h"    "karamay_engine_graphics_unit/source/graphics/gltf/gltf_node.h" "karamay_engine_graphics_unit/source/graphics/gltf/gltf_camera.h" "karamay_engine_graphics_unit/source/graphics/gltf/gltf_skin.h" "karamay_engine_graphics_unit/source/graphics/gltf/gltf_animation.h" "karamay_engine_graphics_unit/source/graphics/gltf/gltf_material.h" "karamay_engine_graphics_unit/source/graphics/gltf/gltf_accessor.h" "karamay_engine_graphics_unit/source/graphics/gltf/gltf_texture.h" "karamay_engine_graphics_unit/source/graphics/gltf/gltf_image.h" "karamay_engine_graphics_unit/source/graphics/gltf/gltf_sampler.h" "karamay_engine_graphics_unit/source/graphics/gltf/gltf_buffer_view.h" "karamay_engine_graphics_unit/source/graphics/gltf/gltf_buffer.h")
 
 target_link_libraries(karamay_engine_graphics_unit glew32s.lib glfw3.lib)
 

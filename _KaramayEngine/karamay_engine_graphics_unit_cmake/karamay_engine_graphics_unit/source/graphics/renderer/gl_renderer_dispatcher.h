@@ -12,9 +12,5 @@ public:
 
 	std::vector<std::shared_ptr<gl_renderer>> renderers;
 
-	void tick(std::float_t delta_time)
-	{
-		renderers[0]->render(delta_time);
-	}
 
 };

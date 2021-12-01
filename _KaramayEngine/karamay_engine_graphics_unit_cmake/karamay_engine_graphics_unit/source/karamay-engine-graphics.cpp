@@ -381,7 +381,7 @@ void test0()
 	{
 		window->tick(0.0f);
 
-		if (_frame_count == 100)
+		if (_frame_count == 1)
 			_test_renderer.set_exit(true);
 
 		_test_renderer.render(1.0f);

@@ -63,70 +63,64 @@ enum class gl_texture_type : GLenum
 
 enum class gl_texture_internal_format : GLenum
 {
-	//	F_R16 = GL_R16F,
-	//	F_RG16 = GL_RG16F,
-	//	F_RGB16 = GL_RGB16F,
-	//	F_RGBA16 = GL_RGBA16F,
-	F_R32 = GL_R32F, // R + FLOAT
-	F_RG32 = GL_RG32F, // RG + FLOAT
-	F_RGB32 = GL_RGB32F, // RGB + FLOAT
-	F_RGBA32 = GL_RGBA32F, // RGBA + FLOAT
+	R_I8 = GL_R8I, // R + BYTE
+	R_I16 = GL_R16I, // R + SHORT
+	R_I32 = GL_R32I, // R + INT
+	RG_I8 = GL_RG8I, // RG + BYTE
+	RG_I16 = GL_RG16I, // RG + SHORT
+	RG_I32 = GL_RG32I, // RG + INT
+	RGB_I8 = GL_RGB8I, // RGB + BYTE
+	RGB_I16 = GL_RGB16I, // RGB + SHORT
+	RGB_I32 = GL_RGB32I, // RGB + INT
+	RGBA_I8 = GL_RGBA8I, // RGBA + BYTE
+	RGBA_I16 = GL_RGBA16I, // RGBA + SHORT
+	RGBA_I32 = GL_RGBA32I, // RGBA + INT
 
-	I_R8 = GL_R8I, // R + BYTE
-	I_R16 = GL_R16I, // R + SHORT
-	I_R32 = GL_R32I, // R + INT
-	I_RG8 = GL_RG8I, // RG + BYTE
-	I_RG16 = GL_RG16I, // RG + SHORT
-	I_RG32 = GL_RG32I, // RG + INT
-	I_RGB8 = GL_RGB8I, // RGB + BYTE
-	I_RGB16 = GL_RGB16I, // RGB + SHORT
-	I_RGB32 = GL_RGB32I, // RGB + INT
-	I_RGBA8 = GL_RGBA8I, // RGBA + BYTE
-	I_RGBA16 = GL_RGBA16I, // RGBA + SHORT
-	I_RGBA32 = GL_RGBA32I, // RGBA + INT
+	R_UI8 = GL_R8UI, // R + UBYTE
+	R_UI16 = GL_R16UI, // R + USHORT
+	R_UI32 = GL_R32UI, // R + UINT
+	RG_UI8 = GL_RG8UI, // RG + UBYTE
+	RG_UI16 = GL_RG16UI, // RG + USHORT
+	RG_UI32 = GL_RG32UI, // RG + UINT
+	RGB_UI8 = GL_RGB8UI,  // RGB + UBYTE
+	RGB_UI16 = GL_RGB16UI, // RGB + USHORT
+	RGB_UI32 = GL_RGB32UI, // RGB + UINT
+	RGBA_UI8 = GL_RGBA8UI, // RGBA + UBYTE
+	RGBA_UI16 = GL_RGBA16UI, // RGBA + USHORT
+	RGBA_UI32 = GL_RGBA32UI, // RGBA + UINT
 
-	UI_R8 = GL_R8UI, // R + UBYTE
-	UI_R16 = GL_R16UI, // R + USHORT
-	UI_R32 = GL_R32UI, // R + UINT
-	UI_RG8 = GL_RG8UI, // RG + UBYTE
-	UI_RG16 = GL_RG16UI, // RG + USHORT
-	UI_RG32 = GL_RG32UI, // RG + UINT
-	UI_RGB8 = GL_RGB8UI,  // RGB + UBYTE
-	UI_RGB16 = GL_RGB16UI, // RGB + USHORT
-	UI_RGB32 = GL_RGB32UI, // RGB + UINT
-	UI_RGBA8 = GL_RGBA8UI, // RGBA + UBYTE
-	UI_RGBA16 = GL_RGBA16UI, // RGBA + USHORT
-	UI_RGBA32 = GL_RGBA32UI, // RGBA + UINT
+	R_F32 = GL_R32F, // R + FLOAT
+	RG_F32 = GL_RG32F, // RG + FLOAT
+	RGB_F32 = GL_RGB32F, // RGB + FLOAT
+	RGBA_F32 = GL_RGBA32F, // RGBA + FLOAT
 
-	NOR_I_R8 = GL_R8_SNORM, // R + BYTE
-	NOR_UI_R8 = GL_R8, // R + UBYTE
-	NOR_I_R16 = GL_R16_SNORM, // R + SHORT
-	NOR_UI_R16 = GL_R16, // R + USHORT
-	NOR_I_RG8 = GL_RG8_SNORM, // RG + BYTE
-	NOR_UI_RG8 = GL_RG8, // RG + UBYTE
-	NOR_I_RG16 = GL_RG16_SNORM, // RG + SHORT
-	NOR_UI_RG16 = GL_RG16, // RG + USHORT
-	NOR_I_RGB8 = GL_RGB8_SNORM, // RGB + BYTE
-	NOR_UI_RGB8 = GL_RGB8, // RGB + UBYTE
-	NOR_I_RGB16 = GL_RGB16_SNORM, // RGB + SHORT
-	NOR_UI_RGB16 = GL_RGB16, // RGB + USHORT
-	NOR_I_RGBA8 = GL_RGBA8_SNORM, // RGBA + BYTE
-	NOR_UI_RGBA8 = GL_RGBA8, // RGBA + UBYTE
-	NOR_I_RGBA16 = GL_RGBA16_SNORM, // RGBA + SHORT
-	NOR_UI_RGBA16 = GL_RGBA16, // RGBA + USHORT
+	NOR_R_I8 = GL_R8_SNORM, // R + BYTE
+	NOR_R_I16 = GL_R16_SNORM, // R + SHORT
+	NOR_RG_I8 = GL_RG8_SNORM, // RG + BYTE
+	NOR_RG_I16 = GL_RG16_SNORM, // RG + SHORT
+	NOR_RGB_I8 = GL_RGB8_SNORM, // RGB + BYTE
+	NOR_RGB_I16 = GL_RGB16_SNORM, // RGB + SHORT
+	NOR_RGBA_I8 = GL_RGBA8_SNORM, // RGBA + BYTE
+	NOR_RGBA_I16 = GL_RGBA16_SNORM, // RGBA + SHORT
+
+	NOR_R_UI8 = GL_R8, // R + UBYTE
+	NOR_R_UI16 = GL_R16, // R + USHORT
+	NOR_RG_UI8 = GL_RG8, // RG + UBYTE
+	NOR_RG_UI16 = GL_RG16, // RG + USHORT
+	NOR_RGB_UI8 = GL_RGB8, // RGB + UBYTE
+	NOR_RGB_UI16 = GL_RGB16, // RGB + USHORT
+	NOR_RGBA_UI8 = GL_RGBA8, // RGBA + UBYTE
+	NOR_RGBA_UI16 = GL_RGBA16, // RGBA + USHORT
 	
-
-	
-
 	//NOR_UI_RGB4 = GL_RGB4,
 	//NOR_UI_RGB5 = GL_RGB5,
-	NOR_UI_R5_G6_B5 = GL_RGB565, // RGB + USHORT_5_6_5
+	NOR_RGB_UI16_5_6_5 = GL_RGB565, // RGB + USHORT_5_6_5
 	//NOR_UI_RGB10 = GL_RGB10,
 	//NOR_UI_RGB12 = GL_RGB12,
 	//NOR_UI_RGBA2 = GL_RGBA2,
-	NOR_UI_RGBA4 = GL_RGBA4, // RGBA + USHORT_4_4_4_4
-	NOR_UI_RGB5_A1 = GL_RGB5_A1, // RGBA + USHORT_5_5_5_1
-	NOR_UI_RGB10_A2 = GL_RGB10_A2, // RGBA + UINT_10_10_10_2
+	NOR_RGBA_UI16_4_4_4_4 = GL_RGBA4, // RGBA + USHORT_4_4_4_4
+	NOR_RGBA_UI16_5_5_5_1 = GL_RGB5_A1, // RGBA + USHORT_5_5_5_1
+	NOR_RGBA_UI32_10_10_10_2 = GL_RGB10_A2, // RGBA + UINT_10_10_10_2
 	//NOR_UI_RGBA12 = GL_RGBA12,
 
 	NOR_UI_SRGB8 = GL_SRGB8, // 
@@ -187,6 +181,7 @@ enum class gl_texture_pixel_format : GLenum
 	RG = GL_RG,
 	RGB = GL_RGB,
 	RGBA = GL_RGBA,
+	
 	BGR = GL_BGR,
 	BGRA = GL_BGRA,
 
@@ -196,40 +191,65 @@ enum class gl_texture_pixel_format : GLenum
 	RG_INTEGER = GL_RG_INTEGER,
 	RGB_INTEGER = GL_RGB_INTEGER,
 	RGBA_INTEGER = GL_RGBA_INTEGER,
+
 	BGR_INTEGER = GL_BGR_INTEGER,
 	BGRA_INTEGER = GL_BGRA_INTEGER
 };
 
 enum class gl_texture_pixel_type : GLenum
 {
-	UBYTE = GL_UNSIGNED_BYTE,
-	BYTE = GL_BYTE,
-	USHORT = GL_UNSIGNED_SHORT,
-	SHORT = GL_SHORT,
-	UINT = GL_UNSIGNED_INT,
-	INT = GL_INT,
+	INT16 = GL_SHORT,
+	INT8 = GL_BYTE,
+	INT32 = GL_INT,
+
+	UINT8 = GL_UNSIGNED_BYTE,
+	UINT16 = GL_UNSIGNED_SHORT,
+	UINT32 = GL_UNSIGNED_INT,
 
 	FLOAT = GL_FLOAT,
 	
-	UBYTE_3_3_2 = GL_UNSIGNED_BYTE_3_3_2,
-	UBYTE_2_3_3_REV = GL_UNSIGNED_BYTE_2_3_3_REV,
+	UINT8_3_3_2 = GL_UNSIGNED_BYTE_3_3_2,
+	UINT8_2_3_3_REV = GL_UNSIGNED_BYTE_2_3_3_REV,
 
-	USHORT_5_6_5 = GL_UNSIGNED_SHORT_5_6_5,
-	USHORT_5_6_5_REV = GL_UNSIGNED_SHORT_5_6_5_REV,
-	
-	USHORT_4_4_4_4 = GL_UNSIGNED_SHORT_4_4_4_4,
-	USHORT_4_4_4_4_REV = GL_UNSIGNED_SHORT_4_4_4_4_REV,
-	
-	USHORT_5_5_5_1 = GL_UNSIGNED_SHORT_5_5_5_1,
-	USHORT_1_5_5_5_REV = GL_UNSIGNED_SHORT_1_5_5_5_REV,
-	
-	UINT_8_8_8_8 = GL_UNSIGNED_INT_8_8_8_8,
-	UINT_8_8_8_8_REV = GL_UNSIGNED_INT_8_8_8_8_REV,
-	
-	UINT_10_10_10_2 = GL_UNSIGNED_INT_10_10_10_2,
-	UINT_2_10_10_10_REV = GL_UNSIGNED_INT_2_10_10_10_REV
+	UINT16_5_6_5 = GL_UNSIGNED_SHORT_5_6_5,
+	UINT16_5_6_5_REV = GL_UNSIGNED_SHORT_5_6_5_REV,
+	UINT16_4_4_4_4 = GL_UNSIGNED_SHORT_4_4_4_4,
+	UINT16_4_4_4_4_REV = GL_UNSIGNED_SHORT_4_4_4_4_REV,
+	UINT16_5_5_5_1 = GL_UNSIGNED_SHORT_5_5_5_1,
+	UINT16_1_5_5_5_REV = GL_UNSIGNED_SHORT_1_5_5_5_REV,
+
+	UINT32_8_8_8_8 = GL_UNSIGNED_INT_8_8_8_8,
+	UINT32_8_8_8_8_REV = GL_UNSIGNED_INT_8_8_8_8_REV,
+	UINT32_10_10_10_2 = GL_UNSIGNED_INT_10_10_10_2,
+	UINT32_2_10_10_10_REV = GL_UNSIGNED_INT_2_10_10_10_REV
 };
 
+enum class pixel_store
+{
+	// If true, byte ordering for multibyte color components, depth components, or stencil indices is reversed.
+	// That is, if a four-byte component consists of bytes b 0 , b 1 , b 2 , b 3 , it is stored in memory as b 3 , b 2 , b 1 , b 0 if GL_PACK_SWAP_BYTES is true. 
+	// GL_PACK_SWAP_BYTES has no effect on the memory order of components within a pixel, only on the order of bytes within components or indices.
+	// For example, the three components of a GL_RGB format pixel are always stored with red first, green second, and blue third, regardless of the value of GL_PACK_SWAP_BYTES.
+	PACK_SWAP_BYTES = GL_PACK_SWAP_BYTES,
+	PACK_LSB_FIRST = GL_PACK_LSB_FIRST,
+	PACK_ROW_LENGTH = GL_PACK_ROW_LENGTH,
+	PACK_IMAGE_HEIGHT = GL_PACK_IMAGE_HEIGHT,
+	PACK_SKIP_PIXELS = GL_PACK_SKIP_PIXELS,
+	PACK_SKIP_ROWS = GL_PACK_SKIP_ROWS,
+	PACK_SKIP_IMAGES = GL_PACK_SKIP_IMAGES,
+	// Specifies the alignment requirements for the start of each pixel row in memory. 
+	// The allowable values are 1 (byte-alignment), 2 (rows aligned to even-numbered bytes), 4 (word-alignment), and 8 (rows start on double-word boundaries).
+	PACK_ALIGNMENT = GL_PACK_ALIGNMENT,
+
+	UNPACK_SWAP_BYTES = GL_UNPACK_SWAP_BYTES,
+	UNPACK_LSB_FIRST = GL_UNPACK_LSB_FIRST,
+	UNPACK_ROW_LENGTH = GL_UNPACK_ROW_LENGTH,
+	UNPACK_IMAGE_HEIGHT=  GL_UNPACK_IMAGE_HEIGHT,
+	UNPACK_SKIP_PIXELS = GL_UNPACK_SKIP_PIXELS,
+	UNPACK_SKIP_ROWS = GL_UNPACK_SKIP_ROWS,
+	UNPACK_SKIP_IMAGES = GL_UNPACK_SKIP_IMAGES,
+	UNPACK_ALIGNMENT = GL_UNPACK_ALIGNMENT
+};
 
 
 /*
@@ -272,7 +292,7 @@ public:
 		glDeleteTextures(1, &_handle);
 	}
 
-	virtual gl_texture_internal_format get_internal_format() const { return gl_texture_internal_format::F_R32; };
+	virtual gl_texture_internal_format get_internal_format() const { return gl_texture_internal_format::R_F32; };
 
 public:
 
@@ -360,6 +380,7 @@ private:
 
 	void _allocate(int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width)
 	{
+		glCreateTextures(GL_TEXTURE_1D, 1, &_handle);
 		glTextureStorage1D(_handle, mipmaps_num, static_cast<GLenum>(internal_format), width);
 		_mipmaps_num = mipmaps_num;
 		_width = width;
@@ -478,6 +499,8 @@ public:
     gl_texture_2d(int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, int32 height)
     {
 		_allocate(mipmaps_num, internal_format, width, height);
+		glm::vec4 _mask(0.f);
+		glClearTexSubImage(_handle, 0, 0, 0, 0, 1024, 1024, 1, GL_RGBA, GL_FLOAT, &_mask);
 	}
 
 	gl_texture_2d(const gl_texture_2d&) = delete;
@@ -492,6 +515,7 @@ public:
 
 	void reallocate(int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, int32 height)
 	{
+		
 		glDeleteTextures(1, &_handle);
 		_allocate(mipmaps_num, internal_format, width, height);
 	}

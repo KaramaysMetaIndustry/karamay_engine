@@ -3,8 +3,10 @@
 
 #include "graphics/pipeline/graphics/gl_graphics_pipeline.h"
 #include "graphics/glsl/opaque_t/glsl_sampler.h"
+#include "graphics/gltf/gltf_scene.h"
+#include "graphics/renderer/gl_renderer.h"
 
-class gl_test_renderer
+class gl_test_renderer : public gl_renderer
 {
 public:
 	gl_test_renderer() 
@@ -28,30 +30,43 @@ public:
 				std::memcpy(mapped_elements, indices, 6 * sizeof(uint32));
 			});
 
-		std::vector<glm::u8vec4> _pixels = {
-			glm::u8vec4(2,2,3, 88), 
-			glm::u8vec4(134,2,73, 88), 
-			glm::u8vec4(134,5,83, 88),
-			glm::u8vec4(12,2,63, 88),
-			glm::u8vec4(12,2,64, 88)
+		gltf_scene _scene;
+		_scene.load("C:\\Users\\jichengcheng\\Downloads\\skull_downloadable");
+
+		glPixelStorei(GL_PACK_ALIGNMENT, 1);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+		std::vector<glm::vec4> _pixels = {
+			glm::vec4(0.81f, 0.91f, 0.77f, 0.12f),
+			glm::vec4(0.82f, 0.92f, 0.7f, 0.13f),
+			glm::vec4(0.82f, 0.9f, 0.73f, 0.13f),
+			glm::vec4(0.8f, 0.9f, 0.72f, 0.133f),
+			glm::vec4(0.84f, 0.9f, 0.7f, 0.1342f),
+			glm::vec4(0.81f, 0.9f, 0.72f, 0.189f),
+			glm::vec4(0.842f, 0.9f, 0.72f, 0.123f),
+			glm::vec4(0.83f, 0.9f, 0.73f, 0.1432f),
 		};
 
-		gl_texture_rectangle* diff_rect = new gl_texture_rectangle(1, 5, gl_texture_internal_format::NOR_UI_RG8);
-		diff_rect->fill(0, 0, 1, 5, gl_texture_pixel_format::RGBA, gl_texture_pixel_type::UBYTE, _pixels.data());
-		
-		std::vector<glm::u8vec4> _out_pixels;
-		_out_pixels.resize(5);
+
+		auto diff_map = 
+			builder.texture_2d(8, gl_texture_internal_format::RGBA_F32, 1024, 1024);
+		auto emiss_map = 
+			builder.texture_2d(8, gl_texture_internal_format::RGBA_F32, 1024, 1024);
+		auto metallic_map =
+			builder.texture_2d(8, gl_texture_internal_format::RGBA_F32, 1024, 1024);
+
+		std::vector<glm::vec4> _out_pixels;
+		_out_pixels.resize(1);
 
 		for (const auto& _pixel : _out_pixels)
 		{
-			std::cout << (uint32)_pixel.r << "," << (uint32)_pixel.g << "," << (uint32)_pixel.b << "," <<(uint32)_pixel.a << std::endl;
+			std::cout << _pixel.r << "," << _pixel.g << "," << _pixel.b << "," << _pixel.a << std::endl;
 		}
 
-		diff_rect->fetch(0, 0, 1, 5, gl_texture_pixel_format::RGBA, gl_texture_pixel_type::UBYTE, 20, _out_pixels.data());
 
 		for (const auto& _pixel : _out_pixels)
 		{
-			std::cout << (uint32)_pixel.r << "," << (uint32)_pixel.g << "," << (uint32)_pixel.b << "," << (uint32)_pixel.a << std::endl;
+			std::cout << _pixel.r << "," << _pixel.g << "," << _pixel.b << "," << _pixel.a << std::endl;
 		}
 
 		gl_graphics_pipeline_descriptor _desc;
