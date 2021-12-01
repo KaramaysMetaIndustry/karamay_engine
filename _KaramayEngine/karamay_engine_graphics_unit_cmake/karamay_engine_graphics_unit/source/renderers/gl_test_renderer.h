@@ -16,68 +16,38 @@ public:
 
 	void initialize()
 	{
-		gl_vertex_launcher_descriptor _vertex_launcher_desc;
-
-		_vertex_launcher_desc.primitive_mode = gl_primitive_mode::TRIANGLES;
-		_vertex_launcher_desc.primitive_vertices_num = 3;
-		_vertex_launcher_desc.vertex_array_descriptor = {};
-		_vertex_launcher_desc.elements_num = 3 * 10;
-
-		auto _vertex_launcher = std::make_shared<gl_vertex_launcher>(_vertex_launcher_desc);
-		_vertex_launcher->execute_mapped_element_slot_writer(0, _vertex_launcher->get_elements_num(), 
-			[](void* mapped_elements, uint32 elements_num) {
-				uint32 indices[] = {1, 2, 3, 4, 5, 6};
-				std::memcpy(mapped_elements, indices, 6 * sizeof(uint32));
-			});
-
-		gltf_scene _scene;
-		_scene.load("C:\\Users\\jichengcheng\\Downloads\\skull_downloadable");
-
 		glPixelStorei(GL_PACK_ALIGNMENT, 1);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-		std::vector<glm::vec4> _pixels = {
-			glm::vec4(0.81f, 0.91f, 0.77f, 0.12f),
-			glm::vec4(0.82f, 0.92f, 0.7f, 0.13f),
-			glm::vec4(0.82f, 0.9f, 0.73f, 0.13f),
-			glm::vec4(0.8f, 0.9f, 0.72f, 0.133f),
-			glm::vec4(0.84f, 0.9f, 0.7f, 0.1342f),
-			glm::vec4(0.81f, 0.9f, 0.72f, 0.189f),
-			glm::vec4(0.842f, 0.9f, 0.72f, 0.123f),
-			glm::vec4(0.83f, 0.9f, 0.73f, 0.1432f),
-		};
+		auto base_color_tex = builder.texture_2d(8, 1024, 1024, gl_texture_internal_format::RGBA_F32);
+		base_color_tex->build_mipmaps();
+		auto metallic_tex = builder.texture_2d(8, 1024, 1024, gl_texture_internal_format::RGBA_F32);
+		metallic_tex->build_mipmaps();
+		auto emiss_tex = builder.texture_2d(8, 1024, 1024, gl_texture_internal_format::RGBA_F32);
+		emiss_tex->build_mipmaps();
+		auto normal_tex = builder.texture_2d(8, 1024, 1024, gl_texture_internal_format::RGBA_F32);
+		normal_tex->build_mipmaps();
+		auto occlusion_tex = builder.texture_2d(8, 1024, 1024, gl_texture_internal_format::RGBA_F32);
+		occlusion_tex->build_mipmaps();
+		auto sky_box_tex = builder.texture_cube(1, 1024, 1024, gl_texture_internal_format::RGBA_F32);
+		sky_box_tex->build_mipmaps();
+		auto practicle_tex = builder.texture_3d(1, 1024, 1024, 1024, gl_texture_internal_format::RGBA_F32);
+		practicle_tex->build_mipmaps();
 
+		auto _baked_vertices_fb = builder.framebuffer(1920, 1080);
 
-		auto diff_map = 
-			builder.texture_2d(8, gl_texture_internal_format::RGBA_F32, 1024, 1024);
-		auto emiss_map = 
-			builder.texture_2d(8, gl_texture_internal_format::RGBA_F32, 1024, 1024);
-		auto metallic_map =
-			builder.texture_2d(8, gl_texture_internal_format::RGBA_F32, 1024, 1024);
+		auto _mesh_pipeline = builder.graphics_pipeline();
+		auto _materials_combiner = builder.compute_pipeline();
 
-		std::vector<glm::vec4> _out_pixels;
-		_out_pixels.resize(1);
+		_mesh_pipeline->vertex_launcher();
+		_mesh_pipeline->program()->sampler2D("baseColor")->set_texture_2d(base_color_tex);
 
-		for (const auto& _pixel : _out_pixels)
-		{
-			std::cout << _pixel.r << "," << _pixel.g << "," << _pixel.b << "," << _pixel.a << std::endl;
-		}
-
-
-		for (const auto& _pixel : _out_pixels)
-		{
-			std::cout << _pixel.r << "," << _pixel.g << "," << _pixel.b << "," << _pixel.a << std::endl;
-		}
-
-		gl_graphics_pipeline_descriptor _desc;
-		_desc.name = "mesh_pipeline";
-		_desc.owner_renderer_dir = "/";
-		_desc.vertex_launcher;
-		_desc.state;
-		_desc.glsl_program;
-		_desc.framebuffer;
-
-		_mesh_pipeline = std::make_unique<gl_graphics_pipeline>(_desc);
+		_finish_commands();
+		_mesh_pipeline->enable();
+		_mesh_pipeline->draw_arrays(0, 2048);
+		_mesh_pipeline->draw_elements(0, 48200);
+		_mesh_pipeline->disable();
+		_flush_commands();
 
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //GL_FILL GL_POINT
 		//glFrontFace(GL_CW);//default GL_CW

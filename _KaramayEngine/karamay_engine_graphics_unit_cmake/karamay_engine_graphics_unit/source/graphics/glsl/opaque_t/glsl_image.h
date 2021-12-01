@@ -62,7 +62,8 @@ enum class gl_image_unit_format : GLenum
  * exp : layout(binding=3,rgba32f) uniform writeonly readonly image1D imageColors;
  *
  * */
-class glsl_image_t : public glsl_texture_handler_t {
+class glsl_image_t : public glsl_texture_handler_t 
+{
 public:
     glsl_image_t();
 

@@ -499,8 +499,6 @@ public:
     gl_texture_2d(int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, int32 height)
     {
 		_allocate(mipmaps_num, internal_format, width, height);
-		glm::vec4 _mask(0.f);
-		glClearTexSubImage(_handle, 0, 0, 0, 0, 1024, 1024, 1, GL_RGBA, GL_FLOAT, &_mask);
 	}
 
 	gl_texture_2d(const gl_texture_2d&) = delete;
@@ -524,6 +522,12 @@ public:
 	{
 		if (!pixels) return;
 		glTextureSubImage2D(_handle, mipmap_index, x_offset, y_offset, width, height, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), pixels);
+	}
+
+	void clear()
+	{
+		glm::vec4 _mask(0.f);
+		glClearTexSubImage(_handle, 0, 0, 0, 0, 1024, 1024, 1, GL_RGBA, GL_FLOAT, &_mask);
 	}
 	
 	void fetch(int32 mipmap_index, int32 x_offset, int32 y_offset, int32 width, int32 height, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, int32 size, void* pixels)

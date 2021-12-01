@@ -17,11 +17,34 @@ public:
 
     ~gl_renderer_builder()
     {
-        for (auto _tex_1d : _texture_1ds) { delete _tex_1d;std::cout << "delete tex_1d" << std::endl; }
+        for (auto _buffer : _buffers) { delete _buffer;  std::cout << "delete buffer" << std::endl;}
+
+        for (auto _tex_1d : _texture_1ds) { delete _tex_1d; std::cout << "delete tex_1d" << std::endl; }
+        for (auto _tex_1d_arr : _texture_1d_arrays) { delete _tex_1d_arr; std::cout << "delete tex_1d_arr" << std::endl; }
         for (auto _tex_2d : _texture_2ds) { delete _tex_2d; std::cout << "delete tex_2d" << std::endl; }
+        for (auto _tex_2d_arr : _texture_2d_arrays) { delete _tex_2d_arr; std::cout << "delete tex_2d_arr" << std::endl; }
+        for (auto _tex_2d_ms : _texture_2d_multisamples) { delete _tex_2d_ms; std::cout << "delete tex_2d_ms" << std::endl; }
+        for (auto _tex_2d_ms_arr : _texture_2d_multisample_arrays) { delete _tex_2d_ms_arr; std::cout << "delete tex_2d_ms_arr" << std::endl; }
+        for (auto _tex_rect : _texture_rectangles) { delete _tex_rect; std::cout << "delete tex_rect" << std::endl; }
+        for (auto _tex_cube : _texture_cubes) { delete _tex_cube; std::cout << "delete tex_cube" << std::endl; }
+        for (auto _tex_cube_arr : _texture_cube_arrays) { delete _tex_cube_arr; std::cout << "delete tex_cube_arr" << std::endl; }
+        for (auto _tex_3d : _texture_3ds) { delete _tex_3d; std::cout << "delete tex_3d" << std::endl; }
+        for (auto _tex_buffer : _texture_buffers) { delete _tex_buffer; std::cout << "delete tex_buffer" << std::endl; }
+
+        for (auto _renderbuffer : _renderbuffers) { delete _renderbuffer; std::cout << "delete renderbuffer" << std::endl; }
+        for (auto _renderbuffer_ms : _renderbuffer_multisamples) { delete _renderbuffer_ms; std::cout << "delete renderbuffer_ms" << std::endl; }
+
+        for (auto _framebuffer : _framebuffers) { delete _framebuffer; std::cout << "delete framebuffer" << std::endl; }
     }
 
 public:
+
+    gl_buffer* buffer(gl_buffer_storage_options options, int64 bytes_num, const void* initial_data = nullptr)
+    {
+        auto _buffer = new gl_buffer(options, bytes_num, initial_data);
+        _buffers.push_back(_buffer);
+        return _buffer;
+    }
 
     gl_texture_1d* texture_1d(int32 mipmaps_num, int32 width, gl_texture_internal_format internal_format)
     {
@@ -35,7 +58,7 @@ public:
         _texture_1d_arrays.push_back(_texture_1d_array);
         return _texture_1d_array;
     }
-    gl_texture_2d* texture_2d(int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, int32 height) 
+    gl_texture_2d* texture_2d(int32 mipmaps_num, int32 width, int32 height, gl_texture_internal_format internal_format)
     {
         auto _texture_2d = new gl_texture_2d(mipmaps_num, internal_format, width, height);
         _texture_2ds.push_back(_texture_2d);
@@ -53,25 +76,25 @@ public:
         _texture_rectangles.push_back(_tex_rect);
         return _tex_rect;
     }
-    gl_texture_cube* texture_cube(int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, int32 height)
+    gl_texture_cube* texture_cube(int32 mipmaps_num, int32 width, int32 height, gl_texture_internal_format internal_format)
     {
         auto _tex_cube = new gl_texture_cube(mipmaps_num, internal_format, width, height);
         _texture_cubes.push_back(_tex_cube);
         return _tex_cube;
     }
-    gl_texture_cube_array* texture_cube_array(int32 elements_num, int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, int32 height)
+    gl_texture_cube_array* texture_cube_array(int32 elements_num, int32 mipmaps_num, int32 width, int32 height, gl_texture_internal_format internal_format)
     {
         auto _tex_cube_arr = new gl_texture_cube_array(elements_num, mipmaps_num, internal_format, width, height);
         _texture_cube_arrays.push_back(_tex_cube_arr);
         return _tex_cube_arr;
     }
-    gl_texture_2d_multisample* texture_2d_multisample(int32 samples_num, gl_texture_internal_format internal_format, int32 width, int32 height, bool fixed_sample_locations)
+    gl_texture_2d_multisample* texture_2d_multisample(int32 samples_num, int32 width, int32 height, gl_texture_internal_format internal_format, bool fixed_sample_locations)
     {
         auto _tex_2d_ms = new gl_texture_2d_multisample(samples_num, internal_format, width, height, fixed_sample_locations);
         _texture_2d_multisamples.push_back(_tex_2d_ms);
         return _tex_2d_ms;
     }
-    gl_texture_2d_multisample_array* texture_2d_multisample_array(int32 elements_num, int32 samples_num, gl_texture_internal_format internal_format, int32 width, int32 height, bool fixed_sample_locations)
+    gl_texture_2d_multisample_array* texture_2d_multisample_array(int32 elements_num, int32 samples_num, int32 width, int32 height, gl_texture_internal_format internal_format, bool fixed_sample_locations)
     {
         auto _tex_2d_ms_arr = new gl_texture_2d_multisample_array(elements_num, samples_num, internal_format, width, height, fixed_sample_locations);
         _texture_2d_multisample_arrays.push_back(_tex_2d_ms_arr);
@@ -85,7 +108,44 @@ public:
     }
     gl_texture_buffer* texture_buffer(gl_buffer* buffer, gl_texture_internal_format internal_format) { return nullptr; }
 
+    gl_renderbuffer* renderbuffer(int32 width, int32 height, gl_renderbuffer_internal_format internal_format)
+    {
+        auto _renderbuffer = new gl_renderbuffer(width, height, internal_format);
+        _renderbuffers.push_back(_renderbuffer);
+        return _renderbuffer;
+    }
+    gl_renderbuffer_multisample* renderbuffer_multisample(int32 samples_num, int32 width, int32 height, gl_renderbuffer_internal_format internal_format)
+    {
+        auto _renderbuffer_ms = new gl_renderbuffer_multisample(samples_num, width, height, internal_format);
+        _renderbuffer_multisamples.push_back(_renderbuffer_ms);
+        return _renderbuffer_ms;
+    }
+
+    gl_framebuffer* framebuffer(int32 width, int32 height)
+    {
+        auto _framebuffer = new gl_framebuffer(width, height);
+        _framebuffers.push_back(_framebuffer);
+        return _framebuffer;
+    }
+
+    gl_graphics_pipeline* graphics_pipeline()
+    {
+        gl_graphics_pipeline_descriptor _desc;
+        auto _graphics_pipeline = new gl_graphics_pipeline(_desc);
+        _graphics_pipelines.push_back(_graphics_pipeline);
+        return _graphics_pipeline;
+    }
+    gl_compute_pipeline* compute_pipeline()
+    {
+        gl_compute_pipeline_descriptor _desc;
+        auto _compute_pipeline = new gl_compute_pipeline(_desc);
+        _compute_pipelines.push_back(_compute_pipeline);
+        return _compute_pipeline;
+    }
+
 private:
+
+    std::vector<gl_buffer*> _buffers;
 
     std::vector<gl_texture_1d*> _texture_1ds;
     std::vector<gl_texture_1d_array*> _texture_1d_arrays;
@@ -98,6 +158,14 @@ private:
     std::vector<gl_texture_2d_multisample_array*> _texture_2d_multisample_arrays;
     std::vector<gl_texture_3d*> _texture_3ds;
     std::vector<gl_texture_buffer*> _texture_buffers;
+
+    std::vector<gl_renderbuffer*> _renderbuffers;
+    std::vector<gl_renderbuffer_multisample*> _renderbuffer_multisamples;
+
+    std::vector<gl_framebuffer*> _framebuffers;
+
+    std::vector<gl_graphics_pipeline*> _graphics_pipelines;
+    std::vector<gl_compute_pipeline*> _compute_pipelines;
 
 };
 
@@ -120,6 +188,8 @@ protected:
 
 #define builder _renderer_builder
 
+    void _flush_commands() { glFlush(); }
+    void _finish_commands() { glFinish(); }
 
 };
 

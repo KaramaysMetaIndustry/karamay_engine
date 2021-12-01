@@ -8,19 +8,10 @@ enum class gl_renderbuffer_internal_format
     NONE,
 };
 
-struct gl_renderbuffer_descriptor
+class gl_renderbuffer final : public gl_object
 {
-
-};
-
-class gl_renderbuffer final : public gl_object{
 public:
-    gl_renderbuffer() = delete;
-    explicit gl_renderbuffer(const gl_renderbuffer_descriptor& descriptor) :
-        gl_object(gl_object_type::RENDERBUFFER_OBJ)
-    {}
-
-	gl_renderbuffer(std::int32_t width, std::int32_t height, gl_renderbuffer_internal_format internal_format) :
+	gl_renderbuffer(int32 width, int32 height, gl_renderbuffer_internal_format internal_format) :
         gl_object(gl_object_type::RENDERBUFFER_OBJ),
         _width(width),
 		_height(height),
@@ -36,19 +27,14 @@ public:
         glDeleteRenderbuffers(1, &_handle);
     }
 
-private:
-	
-	std::int32_t _width{}, _height{};
-
-    gl_renderbuffer_internal_format _internal_format;
 
 public:
 
-    [[nodiscard]] std::int32_t get_width() const { return _width; }
+    int32 get_width() const { return _width; }
 
-    [[nodiscard]] std::int32_t get_height() const { return _height; }
+    int32 get_height() const { return _height; }
 
-    [[nodiscard]] gl_renderbuffer_internal_format get_internal_format() const { return _internal_format; }
+    gl_renderbuffer_internal_format get_internal_format() const { return _internal_format; }
 
 public:
 
@@ -62,21 +48,18 @@ public:
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
     }
 
+private:
+
+    int32 _width, _height;
+
+    gl_renderbuffer_internal_format _internal_format;
+
 };
 
-struct gl_renderbuffer_multisample_descriptor
+class gl_renderbuffer_multisample final : public gl_object
 {
-
-};
-
-class gl_renderbuffer_multisample final : public gl_object{
 public:
-
-    gl_renderbuffer_multisample(const gl_renderbuffer_multisample_descriptor& descriptor) :
-        gl_object(gl_object_type::RENDERBUFFER_OBJ)
-    {}
-
-    gl_renderbuffer_multisample(std::int32_t samples_count, std::int32_t width, std::int32_t height, gl_renderbuffer_internal_format internal_format) :
+    gl_renderbuffer_multisample(int32 samples_count, int32 width, int32 height, gl_renderbuffer_internal_format internal_format) :
         gl_object(gl_object_type::RENDERBUFFER_OBJ),
         _samples_count(samples_count),
         _width(width),
@@ -94,13 +77,26 @@ public:
         glDeleteRenderbuffers(1, &_handle);
     }
 
+public:
+
+    void bind()
+    {
+        glBindRenderbuffer(GL_RENDERBUFFER, _handle);
+    }
+
+    void unbind()
+    {
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    }
+
 private:
 
-    std::int32_t _samples_count{};
+    int32 _samples_count;
 
-    std::int32_t _width{}, _height{};
+    int32 _width{}, _height{};
 
     gl_renderbuffer_internal_format _internal_format;
+
 
 public:
 
@@ -112,11 +108,7 @@ public:
 
     [[nodiscard]] gl_renderbuffer_internal_format get_internal_format() const { return _internal_format; }
 
-public:
 
-    void bind();
-
-    void unbind();
 
 };
 
