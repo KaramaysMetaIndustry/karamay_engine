@@ -41,134 +41,270 @@ private:
 	glsl_geometry_shader* _geometry_shader;
 	glsl_fragment_shader* _fragment_shader;
 
-	void _parse()
-	{
-
-	}
-
 private:
 
-	std::vector<glsl_sampler1D*> _sampler1Ds;
-	std::vector<glsl_sampler1DArray*> _sampler1DArrays;
-	std::vector<glsl_sampler2D*> _sampler2Ds;
-	std::vector<glsl_sampler2DArray*> _sampler2DArrays;
-	std::vector<glsl_samplerCube*> _samplerCubes;
-	std::vector<glsl_samplerCubeArray*> _samplerCubeArrays;
-	std::vector<glsl_sampler2DMS*> _sampler2DMSs;
-	std::vector<glsl_sampler2DMSArray*> _sampler2DMSArrays;
-	std::vector<glsl_sampler2DRect*> _sampler2DRects;
-	std::vector<glsl_samplerBuffer*> _samplerBuffers;
-	std::vector<glsl_sampler1DShadow*> _sampler1DShadows;
-	std::vector<glsl_sampler1DArrayShadow*> _sampler1DArrayShadows;
-	std::vector<glsl_sampler2DShadow*> _sampler2DShadows;
-	std::vector<glsl_sampler2DArrayShadow*> _sampler2DArrayShadows;
-	std::vector<glsl_samplerCubeShadow*> _samplerCubeShadows;
-	std::vector<glsl_samplerCubeArrayShadow*> _samplerCubeArrayShadows;
-	std::vector<glsl_sampler2DRectShadow*> _sampler2DRectShadows;
+	std::unordered_map<std::string, glsl_sampler1D*> _sampler1Ds;
+	std::unordered_map<std::string, glsl_sampler1DArray*> _sampler1DArrays;
+	std::unordered_map<std::string, glsl_sampler2D*> _sampler2Ds;
+	std::unordered_map<std::string, glsl_sampler2DArray*> _sampler2DArrays;
+	std::unordered_map<std::string, glsl_samplerCube*> _samplerCubes;
+	std::unordered_map<std::string, glsl_samplerCubeArray*> _samplerCubeArrays;
+	std::unordered_map<std::string, glsl_sampler2DMS*> _sampler2DMSs;
+	std::unordered_map<std::string, glsl_sampler2DMSArray*> _sampler2DMSArrays;
+	std::unordered_map<std::string, glsl_sampler2DRect*> _sampler2DRects;
+	std::unordered_map<std::string, glsl_samplerBuffer*> _samplerBuffers;
+	std::unordered_map<std::string, glsl_sampler1DShadow*> _sampler1DShadows;
+	std::unordered_map<std::string, glsl_sampler1DArrayShadow*> _sampler1DArrayShadows;
+	std::unordered_map<std::string, glsl_sampler2DShadow*> _sampler2DShadows;
+	std::unordered_map<std::string, glsl_sampler2DArrayShadow*> _sampler2DArrayShadows;
+	std::unordered_map<std::string, glsl_samplerCubeShadow*> _samplerCubeShadows;
+	std::unordered_map<std::string, glsl_samplerCubeArrayShadow*> _samplerCubeArrayShadows;
+	std::unordered_map<std::string, glsl_sampler2DRectShadow*> _sampler2DRectShadows;
 
-	std::vector<glsl_isampler1D*> _isampler1Ds;
-	std::vector<glsl_isampler1DArray*> _isampler1DArrays;
-	std::vector<glsl_isampler2D*> _isampler2Ds;
-	std::vector<glsl_isampler2DArray*> _isampler2DArrays;
-	std::vector<glsl_isampler2DMS*> _isampler2DMSs;
-	std::vector<glsl_isampler2DMSArray*> _isampler2DMSArrays;
-	std::vector<glsl_isamplerCube*> _isamplerCubes;
-	std::vector<glsl_isamplerCubeArray*> _isamplerCubeArrays;
-	std::vector<glsl_isampler2DRect*> _isampler2DRects;
-	std::vector<glsl_isamplerBuffer*> _isamplerBuffers;
+	std::unordered_map<std::string, glsl_isampler1D*> _isampler1Ds;
+	std::unordered_map<std::string, glsl_isampler1DArray*> _isampler1DArrays;
+	std::unordered_map<std::string, glsl_isampler2D*> _isampler2Ds;
+	std::unordered_map<std::string, glsl_isampler2DArray*> _isampler2DArrays;
+	std::unordered_map<std::string, glsl_isampler2DMS*> _isampler2DMSs;
+	std::unordered_map<std::string, glsl_isampler2DMSArray*> _isampler2DMSArrays;
+	std::unordered_map<std::string, glsl_isamplerCube*> _isamplerCubes;
+	std::unordered_map<std::string, glsl_isamplerCubeArray*> _isamplerCubeArrays;
+	std::unordered_map<std::string, glsl_isampler2DRect*> _isampler2DRects;
+	std::unordered_map<std::string, glsl_isamplerBuffer*> _isamplerBuffers;
 
-	std::vector<glsl_usampler1D*> _usampler1Ds;
-	std::vector<glsl_usampler1DArray*> _usampler1DArrays;
-	std::vector<glsl_usampler2D*> _usampler2Ds;
-	std::vector<glsl_usampler2DArray*> _usampler2DArrays;
-	std::vector<glsl_usampler2DMS*> _usampler2DMSs;
-	std::vector<glsl_usampler2DMSArray*> _usampler2DMSArrays;
-	std::vector<glsl_usamplerCube*> _usamplerCubes;
-	std::vector<glsl_usamplerCubeArray*> _usamplerCubeArrays;
-	std::vector<glsl_usampler2DRect*> _usampler2DRects;
-	std::vector<glsl_usamplerBuffer*> _usamplerBuffers;
+	std::unordered_map<std::string, glsl_usampler1D*> _usampler1Ds;
+	std::unordered_map<std::string, glsl_usampler1DArray*> _usampler1DArrays;
+	std::unordered_map<std::string, glsl_usampler2D*> _usampler2Ds;
+	std::unordered_map<std::string, glsl_usampler2DArray*> _usampler2DArrays;
+	std::unordered_map<std::string, glsl_usampler2DMS*> _usampler2DMSs;
+	std::unordered_map<std::string, glsl_usampler2DMSArray*> _usampler2DMSArrays;
+	std::unordered_map<std::string, glsl_usamplerCube*> _usamplerCubes;
+	std::unordered_map<std::string, glsl_usamplerCubeArray*> _usamplerCubeArrays;
+	std::unordered_map<std::string, glsl_usampler2DRect*> _usampler2DRects;
+	std::unordered_map<std::string, glsl_usamplerBuffer*> _usamplerBuffers;
 
 public:
 
 	glsl_sampler1D* sampler1D(const std::string& name)
 	{
+		auto _it = _sampler1Ds.find(name);
+		if (_it != _sampler1Ds.cend()) return _it->second;
 		return nullptr;
 	}
-	glsl_sampler1DArray* sampler1DArray(const std::string& name) {}
-	glsl_sampler2D* sampler2D(const std::string& name) { return nullptr; }
-	glsl_sampler2DArray* sampler2DArray(const std::string& name) {}
-	glsl_sampler2DMS* sampler2DMS(const std::string& name) {}
-	glsl_sampler2DMSArray* sampler2DMSArray(const std::string& name) {}
-	glsl_samplerCube* samplerCube(const std::string& name) {}
-	glsl_samplerCubeArray* samplerCubeArray(const std::string& name) {}
-	glsl_sampler2DRect* sampler2DRect(const std::string& name) {}
-	glsl_samplerBuffer* samplerBuffer(const std::string& name) {}
+	glsl_sampler1DArray* sampler1DArray(const std::string& name) 
+	{
+		auto _it = _sampler1DArrays.find(name);
+		if (_it != _sampler1DArrays.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_sampler2D* sampler2D(const std::string& name) 
+	{
+		auto _it = _sampler2Ds.find(name);
+		if (_it != _sampler2Ds.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_sampler2DArray* sampler2DArray(const std::string& name) 
+	{
+		auto _it = _sampler2DArrays.find(name);
+		if (_it != _sampler2DArrays.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_sampler2DMS* sampler2DMS(const std::string& name) 
+	{
+		auto _it = _sampler2DMSs.find(name);
+		if (_it != _sampler2DMSs.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_sampler2DMSArray* sampler2DMSArray(const std::string& name) 
+	{
+		auto _it = _sampler2DMSArrays.find(name);
+		if (_it != _sampler2DMSArrays.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_samplerCube* samplerCube(const std::string& name) 
+	{
+		auto _it = _samplerCubes.find(name);
+		if (_it != _samplerCubes.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_samplerCubeArray* samplerCubeArray(const std::string& name) 
+	{
+		auto _it = _samplerCubeArrays.find(name);
+		if (_it != _samplerCubeArrays.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_sampler2DRect* sampler2DRect(const std::string& name) 
+	{
+		auto _it = _sampler2DRects.find(name);
+		if (_it != _sampler2DRects.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_samplerBuffer* samplerBuffer(const std::string& name) 
+	{
+		auto _it = _samplerBuffers.find(name);
+		if (_it != _samplerBuffers.cend()) return _it->second;
+		return nullptr;
+	}
 
 	glsl_isampler1D* isampler1D(const std::string& name)
 	{
+		auto _it = _isampler1Ds.find(name);
+		if (_it != _isampler1Ds.cend()) return _it->second;
 		return nullptr;
 	}
-	glsl_isampler1DArray* isampler1DArray(const std::string& name) {}
-	glsl_isampler2D* isampler2D(const std::string& name) {}
-	glsl_isampler2DArray* isampler2DArray(const std::string& name) {}
-	glsl_isampler2DMS* isampler2DMS(const std::string& name) {}
-	glsl_isampler2DMSArray* isampler2DMSArray(const std::string& name) {}
-	glsl_isamplerCube* isamplerCube(const std::string& name) {}
-	glsl_isamplerCubeArray* isamplerCubeArray(const std::string& name) {}
-	glsl_isampler2DRect* isampler2DRect(const std::string& name) {}
-	glsl_isamplerBuffer* isamplerBuffer(const std::string& name) {}
+	glsl_isampler1DArray* isampler1DArray(const std::string& name) 
+	{
+		auto _it = _isampler1DArrays.find(name);
+		if (_it != _isampler1DArrays.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_isampler2D* isampler2D(const std::string& name) 
+	{
+		auto _it = _isampler2Ds.find(name);
+		if (_it != _isampler2Ds.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_isampler2DArray* isampler2DArray(const std::string& name) 
+	{
+		auto _it = _isampler2DArrays.find(name);
+		if (_it != _isampler2DArrays.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_isampler2DMS* isampler2DMS(const std::string& name) 
+	{
+		auto _it = _isampler2DMSs.find(name);
+		if (_it != _isampler2DMSs.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_isampler2DMSArray* isampler2DMSArray(const std::string& name) 
+	{
+		auto _it = _isampler2DMSArrays.find(name);
+		if (_it != _isampler2DMSArrays.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_isamplerCube* isamplerCube(const std::string& name) 
+	{
+		auto _it = _isamplerCubes.find(name);
+		if (_it != _isamplerCubes.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_isamplerCubeArray* isamplerCubeArray(const std::string& name) 
+	{
+		auto _it = _isamplerCubeArrays.find(name);
+		if (_it != _isamplerCubeArrays.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_isampler2DRect* isampler2DRect(const std::string& name) 
+	{
+		auto _it = _isampler2DRects.find(name);
+		if (_it != _isampler2DRects.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_isamplerBuffer* isamplerBuffer(const std::string& name) 
+	{
+		auto _it = _isamplerBuffers.find(name);
+		if (_it != _isamplerBuffers.cend()) return _it->second;
+		return nullptr;
+	}
 
 	glsl_usampler1D* usampler1D(const std::string& name)
 	{
+		auto _it = _usampler1Ds.find(name);
+		if (_it != _usampler1Ds.cend()) return _it->second;
 		return nullptr;
 	}
-	glsl_usampler1DArray* usampler1DArray(const std::string& name) {}
-	glsl_usampler2D* usampler2D(const std::string& name) {}
-	glsl_usampler2DArray* usampler2DArray(const std::string& name) {}
-	glsl_usampler2DMS* usampler2DMS(const std::string& name) {}
-	glsl_usampler2DMSArray* usampler2DMSArray(const std::string& name) {}
-	glsl_usamplerCube* usamplerCube(const std::string& name) {}
-	glsl_usamplerCubeArray* usamplerCubeArray(const std::string& name) {}
-	glsl_usampler2DRect* usampler2DRect(const std::string& name) {}
-	glsl_usamplerBuffer* usamplerBuffer(const std::string& name) {}
+	glsl_usampler1DArray* usampler1DArray(const std::string& name) 
+	{
+		auto _it = _usampler1DArrays.find(name);
+		if (_it != _usampler1DArrays.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_usampler2D* usampler2D(const std::string& name) 
+	{
+		auto _it = _usampler2Ds.find(name);
+		if (_it != _usampler2Ds.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_usampler2DArray* usampler2DArray(const std::string& name) 
+	{
+		auto _it = _usampler2DArrays.find(name);
+		if (_it != _usampler2DArrays.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_usampler2DMS* usampler2DMS(const std::string& name) 
+	{
+		auto _it = _usampler2DMSs.find(name);
+		if (_it != _usampler2DMSs.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_usampler2DMSArray* usampler2DMSArray(const std::string& name) 
+	{
+		auto _it = _usampler2DMSArrays.find(name);
+		if (_it != _usampler2DMSArrays.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_usamplerCube* usamplerCube(const std::string& name) 
+	{
+		auto _it = _usamplerCubes.find(name);
+		if (_it != _usamplerCubes.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_usamplerCubeArray* usamplerCubeArray(const std::string& name) 
+	{
+		auto _it = _usamplerCubeArrays.find(name);
+		if (_it != _usamplerCubeArrays.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_usampler2DRect* usampler2DRect(const std::string& name) 
+	{
+		auto _it = _usampler2DRects.find(name);
+		if (_it != _usampler2DRects.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_usamplerBuffer* usamplerBuffer(const std::string& name) 
+	{
+		auto _it = _usamplerBuffers.find(name);
+		if (_it != _usamplerBuffers.cend()) return _it->second;
+		return nullptr;
+	}
 
 private:
 
-	std::vector<glsl_image1D*> _image1Ds;
-	std::vector<glsl_image1DArray*> _image1DArrays;
-	std::vector<glsl_image2D*> _image2Ds;
-	std::vector<glsl_image2DArray*> _image2DArrays;
-	std::vector<glsl_imageCube*> _imageCubes;
-	std::vector<glsl_imageCubeArray*> _imageCubeArrays;
-	std::vector<glsl_image2DMS*> _image2DMSs;
-	std::vector<glsl_image2DMSArray*> _image2DMSArrays;
-	std::vector<glsl_image2DRect*> _image2DRects;
-	std::vector<glsl_image3D*> _image3Ds;
-	std::vector<glsl_imageBuffer*> _imageBuffers;
+	std::unordered_map<std::string, glsl_image1D*> _image1Ds;
+	std::unordered_map<std::string, glsl_image1DArray*> _image1DArrays;
+	std::unordered_map<std::string, glsl_image2D*> _image2Ds;
+	std::unordered_map<std::string, glsl_image2DArray*> _image2DArrays;
+	std::unordered_map<std::string, glsl_imageCube*> _imageCubes;
+	std::unordered_map<std::string, glsl_imageCubeArray*> _imageCubeArrays;
+	std::unordered_map<std::string, glsl_image2DMS*> _image2DMSs;
+	std::unordered_map<std::string, glsl_image2DMSArray*> _image2DMSArrays;
+	std::unordered_map<std::string, glsl_image2DRect*> _image2DRects;
+	std::unordered_map<std::string, glsl_image3D*> _image3Ds;
+	std::unordered_map<std::string, glsl_imageBuffer*> _imageBuffers;
 
-	std::vector<glsl_iimage1D*> _iimage1Ds;
-	std::vector<glsl_iimage1DArray*> _iimage1DArrays;
-	std::vector<glsl_iimage2D*> _iimage2Ds;
-	std::vector<glsl_iimage2DArray*> _iimage2DArrays;
-	std::vector<glsl_iimageCube*> _iimageCubes;
-	std::vector<glsl_iimageCubeArray*> _iimageCubeArrays;
-	std::vector<glsl_iimage2DMS*> _iimage2DMSs;
-	std::vector<glsl_iimage2DMSArray*> _iimage2DMSArrays;
-	std::vector<glsl_iimage2DRect*> _iimage2DRects;
-	std::vector<glsl_iimage3D*> _iimage3Ds;
-	std::vector<glsl_iimageBuffer*> _iimageBuffers;
+	std::unordered_map<std::string, glsl_iimage1D*> _iimage1Ds;
+	std::unordered_map<std::string, glsl_iimage1DArray*> _iimage1DArrays;
+	std::unordered_map<std::string, glsl_iimage2D*> _iimage2Ds;
+	std::unordered_map<std::string, glsl_iimage2DArray*> _iimage2DArrays;
+	std::unordered_map<std::string, glsl_iimageCube*> _iimageCubes;
+	std::unordered_map<std::string, glsl_iimageCubeArray*> _iimageCubeArrays;
+	std::unordered_map<std::string, glsl_iimage2DMS*> _iimage2DMSs;
+	std::unordered_map<std::string, glsl_iimage2DMSArray*> _iimage2DMSArrays;
+	std::unordered_map<std::string, glsl_iimage2DRect*> _iimage2DRects;
+	std::unordered_map<std::string, glsl_iimage3D*> _iimage3Ds;
+	std::unordered_map<std::string, glsl_iimageBuffer*> _iimageBuffers;
 
-	std::vector<glsl_uimage1D*> _uimage1Ds;
-	std::vector<glsl_uimage1DArray*> _uimage1DArrays;
-	std::vector<glsl_uimage2D*> _uimage2Ds;
-	std::vector<glsl_uimage2DArray*> _uimage2DArrays;
-	std::vector<glsl_uimageCube*> _uimageCubes;
-	std::vector<glsl_uimageCubeArray*> _uimageCubeArrays;
-	std::vector<glsl_uimage2DMS*> _uimage2DMSs;
-	std::vector<glsl_uimage2DMSArray*> _uimage2DMSArrays;
-	std::vector<glsl_uimage2DRect*> _uimage2DRects;
-	std::vector<glsl_uimage3D*> _uimage3Ds;
-	std::vector<glsl_uimageBuffer*> _uimageBuffers;
+	std::unordered_map<std::string, glsl_uimage1D*> _uimage1Ds;
+	std::unordered_map<std::string, glsl_uimage1DArray*> _uimage1DArrays;
+	std::unordered_map<std::string, glsl_uimage2D*> _uimage2Ds;
+	std::unordered_map<std::string, glsl_uimage2DArray*> _uimage2DArrays;
+	std::unordered_map<std::string, glsl_uimageCube*> _uimageCubes;
+	std::unordered_map<std::string, glsl_uimageCubeArray*> _uimageCubeArrays;
+	std::unordered_map<std::string, glsl_uimage2DMS*> _uimage2DMSs;
+	std::unordered_map<std::string, glsl_uimage2DMSArray*> _uimage2DMSArrays;
+	std::unordered_map<std::string, glsl_uimage2DRect*> _uimage2DRects;
+	std::unordered_map<std::string, glsl_uimage3D*> _uimage3Ds;
+	std::unordered_map<std::string, glsl_uimageBuffer*> _uimageBuffers;
 
 public:
 
@@ -181,7 +317,7 @@ public:
 	glsl_image2DMS* image2DMS(const std::string& name) {}
 	glsl_image2DMSArray* image2DMSArray(const std::string& name) {}
 	glsl_image2DRect* image2DRect(const std::string& name) {}
-	glsl_image3D* image3D(const std::string& name) {}
+	glsl_image3D* image3D(const std::string& name) { return nullptr; }
 	glsl_imageBuffer* imageBuffer(const std::string& name) {}
 
 	glsl_iimage1D* iimage1D(const std::string& name) {}
@@ -210,17 +346,29 @@ public:
 
 private:
 
-	std::vector<glsl_uniform_block_t*> _uniform_blocks;
-	std::vector<glsl_shader_storage_block_t*> _shader_storage_blocks;
-	std::vector<glsl_atomic_counter_t*> _atomic_counters;
+	std::unordered_map<std::string, glsl_uniform_block_t*> _uniform_blocks;
+	std::unordered_map<std::string, glsl_shader_storage_block_t*> _shader_storage_blocks;
+	std::unordered_map<std::string, glsl_atomic_counter_t*> _atomic_counters;
 
-	// layout(binding=0) gsamplerBuffer samplerBuffer;
-	// layout(binding=0, format=rgb32f) gimageBuffer imageName;
-	// layout(binding=0) uniform Matrices
-	// {}
-	void test()
+public:
+
+	glsl_uniform_block_t* uniform_block(const std::string& block_name)
 	{
-
+		auto _it = _uniform_blocks.find(block_name);
+		if (_it != _uniform_blocks.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_shader_storage_block_t* shader_storage_block(const std::string& block_name) 
+	{
+		auto _it = _shader_storage_blocks.find(block_name);
+		if (_it != _shader_storage_blocks.cend()) return _it->second;
+		return nullptr;
+	}
+	glsl_atomic_counter_t* atomic_counter(const std::string& block_name) 
+	{
+		auto _it = _atomic_counters.find(block_name);
+		if (_it != _atomic_counters.cend()) return _it->second;
+		return nullptr;
 	}
 
 };

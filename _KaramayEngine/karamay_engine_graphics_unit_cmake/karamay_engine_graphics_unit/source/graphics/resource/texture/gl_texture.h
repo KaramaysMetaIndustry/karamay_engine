@@ -3,7 +3,6 @@
 
 #include "graphics/resource/glo/gl_object.h"
 #include "graphics/resource/buffers/raw_buffer/gl_buffer.h"
-#include "gl_pixels.h"
 
 enum class parameter : GLenum
 {
@@ -293,6 +292,19 @@ public:
 	}
 
 	virtual gl_texture_internal_format get_internal_format() const { return gl_texture_internal_format::R_F32; };
+
+	static int32 cast_face_index(gl_cube_face_index face_index)
+	{
+		switch (face_index)
+		{
+		case gl_cube_face_index::POSITIVE_X: return 0;
+		case gl_cube_face_index::NEGATIVE_X: return 1;
+		case gl_cube_face_index::POSITIVE_Y: return 2;
+		case gl_cube_face_index::NEGATIVE_Y: return 3;
+		case gl_cube_face_index::POSITIVE_Z: return 4;
+		case gl_cube_face_index::NEGATIVE_Z: return 5;
+		}
+	}
 
 public:
 

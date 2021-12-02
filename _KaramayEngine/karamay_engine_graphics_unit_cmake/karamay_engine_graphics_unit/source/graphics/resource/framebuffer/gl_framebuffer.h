@@ -223,9 +223,21 @@ public:
 */
 class gl_default_framebuffer : public gl_framebuffer_base{
 public:
-    gl_default_framebuffer(){}
 
-    virtual ~gl_default_framebuffer() {}
+    static gl_default_framebuffer* get_instance()
+    {
+        if (_instance == nullptr)
+        {
+            _instance = new gl_default_framebuffer();
+        }
+        return _instance;
+    }
+
+private:
+
+    static gl_default_framebuffer* _instance;
+
+    gl_default_framebuffer() = default;
 
 public:
 
@@ -289,6 +301,8 @@ public:
     {}
 
 };
+
+
 
 
 #endif

@@ -12,52 +12,79 @@ public:
 	gl_test_renderer() 
 	{
 		_exit = false;
+
 	}
+
+	~gl_test_renderer()
+	{
+
+	}
+
+public:
 
 	void initialize()
 	{
+
 		glPixelStorei(GL_PACK_ALIGNMENT, 1);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-		auto base_color_tex = builder.texture_2d(8, 1024, 1024, gl_texture_internal_format::RGBA_F32);
+		auto base_color_tex 
+			= builder.create_texture_2d("base_color_tex", 8, 1024, 1024, gl_texture_internal_format::RGBA_F32);
 		base_color_tex->build_mipmaps();
-		auto metallic_tex = builder.texture_2d(8, 1024, 1024, gl_texture_internal_format::RGBA_F32);
+		auto metallic_tex 
+			= builder.create_texture_2d("metallic_tex", 8, 1024, 1024, gl_texture_internal_format::RGBA_F32);
 		metallic_tex->build_mipmaps();
-		auto emiss_tex = builder.texture_2d(8, 1024, 1024, gl_texture_internal_format::RGBA_F32);
+		auto emiss_tex 
+			= builder.create_texture_2d("emiss_tex", 8, 1024, 1024, gl_texture_internal_format::RGBA_F32);
 		emiss_tex->build_mipmaps();
-		auto normal_tex = builder.texture_2d(8, 1024, 1024, gl_texture_internal_format::RGBA_F32);
+		auto normal_tex 
+			= builder.create_texture_2d("normal_tex", 8, 1024, 1024, gl_texture_internal_format::RGBA_F32);
 		normal_tex->build_mipmaps();
-		auto occlusion_tex = builder.texture_2d(8, 1024, 1024, gl_texture_internal_format::RGBA_F32);
+		auto occlusion_tex 
+			= builder.create_texture_2d("occlusion_tex", 8, 1024, 1024, gl_texture_internal_format::RGBA_F32);
 		occlusion_tex->build_mipmaps();
-		auto sky_box_tex = builder.texture_cube(1, 1024, 1024, gl_texture_internal_format::RGBA_F32);
+		auto sky_box_tex 
+			= builder.create_texture_cube("sky_box_tex", 1, 1024, 1024, gl_texture_internal_format::RGBA_F32);
 		sky_box_tex->build_mipmaps();
-		auto practicle_tex = builder.texture_3d(1, 1024, 1024, 1024, gl_texture_internal_format::RGBA_F32);
+		auto practicle_tex 
+			= builder.create_texture_3d("practicle_tex", 1, 1024, 1024, 1024, gl_texture_internal_format::RGBA_F32);
 		practicle_tex->build_mipmaps();
 
-		auto _color0_attch = builder.renderbuffer(1920, 1080, gl_renderbuffer_internal_format::NONE);
-		auto _color1_attch = builder.renderbuffer(1920, 1080, gl_renderbuffer_internal_format::NONE);
-		auto _color2_attch = builder.renderbuffer(1920, 1080, gl_renderbuffer_internal_format::NONE);
-		auto _depth_stencil_attach = builder.renderbuffer(1920, 1080, gl_renderbuffer_internal_format::NONE);
+		auto _color0_attch 
+			= builder.create_renderbuffer("color0_attach", 1920, 1080, gl_renderbuffer_internal_format::RGBA_F32);
+		auto _color1_attch 
+			= builder.create_renderbuffer("color1_attach", 1920, 1080, gl_renderbuffer_internal_format::RGBA_F32);
+		auto _color2_attch 
+			= builder.create_renderbuffer("color2_attach", 1920, 1080, gl_renderbuffer_internal_format::RGBA_F32);
+		auto _depth_stencil_attach 
+			= builder.create_renderbuffer("depth_stencil_attach", 1920, 1080, gl_renderbuffer_internal_format::RGBA_F32);
 
-		auto _baked_vertices_fb = builder.framebuffer(1920, 1080);
+		auto _framebuffer_0
+			= builder.create_framebuffer("framebuffer_0", 1920, 1080);
 
-		auto _mesh_pipeline = builder.graphics_pipeline();
-		auto _deferred_lighting_pipeline = builder.graphics_pipeline();
-		auto _materials_combiner = builder.compute_pipeline();
+		auto _mesh_pipeline 
+			= builder.create_graphics_pipeline("mesh_pipeline");
+		auto _deferred_lighting_pipeline 
+			= builder.create_graphics_pipeline("deferred_lighting_pipeline");
+		auto _materials_combiner 
+			= builder.create_compute_pipeline("materials_combiner");
 
-		_mesh_pipeline->vertex_launcher();
-		/*_mesh_pipeline->program()->sampler2D("baseColorMap")->set_texture_2d(base_color_tex);
+		_framebuffer_0->set_color_attachment(0, _color0_attch);
+		_framebuffer_0->set_color_attachment(1, _color1_attch);
+		_framebuffer_0->set_color_attachment(2, _color2_attch);
+		_framebuffer_0->set_depth_stencil_attachment(_depth_stencil_attach);
+		
+		_mesh_pipeline->program()->sampler2D("baseColorMap")->set_texture_2d(base_color_tex);
 		_mesh_pipeline->program()->sampler2D("normalMap")->set_texture_2d(normal_tex);
 		_mesh_pipeline->program()->sampler2D("occlusionMap")->set_texture_2d(occlusion_tex);
 		_mesh_pipeline->program()->sampler2D("metallicMap")->set_texture_2d(metallic_tex);
 		_mesh_pipeline->program()->sampler2D("emissiveMap")->set_texture_2d(emiss_tex);
-		_mesh_pipeline->program()->image2D("readbackPosition");*/
+		_mesh_pipeline->program()->image2D("readbackPosition")->set_image_2d(sky_box_tex, gl_cube_face_index::POSITIVE_X, 0);
+		_mesh_pipeline->program()->image3D("readbackPosition")->set_image_3d(practicle_tex, 0);
 
-		_baked_vertices_fb->set_color_attachment(0, _color0_attch);
-		_baked_vertices_fb->set_color_attachment(1, _color1_attch);
-		_baked_vertices_fb->set_color_attachment(2, _color2_attch);
-		_baked_vertices_fb->set_depth_stencil_attachment(_depth_stencil_attach);
-		_mesh_pipeline->render_target()->set_framebuffer(_baked_vertices_fb);
+		_mesh_pipeline->program()->uniform_block("matrices");
+
+		_mesh_pipeline->render_target()->set_framebuffer(_framebuffer_0);
 
 		//_deferred_lighting_pipeline->program()->sampler2D("inputPositionTex")->set_texture_2d(_color0_attch);
 
@@ -67,42 +94,11 @@ public:
 		_mesh_pipeline->draw_elements(0, 48200);
 		_mesh_pipeline->disable();
 		_flush_commands();
-
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //GL_FILL GL_POINT
-		//glFrontFace(GL_CW);//default GL_CW
-
-		//glEnable(GL_COLOR_BUFFER_BIT);
-		//glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		//glEnable(GL_ACCUM_BUFFER_BIT);
-		//glClearAccum(1.0f, 0.2f, 1.0f, 1.0f);
-
-		// when current frag-z < 1.0, keep it
-		// fragShader write its z value before working
-		//glEnable(GL_DEPTH_TEST);
-		//glDepthFunc(GL_LESS);
-		//glDepthMask(GL_TRUE);
-		//glClearDepth(1.0f);
-
-		//glEnable(GL_STENCIL_TEST);
-		//glStencilFunc(GL_ALWAYS, 1, 0xFF);
-		//glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-		//glStencilMask(GL_TRUE);
-		//glClearStencil(0);
-
 	}
 
 	void render(float delta_time)
 	{
-		if (!_mesh_pipeline) return;
-
 		glClear(GL_COLOR_BUFFER_BIT);
-
-		_mesh_pipeline->enable();
-
-		_mesh_pipeline->draw_arrays(0, 1024);
-
-		_mesh_pipeline->disable();
 	}
 
 	bool should_exit()
@@ -116,8 +112,6 @@ public:
 	}
 
 private:
-
-	std::unique_ptr<gl_graphics_pipeline> _mesh_pipeline;
 
 	bool _exit;
 };

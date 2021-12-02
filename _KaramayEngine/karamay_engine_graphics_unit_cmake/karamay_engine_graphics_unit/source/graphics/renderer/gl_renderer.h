@@ -15,157 +15,244 @@ class gl_renderer_builder
 public:
     gl_renderer_builder() = default;
 
+    gl_renderer_builder(const gl_renderer_builder&) = delete;
+    gl_renderer_builder& operator=(const gl_renderer_builder&) = delete;
+
     ~gl_renderer_builder()
     {
-        for (auto _buffer : _buffers) { delete _buffer;  std::cout << "delete buffer" << std::endl;}
-
-        for (auto _tex_1d : _texture_1ds) { delete _tex_1d; std::cout << "delete tex_1d" << std::endl; }
-        for (auto _tex_1d_arr : _texture_1d_arrays) { delete _tex_1d_arr; std::cout << "delete tex_1d_arr" << std::endl; }
-        for (auto _tex_2d : _texture_2ds) { delete _tex_2d; std::cout << "delete tex_2d" << std::endl; }
-        for (auto _tex_2d_arr : _texture_2d_arrays) { delete _tex_2d_arr; std::cout << "delete tex_2d_arr" << std::endl; }
-        for (auto _tex_2d_ms : _texture_2d_multisamples) { delete _tex_2d_ms; std::cout << "delete tex_2d_ms" << std::endl; }
-        for (auto _tex_2d_ms_arr : _texture_2d_multisample_arrays) { delete _tex_2d_ms_arr; std::cout << "delete tex_2d_ms_arr" << std::endl; }
-        for (auto _tex_rect : _texture_rectangles) { delete _tex_rect; std::cout << "delete tex_rect" << std::endl; }
-        for (auto _tex_cube : _texture_cubes) { delete _tex_cube; std::cout << "delete tex_cube" << std::endl; }
-        for (auto _tex_cube_arr : _texture_cube_arrays) { delete _tex_cube_arr; std::cout << "delete tex_cube_arr" << std::endl; }
-        for (auto _tex_3d : _texture_3ds) { delete _tex_3d; std::cout << "delete tex_3d" << std::endl; }
-        for (auto _tex_buffer : _texture_buffers) { delete _tex_buffer; std::cout << "delete tex_buffer" << std::endl; }
-
-        for (auto _renderbuffer : _renderbuffers) { delete _renderbuffer; std::cout << "delete renderbuffer" << std::endl; }
-        for (auto _renderbuffer_ms : _renderbuffer_multisamples) { delete _renderbuffer_ms; std::cout << "delete renderbuffer_ms" << std::endl; }
-
-        for (auto _framebuffer : _framebuffers) { delete _framebuffer; std::cout << "delete framebuffer" << std::endl; }
+        for (auto _buffer : _buffers) { delete _buffer.second;  std::cout << "delete buffer" << std::endl;}
+        for (auto _tex_1d : _texture_1ds) { delete _tex_1d.second; std::cout << "delete tex_1d" << std::endl; }
+        for (auto _tex_1d_arr : _texture_1d_arrays) { delete _tex_1d_arr.second; std::cout << "delete tex_1d_arr" << std::endl; }
+        for (auto _tex_2d : _texture_2ds) { delete _tex_2d.second; std::cout << "delete tex_2d" << std::endl; }
+        for (auto _tex_2d_arr : _texture_2d_arrays) { delete _tex_2d_arr.second; std::cout << "delete tex_2d_arr" << std::endl; }
+        for (auto _tex_2d_ms : _texture_2d_multisamples) { delete _tex_2d_ms.second; std::cout << "delete tex_2d_ms" << std::endl; }
+        for (auto _tex_2d_ms_arr : _texture_2d_multisample_arrays) { delete _tex_2d_ms_arr.second; std::cout << "delete tex_2d_ms_arr" << std::endl; }
+        for (auto _tex_rect : _texture_rectangles) { delete _tex_rect.second; std::cout << "delete tex_rect" << std::endl; }
+        for (auto _tex_cube : _texture_cubes) { delete _tex_cube.second; std::cout << "delete tex_cube" << std::endl; }
+        for (auto _tex_cube_arr : _texture_cube_arrays) { delete _tex_cube_arr.second; std::cout << "delete tex_cube_arr" << std::endl; }
+        for (auto _tex_3d : _texture_3ds) { delete _tex_3d.second; std::cout << "delete tex_3d" << std::endl; }
+        for (auto _tex_buffer : _texture_buffers) { delete _tex_buffer.second; std::cout << "delete tex_buffer" << std::endl; }
+        for (auto _renderbuffer : _renderbuffers) { delete _renderbuffer.second; std::cout << "delete renderbuffer" << std::endl; }
+        for (auto _renderbuffer_ms : _renderbuffer_multisamples) { delete _renderbuffer_ms.second; std::cout << "delete renderbuffer_ms" << std::endl; }
+        for (auto _framebuffer : _framebuffers) { delete _framebuffer.second; std::cout << "delete framebuffer" << std::endl; }
     }
 
 public:
 
-    gl_buffer* buffer(gl_buffer_storage_options options, int64 bytes_num, const void* initial_data = nullptr)
+    gl_buffer* create_buffer(const std::string& name, gl_buffer_storage_options options, int64 bytes_num, const void* initial_data = nullptr)
     {
-        auto _buffer = new gl_buffer(options, bytes_num, initial_data);
-        _buffers.push_back(_buffer);
-        return _buffer;
+        auto _it = _buffers.find(name);
+        if (_it == _buffers.cend())
+        {
+            auto _buffer = new gl_buffer(options, bytes_num, initial_data);
+            _buffers.emplace(name, _buffer);
+            return _buffer;
+        }
+        return nullptr;
     }
 
-    gl_texture_1d* texture_1d(int32 mipmaps_num, int32 width, gl_texture_internal_format internal_format)
+    gl_texture_1d* create_texture_1d(const std::string& name, int32 mipmaps_num, int32 width, gl_texture_internal_format internal_format)
     {
-        auto _texture_1d = new gl_texture_1d(mipmaps_num, internal_format, width);
-        _texture_1ds.push_back(_texture_1d);
-        return _texture_1d;
+        auto _it = _buffers.find(name);
+        if (_it == _buffers.cend())
+        {
+            auto _texture_1d = new gl_texture_1d(mipmaps_num, internal_format, width);
+            _texture_1ds.emplace(name, _texture_1d);
+            return _texture_1d;
+        }
+        return nullptr;
     }
-    gl_texture_1d_array* texture_1d_array(int32 elements_num, int32 mipmaps_num, int32 width, gl_texture_internal_format internal_format) 
+    gl_texture_1d_array* create_texture_1d_array(const std::string& name, int32 elements_num, int32 mipmaps_num, int32 width, gl_texture_internal_format internal_format)
     {
-        auto _texture_1d_array = new gl_texture_1d_array(elements_num,mipmaps_num, width, internal_format);
-        _texture_1d_arrays.push_back(_texture_1d_array);
-        return _texture_1d_array;
+        auto _it = _texture_1d_arrays.find(name);
+        if (_it == _texture_1d_arrays.cend())
+        {
+            auto _texture_1d_array = new gl_texture_1d_array(elements_num, mipmaps_num, width, internal_format);
+            _texture_1d_arrays.emplace(name, _texture_1d_array);
+            return _texture_1d_array;
+        }
+        return nullptr;
     }
-    gl_texture_2d* texture_2d(int32 mipmaps_num, int32 width, int32 height, gl_texture_internal_format internal_format)
+    gl_texture_2d* create_texture_2d(const std::string& name, int32 mipmaps_num, int32 width, int32 height, gl_texture_internal_format internal_format)
     {
-        auto _texture_2d = new gl_texture_2d(mipmaps_num, internal_format, width, height);
-        _texture_2ds.push_back(_texture_2d);
-        return _texture_2d;
+        auto _it = _texture_2ds.find(name);
+        if (_it == _texture_2ds.cend())
+        {
+            auto _texture_2d = new gl_texture_2d(mipmaps_num, internal_format, width, height);
+            _texture_2ds.emplace(name, _texture_2d);
+            return _texture_2d;
+        }
+        return nullptr;
     }
-    gl_texture_2d_array* texture_2d_array(int32 elements_num, int32 mipmaps_num, int32 width, int32 height, gl_texture_internal_format internal_format) 
+    gl_texture_2d_array* create_texture_2d_array(const std::string& name, int32 elements_num, int32 mipmaps_num, int32 width, int32 height, gl_texture_internal_format internal_format)
     {
-        auto _texture_2d_array = new gl_texture_2d_array(elements_num, mipmaps_num, width, height, internal_format);
-        _texture_2d_arrays.push_back(_texture_2d_array);
-        return _texture_2d_array;
+        auto _it = _texture_2d_arrays.find(name);
+        if (_it == _texture_2d_arrays.cend())
+        {
+            auto _texture_2d_array = new gl_texture_2d_array(elements_num, mipmaps_num, width, height, internal_format);
+            _texture_2d_arrays.emplace(name, _texture_2d_array);
+            return _texture_2d_array;
+        }
+        return nullptr;
     }
-    gl_texture_rectangle* texture_rectangle(int32 width, int32 height, gl_texture_internal_format internal_format)
+    gl_texture_rectangle* create_texture_rectangle(const std::string& name, int32 width, int32 height, gl_texture_internal_format internal_format)
     {
-        auto _tex_rect = new gl_texture_rectangle(width, height, internal_format);
-        _texture_rectangles.push_back(_tex_rect);
-        return _tex_rect;
+        auto _it = _texture_rectangles.find(name);
+        if (_it == _texture_rectangles.cend())
+        {
+            auto _tex_rect = new gl_texture_rectangle(width, height, internal_format);
+            _texture_rectangles.emplace(name, _tex_rect);
+            return _tex_rect;
+        }
+        return nullptr;
     }
-    gl_texture_cube* texture_cube(int32 mipmaps_num, int32 width, int32 height, gl_texture_internal_format internal_format)
+    gl_texture_cube* create_texture_cube(const std::string& name, int32 mipmaps_num, int32 width, int32 height, gl_texture_internal_format internal_format)
     {
-        auto _tex_cube = new gl_texture_cube(mipmaps_num, internal_format, width, height);
-        _texture_cubes.push_back(_tex_cube);
-        return _tex_cube;
+        auto _it = _texture_cubes.find(name);
+        if (_it == _texture_cubes.cend())
+        {
+            auto _tex_cube = new gl_texture_cube(mipmaps_num, internal_format, width, height);
+            _texture_cubes.emplace(name, _tex_cube);
+            return _tex_cube;
+        }
+        return nullptr;
     }
-    gl_texture_cube_array* texture_cube_array(int32 elements_num, int32 mipmaps_num, int32 width, int32 height, gl_texture_internal_format internal_format)
+    gl_texture_cube_array* create_texture_cube_array(const std::string& name, int32 elements_num, int32 mipmaps_num, int32 width, int32 height, gl_texture_internal_format internal_format)
     {
-        auto _tex_cube_arr = new gl_texture_cube_array(elements_num, mipmaps_num, internal_format, width, height);
-        _texture_cube_arrays.push_back(_tex_cube_arr);
-        return _tex_cube_arr;
+        auto _it = _texture_cube_arrays.find(name);
+        if (_it == _texture_cube_arrays.cend())
+        {
+            auto _tex_cube_arr = new gl_texture_cube_array(elements_num, mipmaps_num, internal_format, width, height);
+            _texture_cube_arrays.emplace(name, _tex_cube_arr);
+            return _tex_cube_arr;
+        }
+        return nullptr;
     }
-    gl_texture_2d_multisample* texture_2d_multisample(int32 samples_num, int32 width, int32 height, gl_texture_internal_format internal_format, bool fixed_sample_locations)
+    gl_texture_2d_multisample* create_texture_2d_multisample(const std::string& name, int32 samples_num, int32 width, int32 height, gl_texture_internal_format internal_format, bool fixed_sample_locations)
     {
-        auto _tex_2d_ms = new gl_texture_2d_multisample(samples_num, internal_format, width, height, fixed_sample_locations);
-        _texture_2d_multisamples.push_back(_tex_2d_ms);
-        return _tex_2d_ms;
+        auto _it = _texture_2d_multisamples.find(name);
+        if (_it == _texture_2d_multisamples.cend())
+        {
+            auto _tex_2d_ms = new gl_texture_2d_multisample(samples_num, internal_format, width, height, fixed_sample_locations);
+            _texture_2d_multisamples.emplace(name, _tex_2d_ms);
+            return _tex_2d_ms;
+        }
+        return nullptr;
     }
-    gl_texture_2d_multisample_array* texture_2d_multisample_array(int32 elements_num, int32 samples_num, int32 width, int32 height, gl_texture_internal_format internal_format, bool fixed_sample_locations)
+    gl_texture_2d_multisample_array* create_texture_2d_multisample_array(const std::string& name, int32 elements_num, int32 samples_num, int32 width, int32 height, gl_texture_internal_format internal_format, bool fixed_sample_locations)
     {
-        auto _tex_2d_ms_arr = new gl_texture_2d_multisample_array(elements_num, samples_num, internal_format, width, height, fixed_sample_locations);
-        _texture_2d_multisample_arrays.push_back(_tex_2d_ms_arr);
-        return _tex_2d_ms_arr;
+        auto _it = _texture_2d_multisample_arrays.find(name);
+        if (_it == _texture_2d_multisample_arrays.cend())
+        {
+            auto _tex_2d_ms_arr = new gl_texture_2d_multisample_array(elements_num, samples_num, internal_format, width, height, fixed_sample_locations);
+            _texture_2d_multisample_arrays.emplace(name, _tex_2d_ms_arr);
+            return _tex_2d_ms_arr;
+        }
+        return nullptr;
     }
-    gl_texture_3d* texture_3d(int32 mipmaps_num, int32 width, int32 height, int32 depth, gl_texture_internal_format internal_format) 
+    gl_texture_3d* create_texture_3d(const std::string& name, int32 mipmaps_num, int32 width, int32 height, int32 depth, gl_texture_internal_format internal_format)
     {
-        auto _tex_3d = new gl_texture_3d(mipmaps_num, width, height, depth, internal_format);
-        _texture_3ds.push_back(_tex_3d);
-        return _tex_3d;
+        auto _it = _texture_3ds.find(name);
+        if (_it == _texture_3ds.cend())
+        {
+            auto _tex_3d = new gl_texture_3d(mipmaps_num, width, height, depth, internal_format);
+            _texture_3ds.emplace(name, _tex_3d);
+            return _tex_3d;
+        }
+        return nullptr;
     }
-    gl_texture_buffer* texture_buffer(gl_buffer* buffer, gl_texture_internal_format internal_format) { return nullptr; }
+    gl_texture_buffer* create_texture_buffer(const std::string& name, gl_buffer* buffer, gl_texture_internal_format internal_format) 
+    {
+        auto _it = _texture_buffers.find(name);
+        if (_it == _texture_buffers.cend())
+        {
+            auto _tex_buffer = new gl_texture_buffer(buffer, internal_format);
+            _texture_buffers.emplace(name, _tex_buffer);
+            return _tex_buffer;
+        }
+        return nullptr; 
+    }
 
-    gl_renderbuffer* renderbuffer(int32 width, int32 height, gl_renderbuffer_internal_format internal_format)
+    gl_renderbuffer* create_renderbuffer(const std::string& name, int32 width, int32 height, gl_renderbuffer_internal_format internal_format)
     {
-        auto _renderbuffer = new gl_renderbuffer(width, height, internal_format);
-        _renderbuffers.push_back(_renderbuffer);
-        return _renderbuffer;
+        auto _it = _renderbuffers.find(name);
+        if (_it == _renderbuffers.cend())
+        {
+            auto _renderbuffer = new gl_renderbuffer(width, height, internal_format);
+            _renderbuffers.emplace(name, _renderbuffer);
+            return _renderbuffer;
+        }
+        return nullptr;
     }
-    gl_renderbuffer_multisample* renderbuffer_multisample(int32 samples_num, int32 width, int32 height, gl_renderbuffer_internal_format internal_format)
+    gl_renderbuffer_multisample* create_renderbuffer_multisample(const std::string& name, int32 samples_num, int32 width, int32 height, gl_renderbuffer_internal_format internal_format)
     {
-        auto _renderbuffer_ms = new gl_renderbuffer_multisample(samples_num, width, height, internal_format);
-        _renderbuffer_multisamples.push_back(_renderbuffer_ms);
-        return _renderbuffer_ms;
+        auto _it = _renderbuffer_multisamples.find(name);
+        if (_it == _renderbuffer_multisamples.cend())
+        {
+            auto _renderbuffer_ms = new gl_renderbuffer_multisample(samples_num, width, height, internal_format);
+            _renderbuffer_multisamples.emplace(name, _renderbuffer_ms);
+            return _renderbuffer_ms;
+        }
+        return nullptr;
     }
 
-    gl_framebuffer* framebuffer(int32 width, int32 height)
+    gl_framebuffer* create_framebuffer(const std::string& name, int32 width, int32 height)
     {
-        auto _framebuffer = new gl_framebuffer(width, height);
-        _framebuffers.push_back(_framebuffer);
-        return _framebuffer;
+        auto _it = _framebuffers.find(name);
+        if (_it == _framebuffers.cend())
+        {
+            auto _framebuffer = new gl_framebuffer(width, height);
+            _framebuffers.emplace(name, _framebuffer);
+            return _framebuffer;
+        }
+        return nullptr;
     }
 
-    gl_graphics_pipeline* graphics_pipeline()
+    gl_graphics_pipeline* create_graphics_pipeline(const std::string& name)
     {
-        gl_graphics_pipeline_descriptor _desc;
-        auto _graphics_pipeline = new gl_graphics_pipeline(_desc);
-        _graphics_pipelines.push_back(_graphics_pipeline);
-        return _graphics_pipeline;
+        auto _it = _graphics_pipelines.find(name);
+        if (_it == _graphics_pipelines.cend())
+        {
+            gl_graphics_pipeline_descriptor _desc;
+            auto _graphics_pipeline = new gl_graphics_pipeline(_desc);
+            _graphics_pipelines.emplace(name, _graphics_pipeline);
+            return _graphics_pipeline;
+        }
+        return nullptr;
     }
-    gl_compute_pipeline* compute_pipeline()
+    gl_compute_pipeline* create_compute_pipeline(const std::string& name)
     {
-        gl_compute_pipeline_descriptor _desc;
-        auto _compute_pipeline = new gl_compute_pipeline(_desc);
-        _compute_pipelines.push_back(_compute_pipeline);
-        return _compute_pipeline;
+        auto _it = _compute_pipelines.find(name);
+        if (_it == _compute_pipelines.cend())
+        {
+            gl_compute_pipeline_descriptor _desc;
+            auto _compute_pipeline = new gl_compute_pipeline(_desc);
+            _compute_pipelines.emplace(name, _compute_pipeline);
+            return _compute_pipeline;
+        }
+        return nullptr;
     }
 
 private:
 
-    std::vector<gl_buffer*> _buffers;
+    std::unordered_map<std::string, gl_buffer*> _buffers;
 
-    std::vector<gl_texture_1d*> _texture_1ds;
-    std::vector<gl_texture_1d_array*> _texture_1d_arrays;
-    std::vector<gl_texture_rectangle*> _texture_rectangles;
-    std::vector<gl_texture_2d*> _texture_2ds;
-    std::vector<gl_texture_2d_array*> _texture_2d_arrays;
-    std::vector<gl_texture_cube*> _texture_cubes;
-    std::vector<gl_texture_cube_array*> _texture_cube_arrays;
-    std::vector<gl_texture_2d_multisample*> _texture_2d_multisamples;
-    std::vector<gl_texture_2d_multisample_array*> _texture_2d_multisample_arrays;
-    std::vector<gl_texture_3d*> _texture_3ds;
-    std::vector<gl_texture_buffer*> _texture_buffers;
-
-    std::vector<gl_renderbuffer*> _renderbuffers;
-    std::vector<gl_renderbuffer_multisample*> _renderbuffer_multisamples;
-
-    std::vector<gl_framebuffer*> _framebuffers;
-
-    std::vector<gl_graphics_pipeline*> _graphics_pipelines;
-    std::vector<gl_compute_pipeline*> _compute_pipelines;
+    std::unordered_map<std::string, gl_texture_1d*> _texture_1ds;
+    std::unordered_map<std::string, gl_texture_1d_array*> _texture_1d_arrays;
+    std::unordered_map<std::string, gl_texture_rectangle*> _texture_rectangles;
+    std::unordered_map<std::string, gl_texture_2d*> _texture_2ds;
+    std::unordered_map<std::string, gl_texture_2d_array*> _texture_2d_arrays;
+    std::unordered_map<std::string, gl_texture_cube*> _texture_cubes;
+    std::unordered_map<std::string, gl_texture_cube_array*> _texture_cube_arrays;
+    std::unordered_map<std::string, gl_texture_2d_multisample*> _texture_2d_multisamples;
+    std::unordered_map<std::string, gl_texture_2d_multisample_array*> _texture_2d_multisample_arrays;
+    std::unordered_map<std::string, gl_texture_3d*> _texture_3ds;
+    std::unordered_map<std::string, gl_texture_buffer*> _texture_buffers;
+     std::unordered_map<std::string, gl_renderbuffer*> _renderbuffers;
+     std::unordered_map<std::string, gl_renderbuffer_multisample*> _renderbuffer_multisamples;
+     std::unordered_map<std::string, gl_framebuffer*> _framebuffers;
+     std::unordered_map<std::string, gl_graphics_pipeline*> _graphics_pipelines;
+     std::unordered_map<std::string, gl_compute_pipeline*> _compute_pipelines;
 
 };
 
