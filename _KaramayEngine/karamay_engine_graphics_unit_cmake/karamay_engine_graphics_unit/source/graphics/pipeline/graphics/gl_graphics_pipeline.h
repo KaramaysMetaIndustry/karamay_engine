@@ -392,8 +392,12 @@ class gl_render_target
 {
 public:
 
+    void set_framebuffer(gl_framebuffer* framebuffer) { _framebuffer = framebuffer; }
+
+    gl_framebuffer* get_framebuffer() const { return _framebuffer; }
+
 private:
-    gl_framebuffer* framebuffer;
+    gl_framebuffer* _framebuffer;
 
 };
 
@@ -430,23 +434,13 @@ public:
     ~gl_graphics_pipeline()
     {
         if (!_vertex_launcher) delete _vertex_launcher;
-
+        if (!_program) delete _program;
+        if (!_render_target) delete _render_target;
     }
-
-private:
-
-    gl_vertex_launcher* _vertex_launcher;
-
-    glsl_graphics_pipeline_program* _program;
-
-    gl_render_target* _render_target;
 
 public:
 
-    gl_vertex_launcher* vertex_launcher()
-    {
-        return _vertex_launcher;
-    }
+    gl_vertex_launcher* vertex_launcher() { return _vertex_launcher; }
 
     glsl_graphics_pipeline_program* program() { return _program; }
 
@@ -719,6 +713,11 @@ private:
     } _resource_pool;
 
 private:
+
+    gl_vertex_launcher* _vertex_launcher;
+    glsl_graphics_pipeline_program* _program;
+    gl_render_target* _render_target;
+
 
 
 };

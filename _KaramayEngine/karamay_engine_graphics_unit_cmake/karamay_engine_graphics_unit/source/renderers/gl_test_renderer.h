@@ -34,13 +34,32 @@ public:
 		auto practicle_tex = builder.texture_3d(1, 1024, 1024, 1024, gl_texture_internal_format::RGBA_F32);
 		practicle_tex->build_mipmaps();
 
+		auto _color0_attch = builder.renderbuffer(1920, 1080, gl_renderbuffer_internal_format::NONE);
+		auto _color1_attch = builder.renderbuffer(1920, 1080, gl_renderbuffer_internal_format::NONE);
+		auto _color2_attch = builder.renderbuffer(1920, 1080, gl_renderbuffer_internal_format::NONE);
+		auto _depth_stencil_attach = builder.renderbuffer(1920, 1080, gl_renderbuffer_internal_format::NONE);
+
 		auto _baked_vertices_fb = builder.framebuffer(1920, 1080);
 
 		auto _mesh_pipeline = builder.graphics_pipeline();
+		auto _deferred_lighting_pipeline = builder.graphics_pipeline();
 		auto _materials_combiner = builder.compute_pipeline();
 
 		_mesh_pipeline->vertex_launcher();
-		_mesh_pipeline->program()->sampler2D("baseColor")->set_texture_2d(base_color_tex);
+		/*_mesh_pipeline->program()->sampler2D("baseColorMap")->set_texture_2d(base_color_tex);
+		_mesh_pipeline->program()->sampler2D("normalMap")->set_texture_2d(normal_tex);
+		_mesh_pipeline->program()->sampler2D("occlusionMap")->set_texture_2d(occlusion_tex);
+		_mesh_pipeline->program()->sampler2D("metallicMap")->set_texture_2d(metallic_tex);
+		_mesh_pipeline->program()->sampler2D("emissiveMap")->set_texture_2d(emiss_tex);
+		_mesh_pipeline->program()->image2D("readbackPosition");*/
+
+		_baked_vertices_fb->set_color_attachment(0, _color0_attch);
+		_baked_vertices_fb->set_color_attachment(1, _color1_attch);
+		_baked_vertices_fb->set_color_attachment(2, _color2_attch);
+		_baked_vertices_fb->set_depth_stencil_attachment(_depth_stencil_attach);
+		_mesh_pipeline->render_target()->set_framebuffer(_baked_vertices_fb);
+
+		//_deferred_lighting_pipeline->program()->sampler2D("inputPositionTex")->set_texture_2d(_color0_attch);
 
 		_finish_commands();
 		_mesh_pipeline->enable();

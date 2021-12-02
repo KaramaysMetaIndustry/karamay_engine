@@ -85,9 +85,9 @@ public:
 
 private:
 
-    std::vector<std::unique_ptr<gl_texture_2d>> colors_attachments;
-    std::unique_ptr<gl_texture_2d> depth_component;
-    std::unique_ptr<gl_texture_2d> stencil_component;
+    std::vector<gl_texture_2d*> colors_attachments;
+    gl_texture_2d* depth_component;
+    gl_texture_2d* stencil_component;
 
 public:
 
@@ -103,31 +103,30 @@ public:
 
 public:
 
-    void set_color_attachment(uint32 attachment_index, const std::shared_ptr<gl_renderbuffer>& renderbuffer)
+    void set_color_attachment(uint32 attachment_index, gl_renderbuffer* renderbuffer)
     {
-        if (!renderbuffer || attachment_index >= GL_MAX_COLOR_ATTACHMENTS) return;
         glNamedFramebufferRenderbuffer(_handle, GL_COLOR_ATTACHMENT0 + attachment_index, GL_RENDERBUFFER, renderbuffer->get_handle());
     }
-    void set_color_attachment(uint32 attachment_index, const std::shared_ptr<gl_texture_2d> texture_2d)
+
+    void set_color_attachment(uint32 attachment_index, gl_texture_2d* texture_2d, int32 mipmap_index)
     {
-        glNamedFramebufferTexture(_handle, GL_COLOR_ATTACHMENT0 + attachment_index, texture_2d->get_handle(), 0);
+        glNamedFramebufferTexture(_handle, GL_COLOR_ATTACHMENT0 + attachment_index, texture_2d->get_handle(), mipmap_index);
     }
-    void set_depth_attchment(const std::shared_ptr<gl_renderbuffer>& renderbuffer)
+
+    void set_depth_attachment(gl_renderbuffer* renderbuffer)
     {
-        if (!renderbuffer) return;
         glNamedFramebufferRenderbuffer(_handle, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderbuffer->get_handle());
     }
-    void set_stencil_attachment(const std::shared_ptr<gl_renderbuffer>& renderbuffer)
+
+    void set_stencil_attachment(gl_renderbuffer* renderbuffer)
     {
-        if (!renderbuffer) return;
         glNamedFramebufferRenderbuffer(_handle, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer->get_handle());
     }
-    void set_depth_stencil(const gl_renderbuffer* renderbuffer)
+
+    void set_depth_stencil_attachment(gl_renderbuffer* renderbuffer)
     {
         glNamedFramebufferRenderbuffer(_handle, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer->get_handle());
     }
-
-   
 
 public:
 

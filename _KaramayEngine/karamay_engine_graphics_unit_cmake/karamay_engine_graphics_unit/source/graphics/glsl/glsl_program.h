@@ -95,7 +95,7 @@ public:
 		return nullptr;
 	}
 	glsl_sampler1DArray* sampler1DArray(const std::string& name) {}
-	glsl_sampler2D* sampler2D(const std::string& name) {}
+	glsl_sampler2D* sampler2D(const std::string& name) { return nullptr; }
 	glsl_sampler2DArray* sampler2DArray(const std::string& name) {}
 	glsl_sampler2DMS* sampler2DMS(const std::string& name) {}
 	glsl_sampler2DMSArray* sampler2DMSArray(const std::string& name) {}
@@ -174,7 +174,7 @@ public:
 
 	glsl_image1D* image1D(const std::string& name) {}
 	glsl_image1DArray* image1DArray(const std::string& name) {}
-	glsl_image2D* image2D(const std::string& name) {}
+	glsl_image2D* image2D(const std::string& name) { return nullptr; }
 	glsl_image2DArray* image2DArray(const std::string& name) {}
 	glsl_imageCube* imageCube(const std::string& name) {}
 	glsl_imageCubeArray* imageCubeArray(const std::string& name) {}
