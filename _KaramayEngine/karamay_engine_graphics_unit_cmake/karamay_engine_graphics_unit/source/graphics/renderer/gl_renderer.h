@@ -20,21 +20,21 @@ public:
 
     ~gl_renderer_builder()
     {
-        for (auto _buffer : _buffers) { delete _buffer.second;  std::cout << "delete buffer" << std::endl;}
-        for (auto _tex_1d : _texture_1ds) { delete _tex_1d.second; std::cout << "delete tex_1d" << std::endl; }
-        for (auto _tex_1d_arr : _texture_1d_arrays) { delete _tex_1d_arr.second; std::cout << "delete tex_1d_arr" << std::endl; }
-        for (auto _tex_2d : _texture_2ds) { delete _tex_2d.second; std::cout << "delete tex_2d" << std::endl; }
-        for (auto _tex_2d_arr : _texture_2d_arrays) { delete _tex_2d_arr.second; std::cout << "delete tex_2d_arr" << std::endl; }
-        for (auto _tex_2d_ms : _texture_2d_multisamples) { delete _tex_2d_ms.second; std::cout << "delete tex_2d_ms" << std::endl; }
-        for (auto _tex_2d_ms_arr : _texture_2d_multisample_arrays) { delete _tex_2d_ms_arr.second; std::cout << "delete tex_2d_ms_arr" << std::endl; }
-        for (auto _tex_rect : _texture_rectangles) { delete _tex_rect.second; std::cout << "delete tex_rect" << std::endl; }
-        for (auto _tex_cube : _texture_cubes) { delete _tex_cube.second; std::cout << "delete tex_cube" << std::endl; }
-        for (auto _tex_cube_arr : _texture_cube_arrays) { delete _tex_cube_arr.second; std::cout << "delete tex_cube_arr" << std::endl; }
-        for (auto _tex_3d : _texture_3ds) { delete _tex_3d.second; std::cout << "delete tex_3d" << std::endl; }
-        for (auto _tex_buffer : _texture_buffers) { delete _tex_buffer.second; std::cout << "delete tex_buffer" << std::endl; }
-        for (auto _renderbuffer : _renderbuffers) { delete _renderbuffer.second; std::cout << "delete renderbuffer" << std::endl; }
-        for (auto _renderbuffer_ms : _renderbuffer_multisamples) { delete _renderbuffer_ms.second; std::cout << "delete renderbuffer_ms" << std::endl; }
-        for (auto _framebuffer : _framebuffers) { delete _framebuffer.second; std::cout << "delete framebuffer" << std::endl; }
+        for (auto _buffer : _buffers) { delete _buffer.second;  std::cout << "delete buffer " << _buffer.first<< std::endl;}
+        for (auto _tex_1d : _texture_1ds) { delete _tex_1d.second; std::cout << "delete tex_1d " << _tex_1d.first << std::endl; }
+        for (auto _tex_1d_arr : _texture_1d_arrays) { delete _tex_1d_arr.second; std::cout << "delete tex_1d_arr " << _tex_1d_arr.first << std::endl; }
+        for (auto _tex_2d : _texture_2ds) { delete _tex_2d.second; std::cout << "delete tex_2d " << _tex_2d.first << std::endl; }
+        for (auto _tex_2d_arr : _texture_2d_arrays) { delete _tex_2d_arr.second; std::cout << "delete tex_2d_arr " << _tex_2d_arr.first << std::endl; }
+        for (auto _tex_2d_ms : _texture_2d_multisamples) { delete _tex_2d_ms.second; std::cout << "delete tex_2d_ms " << _tex_2d_ms.first << std::endl; }
+        for (auto _tex_2d_ms_arr : _texture_2d_multisample_arrays) { delete _tex_2d_ms_arr.second; std::cout << "delete tex_2d_ms_arr " << _tex_2d_ms_arr.first << std::endl; }
+        for (auto _tex_rect : _texture_rectangles) { delete _tex_rect.second; std::cout << "delete tex_rect " << _tex_rect.first << std::endl; }
+        for (auto _tex_cube : _texture_cubes) { delete _tex_cube.second; std::cout << "delete tex_cube " << _tex_cube.first << std::endl; }
+        for (auto _tex_cube_arr : _texture_cube_arrays) { delete _tex_cube_arr.second; std::cout << "delete tex_cube_arr " << _tex_cube_arr.first << std::endl; }
+        for (auto _tex_3d : _texture_3ds) { delete _tex_3d.second; std::cout << "delete tex_3d " << _tex_3d.first << std::endl; }
+        for (auto _tex_buffer : _texture_buffers) { delete _tex_buffer.second; std::cout << "delete tex_buffer " << _tex_buffer.first << std::endl; }
+        for (auto _renderbuffer : _renderbuffers) { delete _renderbuffer.second; std::cout << "delete renderbuffer " << _renderbuffer.first << std::endl; }
+        for (auto _renderbuffer_ms : _renderbuffer_multisamples) { delete _renderbuffer_ms.second; std::cout << "delete renderbuffer_ms " << _renderbuffer_ms.first << std::endl; }
+        for (auto _framebuffer : _framebuffers) { delete _framebuffer.second; std::cout << "delete framebuffer " << _framebuffer.first << std::endl; }
     }
 
 public:
@@ -46,6 +46,7 @@ public:
         {
             auto _buffer = new gl_buffer(options, bytes_num, initial_data);
             _buffers.emplace(name, _buffer);
+            std::cout << "new buffer " << name << std::endl;
             return _buffer;
         }
         return nullptr;
@@ -58,6 +59,7 @@ public:
         {
             auto _texture_1d = new gl_texture_1d(mipmaps_num, internal_format, width);
             _texture_1ds.emplace(name, _texture_1d);
+            std::cout << "new texture_1d " << name << std::endl;
             return _texture_1d;
         }
         return nullptr;
@@ -69,6 +71,7 @@ public:
         {
             auto _texture_1d_array = new gl_texture_1d_array(elements_num, mipmaps_num, width, internal_format);
             _texture_1d_arrays.emplace(name, _texture_1d_array);
+            std::cout << "new texture_1d_array " << name << std::endl;
             return _texture_1d_array;
         }
         return nullptr;
@@ -80,6 +83,7 @@ public:
         {
             auto _texture_2d = new gl_texture_2d(mipmaps_num, internal_format, width, height);
             _texture_2ds.emplace(name, _texture_2d);
+            std::cout << "new texture_2d " << name << std::endl;
             return _texture_2d;
         }
         return nullptr;
@@ -91,6 +95,7 @@ public:
         {
             auto _texture_2d_array = new gl_texture_2d_array(elements_num, mipmaps_num, width, height, internal_format);
             _texture_2d_arrays.emplace(name, _texture_2d_array);
+            std::cout << "new texture_2d_array " << name << std::endl;
             return _texture_2d_array;
         }
         return nullptr;
@@ -102,6 +107,7 @@ public:
         {
             auto _tex_rect = new gl_texture_rectangle(width, height, internal_format);
             _texture_rectangles.emplace(name, _tex_rect);
+            std::cout << "new texture_rectangle " << name << std::endl;
             return _tex_rect;
         }
         return nullptr;
@@ -113,6 +119,7 @@ public:
         {
             auto _tex_cube = new gl_texture_cube(mipmaps_num, internal_format, width, height);
             _texture_cubes.emplace(name, _tex_cube);
+            std::cout << "new texture_cube " << name << std::endl;
             return _tex_cube;
         }
         return nullptr;
@@ -124,6 +131,7 @@ public:
         {
             auto _tex_cube_arr = new gl_texture_cube_array(elements_num, mipmaps_num, internal_format, width, height);
             _texture_cube_arrays.emplace(name, _tex_cube_arr);
+            std::cout << "new texture_cube_array " << name << std::endl;
             return _tex_cube_arr;
         }
         return nullptr;
@@ -135,6 +143,7 @@ public:
         {
             auto _tex_2d_ms = new gl_texture_2d_multisample(samples_num, internal_format, width, height, fixed_sample_locations);
             _texture_2d_multisamples.emplace(name, _tex_2d_ms);
+            std::cout << "new texture_2d_multisample " << name << std::endl;
             return _tex_2d_ms;
         }
         return nullptr;
@@ -146,6 +155,7 @@ public:
         {
             auto _tex_2d_ms_arr = new gl_texture_2d_multisample_array(elements_num, samples_num, internal_format, width, height, fixed_sample_locations);
             _texture_2d_multisample_arrays.emplace(name, _tex_2d_ms_arr);
+            std::cout << "new texture_2d_multisample_array " << name << std::endl;
             return _tex_2d_ms_arr;
         }
         return nullptr;
@@ -157,6 +167,7 @@ public:
         {
             auto _tex_3d = new gl_texture_3d(mipmaps_num, width, height, depth, internal_format);
             _texture_3ds.emplace(name, _tex_3d);
+            std::cout << "new texture_3d " << name << std::endl;
             return _tex_3d;
         }
         return nullptr;
@@ -168,6 +179,7 @@ public:
         {
             auto _tex_buffer = new gl_texture_buffer(buffer, internal_format);
             _texture_buffers.emplace(name, _tex_buffer);
+            std::cout << "new texture_buffer " << name << std::endl;
             return _tex_buffer;
         }
         return nullptr; 
@@ -180,6 +192,7 @@ public:
         {
             auto _renderbuffer = new gl_renderbuffer(width, height, internal_format);
             _renderbuffers.emplace(name, _renderbuffer);
+            std::cout << "new renderbuffer " << name << std::endl;
             return _renderbuffer;
         }
         return nullptr;
@@ -191,6 +204,7 @@ public:
         {
             auto _renderbuffer_ms = new gl_renderbuffer_multisample(samples_num, width, height, internal_format);
             _renderbuffer_multisamples.emplace(name, _renderbuffer_ms);
+            std::cout << "new renderbuffer_multisample " << name << std::endl;
             return _renderbuffer_ms;
         }
         return nullptr;
@@ -203,6 +217,7 @@ public:
         {
             auto _framebuffer = new gl_framebuffer(width, height);
             _framebuffers.emplace(name, _framebuffer);
+            std::cout << "new framebuffer " << name << std::endl;
             return _framebuffer;
         }
         return nullptr;
@@ -216,6 +231,7 @@ public:
             gl_graphics_pipeline_descriptor _desc;
             auto _graphics_pipeline = new gl_graphics_pipeline(_desc);
             _graphics_pipelines.emplace(name, _graphics_pipeline);
+            std::cout << "new grahics_pipeline " << name << std::endl;
             return _graphics_pipeline;
         }
         return nullptr;
@@ -228,8 +244,17 @@ public:
             gl_compute_pipeline_descriptor _desc;
             auto _compute_pipeline = new gl_compute_pipeline(_desc);
             _compute_pipelines.emplace(name, _compute_pipeline);
+            std::cout << "new compute_pipeline " << name << std::endl;
             return _compute_pipeline;
         }
+        return nullptr;
+    }
+
+
+    gl_graphics_pipeline* graphics_pipeline(const std::string& name)
+    {
+        auto _it = _graphics_pipelines.find(name);
+        if (_it != _graphics_pipelines.cend()) return _it->second;
         return nullptr;
     }
 

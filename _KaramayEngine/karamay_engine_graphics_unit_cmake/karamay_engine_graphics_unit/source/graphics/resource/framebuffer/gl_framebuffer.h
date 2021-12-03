@@ -85,9 +85,17 @@ public:
 
 private:
 
-    std::vector<gl_texture_2d*> colors_attachments;
-    gl_texture_2d* depth_component;
-    gl_texture_2d* stencil_component;
+    std::vector<gl_texture_2d*> _colors_tex_attachments;
+    std::vector<gl_texture_2d_multisample*> _colors_tex_ms_attachments;
+    gl_texture_2d* _depth_tex_component;
+    gl_texture_2d* _stencil_tex_component;
+    gl_texture_2d* _depth_stencil_tex_component;
+
+    std::vector<gl_renderbuffer*> _colors_rb_attachments;
+    std::vector<gl_renderbuffer_multisample*> _color_rb_ms_attachments;
+    gl_texture_2d* _depth_rb_component;
+    gl_texture_2d* _stencil_rb_component;
+    gl_texture_2d* _depth_stencil_rb_component;
 
 public:
 
@@ -107,22 +115,18 @@ public:
     {
         glNamedFramebufferRenderbuffer(_handle, GL_COLOR_ATTACHMENT0 + attachment_index, GL_RENDERBUFFER, renderbuffer->get_handle());
     }
-
     void set_color_attachment(uint32 attachment_index, gl_texture_2d* texture_2d, int32 mipmap_index)
     {
         glNamedFramebufferTexture(_handle, GL_COLOR_ATTACHMENT0 + attachment_index, texture_2d->get_handle(), mipmap_index);
     }
-
     void set_depth_attachment(gl_renderbuffer* renderbuffer)
     {
         glNamedFramebufferRenderbuffer(_handle, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderbuffer->get_handle());
     }
-
     void set_stencil_attachment(gl_renderbuffer* renderbuffer)
     {
         glNamedFramebufferRenderbuffer(_handle, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer->get_handle());
     }
-
     void set_depth_stencil_attachment(gl_renderbuffer* renderbuffer)
     {
         glNamedFramebufferRenderbuffer(_handle, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer->get_handle());
@@ -139,12 +143,10 @@ public:
 
         glDrawBuffers(static_cast<GLsizei>(color_attachment_indices.size()), color_attachment_indices.data());
     }
-
     void set_readable_color_component(std::uint32_t color_attachment_index)
     {
         glReadBuffer(GL_COLOR_ATTACHMENT0 + color_attachment_index);
     }
-
     void draw_pixels(int32 width, int32 height, gl_framebuffer_draw_format format, gl_framebuffer_draw_type type, const void* pixels)
     {
         //glPixelStoref();
@@ -153,25 +155,20 @@ public:
         //glPixelZoom()
         glDrawPixels(width, height, static_cast<GLenum>(format), static_cast<GLenum>(type), pixels);
     }
-
-
     void draw_depth_stencil(int32 width, int32 height, GLenum type, const void* pixels)
     {
         glDrawPixels(width, height, GL_DEPTH_STENCIL, type, pixels);
     }
-
     void read_color(int32 attachment_index, int32 x, int32 y, int32 width, int32 height, GLenum format, GLenum type, void* pixels)
     {
         glReadBuffer(GL_COLOR_ATTACHMENT0 + attachment_index);
         glClampColor(GL_CLAMP_READ_COLOR, GL_TRUE); // GL_FALSE, GL_FIXED_ONLY
         glReadPixels(x, y, width, height, format, type, pixels);
     }
-
     void read_depth(int32 x, int32 y, int32 width, int32 height, GLenum type, void* pixels)
     {
         glReadPixels(x, y, width, height, GL_DEPTH_COMPONENT, type, pixels);
     }
-
     void read_stencil(int32 x, int32 y, int32 width, int32 height, GLenum type, void* pixels)
     {
         glReadPixels(x, y, width, height, GL_STENCIL_INDEX, type, pixels);
@@ -181,12 +178,10 @@ public:
     {
         glReadPixels(x, y, width, height, GL_DEPTH_STENCIL, type, pixels);
     }
-
     void clamp_color()
     {
         //glClampColor();
     }
-
     void blit(int32 src_x0, int32 src_y0, int32 src_x1, int32 src_y1, gl_framebuffer* dst_framebuffer, int32 dst_x0, int32 dst_y0, int32 dst_x1, int32 dst_y1)
     {
         glBlitNamedFramebuffer(_handle, dst_framebuffer->get_handle(),
@@ -194,7 +189,6 @@ public:
             GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT, 
             GL_NEAREST); // GL_LINEAR
     }
-
     void copy_to()
     {
         //glCopyTextureSubImage2D()
