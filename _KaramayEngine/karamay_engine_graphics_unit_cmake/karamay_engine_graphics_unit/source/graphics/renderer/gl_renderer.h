@@ -1,16 +1,10 @@
 #ifndef H_RENDERER
 #define H_RENDERER
 
-#include "public/stl.h"
-#include "graphics/pipeline/graphics/gl_graphics_pipeline.h"
-#include "graphics/pipeline/compute/gl_compute_pipeline.h"
-#include "graphics/resource/texture/gl_texture.h"
+#include "pipeline/gl_graphics_pipeline.h"
+#include "pipeline/gl_compute_pipeline.h"
 
-class gl_graphics_pipeline;
-class gl_vertex_processing_pipeline;
-class gl_compute_pipeline;
-
-class gl_renderer_builder
+class gl_renderer_builder final
 {
 public:
     gl_renderer_builder() = default;
@@ -49,6 +43,15 @@ public:
             std::cout << "new buffer " << name << std::endl;
             return _buffer;
         }
+        return nullptr;
+    }
+
+    gl_uniform_buffer* create_uniform_buffer(const std::string& name)
+    {
+        return nullptr;
+    }
+    gl_shader_storage_buffer* create_shader_storage_buffer(const std::string& name)
+    {
         return nullptr;
     }
 
@@ -223,26 +226,61 @@ public:
         return nullptr;
     }
 
-    gl_graphics_pipeline* create_graphics_pipeline(const std::string& name)
+    gl_graphics_pipeline* create_graphics_pipeline(const std::string& name, glsl_vertex_shader* vs, glsl_fragment_shader* fs)
     {
         auto _it = _graphics_pipelines.find(name);
         if (_it == _graphics_pipelines.cend())
         {
-            gl_graphics_pipeline_descriptor _desc;
-            auto _graphics_pipeline = new gl_graphics_pipeline(_desc);
+            auto _graphics_pipeline = new gl_graphics_pipeline(vs, fs);
             _graphics_pipelines.emplace(name, _graphics_pipeline);
             std::cout << "new grahics_pipeline " << name << std::endl;
             return _graphics_pipeline;
         }
         return nullptr;
     }
-    gl_compute_pipeline* create_compute_pipeline(const std::string& name)
+    gl_graphics_pipeline* create_graphics_pipeline(const std::string& name, glsl_vertex_shader* vs, glsl_tessellation_shader* ts, glsl_fragment_shader* fs)
+    {
+        auto _it = _graphics_pipelines.find(name);
+        if (_it == _graphics_pipelines.cend())
+        {
+            auto _graphics_pipeline = new gl_graphics_pipeline(vs, ts, fs);
+            _graphics_pipelines.emplace(name, _graphics_pipeline);
+            std::cout << "new grahics_pipeline " << name << std::endl;
+            return _graphics_pipeline;
+        }
+        return nullptr;
+    }
+    gl_graphics_pipeline* create_graphics_pipeline(const std::string& name, glsl_vertex_shader* vs, glsl_geometry_shader* gs, glsl_fragment_shader* fs)
+    {
+        auto _it = _graphics_pipelines.find(name);
+        if (_it == _graphics_pipelines.cend())
+        {
+            auto _graphics_pipeline = new gl_graphics_pipeline(vs, gs, fs);
+            _graphics_pipelines.emplace(name, _graphics_pipeline);
+            std::cout << "new grahics_pipeline " << name << std::endl;
+            return _graphics_pipeline;
+        }
+        return nullptr;
+    }
+    gl_graphics_pipeline* create_graphics_pipeline(const std::string& name, glsl_vertex_shader* vs, glsl_tessellation_shader* ts, glsl_geometry_shader* gs, glsl_fragment_shader* fs)
+    {
+        auto _it = _graphics_pipelines.find(name);
+        if (_it == _graphics_pipelines.cend())
+        {
+            auto _graphics_pipeline = new gl_graphics_pipeline(vs, ts, gs, fs);
+            _graphics_pipelines.emplace(name, _graphics_pipeline);
+            std::cout << "new grahics_pipeline " << name << std::endl;
+            return _graphics_pipeline;
+        }
+        return nullptr;
+    }
+
+    gl_compute_pipeline* create_compute_pipeline(const std::string& name, glsl_compute_shader* cs)
     {
         auto _it = _compute_pipelines.find(name);
         if (_it == _compute_pipelines.cend())
         {
-            gl_compute_pipeline_descriptor _desc;
-            auto _compute_pipeline = new gl_compute_pipeline(_desc);
+            auto _compute_pipeline = new gl_compute_pipeline(cs);
             _compute_pipelines.emplace(name, _compute_pipeline);
             std::cout << "new compute_pipeline " << name << std::endl;
             return _compute_pipeline;
@@ -250,18 +288,21 @@ public:
         return nullptr;
     }
 
-
+public:
     gl_graphics_pipeline* graphics_pipeline(const std::string& name)
     {
         auto _it = _graphics_pipelines.find(name);
         if (_it != _graphics_pipelines.cend()) return _it->second;
         return nullptr;
     }
+    gl_compute_pipeline* compute_pipeline(const std::string& name)
+    {
+        return nullptr;
+    }
 
 private:
 
     std::unordered_map<std::string, gl_buffer*> _buffers;
-
     std::unordered_map<std::string, gl_texture_1d*> _texture_1ds;
     std::unordered_map<std::string, gl_texture_1d_array*> _texture_1d_arrays;
     std::unordered_map<std::string, gl_texture_rectangle*> _texture_rectangles;
@@ -273,19 +314,14 @@ private:
     std::unordered_map<std::string, gl_texture_2d_multisample_array*> _texture_2d_multisample_arrays;
     std::unordered_map<std::string, gl_texture_3d*> _texture_3ds;
     std::unordered_map<std::string, gl_texture_buffer*> _texture_buffers;
-     std::unordered_map<std::string, gl_renderbuffer*> _renderbuffers;
-     std::unordered_map<std::string, gl_renderbuffer_multisample*> _renderbuffer_multisamples;
-     std::unordered_map<std::string, gl_framebuffer*> _framebuffers;
-     std::unordered_map<std::string, gl_graphics_pipeline*> _graphics_pipelines;
-     std::unordered_map<std::string, gl_compute_pipeline*> _compute_pipelines;
+    std::unordered_map<std::string, gl_renderbuffer*> _renderbuffers;
+    std::unordered_map<std::string, gl_renderbuffer_multisample*> _renderbuffer_multisamples;
+    std::unordered_map<std::string, gl_framebuffer*> _framebuffers;
+    std::unordered_map<std::string, gl_graphics_pipeline*> _graphics_pipelines;
+    std::unordered_map<std::string, gl_compute_pipeline*> _compute_pipelines;
 
 };
 
-/*
-* Every Renderer's resource refs must be dependent to each other.
-* 
-* 
-*/
 class gl_renderer
 {
 public:
@@ -297,7 +333,6 @@ public:
 protected:
 
     gl_renderer_builder _renderer_builder;
-
 #define builder _renderer_builder
 
     void _flush_commands() { glFlush(); }

@@ -1,8 +1,6 @@
 #ifndef GL_TEST_RENDERER_H
 #define GL_TEST_RENDERER_H
 
-#include "graphics/pipeline/graphics/gl_graphics_pipeline.h"
-#include "graphics/glsl/opaque_t/glsl_sampler.h"
 #include "graphics/gltf/gltf_scene.h"
 #include "graphics/renderer/gl_renderer.h"
 
@@ -46,24 +44,32 @@ public:
 
 		auto _framebuffer_0 = builder.create_framebuffer("framebuffer_0", 1920, 1080);
 
-		auto _mesh_pipeline = builder.create_graphics_pipeline("mesh_pipeline");
-		auto _deferred_lighting_pipeline = builder.create_graphics_pipeline("deferred_lighting_pipeline");
+		glsl_vertex_shader* _vs;
+		glsl_tessellation_shader* _ts;
+		glsl_geometry_shader* _gs;
+		glsl_fragment_shader* _fs;
+		auto _mesh_pipeline = builder.create_graphics_pipeline("mesh_pipeline", _vs, _ts, _gs, _fs);
+		auto _deferred_lighting_pipeline = builder.create_graphics_pipeline("deferred_lighting_pipeline", _vs, _fs);
 
 		_framebuffer_0->set_color_attachment(0, _color0_attch);
 		_framebuffer_0->set_color_attachment(1, _color1_attch);
 		_framebuffer_0->set_color_attachment(2, _color2_attch);
 		_framebuffer_0->set_depth_stencil_attachment(_depth_stencil_attach);
 		
-		_mesh_pipeline->program()->sampler2D("baseColorMap")->set_texture_2d(base_color_tex);
-		_mesh_pipeline->program()->sampler2D("normalMap")->set_texture_2d(normal_tex);
-		_mesh_pipeline->program()->sampler2D("occlusionMap")->set_texture_2d(occlusion_tex);
-		_mesh_pipeline->program()->sampler2D("metallicMap")->set_texture_2d(metallic_tex);
-		_mesh_pipeline->program()->sampler2D("emissiveMap")->set_texture_2d(emiss_tex);
-		_mesh_pipeline->program()->image2D("readbackPosition")->set_image_2d(sky_box_tex, gl_cube_face_index::POSITIVE_X, 0);
-		_mesh_pipeline->program()->image3D("readbackPosition")->set_image_3d(practicle_tex, 0);
+		auto& _pro = _mesh_pipeline->program();
+		_pro.sampler2D("baseColorMap")->set_texture_2d(base_color_tex);
+		_pro.sampler2D("normalMap")->set_texture_2d(normal_tex);
+		_pro.sampler2D("occlusionMap")->set_texture_2d(occlusion_tex);
+		_pro.sampler2D("metallicMap")->set_texture_2d(metallic_tex);
+		_pro.sampler2D("emissiveMap")->set_texture_2d(emiss_tex);
+		_pro.image2D("readbackPosition")->set_image_2d(sky_box_tex, gl_cube_face_index::POSITIVE_X, 0);
+		_pro.image3D("readbackPosition")->set_image_3d(practicle_tex, 0);
 
+		auto _ubo = builder.create_uniform_buffer("");
+		
+		_pro.uniform_block("Mat")->set_uniform_buffer(_ubo);
 
-		_mesh_pipeline->render_target()->set_framebuffer(_framebuffer_0);
+		_mesh_pipeline->render_target().set_framebuffer(_framebuffer_0);
 
 		//_deferred_lighting_pipeline->program()->sampler2D("inputPositionTex")->set_texture_2d(_color0_attch);
 
@@ -84,7 +90,7 @@ public:
 			_mesh_pipeline->disable();
 
 			// fetch color attachment from framebuffer
-			auto _fb0 = _mesh_pipeline->render_target()->get_framebuffer();
+			auto _fb0 = _mesh_pipeline->render_target().get_framebuffer();
 			// wait vertex processing pass finished
 			_fence->client_wait(0);
 

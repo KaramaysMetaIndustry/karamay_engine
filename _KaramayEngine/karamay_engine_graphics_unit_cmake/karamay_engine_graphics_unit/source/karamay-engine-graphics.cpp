@@ -1,6 +1,6 @@
-#include "graphics/resource/vertex_array/gl_vertex_array.h"
-#include "graphics/resource/program/gl_program.h"
-#include "graphics/resource/buffers/raw_buffer/gl_buffer.h"
+#include "graphics/renderer/pipeline/base/resource/vertex_array/gl_vertex_array.h"
+#include "graphics/renderer/pipeline/base/resource/program/gl_program.h"
+#include "graphics/renderer/pipeline/base/resource/buffers/raw_buffer/gl_buffer.h"
 #include "window/window.h"
 #include "lua/lua_manager.h"
 
