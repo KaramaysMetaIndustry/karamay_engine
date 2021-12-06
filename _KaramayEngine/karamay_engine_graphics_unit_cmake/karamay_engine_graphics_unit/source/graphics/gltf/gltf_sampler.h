@@ -4,7 +4,10 @@
 class gltf_sampler
 {
 public:
-
+	bool load(const nlohmann::json& object)
+	{
+		return true;
+	}
 
 };
 

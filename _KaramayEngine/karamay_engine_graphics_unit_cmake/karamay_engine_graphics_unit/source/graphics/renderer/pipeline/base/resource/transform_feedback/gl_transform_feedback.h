@@ -3,7 +3,6 @@
 
 #include "../glo/gl_object.h"
 #include "../buffers/indexed_buffer/gl_transform_feedback_buffer.h"
-#include "graphics/renderer/pipeline/base/vertex_launcher/gl_vertex_launcher.h"
 
 class gl_transform_feedback final : public gl_object{
 public:

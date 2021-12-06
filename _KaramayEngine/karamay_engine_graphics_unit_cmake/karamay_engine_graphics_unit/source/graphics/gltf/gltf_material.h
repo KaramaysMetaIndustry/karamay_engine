@@ -6,7 +6,10 @@
 class gltf_material
 {
 public:
-
+	bool load(const nlohmann::json& object)
+	{
+		return true;
+	}
 
 private:
 

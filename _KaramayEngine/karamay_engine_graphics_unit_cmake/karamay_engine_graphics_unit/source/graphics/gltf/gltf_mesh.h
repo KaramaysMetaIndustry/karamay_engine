@@ -6,7 +6,12 @@
 
 class gltf_mesh
 {
+public:
 
+	bool load(const nlohmann::json& object)
+	{
+		return true;
+	}
 };
 
 #endif

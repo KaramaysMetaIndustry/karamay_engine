@@ -8,6 +8,10 @@ class gltf_texture
 {
 public:
 
+	bool load(const nlohmann::json& object)
+	{
+		return true;
+	}
 
 private:
 

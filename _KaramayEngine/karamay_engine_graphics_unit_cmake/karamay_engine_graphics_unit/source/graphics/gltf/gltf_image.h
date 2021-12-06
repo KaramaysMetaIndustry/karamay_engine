@@ -7,14 +7,21 @@ class gltf_image
 {
 public:
 
-	gltf_image(const nlohmann::json& object)
+	gltf_image()
+	{}
+
+	bool load(const nlohmann::json& object)
 	{
 		if (object.find("uri") != object.cend()) object.at("uri").get_to(_uri);
+		return true;
 	}
 
 private:
 
-	std::string _uri;
+	std::string _uri; // "uri"
+
+	uint32 _buffer_view; // "bufferView"
+	std::string _mime_type; // "mimeType"
 
 };
 

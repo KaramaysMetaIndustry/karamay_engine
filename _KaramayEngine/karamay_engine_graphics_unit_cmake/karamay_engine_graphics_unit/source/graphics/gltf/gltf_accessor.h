@@ -7,6 +7,11 @@ class gltf_accessor
 {
 public:
 
+	bool load(const nlohmann::json& object)
+	{
+		return true;
+	}
+
 private:
 
 	std::uint32_t _buffer_view;

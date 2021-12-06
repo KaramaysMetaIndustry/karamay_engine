@@ -11,6 +11,15 @@ class gltf_node
 {
 public:
 
+public:
+    
+    bool load(const nlohmann::json& object)
+    {
+        return true;
+    }
+
+public:
+
     glm::mat4 matrix; // M = T * R * S
     std::string m;
 

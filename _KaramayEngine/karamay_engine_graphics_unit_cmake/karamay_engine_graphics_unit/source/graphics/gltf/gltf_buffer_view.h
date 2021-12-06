@@ -7,13 +7,19 @@ class gltf_buffer_view
 {
 public:
 
-	gltf_buffer_view(const nlohmann::json& object)
+	gltf_buffer_view()
 	{
-		if(object.find("buffer") != object.cend()) object.at("buffer").get_to(_buffer);
+	}
+
+	bool load(const nlohmann::json& object)
+	{
+		if (object.find("buffer") != object.cend()) object.at("buffer").get_to(_buffer);
 		if (object.find("byteOffset") != object.cend()) object.at("byteOffset").get_to(_byte_offset);
 		if (object.find("byteLength") != object.cend()) object.at("byteLength").get_to(_byte_length);
 		if (object.find("byteStride") != object.cend()) object.at("byteStride").get_to(_byte_stride);
 		if (object.find("target") != object.cend()) object.at("target").get_to(_target);
+
+		return true;
 	}
 
 private:
