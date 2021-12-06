@@ -9,4 +9,7 @@ https://www.khronos.org/registry/OpenGL/specs/gl/glspec46.core.pdf
 https://www.khronos.org/registry/OpenGL-Refpages/gl4/
 
 
+https://www.khronos.org/registry/glTF/specs/2.0/glTF-2.0.pdf
+
+
 
