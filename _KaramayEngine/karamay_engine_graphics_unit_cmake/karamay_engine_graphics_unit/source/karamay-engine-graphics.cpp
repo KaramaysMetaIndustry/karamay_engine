@@ -6,7 +6,7 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../dependencies/stb/stb_image.h"
-#include "renderers/gl_test_renderer.h"
+#include "renderers/gl_static_mesh_renderer.h"
 
 
 float vertices[] = {
@@ -374,21 +374,27 @@ void test0()
 	glDebugMessageCallback(MessageCallback, 0);
 #endif 
 
-	gl_test_renderer _test_renderer;
-	_test_renderer.initialize();
-	uint32 _frame_count = 0;
-	while (!_test_renderer.should_exit())
+    gl_static_mesh_renderer* _static_mesh_renderer = new gl_static_mesh_renderer();
+
+    std::vector<gl_renderer*> _renderers;
+    _renderers.push_back(_static_mesh_renderer);
+
+    for (auto _renderer : _renderers) _renderer->initialize();
+
+    uint32 _frame_count = 0;
+    float _frame_delta_time = 0.0f;
+    while (_renderers.size())
 	{
-		window->tick(0.0f);
-
-		if (_frame_count == 1)
-			_test_renderer.set_exit(true);
-
-		_test_renderer.render(1.0f);
-
-		++_frame_count;
+        _frame_delta_time = 0.0f;
+        auto _frame_start = std::chrono::steady_clock::now();
+        window->tick(0.0f);
+        for (auto _renderer : _renderers) _renderer->render(_frame_delta_time);
+        auto _frame_end = std::chrono::steady_clock::now();
+        _frame_delta_time = std::chrono::duration_cast<std::chrono::seconds>(_frame_end - _frame_start).count();
+        ++_frame_count;
 	}
 }
+
 //
 //void test1()
 //{

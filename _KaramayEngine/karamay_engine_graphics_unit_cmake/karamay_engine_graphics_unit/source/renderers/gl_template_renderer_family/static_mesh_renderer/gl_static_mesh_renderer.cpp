@@ -1,1 +1,0 @@
-#include "gl_static_mesh_renderer.h"

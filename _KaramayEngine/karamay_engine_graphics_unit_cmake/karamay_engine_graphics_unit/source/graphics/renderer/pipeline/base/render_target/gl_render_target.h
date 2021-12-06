@@ -5,26 +5,21 @@ class gl_render_target
 {
 public:
 
-    gl_render_target() {}
+    gl_render_target() : _framebuffer(nullptr)
+    {}
+
+    gl_render_target(const gl_render_target&) = delete;
+    gl_render_target& operator=(const gl_render_target&) = delete;
 
     ~gl_render_target() {}
 
 public:
 
-    void set_framebuffer(gl_framebuffer* framebuffer)
-    {
-        if (framebuffer == nullptr)
-        {
-            _default_framebuffer = gl_default_framebuffer::get_instance();
-            _framebuffer = nullptr;
-        }
-        else {
-            _default_framebuffer = nullptr;
-            _framebuffer = framebuffer;
-        }
-    }
+    void set_framebuffer(gl_framebuffer* framebuffer) { _framebuffer = framebuffer; }
 
     gl_framebuffer* get_framebuffer() const { return _framebuffer; }
+
+    void set_default() { _framebuffer = nullptr; }
 
 public:
 
@@ -35,7 +30,7 @@ public:
             _framebuffer->bind();
         }
         else {
-            _default_framebuffer->bind();
+            gl_default_framebuffer::get_instance()->bind();
         }
     }
 
@@ -46,14 +41,13 @@ public:
             _framebuffer->unbind();
         }
         else {
-            _default_framebuffer->unbind();
+            gl_default_framebuffer::get_instance()->unbind();
         }
     }
 
 private:
 
     gl_framebuffer* _framebuffer;
-    gl_default_framebuffer* _default_framebuffer;
 
 };
 

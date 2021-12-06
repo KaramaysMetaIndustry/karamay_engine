@@ -50,7 +50,6 @@ private:
 
 		auto source = content.c_str();
 		glShaderSource(_handle, 1, &source, NULL);
-
         glCompileShader(_handle);
         GLint _result = GL_FALSE;
         char info[512];
@@ -69,36 +68,30 @@ public:
 		_get_shader_params(GL_SHADER_TYPE, &_shader_type);
 		return static_cast<gl_shader_type>(_shader_type);
 	}
-
 	bool get_delete_status()
 	{
 		GLint _status = 0;
 		_get_shader_params(GL_DELETE_STATUS, &_status);
 		return _status == GL_TRUE;
 	}
-
 	bool get_compile_status()
 	{
 		GLint _status = 0;
 		_get_shader_params(GL_COMPILE_STATUS, &_status);
 		return _status == GL_TRUE;
 	}
-
 	std::uint32_t get_info_log_length()
 	{
 		GLint _length = 0;
 		_get_shader_params(GL_INFO_LOG_LENGTH, &_length);
 		return static_cast<std::uint32_t>(_length);
 	}
-
 	std::uint32_t get_source_length()
 	{
 		GLint _length = 0;
 		_get_shader_params(GL_SHADER_SOURCE_LENGTH, &_length);
 		return static_cast<std::uint32_t>(_length);
 	}
-
-
 	inline void _get_shader_params(GLenum param, GLint* value)
 	{
 		glGetShaderiv(_handle, param, value);
@@ -107,8 +100,6 @@ public:
 private:
 
 	gl_shader_type _shader_type;
-
-    std::vector<std::uint8_t> _source_stream;
 
 };
 

@@ -44,13 +44,21 @@ enum class gl_program_interface
  * 
  * 
  */
-class gl_program final : public gl_object, public std::enable_shared_from_this<gl_program>{
+class gl_program final : public gl_object{
 public:
-    gl_program() : gl_object(gl_object_type::PROGRAM_OBJ) {}
+    gl_program() : 
+        gl_object(gl_object_type::PROGRAM_OBJ) 
+    {
+        _handle = glCreateProgram();
+    }
+
     gl_program(const gl_program&) = delete;
     gl_program& operator=(const gl_program&) = delete;
 
-    ~gl_program() override {};
+    ~gl_program() 
+    {
+        glDeleteProgram(_handle);
+    }
 
 public:
 
@@ -65,7 +73,7 @@ public:
 	 * (3) introspection
 	 * (4) state setting
 	 */
-    bool construct(const std::vector<std::shared_ptr<gl_shader>>& shaders) noexcept
+    bool load(const std::vector<gl_shader*>& shaders) noexcept
     {
         // attach shaders
         for (const auto& _shader : shaders)
@@ -74,8 +82,8 @@ public:
         }
 
         // set linking parameters
-        glBindAttribLocation(_handle, 0, ""); // input
-        glBindFragDataLocation(_handle, 0, ""); // output
+        //glBindAttribLocation(_handle, 0, ""); // input
+        //glBindFragDataLocation(_handle, 0, ""); // output
         //glTransformFeedbackVaryings(_handle, 10, {"", ""}, GL_INTERLEAVED_ATTRIBS );
 
         // link
@@ -91,7 +99,7 @@ public:
             std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << _log_length << std::endl;
             glValidateProgram(_handle);
         }
-
+        std::cout << "program load successful.\n" << std::endl;
         return true;
     }
 
@@ -103,10 +111,7 @@ public:
      * */
     void enable() noexcept
     {
-	    if(glIsProgram(_handle))
-        {
-            glUseProgram(_handle);
-        }
+        glUseProgram(_handle);
     }
 
     /*
@@ -114,56 +119,10 @@ public:
      * */
 	void disable() noexcept
     {
-	    if(glIsProgram(_handle))
-	        glUseProgram(0);
-
-        glValidateProgram(_handle);
+        glUseProgram(0);
     }
-
-public: // query
-    // glGetActiveAtomicCounterBufferiv
-
-    // glGetActiveAttrib
-    // glGetAttribLocation
-
-    // glGetActiveSubroutineName
-    // glGetSubroutineIndex
-
-    // glGetActiveSubroutineUniform
-    // glGetActiveSubroutineUniformName
-    // glGetSubroutineUniformLocation
-    // glGetUniformSubroutine
-
-    // glGetActiveUniform
-    // glGetActiveUniformName
-    // glGetActiveUniforms
-    // glGetActiveUniformsiv
-    // glGetUniformIndices
-    // glGetUniformLocation
-    // glGetUniform
-
-    // glGetUniformBlockIndex
-    // glGetActiveUniformBlock
-    // glGetActiveUniformBlockName
-
-    // glGetFragDataIndex
-    // glGetFragDataLocation
-
-    // glGetTransformFeedbackVarying
-
 
 public:
-
-    void get_interface() const noexcept
-    {
-        //glGetProgramInterfaceiv(_handle, GL_TRANSFORM_FEEDBACK, GL_ACTIVE_RESOURCES, );
-    }
-
-    // glGetProgramResource
-    void get_resource() const noexcept
-    {
-        //glGetProgramResourceiv(_handle, GL_ATOMIC_COUNTER_BUFFER, -1, 100, {}, 100,  );
-    }
 
     /*
      * query the index of a named resource within a program
@@ -290,51 +249,40 @@ public:
         return std::string(name);
     }
 
-
-
-    // glGetProgramStageiv
-    std::int32_t stage_active_subroutine_uniforms_num(gl_shader_type shader_type)
+    int32 stage_active_subroutine_uniforms_num(gl_shader_type shader_type)
     {
         GLint param;
         glGetProgramStageiv(_handle, static_cast<GLenum>(shader_type), GL_ACTIVE_SUBROUTINE_UNIFORMS, &param);
         return param;
     }
 
-    std::int32_t stage_active_subroutine_uniform_locations_num(gl_shader_type shader_type)
+    int32 stage_active_subroutine_uniform_locations_num(gl_shader_type shader_type)
     {
         GLint param;
         glGetProgramStageiv(_handle, static_cast<GLenum>(shader_type), GL_ACTIVE_SUBROUTINE_UNIFORM_LOCATIONS, &param);
         return param;
     }
 
-    std::int32_t stage_active_subroutines_num(gl_shader_type shader_type)
+    int32 stage_active_subroutines_num(gl_shader_type shader_type)
     {
         GLint param;
         glGetProgramStageiv(_handle, static_cast<GLenum>(shader_type), GL_ACTIVE_SUBROUTINES, &param);
         return param;
     }
 
-    std::int32_t stage_active_subroutine_uniform_name_max_length(gl_shader_type shader_type)
+    int32 stage_active_subroutine_uniform_name_max_length(gl_shader_type shader_type)
     {
         GLint param;
         glGetProgramStageiv(_handle, static_cast<GLenum>(shader_type), GL_ACTIVE_SUBROUTINE_UNIFORM_MAX_LENGTH, &param);
         return param;
     }
 
-    std::int32_t stage_active_subroutine_name_max_length(gl_shader_type shader_type)
+    int32 stage_active_subroutine_name_max_length(gl_shader_type shader_type)
     {
         GLint param;
         glGetProgramStageiv(_handle, static_cast<GLenum>(shader_type), GL_ACTIVE_SUBROUTINE_MAX_LENGTH, &param);
         return param;
     }
-    // glGetProgramStageiv
-
-    //glGetShaderPrecisionFormat
-
-    //glGetShaderPrecisionFormat
-
-
-
 
 public: // glGetProgramiv
     /*

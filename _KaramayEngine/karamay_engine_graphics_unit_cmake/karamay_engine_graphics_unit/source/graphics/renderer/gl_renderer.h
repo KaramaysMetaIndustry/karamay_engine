@@ -322,46 +322,106 @@ private:
 
 };
 
+enum class gl_renderer_state
+{
+    uninitialized,
+    standby,
+    running,
+    paused,
+    stopped
+};
+
 class gl_renderer
 {
 public:
+    gl_renderer() :
+        _state(gl_renderer_state::uninitialized),
+        _exit(false)
+    {
 
-    gl_renderer(){}
+    }
 
     ~gl_renderer() = default;
 
-protected:
+public:
 
-    gl_renderer_builder _renderer_builder;
-#define builder _renderer_builder
+    void initialize()
+    {
+        if (_state == gl_renderer_state::uninitialized)
+        {
+            _implementation_build();
+            _state = gl_renderer_state::standby;
+        }
+    }
+
+    void render(float delta_time)
+    {
+        _implementation_render(delta_time);
+    }
+
+public:
+
+    bool should_exit()
+    {
+        return _exit;
+    }
+
+    void set_exit(bool exit)
+    {
+        _exit = exit;
+    }
+
+    void switch_state(gl_renderer_state state)
+    {
+        switch (state)
+        {
+        case gl_renderer_state::uninitialized:
+            break;
+        case gl_renderer_state::standby:
+            break;
+        case gl_renderer_state::running:
+            break;
+        case gl_renderer_state::paused:
+            break;
+        case gl_renderer_state::stopped:
+            break;
+        default:
+            break;
+        }
+    }
+
+private:
+
+    gl_renderer_state _state;
+
+    bool _exit;
+
+protected:
+    virtual  void _implementation_build() = 0;
+    virtual void _implementation_render(float delta_time) = 0;
 
     void _flush_commands() { glFlush(); }
     void _finish_commands() { glFinish(); }
+
+    gl_renderer_builder _renderer_builder;
+
+#define BUILDER _renderer_builder
+#define DEVICE_FRAMEBUFFER gl_default_framebuffer::get_instance()
 
 };
 
 
 #define DEFINE_RENDERER_CONSTRUCTOR(RENDERER_NAME)\
 public:\
-    static std::shared_ptr<RENDERER_NAME> _instance;\
     RENDERER_NAME() = default;\
-    RENDERER_NAME(const gl_static_mesh_renderer&) = delete;\
+    RENDERER_NAME(const RENDERER_NAME&) = delete;\
     RENDERER_NAME& operator=(const RENDERER_NAME&) = delete;\
     ~RENDERER_NAME() = default;\
-public:\
-    static std::shared_ptr<RENDERER_NAME> invoke()\
-    {\
-        if (!_instance)\
-        {\
-            _instance = std::make_shared<RENDERER_NAME>();\
-        }\
-        return _instance;\
-    }\
 
 
 #define IMPLEMENTATION_FUNC_BUILD()\
 protected:\
-void _implementation_build(gl_renderer_builder& builder) override\
+void _implementation_build() override\
 
 #define IMPLEMENTATION_FUNC_RENDER()\
 protected:\
@@ -369,11 +429,10 @@ void _implementation_render(std::float_t delta_time) override\
 
 
 #define DEFINE_RENDERER_BEGIN(RENDERER_NAME)\
-class RENDERER_NAME final : protected gl_renderer{\
+class RENDERER_NAME final : public gl_renderer{\
 DEFINE_RENDERER_CONSTRUCTOR(RENDERER_NAME)\
 
-#define DEFINE_RENDERER_END()\
-};\
+#define DEFINE_RENDERER_END };
 
 
 

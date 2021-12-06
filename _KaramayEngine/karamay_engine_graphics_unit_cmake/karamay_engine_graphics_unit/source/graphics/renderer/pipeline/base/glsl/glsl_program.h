@@ -8,6 +8,13 @@
 class glsl_program 
 {
 public:
+	glsl_program()
+	{}
+
+	~glsl_program()
+	{}
+
+public:
 	glsl_sampler1D* sampler1D(const std::string& name)
 	{
 		auto _it = _sampler1Ds.find(name);
@@ -24,6 +31,9 @@ public:
 	{
 		auto _it = _sampler2Ds.find(name);
 		if (_it != _sampler2Ds.cend()) return _it->second;
+#ifdef _DEBUG
+		throw std::exception("can not find sampler2D");
+#endif // _DEBUG
 		return nullptr;
 	}
 	glsl_sampler2DArray* sampler2DArray(const std::string& name)
@@ -456,13 +466,6 @@ public:
 
 private:
 
-	glsl_vertex_shader* _vertex_shader;
-	glsl_tessellation_shader* _tessellation_shader;
-	glsl_geometry_shader* _geometry_shader;
-	glsl_fragment_shader* _fragment_shader;
-
-private:
-
 	std::unordered_map<std::string, glsl_sampler1D*> _sampler1Ds;
 	std::unordered_map<std::string, glsl_sampler1DArray*> _sampler1DArrays;
 	std::unordered_map<std::string, glsl_sampler2D*> _sampler2Ds;
@@ -543,6 +546,8 @@ private:
 
 	std::unordered_map<std::string, glsl_uniform_block*> _uniform_blocks;
 	std::unordered_map<std::string, glsl_shader_storage_block*> _shader_storage_blocks;
+
+
 };
 
 class glsl_graphics_pipeline_program final : public glsl_program 
@@ -566,7 +571,56 @@ public:
 	glsl_graphics_pipeline_program& operator=(const glsl_graphics_pipeline_program&) = delete;
 
 	~glsl_graphics_pipeline_program()
-	{}
+	{
+		if (_vertex_shader) delete _vertex_shader;
+		if (_tessellation_shader) delete _tessellation_shader;
+		if (_geometry_shader) delete _geometry_shader;
+		if (_fragment_shader) delete _fragment_shader;
+		delete _program;
+	}
+
+public:
+
+	void load()
+	{
+		// generate template, if has no file, generate
+		
+		// generate template, if has file and but 'force' is active generate file
+
+		// if has file and forces is not active, load file and validate with template
+		std::string renderer_path = "C:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/shaders/Mesh/PBRMesh";
+		std::vector<gl_shader*> _shaders;
+		if (_vertex_shader) {
+			_vertex_shader->load(renderer_path + "/PBRMesh.vert");
+			_shaders.push_back(_vertex_shader->get_shader());
+		}
+		if (_tessellation_shader)
+		{
+			if (_tessellation_shader->load(renderer_path + "/PBRMesh.tesc", renderer_path + "/PBRMesh.tese"))
+			{
+				auto _shader_pair = _tessellation_shader->get_shader();
+				_shaders.push_back(_shader_pair.first);
+				_shaders.push_back(_shader_pair.second);
+			}
+		}
+		if (_geometry_shader)
+		{
+			_geometry_shader->load(renderer_path + "/PBRMesh.geom");
+			_shaders.push_back(_geometry_shader->get_shader());
+		}
+		if (_fragment_shader) 
+		{
+			_fragment_shader->load(renderer_path + "/PBRMesh.frag");
+			_shaders.push_back(_fragment_shader->get_shader());
+		}
+
+		_program = new gl_program();
+		
+		if (_program->load(_shaders))
+			std::cout << "program load successful" << std::endl;
+		else
+			std::cerr << "program load failed" << std::endl;
+	}
 
 private:
 
@@ -574,6 +628,7 @@ private:
 	glsl_tessellation_shader* _tessellation_shader;
 	glsl_geometry_shader* _geometry_shader;
 	glsl_fragment_shader* _fragment_shader;
+	gl_program* _program;
 
 };
 
@@ -595,8 +650,14 @@ public:
 private:
 
 	glsl_compute_shader* _cs;
-
 	gl_program* _program;
+
+public:
+	
+	void load()
+	{
+
+	}
 
 };
 

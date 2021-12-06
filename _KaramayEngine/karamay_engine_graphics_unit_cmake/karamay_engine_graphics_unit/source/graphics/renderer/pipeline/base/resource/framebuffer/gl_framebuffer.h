@@ -5,7 +5,8 @@
 #include "../texture/gl_texture.h"
 #include "../renderbuffer/gl_renderbuffer.h"
 
-class gl_framebuffer_base : public gl_object{
+class gl_framebuffer_base : public gl_object
+{
 protected:
     gl_framebuffer_base() : gl_object(gl_object_type::FRAMEBUFFER_OBJ) {}
 
@@ -134,19 +135,15 @@ public:
 
 public:
 
-    void set_drawable_color_components(std::vector<std::uint32_t> color_attachment_indices)
+    void set_draw_buffer(uint32 index)
     {
-        for (auto& elem : color_attachment_indices)
-        {
-            elem += GL_COLOR_ATTACHMENT0;
-        }
+        glNamedFramebufferDrawBuffer(_handle, GL_COLOR_ATTACHMENT0 + index);
+    }
+    void set_read_buffer(uint32 index)
+    {
+        glNamedFramebufferReadBuffer(_handle, GL_COLOR_ATTACHMENT0 + index);
+    }
 
-        glDrawBuffers(static_cast<GLsizei>(color_attachment_indices.size()), color_attachment_indices.data());
-    }
-    void set_readable_color_component(std::uint32_t color_attachment_index)
-    {
-        glReadBuffer(GL_COLOR_ATTACHMENT0 + color_attachment_index);
-    }
     void draw_pixels(int32 width, int32 height, gl_framebuffer_draw_format format, gl_framebuffer_draw_type type, const void* pixels)
     {
         //glPixelStoref();
@@ -200,7 +197,6 @@ public:
     {
         glCheckFramebufferStatus(GL_FRAMEBUFFER);
     }
-
     bool is_framebuffer() const
     {
         return glIsFramebuffer(_handle) == GL_TRUE ? true : false;
@@ -209,13 +205,48 @@ public:
 };
 
 
+enum class gl_default_framebuffer_draw_buffer : GLenum
+{
+    NONE = GL_NONE,
+
+    FRONT_LEFT = GL_FRONT_LEFT,
+    FRONT_RIGHT = GL_FRONT_RIGHT,
+    BACK_LEFT = GL_BACK_LEFT,
+    BACK_RIGHT = GL_BACK_RIGHT,
+    FRONT = GL_FRONT,
+    BACK = GL_BACK,
+    LEFT = GL_LEFT,
+    RIGHT = GL_RIGHT,
+
+    FRONT_AND_BACK = GL_FRONT_AND_BACK
+};
+
+enum class gl_default_framebuffer_read_buffer : GLenum
+{
+    FRONT_LEFT = GL_FRONT_LEFT,
+    FRONT_RIGHT = GL_FRONT_RIGHT,
+    BACK_LEFT = GL_BACK_LEFT,
+    BACK_RIGHT = GL_BACK_RIGHT,
+    FRONT = GL_FRONT,
+    BACK = GL_BACK,
+    LEFT = GL_LEFT,
+    RIGHT = GL_RIGHT
+};
+
 /*
 * GL_FONT_LEFT GL_FONT_RIGHT
 * GL_BACK_LEFT GL_BACK_RIGHT
 * GL_DEPTH
 * GL_STENCIL
 */
-class gl_default_framebuffer : public gl_framebuffer_base{
+class gl_default_framebuffer : public gl_framebuffer_base
+{
+private:
+    
+    gl_default_framebuffer() = default;
+
+    static gl_default_framebuffer* _instance;
+
 public:
 
     static gl_default_framebuffer* get_instance()
@@ -227,60 +258,54 @@ public:
         return _instance;
     }
 
-private:
-
-    static gl_default_framebuffer* _instance;
-
-    gl_default_framebuffer() = default;
-
 public:
 
-    void set_draw_color_targets()
-    {
-        glDrawBuffer(GL_BACK_LEFT);
-    }
-
-    void read_color(GLenum mode, GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void* pixels)
-    {
-        glReadBuffer(mode);
-        glReadPixels(x, y, width, height, format, type, pixels);
-    }
-
-    void read_depth(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void* pixels);
-
-    void read_stencil(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void* pixels);
-
-public:
-
-    static void clear_color_buffer()
+    void clear_color_buffer() noexcept
     {
         glClear(GL_COLOR_BUFFER_BIT);
     }
-    static void clear_color_buffer(std::float_t red, std::float_t green, std::float_t blue, std::float_t alpha)
+    void clear_color_buffer(float r, float g, float b, float a) noexcept
     {
-        glClearColor(red, green, blue, alpha);
+        glClearColor(r, g, b, a);
         glClear(GL_COLOR_BUFFER_BIT);
     }
-    static void clear_depth_buffer() noexcept {}
-    static void clear_depth_buffer(std::double_t depth) noexcept
+    void clear_depth_buffer() noexcept
+    {
+        glClear(GL_DEPTH_BUFFER_BIT);
+    }
+    void clear_depth_buffer(double depth) noexcept
     {
         glClearDepth(depth);
         glClear(GL_DEPTH_BUFFER_BIT);
     }
-    static void clear_stencil_buffer() noexcept
+    void clear_stencil_buffer() noexcept
     {
-
+        glClear(GL_STENCIL_BUFFER_BIT);
     }
-    static void clear_stencil_buffer(std::int32_t stencil) noexcept
+    void clear_stencil_buffer(int32 stencil) noexcept
     {
         glClearStencil(stencil);
         glClear(GL_STENCIL_BUFFER_BIT);
     }
 
+    void set_depth_test(bool open)
+    {
+        open ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
+    }
+    void set_stencil_test(bool open)
+    {
+        open ? glEnable(GL_STENCIL_TEST) : glDisable(GL_STENCIL_TEST);
+    }
+
 public:
 
-    static void read_pixels()
+    void set_draw_buffer(gl_default_framebuffer_draw_buffer buffer)
     {
+        glDrawBuffer(static_cast<GLenum>(buffer));
+    }
+    void set_read_buffer(gl_default_framebuffer_read_buffer buffer)
+    {
+        glReadBuffer(static_cast<GLenum>(buffer));
     }
 
 public:
@@ -288,7 +313,6 @@ public:
     void bind() override
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        
     }
 
     void unbind() override

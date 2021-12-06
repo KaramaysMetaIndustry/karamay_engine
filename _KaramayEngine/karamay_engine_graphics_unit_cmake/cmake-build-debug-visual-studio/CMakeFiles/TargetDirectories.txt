@@ -1,3 +1,0 @@
-G:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/cmake-build-debug-visual-studio/CMakeFiles/karamay_engine_graphics_unit.dir
-G:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/cmake-build-debug-visual-studio/CMakeFiles/edit_cache.dir
-G:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/cmake-build-debug-visual-studio/CMakeFiles/rebuild_cache.dir

@@ -392,12 +392,41 @@ public:
     gl_graphics_pipeline(glsl_vertex_shader* vs, glsl_fragment_shader* fs) :
         _program(nullptr)
     {
+        gl_vertex_launcher_descriptor _descriptor;
+        _vertex_launcher = new gl_vertex_launcher(_descriptor);
         _program = new glsl_graphics_pipeline_program(vs, fs);
-
+        _render_target = new gl_render_target();
+        _program->load();
     }
-    gl_graphics_pipeline(glsl_vertex_shader* vs, glsl_tessellation_shader* ts, glsl_fragment_shader* fs) {}
-    gl_graphics_pipeline(glsl_vertex_shader* vs, glsl_geometry_shader* gs, glsl_fragment_shader* fs) {}
-    gl_graphics_pipeline(glsl_vertex_shader* vs, glsl_tessellation_shader* ts, glsl_geometry_shader* gs, glsl_fragment_shader* fs) {}
+
+    gl_graphics_pipeline(glsl_vertex_shader* vs, glsl_tessellation_shader* ts, glsl_fragment_shader* fs) 
+    {
+        gl_vertex_launcher_descriptor _descriptor;
+        _vertex_launcher = new gl_vertex_launcher(_descriptor);
+        _program = new glsl_graphics_pipeline_program(vs, ts, fs);
+        _render_target = new gl_render_target();
+        _program->load();
+    }
+
+    gl_graphics_pipeline(glsl_vertex_shader* vs, glsl_geometry_shader* gs, glsl_fragment_shader* fs) 
+    {
+        gl_vertex_launcher_descriptor _descriptor;
+        _vertex_launcher = new gl_vertex_launcher(_descriptor);
+        _program = new glsl_graphics_pipeline_program(vs, gs, fs);
+        _render_target = new gl_render_target();
+        _program->load();
+    }
+
+    gl_graphics_pipeline(glsl_vertex_shader* vs, glsl_tessellation_shader* ts, glsl_geometry_shader* gs, glsl_fragment_shader* fs) 
+    {
+        gl_vertex_launcher_descriptor _descriptor;
+        _descriptor.primitive_mode = gl_primitive_mode::TRIANGLES;
+        _descriptor.primitive_vertices_num = 3;
+        _vertex_launcher = new gl_vertex_launcher(_descriptor);
+        _program = new glsl_graphics_pipeline_program(vs, ts, gs, fs);
+        _render_target = new gl_render_target();
+        _program->load();
+    }
 
     gl_graphics_pipeline(const gl_graphics_pipeline&) = delete;
     gl_graphics_pipeline& operator=(const gl_graphics_pipeline&) = delete;
@@ -419,6 +448,7 @@ public:
     void enable() noexcept
     {
         if (!_program) return;
+        _vertex_launcher->bind();
     }
 
     /*
@@ -434,7 +464,6 @@ public: // non-draw commands
 
     void begin_transform_feedback()
     {
-
         if (!_vertex_launcher || !_transform_feedback) return;
         gl_primitive_mode _TransformFeedbackPrimitiveMode = _vertex_launcher->get_primitive_mode();
         _transform_feedback->begin_transform_feedback(_TransformFeedbackPrimitiveMode);

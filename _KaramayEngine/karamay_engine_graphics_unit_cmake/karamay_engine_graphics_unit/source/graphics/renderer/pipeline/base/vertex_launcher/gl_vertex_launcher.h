@@ -38,16 +38,16 @@ struct gl_draw_elements_indirect_command {
 	uint32 baseInstance;
 };
 
-
 struct gl_vertex_launcher_descriptor
 {
 	gl_primitive_mode primitive_mode;
 	uint32 primitive_vertices_num; // IndicesNum % PrimitiveVerticesNum == 0
+	
 	gl_vertex_array_descriptor vertex_array_descriptor;
 	uint32 elements_num;
 };
 
-class gl_vertex_launcher 
+class gl_vertex_launcher
 {
 public:
 	using vertex_slot_reader = gl_vertex_array::vertex_slot_reader;
@@ -59,7 +59,7 @@ public:
 	using element_slot_reader = gl_element_array_buffer::element_buffer_reader;
 	using element_slot_writer = gl_element_array_buffer::element_buffer_writer;
 	using element_slot_handler = gl_element_array_buffer::element_buffer_handler;
-
+	
 	gl_vertex_launcher(const gl_vertex_launcher_descriptor& descriptor) :
 		_primitive_mode(descriptor.primitive_mode),
 		_primitive_vertices_num(descriptor.primitive_vertices_num),

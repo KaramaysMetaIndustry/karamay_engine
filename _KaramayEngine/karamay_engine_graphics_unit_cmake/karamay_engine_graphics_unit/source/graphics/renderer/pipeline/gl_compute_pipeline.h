@@ -3,7 +3,8 @@
 
 #include "base/gl_pipeline.h"
 
-class gl_compute_pipeline final : public gl_pipeline{
+class gl_compute_pipeline final : public gl_pipeline
+{
 public:
     gl_compute_pipeline(glsl_compute_shader* cs) :
         _program(nullptr)
@@ -24,19 +25,21 @@ public:
     void enable() noexcept
     {
         if (!_program) return;
+
     }
 
     void disable() noexcept
     {
         if(_program) return;
+
     }
 
 public:
 
-	void dispatch(uint32 group_size_x, uint32 group_size_y, uint32 group_size_z) noexcept
+	void dispatch(uint32 num_groups_x, uint32 num_groups_y, uint32 num_groups_z) noexcept
 	{
 	    if(!_program) return;
-        glDispatchCompute(group_size_x, group_size_y, group_size_z);
+        glDispatchCompute(num_groups_x, num_groups_y, num_groups_z);
 	}
 
 public:
