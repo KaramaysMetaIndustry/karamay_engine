@@ -24,7 +24,7 @@ public:
 
 	}
 
-	~gltf_file() {}
+	~gltf_file() = default;
 
 public:
 
@@ -32,14 +32,15 @@ public:
 	{
 		std::string _scene_gltf_path = path + "\\*.gltf";
 		if (!std::filesystem::exists(_scene_gltf_path))  return false;
-
 		nlohmann::json _file;
 		std::ifstream(_scene_gltf_path) >> _file;
 
 		auto _obj = _file.object();
-
+		if (_file.find("")!= _file.end())
+		{
+			_asset = new gltf_asset();
+		}
 		uint32 index = _file.at("scene");
-
 		if (_file.find("scenes") != _file.end())
 		{
 			auto _scene_objs = _file.at("scenes");
@@ -49,7 +50,6 @@ public:
 				if (_scene && _scene->load(*_it)) _scenes.push_back(_scene);
 			}
 		}
-
 		if (_file.find("nodes") != _file.end())
 		{
 			auto _node_objs = _file.at("nodes");
@@ -59,7 +59,6 @@ public:
 				if (_nod && _nod->load(*_it)) _nodes.push_back(_nod);
 			}
 		}
-
 		if (_file.find("cameras") != _file.end())
 		{
 			auto _camera_objs = _file.at("cameras");
@@ -69,7 +68,6 @@ public:
 				if (_cam && _cam->load(*_it)) _cameras.push_back(_cam);
 			}
 		}
-
 		if (_file.find("meshes") != _file.end())
 		{
 			auto _meshe_objs = _file.at("meshes");
@@ -79,7 +77,6 @@ public:
 				if (_mesh && _mesh->load(*_it)) _meshes.push_back(_mesh);
 			}
 		}
-
 		if(_file.find("materials") != _file.end())
 		{
 			auto _mat_objs = _file.at("materials");
@@ -89,7 +86,6 @@ public:
 				if (_mat && _mat->load(*_it)) _materials.push_back(_mat);
 			}
 		}
-
 		if (_file.find("textures") != _file.end())
 		{
 			auto _texture_objs = _file.at("textures");
@@ -99,7 +95,6 @@ public:
 				if (_tex && _tex->load(*_it)) _textures.push_back(_tex);
 			}
 		}
-		
 		if (_file.find("samplers") != _file.end())
 		{
 			auto _sampler_objs = _file.at("samplers");
@@ -109,7 +104,6 @@ public:
 				if (_smp && _smp->load(*_it)) _samplers.push_back(_smp);
 			}
 		}
-
 		if (_file.find("images") != _file.end())
 		{
 			auto _image_objs = _file.at("images");
@@ -119,7 +113,6 @@ public:
 				if (_img && _img->load(*_it)) _images.push_back(_img);
 			}
 		}
-
 		if (_file.find("accessors") != _file.end())
 		{
 			auto _accessor_objs = _file.at("accessors");
@@ -129,7 +122,6 @@ public:
 				if (_acc && _acc->load(*_it)) _accessors.push_back(_acc);
 			}
 		}
-
 		if (_file.find("buffers") != _file.end())
 		{
 			auto _buffer_objs = _file.at("buffers");
@@ -139,7 +131,6 @@ public:
 				if (_buf && _buf->load(*_it)) _buffers.push_back(_buf);
 			}
 		}
-
 		if (_file.find("bufferViews") != _file.end())
 		{
 			auto _buffer_view_objs = _file.at("bufferViews");
@@ -149,13 +140,12 @@ public:
 				if (_buf_view && _buf_view->load(*_it)) _buffer_views.push_back(_buf_view);
 			}
 		}
-
 		return true;
 	}
 
 public:
-	uint32 scene_index() const { return _scene; }
 	gltf_asset* asset() const { return _asset; }
+	uint32 scene_index() const { return _scene; }
 	const auto& scenes() const { return _scenes; }
 	const auto& nodes() const { return _nodes; }
 	const auto& cameras() const { return _cameras; }
