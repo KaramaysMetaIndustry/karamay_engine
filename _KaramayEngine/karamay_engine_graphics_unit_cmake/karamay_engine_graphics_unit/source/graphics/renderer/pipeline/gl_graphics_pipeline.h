@@ -660,7 +660,11 @@ public:
         _program->load();
     }
 
-    gl_graphics_pipeline(glsl_vertex_shader* vs, glsl_tessellation_shader* ts, glsl_geometry_shader* gs, glsl_fragment_shader* fs) 
+    gl_graphics_pipeline(glsl_vertex_shader* vs, glsl_tessellation_shader* ts, glsl_geometry_shader* gs, glsl_fragment_shader* fs) :
+        _program(nullptr),
+        _vertex_launcher(nullptr),
+        _render_target(nullptr),
+        _transform_feedback(nullptr)
     {
         gl_vertex_launcher_descriptor _descriptor;
         _descriptor.primitive_mode = gl_primitive_mode::TRIANGLES;
@@ -688,19 +692,38 @@ public:
     * Make sure all commands for this pipeline can work.
     * Between this range, many commands can be called.
     */
-    void enable() noexcept
+    void enable()
     {
-        if (!_program) return;
+#ifdef _DEBUG
+        if (!_program || !_vertex_launcher || !_render_target)
+            throw std::exception("vertex launcher, program, render target must not be nullptr");
+#endif // _DEBUG
+        _program->enable();
         _vertex_launcher->bind();
+        if (_transform_feedback)
+        {
+            _transform_feedback->bind();
+        }
+        _render_target->bind();
     }
 
     /*
     * Make sure all commands for this pipeline can not work.
     * Clear all context.
     */
-    void disable() noexcept
+    void disable()
     {
-        if (!_program) return;
+#ifdef _DEBUG
+        if (!_program || !_vertex_launcher || !_render_target)
+            throw std::exception("vertex launcher, program, render target must not be nullptr");
+#endif // _DEBUG
+        _program->disable();
+        _vertex_launcher->unbind();
+        if (_transform_feedback)
+        {
+            _transform_feedback->unbind();
+        }
+        _render_target->unbind();
     }
 
 public: // non-draw commands 
@@ -898,20 +921,33 @@ public:
 
 public:
 
-    gl_vertex_launcher& vertex_launcher() { return *_vertex_launcher; }
-
-    glsl_graphics_pipeline_program& program() { return *_program; }
-
-    gl_render_target& render_target() { return *_render_target; }
+    gl_vertex_launcher& vertex_launcher() 
+    {
+#ifdef _DEBUG
+        if (!_vertex_launcher) throw std::exception("vertex launcher must not be nullptr");
+#endif
+        return *_vertex_launcher; 
+    }
+    glsl_graphics_pipeline_program& program() 
+    { 
+#ifdef _DEBUG
+        if (!_program) throw std::exception("program must not be nullptr");
+#endif
+        return *_program; 
+    }
+    gl_render_target& render_target() 
+    {
+#ifdef _DEBUG
+        if (!_render_target) throw std::exception("render target must not be nullptr");
+#endif
+        return *_render_target; 
+    }
 
 private:
 
-    gl_vertex_launcher* _vertex_launcher;
-
-    gl_transform_feedback* _transform_feedback;
-
     glsl_graphics_pipeline_program* _program;
-
+    gl_vertex_launcher* _vertex_launcher;
+    gl_transform_feedback* _transform_feedback;
     gl_render_target* _render_target;
 
 };

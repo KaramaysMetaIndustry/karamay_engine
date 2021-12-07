@@ -622,6 +622,16 @@ public:
 			std::cerr << "program load failed" << std::endl;
 	}
 
+	void enable()
+	{
+		
+	}
+
+	void disable()
+	{
+
+	}
+
 private:
 
 	glsl_vertex_shader* _vertex_shader;

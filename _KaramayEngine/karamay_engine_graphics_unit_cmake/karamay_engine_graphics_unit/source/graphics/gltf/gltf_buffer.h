@@ -12,8 +12,7 @@ public:
 		_uri()
 	{}
 
-	~gltf_buffer()
-	{}
+	~gltf_buffer() = default;
 
 public:
 

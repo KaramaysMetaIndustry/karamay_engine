@@ -1,14 +1,21 @@
 #ifndef GLTF_ACCESSOR_H
 #define GLTF_ACCESSOR_H
 
-#include "gltf_buffer_view.h"
-
 class gltf_accessor
 {
+public:
+	gltf_accessor()
+	{
+
+	}
+
+	~gltf_accessor() = default;
+
 public:
 
 	bool load(const nlohmann::json& object)
 	{
+		
 		return true;
 	}
 

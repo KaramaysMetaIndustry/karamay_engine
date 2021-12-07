@@ -356,7 +356,7 @@ MessageCallback( GLenum source,
 
 }
 
-#include "graphics/gltf/gltf_file.h"
+#include "graphics/gltf/gltf_loader.h"
 
 void test0()
 {
@@ -374,8 +374,8 @@ void test0()
 	glEnable(GL_DEBUG_OUTPUT);
 	glDebugMessageCallback(MessageCallback, 0);
 #endif 
-    gltf_file* _file = new gltf_file();
-    _file->load("C:\\Users\\jichengcheng\\Downloads\\skull_downloadable");
+   
+    auto _file = gltf_loader::load("");
 
     gl_static_mesh_renderer* _static_mesh_renderer = new gl_static_mesh_renderer();
 

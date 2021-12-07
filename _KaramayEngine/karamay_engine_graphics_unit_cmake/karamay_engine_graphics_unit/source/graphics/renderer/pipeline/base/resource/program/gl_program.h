@@ -44,7 +44,8 @@ enum class gl_program_interface
  * 
  * 
  */
-class gl_program final : public gl_object{
+class gl_program final : public gl_object
+{
 public:
     gl_program() : 
         gl_object(gl_object_type::PROGRAM_OBJ) 
@@ -98,6 +99,7 @@ public:
             glGetProgramInfoLog(_handle, _log_length, nullptr, _log.data());
             std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << _log_length << std::endl;
             glValidateProgram(_handle);
+            return false;
         }
         std::cout << "program load successful.\n" << std::endl;
         return true;
