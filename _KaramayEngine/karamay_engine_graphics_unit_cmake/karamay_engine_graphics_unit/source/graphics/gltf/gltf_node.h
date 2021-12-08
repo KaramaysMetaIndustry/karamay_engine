@@ -10,6 +10,10 @@
 class gltf_node
 {
 public:
+    gltf_node()
+    {
+
+    }
 
 public:
     
