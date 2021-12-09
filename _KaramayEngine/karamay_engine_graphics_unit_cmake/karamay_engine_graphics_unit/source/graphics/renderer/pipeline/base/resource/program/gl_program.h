@@ -587,10 +587,6 @@ public:
         return param == GL_TRUE;
     }
 
-
-
-
-
 public: // glGetActiveAttrib
 
     struct gl_attribute_info
@@ -617,7 +613,6 @@ public:
         return glGetAttribLocation(_handle, name);
     }
 
-
 public:
 
     /*
@@ -636,17 +631,11 @@ public:
         return glGetFragDataLocation(_handle, name);
     }
 
-
-public:
-
     std::uint32_t query_uniform_block_index(const char* name)
     {
         return glGetUniformBlockIndex(_handle, name);
     }
 
-
-
-    //
     std::int32_t attribute_location(const char* name)
     {
         return glGetAttribLocation(_handle, name);
@@ -760,29 +749,15 @@ public:
 	{
 		glDisable(GL_ALPHA_TEST);
 	}
-	
-public:
-
-	/**
-	 * start render processing
-	 */
-	void render(std::float_t delta_time);
 
 private:
-	//~ render begin
-    void _tick_objects() {}
 	void _install();
 	void _enable();
-	void _call_commands();
 	void _disable();
 	void _uninstall();
-	//~ render end
-private:
 
-	// set only once time (when you first time setting the transform feedback)
 	void _set_transform_feedback_varyings();
 
-	// bind these persistent data to context (context is public)
 	void _bind_vertex_array();
 	void _bind_element_array_buffer();
 	void _bind_transform_feedback();
@@ -794,7 +769,6 @@ private:
 
     void _launch_uniforms() {}
 
-	// unbind these persistent data from context (you can not ensure that slots your have used will be overriden by next program)
 	void _unbind_vertex_array()
 	{
 		glBindVertexArray(0);
@@ -828,7 +802,6 @@ public:
 		glGetActiveUniformsiv(_handle, 4, _indices.data(), GL_UNIFORM_OFFSET, _offsets.data());
 	}
 
-
 	const std::int32_t get_uniform_buffer_block_size(const std::string block_name) const
 	{
 		GLint _value = 0;
@@ -847,7 +820,6 @@ public:
 		glGetActiveUniformsiv(_handle, 1, &_index, GL_UNIFORM_OFFSET, &_offset);
 		return _offset;
 	}
-
 
 	const std::int32_t get_shader_storage_buffer_block_size() const
 	{
@@ -932,6 +904,60 @@ public:
 		return _value == GL_TRUE;
 	}
  
+public:
+
+    //void update_uniform(const std::string& name, glsl_int v)
+    //{
+    //    glProgramUniform1i(_handle, glGetUniformLocation(_handle, name.c_str()), 0);
+    //}
+    //void update_uniform(const std::string& name, glsl_ivec2 v)
+    //{
+    //    glProgramUniform2i(_handle, glGetUniformLocation(_handle, name.c_str()), 0, 0);
+    //}
+    //void update_uniform(const std::string& name, const glsl_ivec3& v)
+    //{
+    //    glProgramUniform3iv(_handle, glGetUniformLocation(_handle, name.c_str()), 3, 0);
+    //}
+    //void update_uniform(const std::string& name, const glsl_ivec4& v)
+    //{
+    //    glProgramUniform4iv(_handle, glGetUniformLocation(_handle, name.c_str()), 4, 0);
+    //}
+
+    //void update_uniform(const std::string& name, glsl_uint v) {}
+    //void update_uniform(const std::string& name, glsl_uvec2 v){}
+    //void update_uniform(const std::string& name, const glsl_uvec3& v){}
+    //void update_uniform(const std::string& name, const glsl_uvec4& v){}
+
+    //void update_uniform(const std::string& name, glsl_float v) {}
+    //void update_uniform(const std::string& name, glsl_vec2 v) {}
+    //void update_uniform(const std::string& name, const glsl_vec3& v) {}
+    //void update_uniform(const std::string& name, const glsl_vec4& v) {}
+
+    //void update_uniform(const std::string& name, glsl_double v) {}
+    //void update_uniform(const std::string& name, glsl_dvec2 v) {}
+    //void update_uniform(const std::string& name, const glsl_dvec3& v) {}
+    //void update_uniform(const std::string& name, const glsl_dvec4& v) {}
+
+    //void update_uniform(const std::string& name, const glsl_mat2& v) {}
+    //void update_uniform(const std::string& name, const glsl_mat3& v) {}
+    //void update_uniform(const std::string& name, const glsl_mat4& v) {}
+    //void update_uniform(const std::string& name, const glsl_mat2x4& v) {}
+    //void update_uniform(const std::string& name, const glsl_mat2x3& v) {}
+    //void update_uniform(const std::string& name, const glsl_mat3x2& v) {}
+    //void update_uniform(const std::string& name, const glsl_mat3x4& v) {}
+    //void update_uniform(const std::string& name, const glsl_mat4x2& v) {}
+    //void update_uniform(const std::string& name, const glsl_mat4x3& v) {}
+
+    //void update_uniform(const std::string& name, const glsl_dmat2& v) {}
+    //void update_uniform(const std::string& name, const glsl_dmat3& v) {}
+    //void update_uniform(const std::string& name, const glsl_dmat4& v) {}
+    //void update_uniform(const std::string& name, const glsl_dmat2x4& v) {}
+    //void update_uniform(const std::string& name, const glsl_dmat2x3& v) {}
+    //void update_uniform(const std::string& name, const glsl_dmat3x2& v) {}
+    //void update_uniform(const std::string& name, const glsl_dmat3x4& v) {}
+    //void update_uniform(const std::string& name, const glsl_dmat4x2& v) {}
+    //void update_uniform(const std::string& name, const glsl_dmat4x3& v) {}
+
 };
 
 #endif

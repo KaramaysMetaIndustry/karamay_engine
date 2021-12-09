@@ -21,22 +21,22 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		auto _ambient_occlusion_map = BUILDER.create_texture_2d("ambient_occlusion_map", 1, 1024, 1024, gl_texture_internal_format::NOR_RGBA_UI8);
 		_ambient_occlusion_map->build_mipmaps();
 
-		// construct pipeline
-		//  : graphics program parameters
-		//  : vertex launcher
-		//  : default framebuffer
 		glsl_vertex_shader* _vs = new glsl_vertex_shader({});
 		glsl_tessellation_shader* _ts = new glsl_tessellation_shader({});
 		glsl_geometry_shader* _gs = new glsl_geometry_shader({});
 		glsl_fragment_shader* _fs = new glsl_fragment_shader({});
 		auto _mesh_pipeline = BUILDER.create_graphics_pipeline("mesh_pipeline", _vs, _ts, _gs, _fs);
 		
-		// fill vertex stream
-		_mesh_pipeline->vertex_launcher().reallocate_element_slot(10);
-		_mesh_pipeline->vertex_launcher().reallocate_vertex_slot(16);
+		auto& _vertex_launcher = _mesh_pipeline->vertex_launcher();
+		_vertex_launcher.reallocate_element_slot(10);
+		_vertex_launcher.reallocate_vertex_slot(16);
+		_vertex_launcher.execute_mapped_element_slot_handler(0, 1024, 
+			[](void* data, uint32 elements_num) 
+			{
 
+			}
+		);
 
-		// fill program parameters
 		/*_mesh_pipeline->program().sampler2D("mat.albedo_map")->set_texture_2d(_albedo_map);
 		_mesh_pipeline->program().sampler2D("mat.normal_map")->set_texture_2d(_normal_map);
 		_mesh_pipeline->program().sampler2D("mat.metalness_map")->set_texture_2d(_metalness_map);
@@ -44,16 +44,16 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		_mesh_pipeline->program().sampler2D("mat.displacement_map")->set_texture_2d(_displacement_map);
 		_mesh_pipeline->program().sampler2D("mat.ambient_occlusion_map")->set_texture_2d(_ambient_occlusion_map);*/
 
-		// set render target as default framebuffer
 		_mesh_pipeline->render_target().set_default();
+		
 	}
 
 	IMPLEMENTATION_FUNC_RENDER()
 	{
 		auto _mesh_pipeline = BUILDER.graphics_pipeline("mesh_pipeline");
-		if (!_mesh_pipeline) return;
-
-		// refresh device
+#ifdef _DEBUG
+		if (!_mesh_pipeline) throw std::exception("mesh pipeline must not be nullptr");
+#endif
 		DEVICE_FRAMEBUFFER->set_draw_buffer(gl_default_framebuffer_draw_buffer::LEFT);
 		DEVICE_FRAMEBUFFER->set_read_buffer(gl_default_framebuffer_read_buffer::LEFT);
 		DEVICE_FRAMEBUFFER->set_depth_test(true);
@@ -62,7 +62,6 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		DEVICE_FRAMEBUFFER->clear_depth_buffer();
 		DEVICE_FRAMEBUFFER->clear_stencil_buffer();
 
-		// vertex processing pass
 		_mesh_pipeline->enable();
 		_mesh_pipeline->draw_arrays(0, 1024);
 		_mesh_pipeline->disable();

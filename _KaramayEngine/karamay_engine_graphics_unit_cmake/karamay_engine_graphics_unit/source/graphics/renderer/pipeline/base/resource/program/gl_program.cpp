@@ -1,21 +1,5 @@
 #include "gl_program.h"
 
-
-
-void gl_program::render(std::float_t delta_time)
-{
-	_install();
-    {
-        _enable();
-        {
-            _launch_uniforms();	// must launch uniforms after program enabled
-            _call_commands();
-        }
-        _disable();
-    }
-	_uninstall();
-}
-
 void gl_program::_install()
 {
 	_bind_vertex_array();
@@ -33,11 +17,6 @@ void gl_program::_enable()
 	glUseProgram(_handle);
 
 	std::cout << "[program is enabled.]" << std::endl;
-}
-
-void gl_program::_call_commands()
-{
-	std::cout << "[commands are launched.]" << std::endl;
 }
 
 void gl_program::_disable()

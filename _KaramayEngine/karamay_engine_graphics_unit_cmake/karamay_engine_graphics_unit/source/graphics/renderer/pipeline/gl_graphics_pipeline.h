@@ -44,8 +44,12 @@ public:
     gl_vertex_launcher(const gl_vertex_launcher_descriptor& descriptor) :
         _primitive_mode(descriptor.primitive_mode),
         _primitive_vertices_num(descriptor.primitive_vertices_num),
-        _vertex_array(nullptr), _element_array_buffer(nullptr)
-    {}
+        _vertex_array(), _element_array_buffer()
+    {
+        gl_vertex_array_descriptor _des;
+        _vertex_array.reset(new gl_vertex_array(_des));
+        _element_array_buffer.reset(new gl_element_array_buffer(gl_element_type::UNSIGNED_BYTE, descriptor.elements_num));
+    }
 
     gl_vertex_launcher(const gl_vertex_launcher&) = delete;
     gl_vertex_launcher& operator=(const gl_vertex_launcher&) = delete;
@@ -159,13 +163,11 @@ public:
     void set_primitive_restart_flag_element(uint32 element_offset)
     {
         if (!_element_array_buffer) return;
-
         _element_array_buffer->set_primitive_restart_flag_element(element_offset);
     }
 
     const std::vector<uint32>& get_primitive_restart_flag_element_indices() const
     {
-
     }
 
 public:
@@ -627,37 +629,62 @@ struct gl_graphics_pipeline_state
 
 /*
  * graphics pipeline : 
- * vertex shader [+ tessellation control shader + tessellation evaluation shader] [+ geometry shader] + fragment shader
+ * vertex shader + fragment shader
+ * vertex shader + tessellation control shader + tessellation evaluation shader + fragment shader
+ * vertex shader + geometry shader + fragment shader
+ * vertex shader + tessellation control shader + tessellation evaluation shader + geometry shader + fragment shader
+ * 
+ * vertex shader
+ * vertex shader + tessellation control shader + tessellation evaluation shader
+ * vertex shader + geometry shader
+ * vertex shader + tessellation control shader + tessellation evaluation shader + geometry shader
  * */
 class gl_graphics_pipeline : public gl_pipeline
 {
 public:
     gl_graphics_pipeline(glsl_vertex_shader* vs, glsl_fragment_shader* fs) :
-        _program(nullptr)
+        _program(nullptr),
+        _vertex_launcher(nullptr),
+        _render_target(nullptr),
+        _transform_feedback(nullptr)
     {
-        gl_vertex_launcher_descriptor _descriptor;
-        _vertex_launcher = new gl_vertex_launcher(_descriptor);
         _program = new glsl_graphics_pipeline_program(vs, fs);
-        _render_target = new gl_render_target();
         _program->load();
-    }
 
-    gl_graphics_pipeline(glsl_vertex_shader* vs, glsl_tessellation_shader* ts, glsl_fragment_shader* fs) 
-    {
         gl_vertex_launcher_descriptor _descriptor;
         _vertex_launcher = new gl_vertex_launcher(_descriptor);
+
+        _render_target = new gl_render_target();
+    }
+
+    gl_graphics_pipeline(glsl_vertex_shader* vs, glsl_tessellation_shader* ts, glsl_fragment_shader* fs) :
+        _program(nullptr),
+        _vertex_launcher(nullptr),
+        _render_target(nullptr),
+        _transform_feedback(nullptr)
+    {
         _program = new glsl_graphics_pipeline_program(vs, ts, fs);
-        _render_target = new gl_render_target();
         _program->load();
-    }
 
-    gl_graphics_pipeline(glsl_vertex_shader* vs, glsl_geometry_shader* gs, glsl_fragment_shader* fs) 
-    {
         gl_vertex_launcher_descriptor _descriptor;
         _vertex_launcher = new gl_vertex_launcher(_descriptor);
-        _program = new glsl_graphics_pipeline_program(vs, gs, fs);
+        
         _render_target = new gl_render_target();
+    }
+
+    gl_graphics_pipeline(glsl_vertex_shader* vs, glsl_geometry_shader* gs, glsl_fragment_shader* fs) :
+        _program(nullptr),
+        _vertex_launcher(nullptr),
+        _render_target(nullptr),
+        _transform_feedback(nullptr)
+    {
+        _program = new glsl_graphics_pipeline_program(vs, gs, fs);
         _program->load();
+
+        gl_vertex_launcher_descriptor _descriptor;
+        _vertex_launcher = new gl_vertex_launcher(_descriptor);
+        
+        _render_target = new gl_render_target();
     }
 
     gl_graphics_pipeline(glsl_vertex_shader* vs, glsl_tessellation_shader* ts, glsl_geometry_shader* gs, glsl_fragment_shader* fs) :
@@ -666,13 +693,15 @@ public:
         _render_target(nullptr),
         _transform_feedback(nullptr)
     {
+        _program = new glsl_graphics_pipeline_program(vs, ts, gs, fs);
+        _program->load();
+
         gl_vertex_launcher_descriptor _descriptor;
         _descriptor.primitive_mode = gl_primitive_mode::TRIANGLES;
         _descriptor.primitive_vertices_num = 3;
         _vertex_launcher = new gl_vertex_launcher(_descriptor);
-        _program = new glsl_graphics_pipeline_program(vs, ts, gs, fs);
+
         _render_target = new gl_render_target();
-        _program->load();
     }
 
     gl_graphics_pipeline(const gl_graphics_pipeline&) = delete;
@@ -680,10 +709,13 @@ public:
 
     ~gl_graphics_pipeline()
     {
-        if (!_vertex_launcher) delete _vertex_launcher;
+#ifdef _DEBUG
+        if (!_program || !_vertex_launcher || !_render_target) throw std::exception("these must not be nullptr");
+#endif // !_DEBUG
+        delete _program;
+        delete _vertex_launcher;
         if (!_transform_feedback) delete _transform_feedback;
-        if (!_program) delete _program;
-        if (!_render_target) delete _render_target;
+        delete _render_target;
     }
 
 public:
@@ -717,14 +749,62 @@ public:
         if (!_program || !_vertex_launcher || !_render_target)
             throw std::exception("vertex launcher, program, render target must not be nullptr");
 #endif // _DEBUG
-        _program->disable();
-        _vertex_launcher->unbind();
+        _render_target->unbind();
         if (_transform_feedback)
         {
             _transform_feedback->unbind();
         }
-        _render_target->unbind();
+        _vertex_launcher->unbind();
+        _program->disable();
     }
+
+public:
+
+    /*
+    * ref the program body
+    * you can dynamic link or unlink program parameters' resource
+    */
+    glsl_graphics_pipeline_program& program()
+    {
+#ifdef _DEBUG
+        if (!_program) throw std::exception("program must not be nullptr");
+#endif
+        return *_program;
+    }
+
+    /*
+    * ref the vertex launcher
+    * you should combine and send vertex data to program
+    */
+    gl_vertex_launcher& vertex_launcher()
+    {
+#ifdef _DEBUG
+        if (!_vertex_launcher) throw std::exception("vertex launcher must not be nullptr");
+#endif
+        return *_vertex_launcher;
+    }
+
+    /*
+    * ref the render target
+    * you can set final target (device framebuffer / custom framebuffer) the renderer render to
+    */
+    gl_render_target& render_target()
+    {
+#ifdef _DEBUG
+        if (!_render_target) throw std::exception("render target must not be nullptr");
+#endif
+        return *_render_target;
+    }
+
+private:
+
+    glsl_graphics_pipeline_program* _program;
+
+    gl_vertex_launcher* _vertex_launcher;
+
+    gl_render_target* _render_target;
+
+    gl_transform_feedback* _transform_feedback;
 
 public: // non-draw commands 
 
@@ -919,36 +999,7 @@ public:
         return std::make_shared<gl_fence>();
     }
 
-public:
 
-    gl_vertex_launcher& vertex_launcher() 
-    {
-#ifdef _DEBUG
-        if (!_vertex_launcher) throw std::exception("vertex launcher must not be nullptr");
-#endif
-        return *_vertex_launcher; 
-    }
-    glsl_graphics_pipeline_program& program() 
-    { 
-#ifdef _DEBUG
-        if (!_program) throw std::exception("program must not be nullptr");
-#endif
-        return *_program; 
-    }
-    gl_render_target& render_target() 
-    {
-#ifdef _DEBUG
-        if (!_render_target) throw std::exception("render target must not be nullptr");
-#endif
-        return *_render_target; 
-    }
-
-private:
-
-    glsl_graphics_pipeline_program* _program;
-    gl_vertex_launcher* _vertex_launcher;
-    gl_transform_feedback* _transform_feedback;
-    gl_render_target* _render_target;
 
 };
 
