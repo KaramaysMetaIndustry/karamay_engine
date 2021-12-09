@@ -999,8 +999,14 @@ public:
         return std::make_shared<gl_fence>();
     }
 
+    void multi_draw_indirect()
+    {
+        glMultiDrawArraysIndirect();
+    }
 
-
+    void draw_indirect()
+    {
+    }
 };
 
 
