@@ -56,6 +56,22 @@ public:
 
     ~gl_vertex_launcher() = default;
 
+
+public:
+
+
+private:
+
+    void _set_state()
+    {
+        _enable_primitive_restart ? glEnable(GL_PRIMITIVE_RESTART) : glDisable(GL_PRIMITIVE_RESTART);
+        _use_fixed_primitive_restart_index ? glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX) : glDisable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
+        //glPrimitiveRestartIndex(0);
+    }
+
+    bool _enable_primitive_restart;
+    bool _use_fixed_primitive_restart_index;
+
 public:
 
     uint32 get_vertices_num() const { return _vertex_array ? _vertex_array->get_vertices_num() : 0; }
@@ -845,9 +861,9 @@ private:
         // vertex specification
         {
             glEnable(GL_PRIMITIVE_RESTART);
+            glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);// 2^N - 1
             glPrimitiveRestartIndex(0);
             // or
-            glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);// 2^N - 1
         }
 
         // vertex process
@@ -980,19 +996,20 @@ private:
 
         }
         
-        // blending
         {
             glEnable(GL_BLEND);
-            glBlendFunc(static_cast<GLenum>(gl_blend_func_factor::ZERO), static_cast<GLenum>(gl_blend_func_factor::ZERO));
-            //glBlendFunci();
-
             glBlendColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+            glBlendFunc(static_cast<GLenum>(gl_blend_func_factor::ZERO), static_cast<GLenum>(gl_blend_func_factor::ZERO));
             glBlendFuncSeparate();
-            glBlendFuncSeparatei();
             glBlendEquation();
-            glBlendEquationi();
             glBlendEquationSeparate();
+
+            glBlendFunci();
+            glBlendFuncSeparatei();
+            glBlendEquationi();
             glBlendEquationSeparatei();
+
         }
 
         // sRGB Conversion
@@ -1026,11 +1043,15 @@ private:
 
 public:
 
-    void set_blend_func(gl_blend_func_factor sfactor, gl_blend_func_factor dfactor)
+    void set_blend_func(gl_blend_func_factor src_rgb_factor, gl_blend_func_factor dst_rgbfactor)
     {
 
     }
 
+    void set_blend_func(gl_blend_func_factor src_rgb_factor, gl_blend_func_factor dst_rgbfactor, gl_blend_func_factor src_alpha_factor, gl_blend_func_factor dst_alpha_factor)
+    {
+
+    }
 
 };
 
