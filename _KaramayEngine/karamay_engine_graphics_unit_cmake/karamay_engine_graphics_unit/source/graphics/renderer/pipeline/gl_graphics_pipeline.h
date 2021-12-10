@@ -306,6 +306,24 @@ enum class gl_depth_func : GLenum
     df_always = GL_ALWAYS
 };
 
+enum class gl_blend_func_factor : GLenum
+{
+    ZERO = GL_ZERO,
+    ONE = GL_ONE,
+    SRC_COLOR = GL_SRC_COLOR,
+    ONE_MINUS_SRC_COLOR = GL_ONE_MINUS_SRC_COLOR,
+    DST_COLOR = GL_DST_COLOR,
+    ONE_MINUS_DST_COLOR = GL_ONE_MINUS_DST_COLOR,
+    SRC_ALPHA = GL_SRC_ALPHA,
+    ONE_MINUS_SRC_ALPHA = GL_ONE_MINUS_SRC_ALPHA,
+    DST_ALPHA = GL_DST_ALPHA,
+    ONE_MINUS_DST_ALPHA = GL_ONE_MINUS_DST_ALPHA,
+    CONSTANT_COLOR = GL_CONSTANT_COLOR,
+    ONE_MINUS_CONSTANT_COLOR = GL_ONE_MINUS_CONSTANT_COLOR,
+    CONSTANT_ALPHA = GL_CONSTANT_ALPHA,
+    ONE_MINUS_CONSTANT_ALPHA = GL_ONE_MINUS_CONSTANT_ALPHA,
+};
+
 enum class gl_provoke_mode : GLenum
 {
     first_vertex_convention = GL_FIRST_VERTEX_CONVENTION,
@@ -443,187 +461,6 @@ struct gl_graphics_pipeline_state
         } post_fragment_operations;
     } fragment_processing; // process fragments
 
-    void set()
-    {
-        // vertex specification
-        {
-            glEnable(GL_PRIMITIVE_RESTART);
-            glPrimitiveRestartIndex(0);
-            // or
-            glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);// 2^N - 1
-        }
-
-        // vertex process
-        {
-            //shading
-
-            // flatshading
-            glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);
-
-            // clipping
-            glEnable(GL_CLIP_DISTANCE0); // [0, GL_MAX_CLIP_DISTANCES-1]
-            glClipControl(GL_LOWER_LEFT, GL_NEGATIVE_ONE_TO_ONE);
-            // glEnable(GL_DEPTH_CLAMP);
-            glDepthRange(1.0l, 1.1l);
-            //glDepthRangeArrayv();
-            //glDepthRangef();
-//            glViewport();
-//            glDepthRangeIndexed();
-//            glViewportArrayv();
-//            glViewportIndexedf();
-//            glViewportIndexedfv();
-
-
-        }
-
-        // primitive assmebly
-        {
-
-        }
-        // rasterization
-        {
-            // 到达光栅化之前抛弃所有图元, 使得光栅化包括光栅化之后的阶段全部失效
-            if (true)
-                glEnable(GL_RASTERIZER_DISCARD);
-            else
-                glDisable(GL_RASTERIZER_DISCARD);
-
-            // multisampling
-            glEnable(GL_MULTISAMPLE);
-            glEnable(GL_SAMPLE_SHADING);
-            //            glMinSampleShading();
-            //            glGetMultisamplefv();
-
-                        // points
-            glEnable(GL_PROGRAM_POINT_SIZE);
-            glDisable(GL_PROGRAM_POINT_SIZE);
-            glPointSize(0);
-            //            glPointParameteri();
-            //            glPointParameteriv();
-            //            glPointParameterf();
-            //            glPointParameterfv();
-
-                        // line segments
-            glEnable(GL_LINE_SMOOTH);
-            glLineWidth(1.0f);
-
-            // polygons
-            glEnable(GL_POLYGON_SMOOTH);
-
-            glEnable(GL_CULL_FACE);
-            glFrontFace(GL_CCW);
-            glCullFace(GL_FRONT_AND_BACK);
-
-            // polygon rast & depth offset
-            glEnable(GL_POLYGON_OFFSET_FILL);
-            glEnable(GL_POLYGON_OFFSET_LINE);
-            glEnable(GL_POLYGON_OFFSET_POINT);
-            glEnable(GL_POLYGON_SMOOTH);
-            glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-            //glPolygonOffsetClamp();
-            glPolygonOffset(1.2f, 0);
-
-        }
-
-        // pre frag operations
-        {
-
-            // scissor test
-            glEnable(GL_SCISSOR_TEST);
-            glDisable(GL_SCISSOR_TEST);
-
-            glEnablei(GL_SCISSOR_TEST, 0);
-            glDisablei(GL_SCISSOR_TEST, 0);
-            glScissor(0, 0, 0, 0);
-            glScissorArrayv(0, 100, nullptr);
-            //glScissorIndexed();
-            //glScissorIndexedv();
-
-            // multisample fragment ops
-
-        }
-
-        // fragment shading
-        {
-
-        }
-
-        glEnable(GL_SAMPLE_COVERAGE);
-
-        // alpha to coverage
-        {
-            glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-            glEnable(GL_SAMPLE_ALPHA_TO_ONE); // or
-        }
-        // Stencil test
-        {
-            // do stencil test and update the stencil buffer
-            glEnable(GL_STENCIL_TEST);
-            gl_stencil_func _stencil_func;
-            //glStencilFunc(_stencil_func, 0, 1); // set front-face and back-face function and
-            glStencilFuncSeparate(static_cast<GLenum>(_stencil_func), static_cast<GLenum>(_stencil_func), 0, 1);
-
-            gl_stencil_op _stencil_op;
-            // stencil test fail , stencil stencil test pass but depth test fail, both pass
-           // glStencilOpSeparate(GL_FRONT, _stencil_op, _stencil_op, _stencil_op);
-           // glStencilOpSeparate(GL_BACK, _stencil_op, _stencil_op, _stencil_op);
-           // glStencilOpSeparate(GL_FRONT_AND_BACK, _stencil_op, _stencil_op, _stencil_op);
-            //glStencilOp(_stencil_op, _stencil_op, _stencil_op);
-            glStencilMaskSeparate(GL_FRONT, 1);
-            glStencilMaskSeparate(GL_BACK, 1);
-            glStencilMaskSeparate(GL_FRONT_AND_BACK, 1);
-            //glStencilMask(1);
-        }
-        // Depth test
-        {
-            glEnable(GL_DEPTH_TEST);
-            //glDepthFunc(df_never);
-        }
-        // occlusion queries
-        {
-
-        }
-        // blending
-        {
-            glEnable(GL_BLEND);
-            //            glBlendColor(1.0f, 1.0f, 1.0f, 1.0f);
-            //            glBlendFunc();
-            //            glBlendFuncSeparate();
-            //            glBlendFunci();
-            //            glBlendFuncSeparatei();
-            //            glBlendEquation();
-            //            glBlendEquationi();
-            //            glBlendEquationSeparate();
-            //            glBlendEquationSeparatei();
-        }
-        // sRGB Conversion
-        {
-            glEnable(GL_FRAMEBUFFER_SRGB);
-
-        }
-        //Dithering
-        {
-            glEnable(GL_DITHER);
-        }
-        // color logic operations
-        {
-
-            gl_logic_op _logic_op;
-            glEnable(GL_COLOR_LOGIC_OP);
-            glDisable(GL_COLOR_LOGIC_OP);
-            glLogicOp(static_cast<GLenum>(_logic_op));
-        }
-        // additional multisample fragment operations
-        {
-            glEnable(GL_MULTISAMPLE);
-            //glSampleCoverage();
-        }
-
-        glEnable(GL_SAMPLE_MASK);
-        //glSampleMaski();
-
-        glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-    }
 
 };
 
@@ -902,7 +739,7 @@ public:
     /*
     * draw vertex array according to element array by element_offset and elements_num
     */
-    std::shared_ptr<gl_fence> draw_elements(uint32 element_offset, uint32 elements_num) const
+    sptr<gl_fence> draw_elements(uint32 element_offset, uint32 elements_num) const
     {
         if (element_offset + elements_num >= _vertex_launcher->get_elements_num()) return nullptr;
         glDrawElements(
@@ -913,7 +750,7 @@ public:
         return std::make_shared<gl_fence>();
     }
 
-    std::shared_ptr<gl_fence> draw_elements(uint32 element_offset, uint32 elements_num, uint32 instances_num, uint32 base_instance) const
+    sptr<gl_fence> draw_elements(uint32 element_offset, uint32 elements_num, uint32 instances_num, uint32 base_instance) const
     {
         if (!_vertex_launcher) return nullptr;
         glDrawElementsInstancedBaseInstance(
@@ -924,7 +761,7 @@ public:
         return std::make_shared<gl_fence>();
     }
 
-    std::shared_ptr<gl_fence> draw_elements(uint32 element_offset, uint32 elements_num, uint32 base_vertex) const
+    sptr<gl_fence> draw_elements(uint32 element_offset, uint32 elements_num, uint32 base_vertex) const
     {
         if (!_vertex_launcher) return nullptr;
         glDrawElementsBaseVertex(
@@ -935,7 +772,7 @@ public:
         return std::make_shared<gl_fence>();
     }
 
-    std::shared_ptr<gl_fence> draw_elements(uint32 element_offset, uint32 elements_num, uint32 base_vertex, uint32 instances_num, uint32 base_instance) const
+    sptr<gl_fence> draw_elements(uint32 element_offset, uint32 elements_num, uint32 base_vertex, uint32 instances_num, uint32 base_instance) const
     {
         if (!_vertex_launcher) return nullptr;
         glDrawElementsInstancedBaseVertexBaseInstance(
@@ -946,7 +783,7 @@ public:
         return std::make_shared<gl_fence>();
     }
 
-    std::shared_ptr<gl_fence> draw_elements(const gl_draw_elements_indirect_command& command) const
+    sptr<gl_fence> draw_elements(const gl_draw_elements_indirect_command& command) const
     {
         glDrawElementsIndirect(
             static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
@@ -956,7 +793,7 @@ public:
         return std::make_shared<gl_fence>();
     }
 
-    std::shared_ptr<gl_fence> draw_range_elements(uint32 element_start, uint32 element_end, uint32 element_offset, uint32 elements_num, uint32 base_vertex) const
+    sptr<gl_fence> draw_range_elements(uint32 element_start, uint32 element_end, uint32 element_offset, uint32 elements_num, uint32 base_vertex) const
     {
         if (!_vertex_launcher) return nullptr;
         glDrawRangeElementsBaseVertex(
@@ -968,7 +805,7 @@ public:
         return std::make_shared<gl_fence>();
     }
 
-    std::shared_ptr<gl_fence> multi_draw_elements(const std::vector<uint32>& element_offsets, std::vector<uint32>& elements_nums) const
+    sptr<gl_fence> multi_draw_elements(const std::vector<uint32>& element_offsets, std::vector<uint32>& elements_nums) const
     {
         if (!_vertex_launcher) return nullptr;
         glMultiDrawElements(
@@ -979,19 +816,19 @@ public:
         return std::make_shared<gl_fence>();
     }
 
-    std::shared_ptr<gl_fence> multi_draw_elements(const std::vector<gl_draw_elements_indirect_command>& commands) const
+    sptr<gl_fence> multi_draw_elements(const std::vector<gl_draw_elements_indirect_command>& commands) const
     {
         return std::make_shared<gl_fence>();
     }
 
-    std::shared_ptr<gl_fence> draw_transform_feedback(uint32 stream_Index = 0)
+    sptr<gl_fence> draw_transform_feedback(uint32 stream_Index = 0)
     {
         if (!_vertex_launcher || !_transform_feedback) return nullptr;
         _transform_feedback->draw(_vertex_launcher->get_primitive_mode(), stream_Index);
         return std::make_shared<gl_fence>();
     }
 
-    std::shared_ptr<gl_fence> draw_transform_feedback(uint32 stream_index, uint32 instances_num)
+    sptr<gl_fence> draw_transform_feedback(uint32 stream_index, uint32 instances_num)
     {
         if (!_vertex_launcher || !_transform_feedback) return nullptr;
         gl_primitive_mode _TransformFeedbackPrimitiveMode = _vertex_launcher->get_primitive_mode();
@@ -999,14 +836,202 @@ public:
         return std::make_shared<gl_fence>();
     }
 
-    void multi_draw_indirect()
+private:
+
+    gl_graphics_pipeline_state _state;
+
+    void _set_state()
     {
-        glMultiDrawArraysIndirect();
+        // vertex specification
+        {
+            glEnable(GL_PRIMITIVE_RESTART);
+            glPrimitiveRestartIndex(0);
+            // or
+            glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);// 2^N - 1
+        }
+
+        // vertex process
+        {
+            //shading
+
+            // flatshading
+            glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);
+
+            // clipping
+            glEnable(GL_CLIP_DISTANCE0); // [0, GL_MAX_CLIP_DISTANCES-1]
+            glClipControl(GL_LOWER_LEFT, GL_NEGATIVE_ONE_TO_ONE);
+            // glEnable(GL_DEPTH_CLAMP);
+            glDepthRange(1.0l, 1.1l);
+            //glDepthRangeArrayv();
+            //glDepthRangef();
+//            glViewport();
+//            glDepthRangeIndexed();
+//            glViewportArrayv();
+//            glViewportIndexedf();
+//            glViewportIndexedfv();
+        }
+
+        // primitive assmebly
+        {
+
+        }
+        // rasterization
+        {
+            // 到达光栅化之前抛弃所有图元, 使得光栅化包括光栅化之后的阶段全部失效
+            
+            if (true)
+                glEnable(GL_RASTERIZER_DISCARD);
+            else
+                glDisable(GL_RASTERIZER_DISCARD);
+
+            // multisampling
+            glEnable(GL_MULTISAMPLE);
+            glEnable(GL_SAMPLE_SHADING);
+            //            glMinSampleShading();
+            //            glGetMultisamplefv();
+
+                        // points
+            glEnable(GL_PROGRAM_POINT_SIZE);
+            glDisable(GL_PROGRAM_POINT_SIZE);
+            glPointSize(0);
+            //            glPointParameteri();
+            //            glPointParameteriv();
+            //            glPointParameterf();
+            //            glPointParameterfv();
+
+                        // line segments
+            glEnable(GL_LINE_SMOOTH);
+            glLineWidth(1.0f);
+
+            // polygons
+            glEnable(GL_POLYGON_SMOOTH);
+
+            glEnable(GL_CULL_FACE);
+            glFrontFace(GL_CCW);
+            glCullFace(GL_FRONT_AND_BACK);
+
+            // polygon rast & depth offset
+            glEnable(GL_POLYGON_OFFSET_FILL);
+            glEnable(GL_POLYGON_OFFSET_LINE);
+            glEnable(GL_POLYGON_OFFSET_POINT);
+            glEnable(GL_POLYGON_SMOOTH);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+            //glPolygonOffsetClamp();
+            glPolygonOffset(1.2f, 0);
+
+        }
+
+        // pre frag operations
+        {
+
+            // scissor test
+            glEnable(GL_SCISSOR_TEST);
+            glDisable(GL_SCISSOR_TEST);
+
+            glEnablei(GL_SCISSOR_TEST, 0);
+            glDisablei(GL_SCISSOR_TEST, 0);
+            glScissor(0, 0, 0, 0);
+            glScissorArrayv(0, 100, nullptr);
+            //glScissorIndexed();
+            //glScissorIndexedv();
+
+            // multisample fragment ops
+
+        }
+
+        // fragment shading
+        {
+
+        }
+
+        glEnable(GL_SAMPLE_COVERAGE);
+
+        // alpha to coverage
+        {
+            glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+            glEnable(GL_SAMPLE_ALPHA_TO_ONE); // or
+        }
+        // Stencil test
+        {
+            // do stencil test and update the stencil buffer
+            glEnable(GL_STENCIL_TEST);
+            gl_stencil_func _stencil_func;
+            //glStencilFunc(_stencil_func, 0, 1); // set front-face and back-face function and
+            glStencilFuncSeparate(static_cast<GLenum>(_stencil_func), static_cast<GLenum>(_stencil_func), 0, 1);
+
+            gl_stencil_op _stencil_op;
+            // stencil test fail , stencil stencil test pass but depth test fail, both pass
+           // glStencilOpSeparate(GL_FRONT, _stencil_op, _stencil_op, _stencil_op);
+           // glStencilOpSeparate(GL_BACK, _stencil_op, _stencil_op, _stencil_op);
+           // glStencilOpSeparate(GL_FRONT_AND_BACK, _stencil_op, _stencil_op, _stencil_op);
+            //glStencilOp(_stencil_op, _stencil_op, _stencil_op);
+            glStencilMaskSeparate(GL_FRONT, 1);
+            glStencilMaskSeparate(GL_BACK, 1);
+            glStencilMaskSeparate(GL_FRONT_AND_BACK, 1);
+            //glStencilMask(1);
+        }
+        // Depth test
+        {
+            glEnable(GL_DEPTH_TEST);
+            //glDepthFunc(df_never);
+        }
+        // occlusion queries
+        {
+
+        }
+        
+        // blending
+        {
+            glEnable(GL_BLEND);
+            glBlendFunc(static_cast<GLenum>(gl_blend_func_factor::ZERO), static_cast<GLenum>(gl_blend_func_factor::ZERO));
+            //glBlendFunci();
+
+            glBlendColor(1.0f, 1.0f, 1.0f, 1.0f);
+            glBlendFuncSeparate();
+            glBlendFuncSeparatei();
+            glBlendEquation();
+            glBlendEquationi();
+            glBlendEquationSeparate();
+            glBlendEquationSeparatei();
+        }
+
+        // sRGB Conversion
+        {
+            glEnable(GL_FRAMEBUFFER_SRGB);
+
+        }
+        //Dithering
+        {
+            glEnable(GL_DITHER);
+        }
+        // color logic operations
+        {
+            gl_logic_op _logic_op;
+            glEnable(GL_COLOR_LOGIC_OP);
+            glDisable(GL_COLOR_LOGIC_OP);
+            glLogicOp(static_cast<GLenum>(_logic_op));
+        }
+        // additional multisample fragment operations
+        {
+            glEnable(GL_MULTISAMPLE);
+            //glSampleCoverage();
+        }
+
+        glEnable(GL_SAMPLE_MASK);
+        //glSampleMaski();
+
+        glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
     }
 
-    void draw_indirect()
+
+public:
+
+    void set_blend_func(gl_blend_func_factor sfactor, gl_blend_func_factor dfactor)
     {
+
     }
+
+
 };
 
 
