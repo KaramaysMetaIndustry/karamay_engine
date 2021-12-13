@@ -7,25 +7,25 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 
 	IMPLEMENTATION_FUNC_BUILD()
     {
-		// life time are managed by BUILDER 
-		auto _albedo_map = BUILDER.create_texture_2d("albedo_map", 1, 1024, 1024, gl_texture_internal_format::NOR_RGBA_UI8);
+		// life time are managed by builder 
+		auto _albedo_map = builder.create_texture_2d("albedo_map", 1, 1024, 1024, gl_texture_internal_format::NOR_RGBA_UI8);
 		_albedo_map->build_mipmaps();
-		auto _normal_map = BUILDER.create_texture_2d("normal_map", 1, 1024, 1024, gl_texture_internal_format::NOR_RGBA_UI8);
+		auto _normal_map = builder.create_texture_2d("normal_map", 1, 1024, 1024, gl_texture_internal_format::NOR_RGBA_UI8);
 		_normal_map->build_mipmaps();
-		auto _metalness_map = BUILDER.create_texture_2d("metalness_map", 1, 1024, 1024, gl_texture_internal_format::NOR_RGBA_UI8);
+		auto _metalness_map = builder.create_texture_2d("metalness_map", 1, 1024, 1024, gl_texture_internal_format::NOR_RGBA_UI8);
 		_metalness_map->build_mipmaps();
-		auto _roughness_map = BUILDER.create_texture_2d("roughness_map", 1, 1024, 1024, gl_texture_internal_format::NOR_RGBA_UI8);    
+		auto _roughness_map = builder.create_texture_2d("roughness_map", 1, 1024, 1024, gl_texture_internal_format::NOR_RGBA_UI8);
 		_roughness_map->build_mipmaps();
-		auto _displacement_map = BUILDER.create_texture_2d("displacement_map", 1, 1024, 1024, gl_texture_internal_format::NOR_RGBA_UI8);
+		auto _displacement_map = builder.create_texture_2d("displacement_map", 1, 1024, 1024, gl_texture_internal_format::NOR_RGBA_UI8);
 		_displacement_map->build_mipmaps();
-		auto _ambient_occlusion_map = BUILDER.create_texture_2d("ambient_occlusion_map", 1, 1024, 1024, gl_texture_internal_format::NOR_RGBA_UI8);
+		auto _ambient_occlusion_map = builder.create_texture_2d("ambient_occlusion_map", 1, 1024, 1024, gl_texture_internal_format::NOR_RGBA_UI8);
 		_ambient_occlusion_map->build_mipmaps();
 
 		glsl_vertex_shader* _vs = new glsl_vertex_shader({});
 		glsl_tessellation_shader* _ts = new glsl_tessellation_shader({});
 		glsl_geometry_shader* _gs = new glsl_geometry_shader({});
 		glsl_fragment_shader* _fs = new glsl_fragment_shader({});
-		auto _mesh_pipeline = BUILDER.create_graphics_pipeline("mesh_pipeline", _vs, _ts, _gs, _fs);
+		auto _mesh_pipeline = builder.create_graphics_pipeline("mesh_pipeline", _vs, _ts, _gs, _fs);
 		
 		auto& _vertex_launcher = _mesh_pipeline->vertex_launcher();
 		_vertex_launcher.reallocate_element_slot(10);
@@ -33,7 +33,6 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		_vertex_launcher.execute_mapped_element_slot_handler(0, 1024, 
 			[](void* data, uint32 elements_num) 
 			{
-
 			}
 		);
 
@@ -46,32 +45,47 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 
 		_mesh_pipeline->render_target().set_default();
 		
+		_mesh_pipeline->set_viewport(0, 0, 1024, 1024);
 		_mesh_pipeline->set_blend_enable(true);
 		_mesh_pipeline->set_blend_func(gl_blend_func_factor::ONE_MINUS_DST_COLOR, gl_blend_func_factor::CONSTANT_ALPHA);
 		_mesh_pipeline->set_cull_face_enable(true);
 		_mesh_pipeline->set_depth_test_enable(true);
-		_mesh_pipeline->set_viewport(0, 0, 1024, 1024);
+
+		default_framebuffer->cache_clear_color(1.0f, 0.5f, 1.0f, 1.0f);
+		default_framebuffer->cache_clear_depth(0.1l);
+		default_framebuffer->cache_clear_stencil(1);
+		default_framebuffer->switch_read_buffer(gl_default_framebuffer_read_buffer::LEFT);
 	}
 
 	IMPLEMENTATION_FUNC_RENDER()
 	{
-		auto _mesh_pipeline = BUILDER.graphics_pipeline("mesh_pipeline");
+		// switch default framebuffer
+		/*if (_frame_count % 2 != 0)
+			default_framebuffer->switch_draw_buffer(gl_default_framebuffer_draw_buffer::BACK_LEFT);
+		else
+			default_framebuffer->switch_draw_buffer(gl_default_framebuffer_draw_buffer::BACK_LEFT);*/
+
+		default_framebuffer->switch_draw_buffer(gl_default_framebuffer_draw_buffer::LEFT);
+		default_framebuffer->clear_color_buffer();
+		default_framebuffer->clear_depth_buffer();
+		default_framebuffer->clear_stencil_buffer();
+
+		auto _mesh_pipeline = builder.graphics_pipeline("mesh_pipeline");
+
 #ifdef _DEBUG
 		if (!_mesh_pipeline) throw std::exception("mesh pipeline must not be nullptr");
 #endif
 
-		DEVICE_FRAMEBUFFER->set_draw_buffer(gl_default_framebuffer_draw_buffer::LEFT);
-		DEVICE_FRAMEBUFFER->set_read_buffer(gl_default_framebuffer_read_buffer::LEFT);
-		DEVICE_FRAMEBUFFER->set_depth_test(true);
-		DEVICE_FRAMEBUFFER->set_stencil_test(true);
-		DEVICE_FRAMEBUFFER->clear_color_buffer(0.5f, 0.9f, 0.8f, 1.0f);
-		DEVICE_FRAMEBUFFER->clear_depth_buffer();
-		DEVICE_FRAMEBUFFER->clear_stencil_buffer();
-
 		_mesh_pipeline->enable();
 		_mesh_pipeline->draw_arrays(0, 1024);
 		_mesh_pipeline->disable();
+
+		_frame_count++;
+		
 	}
+
+private:
+	uint32 _frame_count = 0;
 
 DEFINE_RENDERER_END
 

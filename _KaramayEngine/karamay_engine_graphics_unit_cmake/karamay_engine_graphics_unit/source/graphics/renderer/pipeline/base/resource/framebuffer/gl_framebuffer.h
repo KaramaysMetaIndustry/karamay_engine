@@ -18,6 +18,7 @@ public:
 enum class gl_default_framebuffer_draw_buffer : GLenum
 {
     NONE = GL_NONE,
+    FRONT_AND_BACK = GL_FRONT_AND_BACK,
 
     FRONT_LEFT = GL_FRONT_LEFT,
     FRONT_RIGHT = GL_FRONT_RIGHT,
@@ -26,11 +27,8 @@ enum class gl_default_framebuffer_draw_buffer : GLenum
     FRONT = GL_FRONT,
     BACK = GL_BACK,
     LEFT = GL_LEFT,
-    RIGHT = GL_RIGHT,
-
-    FRONT_AND_BACK = GL_FRONT_AND_BACK
+    RIGHT = GL_RIGHT
 };
-
 enum class gl_default_framebuffer_read_buffer : GLenum
 {
     FRONT_LEFT = GL_FRONT_LEFT,
@@ -70,52 +68,49 @@ public:
 
 public:
 
+    void cache_clear_color(float r, float g, float b, float a) noexcept
+    {
+        glClearColor(r, g, b, a);
+    }
+    void cache_clear_stencil(int32 stencil) noexcept
+    {
+        glClearStencil(stencil);
+    }
+    void cache_clear_depth(double depth) noexcept
+    {
+        glClearDepth(depth);
+    }
+
     void clear_color_buffer() noexcept
     {
         glClear(GL_COLOR_BUFFER_BIT);
-    }
-    void clear_color_buffer(float r, float g, float b, float a) noexcept
-    {
-        glClearColor(r, g, b, a);
-        glClear(GL_COLOR_BUFFER_BIT);
-    }
-    void clear_depth_buffer() noexcept
-    {
-        glClear(GL_DEPTH_BUFFER_BIT);
-    }
-    void clear_depth_buffer(double depth) noexcept
-    {
-        glClearDepth(depth);
-        glClear(GL_DEPTH_BUFFER_BIT);
     }
     void clear_stencil_buffer() noexcept
     {
         glClear(GL_STENCIL_BUFFER_BIT);
     }
-    void clear_stencil_buffer(int32 stencil) noexcept
+    void clear_depth_buffer() noexcept
     {
-        glClearStencil(stencil);
-        glClear(GL_STENCIL_BUFFER_BIT);
+        glClear(GL_DEPTH_BUFFER_BIT);
     }
 
-    void set_depth_test(bool open)
-    {
-        open ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
-    }
-    void set_stencil_test(bool open)
-    {
-        open ? glEnable(GL_STENCIL_TEST) : glDisable(GL_STENCIL_TEST);
-    }
-
-public:
-
-    void set_draw_buffer(gl_default_framebuffer_draw_buffer buffer)
+    void switch_draw_buffer(gl_default_framebuffer_draw_buffer buffer)
     {
         glDrawBuffer(static_cast<GLenum>(buffer));
     }
-    void set_read_buffer(gl_default_framebuffer_read_buffer buffer)
+    void switch_read_buffer(gl_default_framebuffer_read_buffer buffer)
     {
         glReadBuffer(static_cast<GLenum>(buffer));
+    }
+
+    void read_pixels(int32 x, int32 y, int32 width, int32 height, void* pixels)
+    {
+        glReadPixels(x, y, width, height, 0, 0, pixels);
+        glClampColor(GL_CLAMP_READ_COLOR, GL_TRUE); // GL_FALSE, GL_FIXED_ONLY
+    }
+    void draw_pixels(int32 width, int32 height, const void* pixels)
+    {
+        glDrawPixels(width, height, 0, 0, pixels);
     }
 
 public:
@@ -124,7 +119,6 @@ public:
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
-
     void unbind() override
     {}
 
@@ -148,7 +142,6 @@ enum class gl_framebuffer_draw_format : GLenum
     LUMINANCE = GL_LUMINANCE,
     LUMINANCE_ALPHA = GL_LUMINANCE_ALPHA
 };
-
 enum class gl_framebuffer_draw_type : GLenum
 {
     BITMAP = GL_BITMAP,
@@ -175,7 +168,6 @@ enum class gl_framebuffer_draw_type : GLenum
     UNSIGNED_INT_2_10_10_10_REV = GL_UNSIGNED_INT_2_10_10_10_REV
 
 };
-
 
 class gl_framebuffer final : public gl_framebuffer_base
 {
@@ -207,6 +199,18 @@ public:
 
 public:
 
+    void set_draw_buffer(uint32 index)
+    {
+        //glNamedFramebufferDrawBuffers(_handle, )
+    }
+
+    void set_read_buffer(uint32 index)
+    {
+        glNamedFramebufferReadBuffer(_handle, GL_COLOR_ATTACHMENT0 + index);
+    }
+
+public:
+
     void enable_color_attchments(std::vector<uint32>& indices)
     {
         for (auto& index : indices)
@@ -220,17 +224,10 @@ public:
     {
         glNamedFramebufferDrawBuffer(_handle, GL_NONE);
     }
-    
 
 private:
 
     std::vector<GLenum> _active_color_attachments;
-
-    void _set()
-    {
-        
-    }
-
     std::vector<GLenum> _target_color_attachs;
 
     std::vector<gl_texture_2d*> _colors_tex_attachments;
@@ -268,52 +265,6 @@ public:
         glNamedFramebufferRenderbuffer(_handle, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer->get_handle());
     }
 
-public:
-
-    void set_draw_buffer(uint32 index)
-    {
-        glNamedFramebufferDrawBuffer(_handle, GL_COLOR_ATTACHMENT0 + index);
-    }
-    void set_read_buffer(uint32 index)
-    {
-        glNamedFramebufferReadBuffer(_handle, GL_COLOR_ATTACHMENT0 + index);
-    }
-
-    void draw_pixels(int32 width, int32 height, gl_framebuffer_draw_format format, gl_framebuffer_draw_type type, const void* pixels)
-    {
-        //glPixelStoref();
-        //glPixelTransferf();
-        //glPixelMapfv();
-        //glPixelZoom()
-        glDrawPixels(width, height, static_cast<GLenum>(format), static_cast<GLenum>(type), pixels);
-    }
-    void draw_depth_stencil(int32 width, int32 height, GLenum type, const void* pixels)
-    {
-        glDrawPixels(width, height, GL_DEPTH_STENCIL, type, pixels);
-    }
-    void read_color(int32 attachment_index, int32 x, int32 y, int32 width, int32 height, GLenum format, GLenum type, void* pixels)
-    {
-        glReadBuffer(GL_COLOR_ATTACHMENT0 + attachment_index);
-        glClampColor(GL_CLAMP_READ_COLOR, GL_TRUE); // GL_FALSE, GL_FIXED_ONLY
-        glReadPixels(x, y, width, height, format, type, pixels);
-    }
-    void read_depth(int32 x, int32 y, int32 width, int32 height, GLenum type, void* pixels)
-    {
-        glReadPixels(x, y, width, height, GL_DEPTH_COMPONENT, type, pixels);
-    }
-    void read_stencil(int32 x, int32 y, int32 width, int32 height, GLenum type, void* pixels)
-    {
-        glReadPixels(x, y, width, height, GL_STENCIL_INDEX, type, pixels);
-    }
-
-    void read_depth_stencil(int32 x, int32 y, int32 width, int32 height, GLenum type, void* pixels)
-    {
-        glReadPixels(x, y, width, height, GL_DEPTH_STENCIL, type, pixels);
-    }
-    void clamp_color()
-    {
-        //glClampColor();
-    }
     void blit(int32 src_x0, int32 src_y0, int32 src_x1, int32 src_y1, gl_framebuffer* dst_framebuffer, int32 dst_x0, int32 dst_y0, int32 dst_x1, int32 dst_y1)
     {
         glBlitNamedFramebuffer(_handle, dst_framebuffer->get_handle(),

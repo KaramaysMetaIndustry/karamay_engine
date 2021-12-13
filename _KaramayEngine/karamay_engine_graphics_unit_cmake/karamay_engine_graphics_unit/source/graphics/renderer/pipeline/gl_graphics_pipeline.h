@@ -956,16 +956,17 @@ private:
     bool _enable_polygon_offset_point;
 
     float _sample_shading_rate;
-    float _rasterized_line_width = 1.0f;
- 
-    gl_front_face_mode _front_face_mode;
 
+    // line smooth
+    float _rasterized_line_width = 1.0f;
+    
+    gl_front_face_mode _front_face_mode;
     gl_polygon_mode _polygon_mode;
 
 
     void _set_rasterization()
     {
-        // rasterizer discard
+        // rasterizer discard which make all stages discarded start from rasterization
         _enable_rasterizer_discard ? glEnable(GL_RASTERIZER_DISCARD) : glDisable(GL_RASTERIZER_DISCARD);
 
         // multisample
@@ -1016,30 +1017,10 @@ private:
         glPolygonMode(GL_FRONT_AND_BACK, static_cast<GLenum>(_polygon_mode));
         //glPolygonOffset();
         //glPolygonOffsetClamp();
-
-        if (_enable_polygon_offset_fill)
-        {
-            glEnable(GL_POLYGON_OFFSET_FILL);
-        }
-        else {
-            glDisable(GL_POLYGON_OFFSET_FILL);
-        }
-
-        if (_enable_polygon_offset_line)
-        {
-            glEnable(GL_POLYGON_OFFSET_LINE);
-        }
-        else {
-            glDisable(GL_POLYGON_OFFSET_LINE);
-        }
-
-        if (_enable_polygon_offset_point)
-        {
-            glEnable(GL_POLYGON_OFFSET_POINT);
-        }
-        else {
-            glDisable(GL_POLYGON_OFFSET_POINT);
-        }
+        
+        _enable_polygon_offset_point ? glEnable(GL_POLYGON_OFFSET_POINT) : glDisable(GL_POLYGON_OFFSET_POINT);
+        _enable_polygon_offset_line ? glEnable(GL_POLYGON_OFFSET_LINE) : glDisable(GL_POLYGON_OFFSET_LINE);
+        _enable_polygon_offset_fill ? glEnable(GL_POLYGON_OFFSET_FILL) : glDisable(GL_POLYGON_OFFSET_FILL);
     }
 
     // pre-fragment operations
@@ -1060,6 +1041,40 @@ private:
     int _scissor_x, _scissor_y, _scissor_width, _scissor_height;
     float _sample_coverage_value;
     bool _inverted;
+
+    enum class gl_stencil_func : GLenum
+    {
+        NEVER = GL_NEVER,
+        LESS = GL_LESS,
+        LEQUAL = GL_LEQUAL,
+        GREATER = GL_GREATER,
+        GEQUAL = GL_GEQUAL,
+        EQUAL = GL_EQUAL,
+        NOTEQUAL = GL_NOTEQUAL,
+        ALWAYS = GL_ALWAYS
+    };
+
+    gl_stencil_func _front_face_stencil_func = gl_stencil_func::ALWAYS;
+    gl_stencil_func _back_face_stencil_func = gl_stencil_func::ALWAYS;
+    uint32 _stencil_ref;
+    uint32 _stencil_mask;
+
+    enum class gl_stencil_operation : GLenum
+    {
+        KEEP = GL_KEEP,
+        ZERO = GL_ZERO,
+        REPLACE = GL_REPLACE,
+        INCR = GL_INCR,
+        INCR_WRAP = GL_INCR_WRAP,
+        DECR = GL_DECR,
+        DECR_WRAP = GL_DECR_WRAP,
+        INVERT = GL_INVERT
+    };
+
+    gl_stencil_operation _sfail_stencil_operation = gl_stencil_operation::KEEP;
+    gl_stencil_operation _dpfail_stencil_operation = gl_stencil_operation::KEEP;
+    gl_stencil_operation _dppass_stencil_operation = gl_stencil_operation::KEEP;
+
 
     void _set_pre_fragment_operation()
     {
@@ -1084,12 +1099,10 @@ private:
         }
         else {
             glDisable(GL_SAMPLE_MASK);
-            //glSampleMaski();
         }
 
         // sample alpha to coverage
         _enable_sample_alpha_to_coverage ? glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE) : glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-
         // sample alpha to one
         _enable_sample_alpha_to_one ? glEnable(GL_SAMPLE_ALPHA_TO_ONE) : glDisable(GL_SAMPLE_ALPHA_TO_ONE);
 
@@ -1107,10 +1120,24 @@ private:
         if (_enable_stencil_test)
         {
             glEnable(GL_STENCIL_TEST);
-            //glStencilFunc();
-            glStencilFuncSeparate();
-            //glStencilOp();
-            glStencilOpSeparate();
+            glStencilFuncSeparate(
+                static_cast<GLenum>(_front_face_stencil_func), 
+                static_cast<GLenum>(_back_face_stencil_func), 
+                _stencil_ref, _stencil_mask);
+            
+            glStencilOpSeparate(GL_FRONT, 
+                static_cast<GLenum>(_sfail_stencil_operation), 
+                static_cast<GLenum>(_dpfail_stencil_operation), 
+                static_cast<GLenum>(_dppass_stencil_operation)
+            );
+            glStencilOpSeparate(GL_BACK,
+                static_cast<GLenum>(_sfail_stencil_operation),
+                static_cast<GLenum>(_dpfail_stencil_operation),
+                static_cast<GLenum>(_dppass_stencil_operation)
+            );
+            
+            glStencilMaskSeparate(GL_FRONT, 1);
+            glStencilMaskSeparate(GL_BACK, 1);
         }
         else {
             glDisable(GL_STENCIL_TEST);

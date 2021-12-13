@@ -405,9 +405,8 @@ protected:
 
     gl_renderer_builder _renderer_builder;
 
-#define BUILDER _renderer_builder
-#define DEVICE_FRAMEBUFFER gl_default_framebuffer::get_instance()
-
+#define builder _renderer_builder
+#define default_framebuffer gl_default_framebuffer::get_instance()
 };
 
 
