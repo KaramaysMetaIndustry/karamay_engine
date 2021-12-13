@@ -46,6 +46,11 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 
 		_mesh_pipeline->render_target().set_default();
 		
+		_mesh_pipeline->set_blend_enable(true);
+		_mesh_pipeline->set_blend_func(gl_blend_func_factor::ONE_MINUS_DST_COLOR, gl_blend_func_factor::CONSTANT_ALPHA);
+		_mesh_pipeline->set_cull_face_enable(true);
+		_mesh_pipeline->set_depth_test_enable(true);
+		_mesh_pipeline->set_viewport(0, 0, 1024, 1024);
 	}
 
 	IMPLEMENTATION_FUNC_RENDER()
@@ -54,6 +59,7 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 #ifdef _DEBUG
 		if (!_mesh_pipeline) throw std::exception("mesh pipeline must not be nullptr");
 #endif
+
 		DEVICE_FRAMEBUFFER->set_draw_buffer(gl_default_framebuffer_draw_buffer::LEFT);
 		DEVICE_FRAMEBUFFER->set_read_buffer(gl_default_framebuffer_read_buffer::LEFT);
 		DEVICE_FRAMEBUFFER->set_depth_test(true);
