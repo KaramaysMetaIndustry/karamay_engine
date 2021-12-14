@@ -7,6 +7,8 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 
 	IMPLEMENTATION_FUNC_BUILD()
     {
+		// Builder.CreateTexture2D()
+		// AutoGenerateMipmaps()
 		// life time are managed by builder 
 		auto _albedo_map = builder.create_texture_2d("albedo_map", 1, 1024, 1024, gl_texture_internal_format::NOR_RGBA_UI8);
 		_albedo_map->build_mipmaps();
@@ -33,6 +35,7 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		_vertex_launcher.execute_mapped_element_slot_handler(0, 1024, 
 			[](void* data, uint32 elements_num) 
 			{
+
 			}
 		);
 
@@ -51,7 +54,7 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		_mesh_pipeline->set_cull_face_enable(true);
 		_mesh_pipeline->set_depth_test_enable(true);
 
-		default_framebuffer->cache_clear_color(1.0f, 0.5f, 1.0f, 1.0f);
+		default_framebuffer->cache_clear_color(0.3f, 0.5f, 0.8f, 1.0f);
 		default_framebuffer->cache_clear_depth(0.1l);
 		default_framebuffer->cache_clear_stencil(1);
 		default_framebuffer->switch_read_buffer(gl_default_framebuffer_read_buffer::LEFT);
@@ -77,11 +80,11 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 #endif
 
 		_mesh_pipeline->enable();
-		_mesh_pipeline->draw_arrays(0, 1024);
+		auto _fence = _mesh_pipeline->draw_arrays(0, 1024);
+		//_fence->client_wait(0);
 		_mesh_pipeline->disable();
 
 		_frame_count++;
-		
 	}
 
 private:

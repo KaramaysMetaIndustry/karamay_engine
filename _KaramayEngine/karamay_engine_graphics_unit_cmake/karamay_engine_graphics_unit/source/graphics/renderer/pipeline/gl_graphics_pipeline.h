@@ -268,25 +268,25 @@ private:
 
 enum class gl_stencil_op : GLenum
 {
-	so_keep = GL_KEEP, // keep current val
-	so_zero = GL_ZERO, // set val to 0
-	so_replace = GL_REPLACE, //set val to ref specified by glStencilFunc
-	so_incr = GL_INCR, // 
-	so_incr_wrap = GL_INCR_WRAP,
-	so_decr = GL_DECR,
-	so_decr_wrap = GL_DECR_WRAP,
-	so_invert = GL_INVERT
+	KEEP = GL_KEEP, 
+	ZERO = GL_ZERO,
+	REPLACE = GL_REPLACE,
+	INCR = GL_INCR,
+	INCR_WRAP = GL_INCR_WRAP,
+	DECR = GL_DECR,
+    DECR_WRAP = GL_DECR_WRAP,
+	INVERT = GL_INVERT
 };
 enum class gl_stencil_func : GLenum
 {
-	sf_never = GL_NEVER,
-	sf_always = GL_ALWAYS,
-	sf_less = GL_LESS,
-	sf_less_equal = GL_LEQUAL,
-	sf_greater = GL_GREATER,
-	sf_greater_equal = GL_GEQUAL,
-	sf_equal = GL_EQUAL,
-	sf_not_equeal = GL_NOTEQUAL
+	NEVER = GL_NEVER, // fail
+	ALWAYS = GL_ALWAYS, // pass
+	LESS = GL_LESS, // <
+	LEQUAL = GL_LEQUAL, // <=
+	GREATER = GL_GREATER, // >
+	GEQUAL = GL_GEQUAL, // >=
+	EQUAL = GL_EQUAL, // ==
+	NOTEQUAL = GL_NOTEQUAL // !=
 };
 enum class gl_logic_op : GLenum
 {
@@ -315,14 +315,14 @@ enum class gl_cull_face : GLenum
 };
 enum class gl_depth_func : GLenum
 {
-    df_never = GL_NEVER,
-    df_less = GL_LESS,
-    df_equeal = GL_EQUAL,
-    df_less_equal = GL_LEQUAL,
-    df_greater = GL_GREATER,
-    df_not_equal = GL_NOTEQUAL,
-    df_greater_equal = GL_GEQUAL,
-    df_always = GL_ALWAYS
+    NEVER = GL_NEVER, // fail
+    ALWAYS = GL_ALWAYS, // pass
+    LESS = GL_LESS, // <
+    EQUAL = GL_EQUAL, // ==
+    LEQUAL = GL_LEQUAL, // <=
+    GREATER = GL_GREATER, // >
+    NOTEQUAL = GL_NOTEQUAL, // !=
+    GEQUAL = GL_GEQUAL // >=
 };
 enum class gl_blend_func_factor : GLenum
 {
@@ -368,9 +368,6 @@ enum class gl_polygon_mode : GLenum
     FILL = GL_FILL
 };
 
-/*
- * for dynamical modifying
- * */
 struct gl_graphics_pipeline_state
 {
     struct gl_vertex_assembly
@@ -661,11 +658,8 @@ public:
 private:
 
     glsl_graphics_pipeline_program* _program;
-
     gl_vertex_launcher* _vertex_launcher;
-
     gl_render_target* _render_target;
-
     gl_transform_feedback* _transform_feedback;
 
 public: // non-draw commands 
@@ -710,7 +704,7 @@ public:
     /*
     * draw vertex array by vertex_offset and vertices_num
     */
-    std::shared_ptr<gl_fence> draw_arrays(uint32 vertex_offset, uint32 vertices_num)
+    sptr<gl_fence> draw_arrays(uint32 vertex_offset, uint32 vertices_num)
     {
         if (!_vertex_launcher || vertex_offset + vertices_num >= _vertex_launcher->get_vertices_num()) return nullptr;
         glDrawArrays(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), vertex_offset, vertices_num);
@@ -721,7 +715,7 @@ public:
     * draw vertex array by vertex_offset and vertices_num
     * draw number of instances, and specify where instance attribute will effect vertex 
     */
-    std::shared_ptr<gl_fence> draw_arrays(uint32 vertex_offset, uint32 vertices_num, uint32 instances_num, uint32 base_instance) const
+    sptr<gl_fence> draw_arrays(uint32 vertex_offset, uint32 vertices_num, uint32 instances_num, uint32 base_instance) const
     {
         if (!_vertex_launcher || vertex_offset + vertices_num >= _vertex_launcher->get_vertices_num()) return nullptr;
         if (base_instance >= instances_num) return nullptr;
@@ -732,7 +726,7 @@ public:
     /*
     * draw vertex array by indrect command
     */
-    std::shared_ptr<gl_fence> draw_arrays(const gl_draw_arrays_indirect_command& command) const
+    sptr<gl_fence> draw_arrays(const gl_draw_arrays_indirect_command& command) const
     {
         glDrawArraysIndirect(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), (const void*)&command);
         return std::make_shared<gl_fence>();
@@ -742,7 +736,7 @@ public:
     * multi draw vertex array by vertex_offset and vertices_num pairs
     * multi drawing can not support instanced drawing.
     */
-    std::shared_ptr<gl_fence> multi_draw_arrays(const std::vector<uint32>& vertex_offsets, const std::vector<uint32>& vertices_nums) const
+    sptr<gl_fence> multi_draw_arrays(const std::vector<uint32>& vertex_offsets, const std::vector<uint32>& vertices_nums) const
     {
         if (!_vertex_launcher) return nullptr;
         if (vertex_offsets.size() != vertices_nums.size()) return nullptr;
@@ -755,7 +749,7 @@ public:
     /*
     * multi draw vertex array by indrect command
     */
-    std::shared_ptr<gl_fence> multi_draw_arrays(const std::vector<gl_draw_arrays_indirect_command>& commands) const
+    sptr<gl_fence> multi_draw_arrays(const std::vector<gl_draw_arrays_indirect_command>& commands) const
     {
         //glMultiDrawArraysIndirect()
         return std::make_shared<gl_fence>();
@@ -866,30 +860,24 @@ public:
     void set_blend_enable(bool enable) { _enable_blend = enable; }
     void set_clip_distance0_enable(bool enable) { _enable_clip_distance0 = enable; }
     void set_color_logic_op_enable(bool enable) { _enable_color_logic_op = enable; }
-    void set_cull_face_enable(bool enable) { _enable_cull_face = enable; }
     void set_debug_output_enable(bool enable) { _enable_debug_output = enable; }
     void set_debug_output_synchronous(bool enable) { _enable_debug_output_synchronous = enable; }
     void set_depth_clamp_enable(bool enable) { _enable_depth_clamp = enable; }
     void set_depth_test_enable(bool enable) { _enable_depth_test = enable; }
     void set_dither_enable(bool enable) { _enable_dither = enable; }
     void set_framebuffer_srgb_enable(bool enable) { _enable_framebuffer_srgb = enable; }
-    void set_line_smooth_enable(bool enable) { _enable_line_smooth = enable; }
-    void set_multisample_enable(bool enable) { _enable_multisample = enable; }
-    void set_polygon_offset_fill_enable(bool enable) { _enable_polygon_offset_fill = enable; }
-    void set_polygon_offset_line_enable(bool enable) { _enable_polygon_offset_line = enable; }
-    void set_polygon_offset_point_enable(bool enable) { _enable_polygon_offset_point = enable; }
-    void set_polygon_smooth_enable(bool enable) { _enable_polygon_smooth = enable; }
+
     void set_primitive_restart(bool enable) { _enable_primitive_restart = enable; }
-    void set_rasterizer_discard(bool enable) { _enable_rasterizer_discard = enable; }
+
+
+
     void set_sample_alpha_to_coverage_enable(bool enable) { _enable_sample_alpha_to_coverage = enable; }
     void set_sample_alpha_to_one_enable(bool enable) { _enable_sample_alpha_to_one = enable; }
     void set_sample_coverage_enable(bool enable) { _enable_sample_coverage = enable; }
-    void set_sample_shading_enable(bool enable) { _enable_sample_shading = enable; }
     void set_sample_mask_enable(bool enable) { _enable_sample_mask = enable; }
     void set_scissor_test_enable(bool enable) { _enable_scissor_test = enable; }
     void set_stencil_test_enable(bool enable) { _enable_stencil_test = enable; }
     void set_texture_cube_map_sampless_enable(bool enable) { _enable_texture_cube_map_sampless = enable; }
-    void set_program_point_size_enable(bool enable) { _enable_program_point_size = enable; }
 
 public:
 
@@ -911,7 +899,6 @@ private:
     bool _enable_clip_distance0;
 
     glm::vec4 _viewport;
-
     gl_clip_control_origin _clip_control_origin;
     gl_clip_control_depth_mode _clip_control_depth_mode;
     gl_provoke_mode _provoke_mode;
@@ -943,7 +930,31 @@ private:
 
     }
 
-    // rasterization
+public:
+    void set_rasterizer_discard(bool enable) { _enable_rasterizer_discard = enable; }
+    void set_multisample_enable(bool enable) { _enable_multisample = enable; }
+    void set_sample_shading_enable(bool enable) { _enable_sample_shading = enable; }
+    void set_sample_shading_rate(float rate) { _sample_shading_rate = rate; }
+
+    void set_program_point_size_enable(bool enable) { _enable_program_point_size = enable; }
+    void set_line_smooth_enable(bool enable) { _enable_line_smooth = enable; }
+    void set_rasterized_line_width(float width) { _rasterized_line_width = width; }
+
+    void set_polygon_smooth_enable(bool enable) { _enable_polygon_smooth = enable; }
+    
+    void set_front_face(gl_front_face_mode face_mode) { _front_face_mode = face_mode; }
+
+    void set_cull_face_enable(bool enable) { _enable_cull_face = enable; }
+    void set_cull_face(gl_cull_face face) { _cull_face = face; }
+
+    void set_front_polygon_mode(gl_polygon_mode mode) { _front_polygon_mode = mode; }
+    void set_back_polygon_mode(gl_polygon_mode mode) { _back_polygon_mode = mode; }
+
+    void set_polygon_offset_fill_enable(bool enable) { _enable_polygon_offset_fill = enable; }
+    void set_polygon_offset_line_enable(bool enable) { _enable_polygon_offset_line = enable; }
+    void set_polygon_offset_point_enable(bool enable) { _enable_polygon_offset_point = enable; }
+
+private:
     bool _enable_rasterizer_discard;
     bool _enable_multisample;
     bool _enable_sample_shading;
@@ -956,22 +967,18 @@ private:
     bool _enable_polygon_offset_point;
 
     float _sample_shading_rate;
-
-    // line smooth
     float _rasterized_line_width = 1.0f;
-    
     gl_front_face_mode _front_face_mode;
-    gl_polygon_mode _polygon_mode;
-
+    gl_cull_face _cull_face;
+    gl_polygon_mode _front_polygon_mode;
+    gl_polygon_mode _back_polygon_mode;
 
     void _set_rasterization()
     {
         // rasterizer discard which make all stages discarded start from rasterization
         _enable_rasterizer_discard ? glEnable(GL_RASTERIZER_DISCARD) : glDisable(GL_RASTERIZER_DISCARD);
-
         // multisample
         _enable_multisample ? glEnable(GL_MULTISAMPLE) : glDisable(GL_MULTISAMPLE);
-
         // sample shading
         if (_enable_sample_shading)
         {
@@ -981,11 +988,9 @@ private:
         else {
             glDisable(GL_SAMPLE_SHADING);
         }
-
         // points
         // program point size
         _enable_program_point_size ? glEnable(GL_PROGRAM_POINT_SIZE) : glDisable(GL_PROGRAM_POINT_SIZE);
-
         // line segments
         // line smooth
         if (_enable_line_smooth)
@@ -996,13 +1001,10 @@ private:
         else {
             glDisable(GL_LINE_SMOOTH);
         }
-
         // polygons
         // polygon smooth
         _enable_polygon_smooth ? glEnable(GL_POLYGON_SMOOTH) : glDisable(GL_POLYGON_SMOOTH);
-
         glFrontFace(static_cast<GLenum>(_front_face_mode));
-
         // cull face
         if (_enable_cull_face)
         {
@@ -1012,12 +1014,11 @@ private:
         else {
             glDisable(GL_CULL_FACE);
         }
-
         // polygon Rast & Depth Offset
-        glPolygonMode(GL_FRONT_AND_BACK, static_cast<GLenum>(_polygon_mode));
+        glPolygonMode(GL_FRONT, static_cast<GLenum>(_front_polygon_mode));
+        glPolygonMode(GL_BACK, static_cast<GLenum>(_back_polygon_mode));
         //glPolygonOffset();
         //glPolygonOffsetClamp();
-        
         _enable_polygon_offset_point ? glEnable(GL_POLYGON_OFFSET_POINT) : glDisable(GL_POLYGON_OFFSET_POINT);
         _enable_polygon_offset_line ? glEnable(GL_POLYGON_OFFSET_LINE) : glDisable(GL_POLYGON_OFFSET_LINE);
         _enable_polygon_offset_fill ? glEnable(GL_POLYGON_OFFSET_FILL) : glDisable(GL_POLYGON_OFFSET_FILL);
@@ -1042,17 +1043,6 @@ private:
     float _sample_coverage_value;
     bool _inverted;
 
-    enum class gl_stencil_func : GLenum
-    {
-        NEVER = GL_NEVER,
-        LESS = GL_LESS,
-        LEQUAL = GL_LEQUAL,
-        GREATER = GL_GREATER,
-        GEQUAL = GL_GEQUAL,
-        EQUAL = GL_EQUAL,
-        NOTEQUAL = GL_NOTEQUAL,
-        ALWAYS = GL_ALWAYS
-    };
 
     gl_stencil_func _front_face_stencil_func = gl_stencil_func::ALWAYS;
     gl_stencil_func _back_face_stencil_func = gl_stencil_func::ALWAYS;
@@ -1158,9 +1148,7 @@ private:
         {
             glEnable(GL_BLEND); 
             //glBlendColor();
-            //glBlendFunc();
             //glBlendFuncSeparate();
-            //glBlendEquation();
             //glBlendEquationSeparate();
         }
         else {
@@ -1197,7 +1185,6 @@ private:
     }
 
     gl_logic_op _logic_op;
-    gl_cull_face _cull_face;
     gl_depth_func _depth_func;
     glm::dvec2 _depth_range;
     float _line_wdith;
