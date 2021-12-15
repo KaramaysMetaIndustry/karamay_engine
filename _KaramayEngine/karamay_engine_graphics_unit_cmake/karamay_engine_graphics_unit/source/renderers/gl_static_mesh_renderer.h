@@ -85,11 +85,15 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		//_mesh_pipeline->render_target().set_default();
 		_mesh_pipeline->render_target().set_framebuffer(_tmp_fb);
 
-
-		ON_WINDOW_SIZE_CHANGED = [_tmp_fb](uint32 width, uint32 height) {
-			_tmp_fb->reallocate(width, height);
+		ON_WINDOW_SIZE_CHANGED = [_tmp_fb](uint32 window_width, uint32 window_height)
+		{
+			_tmp_fb->reallocate(window_width, window_height);
 		};
 
+		ON_DETACHED_FROM_DISPATCHER = []()
+		{
+			std::cout << "this renderer has been detached from dispatcher" << std::endl;
+		};
 	}
 
 	IMPLEMENTATION_FUNC_RENDER()

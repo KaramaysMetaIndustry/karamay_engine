@@ -409,8 +409,10 @@ protected:
 #define default_framebuffer gl_default_framebuffer::get_instance()
 
 std::function<void(uint32, uint32)>  _on_window_size_changed;
+std::function<void(void)> _on_detached_from_dispatcher;
 
 #define ON_WINDOW_SIZE_CHANGED _on_window_size_changed
+#define ON_DETACHED_FROM_DISPATCHER _on_detached_from_dispatcher
 
 };
 
