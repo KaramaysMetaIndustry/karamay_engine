@@ -50,7 +50,7 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		// set fragment operations
 		_mesh_pipeline->fragment_operations.enable_scissor_test = true;
 		_mesh_pipeline->fragment_operations.scissor_x = 512;
-		_mesh_pipeline->fragment_operations.scissor_y = 512;
+		_mesh_pipeline->fragment_operations.scissor_y = 256;
 		_mesh_pipeline->fragment_operations.scissor_width = 512;
 		_mesh_pipeline->fragment_operations.scissor_height = 512;
 		_mesh_pipeline->fragment_operations.enable_stencil_test = true;
