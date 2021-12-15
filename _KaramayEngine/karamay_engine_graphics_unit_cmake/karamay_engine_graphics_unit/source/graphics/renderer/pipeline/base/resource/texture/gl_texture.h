@@ -547,7 +547,7 @@ public:
 		glGetTextureSubImage(_handle, mipmap_index, x_offset, y_offset, 0, width, height, 1, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), size, pixels);
 	}
 
-	void build_mipmaps()
+	void auto_generate_mipmaps()
 	{
 		glGenerateTextureMipmap(_handle);
 	}

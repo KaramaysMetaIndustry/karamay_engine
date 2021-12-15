@@ -68,15 +68,15 @@ public:
 
 public:
 
-    void cache_clear_color(float r, float g, float b, float a) noexcept
+    void set_color_cache(float r, float g, float b, float a) noexcept
     {
         glClearColor(r, g, b, a);
     }
-    void cache_clear_stencil(int32 stencil) noexcept
+    void set_stencil_cache(int32 stencil) noexcept
     {
         glClearStencil(stencil);
     }
-    void cache_clear_depth(double depth) noexcept
+    void set_depth_cache(double depth) noexcept
     {
         glClearDepth(depth);
     }
@@ -186,6 +186,11 @@ public:
     }
 
 public:
+
+    void reallocate(uint32 width, uint32 height)
+    {
+
+    }
 
     void bind() override
     {

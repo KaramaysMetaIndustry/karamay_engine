@@ -407,6 +407,11 @@ protected:
 
 #define builder _renderer_builder
 #define default_framebuffer gl_default_framebuffer::get_instance()
+
+std::function<void(uint32, uint32)>  _on_window_size_changed;
+
+#define ON_WINDOW_SIZE_CHANGED _on_window_size_changed
+
 };
 
 

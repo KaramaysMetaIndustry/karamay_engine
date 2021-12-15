@@ -857,31 +857,19 @@ public:
 
 public:
 
-    void set_blend_enable(bool enable) { _enable_blend = enable; }
-    void set_clip_distance0_enable(bool enable) { _enable_clip_distance0 = enable; }
-    void set_color_logic_op_enable(bool enable) { _enable_color_logic_op = enable; }
     void set_debug_output_enable(bool enable) { _enable_debug_output = enable; }
     void set_debug_output_synchronous(bool enable) { _enable_debug_output_synchronous = enable; }
+
     void set_depth_clamp_enable(bool enable) { _enable_depth_clamp = enable; }
-    void set_depth_test_enable(bool enable) { _enable_depth_test = enable; }
-    void set_dither_enable(bool enable) { _enable_dither = enable; }
-    void set_framebuffer_srgb_enable(bool enable) { _enable_framebuffer_srgb = enable; }
-
+    void set_clip_distance0_enable(bool enable) { _enable_clip_distance0 = enable; }
     void set_primitive_restart(bool enable) { _enable_primitive_restart = enable; }
-
-
-
-    void set_sample_alpha_to_coverage_enable(bool enable) { _enable_sample_alpha_to_coverage = enable; }
-    void set_sample_alpha_to_one_enable(bool enable) { _enable_sample_alpha_to_one = enable; }
-    void set_sample_coverage_enable(bool enable) { _enable_sample_coverage = enable; }
-    void set_sample_mask_enable(bool enable) { _enable_sample_mask = enable; }
-    void set_scissor_test_enable(bool enable) { _enable_scissor_test = enable; }
-    void set_stencil_test_enable(bool enable) { _enable_stencil_test = enable; }
     void set_texture_cube_map_sampless_enable(bool enable) { _enable_texture_cube_map_sampless = enable; }
 
 public:
 
     void set_viewport(float x, float y, float width, float height) { _viewport.x = x; _viewport.y = y; _viewport.z = width; _viewport.w = height; }
+
+
 
 private:
 
@@ -931,158 +919,126 @@ private:
     }
 
 public:
-    void set_rasterizer_discard(bool enable) { _enable_rasterizer_discard = enable; }
-    void set_multisample_enable(bool enable) { _enable_multisample = enable; }
-    void set_sample_shading_enable(bool enable) { _enable_sample_shading = enable; }
-    void set_sample_shading_rate(float rate) { _sample_shading_rate = rate; }
 
-    void set_program_point_size_enable(bool enable) { _enable_program_point_size = enable; }
-    void set_line_smooth_enable(bool enable) { _enable_line_smooth = enable; }
-    void set_rasterized_line_width(float width) { _rasterized_line_width = width; }
+    struct gl_rasterizer 
+    {
+        bool discard;
+        bool enable_multisample;
+        bool enable_sample_shading;
+        float sample_shading_rate;
+        bool enable_program_point_size;
+        bool enable_line_smooth;
+        bool rasterized_line_smooth;
+        bool enable_polygon_smooth;
+        bool enable_cull_face;
+        bool enable_polygon_offset_fill;
+        bool enable_polygon_offset_line;
+        bool enable_polygon_offset_point;
+        gl_front_face_mode front_face_mode;
+        gl_cull_face cull_face;
+        gl_polygon_mode front_polygon_mode;
+        gl_polygon_mode back_polygon_mode;
 
-    void set_polygon_smooth_enable(bool enable) { _enable_polygon_smooth = enable; }
-    
-    void set_front_face(gl_front_face_mode face_mode) { _front_face_mode = face_mode; }
+        gl_rasterizer() :
+            discard(false),
+            enable_multisample(false),
+            enable_sample_shading(false),
+            sample_shading_rate(1.0f),
+            enable_program_point_size(false),
+            enable_line_smooth(false)
+        {}
+    } rasterizer;
 
-    void set_cull_face_enable(bool enable) { _enable_cull_face = enable; }
-    void set_cull_face(gl_cull_face face) { _cull_face = face; }
+    struct gl_fragment_operations
+    {
+        bool enable_scissor_test;
 
-    void set_front_polygon_mode(gl_polygon_mode mode) { _front_polygon_mode = mode; }
-    void set_back_polygon_mode(gl_polygon_mode mode) { _back_polygon_mode = mode; }
+        bool enable_sample_coverage;
+        bool enable_sample_mask;
+        bool enable_sample_alpha_to_coverage;
+        bool enable_sample_alpha_to_one;
 
-    void set_polygon_offset_fill_enable(bool enable) { _enable_polygon_offset_fill = enable; }
-    void set_polygon_offset_line_enable(bool enable) { _enable_polygon_offset_line = enable; }
-    void set_polygon_offset_point_enable(bool enable) { _enable_polygon_offset_point = enable; }
+        bool enable_stencil_test;
+        bool enable_depth_test;
+        bool enable_blend; // blending
+        bool enable_framebuffer_srgb; // SRGB Conversion
+        bool enable_dither; // Dithering
+        bool enable_color_logic_op; // Logicop
+
+        int scissor_x, scissor_y, scissor_width, scissor_height;
+        float sample_coverage_value;
+        bool inverted;
+
+        gl_stencil_func front_face_stencil_func = gl_stencil_func::ALWAYS;
+        gl_stencil_func back_face_stencil_func = gl_stencil_func::ALWAYS;
+        uint32 stencil_ref;
+        uint32 stencil_mask;
+
+        gl_logic_op logic_op;
+        gl_depth_func depth_func;
+        glm::dvec2 depth_range;
+
+        gl_fragment_operations()
+        {}
+    } fragment_operations;
 
 private:
-    bool _enable_rasterizer_discard;
-    bool _enable_multisample;
-    bool _enable_sample_shading;
-    bool _enable_program_point_size;
-    bool _enable_line_smooth;
-    bool _enable_polygon_smooth;
-    bool _enable_cull_face;
-    bool _enable_polygon_offset_fill;
-    bool _enable_polygon_offset_line;
-    bool _enable_polygon_offset_point;
-
-    float _sample_shading_rate;
-    float _rasterized_line_width = 1.0f;
-    gl_front_face_mode _front_face_mode;
-    gl_cull_face _cull_face;
-    gl_polygon_mode _front_polygon_mode;
-    gl_polygon_mode _back_polygon_mode;
 
     void _set_rasterization()
     {
-        // rasterizer discard which make all stages discarded start from rasterization
-        _enable_rasterizer_discard ? glEnable(GL_RASTERIZER_DISCARD) : glDisable(GL_RASTERIZER_DISCARD);
-        // multisample
-        _enable_multisample ? glEnable(GL_MULTISAMPLE) : glDisable(GL_MULTISAMPLE);
-        // sample shading
-        if (_enable_sample_shading)
+        rasterizer.discard ? glEnable(GL_RASTERIZER_DISCARD) : glDisable(GL_RASTERIZER_DISCARD);
+        rasterizer.enable_multisample ? glEnable(GL_MULTISAMPLE) : glDisable(GL_MULTISAMPLE);
+        if (rasterizer.enable_sample_shading)
         {
             glEnable(GL_SAMPLE_SHADING);
-            glMinSampleShading(_sample_shading_rate);
+            glMinSampleShading(rasterizer.sample_shading_rate);
         }
         else {
             glDisable(GL_SAMPLE_SHADING);
         }
-        // points
-        // program point size
-        _enable_program_point_size ? glEnable(GL_PROGRAM_POINT_SIZE) : glDisable(GL_PROGRAM_POINT_SIZE);
-        // line segments
-        // line smooth
-        if (_enable_line_smooth)
+        rasterizer.enable_program_point_size ? glEnable(GL_PROGRAM_POINT_SIZE) : glDisable(GL_PROGRAM_POINT_SIZE);
+        if (rasterizer.enable_line_smooth)
         {
             glEnable(GL_LINE_SMOOTH);
-            glLineWidth(_rasterized_line_width);
+            glLineWidth(rasterizer.rasterized_line_smooth);
         }
         else {
             glDisable(GL_LINE_SMOOTH);
         }
-        // polygons
-        // polygon smooth
-        _enable_polygon_smooth ? glEnable(GL_POLYGON_SMOOTH) : glDisable(GL_POLYGON_SMOOTH);
-        glFrontFace(static_cast<GLenum>(_front_face_mode));
-        // cull face
-        if (_enable_cull_face)
+        rasterizer.enable_polygon_smooth ? glEnable(GL_POLYGON_SMOOTH) : glDisable(GL_POLYGON_SMOOTH);
+        glFrontFace(static_cast<GLenum>(rasterizer.front_face_mode));
+        if (rasterizer.enable_cull_face)
         {
             glEnable(GL_CULL_FACE);
-            glCullFace(static_cast<GLenum>(_cull_face));
+            glCullFace(static_cast<GLenum>(rasterizer.cull_face));
         }
         else {
             glDisable(GL_CULL_FACE);
         }
-        // polygon Rast & Depth Offset
-        glPolygonMode(GL_FRONT, static_cast<GLenum>(_front_polygon_mode));
-        glPolygonMode(GL_BACK, static_cast<GLenum>(_back_polygon_mode));
+        glPolygonMode(GL_FRONT, static_cast<GLenum>(rasterizer.front_polygon_mode));
+        glPolygonMode(GL_BACK, static_cast<GLenum>(rasterizer.back_polygon_mode));
         //glPolygonOffset();
         //glPolygonOffsetClamp();
-        _enable_polygon_offset_point ? glEnable(GL_POLYGON_OFFSET_POINT) : glDisable(GL_POLYGON_OFFSET_POINT);
-        _enable_polygon_offset_line ? glEnable(GL_POLYGON_OFFSET_LINE) : glDisable(GL_POLYGON_OFFSET_LINE);
-        _enable_polygon_offset_fill ? glEnable(GL_POLYGON_OFFSET_FILL) : glDisable(GL_POLYGON_OFFSET_FILL);
+       rasterizer.enable_polygon_offset_point ? glEnable(GL_POLYGON_OFFSET_POINT) : glDisable(GL_POLYGON_OFFSET_POINT);
+       rasterizer.enable_polygon_offset_line ? glEnable(GL_POLYGON_OFFSET_LINE) : glDisable(GL_POLYGON_OFFSET_LINE);
+       rasterizer.enable_polygon_offset_fill ? glEnable(GL_POLYGON_OFFSET_FILL) : glDisable(GL_POLYGON_OFFSET_FILL);
     }
 
-    // pre-fragment operations
-    bool _enable_scissor_test;
-    
-    bool _enable_sample_coverage;
-    bool _enable_sample_mask;
-    bool _enable_sample_alpha_to_coverage;
-    bool _enable_sample_alpha_to_one;
-    
-    bool _enable_stencil_test;
-    bool _enable_depth_test;
-    bool _enable_blend; // blending
-    bool _enable_framebuffer_srgb; // SRGB Conversion
-    bool _enable_dither; // Dithering
-    bool _enable_color_logic_op; // Logicop
+    gl_stencil_op _sfail_stencil_operation = gl_stencil_op::KEEP;
+    gl_stencil_op _dpfail_stencil_operation = gl_stencil_op::KEEP;
+    gl_stencil_op _dppass_stencil_operation = gl_stencil_op::KEEP;
 
-    int _scissor_x, _scissor_y, _scissor_width, _scissor_height;
-    float _sample_coverage_value;
-    bool _inverted;
-
-
-    gl_stencil_func _front_face_stencil_func = gl_stencil_func::ALWAYS;
-    gl_stencil_func _back_face_stencil_func = gl_stencil_func::ALWAYS;
-    uint32 _stencil_ref;
-    uint32 _stencil_mask;
-
-    enum class gl_stencil_operation : GLenum
+    void _set_fragment_operations()
     {
-        KEEP = GL_KEEP,
-        ZERO = GL_ZERO,
-        REPLACE = GL_REPLACE,
-        INCR = GL_INCR,
-        INCR_WRAP = GL_INCR_WRAP,
-        DECR = GL_DECR,
-        DECR_WRAP = GL_DECR_WRAP,
-        INVERT = GL_INVERT
-    };
-
-    gl_stencil_operation _sfail_stencil_operation = gl_stencil_operation::KEEP;
-    gl_stencil_operation _dpfail_stencil_operation = gl_stencil_operation::KEEP;
-    gl_stencil_operation _dppass_stencil_operation = gl_stencil_operation::KEEP;
-
-
-    void _set_pre_fragment_operation()
-    {
-        // scissor test
-        if (_enable_scissor_test)
+        if (fragment_operations.enable_scissor_test)
         {
             glEnable(GL_SCISSOR_TEST);
-            glScissor(_scissor_x, _scissor_y, _scissor_width, _scissor_height);
-            //glScissorIndexed();
-            //glScissorIndexedv();
-            //glScissorArrayv();
+            glScissor(fragment_operations.scissor_x, fragment_operations.scissor_y, fragment_operations.scissor_width, fragment_operations.scissor_height);
         }
         else {
             glDisable(GL_SCISSOR_TEST);
         }
-
-        // sample mask
-        if (_enable_sample_mask)
+        if (fragment_operations.enable_sample_mask)
         {
             glEnable(GL_SAMPLE_MASK);
             //glSampleMaski();
@@ -1090,30 +1046,23 @@ private:
         else {
             glDisable(GL_SAMPLE_MASK);
         }
-
-        // sample alpha to coverage
-        _enable_sample_alpha_to_coverage ? glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE) : glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-        // sample alpha to one
-        _enable_sample_alpha_to_one ? glEnable(GL_SAMPLE_ALPHA_TO_ONE) : glDisable(GL_SAMPLE_ALPHA_TO_ONE);
-
-        // sample coverage
-        if (_enable_sample_coverage)
+        fragment_operations.enable_sample_alpha_to_coverage ? glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE) : glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+        fragment_operations.enable_sample_alpha_to_one ? glEnable(GL_SAMPLE_ALPHA_TO_ONE) : glDisable(GL_SAMPLE_ALPHA_TO_ONE);
+        if (fragment_operations.enable_sample_coverage)
         {
             glEnable(GL_SAMPLE_COVERAGE);
-            glSampleCoverage(_sample_coverage_value, _inverted);
+            glSampleCoverage(fragment_operations.sample_coverage_value, fragment_operations.inverted);
         }
         else {
             glDisable(GL_SAMPLE_COVERAGE);
         }
-
-        // stencil test
-        if (_enable_stencil_test)
+        if (fragment_operations.enable_stencil_test)
         {
             glEnable(GL_STENCIL_TEST);
             glStencilFuncSeparate(
-                static_cast<GLenum>(_front_face_stencil_func), 
-                static_cast<GLenum>(_back_face_stencil_func), 
-                _stencil_ref, _stencil_mask);
+                static_cast<GLenum>( fragment_operations.front_face_stencil_func), 
+                static_cast<GLenum>( fragment_operations.back_face_stencil_func), 
+                fragment_operations.stencil_ref, fragment_operations.stencil_mask);
             
             glStencilOpSeparate(GL_FRONT, 
                 static_cast<GLenum>(_sfail_stencil_operation), 
@@ -1133,18 +1082,15 @@ private:
             glDisable(GL_STENCIL_TEST);
         }
 
-        // depth test
-        if (_enable_depth_test)
+        if (fragment_operations.enable_depth_test)
         {
             glEnable(GL_DEPTH_TEST);
-            glDepthFunc(static_cast<GLenum>(_depth_func));
+            glDepthFunc(static_cast<GLenum>(fragment_operations.depth_func));
         }
         else {
             glDisable(GL_DEPTH_TEST);
         }
-
-        // blend
-        if (_enable_blend)
+        if (fragment_operations.enable_blend)
         {
             glEnable(GL_BLEND); 
             //glBlendColor();
@@ -1154,74 +1100,23 @@ private:
         else {
             glDisable(GL_BLEND);
         }
-
-        if (_enable_framebuffer_srgb)
-        {
-            glEnable(GL_FRAMEBUFFER_SRGB);
-        }
-        else {
-            glDisable(GL_FRAMEBUFFER_SRGB);
-        }
-
-        // dither
-        if (_enable_dither)
-        {
-            glEnable(GL_DITHER);
-        }
-        else {
-            glDisable(GL_DITHER);
-        }
-
-        // logic op
-        if (_enable_color_logic_op)
+        fragment_operations.enable_framebuffer_srgb ? glEnable(GL_FRAMEBUFFER_SRGB) : glDisable(GL_FRAMEBUFFER_SRGB);
+        fragment_operations.enable_dither ? glEnable(GL_DITHER) : glDisable(GL_DITHER);
+        if (fragment_operations.enable_color_logic_op)
         {
             glEnable(GL_COLOR_LOGIC_OP);
-            glLogicOp(static_cast<GLenum>(_logic_op));
+            glLogicOp(static_cast<GLenum>(fragment_operations.logic_op));
         }
         else {
             glDisable(GL_COLOR_LOGIC_OP);
         }
- 
     }
-
-    gl_logic_op _logic_op;
-    gl_depth_func _depth_func;
-    glm::dvec2 _depth_range;
-    float _line_wdith;
 
     void _set_pipeline_state()
     {
         _set_vertex_post_processing();
         _set_rasterization();
-        _set_pre_fragment_operation();
-
-        // primitive restart index
-        _enable_primitive_restart ? glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX) : glDisable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
-
-        // framebuffer srgb
-        if (_enable_framebuffer_srgb)
-        {
-            glEnable(GL_FRAMEBUFFER_SRGB);
-        }
-        else {
-            glDisable(GL_FRAMEBUFFER_SRGB);
-        }
-
-        // texture cube map sampless
-        _enable_texture_cube_map_sampless ? glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS) : glDisable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-    }
-
-
-public:
-
-    void set_blend_func(gl_blend_func_factor src_rgb_factor, gl_blend_func_factor dst_rgbfactor)
-    {
-
-    }
-
-    void set_blend_func(gl_blend_func_factor src_rgb_factor, gl_blend_func_factor dst_rgbfactor, gl_blend_func_factor src_alpha_factor, gl_blend_func_factor dst_alpha_factor)
-    {
-
+        _set_fragment_operations();
     }
 
 };
