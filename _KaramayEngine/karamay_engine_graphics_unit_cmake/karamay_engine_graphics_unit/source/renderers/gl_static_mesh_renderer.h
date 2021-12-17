@@ -48,58 +48,66 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		_mesh_pipeline->rasterizer.enable_polygon_offset_fill = true;
 
 		// set fragment operations
-		_mesh_pipeline->fragment_operations.enable_scissor_test = true;
-		_mesh_pipeline->fragment_operations.scissor_x = 512;
-		_mesh_pipeline->fragment_operations.scissor_y = 256;
-		_mesh_pipeline->fragment_operations.scissor_width = 512;
-		_mesh_pipeline->fragment_operations.scissor_height = 512;
-		_mesh_pipeline->fragment_operations.enable_stencil_test = true;
-		_mesh_pipeline->fragment_operations.stencil_ref = 0;
-		_mesh_pipeline->fragment_operations.stencil_mask = 125;
-		_mesh_pipeline->fragment_operations.front_face_stencil_func = gl_stencil_func::LEQUAL;
-		_mesh_pipeline->fragment_operations.back_face_stencil_func = gl_stencil_func::NEVER;
-		_mesh_pipeline->fragment_operations.enable_depth_test = true;
-		_mesh_pipeline->fragment_operations.depth_func = gl_depth_func::GREATER;
+		// scissor test
+		_mesh_pipeline->fragment_operations.scissor_test.enable = true;
+		_mesh_pipeline->fragment_operations.scissor_test.x = 0;
+		_mesh_pipeline->fragment_operations.scissor_test.y = 0;
+		_mesh_pipeline->fragment_operations.scissor_test.width = 1024;
+		_mesh_pipeline->fragment_operations.scissor_test.height = 1024;
+		// multisample fragment operations
+		_mesh_pipeline->fragment_operations.multisample_fragment_operations.enable_sample_coverage = true;
+		_mesh_pipeline->fragment_operations.multisample_fragment_operations.inverted = true;
+		_mesh_pipeline->fragment_operations.multisample_fragment_operations.sample_coverage_value = 1.2f;
+		_mesh_pipeline->fragment_operations.multisample_fragment_operations.enable_sample_mask = true;
+		// stencil test
+		_mesh_pipeline->fragment_operations.stencil_test.enable = false;
+		_mesh_pipeline->fragment_operations.stencil_test.ref = 0;
+		_mesh_pipeline->fragment_operations.stencil_test.mask = 125;
+		_mesh_pipeline->fragment_operations.stencil_test.front_face_func = gl_stencil_func::LEQUAL;
+		_mesh_pipeline->fragment_operations.stencil_test.back_face_func = gl_stencil_func::NEVER;
+		// depth test
+		_mesh_pipeline->fragment_operations.depth_test.enable = false;
+		_mesh_pipeline->fragment_operations.depth_test.func = gl_depth_func::GREATER;
+		// blend
 		_mesh_pipeline->fragment_operations.enable_blend = true;
-		_mesh_pipeline->fragment_operations.enable_dither = true;
-		_mesh_pipeline->fragment_operations.enable_color_logic_op = true;
-		_mesh_pipeline->fragment_operations.logic_op = gl_logic_op::INVERT;
+		// srgb 
 		_mesh_pipeline->fragment_operations.enable_framebuffer_srgb = true;
+		// dither
+		_mesh_pipeline->fragment_operations.enable_dither = true;
+		// logic operation
+		_mesh_pipeline->fragment_operations.logic_operation.enable = true;
+		_mesh_pipeline->fragment_operations.logic_operation.op = gl_logic_op::INVERT;
 
 		// set vertex launcher
 		auto& _vertex_launcher = _mesh_pipeline->vertex_launcher();
 		_vertex_launcher.reallocate_element_slot(10);
 		_vertex_launcher.reallocate_vertex_slot(16);
-		_vertex_launcher.execute_mapped_element_slot_handler(0, 1024, 
-			[](void* data, uint32 elements_num) 
-			{
 
-			}
-		);
-
+		// set framebuffer
 		auto _tmp_fb = builder.create_framebuffer("tmp_fb", 1024, 1024);
 		_tmp_fb->set_color_attachment(0, _albedo_tex, 0);
 		_tmp_fb->set_color_attachment(1, _normal_tex, 0);
 
 		// set render target
-		//_mesh_pipeline->render_target().set_default();
-		_mesh_pipeline->render_target().set_framebuffer(_tmp_fb);
+		_mesh_pipeline->render_target().set_default();
 
+		// set callback
 		ON_WINDOW_SIZE_CHANGED = [_tmp_fb](uint32 window_width, uint32 window_height)
 		{
+			if (!_tmp_fb) return;
 			_tmp_fb->reallocate(window_width, window_height);
 		};
-
 		ON_DETACHED_FROM_DISPATCHER = []()
 		{
 			std::cout << "this renderer has been detached from dispatcher" << std::endl;
 		};
+
 	}
 
 	IMPLEMENTATION_FUNC_RENDER()
 	{
 		// set default framebuffer
-		default_framebuffer->set_color_cache(0.3f, 0.5f, 0.8f, 1.0f);
+		default_framebuffer->set_color_cache(0.5f, 0.0f, 0.0f, 1.0f);
 		default_framebuffer->set_stencil_cache(1);
 		default_framebuffer->set_depth_cache(0.1l);
 		default_framebuffer->switch_draw_buffer(gl_default_framebuffer_draw_buffer::LEFT);

@@ -951,34 +951,66 @@ public:
 
     struct gl_fragment_operations
     {
-        bool enable_scissor_test;
+        struct gl_scissor_test
+        {
+            bool enable;
+            int x, y, width, height;
+        } scissor_test; // early
+        struct gl_multisample_fragment_operations
+        {
+            bool enable_sample_coverage;
+            float sample_coverage_value;
+            bool inverted;
+            bool enable_sample_mask;
+        } multisample_fragment_operations; // early
+        // fragment shader
+        struct gl_alpha_to_coverage_operations
+        {
+            bool enable_sample_alpha_to_coverage;
+            bool enable_sample_alpha_to_one;
+        } alpha_to_coverage_operations;
+        struct gl_stencil_test
+        {
+            bool enable;
+            uint32 ref;
+            uint32 mask;
+            gl_stencil_func front_face_func = gl_stencil_func::ALWAYS;
+            gl_stencil_func back_face_func = gl_stencil_func::ALWAYS;
+            gl_stencil_op sfail_operation = gl_stencil_op::KEEP;
+            gl_stencil_op dpfail_operation = gl_stencil_op::KEEP;
+            gl_stencil_op dppass_operation = gl_stencil_op::KEEP;
+            gl_stencil_test() :
+                enable(false)
+            {}
+        } stencil_test; // can be early <=> framebuffer
+        struct gl_depth_test
+        {
+            bool enable;
+            gl_depth_func func;
+            gl_depth_test() :
+                enable(false), func(gl_depth_func::ALWAYS)
+            {}
+        } depth_test; // can be early <=> framebuffer
+        bool enable_blend; // <=> framebuffer
+        bool enable_framebuffer_srgb;
+        bool enable_dither;
+        struct gl_logic_operation
+        {
+            bool enable; // Logicop
+            gl_logic_op op;
+            gl_logic_operation() :
+                enable(false), op(gl_logic_op::AND)
+            {}
+        } logic_operation; // <=> framebuffer
 
-        bool enable_sample_coverage;
-        bool enable_sample_mask;
-        bool enable_sample_alpha_to_coverage;
-        bool enable_sample_alpha_to_one;
-
-        bool enable_stencil_test;
-        bool enable_depth_test;
-        bool enable_blend; // blending
-        bool enable_framebuffer_srgb; // SRGB Conversion
-        bool enable_dither; // Dithering
-        bool enable_color_logic_op; // Logicop
-
-        int scissor_x, scissor_y, scissor_width, scissor_height;
-        float sample_coverage_value;
-        bool inverted;
-
-        gl_stencil_func front_face_stencil_func = gl_stencil_func::ALWAYS;
-        gl_stencil_func back_face_stencil_func = gl_stencil_func::ALWAYS;
-        uint32 stencil_ref;
-        uint32 stencil_mask;
-
-        gl_logic_op logic_op;
-        gl_depth_func depth_func;
-        glm::dvec2 depth_range;
-
-        gl_fragment_operations()
+        gl_fragment_operations() :
+            alpha_to_coverage_operations(),
+            stencil_test(),
+            depth_test(),
+            enable_blend(false),
+            enable_framebuffer_srgb(false),
+            enable_dither(false),
+            logic_operation()
         {}
     } fragment_operations;
 
@@ -1024,21 +1056,25 @@ private:
        rasterizer.enable_polygon_offset_fill ? glEnable(GL_POLYGON_OFFSET_FILL) : glDisable(GL_POLYGON_OFFSET_FILL);
     }
 
-    gl_stencil_op _sfail_stencil_operation = gl_stencil_op::KEEP;
-    gl_stencil_op _dpfail_stencil_operation = gl_stencil_op::KEEP;
-    gl_stencil_op _dppass_stencil_operation = gl_stencil_op::KEEP;
-
     void _set_fragment_operations()
     {
-        if (fragment_operations.enable_scissor_test)
+        if (fragment_operations.scissor_test.enable)
         {
             glEnable(GL_SCISSOR_TEST);
-            glScissor(fragment_operations.scissor_x, fragment_operations.scissor_y, fragment_operations.scissor_width, fragment_operations.scissor_height);
+            glScissor(fragment_operations.scissor_test.x, fragment_operations.scissor_test.y, fragment_operations.scissor_test.width, fragment_operations.scissor_test.height);
         }
         else {
             glDisable(GL_SCISSOR_TEST);
         }
-        if (fragment_operations.enable_sample_mask)
+        if (fragment_operations.multisample_fragment_operations.enable_sample_coverage)
+        {
+            glEnable(GL_SAMPLE_COVERAGE);
+            glSampleCoverage(fragment_operations.multisample_fragment_operations.sample_coverage_value, fragment_operations.multisample_fragment_operations.inverted);
+        }
+        else {
+            glDisable(GL_SAMPLE_COVERAGE);
+        }
+        if (fragment_operations.multisample_fragment_operations.enable_sample_mask)
         {
             glEnable(GL_SAMPLE_MASK);
             //glSampleMaski();
@@ -1046,33 +1082,27 @@ private:
         else {
             glDisable(GL_SAMPLE_MASK);
         }
-        fragment_operations.enable_sample_alpha_to_coverage ? glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE) : glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-        fragment_operations.enable_sample_alpha_to_one ? glEnable(GL_SAMPLE_ALPHA_TO_ONE) : glDisable(GL_SAMPLE_ALPHA_TO_ONE);
-        if (fragment_operations.enable_sample_coverage)
-        {
-            glEnable(GL_SAMPLE_COVERAGE);
-            glSampleCoverage(fragment_operations.sample_coverage_value, fragment_operations.inverted);
-        }
-        else {
-            glDisable(GL_SAMPLE_COVERAGE);
-        }
-        if (fragment_operations.enable_stencil_test)
+
+        fragment_operations.alpha_to_coverage_operations.enable_sample_alpha_to_coverage ? glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE) : glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+        fragment_operations.alpha_to_coverage_operations.enable_sample_alpha_to_one ? glEnable(GL_SAMPLE_ALPHA_TO_ONE) : glDisable(GL_SAMPLE_ALPHA_TO_ONE);
+        
+        if (fragment_operations.stencil_test.enable)
         {
             glEnable(GL_STENCIL_TEST);
             glStencilFuncSeparate(
-                static_cast<GLenum>( fragment_operations.front_face_stencil_func), 
-                static_cast<GLenum>( fragment_operations.back_face_stencil_func), 
-                fragment_operations.stencil_ref, fragment_operations.stencil_mask);
+                static_cast<GLenum>( fragment_operations.stencil_test.front_face_func), 
+                static_cast<GLenum>( fragment_operations.stencil_test.back_face_func), 
+                fragment_operations.stencil_test.ref, fragment_operations.stencil_test.mask);
             
             glStencilOpSeparate(GL_FRONT, 
-                static_cast<GLenum>(_sfail_stencil_operation), 
-                static_cast<GLenum>(_dpfail_stencil_operation), 
-                static_cast<GLenum>(_dppass_stencil_operation)
+                static_cast<GLenum>(fragment_operations.stencil_test.sfail_operation), 
+                static_cast<GLenum>(fragment_operations.stencil_test.dpfail_operation), 
+                static_cast<GLenum>(fragment_operations.stencil_test.dppass_operation)
             );
             glStencilOpSeparate(GL_BACK,
-                static_cast<GLenum>(_sfail_stencil_operation),
-                static_cast<GLenum>(_dpfail_stencil_operation),
-                static_cast<GLenum>(_dppass_stencil_operation)
+                static_cast<GLenum>(fragment_operations.stencil_test.sfail_operation),
+                static_cast<GLenum>(fragment_operations.stencil_test.dpfail_operation),
+                static_cast<GLenum>(fragment_operations.stencil_test.dppass_operation)
             );
             
             glStencilMaskSeparate(GL_FRONT, 1);
@@ -1082,10 +1112,10 @@ private:
             glDisable(GL_STENCIL_TEST);
         }
 
-        if (fragment_operations.enable_depth_test)
+        if (fragment_operations.depth_test.enable)
         {
             glEnable(GL_DEPTH_TEST);
-            glDepthFunc(static_cast<GLenum>(fragment_operations.depth_func));
+            glDepthFunc(static_cast<GLenum>(fragment_operations.depth_test.func));
         }
         else {
             glDisable(GL_DEPTH_TEST);
@@ -1102,10 +1132,10 @@ private:
         }
         fragment_operations.enable_framebuffer_srgb ? glEnable(GL_FRAMEBUFFER_SRGB) : glDisable(GL_FRAMEBUFFER_SRGB);
         fragment_operations.enable_dither ? glEnable(GL_DITHER) : glDisable(GL_DITHER);
-        if (fragment_operations.enable_color_logic_op)
+        if (fragment_operations.logic_operation.enable)
         {
             glEnable(GL_COLOR_LOGIC_OP);
-            glLogicOp(static_cast<GLenum>(fragment_operations.logic_op));
+            glLogicOp(static_cast<GLenum>(fragment_operations.logic_operation.op));
         }
         else {
             glDisable(GL_COLOR_LOGIC_OP);
