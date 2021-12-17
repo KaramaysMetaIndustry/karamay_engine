@@ -368,122 +368,6 @@ enum class gl_polygon_mode : GLenum
     FILL = GL_FILL
 };
 
-struct gl_graphics_pipeline_state
-{
-    struct gl_vertex_assembly
-    {
-        struct gl_primitive_restart
-        {
-            bool enabled;
-            bool use_fixed_restart_primitive_index;
-            std::uint32_t restart_primitive_index;
-        } primitive_restart;
-    } vertex_assembly; // organize vertex stream
-    struct gl_vertex_processing
-    {
-        struct gl_post_vertex_processing
-        {
-            struct gl_flatshading
-            {
-                gl_provoke_mode provoke_mode;
-            } flatshading;
-            struct gl_primitive_clipping
-            {
-                std::uint32_t clip_plane_index{0};
-                gl_clip_control_origin clip_control_origin{ gl_clip_control_origin::LOWER_LEFT };
-                gl_clip_control_depth_mode clip_control_depth_mode{};
-                double near_clipping_distance, far_clipping_distance;
-            } primitive_clipping;
-            struct gl_coordinate_transformations
-            {
-                std::int32_t viewport_x, viewport_y;
-                std::uint32_t viewport_width, viewport_height; // glViewport
-            } coordinate_transformations;
-        } post_vertex_processing;
-    } vertex_processing; // vertex shading, tessellation, geometry shading, transform feedback, clipping, coordinates transformation
-    struct gl_primitive_assembly
-    {
-        bool discard_all_primitives; // discard all primitives, if true the pipeline wont go head
-    } primitive_assembly; // collect primitives or discard all of them
-    struct gl_rasterisation
-    {
-    } rasterisation; // the stage generate fragments from primitives (points, lines, polygons)
-    struct gl_fragment_processing
-    {
-        /*
-        * Once fragments are produced by rasterization, a number of per-fragment operations
-        * are performed prior to fragment shader execution.
-        * If a fragment is discarded during any of these operations, it will not be processed by any subsequent stage,
-        * including fragment shader execution.
-        * Three fragment operations are performed,
-        * and a further three are optionally performed on each fragment.
-        * (stencil_test, depth_test, occlusion_queries after fragment shading)
-        * (which need to specify "early_fragment_tests layout" Qualifier in fs)
-        */
-        struct gl_pre_fragment_operations
-        {
-            struct gl_pixel_ownship_test {} pixel_ownship_test;
-            struct gl_scissor_test
-            {
-                bool enabled;
-            } scissor_test;
-            struct gl_multisample_fragment_operations {} multisample_fragment_operations;
-        } pre_fragment_operations;
-        struct gl_post_fragment_operations
-        {
-            struct gl_alpha_to_coverage
-            {
-                bool enabled;
-            } alpha_to_coverage;
-            struct gl_advanceable_operations
-            {
-                struct gl_stencil_test
-                {
-                    bool enabled;
-                    gl_stencil_func front_face_func;
-                    gl_stencil_func back_face_func;
-                    gl_stencil_op front_face_op;
-                    gl_stencil_op back_face_op;
-                } stencil_test; // can be advanced before fragment shading
-                struct gl_depth_test
-                {
-                    bool enabled;
-                    gl_depth_func func;
-                    bool clamp_enabled;
-                    std::double_t near_val, far_val;
-                } depth_test; // can be advanced before fragment shading
-                struct gl_occlusion_queries
-                {
-                } occlusion_queries; // can be advanced before fragment shading
-                bool advanced;
-            } advanceable_operations;
-            struct gl_blending
-            {
-            } blending;
-            struct gl_srgb_conversion
-            {
-            } srgb_conversion;
-            struct gl_dithering
-            {
-                bool enabled;
-            } dithering;
-            struct gl_logical_operation
-            {
-                bool enabled;
-                gl_logic_op op;
-            } logical_operation;
-            struct gl_addtional_multisample_fragment_operations
-            {
-                bool enabled;
-                std::float_t sample_coverage_value;
-                bool inverted;
-            } additional_multisample_fragment_operations;
-        } post_fragment_operations;
-    } fragment_processing; // process fragments
-
-};
-
-
 /*
  * graphics pipeline : 
  * vertex shader + fragment shader
@@ -510,7 +394,6 @@ public:
 
         gl_vertex_launcher_descriptor _descriptor;
         _vertex_launcher = new gl_vertex_launcher(_descriptor);
-
         _render_target = new gl_render_target();
     }
 
@@ -525,7 +408,6 @@ public:
 
         gl_vertex_launcher_descriptor _descriptor;
         _vertex_launcher = new gl_vertex_launcher(_descriptor);
-        
         _render_target = new gl_render_target();
     }
 
@@ -540,7 +422,6 @@ public:
 
         gl_vertex_launcher_descriptor _descriptor;
         _vertex_launcher = new gl_vertex_launcher(_descriptor);
-        
         _render_target = new gl_render_target();
     }
 
@@ -552,12 +433,10 @@ public:
     {
         _program = new glsl_graphics_pipeline_program(vs, ts, gs, fs);
         _program->load();
-
         gl_vertex_launcher_descriptor _descriptor;
         _descriptor.primitive_mode = gl_primitive_mode::TRIANGLES;
         _descriptor.primitive_vertices_num = 3;
         _vertex_launcher = new gl_vertex_launcher(_descriptor);
-
         _render_target = new gl_render_target();
     }
 
@@ -574,6 +453,176 @@ public:
         if (!_transform_feedback) delete _transform_feedback;
         delete _render_target;
     }
+
+public:
+
+    /*
+    * ref the vertex launcher
+    * you should combine and send vertex data to program
+    */
+    gl_vertex_launcher& vertex_launcher()
+    {
+#ifdef _DEBUG
+        if (!_vertex_launcher) throw std::exception("vertex launcher must not be nullptr");
+#endif
+        return *_vertex_launcher;
+    }
+
+    /*
+    * ref the program body
+    * you can dynamic link or unlink program parameters' resource
+    */
+    glsl_graphics_pipeline_program& program()
+    {
+#ifdef _DEBUG
+        if (!_program) throw std::exception("program must not be nullptr");
+#endif
+        return *_program;
+    }
+
+    /*
+    * ref the render target
+    * you can set final target (device framebuffer / custom framebuffer) the renderer render to
+    */
+    gl_render_target& render_target()
+    {
+#ifdef _DEBUG
+        if (!_render_target) throw std::exception("render target must not be nullptr");
+#endif
+        return *_render_target;
+    }
+
+public:
+
+    struct gl_vertex_postprocessor{} vertex_postprocessor;
+    struct gl_rasterizer
+    {
+        bool discard;
+        bool enable_multisample;
+        bool enable_sample_shading;
+        float sample_shading_rate;
+        bool enable_program_point_size;
+        bool enable_line_smooth;
+        bool rasterized_line_smooth;
+        bool enable_polygon_smooth;
+        bool enable_cull_face;
+        bool enable_polygon_offset_fill;
+        bool enable_polygon_offset_line;
+        bool enable_polygon_offset_point;
+        gl_front_face_mode front_face_mode;
+        gl_cull_face cull_face;
+        gl_polygon_mode front_polygon_mode;
+        gl_polygon_mode back_polygon_mode;
+
+        gl_rasterizer() :
+            discard(false),
+            enable_multisample(false),
+            enable_sample_shading(false),
+            sample_shading_rate(1.0f),
+            enable_program_point_size(false),
+            enable_line_smooth(false)
+        {}
+    } rasterizer;
+
+    struct gl_fragment_preprocessor {} fragment_preprocessor;
+    struct gl_fragment_postprocessor {} fragment_postprocessor;
+
+    bool _enable_debug_output;
+    bool _enable_debug_output_synchronous;
+
+    bool _enable_primitive_restart;
+    bool _enable_texture_cube_map_sampless;
+
+    // vertex post-processing
+    bool _enable_depth_clamp;
+    bool _enable_clip_distance0;
+    gl_provoke_mode _provoke_mode;
+
+    struct gl_vertex_post_processing
+    {
+        struct gl_viewport
+        {
+            uint32 index;
+            uint32 x, y;
+            uint32 width, height;
+        } viewport;
+        gl_clip_control_origin origin;
+        gl_clip_control_depth_mode depth_mode;
+    } vertex_post_processing;
+
+    
+
+    struct gl_fragment_operations
+    {
+        struct gl_scissor_test
+        {
+            bool enable;
+            struct gl_rectangle
+            {
+                uint32 index;
+                uint32 x, y;
+                uint32 width, height;
+            } rectangle;
+        } scissor_test; // early
+        struct gl_multisample_fragment_operations
+        {
+            bool enable_sample_coverage;
+            float sample_coverage_value;
+            bool inverted;
+            bool enable_sample_mask;
+        } multisample_fragment_operations; // early
+        // fragment shader
+        struct gl_alpha_to_coverage_operations
+        {
+            bool enable_sample_alpha_to_coverage;
+            bool enable_sample_alpha_to_one;
+        } alpha_to_coverage_operations;
+        struct gl_stencil_test
+        {
+            bool enable;
+            uint32 ref;
+            uint32 mask;
+            gl_stencil_func front_face_func = gl_stencil_func::ALWAYS;
+            gl_stencil_func back_face_func = gl_stencil_func::ALWAYS;
+            gl_stencil_op sfail_operation = gl_stencil_op::KEEP;
+            gl_stencil_op dpfail_operation = gl_stencil_op::KEEP;
+            gl_stencil_op dppass_operation = gl_stencil_op::KEEP;
+            gl_stencil_test() :
+                enable(false)
+            {}
+        } stencil_test; // can be early <=> framebuffer
+        struct gl_depth_test
+        {
+            bool enable;
+            gl_depth_func func;
+            gl_depth_test() :
+                enable(false), func(gl_depth_func::ALWAYS)
+            {}
+        } depth_test; // can be early <=> framebuffer
+        bool enable_blend; // <=> framebuffer
+        bool enable_framebuffer_srgb;
+        bool enable_dither;
+        struct gl_logic_operation
+        {
+            bool enable; // Logicop
+            gl_logic_op op;
+            gl_logic_operation() :
+                enable(false), op(gl_logic_op::AND)
+            {}
+        } logic_operation; // <=> framebuffer
+
+        gl_fragment_operations() :
+            alpha_to_coverage_operations(),
+            stencil_test(),
+            depth_test(),
+            enable_blend(false),
+            enable_framebuffer_srgb(false),
+            enable_dither(false),
+            logic_operation()
+        {}
+    } fragment_operations;
+
+
 
 public:
 
@@ -616,51 +665,6 @@ public:
         _vertex_launcher->unbind();
         _program->disable();
     }
-
-public:
-
-    /*
-    * ref the program body
-    * you can dynamic link or unlink program parameters' resource
-    */
-    glsl_graphics_pipeline_program& program()
-    {
-#ifdef _DEBUG
-        if (!_program) throw std::exception("program must not be nullptr");
-#endif
-        return *_program;
-    }
-
-    /*
-    * ref the vertex launcher
-    * you should combine and send vertex data to program
-    */
-    gl_vertex_launcher& vertex_launcher()
-    {
-#ifdef _DEBUG
-        if (!_vertex_launcher) throw std::exception("vertex launcher must not be nullptr");
-#endif
-        return *_vertex_launcher;
-    }
-
-    /*
-    * ref the render target
-    * you can set final target (device framebuffer / custom framebuffer) the renderer render to
-    */
-    gl_render_target& render_target()
-    {
-#ifdef _DEBUG
-        if (!_render_target) throw std::exception("render target must not be nullptr");
-#endif
-        return *_render_target;
-    }
-
-private:
-
-    glsl_graphics_pipeline_program* _program;
-    gl_vertex_launcher* _vertex_launcher;
-    gl_render_target* _render_target;
-    gl_transform_feedback* _transform_feedback;
 
 public: // non-draw commands 
 
@@ -855,52 +859,17 @@ public:
         return std::make_shared<gl_fence>();
     }
 
-public:
-
-    void set_debug_output_enable(bool enable) { _enable_debug_output = enable; }
-    void set_debug_output_synchronous(bool enable) { _enable_debug_output_synchronous = enable; }
-
-    void set_depth_clamp_enable(bool enable) { _enable_depth_clamp = enable; }
-    void set_clip_distance0_enable(bool enable) { _enable_clip_distance0 = enable; }
-    void set_primitive_restart(bool enable) { _enable_primitive_restart = enable; }
-    void set_texture_cube_map_sampless_enable(bool enable) { _enable_texture_cube_map_sampless = enable; }
-
-public:
-
-    void set_viewport(float x, float y, float width, float height) { _viewport.x = x; _viewport.y = y; _viewport.z = width; _viewport.w = height; }
-
 
 
 private:
-
-    bool _enable_texture_cube_map_sampless;
-
-    // debug output
-    bool _enable_debug_output;
-    bool _enable_debug_output_synchronous;
-
-    // vertex arrays 
-    bool _enable_primitive_restart;
-    
-    // vertex post-processing
-    bool _enable_depth_clamp;
-    bool _enable_clip_distance0;
-
-    glm::vec4 _viewport;
-    gl_clip_control_origin _clip_control_origin;
-    gl_clip_control_depth_mode _clip_control_depth_mode;
-    gl_provoke_mode _provoke_mode;
 
     void _set_vertex_post_processing()
     {
         glProvokingVertex(static_cast<GLenum>(_provoke_mode));
 
-        glViewport(_viewport.x, _viewport.y, _viewport.z, _viewport.w);
-        //glViewportIndexedf();
-        //glViewportIndexedfv();
-        //glViewportArrayv();
-        
-        // depth clamp
+        glClipControl(static_cast<GLenum>(vertex_post_processing.origin), static_cast<GLenum>(vertex_post_processing.depth_mode));
+
+        // primitive clipping
         if (_enable_depth_clamp)
         {
             glEnable(GL_DEPTH_CLAMP);
@@ -914,107 +883,15 @@ private:
 
         _enable_clip_distance0 ? glEnable(GL_CLIP_DISTANCE0) : glDisable(GL_CLIP_DISTANCE0);
 
-        glClipControl(static_cast<GLenum>(_clip_control_origin), static_cast<GLenum>(_clip_control_depth_mode));
+        // coordinate transformations
+        glViewportIndexedf(vertex_post_processing.viewport.index, 
+            vertex_post_processing.viewport.x, 
+            vertex_post_processing.viewport.y, 
+            vertex_post_processing.viewport.width, 
+            vertex_post_processing.viewport.height
+        );
 
     }
-
-public:
-
-    struct gl_rasterizer 
-    {
-        bool discard;
-        bool enable_multisample;
-        bool enable_sample_shading;
-        float sample_shading_rate;
-        bool enable_program_point_size;
-        bool enable_line_smooth;
-        bool rasterized_line_smooth;
-        bool enable_polygon_smooth;
-        bool enable_cull_face;
-        bool enable_polygon_offset_fill;
-        bool enable_polygon_offset_line;
-        bool enable_polygon_offset_point;
-        gl_front_face_mode front_face_mode;
-        gl_cull_face cull_face;
-        gl_polygon_mode front_polygon_mode;
-        gl_polygon_mode back_polygon_mode;
-
-        gl_rasterizer() :
-            discard(false),
-            enable_multisample(false),
-            enable_sample_shading(false),
-            sample_shading_rate(1.0f),
-            enable_program_point_size(false),
-            enable_line_smooth(false)
-        {}
-    } rasterizer;
-
-    struct gl_fragment_operations
-    {
-        struct gl_scissor_test
-        {
-            bool enable;
-            int x, y, width, height;
-        } scissor_test; // early
-        struct gl_multisample_fragment_operations
-        {
-            bool enable_sample_coverage;
-            float sample_coverage_value;
-            bool inverted;
-            bool enable_sample_mask;
-        } multisample_fragment_operations; // early
-        // fragment shader
-        struct gl_alpha_to_coverage_operations
-        {
-            bool enable_sample_alpha_to_coverage;
-            bool enable_sample_alpha_to_one;
-        } alpha_to_coverage_operations;
-        struct gl_stencil_test
-        {
-            bool enable;
-            uint32 ref;
-            uint32 mask;
-            gl_stencil_func front_face_func = gl_stencil_func::ALWAYS;
-            gl_stencil_func back_face_func = gl_stencil_func::ALWAYS;
-            gl_stencil_op sfail_operation = gl_stencil_op::KEEP;
-            gl_stencil_op dpfail_operation = gl_stencil_op::KEEP;
-            gl_stencil_op dppass_operation = gl_stencil_op::KEEP;
-            gl_stencil_test() :
-                enable(false)
-            {}
-        } stencil_test; // can be early <=> framebuffer
-        struct gl_depth_test
-        {
-            bool enable;
-            gl_depth_func func;
-            gl_depth_test() :
-                enable(false), func(gl_depth_func::ALWAYS)
-            {}
-        } depth_test; // can be early <=> framebuffer
-        bool enable_blend; // <=> framebuffer
-        bool enable_framebuffer_srgb;
-        bool enable_dither;
-        struct gl_logic_operation
-        {
-            bool enable; // Logicop
-            gl_logic_op op;
-            gl_logic_operation() :
-                enable(false), op(gl_logic_op::AND)
-            {}
-        } logic_operation; // <=> framebuffer
-
-        gl_fragment_operations() :
-            alpha_to_coverage_operations(),
-            stencil_test(),
-            depth_test(),
-            enable_blend(false),
-            enable_framebuffer_srgb(false),
-            enable_dither(false),
-            logic_operation()
-        {}
-    } fragment_operations;
-
-private:
 
     void _set_rasterization()
     {
@@ -1060,8 +937,15 @@ private:
     {
         if (fragment_operations.scissor_test.enable)
         {
-            glEnable(GL_SCISSOR_TEST);
-            glScissor(fragment_operations.scissor_test.x, fragment_operations.scissor_test.y, fragment_operations.scissor_test.width, fragment_operations.scissor_test.height);
+            //glEnable(GL_SCISSOR_TEST);
+            //glScissor(fragment_operations.scissor_test.x, fragment_operations.scissor_test.y, fragment_operations.scissor_test.width, fragment_operations.scissor_test.height);
+            glEnablei(GL_SCISSOR_TEST, fragment_operations.scissor_test.rectangle.index);
+            glScissorIndexed(fragment_operations.scissor_test.rectangle.index, 
+                fragment_operations.scissor_test.rectangle.x, 
+                fragment_operations.scissor_test.rectangle.y, 
+                fragment_operations.scissor_test.rectangle.width, 
+                fragment_operations.scissor_test.rectangle.height
+            );
         }
         else {
             glDisable(GL_SCISSOR_TEST);
@@ -1148,6 +1032,13 @@ private:
         _set_rasterization();
         _set_fragment_operations();
     }
+
+private:
+    gl_vertex_launcher* _vertex_launcher;
+    glsl_graphics_pipeline_program* _program;
+    gl_render_target* _render_target;
+    gl_transform_feedback* _transform_feedback;
+
 
 };
 

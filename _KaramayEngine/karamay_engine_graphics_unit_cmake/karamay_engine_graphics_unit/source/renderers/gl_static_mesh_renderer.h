@@ -36,6 +36,7 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		_mesh_pipeline->program().sampler2D("mat.displacement_map")->set_texture_2d(_displacement_map);
 		_mesh_pipeline->program().sampler2D("mat.ambient_occlusion_map")->set_texture_2d(_ambient_occlusion_map);*/
 
+
 		// set rasterizer
 		_mesh_pipeline->rasterizer.discard = false;
 		_mesh_pipeline->rasterizer.enable_cull_face = true;
@@ -49,11 +50,14 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 
 		// set fragment operations
 		// scissor test
+		_mesh_pipeline->early_fragment_operations; //EarlyFragmentOperations
+		_mesh_pipeline->final_fragment_operations; //FinalFragmentOperations
+
 		_mesh_pipeline->fragment_operations.scissor_test.enable = true;
-		_mesh_pipeline->fragment_operations.scissor_test.x = 0;
-		_mesh_pipeline->fragment_operations.scissor_test.y = 0;
-		_mesh_pipeline->fragment_operations.scissor_test.width = 1024;
-		_mesh_pipeline->fragment_operations.scissor_test.height = 1024;
+		_mesh_pipeline->fragment_operations.scissor_test.rectangle.x = 0;
+		_mesh_pipeline->fragment_operations.scissor_test.rectangle.y = 0;
+		_mesh_pipeline->fragment_operations.scissor_test.rectangle.width = 1024;
+		_mesh_pipeline->fragment_operations.scissor_test.rectangle.height = 1024;
 		// multisample fragment operations
 		_mesh_pipeline->fragment_operations.multisample_fragment_operations.enable_sample_coverage = true;
 		_mesh_pipeline->fragment_operations.multisample_fragment_operations.inverted = true;
@@ -92,16 +96,21 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		_mesh_pipeline->render_target().set_default();
 
 		// set callback
-		ON_WINDOW_SIZE_CHANGED = [_tmp_fb](uint32 window_width, uint32 window_height)
+		on_window_size_changed = [_tmp_fb](uint32 window_width, uint32 window_height)
 		{
 			if (!_tmp_fb) return;
 			_tmp_fb->reallocate(window_width, window_height);
 		};
-		ON_DETACHED_FROM_DISPATCHER = []()
+
+		on_renderer_attached = []()
+		{
+			std::cout << "this renderer has been attached to dispatcher" << std::endl;
+		};
+
+		on_renderer_detached = []()
 		{
 			std::cout << "this renderer has been detached from dispatcher" << std::endl;
 		};
-
 	}
 
 	IMPLEMENTATION_FUNC_RENDER()
@@ -113,8 +122,6 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		default_framebuffer->switch_draw_buffer(gl_default_framebuffer_draw_buffer::LEFT);
 
 		default_framebuffer->clear_color_buffer();
-		default_framebuffer->clear_depth_buffer();
-		default_framebuffer->clear_stencil_buffer();
 
 		auto _mesh_pipeline = builder.graphics_pipeline("mesh_pipeline");
 
@@ -124,7 +131,6 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 
 		_mesh_pipeline->enable();
 		auto _fence = _mesh_pipeline->draw_arrays(0, 1024);
-		//_fence->client_wait(0);
 		_mesh_pipeline->disable();
 
 		_frame_count++;
