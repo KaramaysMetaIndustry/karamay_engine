@@ -284,6 +284,14 @@ public:
         _parameters(parameters)
 	{
 		glCreateTextures(static_cast<GLenum>(_type), 1, &_handle);
+		GLuint64 textureHandle;
+		glGetTextureHandleARB(_handle);
+		glMakeTextureHandleResidentARB(textureHandle);
+
+		glTextureParameteri(_handle, GL_TEXTURE_SPARSE_ARB, GL_TRUE);
+
+		glUniformHandleui64ARB(0, textureHandle);
+
 	}
 
 	~gl_texture_t() override

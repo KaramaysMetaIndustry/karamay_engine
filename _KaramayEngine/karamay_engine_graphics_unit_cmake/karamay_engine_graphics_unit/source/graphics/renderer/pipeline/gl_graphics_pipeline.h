@@ -1,4 +1,4 @@
-#ifndef GRAPHICS_PIPELINE_H
+﻿#ifndef GRAPHICS_PIPELINE_H
 #define GRAPHICS_PIPELINE_H
 
 #include "base/gl_pipeline.h"
@@ -12,9 +12,9 @@ struct gl_draw_arrays_indirect_command {
 };
 
 struct gl_draw_elements_indirect_command {
-    uint32 count;
-    uint32 primCount;
-    uint32 firstIndex;
+    uint32 count; // 顶点数
+    uint32 primCount; // 图元的顶点数
+    uint32 firstIndex; // 
     uint32 baseVertex;
     uint32 baseInstance;
 };
@@ -55,9 +55,6 @@ public:
     gl_vertex_launcher& operator=(const gl_vertex_launcher&) = delete;
 
     ~gl_vertex_launcher() = default;
-
-public:
-
 
 private:
 
@@ -290,24 +287,24 @@ enum class gl_stencil_func : GLenum
 };
 enum class gl_logic_op : GLenum
 {
-    CLEAR = GL_CLEAR,
-    SET = GL_SET,
-    COPY = GL_COPY,
-    COPY_INVERTED = GL_COPY_INVERTED,
-    NOOP = GL_NOOP,
-    INVERT = GL_INVERT,
-    AND = GL_AND,
-    NAND = GL_NAND,
-    OR = GL_OR,
-    NOR = GL_NOR,
-    XOR = GL_XOR,
-    EQUIV = GL_EQUIV,
-    AND_REVERSE = GL_AND_REVERSE,
-    AND_INVERTED = GL_AND_INVERTED,
-    OR_REVERSE = GL_OR_REVERSE,
-    OR_INVERTED = GL_OR_INVERTED
+    CLEAR = GL_CLEAR, // set all values to 0
+    SET = GL_SET, // set all values to 1
+    COPY = GL_COPY, // src
+    COPY_INVERTED = GL_COPY_INVERTED, // ~ src
+    NOOP = GL_NOOP, // dst
+    INVERT = GL_INVERT, // ~ dst
+    AND = GL_AND, // src & dst
+    NAND = GL_NAND, // ~ (src & dst)
+    OR = GL_OR, // src | dst
+    NOR = GL_NOR, // ~ (src | dst)
+    XOR = GL_XOR, // src ^ dst
+    EQUIV = GL_EQUIV, // ~ (src ^ dst)
+    AND_REVERSE = GL_AND_REVERSE, // src & ~ dst
+    AND_INVERTED = GL_AND_INVERTED, // ~ src & dst
+    OR_REVERSE = GL_OR_REVERSE, // src | ~ dst
+    OR_INVERTED = GL_OR_INVERTED // ~ src | dst
 };
-enum class gl_cull_face : GLenum
+enum class gl_face : GLenum
 {
     FRONT = GL_FRONT, 
     BACK = GL_BACK, // default
@@ -342,6 +339,14 @@ enum class gl_blend_func_factor : GLenum
     ONE_MINUS_CONSTANT_COLOR = GL_ONE_MINUS_CONSTANT_COLOR,
     CONSTANT_ALPHA = GL_CONSTANT_ALPHA,
     ONE_MINUS_CONSTANT_ALPHA = GL_ONE_MINUS_CONSTANT_ALPHA,
+};
+enum class gl_blend_equation_mode : GLenum
+{
+    FUNC_ADD = GL_FUNC_ADD, // default
+    FUNC_SUBTRACT = GL_FUNC_SUBTRACT,
+    FUNC_REVERSE_SUBTRACT = GL_FUNC_REVERSE_SUBTRACT,
+    FUNC_MAX = GL_MAX,
+    FUNC_MIN = GL_MIN
 };
 enum class gl_clip_control_origin : GLenum
 {
@@ -507,26 +512,42 @@ public:
         } viewport;
         gl_clip_control_origin origin;
         gl_clip_control_depth_mode depth_mode;
+
+        gl_vertex_postprocessor() :
+            provoke_mode(gl_provoke_mode::FIRST_VERTEX_CONVENTION),
+            origin(gl_clip_control_origin::LOWER_LEFT),
+            depth_mode(gl_clip_control_depth_mode::ZERO_TO_ONE)
+        {}
     } vertex_postprocessor;
 
     struct gl_rasterizer
     {
         bool discard;
+
         bool enable_multisample;
         bool enable_sample_shading;
         float sample_shading_rate;
+
         bool enable_program_point_size;
         bool enable_line_smooth;
         bool rasterized_line_smooth;
         bool enable_polygon_smooth;
-        bool enable_cull_face;
+        
+        gl_front_face_mode front_face_mode;
+        struct gl_cull_face
+        {
+            bool enable;
+            gl_face face;
+            gl_cull_face() :
+                enable(true),
+                face(gl_face::FRONT)
+            {}
+        } cull_face;
+
         bool enable_polygon_offset_fill;
         bool enable_polygon_offset_line;
         bool enable_polygon_offset_point;
-        gl_front_face_mode front_face_mode;
-        gl_cull_face cull_face;
-        gl_polygon_mode front_polygon_mode;
-        gl_polygon_mode back_polygon_mode;
+        gl_polygon_mode polygon_mode;
 
         gl_rasterizer() :
             discard(false),
@@ -534,7 +555,9 @@ public:
             enable_sample_shading(false),
             sample_shading_rate(1.0f),
             enable_program_point_size(false),
-            enable_line_smooth(false)
+            enable_line_smooth(false),
+            polygon_mode(gl_polygon_mode::FILL),
+            front_face_mode(gl_front_face_mode::CCW) // 逆时针
         {}
     } rasterizer;
 
@@ -566,20 +589,37 @@ public:
             bool enable_sample_alpha_to_coverage;
             bool enable_sample_alpha_to_one;
         } alpha_to_coverage_operations;
+        // The ref​ defines the fragment's stencil value for all fragments generated for the given facing (src)
+        // if ( ref & mask ) < ( stencil & mask ) do { stencil_op }
         struct gl_stencil_test
         {
             bool enable;
-            uint32 ref;
-            uint32 mask;
-            gl_stencil_func front_face_func = gl_stencil_func::ALWAYS;
-            gl_stencil_func back_face_func = gl_stencil_func::ALWAYS;
-            gl_stencil_op sfail_operation = gl_stencil_op::KEEP;
-            gl_stencil_op dpfail_operation = gl_stencil_op::KEEP;
-            gl_stencil_op dppass_operation = gl_stencil_op::KEEP;
+            gl_stencil_func front_face_func;
+            uint32 front_face_ref, front_face_mask;
+            gl_stencil_op front_face_sfail_operation;
+            gl_stencil_op front_face_dpfail_operation;
+            gl_stencil_op front_face_dppass_operation;
+            gl_stencil_func back_face_func;
+            uint32 back_face_ref, back_face_mask;
+            gl_stencil_op back_face_sfail_operation;
+            gl_stencil_op back_face_dpfail_operation;
+            gl_stencil_op back_face_dppass_operation;
+
             gl_stencil_test() :
-                enable(false)
+                enable(false),
+                front_face_func(gl_stencil_func::ALWAYS), front_face_ref(0), front_face_mask(1),
+                front_face_sfail_operation(gl_stencil_op::KEEP),
+                front_face_dpfail_operation(gl_stencil_op::KEEP),
+                front_face_dppass_operation(gl_stencil_op::KEEP),
+                
+                back_face_func(gl_stencil_func::ALWAYS), back_face_ref(0), back_face_mask(1),
+                back_face_sfail_operation(gl_stencil_op::KEEP),
+                back_face_dpfail_operation(gl_stencil_op::KEEP),
+                back_face_dppass_operation(gl_stencil_op::KEEP)
             {}
         } stencil_test; // can be early <=> framebuffer
+        // gl_Position (rast)=> gl_FragCoord.z
+        // if(srcDepth < bufferDepth)
         struct gl_depth_test
         {
             bool enable;
@@ -588,17 +628,41 @@ public:
                 enable(false), func(gl_depth_func::ALWAYS)
             {}
         } depth_test; // can be early <=> framebuffer
-        bool enable_blend; // <=> framebuffer
+        // (srcR * src_rgb_factor) rgb_equation (dstR * (1-dst_rgb_factor)) = rR
+        // (srcG * src_rgb_factor) rgb_equation (dstG * (1-dst_rgb_factor)) = rG
+        // (srcB * src_rgb_factor) rgb_equation (dstB * (1-dst_rgb_factor)) = rB
+        // (srcA * src_alpha_factor) alpha_equation (dstA * (1-dst_alpha_factor)) = rA
+        struct gl_blend
+        {
+            bool enable;
+            glm::vec4 blend_color;
+
+            gl_blend_func_factor src_rgb_factor;
+            gl_blend_func_factor dst_rgb_factor;
+            gl_blend_equation_mode rgb_equation;
+            gl_blend_func_factor src_alpha_factor;
+            gl_blend_func_factor dst_alpha_factor;
+            gl_blend_equation_mode alpha_equation;
+
+            gl_blend() :
+                enable(false), blend_color(0.0f, 0.0f, 0.0f, 1.0f),
+                src_rgb_factor(gl_blend_func_factor::ONE), dst_rgb_factor(gl_blend_func_factor::ZERO), rgb_equation(gl_blend_equation_mode::FUNC_ADD),
+                src_alpha_factor(gl_blend_func_factor::ONE), dst_alpha_factor(gl_blend_func_factor::ZERO), alpha_equation(gl_blend_equation_mode::FUNC_ADD)
+            {}
+        } blend;
+        // if format is SRGB, opengl think that is a linear color, and do transformation
         bool enable_framebuffer_srgb;
+        // make low precision color looks like more rich
         bool enable_dither;
-        struct gl_logic_operation
+        // if enable, blend will not work, only work on rgb
+        struct gl_logical_operation
         {
             bool enable; // Logicop
             gl_logic_op op;
-            gl_logic_operation() :
-                enable(false), op(gl_logic_op::AND)
+            gl_logical_operation() :
+                enable(false), op(gl_logic_op::COPY)
             {}
-        } logic_operation; // <=> framebuffer
+        } logical_operation; // <=> framebuffer
     } fragment_postprocessor;
 
     bool _enable_debug_output;
@@ -607,7 +671,6 @@ public:
     bool _enable_primitive_restart;
     bool _enable_texture_cube_map_sampless;
 
-    // vertex post-processing
     bool _enable_depth_clamp;
     bool _enable_clip_distance0;
 
@@ -653,103 +716,22 @@ public:
         _program->disable();
     }
 
-public: // non-draw commands 
-
-    void begin_transform_feedback()
-    {
-        if (!_vertex_launcher || !_transform_feedback) return;
-        gl_primitive_mode _TransformFeedbackPrimitiveMode = _vertex_launcher->get_primitive_mode();
-        _transform_feedback->begin_transform_feedback(_TransformFeedbackPrimitiveMode);
-    }
-
-    void pause_transform_feedback()
-    {
-        if (!_vertex_launcher || !_transform_feedback) return;
-        _transform_feedback->pause_transform_feedback();
-    }
-
-    void resume_transform_feedback()
-    {
-        if (!_vertex_launcher || !_transform_feedback) return;
-        _transform_feedback->resume_transform_feedback();
-    }
-
-    void end_transform_feedback()
-    {
-        if (!_vertex_launcher || !_transform_feedback) return;
-        _transform_feedback->end_transform_feedback();
-    }
-
-    void begin_conditional_render()
-    {
-        glBeginConditionalRender(0, GL_QUERY_WAIT);
-    }
-
-    void end_conditional_render()
-    {
-        glEndConditionalRender();
-    }
-
 public:
 
-    /*
-    * draw vertex array by vertex_offset and vertices_num
-    */
-    sptr<gl_fence> draw_arrays(uint32 vertex_offset, uint32 vertices_num)
+    auto syncable_draw_arrays(uint32 vertex_offset, uint32 vertices_num) const -> std::shared_ptr<gl_fence>
     {
         if (!_vertex_launcher || vertex_offset + vertices_num >= _vertex_launcher->get_vertices_num()) return nullptr;
         glDrawArrays(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), vertex_offset, vertices_num);
         return std::make_shared<gl_fence>();
     }
-
-    /*
-    * draw vertex array by vertex_offset and vertices_num
-    * draw number of instances, and specify where instance attribute will effect vertex 
-    */
-    sptr<gl_fence> draw_arrays(uint32 vertex_offset, uint32 vertices_num, uint32 instances_num, uint32 base_instance) const
+    auto syncable_draw_arrays(uint32 vertex_offset, uint32 vertices_num, uint32 instances_num, uint32 base_instance) const -> std::shared_ptr<gl_fence>
     {
         if (!_vertex_launcher || vertex_offset + vertices_num >= _vertex_launcher->get_vertices_num()) return nullptr;
         if (base_instance >= instances_num) return nullptr;
         glDrawArraysInstancedBaseInstance(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), vertex_offset, vertices_num, instances_num, base_instance);
         return std::make_shared<gl_fence>();
     }
-    
-    /*
-    * draw vertex array by indrect command
-    */
-    sptr<gl_fence> draw_arrays(const gl_draw_arrays_indirect_command& command) const
-    {
-        glDrawArraysIndirect(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), (const void*)&command);
-        return std::make_shared<gl_fence>();
-    }
-
-    /*
-    * multi draw vertex array by vertex_offset and vertices_num pairs
-    * multi drawing can not support instanced drawing.
-    */
-    sptr<gl_fence> multi_draw_arrays(const std::vector<uint32>& vertex_offsets, const std::vector<uint32>& vertices_nums) const
-    {
-        if (!_vertex_launcher) return nullptr;
-        if (vertex_offsets.size() != vertices_nums.size()) return nullptr;
-        glMultiDrawArrays(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
-            (const int32*)vertex_offsets.data(), (const int32*)vertices_nums.data(), vertex_offsets.size()
-        );
-        return std::make_shared<gl_fence>();
-    }
-
-    /*
-    * multi draw vertex array by indrect command
-    */
-    sptr<gl_fence> multi_draw_arrays(const std::vector<gl_draw_arrays_indirect_command>& commands) const
-    {
-        //glMultiDrawArraysIndirect()
-        return std::make_shared<gl_fence>();
-    }
-
-    /*
-    * draw vertex array according to element array by element_offset and elements_num
-    */
-    sptr<gl_fence> draw_elements(uint32 element_offset, uint32 elements_num) const
+    auto syncable_draw_elements(uint32 element_offset, uint32 elements_num) const -> std::shared_ptr<gl_fence>
     {
         if (element_offset + elements_num >= _vertex_launcher->get_elements_num()) return nullptr;
         glDrawElements(
@@ -759,8 +741,7 @@ public:
         );
         return std::make_shared<gl_fence>();
     }
-
-    sptr<gl_fence> draw_elements(uint32 element_offset, uint32 elements_num, uint32 instances_num, uint32 base_instance) const
+    auto syncable_draw_elements(uint32 element_offset, uint32 elements_num, uint32 instances_num, uint32 base_instance) const -> std::shared_ptr<gl_fence>
     {
         if (!_vertex_launcher) return nullptr;
         glDrawElementsInstancedBaseInstance(
@@ -770,8 +751,7 @@ public:
         );
         return std::make_shared<gl_fence>();
     }
-
-    sptr<gl_fence> draw_elements(uint32 element_offset, uint32 elements_num, uint32 base_vertex) const
+    auto syncable_draw_elements(uint32 element_offset, uint32 elements_num, uint32 base_vertex) const -> std::shared_ptr<gl_fence>
     {
         if (!_vertex_launcher) return nullptr;
         glDrawElementsBaseVertex(
@@ -781,8 +761,7 @@ public:
         );
         return std::make_shared<gl_fence>();
     }
-
-    sptr<gl_fence> draw_elements(uint32 element_offset, uint32 elements_num, uint32 base_vertex, uint32 instances_num, uint32 base_instance) const
+    auto syncable_draw_elements(uint32 element_offset, uint32 elements_num, uint32 base_vertex, uint32 instances_num, uint32 base_instance) const -> std::shared_ptr<gl_fence>
     {
         if (!_vertex_launcher) return nullptr;
         glDrawElementsInstancedBaseVertexBaseInstance(
@@ -792,18 +771,7 @@ public:
         );
         return std::make_shared<gl_fence>();
     }
-
-    sptr<gl_fence> draw_elements(const gl_draw_elements_indirect_command& command) const
-    {
-        glDrawElementsIndirect(
-            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
-            static_cast<GLenum>(_vertex_launcher->get_element_type()),
-            (const void*)&command
-        );
-        return std::make_shared<gl_fence>();
-    }
-
-    sptr<gl_fence> draw_range_elements(uint32 element_start, uint32 element_end, uint32 element_offset, uint32 elements_num, uint32 base_vertex) const
+    auto syncable_draw_range_elements(uint32 element_start, uint32 element_end, uint32 element_offset, uint32 elements_num, uint32 base_vertex) const -> std::shared_ptr<gl_fence>
     {
         if (!_vertex_launcher) return nullptr;
         glDrawRangeElementsBaseVertex(
@@ -814,8 +782,16 @@ public:
         );
         return std::make_shared<gl_fence>();
     }
-
-    sptr<gl_fence> multi_draw_elements(const std::vector<uint32>& element_offsets, std::vector<uint32>& elements_nums) const
+    auto syncable_multi_draw_arrays(const std::vector<uint32>& vertex_offsets, const std::vector<uint32>& vertices_nums) const -> std::shared_ptr<gl_fence>
+    {
+        if (!_vertex_launcher) return nullptr;
+        if (vertex_offsets.size() != vertices_nums.size()) return nullptr;
+        glMultiDrawArrays(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            (const int32*)vertex_offsets.data(), (const int32*)vertices_nums.data(), vertex_offsets.size()
+        );
+        return std::make_shared<gl_fence>();
+    }
+    auto syncable_multi_draw_elements(const std::vector<uint32>& element_offsets, std::vector<uint32>& elements_nums) const -> std::shared_ptr<gl_fence>
     {
         if (!_vertex_launcher) return nullptr;
         glMultiDrawElements(
@@ -825,25 +801,192 @@ public:
         );
         return std::make_shared<gl_fence>();
     }
-
-    sptr<gl_fence> multi_draw_elements(const std::vector<gl_draw_elements_indirect_command>& commands) const
+    
+    auto syncable_indirect_draw_arrays(const gl_draw_arrays_indirect_command& command) const -> std::shared_ptr<gl_fence>
     {
+        glDrawArraysIndirect(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), (const void*)&command);
+        return std::make_shared<gl_fence>();
+    }
+    auto syncable_indirect_draw_elements(const gl_draw_elements_indirect_command& command) const -> std::shared_ptr<gl_fence>
+    {
+        glDrawElementsIndirect(
+            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            static_cast<GLenum>(_vertex_launcher->get_element_type()),
+            (const void*)&command
+        );
+        return std::make_shared<gl_fence>();
+    }
+    auto syncable_indirect_multi_draw_arrays(const std::vector<gl_draw_arrays_indirect_command>& commands) const -> std::shared_ptr<gl_fence>
+    {
+        //glMultiDrawArraysIndirect()
+        return std::make_shared<gl_fence>();
+    }
+    auto syncable_indirect_multi_draw_elements(const std::vector<gl_draw_elements_indirect_command>& commands) const -> std::shared_ptr<gl_fence>
+    {
+        glMultiDrawElementsIndirect(GL_TRIANGLES, 
+            static_cast<GLenum>(_vertex_launcher->get_element_type()),
+            commands.data(), commands.size(), 
+            0
+        );
         return std::make_shared<gl_fence>();
     }
 
-    sptr<gl_fence> draw_transform_feedback(uint32 stream_Index = 0)
+    void unsyncable_draw_arrays(uint32 vertex_offset, uint32 vertices_num)
+    {
+        if (!_vertex_launcher || vertex_offset + vertices_num >= _vertex_launcher->get_vertices_num()) return;
+        glDrawArrays(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), vertex_offset, vertices_num);
+    }
+    void unsyncable_draw_arrays(uint32 vertex_offset, uint32 vertices_num, uint32 instances_num, uint32 base_instance) const
+    {
+        if (!_vertex_launcher || vertex_offset + vertices_num >= _vertex_launcher->get_vertices_num()) return;
+        if (base_instance >= instances_num) return;
+        glDrawArraysInstancedBaseInstance(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), vertex_offset, vertices_num, instances_num, base_instance);
+    }
+    void unsyncable_draw_elements(uint32 element_offset, uint32 elements_num) const
+    {
+        if (element_offset + elements_num >= _vertex_launcher->get_elements_num()) return;
+        glDrawElements(
+            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            elements_num, static_cast<GLenum>(_vertex_launcher->get_element_type()),
+            (void*)(_vertex_launcher->get_element_size() * element_offset)
+        );
+    }
+    void unsyncable_draw_elements(uint32 element_offset, uint32 elements_num, uint32 instances_num, uint32 base_instance) const
+    {
+        if (!_vertex_launcher) return;
+        glDrawElementsInstancedBaseInstance(
+            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            elements_num, static_cast<GLenum>(_vertex_launcher->get_element_type()), (void*)(_vertex_launcher->get_element_size() * element_offset),
+            instances_num, base_instance
+        );
+    }
+    void unsyncable_draw_elements(uint32 element_offset, uint32 elements_num, uint32 base_vertex) const 
+    {
+        if (!_vertex_launcher) return;
+        glDrawElementsBaseVertex(
+            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            elements_num, static_cast<GLenum>(_vertex_launcher->get_element_type()), (void*)(_vertex_launcher->get_element_size() * element_offset),
+            base_vertex
+        );
+    }
+    void unsyncable_draw_elements(uint32 element_offset, uint32 elements_num, uint32 base_vertex, uint32 instances_num, uint32 base_instance) const
+    {
+        if (!_vertex_launcher) return;
+        glDrawElementsInstancedBaseVertexBaseInstance(
+            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            elements_num, static_cast<GLenum>(_vertex_launcher->get_element_type()), (void*)(_vertex_launcher->get_element_size() * element_offset),
+            instances_num, base_vertex, base_instance
+        );
+    }
+    void unsyncable_draw_range_elements(uint32 element_start, uint32 element_end, uint32 element_offset, uint32 elements_num, uint32 base_vertex) const
+    {
+        if (!_vertex_launcher) return;
+        glDrawRangeElementsBaseVertex(
+            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            element_start, element_end,
+            elements_num, static_cast<GLenum>(_vertex_launcher->get_element_type()), (void*)(_vertex_launcher->get_element_size() * element_offset),
+            base_vertex
+        );
+    }
+    void unsyncable_multi_draw_arrays(const std::vector<uint32>& vertex_offsets, const std::vector<uint32>& vertices_nums) const
+    {
+        if (!_vertex_launcher) return;
+        if (vertex_offsets.size() != vertices_nums.size()) return;
+        glMultiDrawArrays(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            (const int32*)vertex_offsets.data(), (const int32*)vertices_nums.data(), vertex_offsets.size()
+        );
+    }
+    void unsyncable_multi_draw_elements(const std::vector<uint32>& element_offsets, std::vector<uint32>& elements_nums) const
+    {
+        if (!_vertex_launcher) return;
+        glMultiDrawElements(
+            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), (const int32*)elements_nums.data(),
+            static_cast<GLenum>(_vertex_launcher->get_element_type()),
+            nullptr, element_offsets.size()
+        );
+    }
+    
+    void unsyncable_indirect_draw_arrays(const gl_draw_arrays_indirect_command& command) const
+    {
+        glDrawArraysIndirect(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), (const void*)&command);
+    }
+    void unsyncable_indirect_draw_elements(const gl_draw_elements_indirect_command& command) const
+    {
+        glDrawElementsIndirect(
+            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            static_cast<GLenum>(_vertex_launcher->get_element_type()),
+            (const void*)&command
+        );
+    }
+    void unsyncable_indirect_multi_draw_arrays(const std::vector<gl_draw_arrays_indirect_command>& commands) const
+    {
+        //glMultiDrawArraysIndirect()
+    }
+    void unsyncable_indirect_multi_draw_elements(const std::vector<gl_draw_elements_indirect_command>& commands) const
+    {
+        glMultiDrawElementsIndirect(GL_TRIANGLES, 
+            static_cast<GLenum>(_vertex_launcher->get_element_type()), 
+            commands.data(), commands.size(), 
+            0
+        );
+    }
+
+public:
+
+    void begin_transform_feedback()
+    {
+        if (!_vertex_launcher || !_transform_feedback) return;
+        gl_primitive_mode _TransformFeedbackPrimitiveMode = _vertex_launcher->get_primitive_mode();
+        _transform_feedback->begin_transform_feedback(_TransformFeedbackPrimitiveMode);
+    }
+    void pause_transform_feedback()
+    {
+        if (!_vertex_launcher || !_transform_feedback) return;
+        _transform_feedback->pause_transform_feedback();
+    }
+    void resume_transform_feedback()
+    {
+        if (!_vertex_launcher || !_transform_feedback) return;
+        _transform_feedback->resume_transform_feedback();
+    }
+    void end_transform_feedback()
+    {
+        if (!_vertex_launcher || !_transform_feedback) return;
+        _transform_feedback->end_transform_feedback();
+    }
+    void begin_conditional_render()
+    {
+        glBeginConditionalRender(0, GL_QUERY_WAIT);
+    }
+    void end_conditional_render()
+    {
+        glEndConditionalRender();
+    }
+
+    auto syncable_draw_feedback(uint32 stream_index) const ->std::shared_ptr<gl_fence>
     {
         if (!_vertex_launcher || !_transform_feedback) return nullptr;
-        _transform_feedback->draw(_vertex_launcher->get_primitive_mode(), stream_Index);
+        _transform_feedback->draw(_vertex_launcher->get_primitive_mode(), stream_index);
         return std::make_shared<gl_fence>();
     }
-
-    sptr<gl_fence> draw_transform_feedback(uint32 stream_index, uint32 instances_num)
+    auto syncable_draw_feedback(uint32 stream_index, uint32 instances_num) const ->std::shared_ptr<gl_fence>
     {
         if (!_vertex_launcher || !_transform_feedback) return nullptr;
         gl_primitive_mode _TransformFeedbackPrimitiveMode = _vertex_launcher->get_primitive_mode();
         _transform_feedback->draw(_TransformFeedbackPrimitiveMode, stream_index, instances_num);
         return std::make_shared<gl_fence>();
+    }
+    
+    void unsyncable_draw_feedback(uint32 stream_index) const
+    {
+        if (!_vertex_launcher || !_transform_feedback) return;
+        _transform_feedback->draw(_vertex_launcher->get_primitive_mode(), stream_index);
+    }
+    void unsyncable_draw_feedback(uint32 stream_index, uint32 instances_num) const
+    {
+        if (!_vertex_launcher || !_transform_feedback) return;
+        gl_primitive_mode _TransformFeedbackPrimitiveMode = _vertex_launcher->get_primitive_mode();
+        _transform_feedback->draw(_TransformFeedbackPrimitiveMode, stream_index, instances_num);
     }
 
 private:
@@ -876,7 +1019,6 @@ private:
         );
 
     }
-
     void _set_rasterizer()
     {
         rasterizer.discard ? glEnable(GL_RASTERIZER_DISCARD) : glDisable(GL_RASTERIZER_DISCARD);
@@ -900,23 +1042,21 @@ private:
         }
         rasterizer.enable_polygon_smooth ? glEnable(GL_POLYGON_SMOOTH) : glDisable(GL_POLYGON_SMOOTH);
         glFrontFace(static_cast<GLenum>(rasterizer.front_face_mode));
-        if (rasterizer.enable_cull_face)
+        if (rasterizer.cull_face.enable)
         {
             glEnable(GL_CULL_FACE);
-            glCullFace(static_cast<GLenum>(rasterizer.cull_face));
+            glCullFace(static_cast<GLenum>(rasterizer.cull_face.face));
         }
         else {
             glDisable(GL_CULL_FACE);
         }
-        glPolygonMode(GL_FRONT, static_cast<GLenum>(rasterizer.front_polygon_mode));
-        glPolygonMode(GL_BACK, static_cast<GLenum>(rasterizer.back_polygon_mode));
+        glPolygonMode(GL_FRONT_AND_BACK, static_cast<GLenum>(rasterizer.polygon_mode));
         //glPolygonOffset();
         //glPolygonOffsetClamp();
        rasterizer.enable_polygon_offset_point ? glEnable(GL_POLYGON_OFFSET_POINT) : glDisable(GL_POLYGON_OFFSET_POINT);
        rasterizer.enable_polygon_offset_line ? glEnable(GL_POLYGON_OFFSET_LINE) : glDisable(GL_POLYGON_OFFSET_LINE);
        rasterizer.enable_polygon_offset_fill ? glEnable(GL_POLYGON_OFFSET_FILL) : glDisable(GL_POLYGON_OFFSET_FILL);
     }
-
     void _set_fragment_preprocessor()
     {
         if (fragment_preprocessor.scissor_test.enable)
@@ -950,41 +1090,40 @@ private:
         else {
             glDisable(GL_SAMPLE_MASK);
         }
-
-        
     }
-
     void _set_fragment_postprocessor()
     {
         fragment_postprocessor.alpha_to_coverage_operations.enable_sample_alpha_to_coverage ? glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE) : glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
         fragment_postprocessor.alpha_to_coverage_operations.enable_sample_alpha_to_one ? glEnable(GL_SAMPLE_ALPHA_TO_ONE) : glDisable(GL_SAMPLE_ALPHA_TO_ONE);
-
         if (fragment_postprocessor.stencil_test.enable)
         {
             glEnable(GL_STENCIL_TEST);
             glStencilFuncSeparate(
+                GL_FRONT,
                 static_cast<GLenum>(fragment_postprocessor.stencil_test.front_face_func),
-                static_cast<GLenum>(fragment_postprocessor.stencil_test.back_face_func),
-                fragment_postprocessor.stencil_test.ref, fragment_postprocessor.stencil_test.mask);
-
+                fragment_postprocessor.stencil_test.front_face_ref, fragment_postprocessor.stencil_test.front_face_mask
+            );
+            glStencilFuncSeparate(
+                GL_BACK,
+                static_cast<GLenum>(fragment_postprocessor.stencil_test.front_face_func),
+                fragment_postprocessor.stencil_test.back_face_ref, fragment_postprocessor.stencil_test.back_face_mask
+            );
             glStencilOpSeparate(GL_FRONT,
-                static_cast<GLenum>(fragment_postprocessor.stencil_test.sfail_operation),
-                static_cast<GLenum>(fragment_postprocessor.stencil_test.dpfail_operation),
-                static_cast<GLenum>(fragment_postprocessor.stencil_test.dppass_operation)
+                static_cast<GLenum>(fragment_postprocessor.stencil_test.front_face_sfail_operation),
+                static_cast<GLenum>(fragment_postprocessor.stencil_test.front_face_dpfail_operation),
+                static_cast<GLenum>(fragment_postprocessor.stencil_test.front_face_dppass_operation)
             );
             glStencilOpSeparate(GL_BACK,
-                static_cast<GLenum>(fragment_postprocessor.stencil_test.sfail_operation),
-                static_cast<GLenum>(fragment_postprocessor.stencil_test.dpfail_operation),
-                static_cast<GLenum>(fragment_postprocessor.stencil_test.dppass_operation)
+                static_cast<GLenum>(fragment_postprocessor.stencil_test.back_face_sfail_operation),
+                static_cast<GLenum>(fragment_postprocessor.stencil_test.back_face_dpfail_operation),
+                static_cast<GLenum>(fragment_postprocessor.stencil_test.back_face_dppass_operation)
             );
-
             glStencilMaskSeparate(GL_FRONT, 1);
             glStencilMaskSeparate(GL_BACK, 1);
         }
         else {
             glDisable(GL_STENCIL_TEST);
         }
-
         if (fragment_postprocessor.depth_test.enable)
         {
             glEnable(GL_DEPTH_TEST);
@@ -993,28 +1132,40 @@ private:
         else {
             glDisable(GL_DEPTH_TEST);
         }
-        if (fragment_postprocessor.enable_blend)
+        if (fragment_postprocessor.blend.enable)
         {
             glEnable(GL_BLEND);
-            //glBlendColor();
-            //glBlendFuncSeparate();
-            //glBlendEquationSeparate();
+            glBlendColor(
+                fragment_postprocessor.blend.blend_color.r,
+                fragment_postprocessor.blend.blend_color.g,
+                fragment_postprocessor.blend.blend_color.b,
+                fragment_postprocessor.blend.blend_color.a
+            );
+            glBlendFuncSeparate(
+                static_cast<GLenum>(fragment_postprocessor.blend.src_rgb_factor),
+                static_cast<GLenum>(fragment_postprocessor.blend.src_alpha_factor),
+                static_cast<GLenum>(fragment_postprocessor.blend.dst_rgb_factor),
+                static_cast<GLenum>(fragment_postprocessor.blend.dst_alpha_factor)
+            );
+            glBlendEquationSeparate(
+                static_cast<GLenum>(fragment_postprocessor.blend.rgb_equation),
+                static_cast<GLenum>(fragment_postprocessor.blend.alpha_equation)
+            );
         }
         else {
             glDisable(GL_BLEND);
         }
         fragment_postprocessor.enable_framebuffer_srgb ? glEnable(GL_FRAMEBUFFER_SRGB) : glDisable(GL_FRAMEBUFFER_SRGB);
         fragment_postprocessor.enable_dither ? glEnable(GL_DITHER) : glDisable(GL_DITHER);
-        if (fragment_postprocessor.logic_operation.enable)
+        if (fragment_postprocessor.logical_operation.enable)
         {
             glEnable(GL_COLOR_LOGIC_OP);
-            glLogicOp(static_cast<GLenum>(fragment_postprocessor.logic_operation.op));
+            glLogicOp(static_cast<GLenum>(fragment_postprocessor.logical_operation.op));
         }
         else {
             glDisable(GL_COLOR_LOGIC_OP);
         }
     }
-
     void _set_pipeline_fixed_functions()
     {
         _set_vertex_postprocessor();

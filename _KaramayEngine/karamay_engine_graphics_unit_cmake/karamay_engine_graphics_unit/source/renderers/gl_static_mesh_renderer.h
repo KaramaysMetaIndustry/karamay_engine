@@ -44,8 +44,6 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		_mesh_pipeline->vertex_postprocessor.depth_mode;
 
 		_mesh_pipeline->rasterizer.discard = false;
-		_mesh_pipeline->rasterizer.enable_cull_face = true;
-		_mesh_pipeline->rasterizer.cull_face = gl_cull_face::BACK;
 		_mesh_pipeline->rasterizer.enable_multisample = true;
 		_mesh_pipeline->rasterizer.enable_sample_shading = true;
 		_mesh_pipeline->rasterizer.sample_shading_rate = 1.1f;
@@ -64,17 +62,13 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		_mesh_pipeline->fragment_preprocessor.multisample_fragment_operations.enable_sample_mask = true;
 
 		_mesh_pipeline->fragment_postprocessor.stencil_test.enable = false;
-		_mesh_pipeline->fragment_postprocessor.stencil_test.ref = 0;
-		_mesh_pipeline->fragment_postprocessor.stencil_test.mask = 125;
+
 		_mesh_pipeline->fragment_postprocessor.stencil_test.front_face_func = gl_stencil_func::LEQUAL;
 		_mesh_pipeline->fragment_postprocessor.stencil_test.back_face_func = gl_stencil_func::NEVER;
 		_mesh_pipeline->fragment_postprocessor.depth_test.enable = false;
 		_mesh_pipeline->fragment_postprocessor.depth_test.func = gl_depth_func::GREATER;
-		_mesh_pipeline->fragment_postprocessor.enable_blend = true;
 		_mesh_pipeline->fragment_postprocessor.enable_framebuffer_srgb = true;
 		_mesh_pipeline->fragment_postprocessor.enable_dither = true;
-		_mesh_pipeline->fragment_postprocessor.logic_operation.enable = true;
-		_mesh_pipeline->fragment_postprocessor.logic_operation.op = gl_logic_op::INVERT;
 
 		auto& _vertex_launcher = _mesh_pipeline->vertex_launcher();
 		_vertex_launcher.reallocate_element_slot(10);
@@ -85,8 +79,6 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		_tmp_fb->set_color_attachment(1, _normal_tex, 0);
 
 		_mesh_pipeline->render_target().set_default();
-
-		//_material_combiner_pipeline->program().iimage1D("");
 
 		on_window_size_changed = [_tmp_fb](uint32 window_width, uint32 window_height)
 		{
@@ -126,7 +118,7 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		_material_combiner_pipeline->disable();
 
 		_mesh_pipeline->enable();
-		_mesh_pipeline->draw_arrays(0, 1024);
+		_mesh_pipeline->unsyncable_draw_arrays(0, 1024);
 		_mesh_pipeline->disable();
 
 		_frame_count++;
