@@ -38,8 +38,13 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		_mesh_pipeline->program().sampler2D("mat.displacement_map")->set_texture_2d(_displacement_map);
 		_mesh_pipeline->program().sampler2D("mat.ambient_occlusion_map")->set_texture_2d(_ambient_occlusion_map);*/
 
+
 		_mesh_pipeline->vertex_postprocessor.provoke_mode;
-		_mesh_pipeline->vertex_postprocessor.viewport;
+		_mesh_pipeline->vertex_postprocessor.viewport.index = 1;
+		_mesh_pipeline->vertex_postprocessor.viewport.x = 0;
+		_mesh_pipeline->vertex_postprocessor.viewport.y = 0;
+		_mesh_pipeline->vertex_postprocessor.viewport.width = 0;
+		_mesh_pipeline->vertex_postprocessor.viewport.height = 0;
 		_mesh_pipeline->vertex_postprocessor.origin;
 		_mesh_pipeline->vertex_postprocessor.depth_mode;
 

@@ -509,14 +509,18 @@ public:
             uint32 index;
             uint32 x, y;
             uint32 width, height;
+            gl_viewport() :
+                index(0),
+                x(0), y(0), width(0), height(0)
+            {}
         } viewport;
         gl_clip_control_origin origin;
         gl_clip_control_depth_mode depth_mode;
 
         gl_vertex_postprocessor() :
             provoke_mode(gl_provoke_mode::FIRST_VERTEX_CONVENTION),
-            origin(gl_clip_control_origin::LOWER_LEFT),
-            depth_mode(gl_clip_control_depth_mode::ZERO_TO_ONE)
+            viewport(),
+            origin(gl_clip_control_origin::LOWER_LEFT), depth_mode(gl_clip_control_depth_mode::ZERO_TO_ONE)
         {}
     } vertex_postprocessor;
 
@@ -531,9 +535,11 @@ public:
         bool enable_program_point_size;
         bool enable_line_smooth;
         bool rasterized_line_smooth;
-        bool enable_polygon_smooth;
+        bool enable_polygon_smooth; //  polygon antialiasing
         
+        // polygon face mode CCW
         gl_front_face_mode front_face_mode;
+        // specify cull face front/back/front_back
         struct gl_cull_face
         {
             bool enable;
@@ -851,6 +857,7 @@ public:
             (void*)(_vertex_launcher->get_element_size() * element_offset)
         );
     }
+
     void unsyncable_draw_elements(uint32 element_offset, uint32 elements_num, uint32 instances_num, uint32 base_instance) const
     {
         if (!_vertex_launcher) return;
@@ -1040,8 +1047,11 @@ private:
         else {
             glDisable(GL_LINE_SMOOTH);
         }
-        rasterizer.enable_polygon_smooth ? glEnable(GL_POLYGON_SMOOTH) : glDisable(GL_POLYGON_SMOOTH);
+
+        // specify polygon front face
         glFrontFace(static_cast<GLenum>(rasterizer.front_face_mode));
+        // specify polygon mode
+        glPolygonMode(GL_FRONT_AND_BACK, static_cast<GLenum>(rasterizer.polygon_mode));
         if (rasterizer.cull_face.enable)
         {
             glEnable(GL_CULL_FACE);
@@ -1050,9 +1060,12 @@ private:
         else {
             glDisable(GL_CULL_FACE);
         }
-        glPolygonMode(GL_FRONT_AND_BACK, static_cast<GLenum>(rasterizer.polygon_mode));
+        rasterizer.enable_polygon_smooth ? glEnable(GL_POLYGON_SMOOTH) : glDisable(GL_POLYGON_SMOOTH);
         //glPolygonOffset();
         //glPolygonOffsetClamp();
+        //glPolygonOffsetClamp();
+        //glPolygonOffset();
+
        rasterizer.enable_polygon_offset_point ? glEnable(GL_POLYGON_OFFSET_POINT) : glDisable(GL_POLYGON_OFFSET_POINT);
        rasterizer.enable_polygon_offset_line ? glEnable(GL_POLYGON_OFFSET_LINE) : glDisable(GL_POLYGON_OFFSET_LINE);
        rasterizer.enable_polygon_offset_fill ? glEnable(GL_POLYGON_OFFSET_FILL) : glDisable(GL_POLYGON_OFFSET_FILL);
@@ -1074,6 +1087,8 @@ private:
         else {
             glDisable(GL_SCISSOR_TEST);
         }
+        // multisample operations
+        // 
         if (fragment_preprocessor.multisample_fragment_operations.enable_sample_coverage)
         {
             glEnable(GL_SAMPLE_COVERAGE);
