@@ -10,6 +10,7 @@ public:
         _program(nullptr)
     {
         _program = new glsl_compute_pipeline_program(cs);
+        _program->load();
     }
 
 	gl_compute_pipeline(const gl_compute_pipeline&) = delete;
@@ -22,31 +23,34 @@ public:
 
 public:
 
+    glsl_compute_pipeline_program& program()
+    {
+#ifdef _DEBUG
+        if(!_program) throw std::exception("program can not be null");
+#endif
+        return *_program;
+    }
+
+public:
+
     void enable() noexcept
     {
         if (!_program) return;
-
+        _program->enable();
     }
 
     void disable() noexcept
     {
-        if(_program) return;
-
+        if (_program) return;
+        _program->disable();
     }
 
 public:
 
-	void dispatch(uint32 num_groups_x, uint32 num_groups_y, uint32 num_groups_z) noexcept
-	{
-	    if(!_program) return;
-        glDispatchCompute(num_groups_x, num_groups_y, num_groups_z);
-	}
-
-public:
-
-    glsl_compute_pipeline_program& program()
+    void dispatch(uint32 num_groups_x, uint32 num_groups_y, uint32 num_groups_z) noexcept
     {
-        return *_program;
+        if (!_program) return;
+        glDispatchCompute(num_groups_x, num_groups_y, num_groups_z);
     }
 
 private:

@@ -24,9 +24,11 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		glsl_tessellation_shader* _ts = new glsl_tessellation_shader({});
 		glsl_geometry_shader* _gs = new glsl_geometry_shader({});
 		glsl_fragment_shader* _fs = new glsl_fragment_shader({});
+
+		glsl_compute_shader* _cs = new glsl_compute_shader({});
 		
-		// initialize pipeline, set shaders
 		auto _mesh_pipeline = builder.create_graphics_pipeline("mesh_pipeline", _vs, _ts, _gs, _fs);
+		auto _material_combiner_pipeline = builder.create_compute_pipeline("material_combiner_pipeline", _cs);
 
 		// set program
 		/*_mesh_pipeline->program().sampler2D("mat.albedo_map")->set_texture_2d(_albedo_map);
@@ -36,8 +38,11 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		_mesh_pipeline->program().sampler2D("mat.displacement_map")->set_texture_2d(_displacement_map);
 		_mesh_pipeline->program().sampler2D("mat.ambient_occlusion_map")->set_texture_2d(_ambient_occlusion_map);*/
 
+		_mesh_pipeline->vertex_postprocessor.provoke_mode;
+		_mesh_pipeline->vertex_postprocessor.viewport;
+		_mesh_pipeline->vertex_postprocessor.origin;
+		_mesh_pipeline->vertex_postprocessor.depth_mode;
 
-		// set rasterizer
 		_mesh_pipeline->rasterizer.discard = false;
 		_mesh_pipeline->rasterizer.enable_cull_face = true;
 		_mesh_pipeline->rasterizer.cull_face = gl_cull_face::BACK;
@@ -47,55 +52,42 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		_mesh_pipeline->rasterizer.enable_line_smooth = true;
 		_mesh_pipeline->rasterizer.enable_polygon_smooth = true;
 		_mesh_pipeline->rasterizer.enable_polygon_offset_fill = true;
+		
+		_mesh_pipeline->fragment_preprocessor.scissor_test.enable = true;
+		_mesh_pipeline->fragment_preprocessor.scissor_test.rectangle.x = 0;
+		_mesh_pipeline->fragment_preprocessor.scissor_test.rectangle.y = 0;
+		_mesh_pipeline->fragment_preprocessor.scissor_test.rectangle.width = 1024;
+		_mesh_pipeline->fragment_preprocessor.scissor_test.rectangle.height = 1024;
+		_mesh_pipeline->fragment_preprocessor.multisample_fragment_operations.enable_sample_coverage = true;
+		_mesh_pipeline->fragment_preprocessor.multisample_fragment_operations.inverted = true;
+		_mesh_pipeline->fragment_preprocessor.multisample_fragment_operations.sample_coverage_value = 1.2f;
+		_mesh_pipeline->fragment_preprocessor.multisample_fragment_operations.enable_sample_mask = true;
 
-		// set fragment operations
-		// scissor test
-		_mesh_pipeline->early_fragment_operations; //EarlyFragmentOperations
-		_mesh_pipeline->final_fragment_operations; //FinalFragmentOperations
+		_mesh_pipeline->fragment_postprocessor.stencil_test.enable = false;
+		_mesh_pipeline->fragment_postprocessor.stencil_test.ref = 0;
+		_mesh_pipeline->fragment_postprocessor.stencil_test.mask = 125;
+		_mesh_pipeline->fragment_postprocessor.stencil_test.front_face_func = gl_stencil_func::LEQUAL;
+		_mesh_pipeline->fragment_postprocessor.stencil_test.back_face_func = gl_stencil_func::NEVER;
+		_mesh_pipeline->fragment_postprocessor.depth_test.enable = false;
+		_mesh_pipeline->fragment_postprocessor.depth_test.func = gl_depth_func::GREATER;
+		_mesh_pipeline->fragment_postprocessor.enable_blend = true;
+		_mesh_pipeline->fragment_postprocessor.enable_framebuffer_srgb = true;
+		_mesh_pipeline->fragment_postprocessor.enable_dither = true;
+		_mesh_pipeline->fragment_postprocessor.logic_operation.enable = true;
+		_mesh_pipeline->fragment_postprocessor.logic_operation.op = gl_logic_op::INVERT;
 
-		_mesh_pipeline->fragment_operations.scissor_test.enable = true;
-		_mesh_pipeline->fragment_operations.scissor_test.rectangle.x = 0;
-		_mesh_pipeline->fragment_operations.scissor_test.rectangle.y = 0;
-		_mesh_pipeline->fragment_operations.scissor_test.rectangle.width = 1024;
-		_mesh_pipeline->fragment_operations.scissor_test.rectangle.height = 1024;
-		// multisample fragment operations
-		_mesh_pipeline->fragment_operations.multisample_fragment_operations.enable_sample_coverage = true;
-		_mesh_pipeline->fragment_operations.multisample_fragment_operations.inverted = true;
-		_mesh_pipeline->fragment_operations.multisample_fragment_operations.sample_coverage_value = 1.2f;
-		_mesh_pipeline->fragment_operations.multisample_fragment_operations.enable_sample_mask = true;
-		// stencil test
-		_mesh_pipeline->fragment_operations.stencil_test.enable = false;
-		_mesh_pipeline->fragment_operations.stencil_test.ref = 0;
-		_mesh_pipeline->fragment_operations.stencil_test.mask = 125;
-		_mesh_pipeline->fragment_operations.stencil_test.front_face_func = gl_stencil_func::LEQUAL;
-		_mesh_pipeline->fragment_operations.stencil_test.back_face_func = gl_stencil_func::NEVER;
-		// depth test
-		_mesh_pipeline->fragment_operations.depth_test.enable = false;
-		_mesh_pipeline->fragment_operations.depth_test.func = gl_depth_func::GREATER;
-		// blend
-		_mesh_pipeline->fragment_operations.enable_blend = true;
-		// srgb 
-		_mesh_pipeline->fragment_operations.enable_framebuffer_srgb = true;
-		// dither
-		_mesh_pipeline->fragment_operations.enable_dither = true;
-		// logic operation
-		_mesh_pipeline->fragment_operations.logic_operation.enable = true;
-		_mesh_pipeline->fragment_operations.logic_operation.op = gl_logic_op::INVERT;
-
-		// set vertex launcher
 		auto& _vertex_launcher = _mesh_pipeline->vertex_launcher();
 		_vertex_launcher.reallocate_element_slot(10);
 		_vertex_launcher.reallocate_vertex_slot(16);
 
-		// set framebuffer
 		auto _tmp_fb = builder.create_framebuffer("tmp_fb", 1024, 1024);
 		_tmp_fb->set_color_attachment(0, _albedo_tex, 0);
 		_tmp_fb->set_color_attachment(1, _normal_tex, 0);
 
-		// set render target
 		_mesh_pipeline->render_target().set_default();
 
-		// set callback
+		//_material_combiner_pipeline->program().iimage1D("");
+
 		on_window_size_changed = [_tmp_fb](uint32 window_width, uint32 window_height)
 		{
 			if (!_tmp_fb) return;
@@ -115,22 +107,26 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 
 	IMPLEMENTATION_FUNC_RENDER()
 	{
-		// set default framebuffer
 		default_framebuffer->set_color_cache(0.5f, 0.0f, 0.0f, 1.0f);
 		default_framebuffer->set_stencil_cache(1);
 		default_framebuffer->set_depth_cache(0.1l);
 		default_framebuffer->switch_draw_buffer(gl_default_framebuffer_draw_buffer::LEFT);
-
 		default_framebuffer->clear_color_buffer();
 
 		auto _mesh_pipeline = builder.graphics_pipeline("mesh_pipeline");
+		auto _material_combiner_pipeline = builder.compute_pipeline("material_combiner_pipeline");
 
 #ifdef _DEBUG
-		if (!_mesh_pipeline) throw std::exception("mesh pipeline must not be nullptr");
+		if (!_mesh_pipeline) throw std::exception("mesh pipeline must not be null");
+		if (!_material_combiner_pipeline) throw std::exception("material combiner pipeline must not be null");
 #endif
 
+		_material_combiner_pipeline->enable();
+		_material_combiner_pipeline->dispatch(1, 1, 1);
+		_material_combiner_pipeline->disable();
+
 		_mesh_pipeline->enable();
-		auto _fence = _mesh_pipeline->draw_arrays(0, 1024);
+		_mesh_pipeline->draw_arrays(0, 1024);
 		_mesh_pipeline->disable();
 
 		_frame_count++;

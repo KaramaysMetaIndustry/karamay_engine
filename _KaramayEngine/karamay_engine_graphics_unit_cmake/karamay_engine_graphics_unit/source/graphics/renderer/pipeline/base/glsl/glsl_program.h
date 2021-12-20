@@ -669,6 +669,16 @@ public:
 
 	}
 
+	void enable()
+	{
+
+	}
+
+	void disable()
+	{
+
+	}
+
 };
 
 

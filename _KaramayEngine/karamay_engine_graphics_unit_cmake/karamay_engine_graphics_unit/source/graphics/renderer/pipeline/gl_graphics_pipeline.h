@@ -332,10 +332,12 @@ enum class gl_blend_func_factor : GLenum
     ONE_MINUS_SRC_COLOR = GL_ONE_MINUS_SRC_COLOR,
     DST_COLOR = GL_DST_COLOR,
     ONE_MINUS_DST_COLOR = GL_ONE_MINUS_DST_COLOR,
+
     SRC_ALPHA = GL_SRC_ALPHA,
     ONE_MINUS_SRC_ALPHA = GL_ONE_MINUS_SRC_ALPHA,
     DST_ALPHA = GL_DST_ALPHA,
     ONE_MINUS_DST_ALPHA = GL_ONE_MINUS_DST_ALPHA,
+
     CONSTANT_COLOR = GL_CONSTANT_COLOR,
     ONE_MINUS_CONSTANT_COLOR = GL_ONE_MINUS_CONSTANT_COLOR,
     CONSTANT_ALPHA = GL_CONSTANT_ALPHA,
@@ -494,7 +496,19 @@ public:
 
 public:
 
-    struct gl_vertex_postprocessor{} vertex_postprocessor;
+    struct gl_vertex_postprocessor
+    {
+        gl_provoke_mode provoke_mode;
+        struct gl_viewport
+        {
+            uint32 index;
+            uint32 x, y;
+            uint32 width, height;
+        } viewport;
+        gl_clip_control_origin origin;
+        gl_clip_control_depth_mode depth_mode;
+    } vertex_postprocessor;
+
     struct gl_rasterizer
     {
         bool discard;
@@ -524,35 +538,7 @@ public:
         {}
     } rasterizer;
 
-    struct gl_fragment_preprocessor {} fragment_preprocessor;
-    struct gl_fragment_postprocessor {} fragment_postprocessor;
-
-    bool _enable_debug_output;
-    bool _enable_debug_output_synchronous;
-
-    bool _enable_primitive_restart;
-    bool _enable_texture_cube_map_sampless;
-
-    // vertex post-processing
-    bool _enable_depth_clamp;
-    bool _enable_clip_distance0;
-    gl_provoke_mode _provoke_mode;
-
-    struct gl_vertex_post_processing
-    {
-        struct gl_viewport
-        {
-            uint32 index;
-            uint32 x, y;
-            uint32 width, height;
-        } viewport;
-        gl_clip_control_origin origin;
-        gl_clip_control_depth_mode depth_mode;
-    } vertex_post_processing;
-
-    
-
-    struct gl_fragment_operations
+    struct gl_fragment_preprocessor 
     {
         struct gl_scissor_test
         {
@@ -571,7 +557,10 @@ public:
             bool inverted;
             bool enable_sample_mask;
         } multisample_fragment_operations; // early
-        // fragment shader
+    } fragment_preprocessor;
+
+    struct gl_fragment_postprocessor 
+    {
         struct gl_alpha_to_coverage_operations
         {
             bool enable_sample_alpha_to_coverage;
@@ -610,19 +599,17 @@ public:
                 enable(false), op(gl_logic_op::AND)
             {}
         } logic_operation; // <=> framebuffer
+    } fragment_postprocessor;
 
-        gl_fragment_operations() :
-            alpha_to_coverage_operations(),
-            stencil_test(),
-            depth_test(),
-            enable_blend(false),
-            enable_framebuffer_srgb(false),
-            enable_dither(false),
-            logic_operation()
-        {}
-    } fragment_operations;
+    bool _enable_debug_output;
+    bool _enable_debug_output_synchronous;
 
+    bool _enable_primitive_restart;
+    bool _enable_texture_cube_map_sampless;
 
+    // vertex post-processing
+    bool _enable_depth_clamp;
+    bool _enable_clip_distance0;
 
 public:
 
@@ -644,7 +631,7 @@ public:
         }
         _render_target->bind();
 
-        _set_pipeline_state();
+        _set_pipeline_fixed_functions();
     }
 
     /*
@@ -859,15 +846,12 @@ public:
         return std::make_shared<gl_fence>();
     }
 
-
-
 private:
 
-    void _set_vertex_post_processing()
+    void _set_vertex_postprocessor()
     {
-        glProvokingVertex(static_cast<GLenum>(_provoke_mode));
-
-        glClipControl(static_cast<GLenum>(vertex_post_processing.origin), static_cast<GLenum>(vertex_post_processing.depth_mode));
+        glProvokingVertex(static_cast<GLenum>(vertex_postprocessor.provoke_mode));
+        glClipControl(static_cast<GLenum>(vertex_postprocessor.origin), static_cast<GLenum>(vertex_postprocessor.depth_mode));
 
         // primitive clipping
         if (_enable_depth_clamp)
@@ -884,16 +868,16 @@ private:
         _enable_clip_distance0 ? glEnable(GL_CLIP_DISTANCE0) : glDisable(GL_CLIP_DISTANCE0);
 
         // coordinate transformations
-        glViewportIndexedf(vertex_post_processing.viewport.index, 
-            vertex_post_processing.viewport.x, 
-            vertex_post_processing.viewport.y, 
-            vertex_post_processing.viewport.width, 
-            vertex_post_processing.viewport.height
+        glViewportIndexedf(vertex_postprocessor.viewport.index,
+            vertex_postprocessor.viewport.x, 
+            vertex_postprocessor.viewport.y, 
+            vertex_postprocessor.viewport.width, 
+            vertex_postprocessor.viewport.height
         );
 
     }
 
-    void _set_rasterization()
+    void _set_rasterizer()
     {
         rasterizer.discard ? glEnable(GL_RASTERIZER_DISCARD) : glDisable(GL_RASTERIZER_DISCARD);
         rasterizer.enable_multisample ? glEnable(GL_MULTISAMPLE) : glDisable(GL_MULTISAMPLE);
@@ -933,32 +917,32 @@ private:
        rasterizer.enable_polygon_offset_fill ? glEnable(GL_POLYGON_OFFSET_FILL) : glDisable(GL_POLYGON_OFFSET_FILL);
     }
 
-    void _set_fragment_operations()
+    void _set_fragment_preprocessor()
     {
-        if (fragment_operations.scissor_test.enable)
+        if (fragment_preprocessor.scissor_test.enable)
         {
             //glEnable(GL_SCISSOR_TEST);
             //glScissor(fragment_operations.scissor_test.x, fragment_operations.scissor_test.y, fragment_operations.scissor_test.width, fragment_operations.scissor_test.height);
-            glEnablei(GL_SCISSOR_TEST, fragment_operations.scissor_test.rectangle.index);
-            glScissorIndexed(fragment_operations.scissor_test.rectangle.index, 
-                fragment_operations.scissor_test.rectangle.x, 
-                fragment_operations.scissor_test.rectangle.y, 
-                fragment_operations.scissor_test.rectangle.width, 
-                fragment_operations.scissor_test.rectangle.height
+            glEnablei(GL_SCISSOR_TEST, fragment_preprocessor.scissor_test.rectangle.index);
+            glScissorIndexed(fragment_preprocessor.scissor_test.rectangle.index,
+                fragment_preprocessor.scissor_test.rectangle.x, 
+                fragment_preprocessor.scissor_test.rectangle.y, 
+                fragment_preprocessor.scissor_test.rectangle.width, 
+                fragment_preprocessor.scissor_test.rectangle.height
             );
         }
         else {
             glDisable(GL_SCISSOR_TEST);
         }
-        if (fragment_operations.multisample_fragment_operations.enable_sample_coverage)
+        if (fragment_preprocessor.multisample_fragment_operations.enable_sample_coverage)
         {
             glEnable(GL_SAMPLE_COVERAGE);
-            glSampleCoverage(fragment_operations.multisample_fragment_operations.sample_coverage_value, fragment_operations.multisample_fragment_operations.inverted);
+            glSampleCoverage(fragment_preprocessor.multisample_fragment_operations.sample_coverage_value, fragment_preprocessor.multisample_fragment_operations.inverted);
         }
         else {
             glDisable(GL_SAMPLE_COVERAGE);
         }
-        if (fragment_operations.multisample_fragment_operations.enable_sample_mask)
+        if (fragment_preprocessor.multisample_fragment_operations.enable_sample_mask)
         {
             glEnable(GL_SAMPLE_MASK);
             //glSampleMaski();
@@ -967,28 +951,33 @@ private:
             glDisable(GL_SAMPLE_MASK);
         }
 
-        fragment_operations.alpha_to_coverage_operations.enable_sample_alpha_to_coverage ? glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE) : glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-        fragment_operations.alpha_to_coverage_operations.enable_sample_alpha_to_one ? glEnable(GL_SAMPLE_ALPHA_TO_ONE) : glDisable(GL_SAMPLE_ALPHA_TO_ONE);
         
-        if (fragment_operations.stencil_test.enable)
+    }
+
+    void _set_fragment_postprocessor()
+    {
+        fragment_postprocessor.alpha_to_coverage_operations.enable_sample_alpha_to_coverage ? glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE) : glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+        fragment_postprocessor.alpha_to_coverage_operations.enable_sample_alpha_to_one ? glEnable(GL_SAMPLE_ALPHA_TO_ONE) : glDisable(GL_SAMPLE_ALPHA_TO_ONE);
+
+        if (fragment_postprocessor.stencil_test.enable)
         {
             glEnable(GL_STENCIL_TEST);
             glStencilFuncSeparate(
-                static_cast<GLenum>( fragment_operations.stencil_test.front_face_func), 
-                static_cast<GLenum>( fragment_operations.stencil_test.back_face_func), 
-                fragment_operations.stencil_test.ref, fragment_operations.stencil_test.mask);
-            
-            glStencilOpSeparate(GL_FRONT, 
-                static_cast<GLenum>(fragment_operations.stencil_test.sfail_operation), 
-                static_cast<GLenum>(fragment_operations.stencil_test.dpfail_operation), 
-                static_cast<GLenum>(fragment_operations.stencil_test.dppass_operation)
+                static_cast<GLenum>(fragment_postprocessor.stencil_test.front_face_func),
+                static_cast<GLenum>(fragment_postprocessor.stencil_test.back_face_func),
+                fragment_postprocessor.stencil_test.ref, fragment_postprocessor.stencil_test.mask);
+
+            glStencilOpSeparate(GL_FRONT,
+                static_cast<GLenum>(fragment_postprocessor.stencil_test.sfail_operation),
+                static_cast<GLenum>(fragment_postprocessor.stencil_test.dpfail_operation),
+                static_cast<GLenum>(fragment_postprocessor.stencil_test.dppass_operation)
             );
             glStencilOpSeparate(GL_BACK,
-                static_cast<GLenum>(fragment_operations.stencil_test.sfail_operation),
-                static_cast<GLenum>(fragment_operations.stencil_test.dpfail_operation),
-                static_cast<GLenum>(fragment_operations.stencil_test.dppass_operation)
+                static_cast<GLenum>(fragment_postprocessor.stencil_test.sfail_operation),
+                static_cast<GLenum>(fragment_postprocessor.stencil_test.dpfail_operation),
+                static_cast<GLenum>(fragment_postprocessor.stencil_test.dppass_operation)
             );
-            
+
             glStencilMaskSeparate(GL_FRONT, 1);
             glStencilMaskSeparate(GL_BACK, 1);
         }
@@ -996,17 +985,17 @@ private:
             glDisable(GL_STENCIL_TEST);
         }
 
-        if (fragment_operations.depth_test.enable)
+        if (fragment_postprocessor.depth_test.enable)
         {
             glEnable(GL_DEPTH_TEST);
-            glDepthFunc(static_cast<GLenum>(fragment_operations.depth_test.func));
+            glDepthFunc(static_cast<GLenum>(fragment_postprocessor.depth_test.func));
         }
         else {
             glDisable(GL_DEPTH_TEST);
         }
-        if (fragment_operations.enable_blend)
+        if (fragment_postprocessor.enable_blend)
         {
-            glEnable(GL_BLEND); 
+            glEnable(GL_BLEND);
             //glBlendColor();
             //glBlendFuncSeparate();
             //glBlendEquationSeparate();
@@ -1014,23 +1003,24 @@ private:
         else {
             glDisable(GL_BLEND);
         }
-        fragment_operations.enable_framebuffer_srgb ? glEnable(GL_FRAMEBUFFER_SRGB) : glDisable(GL_FRAMEBUFFER_SRGB);
-        fragment_operations.enable_dither ? glEnable(GL_DITHER) : glDisable(GL_DITHER);
-        if (fragment_operations.logic_operation.enable)
+        fragment_postprocessor.enable_framebuffer_srgb ? glEnable(GL_FRAMEBUFFER_SRGB) : glDisable(GL_FRAMEBUFFER_SRGB);
+        fragment_postprocessor.enable_dither ? glEnable(GL_DITHER) : glDisable(GL_DITHER);
+        if (fragment_postprocessor.logic_operation.enable)
         {
             glEnable(GL_COLOR_LOGIC_OP);
-            glLogicOp(static_cast<GLenum>(fragment_operations.logic_operation.op));
+            glLogicOp(static_cast<GLenum>(fragment_postprocessor.logic_operation.op));
         }
         else {
             glDisable(GL_COLOR_LOGIC_OP);
         }
     }
 
-    void _set_pipeline_state()
+    void _set_pipeline_fixed_functions()
     {
-        _set_vertex_post_processing();
-        _set_rasterization();
-        _set_fragment_operations();
+        _set_vertex_postprocessor();
+        _set_rasterizer();
+        _set_fragment_preprocessor();
+        _set_fragment_postprocessor();
     }
 
 private:
@@ -1038,7 +1028,6 @@ private:
     glsl_graphics_pipeline_program* _program;
     gl_render_target* _render_target;
     gl_transform_feedback* _transform_feedback;
-
 
 };
 

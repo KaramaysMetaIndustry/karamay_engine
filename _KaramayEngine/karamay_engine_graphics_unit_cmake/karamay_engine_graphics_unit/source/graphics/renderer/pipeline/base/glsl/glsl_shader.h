@@ -21,7 +21,7 @@ struct glsl_compute_shader_descriptor {};
 class glsl_compute_shader : public glsl_shader
 {
 public:
-	glsl_compute_shader(const glsl_compute_shader_descriptor& descriptor, const std::string& path)
+	glsl_compute_shader(const glsl_compute_shader_descriptor& descriptor)
 	{}
 
 };

@@ -289,14 +289,18 @@ public:
     }
 
 public:
+
     gl_graphics_pipeline* graphics_pipeline(const std::string& name)
     {
         auto _it = _graphics_pipelines.find(name);
         if (_it != _graphics_pipelines.cend()) return _it->second;
         return nullptr;
     }
+    
     gl_compute_pipeline* compute_pipeline(const std::string& name)
     {
+        auto _it = _compute_pipelines.find(name);
+        if (_it != _compute_pipelines.cend()) return _it->second;
         return nullptr;
     }
 
