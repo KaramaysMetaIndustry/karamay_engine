@@ -48,7 +48,6 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		_mesh_pipeline->vertex_postprocessor.origin;
 		_mesh_pipeline->vertex_postprocessor.depth_mode;
 
-		_mesh_pipeline->rasterizer.discard = false;
 		_mesh_pipeline->rasterizer.enable_multisample = true;
 		_mesh_pipeline->rasterizer.enable_sample_shading = true;
 		_mesh_pipeline->rasterizer.sample_shading_rate = 1.1f;
@@ -119,7 +118,7 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 #endif
 
 		_material_combiner_pipeline->enable();
-		_material_combiner_pipeline->dispatch(1, 1, 1);
+		//_material_combiner_pipeline->dispatch(1, 1, 1);
 		_material_combiner_pipeline->disable();
 
 		_mesh_pipeline->enable();

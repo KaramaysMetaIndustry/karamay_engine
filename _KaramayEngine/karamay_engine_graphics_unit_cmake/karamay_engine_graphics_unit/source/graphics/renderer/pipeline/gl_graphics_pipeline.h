@@ -63,7 +63,6 @@ private:
         _enable_primitive_restart ? glEnable(GL_PRIMITIVE_RESTART) : glDisable(GL_PRIMITIVE_RESTART);
         _use_fixed_primitive_restart_index ? glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX) : glDisable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
         //glPrimitiveRestartIndex(0);
-        
     }
 
     bool _enable_primitive_restart;
@@ -371,7 +370,7 @@ enum class gl_front_face_mode : GLenum
 enum class gl_polygon_mode : GLenum
 {
     POINT = GL_POINT,
-    LINE = GL_POINT,
+    LINE = GL_LINE,
     FILL = GL_FILL
 };
 
@@ -501,9 +500,19 @@ public:
 
 public:
 
+    bool _enable_debug_output;
+    bool _enable_debug_output_synchronous;
+
+    bool _enable_depth_clamp;
+    bool _enable_clip_distance0;
+
     struct gl_vertex_postprocessor
     {
+        // flat var output to fragment shader
+        // 将整个图元的数据都变为指定顶点的数据
+        // 是否起效取决于 vertex shader/tessellation shader/geometry shader output data 是否使用了 flat 指示
         gl_provoke_mode provoke_mode;
+        // 
         struct gl_viewport
         {
             uint32 index;
@@ -514,32 +523,33 @@ public:
                 x(0), y(0), width(0), height(0)
             {}
         } viewport;
+
         gl_clip_control_origin origin;
         gl_clip_control_depth_mode depth_mode;
+        bool discard;
 
         gl_vertex_postprocessor() :
-            provoke_mode(gl_provoke_mode::FIRST_VERTEX_CONVENTION),
+            provoke_mode(gl_provoke_mode::LAST_VERTEX_CONVENTION),
             viewport(),
-            origin(gl_clip_control_origin::LOWER_LEFT), depth_mode(gl_clip_control_depth_mode::ZERO_TO_ONE)
+            origin(gl_clip_control_origin::LOWER_LEFT), depth_mode(gl_clip_control_depth_mode::NEGATIVE_ONE_TO_ONE),
+            discard(false)
         {}
     } vertex_postprocessor;
 
     struct gl_rasterizer
     {
-        bool discard;
-
         bool enable_multisample;
         bool enable_sample_shading;
         float sample_shading_rate;
 
+        // point rasterization
         bool enable_program_point_size;
+        // line reasterization
         bool enable_line_smooth;
         bool rasterized_line_smooth;
+        // triangle rasterization
         bool enable_polygon_smooth; //  polygon antialiasing
-        
-        // polygon face mode CCW
-        gl_front_face_mode front_face_mode;
-        // specify cull face front/back/front_back
+        gl_front_face_mode front_face_mode; // polygon face mode CCW
         struct gl_cull_face
         {
             bool enable;
@@ -548,7 +558,7 @@ public:
                 enable(true),
                 face(gl_face::FRONT)
             {}
-        } cull_face;
+        } cull_face; // specify cull face front/back/front_back
 
         bool enable_polygon_offset_fill;
         bool enable_polygon_offset_line;
@@ -556,7 +566,6 @@ public:
         gl_polygon_mode polygon_mode;
 
         gl_rasterizer() :
-            discard(false),
             enable_multisample(false),
             enable_sample_shading(false),
             sample_shading_rate(1.0f),
@@ -585,6 +594,8 @@ public:
             float sample_coverage_value;
             bool inverted;
             bool enable_sample_mask;
+            uint32 mask_index;
+            uint32 mask_bitfield;
         } multisample_fragment_operations; // early
     } fragment_preprocessor;
 
@@ -671,14 +682,9 @@ public:
         } logical_operation; // <=> framebuffer
     } fragment_postprocessor;
 
-    bool _enable_debug_output;
-    bool _enable_debug_output_synchronous;
-
-    bool _enable_primitive_restart;
     bool _enable_texture_cube_map_sampless;
 
-    bool _enable_depth_clamp;
-    bool _enable_clip_distance0;
+    
 
 public:
 
@@ -1024,11 +1030,11 @@ private:
             vertex_postprocessor.viewport.width, 
             vertex_postprocessor.viewport.height
         );
-
+        vertex_postprocessor.discard ? glEnable(GL_RASTERIZER_DISCARD) : glDisable(GL_RASTERIZER_DISCARD);
     }
     void _set_rasterizer()
     {
-        rasterizer.discard ? glEnable(GL_RASTERIZER_DISCARD) : glDisable(GL_RASTERIZER_DISCARD);
+        // when this enabled, point/line/polygon smooth will not work
         rasterizer.enable_multisample ? glEnable(GL_MULTISAMPLE) : glDisable(GL_MULTISAMPLE);
         if (rasterizer.enable_sample_shading)
         {
@@ -1088,11 +1094,14 @@ private:
             glDisable(GL_SCISSOR_TEST);
         }
         // multisample operations
-        // 
+        // frag_coverage & (~coverage_value)
         if (fragment_preprocessor.multisample_fragment_operations.enable_sample_coverage)
         {
             glEnable(GL_SAMPLE_COVERAGE);
-            glSampleCoverage(fragment_preprocessor.multisample_fragment_operations.sample_coverage_value, fragment_preprocessor.multisample_fragment_operations.inverted);
+            glSampleCoverage(
+                fragment_preprocessor.multisample_fragment_operations.sample_coverage_value, 
+                fragment_preprocessor.multisample_fragment_operations.inverted
+            );
         }
         else {
             glDisable(GL_SAMPLE_COVERAGE);
@@ -1100,7 +1109,7 @@ private:
         if (fragment_preprocessor.multisample_fragment_operations.enable_sample_mask)
         {
             glEnable(GL_SAMPLE_MASK);
-            //glSampleMaski();
+            glSampleMaski(fragment_preprocessor.multisample_fragment_operations.mask_index, fragment_preprocessor.multisample_fragment_operations.mask_bitfield);
         }
         else {
             glDisable(GL_SAMPLE_MASK);
@@ -1110,6 +1119,7 @@ private:
     {
         fragment_postprocessor.alpha_to_coverage_operations.enable_sample_alpha_to_coverage ? glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE) : glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
         fragment_postprocessor.alpha_to_coverage_operations.enable_sample_alpha_to_one ? glEnable(GL_SAMPLE_ALPHA_TO_ONE) : glDisable(GL_SAMPLE_ALPHA_TO_ONE);
+        
         if (fragment_postprocessor.stencil_test.enable)
         {
             glEnable(GL_STENCIL_TEST);
