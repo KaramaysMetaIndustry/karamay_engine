@@ -1078,6 +1078,7 @@ private:
     }
     void _set_fragment_preprocessor()
     {
+        // fragment preprocessor
         if (fragment_preprocessor.scissor_test.enable)
         {
             //glEnable(GL_SCISSOR_TEST);
@@ -1086,13 +1087,14 @@ private:
             glScissorIndexed(fragment_preprocessor.scissor_test.rectangle.index,
                 fragment_preprocessor.scissor_test.rectangle.x, 
                 fragment_preprocessor.scissor_test.rectangle.y, 
-                fragment_preprocessor.scissor_test.rectangle.width, 
+                fragment_preprocessor.scissor_test.rectangle.width,
                 fragment_preprocessor.scissor_test.rectangle.height
             );
         }
         else {
             glDisable(GL_SCISSOR_TEST);
         }
+        
         // multisample operations
         // frag_coverage & (~coverage_value)
         if (fragment_preprocessor.multisample_fragment_operations.enable_sample_coverage)
@@ -1106,6 +1108,7 @@ private:
         else {
             glDisable(GL_SAMPLE_COVERAGE);
         }
+
         if (fragment_preprocessor.multisample_fragment_operations.enable_sample_mask)
         {
             glEnable(GL_SAMPLE_MASK);
