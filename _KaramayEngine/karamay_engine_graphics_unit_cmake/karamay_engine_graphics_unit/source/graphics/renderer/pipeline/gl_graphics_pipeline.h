@@ -216,25 +216,26 @@ class gl_render_target
 {
 public:
 
-    gl_render_target() : _framebuffer(nullptr)
+    gl_render_target() : 
+        _framebuffer(nullptr)
     {}
 
     gl_render_target(const gl_render_target&) = delete;
     gl_render_target& operator=(const gl_render_target&) = delete;
 
-    ~gl_render_target() {}
+    ~gl_render_target() = default;
 
 public:
+
+    void set_default() { _framebuffer = nullptr; }
 
     void set_framebuffer(gl_framebuffer* framebuffer) { _framebuffer = framebuffer; }
 
     gl_framebuffer* get_framebuffer() const { return _framebuffer; }
 
-    void set_default() { _framebuffer = nullptr; }
-
 public:
 
-    void bind()
+    void bind() noexcept
     {
         if (_framebuffer)
         {
@@ -683,8 +684,6 @@ public:
     } fragment_postprocessor;
 
     bool _enable_texture_cube_map_sampless;
-
-    
 
 public:
 

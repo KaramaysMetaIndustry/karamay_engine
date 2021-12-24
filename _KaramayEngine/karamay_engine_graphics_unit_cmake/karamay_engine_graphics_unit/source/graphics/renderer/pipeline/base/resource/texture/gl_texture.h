@@ -59,7 +59,6 @@ enum class gl_texture_type : GLenum
 
 };
 
-
 enum class gl_texture_internal_format : GLenum
 {
 	R_I8 = GL_R8I, // R + BYTE
@@ -250,7 +249,6 @@ enum class pixel_store
 	UNPACK_ALIGNMENT = GL_UNPACK_ALIGNMENT
 };
 
-
 /*
  * texture parameters
  * */
@@ -284,20 +282,21 @@ public:
         _parameters(parameters)
 	{
 		glCreateTextures(static_cast<GLenum>(_type), 1, &_handle);
-		GLuint64 textureHandle;
+		/*GLuint64 textureHandle;
 		glGetTextureHandleARB(_handle);
 		glMakeTextureHandleResidentARB(textureHandle);
 
 		glTextureParameteri(_handle, GL_TEXTURE_SPARSE_ARB, GL_TRUE);
 
-		glUniformHandleui64ARB(0, textureHandle);
-
+		glUniformHandleui64ARB(0, textureHandle);*/
 	}
 
 	~gl_texture_t() override
 	{
 		glDeleteTextures(1, &_handle);
 	}
+
+public:
 
 	virtual gl_texture_internal_format get_internal_format() const { return gl_texture_internal_format::R_F32; };
 
@@ -844,7 +843,7 @@ private:
 class gl_texture_2d_multisample : public gl_texture_t
 {
 public:
-	gl_texture_2d_multisample(int32 samples_num, gl_texture_internal_format internal_format, int32 width, int32 height, bool fixed_sample_locations)
+	gl_texture_2d_multisample(gl_texture_internal_format internal_format, int32 samples_num, bool fixed_sample_locations, int32 width, int32 height)
 	{
 		_allocate(samples_num, internal_format, width, height, fixed_sample_locations);
 	}
@@ -878,7 +877,7 @@ private:
 class gl_texture_2d_multisample_array : public gl_texture_t
 {
 public:
-	gl_texture_2d_multisample_array(int32 elements_num, int32 samples_num, gl_texture_internal_format internal_format, int32 width, int32 height, bool fixed_sample_locations)
+	gl_texture_2d_multisample_array(gl_texture_internal_format internal_format, int32 samples_num, bool fixed_sample_locations, int32 width, int32 height, int32 elements_num)
 	{
 		_allocate(elements_num, samples_num, internal_format, width, height, fixed_sample_locations);
 	}
@@ -912,10 +911,10 @@ private:
 class gl_texture_3d : public gl_texture_t
 {
 public:
-	gl_texture_3d(int32 mipmaps_num, int32 width, int32 height, int32 depth, gl_texture_internal_format internal_format) :
+	gl_texture_3d(gl_texture_internal_format format, int32 width, int32 height, int32 depth, int32 mipmaps_num) :
 		_mipmaps_num(mipmaps_num),
 		_width(width), _height(height), _depth(depth),
-		_internal_format(internal_format)
+		_internal_format(format)
     {
 		_allocate();
 	}
