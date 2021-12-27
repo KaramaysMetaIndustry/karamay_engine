@@ -23,7 +23,6 @@ struct gl_vertex_launcher_descriptor
 {
     gl_primitive_mode primitive_mode;
     uint32 primitive_vertices_num; // IndicesNum % PrimitiveVerticesNum == 0
-
     gl_vertex_array_descriptor vertex_array_descriptor;
     uint32 elements_num;
 };
@@ -176,10 +175,6 @@ public:
     {
         if (!_element_array_buffer) return;
         _element_array_buffer->set_primitive_restart_flag_element(element_offset);
-    }
-
-    const std::vector<uint32>& get_primitive_restart_flag_element_indices() const
-    {
     }
 
 public:

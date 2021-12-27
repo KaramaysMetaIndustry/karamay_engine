@@ -4,33 +4,56 @@
 #include "../base/glsl_class.h"
 #include "../../resource/texture/gl_texture.h"
 
-enum class glsl_image_format_qualifier
+#define ExtractStr(Specifier) #Specifier
+
+enum class gl_image_format
 {
-    // image*
-    R16F, RG16F, RGBA16F,
-    R32F, RG32F, RGBA32F,
-    R11F_G11F_B10F,
-    
-    R8, R16,
-    RG8, RG16,
-    RGB8, RGB16,
-    RGB10_A2,
-    
-    R8_SNORM, R16_SNORM,
-    RG8_SNORM, RG16_SNORM,
-    RGBA8_SNORM, RGBA16_SNORM,
-    
-    // int iimage*
-    R8I, R16I, R32I,
-    RG8I, RG16I, RG32I,
-    RGBA8I, RGBA16I, RGBA32I,
-   
-    // uint uimage*
-    R8UI, R16UI, R32UI,
-    RG8UI, RG16UI, RG32UI,
-    RGBA8UI, RGBA16UI, RGBA32UI,
-    
-    RGB10_A2UI
+    rgba32f = GL_RGBA32F,
+    rgba16f = GL_RGBA16F,
+    rg32f = GL_RG32F,
+    rg16f = GL_RG16F,
+    r11f_g11f_b10f = GL_R11F_G11F_B10F,
+    r32f = GL_R32F,
+    r16f = GL_R16F,
+    rgba32ui = GL_RGBA32UI,
+    rgba16ui = GL_RGBA16UI,
+    rgb10_a2ui = GL_RGB10_A2UI,
+    rgba8ui = GL_RGBA8UI,
+    rg32ui = GL_RG32UI,
+    rg16ui = GL_RG16UI,
+    rg8ui = GL_RG8UI,
+    r32ui = GL_R32UI,
+    r16ui = GL_R16UI,
+    r8ui = GL_R8UI,
+    rgba32i = GL_RGBA32I,
+    rgba16i = GL_RGBA16I,
+    rgba8i = GL_RGBA8I,
+    rg32i = GL_RG32I,
+    rg16i = GL_RG16I,
+    rg8i = GL_RG8I,
+    r32i = GL_R32I,
+    r16i = GL_R16I,
+    r8i = GL_R8I,
+    rgba16 = GL_RGBA16,
+    rgb10_a2 = GL_RGB10_A2,
+    rgba8 = GL_RGBA8,
+    rg16 = GL_RG16,
+    rg8 = GL_RG8,
+    r16 = GL_R16,
+    r8 = GL_R8,
+    rgba16_snorm = GL_RGBA16_SNORM,
+    rgba8_snorm = GL_RGBA8_SNORM,
+    rg16_snorm = GL_RG16_SNORM,
+    rg8_snorm = GL_RG8_SNORM,
+    r16_snorm = GL_R16_SNORM,
+    r8_snorm = GL_R8_SNORM
+};
+
+enum class gl_image_access_mode : GLenum
+{
+    READ_ONLY = GL_READ_ONLY,
+    WRITE_ONLY = GL_WRITE_ONLY,
+    READ_WRITE = GL_READ_WRITE
 };
 
 enum class glsl_image_memory_qualifier
@@ -42,12 +65,6 @@ enum class glsl_image_memory_qualifier
    WRITEONLY
 };
 
-enum class gl_image_access_mode : GLenum
-{
-    READ_ONLY = GL_READ_ONLY,
-    WRITE_ONLY = GL_WRITE_ONLY,
-    READ_WRITE = GL_READ_WRITE
-};
 
 /*
  * layout(FormatLayoutQualifier) uniform [MemoryQualifier] image IMAGE_NAME[10];
@@ -62,68 +79,60 @@ enum class gl_image_access_mode : GLenum
 class glsl_image_t : public glsl_texture_handler_t 
 {
 public:
-    glsl_image_t(uint32 binding, glsl_image_format_qualifier format_qualifier, const std::vector<glsl_image_memory_qualifier>& memory_qualifiers, const std::string& type_name, const std::string& var_name) :
-        _binding(binding),
-        _format_qualifier(format_qualifier),
+    glsl_image_t(
+        gl_image_format format,
+        const std::vector<glsl_image_memory_qualifier>& memory_qualifiers, 
+        const std::string& type_name,
+        const std::string& var_name
+    ) :
+        _format(format),
         _memory_qualifiers(memory_qualifiers),
         _type_name(type_name),
         _var_name(var_name)
-    {
-        // gen token
-        std::string _memory_qualifer_seq;
-        for (const auto& _q : _memory_qualifiers)
-        {
-            _memory_qualifer_seq.append(_cast_memory_qualifier(_q) + " ");
-        }
-
-        _token = std::string("layout(binding=") + std::to_string(binding) +  "," + _cast_format_qualifier(format_qualifier) +  ") uniform " + _memory_qualifer_seq + _type_name + " " + var_name + ";";
-    }
+    {}
 
     glsl_image_t(const glsl_image_t&) = delete;
     glsl_image_t& operator=(const glsl_image_t&) = delete;
 
     ~glsl_image_t() = default;
 
-public:
-
-    void bind()
-    {
-        glBindImageTexture(
-            _binding, _binding_info.tex->get_handle(), _binding_info.mipmap_index, _binding_info.is_layered, _binding_info.layer_index, 
-            static_cast<GLenum>(_access_mode), 0
-        );
-    }
-
-    void unbind()
-    {
-        glBindImageTexture(_binding, 0, 0, 0, 0, 0, 0);
-    }
-
 protected:
 
-    struct image_binding_info
+    void _set_image(gl_texture_t* texture, int32 mipmap_index, int32 element_index)
     {
-        int32 mipmap_index;
-        gl_texture_t* tex;
-        bool is_layered;
-        int32 layer_index;
-    } _binding_info;
+        if (_bindless_handle)
+        {
+            glMakeImageHandleNonResidentARB(_bindless_handle);
+        }
+        _bindless_handle = glGetImageHandleARB(texture->get_handle(), mipmap_index, false, element_index, static_cast<GLenum>(_format));
+        glMakeImageHandleResidentARB(_bindless_handle, static_cast<GLenum>(_access_mode));
+    }
 
+    void _set_image(gl_texture_t* texture, int32 mipmap_index)
+    {
+        if (_bindless_handle)
+        {
+            glMakeImageHandleNonResidentARB(_bindless_handle);
+        }
+        _bindless_handle = glGetImageHandleARB(texture->get_handle(), mipmap_index, true, 0, static_cast<GLenum>(_format));
+        glMakeImageHandleResidentARB(_bindless_handle, static_cast<GLenum>(_access_mode));
+    }
+    
+    gl_image_format _format;
     gl_image_access_mode _access_mode;
-   
-    uint32 _binding;
-    glsl_image_format_qualifier _format_qualifier;
     std::vector<glsl_image_memory_qualifier> _memory_qualifiers;
+
+    uint64 _bindless_handle;
+    
     std::string _type_name;
     std::string _var_name;
     std::string _token;
 
-    static std::string _cast_format_qualifier(glsl_image_format_qualifier format_qualifier)
+    static std::string _cast_format_qualifier(gl_image_format format)
     {
-        switch (format_qualifier)
+        switch (format)
         {
-        case glsl_image_format_qualifier::R11F_G11F_B10F: return "r11f_g11f_b10f";
-        default: return "";
+        
         }
     }
 
@@ -139,20 +148,28 @@ protected:
         default: return "";
         }
     }
+
 };
 
+
+// float-image
 class glsl_image : public glsl_image_t
 {
 public:
-    glsl_image(uint32 binding, glsl_image_format_qualifier format_qualifier, const std::vector<glsl_image_memory_qualifier>& memory_qualifiers, const std::string& type_name, const std::string& var_name) :
-        glsl_image_t(binding, format_qualifier, memory_qualifiers, type_name, var_name)
+    glsl_image(
+        gl_image_format format, 
+        const std::vector<glsl_image_memory_qualifier>& memory_qualifiers, 
+        const std::string& type_name, 
+        const std::string& var_name
+    ) :
+        glsl_image_t(format, memory_qualifiers, type_name, var_name)
     {}
 
 protected:
 
-    bool _check_internal_format(gl_texture_internal_format internal_format)
+    bool _check_internal_format(gl_texture_internal_format format)
     {
-        return false;
+        return true;
     }
 
 };
@@ -160,8 +177,12 @@ protected:
 class glsl_image1D final : public glsl_image
 {
 public:
-    glsl_image1D(uint32 binding, glsl_image_format_qualifier format_qualifier, const std::vector<glsl_image_memory_qualifier>& memory_qualifiers, const std::string& var_name) :
-        glsl_image(binding, format_qualifier, memory_qualifiers, "image1D", var_name)
+    glsl_image1D(
+        const std::string& name,
+        gl_image_format format,
+        const std::vector<glsl_image_memory_qualifier>& memory_qualifiers
+    ) :
+        glsl_image(format, memory_qualifiers, "image1D", name)
     {}
 
     glsl_image1D(const glsl_image1D&) = delete;
@@ -171,31 +192,40 @@ public:
 
 public:
 
-    void set_image_1d(gl_texture_1d* texture_1d, int32 mipmap_index) 
+    void set_image_1d(gl_texture_1d* texture, uint32 mipmap_index) noexcept
     {
-        if (!texture_1d) return;
-        if (!_check_internal_format(texture_1d->get_internal_format())) return;
-        _binding_info.tex = texture_1d;
-        _binding_info.is_layered = true;
-        _binding_info.mipmap_index = mipmap_index;
+        if (!texture) return;
+        if (!_check_internal_format(texture->get_internal_format())) return;
+
+        _set_image(texture, static_cast<int32>(mipmap_index));
     }
 
-    void set_image_1d(gl_texture_1d_array* texture_1d_array, int32 element_index, int32 mipmap_index)
+    void set_image_1d(gl_texture_1d_array* texture, uint32 element_index, uint32 mipmap_index) noexcept
     {
-        if (!texture_1d_array) return;
-        if (!_check_internal_format(texture_1d_array->get_internal_format())) return;
-        _binding_info.tex = texture_1d_array;
-        _binding_info.is_layered = false;
-        _binding_info.layer_index = element_index;
-        _binding_info.mipmap_index = mipmap_index;
+        if (!texture)
+        {
+            return;
+        }
+
+        if (!_check_internal_format(texture->get_internal_format())) 
+        {
+            return;
+        }
+
+        _set_image(texture, static_cast<int32>(mipmap_index), static_cast<int32>(element_index));
     }
 
 };
-class glsl_image1DArray final : private glsl_image
+
+class glsl_image1DArray final : public glsl_image
 {
 public:
-    glsl_image1DArray(uint32 binding, glsl_image_format_qualifier format_qualifier, const std::vector<glsl_image_memory_qualifier>& memory_qualifiers, const std::string& var_name) :
-        glsl_image(binding, format_qualifier, memory_qualifiers, "image1DArray", var_name)
+    glsl_image1DArray(
+        gl_image_format format,
+        const std::vector<glsl_image_memory_qualifier>& memory_qualifiers, 
+        const std::string& var_name
+    ) :
+        glsl_image(format, memory_qualifiers, "image1DArray", var_name)
     {}
 
     glsl_image1DArray(const glsl_image1DArray&) = delete;
@@ -205,22 +235,24 @@ public:
 
 public:
 
-    void set_image_1d_array(gl_texture_1d_array* texture_1d_array, int32 mipmap_index)
+    void set_image_1d_array(gl_texture_1d_array* texture, uint32 mipmap_index)
     {
-        if (!texture_1d_array) return;
-        if (!_check_internal_format(texture_1d_array->get_internal_format())) return;
-        
-        _binding_info.tex = texture_1d_array;
-        _binding_info.is_layered = true;
-        _binding_info.mipmap_index = mipmap_index;
+        if (!texture) return;
+        if (!_check_internal_format(texture->get_internal_format())) return;
+        _set_image(texture, mipmap_index);
     }
 
 };
+
 class glsl_image2D final : public glsl_image
 {
 public:
-    glsl_image2D(uint32 binding, glsl_image_format_qualifier format_qualifier, const std::vector<glsl_image_memory_qualifier>& memory_qualifiers, const std::string& var_name) :
-        glsl_image(binding, format_qualifier, memory_qualifiers, "image2D", var_name)
+    glsl_image2D(
+        gl_image_format format,
+        const std::vector<glsl_image_memory_qualifier>& memory_qualifiers, 
+        const std::string& var_name
+    ) :
+        glsl_image(format, memory_qualifiers, "image2D", var_name)
     {}
 
     glsl_image2D(const glsl_image2D&) = delete;
@@ -230,61 +262,46 @@ public:
 
 public:
 
-    void set_image_2d(gl_texture_2d* texture_2d, int32 mipmap_index)
+    void set_image_2d(gl_texture_2d* texture, uint32 mipmap_index)
     {
-        if (!texture_2d) return;
+        if (!texture) return;
         if (mipmap_index < 0) return;
-        if (!_check_internal_format(texture_2d->get_internal_format())) return;
-
-        _binding_info.tex = texture_2d;
-        _binding_info.is_layered = true;
-        _binding_info.mipmap_index = mipmap_index;
+        if (!_check_internal_format(texture->get_internal_format())) return;
+        _set_image(texture, mipmap_index);
     }
 
-    void set_image_2d(gl_texture_2d_array* texture_2d_array, int32 element_index, int32 mipmap_index)
+    void set_image_2d(gl_texture_2d_array* texture, uint32 element_index, uint32 mipmap_index)
     {
-        if (!texture_2d_array) return;
-        if (!_check_internal_format(texture_2d_array->get_internal_format())) return;
-
-        _binding_info.tex = texture_2d_array;
-        _binding_info.is_layered = false;
-        _binding_info.layer_index = element_index;
-        _binding_info.mipmap_index = mipmap_index;
+        if (!texture) return;
+        if (!_check_internal_format(texture->get_internal_format())) return;
+        _set_image(texture, mipmap_index, element_index);
     }
 
-    void set_image_2d(gl_texture_cube* texture_cube, gl_cube_face_index face_index, int32 mipmap_index) 
+    void set_image_2d(gl_texture_cube* texture, gl_cube_face_index face_index, uint32 mipmap_index)
     {
-        if (!texture_cube) return;
-        if (!_check_internal_format(texture_cube->get_internal_format())) return;
-
-        _binding_info.tex = texture_cube;
-        _binding_info.is_layered = false;
-        _binding_info.layer_index = gl_texture_t::cast_face_index(face_index);
-        _binding_info.mipmap_index = mipmap_index;
+        if (!texture) return;
+        if (!_check_internal_format(texture->get_internal_format())) return;
+        _set_image(texture, mipmap_index, gl_texture_t::cast_face_index(face_index));
     }
 
-    void set_image_2d(gl_texture_cube_array* texture_cube_array, int32 element_index, gl_cube_face_index face_index, int32 mipmap_index) 
+    void set_image_2d(gl_texture_cube_array* texture, uint32 element_index, gl_cube_face_index face_index, uint32 mipmap_index)
     {
-        if (!texture_cube_array) return;
-        if (!_check_internal_format(texture_cube_array->get_internal_format())) return;
-
-        _binding_info.tex = texture_cube_array;
-        _binding_info.is_layered = false;
-        _binding_info.layer_index = element_index + gl_texture_t::cast_face_index(face_index);
-        _binding_info.mipmap_index = mipmap_index;
+        if (!texture) return;
+        if (!_check_internal_format(texture->get_internal_format())) return;
+        _set_image(texture, mipmap_index, element_index + gl_texture_t::cast_face_index(face_index));
     }
 
 };
+
 class glsl_image2DArray final : public glsl_image
 {
 public:
     glsl_image2DArray(
-        uint32 binding, 
-        glsl_image_format_qualifier format_qualifier, 
+        gl_image_format format,
         const std::vector<glsl_image_memory_qualifier>& memory_qualifiers, 
         const std::string& var_name
     ) :
-        glsl_image(binding, format_qualifier, memory_qualifiers, "image2DArray", var_name)
+        glsl_image(format, memory_qualifiers, "image2DArray", var_name)
     {}
 
     glsl_image2DArray(const glsl_image2DArray&) = delete;
@@ -294,28 +311,24 @@ public:
 
 public:
 
-    void set_image_2d_array(gl_texture_2d_array* texture_2d_array, int32 mipmap_index)
+    void set_image_2d_array(gl_texture_2d_array* texture, uint32 mipmap_index)
     {
-        if (!texture_2d_array) return;
-        if (!_check_internal_format(texture_2d_array->get_internal_format())) return;
-
-        _binding_info.tex = texture_2d_array;
-        _binding_info.is_layered = true;
-        _binding_info.mipmap_index = mipmap_index;
+        if (!texture) return;
+        if (!_check_internal_format(texture->get_internal_format())) return;
+        _set_image(texture, mipmap_index);
     }
 
 };
+
 class glsl_imageCube final : public glsl_image
 {
 public:
-
     glsl_imageCube(
-        uint32 binding,
-        glsl_image_format_qualifier format_qualifier,
+        gl_image_format format,
         const std::vector<glsl_image_memory_qualifier>& memory_qualifiers,
         const std::string& var_name
     ) :
-        glsl_image(binding, format_qualifier, memory_qualifiers, "imageCube", var_name)
+        glsl_image(format, memory_qualifiers, "imageCube", var_name)
     {}
 
     glsl_imageCube(const glsl_imageCube&) = delete;
@@ -325,37 +338,31 @@ public:
 
 public:
 
-    void set_image_cube(gl_texture_cube* texture_cube, int32 mipmap_index)
+    void set_image_cube(gl_texture_cube* texture, uint32 mipmap_index)
     {
-        if (!texture_cube) return;
-        if (!_check_internal_format(texture_cube->get_internal_format())) return;
-        _binding_info.tex = texture_cube;
-        _binding_info.is_layered = true;
-        _binding_info.mipmap_index = mipmap_index;
+        if (!texture) return;
+        if (!_check_internal_format(texture->get_internal_format())) return;
+        _set_image(texture, mipmap_index);
     }
 
-    void set_image_cube(gl_texture_cube_array* texture_cube_array, int32 mipmap_index)
+    void set_image_cube(gl_texture_cube_array* texture, uint32 element_index, uint32 mipmap_index)
     {
-        if (!texture_cube_array) return;
-        if (!_check_internal_format(texture_cube_array->get_internal_format())) return;
-        _binding_info.tex = texture_cube_array;
-        _binding_info.is_layered = false;
-        _binding_info.layer_index = 0;
-        _binding_info.mipmap_index = mipmap_index;
+        if (!texture) return;
+        if (!_check_internal_format(texture->get_internal_format())) return;
+        _set_image(texture, mipmap_index, element_index);
     }
 
 };
+
 class glsl_imageCubeArray final : public glsl_image
 {
 public:
-
     glsl_imageCubeArray(
-        uint32 binding,
-        glsl_image_format_qualifier format_qualifier,
+        gl_image_format format,
         const std::vector<glsl_image_memory_qualifier>& memory_qualifiers,
         const std::string& var_name
     ) :
-        glsl_image(binding, format_qualifier, memory_qualifiers, "imageCubeArray", var_name)
+        glsl_image(format, memory_qualifiers, "imageCubeArray", var_name)
     {}
 
     glsl_imageCubeArray(const glsl_imageCubeArray&) = delete;
@@ -365,27 +372,24 @@ public:
 
 public:
 
-    void set_image_cube_array(gl_texture_cube_array* texture_cube_array, int32 mipmap_index)
+    void set_image_cube_array(gl_texture_cube_array* texture, uint32 mipmap_index)
     {
-        if (!texture_cube_array) return;
-        if (!_check_internal_format(texture_cube_array->get_internal_format())) return;
-        _binding_info.tex = texture_cube_array;
-        _binding_info.is_layered = true;
-        _binding_info.mipmap_index = mipmap_index;
+        if (!texture) return;
+        if (!_check_internal_format(texture->get_internal_format())) return;
+        _set_image(texture, mipmap_index);
     }
 
 };
+
 class glsl_image2DMS final : public glsl_image
 {
 public:
-
     glsl_image2DMS(
-        uint32 binding,
-        glsl_image_format_qualifier format_qualifier,
+        gl_image_format format,
         const std::vector<glsl_image_memory_qualifier>& memory_qualifiers,
         const std::string& var_name
     ) :
-        glsl_image(binding, format_qualifier, memory_qualifiers, "image2DMS", var_name)
+        glsl_image(format, memory_qualifiers, "image2DMS", var_name)
     {}
 
     glsl_image2DMS(const glsl_image2DMS&) = delete;
@@ -395,36 +399,31 @@ public:
 
 public:
 
-    void set_image_2d_ms(gl_texture_2d_multisample* texture_2d_multisample, int32 mipmap_index)
+    void set_image_2d_ms(gl_texture_2d_multisample* texture)
     {
-        if (!texture_2d_multisample) return;
-        if (!_check_internal_format(texture_2d_multisample->get_internal_format())) return;
-        _binding_info.tex = texture_2d_multisample;
-        _binding_info.is_layered = true;
-        _binding_info.mipmap_index = mipmap_index;
+        if (!texture) return;
+        if (!_check_internal_format(texture->get_internal_format())) return;
+        _set_image(texture, 0);
     }
 
-    void set_image_2d_ms(gl_texture_2d_multisample_array* texture_2d_multisample_array, int32 element_index, int32 mipmap_index)
+    void set_image_2d_ms(gl_texture_2d_multisample_array* texture, uint32 element_index)
     {
-        if (!texture_2d_multisample_array) return;
-        if (!_check_internal_format(texture_2d_multisample_array->get_internal_format())) return;
-        _binding_info.tex = texture_2d_multisample_array;
-        _binding_info.is_layered = false;
-        _binding_info.layer_index = element_index;
-        _binding_info.mipmap_index = mipmap_index;
+        if (!texture) return;
+        if (!_check_internal_format(texture->get_internal_format())) return;
+        _set_image(texture, 0, element_index);
     }
 
 };
+
 class glsl_image2DMSArray final : public glsl_image
 {
 public:
     glsl_image2DMSArray(
-        uint32 binding,
-        glsl_image_format_qualifier format_qualifier,
+        gl_image_format format,
         const std::vector<glsl_image_memory_qualifier>& memory_qualifiers,
         const std::string& var_name
     ) :
-        glsl_image(binding, format_qualifier, memory_qualifiers, "image2DMSArray", var_name)
+        glsl_image(format, memory_qualifiers, "image2DMSArray", var_name)
     {}
 
     glsl_image2DMSArray(const glsl_image2DMSArray&) = delete;
@@ -434,26 +433,24 @@ public:
 
 public:
 
-    void set_image_2d_ms_array(gl_texture_2d_multisample_array* texture_2d_multisample_array, int32 mipmap_index)
+    void set_image_2d_ms_array(gl_texture_2d_multisample_array* texture)
     {
-        if (!texture_2d_multisample_array) return;
-        if (!_check_internal_format(texture_2d_multisample_array->get_internal_format())) return;
-        _binding_info.tex = texture_2d_multisample_array;
-        _binding_info.is_layered = true;
-        _binding_info.mipmap_index = mipmap_index;
+        if (!texture) return;
+        if (!_check_internal_format(texture->get_internal_format())) return;
+        _set_image(texture, 0);
     }
 
 };
+
 class glsl_image2DRect final : public glsl_image
 {
 public:
     glsl_image2DRect(
-        uint32 binding,
-        glsl_image_format_qualifier format_qualifier,
+        gl_image_format format,
         const std::vector<glsl_image_memory_qualifier>& memory_qualifiers,
         const std::string& var_name
     ) :
-        glsl_image(binding, format_qualifier, memory_qualifiers, "image2DRect", var_name)
+        glsl_image(format, memory_qualifiers, "image2DRect", var_name)
     {}
 
     glsl_image2DRect(const glsl_image2DRect&) = delete;
@@ -463,25 +460,24 @@ public:
 
 public:
 
-    void set_image_2d_rect(gl_texture_rectangle* texture_rectangle)
+    void set_image_2d_rect(gl_texture_rectangle* texture)
     {
-        if (!texture_rectangle) return;
-        if (!_check_internal_format(texture_rectangle->get_internal_format())) return;
-        _binding_info.tex = texture_rectangle;
-        _binding_info.is_layered = true;
-        _binding_info.mipmap_index = 0;
+        if (!texture) return;
+        if (!_check_internal_format(texture->get_internal_format())) return;
+        _set_image(texture, 0);
     }
+
 };
+
 class glsl_image3D final : public glsl_image
 {
 public:
     glsl_image3D(
-        uint32 binding,
-        glsl_image_format_qualifier format_qualifier,
+        gl_image_format format,
         const std::vector<glsl_image_memory_qualifier>& memory_qualifiers,
         const std::string& var_name
     ) :
-        glsl_image(binding, format_qualifier, memory_qualifiers, "image3D", var_name)
+        glsl_image(format, memory_qualifiers, "image3D", var_name)
     {}
 
     glsl_image3D(const glsl_image3D&) = delete;
@@ -491,21 +487,23 @@ public:
 
 public:
 
-    void set_image_3d(gl_texture_3d* texture_3d, int32 mipmap_index)
+    void set_image_3d(gl_texture_3d* texture, uint32 mipmap_index)
     {
-        if (!texture_3d) return;
-        if (!_check_internal_format(texture_3d->get_internal_format())) return;
-        _binding_info.tex = texture_3d;
-        _binding_info.is_layered = true;
-        _binding_info.mipmap_index = mipmap_index;
+        if (!texture) return;
+        if (!_check_internal_format(texture->get_internal_format())) return;
+        _set_image(texture, mipmap_index);
     }
 
 };
+
 class glsl_imageBuffer final : public glsl_image
 {
 public:
-    glsl_imageBuffer(uint32 binding, glsl_image_format_qualifier format_qualifier, const std::vector<glsl_image_memory_qualifier>& memory_qualifiers, const std::string& var_name) :
-        glsl_image(binding, format_qualifier, memory_qualifiers, "imageBuffer", var_name)
+    glsl_imageBuffer(
+        gl_image_format format, 
+        const std::vector<glsl_image_memory_qualifier>& memory_qualifiers, 
+        const std::string& var_name) :
+        glsl_image(format, memory_qualifiers, "imageBuffer", var_name)
     {}
 
     glsl_imageBuffer(const glsl_imageBuffer&) = delete;
@@ -515,49 +513,104 @@ public:
     
 public:
 
-    void set_image_buffer(gl_texture_buffer* texture_buffer)
+    void set_image_buffer(gl_texture_buffer* texture)
     {
-        if (!texture_buffer) return;
-        if (!_check_internal_format(texture_buffer->get_internal_format())) return;
-        _binding_info.tex = texture_buffer;
-        _binding_info.is_layered = true;
-        _binding_info.mipmap_index = 0;
+        if (!texture) return;
+        if (!_check_internal_format(texture->get_internal_format())) return;
+        _set_image(texture, 0);
     }
 
 };
 
+
+// int image
 class glsl_iimage : public glsl_image_t
 {
 
 };
 
 class glsl_iimage1D final : public glsl_iimage {};
+
 class glsl_iimage1DArray final : public glsl_iimage {};
+
 class glsl_iimage2D final : public glsl_iimage {};
+
 class glsl_iimage2DArray final : public glsl_iimage {};
+
 class glsl_iimageCube final : public glsl_iimage {};
+
 class glsl_iimageCubeArray final : public glsl_iimage {};
+
 class glsl_iimage2DMS final : public glsl_iimage {};
+
 class glsl_iimage2DMSArray final : public glsl_iimage {};
+
 class glsl_iimage2DRect final : public glsl_iimage {};
+
 class glsl_iimage3D final : public glsl_iimage {};
+
 class glsl_iimageBuffer final : public glsl_iimage {};
 
+
+// uint image
 class glsl_uimage : public glsl_image_t
 {
 
 };
 
-class glsl_uimage1D final : public glsl_uimage {};
-class glsl_uimage1DArray final : public glsl_uimage {};
-class glsl_uimage2D final : public glsl_uimage {};
-class glsl_uimage2DArray final : public glsl_uimage {};
-class glsl_uimageCube final : public glsl_uimage {};
-class glsl_uimageCubeArray final : public glsl_uimage {};
-class glsl_uimage2DMS final : public glsl_uimage {};
-class glsl_uimage2DMSArray final : public glsl_uimage {};
-class glsl_uimage2DRect final : public glsl_uimage {};
-class glsl_uimage3D final : public glsl_uimage {};
-class glsl_uimageBuffer final : public glsl_uimage {};
+class glsl_uimage1D final : public glsl_uimage 
+{
+
+};
+
+class glsl_uimage1DArray final : public glsl_uimage 
+{
+
+};
+
+class glsl_uimage2D final : public glsl_uimage 
+{
+
+};
+
+class glsl_uimage2DArray final : public glsl_uimage 
+{
+
+};
+
+class glsl_uimageCube final : public glsl_uimage 
+{
+
+};
+
+class glsl_uimageCubeArray final : public glsl_uimage 
+{
+
+};
+
+class glsl_uimage2DMS final : public glsl_uimage 
+{
+
+};
+
+class glsl_uimage2DMSArray final : public glsl_uimage 
+{
+
+};
+
+class glsl_uimage2DRect final : public glsl_uimage 
+{
+
+};
+
+class glsl_uimage3D final : public glsl_uimage 
+{
+
+};
+
+class glsl_uimageBuffer final : public glsl_uimage 
+{
+
+};
 
 #endif

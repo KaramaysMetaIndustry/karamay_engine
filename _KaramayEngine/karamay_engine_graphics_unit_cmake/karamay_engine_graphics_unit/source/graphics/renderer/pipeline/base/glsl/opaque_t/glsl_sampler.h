@@ -8,103 +8,96 @@
 class glsl_sampler_t 
 {
 protected:
-    glsl_sampler_t() = delete;
-    glsl_sampler_t(uint32 binding, const std::string& type_token, const std::string var_token) :
+    glsl_sampler_t(const std::string& type_token, const std::string var_token) :
         _texture(nullptr),
         _sampler(nullptr),
-        _binding(binding)
-    {
-        _token = "layout(binding = 0) sampler2D diffuse;";
-    }
+        _bindless_handle(0)
+    {}
+
+    glsl_sampler_t(const glsl_sampler_t&) = delete;
+    glsl_sampler_t& operator=(const glsl_sampler_t&) = delete;
+
+    ~glsl_sampler_t() = default;
 
 protected:
 
-    virtual void set_texture(gl_texture_t* texture)
+    void _set_sampler_internal(gl_texture_t* texture)
     {
+        if (!texture) return;
+
+        if (_bindless_handle != 0)
+        {
+            glMakeTextureHandleNonResidentARB(_bindless_handle);
+        }
+
         _texture = texture;
+        _bindless_handle = glGetTextureHandleARB(_texture->get_handle());
+        glMakeTextureHandleResidentARB(_bindless_handle);
     }
 
-    gl_texture_t* get_texture() const
+    void _set_sampler_internal(gl_texture_t* texture, gl_sampler* sampler)
     {
-        return _texture;
-    }
+        if (!texture || !sampler) return;
 
-public:
+        if (_bindless_handle != 0)
+        {
+            glMakeTextureHandleNonResidentARB(_bindless_handle);
+        }
 
-    void assocate_sampler(gl_sampler* sampler)
-    {
+        _texture = texture;
         _sampler = sampler;
+        _bindless_handle = glGetTextureSamplerHandleARB(_texture->get_handle(), _sampler->get_handle());
+        glMakeTextureHandleResidentARB(_bindless_handle);
     }
 
-    gl_sampler* get_sampler() const
-    {
-        return _sampler;
-    }
-
-    const std::string& get_token() const { return _token; }
-
-    uint32 get_unit() const { return _binding; }
-
-    const std::string& get_var_token() const { return _var_token; }
+    gl_texture_t* _get_texture() const { return _texture; }
 
 public:
 
-    void bind()
-    {
-        if (!_texture)
-        {
-            std::cerr << "bind canceled, no texture resource" << std::endl;
-            return;
-        }
+    gl_sampler* get_sampler() const { return _sampler; }
 
-        glBindTextureUnit(_binding, _texture->get_handle());
-        std::cout << "bind texture at the unit " << _binding << std::endl;
-
-        if (_sampler)
-        {
-            _sampler->bind(_binding);
-            std::cout << "bind sampler at the unit " << _binding << std::endl;
-        }
-
-    }
-
-    void unbind()
-    {
-        glBindTextureUnit(_binding, 0);
-
-        if (_sampler)
-        {
-            _sampler->unbind(_binding);
-        }
-    }
+    uint64 get_handle() const { return _bindless_handle; }
 
 private:
-
+    
     gl_texture_t* _texture;
+
     gl_sampler* _sampler;
-    uint32 _binding;
-    std::string _token;
-    std::string _var_token;
+    
+    uint64 _bindless_handle;
+
 };
 
 class glsl_sampler : public glsl_sampler_t
 {
 public:
-    glsl_sampler(uint32 binding, const std::string& type_name, const std::string& var_name) : 
-        glsl_sampler_t(binding, type_name, var_name) 
+    glsl_sampler(const std::string& type_name, const std::string& var_name) : 
+        glsl_sampler_t(type_name, var_name) 
     {}
 
 protected:
 
-    void set_texture(gl_texture_t* texture) override
+    void _set_sampler(gl_texture_t* texture)
     {
         if (!_check_format(texture))
         {
             std::cerr << "internal format must be float about." << std::endl;
             return;
         }
-        glsl_sampler_t::set_texture(texture);
+        _set_sampler_internal(texture);
     }
+
+    void _set_sampler(gl_texture_t* texture, gl_sampler* sampler)
+    {
+        if (!_check_format(texture))
+        {
+            std::cerr << "internal format must be float about." << std::endl;
+            return;
+        }
+        _set_sampler_internal(texture, sampler);
+    }
+
+private:
 
     bool _check_format(gl_texture_t* texture)
     {
@@ -148,8 +141,8 @@ protected:
 class glsl_sampler1D : public glsl_sampler
 {
 public:
-    glsl_sampler1D(uint32 unit, const std::string& var_token) 
-        : glsl_sampler(unit, "sampler1D", var_token) 
+    glsl_sampler1D(const std::string& name)
+        : glsl_sampler("sampler1D", name)
     {}
 
     glsl_sampler1D(const glsl_sampler1D&) = delete;
@@ -159,16 +152,18 @@ public:
 
 public:
 
-    void set_texture_1d(gl_texture_1d* texture) { set_texture(texture); }
+    void associate(gl_texture_1d* texture) { _set_sampler(texture); }
 
-    gl_texture_1d* get_texture_1d() const { return dynamic_cast<gl_texture_1d*>(get_texture()); }
+    void associate(gl_texture_1d* texture, gl_sampler* sampler) { _set_sampler(texture, sampler); }
+
+    gl_texture_1d* get_texture_1d() const { return dynamic_cast<gl_texture_1d*>(_get_texture()); }
 
 };
 class glsl_sampler1DArray : public glsl_sampler
 {
 public:
-    glsl_sampler1DArray(uint32 unit, const std::string& var_token) 
-        : glsl_sampler(unit, "sampler1DArray", var_token) 
+    glsl_sampler1DArray(const std::string& name) 
+        : glsl_sampler("sampler1DArray", name) 
     {}
 
     glsl_sampler1DArray(const glsl_sampler1DArray&) = delete;
@@ -178,16 +173,18 @@ public:
 
 public:
 
-    void set_texture_1d_array(gl_texture_1d_array* texture) { set_texture(texture); }
+    void associate(gl_texture_1d_array* texture) { _set_sampler(texture); }
 
-    gl_texture_1d_array* get_texture_1d_array() const { return dynamic_cast<gl_texture_1d_array*>(get_texture()); }
+    void associate(gl_texture_1d_array* texture, gl_sampler* sampler) { _set_sampler(texture, sampler); }
+
+    gl_texture_1d_array* get_texture_1d_array() const { return dynamic_cast<gl_texture_1d_array*>(_get_texture()); }
 
 };
-class glsl_sampler2D : public glsl_sampler_t
+class glsl_sampler2D : public glsl_sampler
 {
 public:
-    glsl_sampler2D(uint32 unit, const std::string& var_token)
-        : glsl_sampler_t(unit, "sampler2D", var_token)
+    glsl_sampler2D(const std::string& name)
+        : glsl_sampler("sampler2D", name)
     {}
 
     glsl_sampler2D(const glsl_sampler2D&) = delete;
@@ -197,16 +194,18 @@ public:
 
 public:
 
-    void set_texture_2d(gl_texture_2d* texture) { set_texture(texture); }
+    void associate(gl_texture_2d* texture) { _set_sampler(texture); }
 
-    gl_texture_2d* get_texture_2d() const { return dynamic_cast<gl_texture_2d*>(get_texture()); }
+    void associate(gl_texture_2d* texture, gl_sampler* sampler) { _set_sampler(texture, sampler); }
+
+    gl_texture_2d* get_texture_2d() const { return dynamic_cast<gl_texture_2d*>(_get_texture()); }
 
 };
-class glsl_sampler2DArray : public glsl_sampler_t
+class glsl_sampler2DArray : public glsl_sampler
 {
 public:
-    glsl_sampler2DArray(uint32 unit, const std::string& var_token)
-        : glsl_sampler_t(unit, "sampler2DArray", var_token)
+    glsl_sampler2DArray(const std::string& name)
+        : glsl_sampler("sampler2DArray", name)
     {}
 
     glsl_sampler2DArray(const glsl_sampler2DArray&) = delete;
@@ -216,143 +215,158 @@ public:
 
 public:
 
-    void set_texture_2d_array(gl_texture_2d_array* texture) { set_texture(texture); }
+    void associate(gl_texture_2d_array* texture) { _set_sampler(texture); }
 
-    gl_texture_2d_array* get_texture_2d_array() const { return dynamic_cast<gl_texture_2d_array*>(get_texture()); }
+    void associate(gl_texture_2d_array* texture, gl_sampler* sampler) { _set_sampler(texture, sampler); }
+
+    gl_texture_2d_array* get_texture_2d_array() const { return dynamic_cast<gl_texture_2d_array*>(_get_texture()); }
 
 };
-class glsl_sampler2DMS : public glsl_sampler_t
+class glsl_sampler2DMS : public glsl_sampler
 {
 public:
-    glsl_sampler2DMS(uint32 unit, const std::string& var_token)
-        : glsl_sampler_t(unit, "sampler2DMS", var_token)
+    glsl_sampler2DMS(const std::string& name)
+        : glsl_sampler("sampler2DMS", name)
     {}
 
     glsl_sampler2DMS(const glsl_sampler2DMS&) = delete;
     glsl_sampler2DMS& operator=(const glsl_sampler2DMS&) = delete;
 
-    ~glsl_sampler2DMS()
-    {}
+    ~glsl_sampler2DMS() = default;
 
 public:
 
-    void set_texture_2d_multisample(gl_texture_2d_multisample* texture) { set_texture(texture); }
+    void associate(gl_texture_2d_multisample* texture) { _set_sampler(texture); }
 
-    gl_texture_2d_multisample* get_texture_2d_multisample() const { return dynamic_cast<gl_texture_2d_multisample*>(get_texture()); }
+    void associate(gl_texture_2d_multisample* texture, gl_sampler* sampler) { _set_sampler(texture, sampler); }
+
+    gl_texture_2d_multisample* get_texture_2d_multisample() const { return dynamic_cast<gl_texture_2d_multisample*>(_get_texture()); }
 
 };
-class glsl_sampler2DMSArray : public glsl_sampler_t
+class glsl_sampler2DMSArray : public glsl_sampler
 {
 public:
-    glsl_sampler2DMSArray(uint32 unit, const std::string& var_token)
-        : glsl_sampler_t(unit, "sampler2DMSArray", var_token)
+    glsl_sampler2DMSArray(const std::string& name)
+        : glsl_sampler("sampler2DMSArray", name)
     {}
 
     glsl_sampler2DMSArray(const glsl_sampler2DMSArray&) = delete;
     glsl_sampler2DMSArray& operator=(const glsl_sampler2DMSArray&) = delete;
 
-    ~glsl_sampler2DMSArray();
+    ~glsl_sampler2DMSArray() = default;
 
 public:
 
-    void set_texture_2d_multisample_array(gl_texture_2d_multisample_array* texture) { set_texture(texture); }
+    void associate(gl_texture_2d_multisample_array* texture) { _set_sampler(texture); }
 
-    gl_texture_2d_multisample_array* get_texture_2d_multisample_array() const { return dynamic_cast<gl_texture_2d_multisample_array*>(get_texture()); }
+    void associate(gl_texture_2d_multisample_array* texture, gl_sampler* sampler) { _set_sampler(texture, sampler); }
+
+    gl_texture_2d_multisample_array* get_texture_2d_multisample_array() const { return dynamic_cast<gl_texture_2d_multisample_array*>(_get_texture()); }
 
 };
-class glsl_samplerCube : public glsl_sampler_t 
+class glsl_samplerCube : public glsl_sampler
 {
 public:
-    glsl_samplerCube(uint32 unit, const std::string& var_token)
-        : glsl_sampler_t(unit, "samplerCube", var_token)
+    glsl_samplerCube(const std::string& name)
+        : glsl_sampler("samplerCube", name)
     {}
 
     glsl_samplerCube(const glsl_samplerCube&) = delete;
     glsl_samplerCube& operator=(const glsl_samplerCube&) = delete;
 
-    ~glsl_samplerCube() {}
+    ~glsl_samplerCube() = default;
 
 public:
 
-    void set_texture_cube(gl_texture_cube* texture) { set_texture(texture); }
+    void associate(gl_texture_cube* texture) { _set_sampler(texture); }
 
-    gl_texture_cube* get_texture_cube() const { return dynamic_cast<gl_texture_cube*>(get_texture()); }
+    void associate(gl_texture_cube* texture, gl_sampler* sampler) { _set_sampler(texture, sampler); }
+
+    gl_texture_cube* get_texture_cube() const { return dynamic_cast<gl_texture_cube*>(_get_texture()); }
 
 };
-class glsl_samplerCubeArray : public glsl_sampler_t 
+class glsl_samplerCubeArray : public glsl_sampler
 {
 public:
-    glsl_samplerCubeArray(uint32 unit, const std::string& var_token)
-        : glsl_sampler_t(unit, "samplerCubeArray", var_token)
+    glsl_samplerCubeArray(const std::string& name)
+        : glsl_sampler("samplerCubeArray", name)
     {}
 
     glsl_samplerCubeArray(const glsl_samplerCubeArray&) = delete;
     glsl_samplerCubeArray& operator=(const glsl_samplerCubeArray&) = delete;
 
-    ~glsl_samplerCubeArray();
+    ~glsl_samplerCubeArray() = default;
 
 public:
 
-    void set_texture_cube_array(gl_texture_cube_array* texture) { set_texture(texture); }
+    void associate(gl_texture_cube_array* texture) { _set_sampler(texture); }
 
-    gl_texture_cube_array* get_texture_cube_array() const { return dynamic_cast<gl_texture_cube_array*>(get_texture()); }
+    void associate(gl_texture_cube_array* texture, gl_sampler* sampler) { _set_sampler(texture, sampler); }
+
+    gl_texture_cube_array* get_texture_cube_array() const { return dynamic_cast<gl_texture_cube_array*>(_get_texture()); }
 
 };
-class glsl_sampler2DRect : public glsl_sampler_t
+class glsl_sampler2DRect : public glsl_sampler
 {
 public:
-    glsl_sampler2DRect(uint32 unit, const std::string& var_token)
-        : glsl_sampler_t(unit, "sampler2DRect", var_token)
+    glsl_sampler2DRect(const std::string& name)
+        : glsl_sampler("sampler2DRect", name)
     {}
 
     glsl_sampler2DRect(const glsl_sampler2DRect&) = delete;
     glsl_sampler2DRect& operator=(const glsl_sampler2DRect&) = delete;
 
-    ~glsl_sampler2DRect();
+    ~glsl_sampler2DRect() = default;
 
 public:
 
-    void set_texture_rectangle(gl_texture_rectangle* texture) { set_texture(texture); }
+    void associate(gl_texture_rectangle* texture) { _set_sampler(texture); }
 
-    gl_texture_rectangle* get_texture_rectangle() const { return dynamic_cast<gl_texture_rectangle*>(get_texture()); }
+    void associate(gl_texture_rectangle* texture, gl_sampler* sampler) { _set_sampler(texture, sampler); }
+
+    gl_texture_rectangle* get_texture_rectangle() const { return dynamic_cast<gl_texture_rectangle*>(_get_texture()); }
 
 };
-class glsl_sampler3D : public glsl_sampler_t 
+class glsl_sampler3D : public glsl_sampler
 {
 public:
-    glsl_sampler3D(uint32 unit, const std::string& var_token)
-        : glsl_sampler_t(unit, "sampler3D", var_token)
+    glsl_sampler3D(const std::string& name)
+        : glsl_sampler("sampler3D", name)
     {}
 
     glsl_sampler3D(const glsl_sampler3D&) = delete;
     glsl_sampler3D& operator=(const glsl_sampler3D&) = delete;
 
-    ~glsl_sampler3D();
+    ~glsl_sampler3D() = default;
 
 public:
 
-    void set_texture_3d(gl_texture_3d* texture) { set_texture(texture); }
+    void associate(gl_texture_3d* texture) { _set_sampler(texture); }
 
-    gl_texture_3d* get_texture_3d() const { return dynamic_cast<gl_texture_3d*>(get_texture()); }
+    void associate(gl_texture_3d* texture, gl_sampler* sampler) { _set_sampler(texture, sampler); }
+
+    gl_texture_3d* get_texture_3d() const { return dynamic_cast<gl_texture_3d*>(_get_texture()); }
 
 };
-class glsl_samplerBuffer : public glsl_sampler_t
+class glsl_samplerBuffer : public glsl_sampler
 {
 public:
-    glsl_samplerBuffer(uint32 unit, const std::string& var_token)
-        : glsl_sampler_t(unit, "samplerBuffer", var_token)
+    glsl_samplerBuffer(const std::string& name)
+        : glsl_sampler("samplerBuffer", name)
     {}
 
     glsl_samplerBuffer(const glsl_samplerBuffer&) = delete;
     glsl_samplerBuffer& operator=(const glsl_samplerBuffer&) = delete;
 
-    ~glsl_samplerBuffer() {}
+    ~glsl_samplerBuffer() = default;
 
 public:
 
-    void set_texture_buffer(gl_texture_buffer* texture) { set_texture(texture); }
+    void associate(gl_texture_buffer* texture) { _set_sampler(texture); }
 
-    gl_texture_buffer* get_texture_buffer() const { return dynamic_cast<gl_texture_buffer*>(get_texture()); }
+    void associate(gl_texture_buffer* texture, gl_sampler* sampler) { _set_sampler(texture, sampler); }
+
+    gl_texture_buffer* get_texture_buffer() const { return dynamic_cast<gl_texture_buffer*>(_get_texture()); }
 
 };
 

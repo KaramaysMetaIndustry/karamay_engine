@@ -4,10 +4,8 @@
 #include "window/window.h"
 #include "lua/lua_manager.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "../dependencies/stb/stb_image.h"
-#include "renderers/gl_static_mesh_renderer.h"
 
+#include "renderers/gl_static_mesh_renderer.h"
 
 float vertices[] = {
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f, //0
@@ -202,36 +200,7 @@ std::uint32_t indices[] = {
 //		glv::f32vec3(-0.5f,  0.5f, -0.5f)
 //};
 
-struct gl_texture_pixels
-{
-	stbi_uc* pixels;
 
-	std::int32_t width, height;
-
-	std::uint32_t format;
-
-	gl_texture_pixels(const std::string& path)
-	{
-		stbi_set_flip_vertically_on_load(true);
-		std::int32_t _channels = 0;
-		pixels = stbi_load(path.c_str(), &width, &height, &_channels, 0);
-
-		//std::cout << "channels: " << _channels << std::endl;
-
-		if (pixels == nullptr) {
-			std::cout << "load fail" << std::endl;
-		}
-
-		switch (_channels)
-		{
-		case 1: format = GL_RED; break;
-		case 3:	format = GL_RGB; break;
-		case 4: format = GL_RGBA; break;
-		default:
-			break;
-		}
-	}
-};
 
 void test0();
 
@@ -378,7 +347,7 @@ void test0()
    
     auto _file = gltf_loader::load("");
 
-    gl_static_mesh_renderer* _static_mesh_renderer = new gl_static_mesh_renderer();
+    karamay::meta::gl_static_mesh_renderer* _static_mesh_renderer = new karamay::meta::gl_static_mesh_renderer();
 
     std::vector<gl_renderer*> _renderers;
     _renderers.push_back(_static_mesh_renderer);

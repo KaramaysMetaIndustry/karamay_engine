@@ -222,6 +222,7 @@ enum class gl_texture_pixel_type : GLenum
 	UINT32_2_10_10_10_REV = GL_UNSIGNED_INT_2_10_10_10_REV
 };
 
+
 enum class pixel_store
 {
 	// If true, byte ordering for multibyte color components, depth components, or stencil indices is reversed.
@@ -265,6 +266,34 @@ struct gl_texture_parameters{
 
 };
 
+
+//#define STB_IMAGE_IMPLEMENTATION
+//#include "../dependencies/stb/stb_image.h"
+//
+//class gl_image
+//{
+//public:
+//	gl_image()
+//	{}
+//
+//public:
+//
+//	bool load(const std::string& path)
+//	{
+//		stbi_set_flip_vertically_on_load(true);
+//		_pixels = stbi_load(path.c_str(), &width, &height, &channels_num, 0);
+//		if (_pixels == nullptr) {
+//			std::cout << "load fail" << std::endl;
+//		}
+//	}
+//
+//private:
+//	stbi_uc* _pixels;
+//	int32 width, height;
+//	int32 channels_num;
+//};
+
+
 /*
  * a texture combined with storage, texture parameters, sampler parameters
  * and sampler parameters can bind a sampler object to overwrite
@@ -278,17 +307,14 @@ public:
     gl_texture_t(gl_texture_type type, const gl_texture_parameters& parameters):
 		gl_object(gl_object_type::TEXTURE_OBJ),
 		_type(type),
-		_unit(0),
+		_bindless_handle(0),
         _parameters(parameters)
 	{
 		glCreateTextures(static_cast<GLenum>(_type), 1, &_handle);
-		/*GLuint64 textureHandle;
-		glGetTextureHandleARB(_handle);
-		glMakeTextureHandleResidentARB(textureHandle);
-
 		glTextureParameteri(_handle, GL_TEXTURE_SPARSE_ARB, GL_TRUE);
 
-		glUniformHandleui64ARB(0, textureHandle);*/
+		// update
+		glUniformHandleui64ARB(0, _bindless_handle);
 	}
 
 	~gl_texture_t() override
@@ -297,6 +323,8 @@ public:
 	}
 
 public:
+
+	uint64 get_bindless_handle() const { return _bindless_handle; }
 
 	virtual gl_texture_internal_format get_internal_format() const { return gl_texture_internal_format::R_F32; };
 
@@ -313,24 +341,11 @@ public:
 		}
 	}
 
-public:
-
-	void bind(uint32 unit)
-	{
-		glBindTextureUnit(unit, _handle);
-		_unit = unit;
-	}
-
-	void unbind() const
-	{
-		glBindTextureUnit(_unit, 0);
-	}
-
 protected:
-
+	
 	gl_texture_type _type;
 
-	uint32 _unit;
+	uint64 _bindless_handle;
 
     gl_texture_parameters _parameters;
 
@@ -554,7 +569,7 @@ public:
 		glGetTextureSubImage(_handle, mipmap_index, x_offset, y_offset, 0, width, height, 1, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), size, pixels);
 	}
 
-	void auto_generate_mipmaps()
+	void build_mipmaps()
 	{
 		glGenerateTextureMipmap(_handle);
 	}
@@ -665,16 +680,16 @@ public:
 
 	void fill(gl_cube_face_index face_index, int32 mipmap_index, int32 x_offset, int32 y_offset, int32 width, int32 height, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, const void* pixels)
 	{
-		glBindTexture(GL_TEXTURE_CUBE_MAP, _handle);
+		//glBindTexture(GL_TEXTURE_CUBE_MAP, _handle);
 		glTexSubImage2D(static_cast<GLenum>(face_index), mipmap_index, x_offset, y_offset, width, height, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), pixels);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+		//glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	}
 
 	void fill(int32 face_index, int32 mipmap_index, int32 x_offset, int32 y_offset, int32 width, int32 height, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, const void* pixels)
 	{
-		glBindTexture(GL_TEXTURE_CUBE_MAP, _handle);
+		//glBindTexture(GL_TEXTURE_CUBE_MAP, _handle);
 		glTexSubImage2D(static_cast<GLenum>(_cast_face_index(face_index)), mipmap_index, x_offset, y_offset, width, height, static_cast<GLenum>(pixel_format), static_cast<GLenum>(pixel_type), pixels);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+		//glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	}
 
 	void fetch(gl_cube_face_index face_index, int32 mipmap_index, int32 x_offset, int32 y_offset, int32 width, int32 height, gl_texture_pixel_format pixel_format, gl_texture_pixel_type pixel_type, int32 size, void* pixels)

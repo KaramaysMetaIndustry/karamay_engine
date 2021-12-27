@@ -1,81 +1,63 @@
 #version 460 core
+#extension GL_ARB_bindless_texture : require
+
 struct Material
 {
-	vec3 Ambient;
-	sampler2D Diffuse;
-	sampler2D Specular;
-	float Shininess;
+	vec3 baseColor;
+	sampler2D albedoSamp;
+	sampler2D roughnessSamp;
+	sampler2DRect rescl;
 };
 
-struct PointLight{
-	float Constant;
-	float Linear;
-	float Quadratic;
-};
-
-struct SpotLight{
-	float cosPhy;
-};
-
-layout(binding = 0) uniform At
+layout(binding = 0) uniform Materials
 {
-	vec3 color;
-	sampler2D texture[];
+	sampler2D albedoMap;
+	sampler2DArray albedoMaps;
+	sampler2DArrayShadow shadowAlbedoMaps;
+
+	layout(r32f) readonly image1D readBackPosition;
 };
 
-layout(binding = 0) buffer a
+buffer Wat
 {
-	vec3 cs;
-	sampler2D a[100];
+	vec4 aa;
 };
 
+// texture, textureOffset, 
+// textureLod, textureLodOffset,
+// textureGather, textureGatherOffset, textureGatherOffsets, 
+// textureGrad, textureGradOffset,
+// 
+// textureProj, textureProjOffset
+// textureProjLod, textureProjLodOffset, 
+// textureProjGrad, textureProjGrad, textureProjGradOffset,
+//
+// textureSamples
+// textureSize
 
+// imageLoad
+// imageStore
+// imageSamples
+// imageSize
+// imageAtomicAdd
+// imageAtomicAnd
+// imageAtomicCompSwap
+// imageAtomicExchange
+// imageAtomicMax
+// imageAtomicMin
+// imageAtomicOr
+// imageAtomicXor
 
-in vec3 FragPos;
-in vec3 Normal;
-in vec2 TexCoord;
-
-out vec4 FragColor;
-
-uniform Material material;
-uniform PointLight pointLight;
-uniform SpotLight spotLight;
-
-uniform vec3 ObjectReflectionAbility;
-uniform vec3 AmbientLightColor;
-
-uniform vec3 LightPosition;
-uniform vec3 LightColor;
-uniform vec3 DirectionalLightDirection;
-uniform vec3 CameraPosition;
-
+// texelFetch, 
+//
+//
+//
 void main()
-{	
-	float Distance = length(LightPosition - FragPos);
-	float Attenuation = 1.0 / (pointLight.Constant + pointLight.Linear * Distance + pointLight.Quadratic * (Distance * Distance));
+{
+	vec4 albedoColor0 = texture(albedoMap, vec2(1, 2));
 
-	vec3 LightDirection = normalize(DirectionalLightDirection);
-	//normalize(DirectionalLightDirection);
-	vec3 ReflectVec = reflect(-LightDirection, Normal);
-	vec3 CameraVec = normalize(CameraPosition - FragPos);
+	vec4 albedoColor1 = texture(albedoMaps, vec3(1, 2, 2));
 
-	vec3 Ambient 
-	= texture(material.Diffuse, TexCoord).rgb * AmbientLightColor;
+	float shadowColor = texture(shadowAlbedoMaps, vec4(1, 1, 1, 1));
 
-	vec3 Diffuse 
-	= texture(material.Diffuse, TexCoord).rgb * max(dot(LightDirection, Normal), 0) * LightColor; 
-
-	vec3 Specular 
-	= texture(material.Specular, TexCoord).rgb * pow(max(dot(CameraVec,  ReflectVec), 0), 64) * LightColor;
-
-	float cosTheta = dot(normalize(FragPos - LightPosition), -1 * LightDirection);
-
-	if(cosTheta > spotLight.cosPhy)
-	{	
-		FragColor = vec4((Ambient + (Diffuse + Specular)), 1.0);
-	}else{
-		FragColor = vec4((Ambient), 1.0);
-	}
-
-	
 }

@@ -228,7 +228,7 @@ public:
 
 public:
 	
-	[[nodiscard]] std::uint32_t get_handle() const { return _handle; }
+	[[nodiscard]] uint32 get_handle() const { return _handle; }
 
 };
 
