@@ -253,18 +253,65 @@ enum class pixel_store
 /*
  * texture parameters
  * */
-struct gl_texture_parameters{
-
-//    gl_depth_stencil_texture_mode depth_stencil_texture_mode;
-//    std::int32_t texture_base_level;
-//    std::int32_t texture_max_level;
-//    gl_texture_swizzle_component texture_swizzle_r;
-//    gl_texture_swizzle_component texture_swizzle_g;
-//    gl_texture_swizzle_component texture_swizzle_b;
-//    gl_texture_swizzle_component texture_swizzle_a;
-//    std::float_t texture_lod_bias;
-
+enum class gl_depth_stencil_texture_mode : GLenum
+{
+	DEPTH_COMPONENT = GL_DEPTH_COMPONENT,
+	STENCIL_INDEX = GL_STENCIL_INDEX,
 };
+
+enum class gl_texture_compare_mode : GLenum
+{
+	COMPARE_REF_TO_TEXTURE = GL_COMPARE_REF_TO_TEXTURE,
+	NONE = GL_NONE,
+};
+
+enum class gl_texture_compare_func : GLenum
+{
+	LEQUAL = GL_LEQUAL,
+	GEQUAL = GL_GEQUAL,
+	LESS = GL_LESS,
+	GREATER = GL_GREATER,
+	EQUAL = GL_EQUAL,
+	NOTEQUAL = GL_NOTEQUAL,
+	ALWAYS = GL_ALWAYS,
+	NEVER = GL_NEVER
+};
+
+enum class gl_texture_min_filter
+{
+	NEAREST = GL_NEAREST,
+	LINEAR = GL_LINEAR,
+	NEAREST_MIPMAP_NEAREST = GL_NEAREST_MIPMAP_NEAREST,
+	LINEAR_MIPMAP_NEAREST = GL_LINEAR_MIPMAP_NEAREST,
+	NEAREST_MIPMAP_LINEAR = GL_NEAREST_MIPMAP_LINEAR,
+	LINEAR_MIPMAP_LINEAR = GL_LINEAR_MIPMAP_LINEAR,
+};
+
+enum class gl_texture_mag_filter
+{
+	NEAREST = GL_NEAREST,
+	LINEAR = GL_LINEAR,
+};
+
+enum class gl_texture_swizzle_component : GLenum
+{
+	RED = GL_RED,
+	GREEN = GL_GREEN,
+	BLUE = GL_BLUE,
+	ALPHA = GL_ALPHA,
+	ZERO = GL_ZERO,
+	ONE = GL_ONE
+};
+
+enum class gl_texture_wrap_mode : GLenum
+{
+	CLAMP_TO_EDGE = GL_CLAMP_TO_EDGE,
+	CLAMP_TO_BORDER = GL_CLAMP_TO_BORDER,
+	MIRRORED_REPEAT = GL_MIRRORED_REPEAT,
+	REPEAT = GL_REPEAT,
+	MIRROR_CLAMP_TO_EDGE = GL_MIRROR_CLAMP_TO_EDGE
+};
+
 
 
 //#define STB_IMAGE_IMPLEMENTATION
@@ -294,6 +341,157 @@ struct gl_texture_parameters{
 //};
 
 
+class gl_sampler final : public gl_object {
+public:
+	gl_sampler() : gl_object(gl_object_type::SAMPLER_OBJ)
+	{
+		glCreateSamplers(1, &_handle);
+	}
+
+	~gl_sampler() override
+	{
+		glDeleteSamplers(1, &_handle);
+	}
+
+public:
+
+	void set_min_filter(gl_texture_min_filter min_filter) 
+	{
+		glSamplerParameteri(_handle, GL_TEXTURE_MIN_FILTER, static_cast<GLenum>(min_filter));
+	}
+
+	void set_mag_filter(gl_texture_mag_filter mag_filter) 
+	{
+		glSamplerParameteri(_handle, GL_TEXTURE_MAG_FILTER, static_cast<GLenum>(mag_filter));
+	}
+
+	void set_min_lod(float min_lod) 
+	{
+		glSamplerParameterf(_handle, GL_TEXTURE_MIN_LOD, min_lod);
+	}
+
+	void set_max_lod(float max_lod) 
+	{
+		glSamplerParameterf(_handle, GL_TEXTURE_MAX_LOD, max_lod);
+	}
+
+	void set_border_color(glm::vec4 color) 
+	{
+		glSamplerParameterfv(_handle, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(color));
+	}
+
+	void set_wrap_s(gl_texture_wrap_mode mode) 
+	{
+		glSamplerParameteri(_handle, GL_TEXTURE_WRAP_S, static_cast<GLenum> (mode));
+	}
+
+	void set_wrap_t(gl_texture_wrap_mode mode) 
+	{
+		glSamplerParameteri(_handle, GL_TEXTURE_WRAP_T, static_cast<GLenum>(mode));
+
+	}
+
+	void set_wrap_r(gl_texture_wrap_mode mode) 
+	{
+		glSamplerParameteri(_handle, GL_TEXTURE_WRAP_R, static_cast<GLenum>(mode));
+	}
+
+	void set_compare_mode(gl_texture_compare_mode mode) 
+	{
+		glSamplerParameteri(_handle, GL_TEXTURE_COMPARE_MODE, static_cast<GLint>(mode));
+	}
+
+	void set_compare_func(gl_texture_compare_func func)
+	{
+		glSamplerParameteri(_handle, GL_TEXTURE_COMPARE_FUNC, static_cast<GLint>(func));
+	}
+
+	gl_texture_compare_mode get_compare_mode() const { return _texture_compare_mode; }
+
+private:
+
+	gl_texture_compare_mode _texture_compare_mode;
+
+	//
+	//	gl_sampler_enum::texture_mag_filter get_texture_mag_filter()
+	//	{
+	//		GLint value = 0;
+	//		glGetSamplerParameteriv(_handle, GL_TEXTURE_MAG_FILTER, &value);
+	//		return static_cast<gl_sampler_enum::texture_mag_filter>(value);
+	//	}
+	//
+	//	gl_sampler_enum::texture_min_filter get_texture_min_filter()
+	//	{
+	//		GLint value = 0;
+	//		glGetSamplerParameteriv(_handle, GL_TEXTURE_MIN_FILTER, &value);
+	//		return static_cast<gl_sampler_enum::texture_min_filter>(value);
+	//	}
+	//
+	//	std::float_t get_max_lod()
+	//	{
+	//		GLfloat value = 0.0f;
+	//		glGetSamplerParameterfv(_handle, GL_TEXTURE_MAX_LOD, &value);
+	//		return static_cast<std::float_t>(value);
+	//	}
+	//
+	//	std::float_t get_min_lod()
+	//	{
+	//		GLfloat value = 0.0f;
+	//		glGetSamplerParameterfv(_handle, GL_TEXTURE_MIN_LOD, &value);
+	//		return static_cast<std::float_t>(value);
+	//	}
+	//
+	//	gl_sampler_enum::texture_wrap_option get_texture_wrap_s()
+	//	{
+	//		GLint value = 0;
+	//		glGetSamplerParameteriv(_handle, GL_TEXTURE_WRAP_S, &value);
+	//		return static_cast<gl_sampler_enum::texture_wrap_option>(value);
+	//	}
+	//
+	//	gl_sampler_enum::texture_wrap_option get_texture_wrap_t()
+	//	{
+	//		GLint value = 0;
+	//		glGetSamplerParameteriv(_handle, GL_TEXTURE_WRAP_T, &value);
+	//		return static_cast<gl_sampler_enum::texture_wrap_option>(value);
+	//	}
+	//
+	//	gl_sampler_enum::texture_wrap_option get_texture_wrap_r()
+	//	{
+	//		GLint value = 0;
+	//		glGetSamplerParameteriv(_handle, GL_TEXTURE_WRAP_R, &value);
+	//		return static_cast<gl_sampler_enum::texture_wrap_option>(value);
+	//	}
+	//
+	//	glm::vec4 get_texture_border_color()
+	//	{
+	//		GLfloat* values = nullptr;
+	//		glGetSamplerParameterfv(_handle, GL_TEXTURE_BORDER_COLOR, values);
+	//		return glm::vec4();
+	//	}
+	//
+	//	gl_sampler_enum::texture_compare_mode get_texture_compare_mode()
+	//	{
+	//		GLint value = 0;
+	//		glGetSamplerParameteriv(_handle, GL_TEXTURE_COMPARE_MODE, &value);
+	//		return static_cast<gl_sampler_enum::texture_compare_mode>(value);
+	//	}
+	//
+	//	gl_sampler_enum::texture_compare_func get_texture_compare_func()
+	//	{
+	//		GLint value = 0;
+	//		glGetSamplerParameteriv(_handle, GL_TEXTURE_COMPARE_FUNC, &value);
+	//		return static_cast<gl_sampler_enum::texture_compare_func>(value);
+	//	}
+	//
+	//private:
+	//
+	//	bool is_sampler_object() const
+	//	{
+	//		return glIsSampler(_handle) == GL_TRUE ? true : false;
+	//	}
+};
+
+
 /*
  * a texture combined with storage, texture parameters, sampler parameters
  * and sampler parameters can bind a sampler object to overwrite
@@ -301,20 +499,13 @@ struct gl_texture_parameters{
 class gl_texture_t : public gl_object
 {
 public:
-	gl_texture_t()
-	{}
 
-    gl_texture_t(gl_texture_type type, const gl_texture_parameters& parameters):
+	gl_texture_t(gl_texture_type type) :
 		gl_object(gl_object_type::TEXTURE_OBJ),
 		_type(type),
-		_bindless_handle(0),
-        _parameters(parameters)
+		_bindless_handle(0)
 	{
 		glCreateTextures(static_cast<GLenum>(_type), 1, &_handle);
-		glTextureParameteri(_handle, GL_TEXTURE_SPARSE_ARB, GL_TRUE);
-
-		// update
-		glUniformHandleui64ARB(0, _bindless_handle);
 	}
 
 	~gl_texture_t() override
@@ -342,12 +533,120 @@ public:
 	}
 
 protected:
-	
+
 	gl_texture_type _type;
 
 	uint64 _bindless_handle;
 
-    gl_texture_parameters _parameters;
+public:
+
+	void set_sparse_enable(bool enable)
+	{
+		glTextureParameteri(_handle, GL_TEXTURE_SPARSE_ARB, enable ? GL_TRUE : GL_FALSE);
+	}
+
+	void set_depth_stencil_mode(gl_depth_stencil_texture_mode mode)
+	{
+		glTextureParameteri(_handle, GL_DEPTH_STENCIL_TEXTURE_MODE, static_cast<GLenum>(mode));
+	}
+
+	void set_base_level(int32 base_level)
+	{
+		glTextureParameteri(_handle, GL_TEXTURE_BASE_LEVEL, base_level);
+	}
+
+	void set_border_color(const glm::vec4& color)
+	{
+		glTextureParameterfv(_handle, GL_TEXTURE_BORDER_COLOR, (const float*)&color);
+	}
+
+	void set_compare_func(gl_texture_compare_func func)
+	{
+		glTextureParameteri(_handle, GL_TEXTURE_COMPARE_FUNC, static_cast<GLenum>(func));
+	}
+
+	void set_compare_mode(gl_texture_compare_mode mode)
+	{
+		_texture_compare_mode = mode;
+		glTextureParameteri(_handle, GL_TEXTURE_COMPARE_MODE, static_cast<GLenum>(mode));
+	}
+
+	void set_lod_bias(float bias)
+	{
+		glTextureParameterf(_handle, GL_TEXTURE_LOD_BIAS, bias);
+	}
+
+	void set_min_filter(gl_texture_min_filter min_filter)
+	{
+		glTextureParameteri(_handle, GL_TEXTURE_MIN_FILTER, static_cast<GLenum>(min_filter));
+	}
+
+	void set_mag_filter(gl_texture_mag_filter mag_filter)
+	{
+		glTextureParameteri(_handle, GL_TEXTURE_MAG_FILTER, static_cast<GLenum>(mag_filter));
+	}
+
+	void set_min_lod(int32 min_lod)
+	{
+		glTextureParameteri(_handle, GL_TEXTURE_MIN_LOD, min_lod);
+	}
+
+	void set_max_lod(int32 max_lod)
+	{
+		glTextureParameteri(_handle, GL_TEXTURE_MAX_LOD, max_lod);
+	}
+
+	void set_max_level(int32 max_level)
+	{
+		glTextureParameteri(_handle, GL_TEXTURE_MAX_LEVEL, max_level);
+	}
+
+	void set_swizzle_r(gl_texture_swizzle_component r) 
+	{
+		glTextureParameteri(_handle, GL_TEXTURE_SWIZZLE_R, static_cast<GLenum>(r));
+	}
+	
+	void set_swizzle_g(gl_texture_swizzle_component g) 
+	{
+		glTextureParameteri(_handle, GL_TEXTURE_SWIZZLE_R, static_cast<GLenum>(g));
+	}
+	
+	void set_swizzle_b(gl_texture_swizzle_component b) 
+	{
+		glTextureParameteri(_handle, GL_TEXTURE_SWIZZLE_R, static_cast<GLenum>(b));
+	}
+	
+	void set_swizzle_a(gl_texture_swizzle_component a) 
+	{
+		glTextureParameteri(_handle, GL_TEXTURE_SWIZZLE_R, static_cast<GLenum>(a));
+	}
+	
+	void set_swizzle_rgba(gl_texture_swizzle_component r, gl_texture_swizzle_component g, gl_texture_swizzle_component b, gl_texture_swizzle_component a) 
+	{
+
+	}
+
+	void set_warp_s(gl_texture_wrap_mode mode) 
+	{
+		glTextureParameteri(_handle, GL_TEXTURE_WRAP_S, static_cast<GLenum>(mode));
+	}
+
+	void set_warp_t(gl_texture_wrap_mode mode)
+	{
+		glTextureParameteri(_handle, GL_TEXTURE_WRAP_T, static_cast<GLenum>(mode));
+	}
+
+	void set_warp_r(gl_texture_wrap_mode mode) 
+	{
+		glTextureParameteri(_handle, GL_TEXTURE_WRAP_R, static_cast<GLenum>(mode));
+	}
+
+	gl_texture_compare_mode get_compare_mode() const { return _texture_compare_mode; }
+
+private:
+
+	gl_texture_compare_mode _texture_compare_mode;
+
 
 };
 
@@ -355,7 +654,8 @@ protected:
 class gl_texture_1d : public gl_texture_t 
 {
 public:
-	gl_texture_1d(int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width)
+	gl_texture_1d(int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width) : 
+		gl_texture_t(gl_texture_type::TEXTURE_1D)
 	{
 		_allocate(mipmaps_num, internal_format, width);
 	}
@@ -426,7 +726,8 @@ private:
 class gl_texture_1d_array : public gl_texture_t
 {
 public:
-    gl_texture_1d_array(int32 elements_num, int32 mipmaps_num, int32 width, gl_texture_internal_format internal_format)
+    gl_texture_1d_array(int32 elements_num, int32 mipmaps_num, int32 width, gl_texture_internal_format internal_format) :
+		gl_texture_t(gl_texture_type::TEXTURE_1D_ARRAY)
     {
 		_allocate(elements_num, mipmaps_num, width, internal_format);
 	}
@@ -484,7 +785,8 @@ private:
 class gl_texture_buffer : public gl_texture_t
 {
 public:
-	gl_texture_buffer(gl_buffer* buffer, gl_texture_internal_format internal_format)
+	gl_texture_buffer(gl_buffer* buffer, gl_texture_internal_format internal_format) :
+		gl_texture_t(gl_texture_type::TEXTURE_BUFFER)
 	{
 		glCreateTextures(GL_TEXTURE_BUFFER, 1, &_handle);
 		_allocate(buffer, internal_format);
@@ -530,7 +832,8 @@ private:
 class gl_texture_2d : public gl_texture_t
 {
 public:
-    gl_texture_2d(int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, int32 height)
+    gl_texture_2d(int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, int32 height) :
+		gl_texture_t(gl_texture_type::TEXTURE_2D)
     {
 		_allocate(mipmaps_num, internal_format, width, height);
 	}
@@ -608,7 +911,8 @@ private:
 class gl_texture_2d_array : public gl_texture_t
 {
 public:
-    gl_texture_2d_array(int32 elements_num, int32 mipmaps_num, int32 width, int32 height, gl_texture_internal_format internal_format)
+    gl_texture_2d_array(int32 elements_num, int32 mipmaps_num, int32 width, int32 height, gl_texture_internal_format internal_format) :
+		gl_texture_t(gl_texture_type::TEXTURE_2D_ARRAY)
     {
 		_allocate(elements_num, mipmaps_num, width, height, internal_format);
 	}
@@ -657,7 +961,8 @@ private:
 class gl_texture_cube : public gl_texture_t
 {
 public:
-    gl_texture_cube(int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, int32 height)
+    gl_texture_cube(int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, int32 height) :
+		gl_texture_t(gl_texture_type::TEXTURE_CUBE_MAP)
     {
 		_allocate(mipmaps_num, internal_format, width, height);
 	}
@@ -746,7 +1051,8 @@ private:
 class gl_texture_cube_array : public gl_texture_t
 {
 public:
-    gl_texture_cube_array(int32 elements_num, int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, int32 height)
+    gl_texture_cube_array(int32 elements_num, int32 mipmaps_num, gl_texture_internal_format internal_format, int32 width, int32 height) :
+		gl_texture_t(gl_texture_type::TEXTURE_CUBE_MAP_ARRAY)
     {
 		_allocate(elements_num, mipmaps_num, internal_format, width, height);
 	}
@@ -814,7 +1120,8 @@ private:
 class gl_texture_rectangle : public gl_texture_t 
 {
 public:
-	gl_texture_rectangle(int32 width, int32 height, gl_texture_internal_format internal_format)
+	gl_texture_rectangle(int32 width, int32 height, gl_texture_internal_format internal_format) :
+		gl_texture_t(gl_texture_type::TEXTURE_RECTANGLE)
 	{
 		_allocate(width, height, internal_format);
 	}
@@ -858,7 +1165,8 @@ private:
 class gl_texture_2d_multisample : public gl_texture_t
 {
 public:
-	gl_texture_2d_multisample(gl_texture_internal_format internal_format, int32 samples_num, bool fixed_sample_locations, int32 width, int32 height)
+	gl_texture_2d_multisample(gl_texture_internal_format internal_format, int32 samples_num, bool fixed_sample_locations, int32 width, int32 height) :
+		gl_texture_t(gl_texture_type::TEXTURE_2D_MULTISAMPLE)
 	{
 		_allocate(samples_num, internal_format, width, height, fixed_sample_locations);
 	}
@@ -892,7 +1200,8 @@ private:
 class gl_texture_2d_multisample_array : public gl_texture_t
 {
 public:
-	gl_texture_2d_multisample_array(gl_texture_internal_format internal_format, int32 samples_num, bool fixed_sample_locations, int32 width, int32 height, int32 elements_num)
+	gl_texture_2d_multisample_array(gl_texture_internal_format internal_format, int32 samples_num, bool fixed_sample_locations, int32 width, int32 height, int32 elements_num) :
+		gl_texture_t(gl_texture_type::TEXTURE_2D_MULTISAMPLE_ARRAY)
 	{
 		_allocate(elements_num, samples_num, internal_format, width, height, fixed_sample_locations);
 	}
@@ -927,6 +1236,7 @@ class gl_texture_3d : public gl_texture_t
 {
 public:
 	gl_texture_3d(gl_texture_internal_format format, int32 width, int32 height, int32 depth, int32 mipmaps_num) :
+		gl_texture_t(gl_texture_type::TEXTURE_3D),
 		_mipmaps_num(mipmaps_num),
 		_width(width), _height(height), _depth(depth),
 		_internal_format(format)

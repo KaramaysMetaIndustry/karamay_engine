@@ -11,6 +11,9 @@ enum class glsl_uniform_block_memory_layout
     PACKED
 };
 
+class glsl_uniform_block_item
+{};
+
 /*
  * [transparent type]
  * exp : layout(row_major,std140/shared/packed,binding=0) uniform { ... };
@@ -19,11 +22,11 @@ enum class glsl_uniform_block_memory_layout
 class glsl_uniform_block : public glsl_interface_block_t
 {
 public:
-    glsl_uniform_block() = delete;
     glsl_uniform_block(
             glsl_interface_block_matrix_layout _matrix_layout,
             glsl_uniform_block_memory_layout _memory_layout
     ) {}
+
     glsl_uniform_block(const glsl_uniform_block&) = delete;
     glsl_uniform_block& operator=(const glsl_uniform_block&) = delete;
 
@@ -53,6 +56,8 @@ public:
 private:
 
     gl_uniform_buffer* _uniform_buffer;
+
+    std::vector<glsl_transparent_t*> items;
 
 };
 

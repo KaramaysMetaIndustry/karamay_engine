@@ -3,16 +3,17 @@
 
 #include "../base/glsl_class.h"
 #include "../../resource/texture/gl_texture.h"
-#include "../../resource/sampler/gl_sampler.h"
 
-class glsl_sampler_t 
+class glsl_sampler_t : public glsl_opaque_t
 {
 protected:
-    glsl_sampler_t(const std::string& type_token, const std::string var_token) :
+    glsl_sampler_t(const std::string& type_name, const std::string name) :
         _texture(nullptr),
         _sampler(nullptr),
         _bindless_handle(0)
-    {}
+    {
+        std::string _token = "sampler2D position;";
+    }
 
     glsl_sampler_t(const glsl_sampler_t&) = delete;
     glsl_sampler_t& operator=(const glsl_sampler_t&) = delete;
@@ -54,9 +55,11 @@ protected:
 
 public:
 
+    // nullptr not exist, other exist
     gl_sampler* get_sampler() const { return _sampler; }
 
-    uint64 get_handle() const { return _bindless_handle; }
+    // 0 invalid, other valid
+    uint64 get_uniform() const { return _bindless_handle; }
 
 private:
     
@@ -70,12 +73,10 @@ private:
 
 class glsl_sampler : public glsl_sampler_t
 {
-public:
+protected:
     glsl_sampler(const std::string& type_name, const std::string& var_name) : 
         glsl_sampler_t(type_name, var_name) 
     {}
-
-protected:
 
     void _set_sampler(gl_texture_t* texture)
     {
@@ -152,9 +153,9 @@ public:
 
 public:
 
-    void associate(gl_texture_1d* texture) { _set_sampler(texture); }
+    void associate(gl_texture_1d* texture_1d) { _set_sampler(texture_1d); }
 
-    void associate(gl_texture_1d* texture, gl_sampler* sampler) { _set_sampler(texture, sampler); }
+    void associate(gl_texture_1d* texture_1d, gl_sampler* sampler) { _set_sampler(texture_1d, sampler); }
 
     gl_texture_1d* get_texture_1d() const { return dynamic_cast<gl_texture_1d*>(_get_texture()); }
 
@@ -173,9 +174,9 @@ public:
 
 public:
 
-    void associate(gl_texture_1d_array* texture) { _set_sampler(texture); }
+    void associate(gl_texture_1d_array* texture_1d_array) { _set_sampler(texture_1d_array); }
 
-    void associate(gl_texture_1d_array* texture, gl_sampler* sampler) { _set_sampler(texture, sampler); }
+    void associate(gl_texture_1d_array* texture_1d_array, gl_sampler* sampler) { _set_sampler(texture_1d_array, sampler); }
 
     gl_texture_1d_array* get_texture_1d_array() const { return dynamic_cast<gl_texture_1d_array*>(_get_texture()); }
 
@@ -190,13 +191,13 @@ public:
     glsl_sampler2D(const glsl_sampler2D&) = delete;
     glsl_sampler2D& operator=(const glsl_sampler2D&) = delete;
 
-    ~glsl_sampler2D() {}
+    ~glsl_sampler2D() = default;
 
 public:
 
-    void associate(gl_texture_2d* texture) { _set_sampler(texture); }
+    void associate(gl_texture_2d* texture_2d) { _set_sampler(texture_2d); }
 
-    void associate(gl_texture_2d* texture, gl_sampler* sampler) { _set_sampler(texture, sampler); }
+    void associate(gl_texture_2d* texture_2d, gl_sampler* sampler) { _set_sampler(texture_2d, sampler); }
 
     gl_texture_2d* get_texture_2d() const { return dynamic_cast<gl_texture_2d*>(_get_texture()); }
 
@@ -215,9 +216,9 @@ public:
 
 public:
 
-    void associate(gl_texture_2d_array* texture) { _set_sampler(texture); }
+    void associate(gl_texture_2d_array* texture_2d_array) { _set_sampler(texture_2d_array); }
 
-    void associate(gl_texture_2d_array* texture, gl_sampler* sampler) { _set_sampler(texture, sampler); }
+    void associate(gl_texture_2d_array* texture_2d_array, gl_sampler* sampler) { _set_sampler(texture_2d_array, sampler); }
 
     gl_texture_2d_array* get_texture_2d_array() const { return dynamic_cast<gl_texture_2d_array*>(_get_texture()); }
 
@@ -236,9 +237,9 @@ public:
 
 public:
 
-    void associate(gl_texture_2d_multisample* texture) { _set_sampler(texture); }
+    void associate(gl_texture_2d_multisample* texture_2d_multisample) { _set_sampler(texture_2d_multisample); }
 
-    void associate(gl_texture_2d_multisample* texture, gl_sampler* sampler) { _set_sampler(texture, sampler); }
+    void associate(gl_texture_2d_multisample* texture_2d_multisample, gl_sampler* sampler) { _set_sampler(texture_2d_multisample, sampler); }
 
     gl_texture_2d_multisample* get_texture_2d_multisample() const { return dynamic_cast<gl_texture_2d_multisample*>(_get_texture()); }
 
@@ -257,9 +258,9 @@ public:
 
 public:
 
-    void associate(gl_texture_2d_multisample_array* texture) { _set_sampler(texture); }
+    void associate(gl_texture_2d_multisample_array* texture_2d_multisample_array) { _set_sampler(texture_2d_multisample_array); }
 
-    void associate(gl_texture_2d_multisample_array* texture, gl_sampler* sampler) { _set_sampler(texture, sampler); }
+    void associate(gl_texture_2d_multisample_array* texture_2d_multisample_array, gl_sampler* sampler) { _set_sampler(texture_2d_multisample_array, sampler); }
 
     gl_texture_2d_multisample_array* get_texture_2d_multisample_array() const { return dynamic_cast<gl_texture_2d_multisample_array*>(_get_texture()); }
 
@@ -278,9 +279,9 @@ public:
 
 public:
 
-    void associate(gl_texture_cube* texture) { _set_sampler(texture); }
+    void associate(gl_texture_cube* texture_cube) { _set_sampler(texture_cube); }
 
-    void associate(gl_texture_cube* texture, gl_sampler* sampler) { _set_sampler(texture, sampler); }
+    void associate(gl_texture_cube* texture_cube, gl_sampler* sampler) { _set_sampler(texture_cube, sampler); }
 
     gl_texture_cube* get_texture_cube() const { return dynamic_cast<gl_texture_cube*>(_get_texture()); }
 
@@ -299,9 +300,9 @@ public:
 
 public:
 
-    void associate(gl_texture_cube_array* texture) { _set_sampler(texture); }
+    void associate(gl_texture_cube_array* texture_cube_array) { _set_sampler(texture_cube_array); }
 
-    void associate(gl_texture_cube_array* texture, gl_sampler* sampler) { _set_sampler(texture, sampler); }
+    void associate(gl_texture_cube_array* texture_cube_array, gl_sampler* sampler) { _set_sampler(texture_cube_array, sampler); }
 
     gl_texture_cube_array* get_texture_cube_array() const { return dynamic_cast<gl_texture_cube_array*>(_get_texture()); }
 
@@ -320,9 +321,9 @@ public:
 
 public:
 
-    void associate(gl_texture_rectangle* texture) { _set_sampler(texture); }
+    void associate(gl_texture_rectangle* texture_rectangle) { _set_sampler(texture_rectangle); }
 
-    void associate(gl_texture_rectangle* texture, gl_sampler* sampler) { _set_sampler(texture, sampler); }
+    void associate(gl_texture_rectangle* texture_rectangle, gl_sampler* sampler) { _set_sampler(texture_rectangle, sampler); }
 
     gl_texture_rectangle* get_texture_rectangle() const { return dynamic_cast<gl_texture_rectangle*>(_get_texture()); }
 
@@ -341,9 +342,9 @@ public:
 
 public:
 
-    void associate(gl_texture_3d* texture) { _set_sampler(texture); }
+    void associate(gl_texture_3d* texture_3d) { _set_sampler(texture_3d); }
 
-    void associate(gl_texture_3d* texture, gl_sampler* sampler) { _set_sampler(texture, sampler); }
+    void associate(gl_texture_3d* texture_3d, gl_sampler* sampler) { _set_sampler(texture_3d, sampler); }
 
     gl_texture_3d* get_texture_3d() const { return dynamic_cast<gl_texture_3d*>(_get_texture()); }
 
@@ -362,23 +363,101 @@ public:
 
 public:
 
-    void associate(gl_texture_buffer* texture) { _set_sampler(texture); }
+    void associate(gl_texture_buffer* texture_buffer) { _set_sampler(texture_buffer); }
 
-    void associate(gl_texture_buffer* texture, gl_sampler* sampler) { _set_sampler(texture, sampler); }
+    void associate(gl_texture_buffer* texture_buffer, gl_sampler* sampler) { _set_sampler(texture_buffer, sampler); }
 
     gl_texture_buffer* get_texture_buffer() const { return dynamic_cast<gl_texture_buffer*>(_get_texture()); }
 
 };
 
 class glsl_samplerShadow : public glsl_sampler
-{};
+{
+protected:
+
+    glsl_samplerShadow(const std::string& type_name, const std::string& name) : 
+        glsl_sampler(type_name, name)
+    {}
+
+    bool _check_compare_mode(gl_texture_t* texture, gl_sampler* sampler)
+    {
+        if (sampler == nullptr)
+        {
+            if (texture->get_compare_mode() != gl_texture_compare_mode::COMPARE_REF_TO_TEXTURE) return false;
+        }
+        if (sampler->get_compare_mode() != gl_texture_compare_mode::COMPARE_REF_TO_TEXTURE) return false;
+        return true;
+    }
+
+    bool _check_format(gl_texture_t* texture)
+    {
+        switch (texture->get_internal_format())
+        {
+        default:
+            break;
+        }
+
+        return false;
+    }
+
+};
 
 class glsl_sampler1DShadow : public glsl_samplerShadow
 {
+public:
+    glsl_sampler1DShadow(const std::string& name) :
+        glsl_samplerShadow("sampler1DShadow", name)
+    {}
+
+    glsl_sampler1DShadow(const glsl_sampler1DShadow&) = delete;
+    glsl_sampler1DShadow& operator=(const glsl_sampler1DShadow&) = delete;
+
+    ~glsl_sampler1DShadow() = default;
+
+public:
+
+    void associate(gl_texture_1d * texture_1d) 
+    {
+        if (!_check_compare_mode(texture_1d, nullptr)) return;
+        _set_sampler(texture_1d); 
+    }
+
+    void associate(gl_texture_1d * texture_1d, gl_sampler * sampler) 
+    {
+        if (!_check_compare_mode(texture_1d, sampler)) return;
+        _set_sampler(texture_1d, sampler); 
+    }
+
+    gl_texture_1d* get_texture_1d() const { return dynamic_cast<gl_texture_1d*>(_get_texture()); }
 
 };
 class glsl_sampler1DArrayShadow : public glsl_samplerShadow
 {
+public:
+    glsl_sampler1DArrayShadow(const std::string& name)
+        : glsl_samplerShadow("sampler1DArray", name)
+    {}
+
+    glsl_sampler1DArrayShadow(const glsl_sampler1DArrayShadow&) = delete;
+    glsl_sampler1DArrayShadow& operator=(const glsl_sampler1DArrayShadow&) = delete;
+
+    ~glsl_sampler1DArrayShadow() = default;
+
+public:
+
+    void associate(gl_texture_1d_array * texture_1d_array) 
+    {
+        if (!_check_compare_mode(texture_1d_array, nullptr)) return;
+        _set_sampler(texture_1d_array); 
+    }
+
+    void associate(gl_texture_1d_array * texture_1d_array, gl_sampler * sampler) 
+    {
+        if (!_check_compare_mode(texture_1d_array, sampler)) return;
+        _set_sampler(texture_1d_array, sampler);
+    }
+
+    gl_texture_1d_array* get_texture_1d_array() const { return dynamic_cast<gl_texture_1d_array*>(_get_texture()); }
 
 };
 class glsl_sampler2DShadow : public glsl_samplerShadow

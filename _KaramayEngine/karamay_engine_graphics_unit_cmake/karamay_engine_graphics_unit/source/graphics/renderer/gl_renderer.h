@@ -136,6 +136,13 @@ protected:
             return nullptr;
         }
 
+        gl_sampler* build_sampler() 
+        {
+            auto _sampler = new gl_sampler();
+            _samplers.push_back(_sampler);
+            return _sampler;
+        }
+
         gl_texture_1d* build_texture_1d(gl_texture_internal_format format, uint32 width, uint32 mipmaps_num)
         {
             auto _texture_1d = new gl_texture_1d(static_cast<int32>(mipmaps_num), format, static_cast<int32>(width));
@@ -284,6 +291,7 @@ protected:
     private:
 
         std::vector<gl_buffer*> _buffers;
+        std::vector<gl_sampler*> _samplers;
         std::vector<gl_texture_1d*> _texture_1ds;
         std::vector<gl_texture_1d_array*> _texture_1d_arrays;
         std::vector<gl_texture_rectangle*> _texture_rectangles;

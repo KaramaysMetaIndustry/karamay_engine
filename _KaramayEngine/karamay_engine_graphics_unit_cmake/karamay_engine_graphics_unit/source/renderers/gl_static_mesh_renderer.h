@@ -3,8 +3,6 @@
 
 #include "graphics/renderer/gl_renderer.h"
 
-
-
 namespace karamay
 {
 
@@ -50,6 +48,7 @@ namespace karamay
 			IMPLEMENTATION_FUNC_BUILD()
 			{
 				auto _albedo_tex = builder.build_texture_2d(gl_texture_internal_format::NOR_RGBA_UI8, 1024, 1024, 1);
+				_albedo_tex->set_base_level(0);
 				_albedo_tex->fill(0, 0, 0, 1024, 1024, gl_texture_pixel_format::RGBA, gl_texture_pixel_type::UINT8, nullptr);
 				_albedo_tex->build_mipmaps();
 
@@ -130,13 +129,15 @@ namespace karamay
 					_mesh_pipeline->fragment_postprocessor.enable_framebuffer_srgb = true;
 					_mesh_pipeline->fragment_postprocessor.enable_dither = true;
 				}
+				auto _public_sampler = builder.build_sampler();
+				_public_sampler->set_border_color(glm::vec4(0.5, 0.8, 0.9, 1.0f));
 
 				// set pipeline shader program parameters
 				// explicitly specify the resource parameter uses
 				// you can also change these when rendering
 				{
 					// set program
-					_mesh_pipeline->program().sampler2D("mat.albedo_map")->associate(_albedo_tex);
+					_mesh_pipeline->program().sampler2D("mat.albedo_map")->associate(_albedo_tex, _public_sampler);
 					_mesh_pipeline->program().sampler2D("mat.normal_map")->associate(_normal_tex);
 					_mesh_pipeline->program().sampler2D("mat.metalness_map")->associate(_metalness_tex);
 					_mesh_pipeline->program().sampler2D("mat.roughness_map")->associate(_roughness_tex);

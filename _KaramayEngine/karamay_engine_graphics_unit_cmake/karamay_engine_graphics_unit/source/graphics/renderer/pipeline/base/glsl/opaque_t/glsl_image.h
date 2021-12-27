@@ -192,7 +192,7 @@ public:
 
 public:
 
-    void set_image_1d(gl_texture_1d* texture, uint32 mipmap_index) noexcept
+    void associate(gl_texture_1d* texture, uint32 mipmap_index) noexcept
     {
         if (!texture) return;
         if (!_check_internal_format(texture->get_internal_format())) return;
@@ -200,7 +200,7 @@ public:
         _set_image(texture, static_cast<int32>(mipmap_index));
     }
 
-    void set_image_1d(gl_texture_1d_array* texture, uint32 element_index, uint32 mipmap_index) noexcept
+    void associate(gl_texture_1d_array* texture, uint32 element_index, uint32 mipmap_index) noexcept
     {
         if (!texture)
         {
@@ -235,7 +235,7 @@ public:
 
 public:
 
-    void set_image_1d_array(gl_texture_1d_array* texture, uint32 mipmap_index)
+    void associate(gl_texture_1d_array* texture, uint32 mipmap_index)
     {
         if (!texture) return;
         if (!_check_internal_format(texture->get_internal_format())) return;
@@ -262,7 +262,7 @@ public:
 
 public:
 
-    void set_image_2d(gl_texture_2d* texture, uint32 mipmap_index)
+    void associate(gl_texture_2d* texture, uint32 mipmap_index)
     {
         if (!texture) return;
         if (mipmap_index < 0) return;
@@ -270,21 +270,21 @@ public:
         _set_image(texture, mipmap_index);
     }
 
-    void set_image_2d(gl_texture_2d_array* texture, uint32 element_index, uint32 mipmap_index)
+    void associate(gl_texture_2d_array* texture, uint32 element_index, uint32 mipmap_index)
     {
         if (!texture) return;
         if (!_check_internal_format(texture->get_internal_format())) return;
         _set_image(texture, mipmap_index, element_index);
     }
 
-    void set_image_2d(gl_texture_cube* texture, gl_cube_face_index face_index, uint32 mipmap_index)
+    void associate(gl_texture_cube* texture, gl_cube_face_index face_index, uint32 mipmap_index)
     {
         if (!texture) return;
         if (!_check_internal_format(texture->get_internal_format())) return;
         _set_image(texture, mipmap_index, gl_texture_t::cast_face_index(face_index));
     }
 
-    void set_image_2d(gl_texture_cube_array* texture, uint32 element_index, gl_cube_face_index face_index, uint32 mipmap_index)
+    void associate(gl_texture_cube_array* texture, uint32 element_index, gl_cube_face_index face_index, uint32 mipmap_index)
     {
         if (!texture) return;
         if (!_check_internal_format(texture->get_internal_format())) return;
@@ -299,9 +299,9 @@ public:
     glsl_image2DArray(
         gl_image_format format,
         const std::vector<glsl_image_memory_qualifier>& memory_qualifiers, 
-        const std::string& var_name
+        const std::string& name
     ) :
-        glsl_image(format, memory_qualifiers, "image2DArray", var_name)
+        glsl_image(format, memory_qualifiers, "image2DArray", name)
     {}
 
     glsl_image2DArray(const glsl_image2DArray&) = delete;
@@ -311,7 +311,7 @@ public:
 
 public:
 
-    void set_image_2d_array(gl_texture_2d_array* texture, uint32 mipmap_index)
+    void associate(gl_texture_2d_array* texture, uint32 mipmap_index)
     {
         if (!texture) return;
         if (!_check_internal_format(texture->get_internal_format())) return;
@@ -338,14 +338,14 @@ public:
 
 public:
 
-    void set_image_cube(gl_texture_cube* texture, uint32 mipmap_index)
+    void associate(gl_texture_cube* texture, uint32 mipmap_index)
     {
         if (!texture) return;
         if (!_check_internal_format(texture->get_internal_format())) return;
         _set_image(texture, mipmap_index);
     }
 
-    void set_image_cube(gl_texture_cube_array* texture, uint32 element_index, uint32 mipmap_index)
+    void associate(gl_texture_cube_array* texture, uint32 element_index, uint32 mipmap_index)
     {
         if (!texture) return;
         if (!_check_internal_format(texture->get_internal_format())) return;
@@ -362,7 +362,7 @@ public:
         const std::vector<glsl_image_memory_qualifier>& memory_qualifiers,
         const std::string& var_name
     ) :
-        glsl_image(format, memory_qualifiers, "imageCubeArray", var_name)
+        glsl_image(format, memory_qualifiers, "imageCubeArray", var_name) 
     {}
 
     glsl_imageCubeArray(const glsl_imageCubeArray&) = delete;
@@ -372,7 +372,7 @@ public:
 
 public:
 
-    void set_image_cube_array(gl_texture_cube_array* texture, uint32 mipmap_index)
+    void associate(gl_texture_cube_array* texture, uint32 mipmap_index)
     {
         if (!texture) return;
         if (!_check_internal_format(texture->get_internal_format())) return;
@@ -399,14 +399,14 @@ public:
 
 public:
 
-    void set_image_2d_ms(gl_texture_2d_multisample* texture)
+    void associate(gl_texture_2d_multisample* texture)
     {
         if (!texture) return;
         if (!_check_internal_format(texture->get_internal_format())) return;
         _set_image(texture, 0);
     }
 
-    void set_image_2d_ms(gl_texture_2d_multisample_array* texture, uint32 element_index)
+    void associate(gl_texture_2d_multisample_array* texture, uint32 element_index)
     {
         if (!texture) return;
         if (!_check_internal_format(texture->get_internal_format())) return;
@@ -433,7 +433,7 @@ public:
 
 public:
 
-    void set_image_2d_ms_array(gl_texture_2d_multisample_array* texture)
+    void associate(gl_texture_2d_multisample_array* texture)
     {
         if (!texture) return;
         if (!_check_internal_format(texture->get_internal_format())) return;
@@ -460,7 +460,7 @@ public:
 
 public:
 
-    void set_image_2d_rect(gl_texture_rectangle* texture)
+    void associate(gl_texture_rectangle* texture)
     {
         if (!texture) return;
         if (!_check_internal_format(texture->get_internal_format())) return;
@@ -487,7 +487,7 @@ public:
 
 public:
 
-    void set_image_3d(gl_texture_3d* texture, uint32 mipmap_index)
+    void associate(gl_texture_3d* texture, uint32 mipmap_index)
     {
         if (!texture) return;
         if (!_check_internal_format(texture->get_internal_format())) return;
@@ -513,7 +513,7 @@ public:
     
 public:
 
-    void set_image_buffer(gl_texture_buffer* texture)
+    void associate(gl_texture_buffer* texture)
     {
         if (!texture) return;
         if (!_check_internal_format(texture->get_internal_format())) return;
