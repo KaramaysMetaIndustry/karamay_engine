@@ -9,19 +9,25 @@ struct Material
 	sampler2DRect rescl;
 };
 
-uniform GlobalUniformBuffer
+layout(std140) uniform GlobalUniformBuffer
 {
+	vec4 validationPosition;
 	sampler2D albedoMap;
 	sampler2DArray albedoMaps;
 	sampler2DArrayShadow shadowAlbedoMaps;
 
-	layout(r32f) readonly image1D readBackPosition;
 };
 
-buffer GlobalBuffer
+layout(std430) buffer GlobalBuffer
 {
 	vec4 aa;
+	layout(r32f) image1D readBackPosition1;
+
 };
+
+layout(binding = 0, offset = 0) uniform atomic_uint xs;
+
+
 
 // texture, textureOffset, 
 // textureLod, textureLodOffset,
@@ -60,4 +66,5 @@ void main()
 
 	float shadowColor = texture(shadowAlbedoMaps, vec4(1, 1, 1, 1));
 
+	aa = vec4(0);
 }

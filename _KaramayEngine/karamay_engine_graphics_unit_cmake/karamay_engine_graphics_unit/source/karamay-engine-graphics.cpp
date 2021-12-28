@@ -347,7 +347,7 @@ void test0()
    
     auto _file = gltf_loader::load("");
 
-    karamay::meta::gl_static_mesh_renderer* _static_mesh_renderer = new karamay::meta::gl_static_mesh_renderer();
+    gl_static_mesh_renderer* _static_mesh_renderer = new gl_static_mesh_renderer();
 
     std::vector<gl_renderer*> _renderers;
     _renderers.push_back(_static_mesh_renderer);

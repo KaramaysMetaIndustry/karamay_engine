@@ -173,7 +173,6 @@ protected:
     }
 
 };
-
 class glsl_image1D final : public glsl_image
 {
 public:
@@ -216,7 +215,6 @@ public:
     }
 
 };
-
 class glsl_image1DArray final : public glsl_image
 {
 public:
@@ -243,7 +241,6 @@ public:
     }
 
 };
-
 class glsl_image2D final : public glsl_image
 {
 public:
@@ -277,14 +274,14 @@ public:
         _set_image(texture, mipmap_index, element_index);
     }
 
-    void associate(gl_texture_cube* texture, gl_cube_face_index face_index, uint32 mipmap_index)
+    void associate(gl_texture_cube_map* texture, gl_cube_face_index face_index, uint32 mipmap_index)
     {
         if (!texture) return;
         if (!_check_internal_format(texture->get_internal_format())) return;
         _set_image(texture, mipmap_index, gl_texture_t::cast_face_index(face_index));
     }
 
-    void associate(gl_texture_cube_array* texture, uint32 element_index, gl_cube_face_index face_index, uint32 mipmap_index)
+    void associate(gl_texture_cube_map_array* texture, uint32 element_index, gl_cube_face_index face_index, uint32 mipmap_index)
     {
         if (!texture) return;
         if (!_check_internal_format(texture->get_internal_format())) return;
@@ -292,7 +289,6 @@ public:
     }
 
 };
-
 class glsl_image2DArray final : public glsl_image
 {
 public:
@@ -319,7 +315,6 @@ public:
     }
 
 };
-
 class glsl_imageCube final : public glsl_image
 {
 public:
@@ -338,14 +333,14 @@ public:
 
 public:
 
-    void associate(gl_texture_cube* texture, uint32 mipmap_index)
+    void associate(gl_texture_cube_map* texture, uint32 mipmap_index)
     {
         if (!texture) return;
         if (!_check_internal_format(texture->get_internal_format())) return;
         _set_image(texture, mipmap_index);
     }
 
-    void associate(gl_texture_cube_array* texture, uint32 element_index, uint32 mipmap_index)
+    void associate(gl_texture_cube_map_array* texture, uint32 element_index, uint32 mipmap_index)
     {
         if (!texture) return;
         if (!_check_internal_format(texture->get_internal_format())) return;
@@ -353,7 +348,6 @@ public:
     }
 
 };
-
 class glsl_imageCubeArray final : public glsl_image
 {
 public:
@@ -372,7 +366,7 @@ public:
 
 public:
 
-    void associate(gl_texture_cube_array* texture, uint32 mipmap_index)
+    void associate(gl_texture_cube_map_array* texture, uint32 mipmap_index)
     {
         if (!texture) return;
         if (!_check_internal_format(texture->get_internal_format())) return;
@@ -380,7 +374,6 @@ public:
     }
 
 };
-
 class glsl_image2DMS final : public glsl_image
 {
 public:
@@ -414,7 +407,6 @@ public:
     }
 
 };
-
 class glsl_image2DMSArray final : public glsl_image
 {
 public:
@@ -441,7 +433,6 @@ public:
     }
 
 };
-
 class glsl_image2DRect final : public glsl_image
 {
 public:
@@ -468,7 +459,6 @@ public:
     }
 
 };
-
 class glsl_image3D final : public glsl_image
 {
 public:
@@ -495,7 +485,6 @@ public:
     }
 
 };
-
 class glsl_imageBuffer final : public glsl_image
 {
 public:

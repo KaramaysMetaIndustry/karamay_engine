@@ -106,8 +106,8 @@ protected:
             for (auto _tex_2d_ms : _texture_2d_multisamples) { delete _tex_2d_ms; }
             for (auto _tex_2d_ms_arr : _texture_2d_multisample_arrays) { delete _tex_2d_ms_arr; }
             for (auto _tex_rect : _texture_rectangles) { delete _tex_rect; }
-            for (auto _tex_cube : _texture_cubes) { delete _tex_cube; }
-            for (auto _tex_cube_arr : _texture_cube_arrays) { delete _tex_cube_arr; }
+            for (auto _tex_cube : _texture_cube_maps) { delete _tex_cube; }
+            for (auto _tex_cube_arr : _texture_cube_map_arrays) { delete _tex_cube_arr; }
             for (auto _tex_3d : _texture_3ds) { delete _tex_3d; }
             for (auto _tex_buffer : _texture_buffers) { delete _tex_buffer; }
             for (auto _renderbuffer : _renderbuffers) { delete _renderbuffer; }
@@ -186,18 +186,18 @@ protected:
             _texture_rectangles.push_back(_tex_rect);
             return _tex_rect;
         }
-        gl_texture_cube* 
+        gl_texture_cube_map* 
             build_texture_cube(gl_texture_internal_format format, uint32 width, uint32 height, uint32 mipmaps_num)
         {
-            auto _tex_cube = new gl_texture_cube(mipmaps_num, format, width, height);
-            _texture_cubes.push_back(_tex_cube);
+            auto _tex_cube = new gl_texture_cube_map(mipmaps_num, format, width, height);
+            _texture_cube_maps.push_back(_tex_cube);
             return _tex_cube;
         }
-        gl_texture_cube_array* 
+        gl_texture_cube_map_array* 
             build_texture_cube_array(gl_texture_internal_format format, uint32 width, uint32 height, uint32 mipmaps_num, uint32 elements_num)
         {
-            auto _tex_cube_arr = new gl_texture_cube_array(elements_num, mipmaps_num, format, width, height);
-            _texture_cube_arrays.push_back(_tex_cube_arr);
+            auto _tex_cube_arr = new gl_texture_cube_map_array(elements_num, mipmaps_num, format, width, height);
+            _texture_cube_map_arrays.push_back(_tex_cube_arr);
             return _tex_cube_arr;
         }
         gl_texture_2d_multisample* 
@@ -297,8 +297,8 @@ protected:
         std::vector<gl_texture_rectangle*> _texture_rectangles;
         std::vector<gl_texture_2d*> _texture_2ds;
         std::vector<gl_texture_2d_array*> _texture_2d_arrays;
-        std::vector<gl_texture_cube*> _texture_cubes;
-        std::vector<gl_texture_cube_array*> _texture_cube_arrays;
+        std::vector<gl_texture_cube_map*> _texture_cube_maps;
+        std::vector<gl_texture_cube_map_array*> _texture_cube_map_arrays;
         std::vector<gl_texture_2d_multisample*> _texture_2d_multisamples;
         std::vector<gl_texture_2d_multisample_array*> _texture_2d_multisample_arrays;
         std::vector<gl_texture_3d*> _texture_3ds;
