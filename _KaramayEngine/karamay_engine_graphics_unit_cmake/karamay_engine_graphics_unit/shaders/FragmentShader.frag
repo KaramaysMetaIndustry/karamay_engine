@@ -9,7 +9,7 @@ struct Material
 	sampler2DRect rescl;
 };
 
-layout(binding = 0) uniform Materials
+uniform GlobalUniformBuffer
 {
 	sampler2D albedoMap;
 	sampler2DArray albedoMaps;
@@ -18,7 +18,7 @@ layout(binding = 0) uniform Materials
 	layout(r32f) readonly image1D readBackPosition;
 };
 
-buffer Wat
+buffer GlobalBuffer
 {
 	vec4 aa;
 };

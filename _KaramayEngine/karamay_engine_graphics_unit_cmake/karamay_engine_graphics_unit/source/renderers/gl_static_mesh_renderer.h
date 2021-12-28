@@ -143,6 +143,7 @@ namespace karamay
 					_mesh_pipeline->program().sampler2D("mat.roughness_map")->associate(_roughness_tex);
 					_mesh_pipeline->program().sampler2D("mat.displacement_map")->associate(_displacement_tex);
 					_mesh_pipeline->program().sampler2D("mat.ambient_occlusion_map")->associate(_ambient_occlusion_tex);
+					_mesh_pipeline->program().sampler2DRectShadow("");
 				}
 
 				// set pipeline render target
