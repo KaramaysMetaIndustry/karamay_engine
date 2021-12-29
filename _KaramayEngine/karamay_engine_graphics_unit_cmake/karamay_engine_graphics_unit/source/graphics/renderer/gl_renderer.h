@@ -4,7 +4,6 @@
 #include "pipeline/gl_graphics_pipeline.h"
 #include "pipeline/gl_compute_pipeline.h"
 
-
 enum class gl_renderer_state
 {
     uninitialized,
@@ -20,15 +19,16 @@ public:
     gl_renderer() :
         _state(gl_renderer_state::uninitialized),
         _exit(false)
-    {
+    {}
 
-    }
+    gl_renderer(const gl_renderer&) = delete;
+    gl_renderer& operator=(const gl_renderer&) = delete;
 
     ~gl_renderer() = default;
 
 public:
 
-    void initialize()
+    void initialize() noexcept
     {
         if (_state == gl_renderer_state::uninitialized)
         {
@@ -37,7 +37,7 @@ public:
         }
     }
 
-    void render(float delta_time)
+    void render(float delta_time) noexcept
     {
         _implementation_render(delta_time);
     }
@@ -133,19 +133,21 @@ protected:
             _samplers.push_back(_sampler);
             return _sampler;
         }
+
         gl_texture_1d* build_texture_1d(gl_texture_internal_format format, uint32 width, uint32 mipmaps_num)
         {
-            auto _texture_1d = new gl_texture_1d(static_cast<int32>(mipmaps_num), format, static_cast<int32>(width));
+            auto _texture_1d = new gl_texture_1d(format, static_cast<int32>(width), static_cast<int32>(mipmaps_num));
             _texture_1ds.push_back(_texture_1d);
             return _texture_1d;
         }
         gl_texture_1d_array* build_texture_1d_array(gl_texture_internal_format format, uint32 width, uint32 mipmaps_num, uint32 elements_num)
         {
             auto _texture_1d_array = new gl_texture_1d_array(
-                static_cast<int32>(elements_num),
-                static_cast<int32>(mipmaps_num),
+                format,
                 static_cast<int32>(width),
-                format);
+                static_cast<int32>(mipmaps_num),
+                static_cast<int32>(elements_num)
+                );
             _texture_1d_arrays.push_back(_texture_1d_array);
             return _texture_1d_array;
         }
@@ -156,13 +158,13 @@ protected:
                 std::cerr << "width, heigth, mipmaps_num :: format error" << std::endl;
                 return nullptr;
             }
-            auto _texture_2d = new gl_texture_2d(mipmaps_num, format, width, height);
+            auto _texture_2d = new gl_texture_2d(format, width, height, mipmaps_num);
             _texture_2ds.push_back(_texture_2d);
             return _texture_2d;
         }
         gl_texture_2d_array* build_texture_2d_array(gl_texture_internal_format format, uint32 width, uint32 height, uint32 mipmaps_num, uint32 elements_num)
         {
-            auto _texture_2d_array = new gl_texture_2d_array(elements_num, mipmaps_num, width, height, format);
+            auto _texture_2d_array = new gl_texture_2d_array(format, width, height, mipmaps_num, elements_num);
             _texture_2d_arrays.push_back(_texture_2d_array);
             return _texture_2d_array;
         }
@@ -174,7 +176,7 @@ protected:
         }
         gl_texture_cube_map* build_texture_cube(gl_texture_internal_format format, uint32 width, uint32 height, uint32 mipmaps_num)
         {
-            auto _tex_cube = new gl_texture_cube_map(mipmaps_num, format, width, height);
+            auto _tex_cube = new gl_texture_cube_map(format, width, height, mipmaps_num);
             _texture_cube_maps.push_back(_tex_cube);
             return _tex_cube;
         }
@@ -208,6 +210,33 @@ protected:
             _texture_buffers.push_back(_tex_buffer);
             return _tex_buffer;
         }
+        
+        gl_texture_view_1d* build_texture_view_1d(gl_texture_1d* texture_1d, gl_texture_internal_format format) {}
+        gl_texture_view_1d* build_texture_view_1d(gl_texture_1d_array* texture_1d_array, gl_texture_internal_format format) {}
+        gl_texture_view_1d_array* build_texture_view_1d_array(gl_texture_1d* texture_1d, gl_texture_internal_format format) {}
+        gl_texture_view_1d_array* build_texture_view_1d_array(gl_texture_1d_array* texture_1d_array, gl_texture_internal_format format) {}
+        gl_texture_view_2d* build_texture_view_2d(gl_texture_2d* texture_2d, gl_texture_internal_format format) {}
+        gl_texture_view_2d* build_texture_view_2d(gl_texture_2d_array* texture_2d_array, gl_texture_internal_format format) {}
+        gl_texture_view_2d* build_texture_view_2d(gl_texture_cube_map* texture_cube_map, gl_texture_internal_format format) {}
+        gl_texture_view_2d* build_texture_view_2d(gl_texture_cube_map_array* texture_cube_map_array, gl_texture_internal_format format) {}
+        gl_texture_view_2d_array* build_texture_view_2d_array(gl_texture_2d* texture_2d, gl_texture_internal_format format) {}
+        gl_texture_view_2d_array* build_texture_view_2d_array(gl_texture_2d_array* texture_2d_array, gl_texture_internal_format format) {}
+        gl_texture_view_2d_array* build_texture_view_2d_array(gl_texture_cube_map* texture_cube_map, gl_texture_internal_format format) {}
+        gl_texture_view_2d_array* build_texture_view_2d_array(gl_texture_cube_map_array* texture_cube_map_array, gl_texture_internal_format format) {}
+        gl_texture_view_rectangle* build_texture_view_rectangle(gl_texture_rectangle* texture_rectangle, gl_texture_internal_format format) {}
+        gl_texture_view_cube_map* build_texture_view_cube_map(gl_texture_cube_map* texture_cube_map, gl_texture_internal_format format) {}
+        gl_texture_view_cube_map* build_texture_view_cube_map(gl_texture_cube_map_array* texture_cube_map_array, gl_texture_internal_format format) {}
+        gl_texture_view_cube_map_array* build_texture_view_cube_map_array(gl_texture_cube_map* texture_cube_map, gl_texture_internal_format format) {}
+        gl_texture_view_cube_map_array* build_texture_view_cube_map_array(gl_texture_cube_map_array* texture_cube_map_array, gl_texture_internal_format format) {}
+        gl_texture_view_2d_multisample* build_texture_view_2d_multisample(gl_texture_2d_multisample* texture_2d_multisample, gl_texture_internal_format format) {}
+        gl_texture_view_2d_multisample* build_texture_view_2d_multisample(gl_texture_2d_multisample_array* texture_2d_multisample_array, gl_texture_internal_format format) {}
+        gl_texture_view_2d_multisample_array* build_texture_view_2d_multisample_array(gl_texture_2d_multisample* texture_2d_multisample, gl_texture_internal_format format) {}
+        gl_texture_view_2d_multisample_array* build_texture_view_2d_multisample_array(gl_texture_2d_multisample_array* texture_2d_multisample_array, gl_texture_internal_format format) {}
+        gl_texture_view_3d* build_texture_view_3d(gl_texture_3d* texture_3d, gl_texture_internal_format format) 
+        {
+            return new gl_texture_view_3d(texture_3d, format, {});
+        }
+        
         gl_renderbuffer* build_renderbuffer(gl_renderbuffer_internal_format format, uint32 width, uint32 height)
         {
             auto _renderbuffer = new gl_renderbuffer(width, height, format);
@@ -226,6 +255,7 @@ protected:
             _framebuffers.push_back(_framebuffer);
             return _framebuffer;
         }
+        
         gl_graphics_pipeline* build_graphics_pipeline(glsl_vertex_shader* vs, glsl_fragment_shader* fs)
         {
             auto _graphics_pipeline = new gl_graphics_pipeline(vs, fs);

@@ -13,14 +13,12 @@ protected:
         _sampler(nullptr),
         _bindless_handle(0)
     {
-        std::string _token = "sampler2D position;";
     }
 
     glsl_sampler_t(const glsl_sampler_t&) = delete;
     glsl_sampler_t& operator=(const glsl_sampler_t&) = delete;
 
     ~glsl_sampler_t() = default;
-
 
 protected:
 
@@ -141,6 +139,7 @@ private:
     }
 
 };
+
 class glsl_sampler1D : public glsl_sampler
 {
 public:
@@ -155,13 +154,11 @@ public:
 
 public:
 
-    void associate(gl_texture_1d* texture_1d, gl_sampler* sampler = nullptr) 
+    void associate(gl_texture_1d_t* texture_1d, gl_sampler* sampler = nullptr) 
     {
         if (!texture_1d) return;
         _associate(texture_1d, sampler);
     }
-
-    gl_texture_1d* get_texture_1d() const { return dynamic_cast<gl_texture_1d*>(_get_texture()); }
 
 };
 class glsl_sampler1DArray : public glsl_sampler
@@ -178,15 +175,10 @@ public:
 
 public:
 
-    void associate(gl_texture_1d_array* texture_1d_array, gl_sampler* sampler = nullptr) 
+    void associate(gl_texture_1d_array_t* texture_1d_array, gl_sampler* sampler = nullptr) 
     { 
         if (!texture_1d_array) return;
         _associate(texture_1d_array, sampler); 
-    }
-
-    gl_texture_1d_array* get_texture_1d_array() const 
-    { 
-        return dynamic_cast<gl_texture_1d_array*>(_get_texture()); 
     }
 
 };
@@ -204,15 +196,10 @@ public:
 
 public:
 
-    void associate(gl_texture_rectangle* texture_rectangle, gl_sampler* sampler = nullptr)
+    void associate(gl_texture_rectangle_t* texture_rectangle, gl_sampler* sampler = nullptr)
     {
         if (!texture_rectangle) return;
         _associate(texture_rectangle, sampler);
-    }
-
-    gl_texture_rectangle* get_texture_rectangle() const
-    {
-        return dynamic_cast<gl_texture_rectangle*>(_get_texture());
     }
 
 };
@@ -230,15 +217,10 @@ public:
 
 public:
 
-    void associate(gl_texture_2d* texture_2d, gl_sampler* sampler = nullptr) 
+    void associate(gl_texture_2d_t* texture_2d, gl_sampler* sampler = nullptr) 
     {
         if (!texture_2d) return;
         _associate(texture_2d, sampler);
-    }
-
-    gl_texture_2d* get_texture_2d() const 
-    { 
-        return dynamic_cast<gl_texture_2d*>(_get_texture());
     }
 
 };
@@ -256,15 +238,10 @@ public:
 
 public:
 
-    void associate(gl_texture_2d_array* texture_2d_array, gl_sampler* sampler = nullptr) 
+    void associate(gl_texture_2d_array_t* texture_2d_array, gl_sampler* sampler = nullptr) 
     { 
         if (!texture_2d_array) return;
         _associate(texture_2d_array, sampler); 
-    }
-
-    gl_texture_2d_array* get_texture_2d_array() const 
-    { 
-        return dynamic_cast<gl_texture_2d_array*>(_get_texture());
     }
 
 };
@@ -282,15 +259,10 @@ public:
 
 public:
 
-    void associate(gl_texture_2d_multisample* texture_2d_multisample, gl_sampler* sampler = nullptr) 
+    void associate(gl_texture_2d_multisample_t* texture_2d_multisample, gl_sampler* sampler = nullptr) 
     { 
         if (!texture_2d_multisample) return;
         _associate(texture_2d_multisample, sampler); 
-    }
-
-    gl_texture_2d_multisample* get_texture_2d_multisample() const 
-    { 
-        return dynamic_cast<gl_texture_2d_multisample*>(_get_texture()); 
     }
 
 };
@@ -308,15 +280,10 @@ public:
 
 public:
 
-    void associate(gl_texture_2d_multisample_array* texture_2d_multisample_array, gl_sampler* sampler) 
+    void associate(gl_texture_2d_multisample_array_t* texture_2d_multisample_array, gl_sampler* sampler) 
     { 
         if (!texture_2d_multisample_array) return;
         _associate(texture_2d_multisample_array, sampler); 
-    }
-
-    gl_texture_2d_multisample_array* get_texture_2d_multisample_array() const 
-    { 
-        return dynamic_cast<gl_texture_2d_multisample_array*>(_get_texture());
     }
 
 };
@@ -334,15 +301,10 @@ public:
 
 public:
 
-    void associate(gl_texture_cube_map* texture_cube_map, gl_sampler* sampler = nullptr) 
+    void associate(gl_texture_cube_map_t* texture_cube_map, gl_sampler* sampler = nullptr) 
     { 
         if (!texture_cube_map) return;
         _associate(texture_cube_map, sampler);
-    }
-
-    gl_texture_cube_map* get_texture_cube_map() const
-    { 
-        return dynamic_cast<gl_texture_cube_map*>(_get_texture());
     }
 
 };
@@ -360,15 +322,10 @@ public:
 
 public:
 
-    void associate(gl_texture_cube_map_array* texture_cube_map_array, gl_sampler* sampler = nullptr) 
+    void associate(gl_texture_cube_map_array_t* texture_cube_map_array, gl_sampler* sampler = nullptr) 
     { 
         if (!texture_cube_map_array) return;
         _associate(texture_cube_map_array, sampler);
-    }
-
-    gl_texture_cube_map_array* get_texture_cube_map_array() const
-    { 
-        return dynamic_cast<gl_texture_cube_map_array*>(_get_texture());
     }
 
 };
@@ -386,15 +343,10 @@ public:
 
 public:
 
-    void associate(gl_texture_3d* texture_3d, gl_sampler* sampler = nullptr) 
+    void associate(gl_texture_3d_t* texture_3d, gl_sampler* sampler = nullptr) 
     { 
         if (!texture_3d) return;
         _associate(texture_3d, sampler);
-    }
-
-    gl_texture_3d* get_texture_3d() const 
-    { 
-        return dynamic_cast<gl_texture_3d*>(_get_texture()); 
     }
 
 };
@@ -416,11 +368,6 @@ public:
     { 
         if (!texture_buffer) return;
         _associate(texture_buffer, sampler); 
-    }
-
-    gl_texture_buffer* get_texture_buffer() const 
-    { 
-        return dynamic_cast<gl_texture_buffer*>(_get_texture()); 
     }
 
 };
@@ -482,6 +429,7 @@ protected:
     }
 
 };
+
 class glsl_sampler1DShadow : public glsl_samplerShadow
 {
 public:
@@ -496,14 +444,12 @@ public:
 
 public:
 
-    void associate(gl_texture_1d * texture_1d, gl_sampler * sampler = nullptr) 
+    void associate(gl_texture_1d_t * texture_1d, gl_sampler * sampler = nullptr) 
     {
         if (!texture_1d) return;
         if (!_check(texture_1d, sampler)) return;
         _associate_internal(texture_1d, sampler); 
     }
-
-    gl_texture_1d* get_texture_1d() const { return dynamic_cast<gl_texture_1d*>(_get_texture()); }
 
 };
 class glsl_sampler1DArrayShadow : public glsl_samplerShadow
@@ -520,14 +466,12 @@ public:
 
 public:
 
-    void associate(gl_texture_1d_array * texture_1d_array, gl_sampler * sampler) 
+    void associate(gl_texture_1d_array_t * texture_1d_array, gl_sampler * sampler) 
     {
         if (!texture_1d_array) return;
         if (!_check(texture_1d_array, sampler)) return;
         _associate_internal(texture_1d_array, sampler);
     }
-
-    gl_texture_1d_array* get_texture_1d_array() const { return dynamic_cast<gl_texture_1d_array*>(_get_texture()); }
 
 };
 class glsl_sampler2DRectShadow : public glsl_samplerShadow
@@ -544,14 +488,13 @@ public:
 
 public:
 
-    void associate(gl_texture_rectangle * texture_rectangle, gl_sampler * sampler = nullptr)
+    void associate(gl_texture_rectangle_t * texture_rectangle, gl_sampler * sampler = nullptr)
     {
         if (!texture_rectangle) return;
         if (!_check(texture_rectangle, sampler)) return;
         _associate_internal(texture_rectangle, sampler);
     }
 
-    gl_texture_rectangle* get_texture_rectangle() const { return dynamic_cast<gl_texture_rectangle*>(_get_texture()); }
 };
 class glsl_sampler2DShadow : public glsl_samplerShadow
 {
@@ -567,14 +510,12 @@ public:
 
 public:
 
-    void associate(gl_texture_2d * texture_2d, gl_sampler * sampler = nullptr)
+    void associate(gl_texture_2d_t * texture_2d, gl_sampler * sampler = nullptr)
     {
         if (!texture_2d) return;
         if (!_check(texture_2d, sampler)) return;
         _associate_internal(texture_2d, sampler);
     }
-
-    gl_texture_2d* get_texture_2d() const { return dynamic_cast<gl_texture_2d*>(_get_texture()); }
 
 };
 class glsl_sampler2DArrayShadow : public glsl_samplerShadow
@@ -591,14 +532,13 @@ public:
 
 public:
 
-    void associate(gl_texture_2d_array * texture_2d_array, gl_sampler * sampler = nullptr)
+    void associate(gl_texture_2d_array_t * texture_2d_array, gl_sampler * sampler = nullptr)
     {
         if (!texture_2d_array) return;
         if (!_check(texture_2d_array, sampler)) return;
         _associate_internal(texture_2d_array, sampler);
     }
 
-    gl_texture_2d_array* get_texture_2d_array() const { return dynamic_cast<gl_texture_2d_array*>(_get_texture()); }
 };
 class glsl_samplerCubeShadow : public glsl_samplerShadow
 {
@@ -614,14 +554,12 @@ public:
 
 public:
 
-    void associate(gl_texture_cube_map * texture_cube_map, gl_sampler * sampler = nullptr)
+    void associate(gl_texture_cube_map_t * texture_cube_map, gl_sampler * sampler = nullptr)
     {
         if (!texture_cube_map) return;
         if (!_check(texture_cube_map, sampler)) return;
         _associate_internal(texture_cube_map, sampler);
     }
-
-    gl_texture_cube_map* get_texture_cube_map() const { return dynamic_cast<gl_texture_cube_map*>(_get_texture()); }
 
 };
 class glsl_samplerCubeArrayShadow : public glsl_samplerShadow
@@ -638,14 +576,13 @@ public:
 
 public:
 
-    void associate(gl_texture_cube_map_array * texture_cube_map_array, gl_sampler * sampler = nullptr)
+    void associate(gl_texture_cube_map_array_t * texture_cube_map_array, gl_sampler * sampler = nullptr)
     {
         if (!texture_cube_map_array) return;
         if (!_check(texture_cube_map_array, sampler)) return;
         _associate_internal(texture_cube_map_array, sampler);
     }
 
-    gl_texture_cube_map_array* get_texture_cube_map_array() const { return dynamic_cast<gl_texture_cube_map_array*>(_get_texture()); }
 };
 
 // texture format must be int about
@@ -657,12 +594,11 @@ protected:
     {
         switch (texture->get_internal_format())
         {
-
         }
-
         return false;
     }
 };
+
 class glsl_isampler1D : public glsl_isampler {};
 class glsl_isampler1DArray : public glsl_isampler {};
 class glsl_isampler2DRect : public glsl_isampler {};
@@ -678,6 +614,7 @@ class glsl_isamplerBuffer : public glsl_isampler {};
 // texture format must be uint about
 class glsl_usampler : public glsl_sampler_t
 {};
+
 class glsl_usampler1D : public glsl_usampler {};
 class glsl_usampler1DArray : public glsl_usampler {};
 class glsl_usampler2DRect : public glsl_usampler {};

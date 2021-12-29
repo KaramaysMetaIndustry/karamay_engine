@@ -542,7 +542,6 @@ public:
 
 };
 
-
 // int image
 class glsl_iimage : public glsl_image_t
 {

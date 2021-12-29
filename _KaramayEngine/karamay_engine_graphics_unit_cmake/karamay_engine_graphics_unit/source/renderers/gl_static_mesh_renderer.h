@@ -33,6 +33,13 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 	{
 		glsl_uniform_block_exp exp;
 
+		auto _al_tex = builder.build_texture_1d(gl_texture_internal_format::RGBA_F32, 1024, 4);
+		std::pair<uint32, uint32> _mipmap_range;
+
+		auto _al_tex_view_1d = new gl_texture_view_1d(_al_tex, gl_texture_internal_format::RGBA_F32, _mipmap_range);
+		auto _al_tex_view_1d_array = new gl_texture_view_1d_array(_al_tex, gl_texture_internal_format::RGBA_F32, _mipmap_range, { 0,1 });
+		exp.att().associate(_al_tex_view_1d);
+
 		auto _tex_1d = builder.build_texture_1d(gl_texture_internal_format::DEPTH24_STENCIL8, 100, 1);
 		_tex_1d->set_compare_mode(gl_texture_compare_mode::COMPARE_REF_TO_TEXTURE);
 		glsl_sampler1DShadow* _samp = new glsl_sampler1DShadow("_samp");
