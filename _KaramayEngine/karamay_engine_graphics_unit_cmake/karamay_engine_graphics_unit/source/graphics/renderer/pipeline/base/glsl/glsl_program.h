@@ -15,434 +15,434 @@ public:
 	{}
 
 public:
-	glsl_sampler1D* sampler1D(const std::string& name)
-	{
-		auto _it = _sampler1Ds.find(name);
-		if (_it != _sampler1Ds.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_sampler1DArray* sampler1DArray(const std::string& name)
-	{
-		auto _it = _sampler1DArrays.find(name);
-		if (_it != _sampler1DArrays.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_sampler2D* sampler2D(const std::string& name)
-	{
-		auto _it = _sampler2Ds.find(name);
-		if (_it != _sampler2Ds.cend()) return _it->second;
-#ifdef _DEBUG
-		throw std::exception("can not find sampler2D");
-#endif // _DEBUG
-		return nullptr;
-	}
-	glsl_sampler2DArray* sampler2DArray(const std::string& name)
-	{
-		auto _it = _sampler2DArrays.find(name);
-		if (_it != _sampler2DArrays.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_sampler2DMS* sampler2DMS(const std::string& name)
-	{
-		auto _it = _sampler2DMSs.find(name);
-		if (_it != _sampler2DMSs.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_sampler2DMSArray* sampler2DMSArray(const std::string& name)
-	{
-		auto _it = _sampler2DMSArrays.find(name);
-		if (_it != _sampler2DMSArrays.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_samplerCube* samplerCube(const std::string& name)
-	{
-		auto _it = _samplerCubes.find(name);
-		if (_it != _samplerCubes.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_samplerCubeArray* samplerCubeArray(const std::string& name)
-	{
-		auto _it = _samplerCubeArrays.find(name);
-		if (_it != _samplerCubeArrays.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_sampler2DRect* sampler2DRect(const std::string& name)
-	{
-		auto _it = _sampler2DRects.find(name);
-		if (_it != _sampler2DRects.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_samplerBuffer* samplerBuffer(const std::string& name)
-	{
-		auto _it = _samplerBuffers.find(name);
-		if (_it != _samplerBuffers.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_sampler1DShadow* sampler1DShadow(const std::string& name)
-	{
-		auto _it = _sampler1DShadows.find(name);
-		if (_it != _sampler1DShadows.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_sampler1DArrayShadow* sampler1DArrayShadow(const std::string& name)
-	{
-		auto _it = _sampler1DArrayShadows.find(name);
-		if (_it != _sampler1DArrayShadows.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_sampler2DShadow* sampler2DShadow(const std::string& name)
-	{
-		auto _it = _sampler2DShadows.find(name);
-		if (_it != _sampler2DShadows.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_sampler2DArrayShadow* sampler2DArrayShadow(const std::string& name)
-	{
-		auto _it = _sampler2DArrayShadows.find(name);
-		if (_it != _sampler2DArrayShadows.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_samplerCubeShadow* samplerCubeShadow(const std::string& name)
-	{
-		auto _it = _samplerCubeShadows.find(name);
-		if (_it != _samplerCubeShadows.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_samplerCubeArrayShadow* samplerCubeArrayShadow(const std::string& name)
-	{
-		auto _it = _samplerCubeArrayShadows.find(name);
-		if (_it != _samplerCubeArrayShadows.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_sampler2DRectShadow* sampler2DRectShadow(const std::string& name)
-	{
-		auto _it = _sampler2DRectShadows.find(name);
-		if (_it != _sampler2DRectShadows.cend()) return _it->second;
-		return nullptr;
-	}
-
-	glsl_isampler1D* isampler1D(const std::string& name)
-	{
-		auto _it = _isampler1Ds.find(name);
-		if (_it != _isampler1Ds.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_isampler1DArray* isampler1DArray(const std::string& name)
-	{
-		auto _it = _isampler1DArrays.find(name);
-		if (_it != _isampler1DArrays.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_isampler2D* isampler2D(const std::string& name)
-	{
-		auto _it = _isampler2Ds.find(name);
-		if (_it != _isampler2Ds.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_isampler2DArray* isampler2DArray(const std::string& name)
-	{
-		auto _it = _isampler2DArrays.find(name);
-		if (_it != _isampler2DArrays.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_isampler2DMS* isampler2DMS(const std::string& name)
-	{
-		auto _it = _isampler2DMSs.find(name);
-		if (_it != _isampler2DMSs.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_isampler2DMSArray* isampler2DMSArray(const std::string& name)
-	{
-		auto _it = _isampler2DMSArrays.find(name);
-		if (_it != _isampler2DMSArrays.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_isamplerCube* isamplerCube(const std::string& name)
-	{
-		auto _it = _isamplerCubes.find(name);
-		if (_it != _isamplerCubes.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_isamplerCubeArray* isamplerCubeArray(const std::string& name)
-	{
-		auto _it = _isamplerCubeArrays.find(name);
-		if (_it != _isamplerCubeArrays.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_isampler2DRect* isampler2DRect(const std::string& name)
-	{
-		auto _it = _isampler2DRects.find(name);
-		if (_it != _isampler2DRects.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_isamplerBuffer* isamplerBuffer(const std::string& name)
-	{
-		auto _it = _isamplerBuffers.find(name);
-		if (_it != _isamplerBuffers.cend()) return _it->second;
-		return nullptr;
-	}
-
-	glsl_usampler1D* usampler1D(const std::string& name)
-	{
-		auto _it = _usampler1Ds.find(name);
-		if (_it != _usampler1Ds.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_usampler1DArray* usampler1DArray(const std::string& name)
-	{
-		auto _it = _usampler1DArrays.find(name);
-		if (_it != _usampler1DArrays.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_usampler2D* usampler2D(const std::string& name)
-	{
-		auto _it = _usampler2Ds.find(name);
-		if (_it != _usampler2Ds.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_usampler2DArray* usampler2DArray(const std::string& name)
-	{
-		auto _it = _usampler2DArrays.find(name);
-		if (_it != _usampler2DArrays.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_usampler2DMS* usampler2DMS(const std::string& name)
-	{
-		auto _it = _usampler2DMSs.find(name);
-		if (_it != _usampler2DMSs.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_usampler2DMSArray* usampler2DMSArray(const std::string& name)
-	{
-		auto _it = _usampler2DMSArrays.find(name);
-		if (_it != _usampler2DMSArrays.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_usamplerCube* usamplerCube(const std::string& name)
-	{
-		auto _it = _usamplerCubes.find(name);
-		if (_it != _usamplerCubes.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_usamplerCubeArray* usamplerCubeArray(const std::string& name)
-	{
-		auto _it = _usamplerCubeArrays.find(name);
-		if (_it != _usamplerCubeArrays.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_usampler2DRect* usampler2DRect(const std::string& name)
-	{
-		auto _it = _usampler2DRects.find(name);
-		if (_it != _usampler2DRects.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_usamplerBuffer* usamplerBuffer(const std::string& name)
-	{
-		auto _it = _usamplerBuffers.find(name);
-		if (_it != _usamplerBuffers.cend()) return _it->second;
-		return nullptr;
-	}
-
-	glsl_image1D* image1D(const std::string& name)
-	{
-		auto _it = _image1Ds.find(name);
-		if (_it != _image1Ds.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_image1DArray* image1DArray(const std::string& name)
-	{
-		auto _it = _image1DArrays.find(name);
-		if (_it != _image1DArrays.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_image2D* image2D(const std::string& name)
-	{
-		auto _it = _image2Ds.find(name);
-		if (_it != _image2Ds.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_image2DArray* image2DArray(const std::string& name)
-	{
-		auto _it = _image2DArrays.find(name);
-		if (_it != _image2DArrays.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_imageCube* imageCube(const std::string& name)
-	{
-		auto _it = _imageCubes.find(name);
-		if (_it != _imageCubes.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_imageCubeArray* imageCubeArray(const std::string& name)
-	{
-		auto _it = _imageCubeArrays.find(name);
-		if (_it != _imageCubeArrays.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_image2DMS* image2DMS(const std::string& name)
-	{
-		auto _it = _image2DMSs.find(name);
-		if (_it != _image2DMSs.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_image2DMSArray* image2DMSArray(const std::string& name)
-	{
-		auto _it = _image2DMSArrays.find(name);
-		if (_it != _image2DMSArrays.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_image2DRect* image2DRect(const std::string& name)
-	{
-		auto _it = _image2DRects.find(name);
-		if (_it != _image2DRects.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_image3D* image3D(const std::string& name)
-	{
-		auto _it = _image3Ds.find(name);
-		if (_it != _image3Ds.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_imageBuffer* imageBuffer(const std::string& name)
-	{
-		auto _it = _imageBuffers.find(name);
-		if (_it != _imageBuffers.cend()) return _it->second;
-		return nullptr;
-	}
-
-	glsl_iimage1D* iimage1D(const std::string& name)
-	{
-		auto _it = _iimage1Ds.find(name);
-		if (_it != _iimage1Ds.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_iimage1DArray* iimage1DArray(const std::string& name)
-	{
-		auto _it = _iimage1DArrays.find(name);
-		if (_it != _iimage1DArrays.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_iimage2D* iimage2D(const std::string& name)
-	{
-		auto _it = _iimage2Ds.find(name);
-		if (_it != _iimage2Ds.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_iimage2DArray* iimage2DArray(const std::string& name)
-	{
-		auto _it = _iimage2DArrays.find(name);
-		if (_it != _iimage2DArrays.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_iimageCube* iimageCube(const std::string& name)
-	{
-		auto _it = _iimageCubes.find(name);
-		if (_it != _iimageCubes.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_iimageCubeArray* iimageCubeArray(const std::string& name)
-	{
-		auto _it = _iimageCubeArrays.find(name);
-		if (_it != _iimageCubeArrays.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_iimage2DMS* iimage2DMS(const std::string& name)
-	{
-		auto _it = _iimage2DMSs.find(name);
-		if (_it != _iimage2DMSs.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_iimage2DMSArray* iimage2DMSArray(const std::string& name)
-	{
-		auto _it = _iimage2DMSArrays.find(name);
-		if (_it != _iimage2DMSArrays.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_iimage2DRect* iimage2DRect(const std::string& name)
-	{
-		auto _it = _iimage2DRects.find(name);
-		if (_it != _iimage2DRects.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_iimage3D* iimage3D(const std::string& name)
-	{
-		auto _it = _iimage3Ds.find(name);
-		if (_it != _iimage3Ds.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_iimageBuffer* iimageBuffer(const std::string& name)
-	{
-		auto _it = _iimageBuffers.find(name);
-		if (_it != _iimageBuffers.cend()) return _it->second;
-		return nullptr;
-	}
-
-	glsl_uimage1D* uimage1D(const std::string& name)
-	{
-		auto _it = _uimage1Ds.find(name);
-		if (_it != _uimage1Ds.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_uimage1DArray* uimage1DArray(const std::string& name)
-	{
-		auto _it = _uimage1DArrays.find(name);
-		if (_it != _uimage1DArrays.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_uimage2D* uimage2D(const std::string& name)
-	{
-		auto _it = _uimage2Ds.find(name);
-		if (_it != _uimage2Ds.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_uimage2DArray* uimage2DArray(const std::string& name)
-	{
-		auto _it = _uimage2DArrays.find(name);
-		if (_it != _uimage2DArrays.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_uimageCube* uimageCube(const std::string& name)
-	{
-		auto _it = _uimageCubes.find(name);
-		if (_it != _uimageCubes.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_uimageCubeArray* uimageCubeArray(const std::string& name)
-	{
-		auto _it = _uimageCubeArrays.find(name);
-		if (_it != _uimageCubeArrays.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_uimage2DMS* uimage2DMS(const std::string& name)
-	{
-		auto _it = _uimage2DMSs.find(name);
-		if (_it != _uimage2DMSs.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_uimage2DMSArray* uimage2DMSArray(const std::string& name)
-	{
-		auto _it = _uimage2DMSArrays.find(name);
-		if (_it != _uimage2DMSArrays.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_uimage2DRect* uimage2DRect(const std::string& name)
-	{
-		auto _it = _uimage2DRects.find(name);
-		if (_it != _uimage2DRects.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_uimage3D* uimage3D(const std::string& name)
-	{
-		auto _it = _uimage3Ds.find(name);
-		if (_it != _uimage3Ds.cend()) return _it->second;
-		return nullptr;
-	}
-	glsl_uimageBuffer* uimageBuffer(const std::string& name)
-	{
-		auto _it = _uimageBuffers.find(name);
-		if (_it != _uimageBuffers.cend()) return _it->second;
-		return nullptr;
-	}
+//	glsl_sampler1D* sampler1D(const std::string& name)
+//	{
+//		auto _it = _sampler1Ds.find(name);
+//		if (_it != _sampler1Ds.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_sampler1DArray* sampler1DArray(const std::string& name)
+//	{
+//		auto _it = _sampler1DArrays.find(name);
+//		if (_it != _sampler1DArrays.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_sampler2D* sampler2D(const std::string& name)
+//	{
+//		auto _it = _sampler2Ds.find(name);
+//		if (_it != _sampler2Ds.cend()) return _it->second;
+//#ifdef _DEBUG
+//		throw std::exception("can not find sampler2D");
+//#endif // _DEBUG
+//		return nullptr;
+//	}
+//	glsl_sampler2DArray* sampler2DArray(const std::string& name)
+//	{
+//		auto _it = _sampler2DArrays.find(name);
+//		if (_it != _sampler2DArrays.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_sampler2DMS* sampler2DMS(const std::string& name)
+//	{
+//		auto _it = _sampler2DMSs.find(name);
+//		if (_it != _sampler2DMSs.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_sampler2DMSArray* sampler2DMSArray(const std::string& name)
+//	{
+//		auto _it = _sampler2DMSArrays.find(name);
+//		if (_it != _sampler2DMSArrays.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_samplerCube* samplerCube(const std::string& name)
+//	{
+//		auto _it = _samplerCubes.find(name);
+//		if (_it != _samplerCubes.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_samplerCubeArray* samplerCubeArray(const std::string& name)
+//	{
+//		auto _it = _samplerCubeArrays.find(name);
+//		if (_it != _samplerCubeArrays.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_sampler2DRect* sampler2DRect(const std::string& name)
+//	{
+//		auto _it = _sampler2DRects.find(name);
+//		if (_it != _sampler2DRects.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_samplerBuffer* samplerBuffer(const std::string& name)
+//	{
+//		auto _it = _samplerBuffers.find(name);
+//		if (_it != _samplerBuffers.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_sampler1DShadow* sampler1DShadow(const std::string& name)
+//	{
+//		auto _it = _sampler1DShadows.find(name);
+//		if (_it != _sampler1DShadows.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_sampler1DArrayShadow* sampler1DArrayShadow(const std::string& name)
+//	{
+//		auto _it = _sampler1DArrayShadows.find(name);
+//		if (_it != _sampler1DArrayShadows.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_sampler2DShadow* sampler2DShadow(const std::string& name)
+//	{
+//		auto _it = _sampler2DShadows.find(name);
+//		if (_it != _sampler2DShadows.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_sampler2DArrayShadow* sampler2DArrayShadow(const std::string& name)
+//	{
+//		auto _it = _sampler2DArrayShadows.find(name);
+//		if (_it != _sampler2DArrayShadows.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_samplerCubeShadow* samplerCubeShadow(const std::string& name)
+//	{
+//		auto _it = _samplerCubeShadows.find(name);
+//		if (_it != _samplerCubeShadows.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_samplerCubeArrayShadow* samplerCubeArrayShadow(const std::string& name)
+//	{
+//		auto _it = _samplerCubeArrayShadows.find(name);
+//		if (_it != _samplerCubeArrayShadows.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_sampler2DRectShadow* sampler2DRectShadow(const std::string& name)
+//	{
+//		auto _it = _sampler2DRectShadows.find(name);
+//		if (_it != _sampler2DRectShadows.cend()) return _it->second;
+//		return nullptr;
+//	}
+//
+//	glsl_isampler1D* isampler1D(const std::string& name)
+//	{
+//		auto _it = _isampler1Ds.find(name);
+//		if (_it != _isampler1Ds.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_isampler1DArray* isampler1DArray(const std::string& name)
+//	{
+//		auto _it = _isampler1DArrays.find(name);
+//		if (_it != _isampler1DArrays.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_isampler2D* isampler2D(const std::string& name)
+//	{
+//		auto _it = _isampler2Ds.find(name);
+//		if (_it != _isampler2Ds.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_isampler2DArray* isampler2DArray(const std::string& name)
+//	{
+//		auto _it = _isampler2DArrays.find(name);
+//		if (_it != _isampler2DArrays.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_isampler2DMS* isampler2DMS(const std::string& name)
+//	{
+//		auto _it = _isampler2DMSs.find(name);
+//		if (_it != _isampler2DMSs.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_isampler2DMSArray* isampler2DMSArray(const std::string& name)
+//	{
+//		auto _it = _isampler2DMSArrays.find(name);
+//		if (_it != _isampler2DMSArrays.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_isamplerCube* isamplerCube(const std::string& name)
+//	{
+//		auto _it = _isamplerCubes.find(name);
+//		if (_it != _isamplerCubes.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_isamplerCubeArray* isamplerCubeArray(const std::string& name)
+//	{
+//		auto _it = _isamplerCubeArrays.find(name);
+//		if (_it != _isamplerCubeArrays.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_isampler2DRect* isampler2DRect(const std::string& name)
+//	{
+//		auto _it = _isampler2DRects.find(name);
+//		if (_it != _isampler2DRects.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_isamplerBuffer* isamplerBuffer(const std::string& name)
+//	{
+//		auto _it = _isamplerBuffers.find(name);
+//		if (_it != _isamplerBuffers.cend()) return _it->second;
+//		return nullptr;
+//	}
+//
+//	glsl_usampler1D* usampler1D(const std::string& name)
+//	{
+//		auto _it = _usampler1Ds.find(name);
+//		if (_it != _usampler1Ds.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_usampler1DArray* usampler1DArray(const std::string& name)
+//	{
+//		auto _it = _usampler1DArrays.find(name);
+//		if (_it != _usampler1DArrays.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_usampler2D* usampler2D(const std::string& name)
+//	{
+//		auto _it = _usampler2Ds.find(name);
+//		if (_it != _usampler2Ds.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_usampler2DArray* usampler2DArray(const std::string& name)
+//	{
+//		auto _it = _usampler2DArrays.find(name);
+//		if (_it != _usampler2DArrays.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_usampler2DMS* usampler2DMS(const std::string& name)
+//	{
+//		auto _it = _usampler2DMSs.find(name);
+//		if (_it != _usampler2DMSs.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_usampler2DMSArray* usampler2DMSArray(const std::string& name)
+//	{
+//		auto _it = _usampler2DMSArrays.find(name);
+//		if (_it != _usampler2DMSArrays.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_usamplerCube* usamplerCube(const std::string& name)
+//	{
+//		auto _it = _usamplerCubes.find(name);
+//		if (_it != _usamplerCubes.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_usamplerCubeArray* usamplerCubeArray(const std::string& name)
+//	{
+//		auto _it = _usamplerCubeArrays.find(name);
+//		if (_it != _usamplerCubeArrays.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_usampler2DRect* usampler2DRect(const std::string& name)
+//	{
+//		auto _it = _usampler2DRects.find(name);
+//		if (_it != _usampler2DRects.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_usamplerBuffer* usamplerBuffer(const std::string& name)
+//	{
+//		auto _it = _usamplerBuffers.find(name);
+//		if (_it != _usamplerBuffers.cend()) return _it->second;
+//		return nullptr;
+//	}
+//
+//	glsl_image1D* image1D(const std::string& name)
+//	{
+//		auto _it = _image1Ds.find(name);
+//		if (_it != _image1Ds.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_image1DArray* image1DArray(const std::string& name)
+//	{
+//		auto _it = _image1DArrays.find(name);
+//		if (_it != _image1DArrays.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_image2D* image2D(const std::string& name)
+//	{
+//		auto _it = _image2Ds.find(name);
+//		if (_it != _image2Ds.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_image2DArray* image2DArray(const std::string& name)
+//	{
+//		auto _it = _image2DArrays.find(name);
+//		if (_it != _image2DArrays.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_imageCube* imageCube(const std::string& name)
+//	{
+//		auto _it = _imageCubes.find(name);
+//		if (_it != _imageCubes.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_imageCubeArray* imageCubeArray(const std::string& name)
+//	{
+//		auto _it = _imageCubeArrays.find(name);
+//		if (_it != _imageCubeArrays.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_image2DMS* image2DMS(const std::string& name)
+//	{
+//		auto _it = _image2DMSs.find(name);
+//		if (_it != _image2DMSs.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_image2DMSArray* image2DMSArray(const std::string& name)
+//	{
+//		auto _it = _image2DMSArrays.find(name);
+//		if (_it != _image2DMSArrays.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_image2DRect* image2DRect(const std::string& name)
+//	{
+//		auto _it = _image2DRects.find(name);
+//		if (_it != _image2DRects.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_image3D* image3D(const std::string& name)
+//	{
+//		auto _it = _image3Ds.find(name);
+//		if (_it != _image3Ds.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_imageBuffer* imageBuffer(const std::string& name)
+//	{
+//		auto _it = _imageBuffers.find(name);
+//		if (_it != _imageBuffers.cend()) return _it->second;
+//		return nullptr;
+//	}
+//
+//	glsl_iimage1D* iimage1D(const std::string& name)
+//	{
+//		auto _it = _iimage1Ds.find(name);
+//		if (_it != _iimage1Ds.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_iimage1DArray* iimage1DArray(const std::string& name)
+//	{
+//		auto _it = _iimage1DArrays.find(name);
+//		if (_it != _iimage1DArrays.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_iimage2D* iimage2D(const std::string& name)
+//	{
+//		auto _it = _iimage2Ds.find(name);
+//		if (_it != _iimage2Ds.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_iimage2DArray* iimage2DArray(const std::string& name)
+//	{
+//		auto _it = _iimage2DArrays.find(name);
+//		if (_it != _iimage2DArrays.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_iimageCube* iimageCube(const std::string& name)
+//	{
+//		auto _it = _iimageCubes.find(name);
+//		if (_it != _iimageCubes.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_iimageCubeArray* iimageCubeArray(const std::string& name)
+//	{
+//		auto _it = _iimageCubeArrays.find(name);
+//		if (_it != _iimageCubeArrays.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_iimage2DMS* iimage2DMS(const std::string& name)
+//	{
+//		auto _it = _iimage2DMSs.find(name);
+//		if (_it != _iimage2DMSs.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_iimage2DMSArray* iimage2DMSArray(const std::string& name)
+//	{
+//		auto _it = _iimage2DMSArrays.find(name);
+//		if (_it != _iimage2DMSArrays.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_iimage2DRect* iimage2DRect(const std::string& name)
+//	{
+//		auto _it = _iimage2DRects.find(name);
+//		if (_it != _iimage2DRects.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_iimage3D* iimage3D(const std::string& name)
+//	{
+//		auto _it = _iimage3Ds.find(name);
+//		if (_it != _iimage3Ds.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_iimageBuffer* iimageBuffer(const std::string& name)
+//	{
+//		auto _it = _iimageBuffers.find(name);
+//		if (_it != _iimageBuffers.cend()) return _it->second;
+//		return nullptr;
+//	}
+//
+//	glsl_uimage1D* uimage1D(const std::string& name)
+//	{
+//		auto _it = _uimage1Ds.find(name);
+//		if (_it != _uimage1Ds.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_uimage1DArray* uimage1DArray(const std::string& name)
+//	{
+//		auto _it = _uimage1DArrays.find(name);
+//		if (_it != _uimage1DArrays.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_uimage2D* uimage2D(const std::string& name)
+//	{
+//		auto _it = _uimage2Ds.find(name);
+//		if (_it != _uimage2Ds.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_uimage2DArray* uimage2DArray(const std::string& name)
+//	{
+//		auto _it = _uimage2DArrays.find(name);
+//		if (_it != _uimage2DArrays.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_uimageCube* uimageCube(const std::string& name)
+//	{
+//		auto _it = _uimageCubes.find(name);
+//		if (_it != _uimageCubes.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_uimageCubeArray* uimageCubeArray(const std::string& name)
+//	{
+//		auto _it = _uimageCubeArrays.find(name);
+//		if (_it != _uimageCubeArrays.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_uimage2DMS* uimage2DMS(const std::string& name)
+//	{
+//		auto _it = _uimage2DMSs.find(name);
+//		if (_it != _uimage2DMSs.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_uimage2DMSArray* uimage2DMSArray(const std::string& name)
+//	{
+//		auto _it = _uimage2DMSArrays.find(name);
+//		if (_it != _uimage2DMSArrays.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_uimage2DRect* uimage2DRect(const std::string& name)
+//	{
+//		auto _it = _uimage2DRects.find(name);
+//		if (_it != _uimage2DRects.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_uimage3D* uimage3D(const std::string& name)
+//	{
+//		auto _it = _uimage3Ds.find(name);
+//		if (_it != _uimage3Ds.cend()) return _it->second;
+//		return nullptr;
+//	}
+//	glsl_uimageBuffer* uimageBuffer(const std::string& name)
+//	{
+//		auto _it = _uimageBuffers.find(name);
+//		if (_it != _uimageBuffers.cend()) return _it->second;
+//		return nullptr;
+//	}
 
 	glsl_atomic_counter* atomic_uint(const std::string& block_name)
 	{

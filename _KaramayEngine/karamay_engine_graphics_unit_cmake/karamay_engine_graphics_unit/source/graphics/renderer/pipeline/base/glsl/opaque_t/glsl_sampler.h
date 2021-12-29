@@ -3,6 +3,7 @@
 
 #include "../base/glsl_class.h"
 #include "../../resource/texture/gl_texture.h"
+#include "graphics/renderer/pipeline/base/glsl/interface_block/glsl_uniform_block.h"
 
 class glsl_sampler_t : public glsl_opaque_t
 {
@@ -19,6 +20,7 @@ protected:
     glsl_sampler_t& operator=(const glsl_sampler_t&) = delete;
 
     ~glsl_sampler_t() = default;
+
 
 protected:
 
@@ -46,6 +48,8 @@ protected:
         _texture = texture;
 
         glMakeTextureHandleResidentARB(_bindless_handle);
+
+        if(manager) manager->update(_name);
     }
 
     gl_texture_t* _get_texture() const { return _texture; }
@@ -56,15 +60,20 @@ public:
     gl_sampler* get_sampler() const { return _sampler; }
 
     // 0 invalid, other valid
-    uint64 get_uniform() const { return _bindless_handle; }
+    const uint64* get_uniform() const { return &_bindless_handle; }
 
 private:
+
+    std::string _name;
     
     gl_texture_t* _texture;
 
     gl_sampler* _sampler;
     
     uint64 _bindless_handle;
+
+public:
+    glsl_uniform_block* manager;
 
 };
 

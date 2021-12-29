@@ -3,15 +3,10 @@
 
 #include "../../buffers/raw_buffer/gl_buffer.h"
 
-struct gl_uniform_buffer_descriptor{
-};
-
-
-class gl_uniform_buffer final{
+class gl_uniform_buffer final
+{
 public:
-
-    gl_uniform_buffer() = delete;
-    explicit gl_uniform_buffer(const gl_uniform_buffer_descriptor& descriptor)
+    gl_uniform_buffer()
     {
        // // generate uniform blocks' layout infos
        //int64 _initialization_size = 0;
@@ -61,6 +56,7 @@ public:
        //             }
        //         });
     }
+
     gl_uniform_buffer(const gl_uniform_buffer&) = delete;
     gl_uniform_buffer& operator=(const gl_uniform_buffer&) = delete;
 
@@ -68,42 +64,33 @@ public:
 
 public:
 
-    void bind() noexcept
+    void upload(uint32 offset, uint32 size, const void* bytes)
     {
-    }
-
-    void unbind() noexcept
-    {
-        glBindBuffer(GL_UNIFORM_BUFFER, 0);
-    }
-
-public:
-
-    void upload() noexcept
-    {
-        /*if(!_buffer) return;
-
-        glMemoryBarrierByRegion(GL_UNIFORM_BARRIER_BIT);
-
-        for(const auto& _layout : _layouts)
+        if (_buffer)
         {
-            if(_layout.block && _layout.block->is_dirty)
-            {
-                if(!_layout.block->data()) return;
-                _buffer->write(_layout.offset, _layout.block->data(), _layout.block->size());
-                _layout.block->is_dirty = false;
-            }
-        }*/
+            _buffer->execute_mapped_memory_writer(offset, size, 
+                [bytes](void* data, int64 size) 
+                {
+                    std::memcpy(data, bytes, size);
+                }
+            );
+        }
     }
 
-    void download() noexcept
+    const void* download(uint32 offset, uint32 size)
     {
-       
+
     }
+
+    uint32 get_handle()
+    {
+        return _buffer->get_handle();
+    }
+
+private:
+
+    std::unique_ptr<gl_buffer> _buffer;
 
 };
-
-
-
 
 #endif

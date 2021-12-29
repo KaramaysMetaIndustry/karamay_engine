@@ -169,10 +169,41 @@ protected:
 
     bool _check_internal_format(gl_texture_internal_format format)
     {
-        return true;
+        switch (format)
+        {
+        case gl_texture_internal_format::R_F32: return true;
+        case gl_texture_internal_format::RG_F32: return true;
+        case gl_texture_internal_format::RGB_F32: return true;
+        case gl_texture_internal_format::RGBA_F32: return true;
+        case gl_texture_internal_format::NOR_R_I8: return true;
+        case gl_texture_internal_format::NOR_R_I16: return true;
+        case gl_texture_internal_format::NOR_RG_I8: return true;
+        case gl_texture_internal_format::NOR_RG_I16: return true;
+        case gl_texture_internal_format::NOR_RGB_I8: return true;
+        case gl_texture_internal_format::NOR_RGB_I16: return true;
+        case gl_texture_internal_format::NOR_RGBA_I8: return true;
+        case gl_texture_internal_format::NOR_RGBA_I16: return true;
+        case gl_texture_internal_format::NOR_R_UI8: return true;
+        case gl_texture_internal_format::NOR_R_UI16: return true;
+        case gl_texture_internal_format::NOR_RG_UI8: return true;
+        case gl_texture_internal_format::NOR_RG_UI16: return true;
+        case gl_texture_internal_format::NOR_RGB_UI8: return true;
+        case gl_texture_internal_format::NOR_RGB_UI16: return true;
+        case gl_texture_internal_format::NOR_RGBA_UI8: return true;
+        case gl_texture_internal_format::NOR_RGBA_UI16: return true;
+        case gl_texture_internal_format::NOR_RGB_UI16_5_6_5: return true;
+        case gl_texture_internal_format::NOR_RGBA_UI16_4_4_4_4: return true;
+        case gl_texture_internal_format::NOR_RGBA_UI16_5_5_5_1: return true;
+        case gl_texture_internal_format::NOR_RGBA_UI32_10_10_10_2: return true;
+        case gl_texture_internal_format::NOR_UI_SRGB8: return true;
+        case gl_texture_internal_format::NOR_UI_SRGB8_ALPHA8: return true;
+        case gl_texture_internal_format::F_R11_G11_B10: return true;
+        case gl_texture_internal_format::RGB9_E5: return true;
+        default: return false;
+        }
     }
-
 };
+
 class glsl_image1D final : public glsl_image
 {
 public:
@@ -199,7 +230,7 @@ public:
         _set_image(texture, static_cast<int32>(mipmap_index));
     }
 
-    void associate(gl_texture_1d_array* texture, uint32 element_index, uint32 mipmap_index) noexcept
+    void associate(gl_texture_1d_array* texture, uint32 mipmap_index, uint32 element_index) noexcept
     {
         if (!texture)
         {
@@ -519,25 +550,15 @@ class glsl_iimage : public glsl_image_t
 };
 
 class glsl_iimage1D final : public glsl_iimage {};
-
 class glsl_iimage1DArray final : public glsl_iimage {};
-
 class glsl_iimage2D final : public glsl_iimage {};
-
 class glsl_iimage2DArray final : public glsl_iimage {};
-
 class glsl_iimageCube final : public glsl_iimage {};
-
 class glsl_iimageCubeArray final : public glsl_iimage {};
-
 class glsl_iimage2DMS final : public glsl_iimage {};
-
 class glsl_iimage2DMSArray final : public glsl_iimage {};
-
 class glsl_iimage2DRect final : public glsl_iimage {};
-
 class glsl_iimage3D final : public glsl_iimage {};
-
 class glsl_iimageBuffer final : public glsl_iimage {};
 
 
@@ -551,52 +572,42 @@ class glsl_uimage1D final : public glsl_uimage
 {
 
 };
-
 class glsl_uimage1DArray final : public glsl_uimage 
 {
 
 };
-
 class glsl_uimage2D final : public glsl_uimage 
 {
 
 };
-
 class glsl_uimage2DArray final : public glsl_uimage 
 {
 
 };
-
 class glsl_uimageCube final : public glsl_uimage 
 {
 
 };
-
 class glsl_uimageCubeArray final : public glsl_uimage 
 {
 
 };
-
 class glsl_uimage2DMS final : public glsl_uimage 
 {
 
 };
-
 class glsl_uimage2DMSArray final : public glsl_uimage 
 {
 
 };
-
 class glsl_uimage2DRect final : public glsl_uimage 
 {
 
 };
-
 class glsl_uimage3D final : public glsl_uimage 
 {
 
 };
-
 class glsl_uimageBuffer final : public glsl_uimage 
 {
 

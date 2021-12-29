@@ -313,9 +313,9 @@ public:
     ~glsl_interface_block_t() = default;
 
 public:
-    virtual std::uint8_t* data() = 0;
-    [[nodiscard]] virtual const std::uint8_t* data() const = 0;
-    [[nodiscard]] virtual std::int64_t size() const = 0;
+    virtual std::uint8_t* data() { return nullptr; };
+    [[nodiscard]] virtual const std::uint8_t* data() const { return nullptr; };
+    [[nodiscard]] virtual std::int64_t size() const { return 0; };
 };
 
 enum class glsl_interface_block_matrix_layout

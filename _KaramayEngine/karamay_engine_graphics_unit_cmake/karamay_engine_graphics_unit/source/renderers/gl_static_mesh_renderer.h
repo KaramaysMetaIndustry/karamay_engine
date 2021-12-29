@@ -2,11 +2,37 @@
 #define GL_TEST_RENDERER_H
 
 #include "graphics/renderer/gl_renderer.h"
+#include "graphics/renderer/pipeline/base/glsl/glsl_builder.h"
 
 DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 
+	uniformBlock(0, STD140, Materials)
+		sampler2DArray(albedos);
+		sampler2DArray(roughnesses);
+		sampler2DArray(occlusionMaps);
+	};
+
+	class glsl_uniform_block_exp : public glsl_uniform_block
+	{
+	public:
+		glsl_uniform_block_exp() :
+			glsl_uniform_block(glsl_interface_block_matrix_layout::COLUMN_MAJOR, glsl_uniform_block_memory_layout::STD140, {})
+		{}
+
+	private:
+		std::shared_ptr<glsl_sampler1D> _att = _create_sampler<glsl_sampler1D>("att");
+	public:
+		glsl_sampler1D& att() 
+		{
+			return *_att; 
+		}
+
+	};
+
 	IMPLEMENTATION_FUNC_BUILD()
 	{
+		glsl_uniform_block_exp exp;
+
 		auto _tex_1d = builder.build_texture_1d(gl_texture_internal_format::DEPTH24_STENCIL8, 100, 1);
 		_tex_1d->set_compare_mode(gl_texture_compare_mode::COMPARE_REF_TO_TEXTURE);
 		glsl_sampler1DShadow* _samp = new glsl_sampler1DShadow("_samp");
@@ -102,13 +128,6 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		// you can also change these when rendering
 		{
 			// set program
-			_mesh_pipeline->program().sampler2D("mat.albedo_map")->associate(_albedo_tex, _public_sampler);
-			_mesh_pipeline->program().sampler2D("mat.normal_map")->associate(_normal_tex);
-			_mesh_pipeline->program().sampler2D("mat.metalness_map")->associate(_metalness_tex);
-			_mesh_pipeline->program().sampler2D("mat.roughness_map")->associate(_roughness_tex);
-			_mesh_pipeline->program().sampler2D("mat.displacement_map")->associate(_displacement_tex);
-			_mesh_pipeline->program().sampler2D("mat.ambient_occlusion_map")->associate(_ambient_occlusion_tex);
-			_mesh_pipeline->program().sampler2DRectShadow("");
 		}
 
 		// set pipeline render target
