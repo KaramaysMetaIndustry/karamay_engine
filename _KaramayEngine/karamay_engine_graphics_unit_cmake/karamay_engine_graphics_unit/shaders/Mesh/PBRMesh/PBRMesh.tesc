@@ -2,18 +2,19 @@
 
 float GetTessLevel(float distance0, float distance1);
 
+uniform vec3 camera_position;
+
 //----------------------------
 layout(vertices = 3) out;
 
-in vec3 tesc_position[];
-in vec2 tesc_uv[];
-in vec3 tesc_normal[];
+layout(location = 0) in vec3 tesc_position[];
+layout(location = 1) in vec2 tesc_uv[];
+layout(location = 2) in vec3 tesc_normal[];
 
-out vec3 tese_position[];
-out vec2 tese_uv[];
-out vec3 tese_normal[];
+layout(location = 0) out vec3 tese_position[];
+layout(location = 1) out vec2 tese_uv[];
+layout(location = 2) out vec3 tese_normal[];
 
-uniform vec3 camera_position;
 
 void main()
 {
@@ -30,11 +31,9 @@ void main()
 		gl_TessLevelOuter[0] = GetTessLevel(distance1, distance2);
 		gl_TessLevelOuter[1] = GetTessLevel(distance2, distance0);
 		gl_TessLevelOuter[2] = GetTessLevel(distance0,distance1);
-
 		gl_TessLevelInner[0] = gl_TessLevelOuter[2];
 	}
 }
-
 
 float GetTessLevel(float distance0, float distance1)
 {

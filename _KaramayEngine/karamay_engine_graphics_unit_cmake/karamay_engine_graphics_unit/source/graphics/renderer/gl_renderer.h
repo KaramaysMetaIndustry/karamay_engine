@@ -256,35 +256,13 @@ protected:
             return _framebuffer;
         }
         
-        gl_graphics_pipeline* build_graphics_pipeline(glsl_vertex_shader* vs, glsl_fragment_shader* fs)
+        gl_graphics_pipeline* build_graphics_pipeline(glsl_graphics_pipeline_program* program)
         {
-            auto _graphics_pipeline = new gl_graphics_pipeline(vs, fs);
-            _graphics_pipelines.push_back(_graphics_pipeline);
-            return _graphics_pipeline;
+            return nullptr;
         }
-        gl_graphics_pipeline* build_graphics_pipeline(glsl_vertex_shader* vs, glsl_tessellation_shader* ts, glsl_fragment_shader* fs)
+        gl_compute_pipeline* build_compute_pipeline(glsl_compute_pipeline_program* program)
         {
-            auto _graphics_pipeline = new gl_graphics_pipeline(vs, ts, fs);
-            _graphics_pipelines.push_back(_graphics_pipeline);
-            return _graphics_pipeline;
-        }
-        gl_graphics_pipeline* build_graphics_pipeline(glsl_vertex_shader* vs, glsl_geometry_shader* gs, glsl_fragment_shader* fs)
-        {
-            auto _graphics_pipeline = new gl_graphics_pipeline(vs, gs, fs);
-            _graphics_pipelines.push_back(_graphics_pipeline);
-            return _graphics_pipeline;
-        }
-        gl_graphics_pipeline* build_graphics_pipeline(glsl_vertex_shader* vs, glsl_tessellation_shader* ts, glsl_geometry_shader* gs, glsl_fragment_shader* fs)
-        {
-            auto _graphics_pipeline = new gl_graphics_pipeline(vs, ts, gs, fs);
-            _graphics_pipelines.push_back(_graphics_pipeline);
-            return _graphics_pipeline;
-        }
-        gl_compute_pipeline* build_compute_pipeline(glsl_compute_shader* cs)
-        {
-            auto _compute_pipeline = new gl_compute_pipeline(cs);
-            _compute_pipelines.push_back(_compute_pipeline);
-            return _compute_pipeline;
+            return nullptr;
         }
 
     private:
