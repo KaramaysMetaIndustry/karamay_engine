@@ -2,8 +2,33 @@
 #define GLSL_PROGRAM_H
 
 #include "glsl.h"
+#include "glsl_builder.h"
 #include "glsl_shader.h"
 #include "graphics/renderer/pipeline/base/resource/program/gl_program.h"
+
+uniformBlock(0, STD140, Materials)
+	sampler2DArray(albedos);
+	sampler2DArray(roughnesses);
+	sampler2DArray(occlusionMaps);
+};
+
+class glsl_uniform_block_exp : public glsl_uniform_block
+{
+public:
+	glsl_uniform_block_exp() :
+		glsl_uniform_block(glsl_interface_block_matrix_layout::COLUMN_MAJOR, glsl_uniform_block_memory_layout::STD140, {})
+	{}
+
+private:
+	std::shared_ptr<glsl_sampler1D> _att = _create_sampler<glsl_sampler1D>("att");
+public:
+	glsl_sampler1D& att()
+	{
+		return *_att;
+	}
+
+};
+
 
 class glsl_program 
 {
@@ -14,6 +39,21 @@ public:
 	glsl_program& operator=(const glsl_program&) = delete;
 
 	~glsl_program() = default;
+
+public:
+
+	bool generate_templates(const std::string& dir)
+	{
+		for (auto _shader : _shaders)
+		{
+			_shader->generate_template(dir);
+		}
+	}
+
+	bool load()
+	{
+
+	}
 
 public:
 
@@ -38,7 +78,16 @@ public:
 		return nullptr;
 	}
 
+protected:
+
+	void create_uniform_block()
+	{
+
+	}
+
 private:
+
+	std::vector<glsl_shader*> _shaders;
 
 	std::unordered_map<std::string, glsl_uniform_block*> _uniform_blocks;
 	std::unordered_map<std::string, glsl_shader_storage_block*> _shader_storage_blocks;
@@ -131,7 +180,7 @@ public:
 		_vertex_shader(vs), _tessellation_shader(nullptr), _geometry_shader(nullptr), _fragment_shader(fs)
 	{}
 	
-	glsl_graphics_pipeline_program(glsl_vertex_shader* vs, glsl_tessellation_shader* ts, glsl_fragment_shader* fs) :
+	glsl_graphics_pipeline_program(glsl_vertex_shader* vs, glsl_tessellation_control_shader* tesc, glsl_tessellation_evaluation_shader* tese, glsl_fragment_shader* fs) :
 		_vertex_shader(vs), _tessellation_shader(ts), _geometry_shader(nullptr), _fragment_shader(fs)
 	{}
 	
@@ -139,7 +188,7 @@ public:
 		_vertex_shader(vs), _tessellation_shader(nullptr), _geometry_shader(gs), _fragment_shader(fs)
 	{}
 
-	glsl_graphics_pipeline_program(glsl_vertex_shader* vs, glsl_tessellation_shader* ts, glsl_geometry_shader* gs, glsl_fragment_shader* fs) :
+	glsl_graphics_pipeline_program(glsl_vertex_shader* vs, glsl_tessellation_control_shader* tesc, glsl_tessellation_evaluation_shader* tese, glsl_geometry_shader* gs, glsl_fragment_shader* fs) :
 		_vertex_shader(vs), _tessellation_shader(ts), _geometry_shader(gs), _fragment_shader(fs)
 	{}
 
@@ -170,13 +219,12 @@ public:
 			_vertex_shader->load(renderer_path + "/PBRMesh.vert");
 			_shaders.push_back(_vertex_shader->get_shader());
 		}
-		if (_tessellation_shader)
+		if (_tesc_shader && _tese_shader)
 		{
-			if (_tessellation_shader->load(renderer_path + "/PBRMesh.tesc", renderer_path + "/PBRMesh.tese"))
+			if (_tesc_shader->load(renderer_path + "/PBRMesh.tesc") && _tese_shader->load(renderer_path + "/PBRMesh.tese"))
 			{
-				auto _shader_pair = _tessellation_shader->get_shader();
-				_shaders.push_back(_shader_pair.first);
-				_shaders.push_back(_shader_pair.second);
+				_shaders.push_back(_tesc_shader);
+				_shaders.push_back(_tese_shader);
 			}
 		}
 		if (_geometry_shader)
@@ -205,7 +253,8 @@ public:
 private:
 	gl_program* _program;
 	glsl_vertex_shader* _vertex_shader;
-	glsl_tessellation_shader* _tessellation_shader;
+	glsl_tessellation_control_shader* _tesc_shader;
+	glsl_tessellation_evaluation_shader* _tese_shader;
 	glsl_geometry_shader* _geometry_shader;
 	glsl_fragment_shader* _fragment_shader;
 
@@ -252,9 +301,45 @@ public:
 };
 
 
+class glsl_gpp : public glsl_graphics_pipeline_program
+{
+
+	uniformBlock(0, STD140, Material)
+		sampler1D(position);
+		sampler2DArray(albedoMaps);
+	};
+
+	shaderStorageBlock(0, STD430, PositionReadback)
+
+	};
+
+	vertexShader()
+		refUniformBlock()
+		refShaderStorageBlock()
+		refAtomicCounter()
+
+	tessellationShader()
+		refUniformBlock()
+		refShaderStorageBlock()
+		refAtomicCounter()
+
+	geometryShader()
+		refUniformBlock()
+		refShaderStorageBlock()
+		refAtomicCounter()
+
+	fragmentShader()
+		refUniformBlock()
+		refShaderStorageBlock()
+		refAtomicCounter()
+
+};
+
+
 #define graphicsPipelineProgram()
 
 #define computePipelineProgram()
+
 
 
 #endif

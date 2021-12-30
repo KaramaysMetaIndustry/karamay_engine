@@ -13,6 +13,9 @@ public:\
         \
     }\
 
+#define shaderStorageBlock(binding, layout, name)\
+class glsl_##name : public glsl_shader_storage_block\
+{\
 
 
 #define sampler(prefix, suffix, name)\

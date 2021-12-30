@@ -123,7 +123,6 @@ class glsl_t {
 public:
 };
 
-
 struct glsl_transparent_t_meta
 {
     std::uint32_t components_count;

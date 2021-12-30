@@ -6,44 +6,13 @@
 
 DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 
-	uniformBlock(0, STD140, Materials)
-		sampler2DArray(albedos);
-		sampler2DArray(roughnesses);
-		sampler2DArray(occlusionMaps);
-	};
-
-	class glsl_uniform_block_exp : public glsl_uniform_block
-	{
-	public:
-		glsl_uniform_block_exp() :
-			glsl_uniform_block(glsl_interface_block_matrix_layout::COLUMN_MAJOR, glsl_uniform_block_memory_layout::STD140, {})
-		{}
-
-	private:
-		std::shared_ptr<glsl_sampler1D> _att = _create_sampler<glsl_sampler1D>("att");
-	public:
-		glsl_sampler1D& att() 
-		{
-			return *_att; 
-		}
-
-	};
-
 	IMPLEMENTATION_FUNC_BUILD()
 	{
-		glsl_uniform_block_exp exp;
+		auto _albedo_tex_2d_pool = builder.build_texture_2d_array(gl_texture_internal_format::NOR_RGBA_UI8, 1024, 1024, 8, 1000);
 
-		auto _al_tex = builder.build_texture_1d(gl_texture_internal_format::RGBA_F32, 1024, 4);
-		std::pair<uint32, uint32> _mipmap_range;
+		auto _albedos = builder.build_texture_view_2d_array(_albedo_tex_2d_pool, gl_texture_internal_format::NOR_RGBA_UI8, { 0, 7 }, { 0, 10 });
+		auto _albedo = builder.build_texture_view_2d(_albedo_tex_2d_pool, gl_texture_internal_format::NOR_RGBA_UI8, { 0, 7 }, 11);
 
-		auto _al_tex_view_1d = new gl_texture_view_1d(_al_tex, gl_texture_internal_format::RGBA_F32, _mipmap_range);
-		auto _al_tex_view_1d_array = new gl_texture_view_1d_array(_al_tex, gl_texture_internal_format::RGBA_F32, _mipmap_range, { 0,1 });
-		exp.att().associate(_al_tex_view_1d);
-
-		auto _tex_1d = builder.build_texture_1d(gl_texture_internal_format::DEPTH24_STENCIL8, 100, 1);
-		_tex_1d->set_compare_mode(gl_texture_compare_mode::COMPARE_REF_TO_TEXTURE);
-		glsl_sampler1DShadow* _samp = new glsl_sampler1DShadow("_samp");
-		_samp->associate(_tex_1d);
 
 		auto _albedo_tex = builder.build_texture_2d(gl_texture_internal_format::NOR_RGBA_UI8, 1024, 1024, 1);
 		_albedo_tex->set_base_level(0);

@@ -211,16 +211,16 @@ protected:
             return _tex_buffer;
         }
         
-        gl_texture_view_1d* build_texture_view_1d(gl_texture_1d* texture_1d, gl_texture_internal_format format) {}
-        gl_texture_view_1d* build_texture_view_1d(gl_texture_1d_array* texture_1d_array, gl_texture_internal_format format) {}
-        gl_texture_view_1d_array* build_texture_view_1d_array(gl_texture_1d* texture_1d, gl_texture_internal_format format) {}
-        gl_texture_view_1d_array* build_texture_view_1d_array(gl_texture_1d_array* texture_1d_array, gl_texture_internal_format format) {}
+        gl_texture_view_1d* build_texture_view_1d(gl_texture_1d* texture_1d, gl_texture_internal_format format, const gl_mipmap_range& mipmap_range) {}
+        gl_texture_view_1d* build_texture_view_1d(gl_texture_1d_array* texture_1d_array, gl_texture_internal_format format, const gl_mipmap_range& mipmap_range, const gl_array_range& array_range) {}
+        gl_texture_view_1d_array* build_texture_view_1d_array(gl_texture_1d* texture_1d, gl_texture_internal_format format, const gl_mipmap_range& mipmap_range) {}
+        gl_texture_view_1d_array* build_texture_view_1d_array(gl_texture_1d_array* texture_1d_array, gl_texture_internal_format format, const gl_mipmap_range& mipmap_range, const gl_array_range& array_range) {}
         gl_texture_view_2d* build_texture_view_2d(gl_texture_2d* texture_2d, gl_texture_internal_format format) {}
-        gl_texture_view_2d* build_texture_view_2d(gl_texture_2d_array* texture_2d_array, gl_texture_internal_format format) {}
+        gl_texture_view_2d* build_texture_view_2d(gl_texture_2d_array* texture_2d_array, gl_texture_internal_format format, const gl_mipmap_range& mipmap_range, uint32 element_index) {}
         gl_texture_view_2d* build_texture_view_2d(gl_texture_cube_map* texture_cube_map, gl_texture_internal_format format) {}
         gl_texture_view_2d* build_texture_view_2d(gl_texture_cube_map_array* texture_cube_map_array, gl_texture_internal_format format) {}
         gl_texture_view_2d_array* build_texture_view_2d_array(gl_texture_2d* texture_2d, gl_texture_internal_format format) {}
-        gl_texture_view_2d_array* build_texture_view_2d_array(gl_texture_2d_array* texture_2d_array, gl_texture_internal_format format) {}
+        gl_texture_view_2d_array* build_texture_view_2d_array(gl_texture_2d_array* texture_2d_array, gl_texture_internal_format format, const gl_mipmap_range& mipmap_range, const gl_array_range& array_range) {}
         gl_texture_view_2d_array* build_texture_view_2d_array(gl_texture_cube_map* texture_cube_map, gl_texture_internal_format format) {}
         gl_texture_view_2d_array* build_texture_view_2d_array(gl_texture_cube_map_array* texture_cube_map_array, gl_texture_internal_format format) {}
         gl_texture_view_rectangle* build_texture_view_rectangle(gl_texture_rectangle* texture_rectangle, gl_texture_internal_format format) {}

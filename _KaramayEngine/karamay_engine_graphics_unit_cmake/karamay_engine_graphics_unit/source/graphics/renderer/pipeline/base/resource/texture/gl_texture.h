@@ -1400,8 +1400,8 @@ public:
 	{
 		glTextureView(_handle, GL_TEXTURE_2D,
 			texture_cube_map_array->get_handle(), static_cast<GLenum>(format),
-			mipmap_range.first, mipmap_range.second + 1,
-			layer_range.first, layer_range.second + 1
+			mipmap_range.bottom, mipmap_range.top - mipmap_range.bottom + 1,
+			array_range.begin, array_range.end - array_range.begin + 1
 		);
 	}
 
