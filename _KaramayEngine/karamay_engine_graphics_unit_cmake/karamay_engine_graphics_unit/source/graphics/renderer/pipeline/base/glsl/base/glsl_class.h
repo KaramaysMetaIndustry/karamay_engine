@@ -281,7 +281,8 @@ class glsl_opaque_t : public glsl_t{
 /*
  * sampler/image
  * */
-class glsl_texture_handler_t : glsl_opaque_t{
+class glsl_texture_handler_t : glsl_opaque_t
+{
 };
 
 enum class glsl_storage_qualifier
@@ -301,13 +302,22 @@ enum class glsl_auxiliary_storage_qualifier
     _patch,
 };
 
+enum class glsl_interface_block_matrix_layout
+{
+    ROW_MAJOR,
+    COLUMN_MAJOR
+};
+
 /*
  *
  * */
-class glsl_interface_block_t : public glsl_t{
+class glsl_interface_block_t : public glsl_t
+{
 public:
     glsl_interface_block_t() = default;
+
     glsl_interface_block_t(const glsl_interface_block_t&) = delete;
+    glsl_interface_block_t& operator=(const glsl_interface_block_t&) = delete;
 
     ~glsl_interface_block_t() = default;
 
@@ -315,12 +325,85 @@ public:
     virtual std::uint8_t* data() { return nullptr; };
     [[nodiscard]] virtual const std::uint8_t* data() const { return nullptr; };
     [[nodiscard]] virtual std::int64_t size() const { return 0; };
+
+//protected:
+//
+//    std::unordered_map<std::string, glsl_sampler1D*> _sampler1Ds;
+//    std::unordered_map<std::string, glsl_sampler1DArray*> _sampler1DArrays;
+//    std::unordered_map<std::string, glsl_sampler2D*> _sampler2Ds;
+//    std::unordered_map<std::string, glsl_sampler2DArray*> _sampler2DArrays;
+//    std::unordered_map<std::string, glsl_samplerCube*> _samplerCubes;
+//    std::unordered_map<std::string, glsl_samplerCubeArray*> _samplerCubeArrays;
+//    std::unordered_map<std::string, glsl_sampler2DMS*> _sampler2DMSs;
+//    std::unordered_map<std::string, glsl_sampler2DMSArray*> _sampler2DMSArrays;
+//    std::unordered_map<std::string, glsl_sampler2DRect*> _sampler2DRects;
+//    std::unordered_map<std::string, glsl_samplerBuffer*> _samplerBuffers;
+//    std::unordered_map<std::string, glsl_sampler1DShadow*> _sampler1DShadows;
+//    std::unordered_map<std::string, glsl_sampler1DArrayShadow*> _sampler1DArrayShadows;
+//    std::unordered_map<std::string, glsl_sampler2DShadow*> _sampler2DShadows;
+//    std::unordered_map<std::string, glsl_sampler2DArrayShadow*> _sampler2DArrayShadows;
+//    std::unordered_map<std::string, glsl_samplerCubeShadow*> _samplerCubeShadows;
+//    std::unordered_map<std::string, glsl_samplerCubeArrayShadow*> _samplerCubeArrayShadows;
+//    std::unordered_map<std::string, glsl_sampler2DRectShadow*> _sampler2DRectShadows;
+//
+//    std::unordered_map<std::string, glsl_isampler1D*> _isampler1Ds;
+//    std::unordered_map<std::string, glsl_isampler1DArray*> _isampler1DArrays;
+//    std::unordered_map<std::string, glsl_isampler2D*> _isampler2Ds;
+//    std::unordered_map<std::string, glsl_isampler2DArray*> _isampler2DArrays;
+//    std::unordered_map<std::string, glsl_isampler2DMS*> _isampler2DMSs;
+//    std::unordered_map<std::string, glsl_isampler2DMSArray*> _isampler2DMSArrays;
+//    std::unordered_map<std::string, glsl_isamplerCube*> _isamplerCubes;
+//    std::unordered_map<std::string, glsl_isamplerCubeArray*> _isamplerCubeArrays;
+//    std::unordered_map<std::string, glsl_isampler2DRect*> _isampler2DRects;
+//    std::unordered_map<std::string, glsl_isamplerBuffer*> _isamplerBuffers;
+//
+//    std::unordered_map<std::string, glsl_usampler1D*> _usampler1Ds;
+//    std::unordered_map<std::string, glsl_usampler1DArray*> _usampler1DArrays;
+//    std::unordered_map<std::string, glsl_usampler2D*> _usampler2Ds;
+//    std::unordered_map<std::string, glsl_usampler2DArray*> _usampler2DArrays;
+//    std::unordered_map<std::string, glsl_usampler2DMS*> _usampler2DMSs;
+//    std::unordered_map<std::string, glsl_usampler2DMSArray*> _usampler2DMSArrays;
+//    std::unordered_map<std::string, glsl_usamplerCube*> _usamplerCubes;
+//    std::unordered_map<std::string, glsl_usamplerCubeArray*> _usamplerCubeArrays;
+//    std::unordered_map<std::string, glsl_usampler2DRect*> _usampler2DRects;
+//    std::unordered_map<std::string, glsl_usamplerBuffer*> _usamplerBuffers;
+//
+//    std::unordered_map<std::string, glsl_image1D*> _image1Ds;
+//    std::unordered_map<std::string, glsl_image1DArray*> _image1DArrays;
+//    std::unordered_map<std::string, glsl_image2D*> _image2Ds;
+//    std::unordered_map<std::string, glsl_image2DArray*> _image2DArrays;
+//    std::unordered_map<std::string, glsl_imageCube*> _imageCubes;
+//    std::unordered_map<std::string, glsl_imageCubeArray*> _imageCubeArrays;
+//    std::unordered_map<std::string, glsl_image2DMS*> _image2DMSs;
+//    std::unordered_map<std::string, glsl_image2DMSArray*> _image2DMSArrays;
+//    std::unordered_map<std::string, glsl_image2DRect*> _image2DRects;
+//    std::unordered_map<std::string, glsl_image3D*> _image3Ds;
+//    std::unordered_map<std::string, glsl_imageBuffer*> _imageBuffers;
+//
+//    std::unordered_map<std::string, glsl_iimage1D*> _iimage1Ds;
+//    std::unordered_map<std::string, glsl_iimage1DArray*> _iimage1DArrays;
+//    std::unordered_map<std::string, glsl_iimage2D*> _iimage2Ds;
+//    std::unordered_map<std::string, glsl_iimage2DArray*> _iimage2DArrays;
+//    std::unordered_map<std::string, glsl_iimageCube*> _iimageCubes;
+//    std::unordered_map<std::string, glsl_iimageCubeArray*> _iimageCubeArrays;
+//    std::unordered_map<std::string, glsl_iimage2DMS*> _iimage2DMSs;
+//    std::unordered_map<std::string, glsl_iimage2DMSArray*> _iimage2DMSArrays;
+//    std::unordered_map<std::string, glsl_iimage2DRect*> _iimage2DRects;
+//    std::unordered_map<std::string, glsl_iimage3D*> _iimage3Ds;
+//    std::unordered_map<std::string, glsl_iimageBuffer*> _iimageBuffers;
+//
+//    std::unordered_map<std::string, glsl_uimage1D*> _uimage1Ds;
+//    std::unordered_map<std::string, glsl_uimage1DArray*> _uimage1DArrays;
+//    std::unordered_map<std::string, glsl_uimage2D*> _uimage2Ds;
+//    std::unordered_map<std::string, glsl_uimage2DArray*> _uimage2DArrays;
+//    std::unordered_map<std::string, glsl_uimageCube*> _uimageCubes;
+//    std::unordered_map<std::string, glsl_uimageCubeArray*> _uimageCubeArrays;
+//    std::unordered_map<std::string, glsl_uimage2DMS*> _uimage2DMSs;
+//    std::unordered_map<std::string, glsl_uimage2DMSArray*> _uimage2DMSArrays;
+//    std::unordered_map<std::string, glsl_uimage2DRect*> _uimage2DRects;
+//    std::unordered_map<std::string, glsl_uimage3D*> _uimage3Ds;
+//    std::unordered_map<std::string, glsl_uimageBuffer*> _uimageBuffers;
 };
 
-enum class glsl_interface_block_matrix_layout
-{
-    ROW_MAJOR,
-    COLUMN_MAJOR
-};
 
 #endif

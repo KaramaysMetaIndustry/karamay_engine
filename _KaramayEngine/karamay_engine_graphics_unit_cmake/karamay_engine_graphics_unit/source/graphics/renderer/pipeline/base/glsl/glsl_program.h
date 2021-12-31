@@ -6,30 +6,6 @@
 #include "glsl_shader.h"
 #include "graphics/renderer/pipeline/base/resource/program/gl_program.h"
 
-uniformBlock(0, STD140, Materials)
-	sampler2DArray(albedos);
-	sampler2DArray(roughnesses);
-	sampler2DArray(occlusionMaps);
-};
-
-class glsl_uniform_block_exp : public glsl_uniform_block
-{
-public:
-	glsl_uniform_block_exp() :
-		glsl_uniform_block(glsl_interface_block_matrix_layout::COLUMN_MAJOR, glsl_uniform_block_memory_layout::STD140, {})
-	{}
-
-private:
-	std::shared_ptr<glsl_sampler1D> _att = _create_sampler<glsl_sampler1D>("att");
-public:
-	glsl_sampler1D& att()
-	{
-		return *_att;
-	}
-
-};
-
-
 class glsl_program 
 {
 public:
@@ -48,12 +24,11 @@ public:
 		{
 			_shader->generate_template(dir);
 		}
+
+		return false;
 	}
 
-	bool load()
-	{
-
-	}
+	bool load() { return false; }
 
 public:
 
@@ -63,14 +38,12 @@ public:
 		if (_it != _uniform_blocks.cend()) return _it->second;
 		return nullptr;
 	}
-
 	glsl_shader_storage_block* shader_storage_block(const std::string& block_name)
 	{
 		auto _it = _shader_storage_blocks.find(block_name);
 		if (_it != _shader_storage_blocks.cend()) return _it->second;
 		return nullptr;
 	}
-
 	glsl_atomic_counter* atomic_uint(const std::string& block_name)
 	{
 		auto _it = _atomic_counters.find(block_name);
@@ -80,9 +53,22 @@ public:
 
 protected:
 
-	void create_uniform_block()
+	template<typename T>
+	T* _create_shader()
 	{
+		return new T();
+	}
 
+	template<typename T>
+	T* _create_uniform_block()
+	{
+		return new T();
+	}
+
+	template<typename T>
+	T* _create_shader_storage_block()
+	{
+		return new T();
 	}
 
 private:
@@ -93,116 +79,17 @@ private:
 	std::unordered_map<std::string, glsl_shader_storage_block*> _shader_storage_blocks;
 	std::unordered_map<std::string, glsl_atomic_counter*> _atomic_counters;
 
-	//std::unordered_map<std::string, glsl_sampler1D*> _sampler1Ds;
-	//std::unordered_map<std::string, glsl_sampler1DArray*> _sampler1DArrays;
-	//std::unordered_map<std::string, glsl_sampler2D*> _sampler2Ds;
-	//std::unordered_map<std::string, glsl_sampler2DArray*> _sampler2DArrays;
-	//std::unordered_map<std::string, glsl_samplerCube*> _samplerCubes;
-	//std::unordered_map<std::string, glsl_samplerCubeArray*> _samplerCubeArrays;
-	//std::unordered_map<std::string, glsl_sampler2DMS*> _sampler2DMSs;
-	//std::unordered_map<std::string, glsl_sampler2DMSArray*> _sampler2DMSArrays;
-	//std::unordered_map<std::string, glsl_sampler2DRect*> _sampler2DRects;
-	//std::unordered_map<std::string, glsl_samplerBuffer*> _samplerBuffers;
-	//std::unordered_map<std::string, glsl_sampler1DShadow*> _sampler1DShadows;
-	//std::unordered_map<std::string, glsl_sampler1DArrayShadow*> _sampler1DArrayShadows;
-	//std::unordered_map<std::string, glsl_sampler2DShadow*> _sampler2DShadows;
-	//std::unordered_map<std::string, glsl_sampler2DArrayShadow*> _sampler2DArrayShadows;
-	//std::unordered_map<std::string, glsl_samplerCubeShadow*> _samplerCubeShadows;
-	//std::unordered_map<std::string, glsl_samplerCubeArrayShadow*> _samplerCubeArrayShadows;
-	//std::unordered_map<std::string, glsl_sampler2DRectShadow*> _sampler2DRectShadows;
-
-	//std::unordered_map<std::string, glsl_isampler1D*> _isampler1Ds;
-	//std::unordered_map<std::string, glsl_isampler1DArray*> _isampler1DArrays;
-	//std::unordered_map<std::string, glsl_isampler2D*> _isampler2Ds;
-	//std::unordered_map<std::string, glsl_isampler2DArray*> _isampler2DArrays;
-	//std::unordered_map<std::string, glsl_isampler2DMS*> _isampler2DMSs;
-	//std::unordered_map<std::string, glsl_isampler2DMSArray*> _isampler2DMSArrays;
-	//std::unordered_map<std::string, glsl_isamplerCube*> _isamplerCubes;
-	//std::unordered_map<std::string, glsl_isamplerCubeArray*> _isamplerCubeArrays;
-	//std::unordered_map<std::string, glsl_isampler2DRect*> _isampler2DRects;
-	//std::unordered_map<std::string, glsl_isamplerBuffer*> _isamplerBuffers;
-
-	//std::unordered_map<std::string, glsl_usampler1D*> _usampler1Ds;
-	//std::unordered_map<std::string, glsl_usampler1DArray*> _usampler1DArrays;
-	//std::unordered_map<std::string, glsl_usampler2D*> _usampler2Ds;
-	//std::unordered_map<std::string, glsl_usampler2DArray*> _usampler2DArrays;
-	//std::unordered_map<std::string, glsl_usampler2DMS*> _usampler2DMSs;
-	//std::unordered_map<std::string, glsl_usampler2DMSArray*> _usampler2DMSArrays;
-	//std::unordered_map<std::string, glsl_usamplerCube*> _usamplerCubes;
-	//std::unordered_map<std::string, glsl_usamplerCubeArray*> _usamplerCubeArrays;
-	//std::unordered_map<std::string, glsl_usampler2DRect*> _usampler2DRects;
-	//std::unordered_map<std::string, glsl_usamplerBuffer*> _usamplerBuffers;
-
-	//std::unordered_map<std::string, glsl_image1D*> _image1Ds;
-	//std::unordered_map<std::string, glsl_image1DArray*> _image1DArrays;
-	//std::unordered_map<std::string, glsl_image2D*> _image2Ds;
-	//std::unordered_map<std::string, glsl_image2DArray*> _image2DArrays;
-	//std::unordered_map<std::string, glsl_imageCube*> _imageCubes;
-	//std::unordered_map<std::string, glsl_imageCubeArray*> _imageCubeArrays;
-	//std::unordered_map<std::string, glsl_image2DMS*> _image2DMSs;
-	//std::unordered_map<std::string, glsl_image2DMSArray*> _image2DMSArrays;
-	//std::unordered_map<std::string, glsl_image2DRect*> _image2DRects;
-	//std::unordered_map<std::string, glsl_image3D*> _image3Ds;
-	//std::unordered_map<std::string, glsl_imageBuffer*> _imageBuffers;
-
-	//std::unordered_map<std::string, glsl_iimage1D*> _iimage1Ds;
-	//std::unordered_map<std::string, glsl_iimage1DArray*> _iimage1DArrays;
-	//std::unordered_map<std::string, glsl_iimage2D*> _iimage2Ds;
-	//std::unordered_map<std::string, glsl_iimage2DArray*> _iimage2DArrays;
-	//std::unordered_map<std::string, glsl_iimageCube*> _iimageCubes;
-	//std::unordered_map<std::string, glsl_iimageCubeArray*> _iimageCubeArrays;
-	//std::unordered_map<std::string, glsl_iimage2DMS*> _iimage2DMSs;
-	//std::unordered_map<std::string, glsl_iimage2DMSArray*> _iimage2DMSArrays;
-	//std::unordered_map<std::string, glsl_iimage2DRect*> _iimage2DRects;
-	//std::unordered_map<std::string, glsl_iimage3D*> _iimage3Ds;
-	//std::unordered_map<std::string, glsl_iimageBuffer*> _iimageBuffers;
-
-	//std::unordered_map<std::string, glsl_uimage1D*> _uimage1Ds;
-	//std::unordered_map<std::string, glsl_uimage1DArray*> _uimage1DArrays;
-	//std::unordered_map<std::string, glsl_uimage2D*> _uimage2Ds;
-	//std::unordered_map<std::string, glsl_uimage2DArray*> _uimage2DArrays;
-	//std::unordered_map<std::string, glsl_uimageCube*> _uimageCubes;
-	//std::unordered_map<std::string, glsl_uimageCubeArray*> _uimageCubeArrays;
-	//std::unordered_map<std::string, glsl_uimage2DMS*> _uimage2DMSs;
-	//std::unordered_map<std::string, glsl_uimage2DMSArray*> _uimage2DMSArrays;
-	//std::unordered_map<std::string, glsl_uimage2DRect*> _uimage2DRects;
-	//std::unordered_map<std::string, glsl_uimage3D*> _uimage3Ds;
-	//std::unordered_map<std::string, glsl_uimageBuffer*> _uimageBuffers;
-
 };
 
 class glsl_graphics_pipeline_program : public glsl_program 
 {
 public:
 	glsl_graphics_pipeline_program() = default;
-	
-	glsl_graphics_pipeline_program(glsl_vertex_shader* vs, glsl_fragment_shader* fs) :
-		_vertex_shader(vs), _tessellation_shader(nullptr), _geometry_shader(nullptr), _fragment_shader(fs)
-	{}
-	
-	glsl_graphics_pipeline_program(glsl_vertex_shader* vs, glsl_tessellation_control_shader* tesc, glsl_tessellation_evaluation_shader* tese, glsl_fragment_shader* fs) :
-		_vertex_shader(vs), _tessellation_shader(ts), _geometry_shader(nullptr), _fragment_shader(fs)
-	{}
-	
-	glsl_graphics_pipeline_program(glsl_vertex_shader* vs, glsl_geometry_shader* gs, glsl_fragment_shader* fs) :
-		_vertex_shader(vs), _tessellation_shader(nullptr), _geometry_shader(gs), _fragment_shader(fs)
-	{}
-
-	glsl_graphics_pipeline_program(glsl_vertex_shader* vs, glsl_tessellation_control_shader* tesc, glsl_tessellation_evaluation_shader* tese, glsl_geometry_shader* gs, glsl_fragment_shader* fs) :
-		_vertex_shader(vs), _tessellation_shader(ts), _geometry_shader(gs), _fragment_shader(fs)
-	{}
 
 	glsl_graphics_pipeline_program(const glsl_graphics_pipeline_program&) = delete;
 	glsl_graphics_pipeline_program& operator=(const glsl_graphics_pipeline_program&) = delete;
 
-	~glsl_graphics_pipeline_program()
-	{
-		if (_vertex_shader) delete _vertex_shader;
-		if (_tessellation_shader) delete _tessellation_shader;
-		if (_geometry_shader) delete _geometry_shader;
-		if (_fragment_shader) delete _fragment_shader;
-		delete _program;
-	}
+	~glsl_graphics_pipeline_program() = default;
 
 public:
 
@@ -223,8 +110,6 @@ public:
 		{
 			if (_tesc_shader->load(renderer_path + "/PBRMesh.tesc") && _tese_shader->load(renderer_path + "/PBRMesh.tese"))
 			{
-				_shaders.push_back(_tesc_shader);
-				_shaders.push_back(_tese_shader);
 			}
 		}
 		if (_geometry_shader)
@@ -299,47 +184,5 @@ public:
 	}
 
 };
-
-
-class glsl_gpp : public glsl_graphics_pipeline_program
-{
-
-	uniformBlock(0, STD140, Material)
-		sampler1D(position);
-		sampler2DArray(albedoMaps);
-	};
-
-	shaderStorageBlock(0, STD430, PositionReadback)
-
-	};
-
-	vertexShader()
-		refUniformBlock()
-		refShaderStorageBlock()
-		refAtomicCounter()
-
-	tessellationShader()
-		refUniformBlock()
-		refShaderStorageBlock()
-		refAtomicCounter()
-
-	geometryShader()
-		refUniformBlock()
-		refShaderStorageBlock()
-		refAtomicCounter()
-
-	fragmentShader()
-		refUniformBlock()
-		refShaderStorageBlock()
-		refAtomicCounter()
-
-};
-
-
-#define graphicsPipelineProgram()
-
-#define computePipelineProgram()
-
-
 
 #endif

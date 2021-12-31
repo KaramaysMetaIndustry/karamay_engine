@@ -6,30 +6,24 @@
 class gl_compute_pipeline final : public gl_pipeline
 {
 public:
-    gl_compute_pipeline(glsl_compute_shader* cs) :
-        _program(nullptr)
+    gl_compute_pipeline(glsl_compute_pipeline_program* compute_pipeline_program)
     {
-        _program = new glsl_compute_pipeline_program(cs);
+        _program.reset(compute_pipeline_program);
         _program->load();
     }
 
 	gl_compute_pipeline(const gl_compute_pipeline&) = delete;
 	gl_compute_pipeline& operator=(const gl_compute_pipeline&) = delete;
 
-    ~gl_compute_pipeline()
-    {
-        delete _program;
-    }
+    ~gl_compute_pipeline() = default;
+
+private:
+
+    std::unique_ptr<glsl_compute_pipeline_program> _program = {};
 
 public:
 
-    glsl_compute_pipeline_program& program()
-    {
-#ifdef _DEBUG
-        if(!_program) throw std::exception("program can not be null");
-#endif
-        return *_program;
-    }
+    const std::unique_ptr<glsl_compute_pipeline_program>& program() const noexcept { return _program; }
 
 public:
 
@@ -52,10 +46,6 @@ public:
         if (!_program) return;
         glDispatchCompute(num_groups_x, num_groups_y, num_groups_z);
     }
-
-private:
-
-    glsl_compute_pipeline_program* _program;
 
 };
 

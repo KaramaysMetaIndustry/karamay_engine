@@ -102,6 +102,7 @@ protected:
         _add_item(_item);
         return _image;
     }
+	
 
 };
 

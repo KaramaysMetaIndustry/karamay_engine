@@ -385,114 +385,44 @@ enum class gl_polygon_mode : GLenum
 class gl_graphics_pipeline : public gl_pipeline
 {
 public:
-    gl_graphics_pipeline(glsl_vertex_shader* vs, glsl_fragment_shader* fs) :
-        _program(nullptr),
-        _vertex_launcher(nullptr),
-        _render_target(nullptr),
-        _transform_feedback(nullptr)
+    gl_graphics_pipeline(glsl_graphics_pipeline_program* graphics_pipeline_program)
     {
-        _program = new glsl_graphics_pipeline_program(vs, fs);
+        _program.reset(graphics_pipeline_program);
         _program->load();
 
-        gl_vertex_launcher_descriptor _descriptor;
-        _vertex_launcher = new gl_vertex_launcher(_descriptor);
-        _render_target = new gl_render_target();
-    }
-
-    gl_graphics_pipeline(glsl_vertex_shader* vs, glsl_tessellation_shader* ts, glsl_fragment_shader* fs) :
-        _program(nullptr),
-        _vertex_launcher(nullptr),
-        _render_target(nullptr),
-        _transform_feedback(nullptr)
-    {
-        _program = new glsl_graphics_pipeline_program(vs, ts, fs);
-        _program->load();
-
-        gl_vertex_launcher_descriptor _descriptor;
-        _vertex_launcher = new gl_vertex_launcher(_descriptor);
-        _render_target = new gl_render_target();
-    }
-
-    gl_graphics_pipeline(glsl_vertex_shader* vs, glsl_geometry_shader* gs, glsl_fragment_shader* fs) :
-        _program(nullptr),
-        _vertex_launcher(nullptr),
-        _render_target(nullptr),
-        _transform_feedback(nullptr)
-    {
-        _program = new glsl_graphics_pipeline_program(vs, gs, fs);
-        _program->load();
-
-        gl_vertex_launcher_descriptor _descriptor;
-        _vertex_launcher = new gl_vertex_launcher(_descriptor);
-        _render_target = new gl_render_target();
-    }
-
-    gl_graphics_pipeline(glsl_vertex_shader* vs, glsl_tessellation_shader* ts, glsl_geometry_shader* gs, glsl_fragment_shader* fs) :
-        _program(nullptr),
-        _vertex_launcher(nullptr),
-        _render_target(nullptr),
-        _transform_feedback(nullptr)
-    {
-        _program = new glsl_graphics_pipeline_program(vs, ts, gs, fs);
-        _program->load();
+        // initialize vertex launcher and render target according to program
         gl_vertex_launcher_descriptor _descriptor;
         _descriptor.primitive_mode = gl_primitive_mode::TRIANGLES;
         _descriptor.primitive_vertices_num = 3;
-        _vertex_launcher = new gl_vertex_launcher(_descriptor);
-        _render_target = new gl_render_target();
+
+        _vertex_launcher.reset(new gl_vertex_launcher(_descriptor));
+        _render_target.reset(new gl_render_target());
     }
 
     gl_graphics_pipeline(const gl_graphics_pipeline&) = delete;
     gl_graphics_pipeline& operator=(const gl_graphics_pipeline&) = delete;
 
-    ~gl_graphics_pipeline()
-    {
-#ifdef _DEBUG
-        if (!_program || !_vertex_launcher || !_render_target) throw std::exception("these must not be nullptr");
-#endif // !_DEBUG
-        delete _program;
-        delete _vertex_launcher;
-        if (!_transform_feedback) delete _transform_feedback;
-        delete _render_target;
-    }
+    ~gl_graphics_pipeline() = default;
 
 public:
 
-    /*
-    * ref the vertex launcher
-    * you should combine and send vertex data to program
-    */
-    gl_vertex_launcher& vertex_launcher()
-    {
-#ifdef _DEBUG
-        if (!_vertex_launcher) throw std::exception("vertex launcher must not be nullptr");
-#endif
-        return *_vertex_launcher;
-    }
+    const std::unique_ptr<glsl_graphics_pipeline_program>& program() const { return _program; }
 
-    /*
-    * ref the program body
-    * you can dynamic link or unlink program parameters' resource
-    */
-    glsl_graphics_pipeline_program& program()
-    {
-#ifdef _DEBUG
-        if (!_program) throw std::exception("program must not be nullptr");
-#endif
-        return *_program;
-    }
+    const std::unique_ptr<gl_vertex_launcher>& vertex_launcher() const { return _vertex_launcher; }
 
-    /*
-    * ref the render target
-    * you can set final target (device framebuffer / custom framebuffer) the renderer render to
-    */
-    gl_render_target& render_target()
-    {
-#ifdef _DEBUG
-        if (!_render_target) throw std::exception("render target must not be nullptr");
-#endif
-        return *_render_target;
-    }
+    const std::unique_ptr<gl_transform_feedback>& transform_feedback() const { return _transform_feedback; }
+
+    const std::unique_ptr<gl_render_target>& render_target() const { return _render_target; }
+
+private:
+
+    std::unique_ptr<glsl_graphics_pipeline_program> _program = {};
+
+    std::unique_ptr<gl_vertex_launcher> _vertex_launcher = {};
+
+    std::unique_ptr<gl_transform_feedback> _transform_feedback = {};
+
+    std::unique_ptr<gl_render_target> _render_target = {};
 
 public:
 
@@ -682,10 +612,6 @@ public:
 
 public:
 
-    /*
-    * Make sure all commands for this pipeline can work.
-    * Between this range, many commands can be called.
-    */
     void enable()
     {
 #ifdef _DEBUG
@@ -694,19 +620,12 @@ public:
 #endif // _DEBUG
         _program->enable();
         _vertex_launcher->bind();
-        if (_transform_feedback)
-        {
-            _transform_feedback->bind();
-        }
+        if (_transform_feedback)  _transform_feedback->bind();
         _render_target->bind();
 
         _set_pipeline_fixed_functions();
     }
 
-    /*
-    * Make sure all commands for this pipeline can not work.
-    * Clear all context.
-    */
     void disable()
     {
 #ifdef _DEBUG
@@ -714,12 +633,16 @@ public:
             throw std::exception("vertex launcher, program, render target must not be nullptr");
 #endif // _DEBUG
         _render_target->unbind();
-        if (_transform_feedback)
-        {
-            _transform_feedback->unbind();
-        }
+        if (_transform_feedback) _transform_feedback->unbind();
         _vertex_launcher->unbind();
         _program->disable();
+    }
+
+    void capture_commands(const std::function<void(void)>& launcher)
+    {
+        enable();
+        launcher();
+        disable();
     }
 
 public:
@@ -1195,12 +1118,6 @@ private:
         _set_fragment_preprocessor();
         _set_fragment_postprocessor();
     }
-
-private:
-    gl_vertex_launcher* _vertex_launcher;
-    glsl_graphics_pipeline_program* _program;
-    gl_render_target* _render_target;
-    gl_transform_feedback* _transform_feedback;
 
 };
 

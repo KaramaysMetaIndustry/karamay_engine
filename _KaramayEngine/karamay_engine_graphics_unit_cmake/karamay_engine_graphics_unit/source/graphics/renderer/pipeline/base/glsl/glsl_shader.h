@@ -1,12 +1,12 @@
 #ifndef GLSL_SHADER_H
 #define GLSL_SHADER_H
 
+#include "graphics/renderer/pipeline/base/resource/shader/gl_shader.h"
 #include "interface_block/glsl_uniform_block.h"
 #include "interface_block/glsl_shader_storage_block.h"
 #include "opaque_t/glsl_atomic_counter.h"
 #include "opaque_t/glsl_image.h"
 #include "opaque_t/glsl_sampler.h"
-#include "graphics/renderer/pipeline/base/resource/shader/gl_shader.h"
 
 class glsl_shader
 {
@@ -182,7 +182,11 @@ public:
 
 };
 
-struct glsl_fragment_shader_input_item {};
+struct glsl_fragment_shader_input_item 
+{
+	std::string type_name;
+	std::string var_name;
+};
 struct glsl_fragment_shader_output_item {};
 
 // .frag
@@ -221,7 +225,6 @@ protected:
 
 
 
-
 // .task
 class glsl_task_shader final {}; 
 
@@ -244,35 +247,5 @@ class glsl_intersection_shader final {};
 class glsl_any_hit_shader final {};
 
 // .rcall 
-
-
-
-#define refUniformBlock()
-
-#define refShaderStorageBlock()
-
-#define refAtomicCounter()
-
-
-#define vertexShader()\
-class glsl_vs : public glsl_vertex_shader\
-{\
-
-#define tessellationControlShader()\
-class glsl_tesc : public glsl_tessellation_control_shader\
-{\
-
-#define tessellationEvaluationShader()\
-class glsl_tese : public glsl_tessellation_evaluation_shader\
-{\
-
-#define geometryShader()\
-class glsl_gs : public glsl_geometry_shader\
-{\
-
-#define fragmentShader()\
-class glsl_fs : public glsl_fragment_shader\
-{\
-
 
 #endif

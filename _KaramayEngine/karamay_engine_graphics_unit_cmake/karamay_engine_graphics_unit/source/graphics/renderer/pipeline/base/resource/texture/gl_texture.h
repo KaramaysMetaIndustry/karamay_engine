@@ -1284,14 +1284,14 @@ public:
 		gl_texture_1d_array* texture_1d_array, 
 		gl_texture_internal_format format,
 		const gl_mipmap_range& mipmap_range,
-		const gl_array_range& array_range
+		uint32 element_index
 	) :
 		gl_texture_1d_t()
 	{
 		glTextureView(_handle, GL_TEXTURE_1D,
 			texture_1d_array->get_handle(), static_cast<GLenum>(format),
 			mipmap_range.bottom, mipmap_range.top - mipmap_range.bottom + 1,
-			array_range.begin, array_range.end - array_range.begin + 1
+			element_index, 1
 		);
 	}
 
@@ -1331,14 +1331,15 @@ public:
 };
 class gl_texture_view_rectangle final : public gl_texture_rectangle_t
 {
+public:
 	gl_texture_view_rectangle(
-		gl_texture_rectangle* texture_cube_rectangle, 
+		gl_texture_rectangle* texture_rectangle, 
 		gl_texture_internal_format format
 	) : 
 		gl_texture_rectangle_t()
 	{
 		glTextureView(_handle, GL_TEXTURE_RECTANGLE,
-			texture_cube_rectangle->get_handle(), static_cast<GLenum>(format),
+			texture_rectangle->get_handle(), static_cast<GLenum>(format),
 			0, 1,
 			0, 1
 		);
@@ -1365,14 +1366,14 @@ public:
 		gl_texture_2d_array* texture_2d_array, 
 		gl_texture_internal_format format,
 		const gl_mipmap_range& mipmap_range,
-		const gl_array_range& array_range
+		uint32 element_index
 	) : 
 		gl_texture_2d_t()
 	{
 		glTextureView(_handle, GL_TEXTURE_2D,
 			texture_2d_array->get_handle(), static_cast<GLenum>(format),
 			mipmap_range.bottom, mipmap_range.top - mipmap_range.bottom + 1,
-			array_range.begin, array_range.end - array_range.begin + 1
+			element_index, 1
 		);
 	}
 
@@ -1412,30 +1413,29 @@ public:
 	gl_texture_view_2d_array(
 		gl_texture_2d* texture_2d, 
 		gl_texture_internal_format format,
-		const std::pair<uint32, uint32>& mipmap_range,
-		const std::pair<uint32, uint32>& layer_range
+		const gl_mipmap_range& mipmap_range
 	) : 
 		gl_texture_2d_array_t()
 	{
 		glTextureView(_handle, GL_TEXTURE_2D_ARRAY,
 			texture_2d->get_handle(), static_cast<GLenum>(format),
-			mipmap_range.first, mipmap_range.second - mipmap_range.first + 1,
-			layer_range.first, layer_range.second - layer_range.first + 1
+			mipmap_range.bottom, mipmap_range.top - mipmap_range.bottom + 1,
+			0, 1
 		);
 	}
 
 	gl_texture_view_2d_array(
 		gl_texture_2d_array* texture_2d_array, 
 		gl_texture_internal_format format,
-		const std::pair<uint32, uint32>& mipmap_range,
-		const std::pair<uint32, uint32>& layer_range
+		const gl_mipmap_range& mipmap_range,
+		const gl_array_range& array_range
 	) :
 		gl_texture_2d_array_t()
 	{
 		glTextureView(_handle, GL_TEXTURE_2D_ARRAY,
 			texture_2d_array->get_handle(), static_cast<GLenum>(format),
-			mipmap_range.first, mipmap_range.second - mipmap_range.first + 1,
-			layer_range.first, layer_range.second - layer_range.first + 1
+			mipmap_range.bottom, mipmap_range.top - mipmap_range.bottom + 1,
+			array_range.begin, array_range.end - array_range.begin + 1
 		);
 	}
 
@@ -1527,14 +1527,14 @@ public:
 	gl_texture_view_2d_multisample(
 		gl_texture_2d_multisample_array* texture_2d_multisample_array, 
 		gl_texture_internal_format format,
-		const std::pair<uint32, uint32>& layer_range
+		uint32 element_index
 	) : 
 		gl_texture_2d_multisample_t()
 	{
 		glTextureView(_handle, GL_TEXTURE_2D_MULTISAMPLE,
 			texture_2d_multisample_array->get_handle(), static_cast<GLenum>(format),
 			0, 1,
-			layer_range.first, layer_range.second - layer_range.first + 1
+			element_index, 1
 		);
 	}
 
@@ -1544,29 +1544,28 @@ class gl_texture_view_2d_multisample_array final : public gl_texture_2d_multisam
 public:
 	gl_texture_view_2d_multisample_array(
 		gl_texture_2d_multisample* texture_2d_multisample, 
-		gl_texture_internal_format format,
-		const std::pair<uint32, uint32>& layer_range
+		gl_texture_internal_format format
 	)
 		: gl_texture_2d_multisample_array_t()
 	{
 		glTextureView(_handle, GL_TEXTURE_2D_MULTISAMPLE_ARRAY,
 			texture_2d_multisample->get_handle(), static_cast<GLenum>(format),
 			0, 1,
-			layer_range.first, layer_range.second - layer_range.first + 1
+			0, 1
 		);
 	}
 
 	gl_texture_view_2d_multisample_array(
 		gl_texture_2d_multisample_array* texture_2d_multisample_array, 
 		gl_texture_internal_format format,
-		const std::pair<uint32, uint32>& layer_range
+		const gl_array_range& array_range
 	)
 		: gl_texture_2d_multisample_array_t()
 	{
 		glTextureView(_handle, GL_TEXTURE_2D_MULTISAMPLE_ARRAY,
 			texture_2d_multisample_array->get_handle(), static_cast<GLenum>(format),
 			0, 1,
-			layer_range.first, layer_range.second
+			array_range.begin, array_range.end - array_range.begin + 1
 		);
 	}
 
@@ -1577,13 +1576,13 @@ public:
 	gl_texture_view_3d(
 		gl_texture_3d* texture_3d, 
 		gl_texture_internal_format format,
-		const std::pair<uint32, uint32>& mipmap_range
+		const gl_mipmap_range& mipmap_range
 	) : 
 		gl_texture_3d_t()
 	{
 		glTextureView(_handle, GL_TEXTURE_3D,
 			texture_3d->get_handle(), static_cast<GLenum>(format),
-			mipmap_range.first, mipmap_range.second - mipmap_range.first + 1,
+			mipmap_range.bottom, mipmap_range.top - mipmap_range.bottom + 1,
 			0, 1
 		);
 	}

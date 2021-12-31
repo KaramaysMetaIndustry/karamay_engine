@@ -3,7 +3,7 @@
 
 #include "glsl.h"
 
-#define uniformBlock(binding, layout, name)\
+#define UNIFORM_BLOCK(binding, layout, name)\
 class glsl_##name : public glsl_uniform_block\
 {\
 public:\
@@ -13,7 +13,7 @@ public:\
         \
     }\
 
-#define shaderStorageBlock(binding, layout, name)\
+#define SHADER_STORAGE_BLOCK(binding, layout, name)\
 class glsl_##name : public glsl_shader_storage_block\
 {\
 
@@ -118,7 +118,36 @@ glsl_vec3& name() const {return *_##name;};\
 
 
 
+#define refUniformBlock()
 
+#define refShaderStorageBlock()
+
+#define refAtomicCounter()
+
+
+#define vertexShader()\
+class glsl_vs : public glsl_vertex_shader\
+{\
+
+#define tessellationControlShader()\
+class glsl_tesc : public glsl_tessellation_control_shader\
+{\
+
+#define tessellationEvaluationShader()\
+class glsl_tese : public glsl_tessellation_evaluation_shader\
+{\
+
+#define geometryShader()\
+class glsl_gs : public glsl_geometry_shader\
+{\
+
+#define fragmentShader()\
+class glsl_fs : public glsl_fragment_shader\
+{\
+
+#define computeShader()\
+class glsl_cs : public glsl_compute_shader\
+{\
 
 
 
