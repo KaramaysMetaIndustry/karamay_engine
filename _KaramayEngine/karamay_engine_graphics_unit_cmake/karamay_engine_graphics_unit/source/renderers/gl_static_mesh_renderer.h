@@ -9,17 +9,17 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 	{
 	public:
 
-		UNIFORM_BLOCK(0, STD140, Material)
+		uniformBlock(0, STD140, Material)
 			sampler1D(Powder);
 			sampler2DArrayShadow(Waiter);
 			samplerBuffer(Rect);
 		} * Material = _create_uniform_block<glsl_Material>();
 	
-		SHADER_STORAGE_BLOCK(0, STD430, ReadPosition)
+		shaderStorageBlock(0, STD430, ReadPosition)
 
 		} *ReadPosition = _create_shader_storage_block<glsl_ReadPosition>();
 
-		class glsl_vs : public glsl_vertex_shader
+		class glsl_vs : public glsl_vertex_shader 
 		{
 		public:
 			
@@ -72,6 +72,7 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 	
 	IMPLEMENTATION_FUNC_BUILD()
 	{
+
 		auto _albedo_tex = builder.build_texture_2d(gl_texture_internal_format::NOR_RGBA_UI8, 1024, 1024, 1);
 		_albedo_tex->set_base_level(0);
 		_albedo_tex->fill(0, 0, 0, 1024, 1024, gl_texture_pixel_format::RGBA, gl_texture_pixel_type::UINT8, nullptr);

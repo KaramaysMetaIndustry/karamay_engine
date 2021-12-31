@@ -3,7 +3,7 @@
 
 #include "glsl.h"
 
-#define UNIFORM_BLOCK(binding, layout, name)\
+#define uniformBlock(binding, layout, name)\
 class glsl_##name : public glsl_uniform_block\
 {\
 public:\
@@ -13,7 +13,7 @@ public:\
         \
     }\
 
-#define SHADER_STORAGE_BLOCK(binding, layout, name)\
+#define shaderStorageBlock(binding, layout, name)\
 class glsl_##name : public glsl_shader_storage_block\
 {\
 

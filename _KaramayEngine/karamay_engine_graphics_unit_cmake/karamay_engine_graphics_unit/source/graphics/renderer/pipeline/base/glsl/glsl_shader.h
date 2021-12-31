@@ -95,7 +95,7 @@ public:
 
 	bool generate_template(const std::string& pipeline_dir) override
 	{
-
+		return nullptr;
 	}
 
 	bool load(const std::string& pipeline_dir) override
@@ -121,12 +121,13 @@ public:
 
 	bool generate_template(const std::string& pipeline_dir) override
 	{
-
+		return false;
 	}
 
 	bool load(const std::string& pipeline_dir) override
 	{
 		_shader = new gl_shader(gl_shader_type::TESS_CONTROL_SHADER, pipeline_dir);
+		return true;
 	}
 
 };
@@ -146,12 +147,13 @@ public:
 
 	bool generate_template(const std::string & pipeline_dir) override
 	{
-
+		return false;
 	}
 
 	bool load(const std::string & pipeline_dir) override
 	{
 		_shader = new gl_shader(gl_shader_type::TESS_EVALUATION_SHADER, pipeline_dir);
+		return false;
 	}
 
 };
@@ -171,7 +173,7 @@ public:
 	
 	bool generate_template(const std::string& pipeline_dir) override
 	{
-
+		return false;
 	}
 
 	bool load(const std::string& pipeline_dir) override
@@ -207,7 +209,7 @@ public:
 		std::ifstream _file;
 
 		std::string _content = "#version 460\n";
-
+		return false;
 	}
 
 	bool load(const std::string& pipeline_dir) override
