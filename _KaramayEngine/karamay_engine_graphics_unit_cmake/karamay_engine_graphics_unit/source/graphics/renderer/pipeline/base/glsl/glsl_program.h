@@ -28,7 +28,7 @@ public:
 		return false;
 	}
 
-	bool load() { return false; }
+	virtual bool load(const std::string& pipeline_dir) { return false; }
 
 public:
 
@@ -111,7 +111,7 @@ public:
 
 public:
 
-	void load(const std::string& pipeline_dir)
+	bool load(const std::string& pipeline_dir) override
 	{
 		// generate template, if has no file, generate
 		// generate template, if has file and but 'force' is active generate file
@@ -126,9 +126,15 @@ public:
 
 		_program = new gl_program();
 		if (_program->load(_real_shaders))
+		{
 			std::cout << "program load successful" << std::endl;
+			return true;
+		}
 		else
+		{
 			std::cerr << "program load failed" << std::endl;
+			return false;
+		}
 	}
 
 	void enable() {}
@@ -162,9 +168,9 @@ private:
 
 public:
 	
-	void load()
+	bool load(const std::string& pipeline_dir) override
 	{
-
+		return false;
 	}
 
 	void enable()

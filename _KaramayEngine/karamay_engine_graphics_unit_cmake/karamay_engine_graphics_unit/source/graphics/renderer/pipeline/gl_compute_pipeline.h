@@ -9,7 +9,6 @@ public:
     gl_compute_pipeline(glsl_compute_pipeline_program* compute_pipeline_program)
     {
         _program.reset(compute_pipeline_program);
-        _program->load();
     }
 
 	gl_compute_pipeline(const gl_compute_pipeline&) = delete;
@@ -22,6 +21,13 @@ private:
     std::unique_ptr<glsl_compute_pipeline_program> _program = {};
 
 public:
+
+    bool load(const std::string& pipeline_dir) override
+    {
+        if (!_program->load(pipeline_dir)) return false;
+
+        return true;
+    }
 
     const std::unique_ptr<glsl_compute_pipeline_program>& program() const noexcept { return _program; }
 

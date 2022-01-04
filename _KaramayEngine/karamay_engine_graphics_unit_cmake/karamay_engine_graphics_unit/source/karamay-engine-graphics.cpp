@@ -352,16 +352,23 @@ void test0()
     std::vector<gl_renderer*> _renderers;
     _renderers.push_back(_static_mesh_renderer);
 
-    for (auto _renderer : _renderers) _renderer->initialize();
+    std::vector<gl_renderer*> _standby_renderers;
+    for (auto _renderer : _renderers)
+    {
+        if (_renderer->initialize())
+        {
+            _standby_renderers.push_back(_renderer);
+        }
+    }
 
     uint32 _frame_count = 0;
     float _frame_delta_time = 0.0f;
-    while (_renderers.size())
+    while (_standby_renderers.size())
 	{
         _frame_delta_time = 0.0f;
         auto _frame_start = std::chrono::steady_clock::now();
         window->tick(0.0f);
-        for (auto _renderer : _renderers) _renderer->render(_frame_delta_time);
+        for (auto _standby_renderer : _standby_renderers) _standby_renderer->render(_frame_delta_time);
         auto _frame_end = std::chrono::steady_clock::now();
         _frame_delta_time = std::chrono::duration_cast<std::chrono::seconds>(_frame_end - _frame_start).count();
         ++_frame_count;

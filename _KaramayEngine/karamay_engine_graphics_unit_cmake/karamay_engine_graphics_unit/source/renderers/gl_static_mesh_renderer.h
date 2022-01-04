@@ -80,31 +80,9 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 	
 	IMPLEMENTATION_FUNC_BUILD()
 	{
-		auto _albedo_tex = builder.build_texture_2d(gl_texture_internal_format::NOR_RGBA_UI8, 1024, 1024, 1);
-		_albedo_tex->set_base_level(0);
-		_albedo_tex->fill(0, 0, 0, 1024, 1024, gl_texture_pixel_format::RGBA, gl_texture_pixel_type::UINT8, nullptr);
-		_albedo_tex->build_mipmaps();
-		auto _normal_tex = builder.build_texture_2d(gl_texture_internal_format::NOR_RGBA_UI8, 1024, 1024, 1);
-		_normal_tex->build_mipmaps();
-		auto _metalness_tex = builder.build_texture_2d(gl_texture_internal_format::NOR_RGBA_UI8, 1024, 1024, 1);
-		_metalness_tex->build_mipmaps();
-		auto _roughness_tex = builder.build_texture_2d(gl_texture_internal_format::NOR_RGBA_UI8, 1024, 1024, 1);
-		_roughness_tex->build_mipmaps();
-		auto _displacement_tex = builder.build_texture_2d(gl_texture_internal_format::NOR_RGBA_UI8, 1024, 1024, 1);
-		_displacement_tex->build_mipmaps();
-		auto _ambient_occlusion_tex = builder.build_texture_2d(gl_texture_internal_format::NOR_RGBA_UI8, 1024, 1024, 1);
-		_ambient_occlusion_tex->build_mipmaps();
-		auto _sky_box_tex = builder.build_texture_cube(gl_texture_internal_format::NOR_RGBA_UI8, 1024, 1024, 2);
-		_sky_box_tex->fill(
-			gl_cube_face_index::NEGATIVE_X, // face index
-			0, // mipmap index
-			0, 0, 1024, 1024, // offset + size
-			gl_texture_pixel_format::RGBA, gl_texture_pixel_type::UINT8, nullptr // pixels
-		);
-		_sky_box_tex->build_mipmaps();
-
 		// build pipeline
 		_mesh_pipeline = builder.build_graphics_pipeline(_mesh_pipeline_program);
+		if (!_mesh_pipeline->load("C:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/shaders/Mesh/PBRMesh")) return false;
 		
 		// set pipeline fixed stage
 		// can also change these when rendering
@@ -191,6 +169,29 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 			return false;
 		}
 		_rt->set_default();
+
+		auto _albedo_tex = builder.build_texture_2d(gl_texture_internal_format::NOR_RGBA_UI8, 1024, 1024, 1);
+		_albedo_tex->set_base_level(0);
+		_albedo_tex->fill(0, 0, 0, 1024, 1024, gl_texture_pixel_format::RGBA, gl_texture_pixel_type::UINT8, nullptr);
+		_albedo_tex->build_mipmaps();
+		auto _normal_tex = builder.build_texture_2d(gl_texture_internal_format::NOR_RGBA_UI8, 1024, 1024, 1);
+		_normal_tex->build_mipmaps();
+		auto _metalness_tex = builder.build_texture_2d(gl_texture_internal_format::NOR_RGBA_UI8, 1024, 1024, 1);
+		_metalness_tex->build_mipmaps();
+		auto _roughness_tex = builder.build_texture_2d(gl_texture_internal_format::NOR_RGBA_UI8, 1024, 1024, 1);
+		_roughness_tex->build_mipmaps();
+		auto _displacement_tex = builder.build_texture_2d(gl_texture_internal_format::NOR_RGBA_UI8, 1024, 1024, 1);
+		_displacement_tex->build_mipmaps();
+		auto _ambient_occlusion_tex = builder.build_texture_2d(gl_texture_internal_format::NOR_RGBA_UI8, 1024, 1024, 1);
+		_ambient_occlusion_tex->build_mipmaps();
+		auto _sky_box_tex = builder.build_texture_cube(gl_texture_internal_format::NOR_RGBA_UI8, 1024, 1024, 2);
+		_sky_box_tex->fill(
+			gl_cube_face_index::NEGATIVE_X, // face index
+			0, // mipmap index
+			0, 0, 1024, 1024, // offset + size
+			gl_texture_pixel_format::RGBA, gl_texture_pixel_type::UINT8, nullptr // pixels
+		);
+		_sky_box_tex->build_mipmaps();
 
 		return true;
 	}

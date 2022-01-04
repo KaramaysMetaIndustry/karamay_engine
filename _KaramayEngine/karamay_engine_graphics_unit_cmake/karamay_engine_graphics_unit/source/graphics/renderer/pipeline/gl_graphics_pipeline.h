@@ -388,7 +388,18 @@ public:
     gl_graphics_pipeline(glsl_graphics_pipeline_program* graphics_pipeline_program)
     {
         _program.reset(graphics_pipeline_program);
-        _program->load("C:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/shaders/Mesh/PBRMesh");
+    }
+
+    gl_graphics_pipeline(const gl_graphics_pipeline&) = delete;
+    gl_graphics_pipeline& operator=(const gl_graphics_pipeline&) = delete;
+
+    ~gl_graphics_pipeline() = default;
+
+public:
+
+    bool load(const std::string& pipeline_dir) override
+    {
+        if (!_program->load(pipeline_dir)) return false;
 
         // initialize vertex launcher and render target according to program
         gl_vertex_launcher_descriptor _descriptor;
@@ -397,12 +408,9 @@ public:
 
         _vertex_launcher.reset(new gl_vertex_launcher(_descriptor));
         _render_target.reset(new gl_render_target());
+
+        return true;
     }
-
-    gl_graphics_pipeline(const gl_graphics_pipeline&) = delete;
-    gl_graphics_pipeline& operator=(const gl_graphics_pipeline&) = delete;
-
-    ~gl_graphics_pipeline() = default;
 
 public:
 

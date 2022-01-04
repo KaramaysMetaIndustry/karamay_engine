@@ -28,12 +28,11 @@ public:
 
 public:
 
-    void initialize() noexcept
+    bool initialize() noexcept
     {
         if (_state == gl_renderer_state::uninitialized)
         {
-            _implementation_build();
-            _state = gl_renderer_state::standby;
+            return _implementation_build();
         }
     }
 

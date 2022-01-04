@@ -6,7 +6,8 @@
 
 class gl_pipeline
 {
-
+public:
+	virtual bool load(const std::string& pipeline_dir) = 0;
 };
 
 #endif
