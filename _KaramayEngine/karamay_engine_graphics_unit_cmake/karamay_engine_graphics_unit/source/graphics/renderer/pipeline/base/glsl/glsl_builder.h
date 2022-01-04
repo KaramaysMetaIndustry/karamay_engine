@@ -3,7 +3,7 @@
 
 #include "glsl.h"
 
-#define uniformBlock(binding, layout, name)\
+#define def_uniformBlock(binding, layout, name)\
 class glsl_##name : public glsl_uniform_block\
 {\
 public:\
@@ -13,9 +13,20 @@ public:\
         \
     }\
 
-#define shaderStorageBlock(binding, layout, name)\
+#define decl_uniformBlock(name)\
+glsl_##name * name = _create_uniform_block<glsl_##name>()\
+
+#define def_shaderStorageBlock(binding, layout, name)\
 class glsl_##name : public glsl_shader_storage_block\
 {\
+public:\
+    glsl_##name() : \
+        glsl_shader_storage_block(glsl_interface_block_matrix_layout::COLUMN_MAJOR, glsl_shader_storage_block_memory_layout::layout)\
+    {}\
+
+
+#define decl_shaderStorageBlock(name)\
+glsl_##name* name = _create_shader_storage_block<glsl_##name>()\
 
 
 #define sampler(prefix, suffix, name)\
@@ -125,29 +136,54 @@ glsl_vec3& name() const {return *_##name;};\
 #define refAtomicCounter()
 
 
-#define vertexShader()\
+#define def_vertexShader()\
 class glsl_vs : public glsl_vertex_shader\
 {\
 
-#define tessellationControlShader()\
+#define decl_vertexShader()\
+glsl_vs* vs = _create_shader<glsl_vs>()\
+
+#define def_tessellationControlShader()\
 class glsl_tesc : public glsl_tessellation_control_shader\
 {\
 
-#define tessellationEvaluationShader()\
+#define decl_tessellationControlShader()\
+glsl_tesc* tesc = _create_shader<glsl_tesc>()\
+
+#define def_tessellationEvaluationShader()\
 class glsl_tese : public glsl_tessellation_evaluation_shader\
 {\
 
-#define geometryShader()\
+#define decl_tessellationEvaludationShader()\
+glsl_tese* tese = _create_shader<glsl_tese>()\
+
+#define def_geometryShader()\
 class glsl_gs : public glsl_geometry_shader\
 {\
 
-#define fragmentShader()\
+#define decl_geometryShader()\
+glsl_gs* gs = _create_shader<glsl_gs>()\
+
+#define def_fragmentShader()\
 class glsl_fs : public glsl_fragment_shader\
 {\
 
-#define computeShader()\
+#define decl_fragmentShader()\
+glsl_fs* fs = _create_shader<glsl_fs>()\
+
+#define def_computeShader()\
 class glsl_cs : public glsl_compute_shader\
 {\
+
+#define decl_computeShader()\
+glsl_cs* cs = _create_shader<glsl_cs>()\
+
+#define ref_uniformBlock(name)\
+void* name = _ref_uniform_block(ExtractStr(name))\
+
+#define ref_shaderStorageBlock(name)\
+void* name = _ref_shader_storage_block(ExtractStr(name))\
+
 
 
 

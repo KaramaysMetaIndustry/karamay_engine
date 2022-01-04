@@ -97,7 +97,9 @@ public:
             std::vector<char> _log;
             _log.resize(_log_length);
             glGetProgramInfoLog(_handle, _log_length, nullptr, _log.data());
+            _log.push_back('\0');
             std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << _log_length << std::endl;
+            std::cerr << _log.data() << std::endl;
             glValidateProgram(_handle);
             return false;
         }

@@ -326,6 +326,7 @@ public:
     [[nodiscard]] virtual const std::uint8_t* data() const { return nullptr; };
     [[nodiscard]] virtual std::int64_t size() const { return 0; };
 
+
 //protected:
 //
 //    std::unordered_map<std::string, glsl_sampler1D*> _sampler1Ds;

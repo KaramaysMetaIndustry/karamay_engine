@@ -1,4 +1,4 @@
-#version 400 core
+#version 460 core
 #extension GL_ARB_shading_language_include : require
 
 uniform mat4 TransformMatrix;

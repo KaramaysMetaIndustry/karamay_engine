@@ -63,37 +63,41 @@ public:
         glBindBufferRange(GL_UNIFORM_BUFFER, _binding, 0, 0, 0);
     }
 
+    const std::string& block_name() const { return _block_name; }
+
 private:
+
     std::string _block_name;
-    std::vector<glsl_block_item> _items;
+    
     uint32 _binding;
+
+    std::vector<glsl_block_item> _items;
+    
     gl_uniform_buffer* _associated_uniform_buffer;
+    
     uint64 _binding_offset, _binding_size;
-protected:
 
     void _add_item(const glsl_block_item& item)
     {
         _items.push_back(item);
     }
 
-    
-
 protected:
 
-    template<typename T>
-    std::shared_ptr<T> _create_sampler(const std::string& name)
+    template<typename GLSL_SAMPLER_T>
+    std::shared_ptr<GLSL_SAMPLER_T> _create_sampler(const std::string& name)
     {
-        std::shared_ptr<T> _sampler = std::make_shared<T>(name);
+        std::shared_ptr<GLSL_SAMPLER_T> _sampler = std::make_shared<GLSL_SAMPLER_T>(name);
         _sampler->manager = this;
         glsl_block_item _item;
         _add_item(_item);
         return _sampler;
     }
 
-    template<typename T>
-    std::shared_ptr<T> _create_image(const std::string& name, gl_image_format format, const std::vector<glsl_image_memory_qualifier>& memory_qualifiers)
+    template<typename GLSL_IMAGE_T>
+    std::shared_ptr<GLSL_IMAGE_T> _create_image(const std::string& name, gl_image_format format, const std::vector<glsl_image_memory_qualifier>& memory_qualifiers)
     {
-        std::shared_ptr<T> _image = std::make_shared<T>(name, format, memory_qualifiers);
+        std::shared_ptr<GLSL_IMAGE_T> _image = std::make_shared<GLSL_IMAGE_T>(name, format, memory_qualifiers);
         glsl_block_item _item;
         _item.padding = 0;
         _item.offset = 0;
@@ -102,7 +106,6 @@ protected:
         _add_item(_item);
         return _image;
     }
-	
 
 };
 

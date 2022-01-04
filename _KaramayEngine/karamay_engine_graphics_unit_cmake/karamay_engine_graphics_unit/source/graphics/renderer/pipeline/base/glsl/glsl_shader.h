@@ -18,7 +18,7 @@ public:
 
 public:
 
-	virtual bool generate_template(const std::string& path) = 0;
+	virtual bool generate_template(const std::string& pipeline_dir) = 0;
 
 	virtual bool load(const std::string& path) = 0;
 
@@ -31,6 +31,16 @@ protected:
 	std::vector<glsl_uniform_block*> _uniform_block_refs;
 	std::vector<glsl_shader_storage_block*> _shader_storage_block_refs;
 	std::vector<glsl_atomic_counter*> _atomic_counter_refs;
+
+	void* _ref_uniform_block(const std::string& name)
+	{
+		return nullptr;
+	}
+
+	void* _ref_shader_storage_block(const std::string& name)
+	{
+		return nullptr;
+	}
 
 };
 
@@ -73,9 +83,9 @@ public:
 
 	}
 
-	bool load(const std::string& path) override
+	bool load(const std::string& pipeline_dir) override
 	{
-		_shader = new gl_shader(gl_shader_type::COMPUTE_SHADER, path);
+		_shader = new gl_shader(gl_shader_type::COMPUTE_SHADER, pipeline_dir + "/"+ pipeline_dir.substr(pipeline_dir.find_last_of("/") + 1) + ".cs");
 	}
 
 };
@@ -100,7 +110,7 @@ public:
 
 	bool load(const std::string& pipeline_dir) override
 	{
-		_shader = new gl_shader(gl_shader_type::VERTEX_SHADER, pipeline_dir);
+		_shader = new gl_shader(gl_shader_type::VERTEX_SHADER, pipeline_dir + "/" + pipeline_dir.substr(pipeline_dir.find_last_of("/") + 1) + ".vert");
 		return _shader->get_compile_status();
 	}
 
@@ -126,14 +136,14 @@ public:
 
 	bool load(const std::string& pipeline_dir) override
 	{
-		_shader = new gl_shader(gl_shader_type::TESS_CONTROL_SHADER, pipeline_dir);
+		_shader = new gl_shader(gl_shader_type::TESS_CONTROL_SHADER, pipeline_dir + "/" + pipeline_dir.substr(pipeline_dir.find_last_of("/") + 1) + ".tesc");
 		return true;
 	}
 
 };
 
 // .tese
-class glsl_tessellation_evaluation_shader : glsl_graphics_shader 
+class glsl_tessellation_evaluation_shader : public glsl_graphics_shader 
 {
 public:
 	glsl_tessellation_evaluation_shader() = default;
@@ -152,7 +162,7 @@ public:
 
 	bool load(const std::string & pipeline_dir) override
 	{
-		_shader = new gl_shader(gl_shader_type::TESS_EVALUATION_SHADER, pipeline_dir);
+		_shader = new gl_shader(gl_shader_type::TESS_EVALUATION_SHADER, pipeline_dir + "/" + pipeline_dir.substr(pipeline_dir.find_last_of("/") + 1) + ".tese");
 		return false;
 	}
 
@@ -178,7 +188,7 @@ public:
 
 	bool load(const std::string& pipeline_dir) override
 	{
-		_shader = new gl_shader(gl_shader_type::GEOMETRY_SHADER, pipeline_dir);
+		_shader = new gl_shader(gl_shader_type::GEOMETRY_SHADER, pipeline_dir + "/" + pipeline_dir.substr(pipeline_dir.find_last_of("/") + 1) + ".geom");
 		return _shader->get_compile_status();
 	}
 
@@ -214,7 +224,7 @@ public:
 
 	bool load(const std::string& pipeline_dir) override
 	{
-		_shader = new gl_shader(gl_shader_type::FRAGMENT_SHADER, pipeline_dir);
+		_shader = new gl_shader(gl_shader_type::FRAGMENT_SHADER, pipeline_dir + "/" + pipeline_dir.substr(pipeline_dir.find_last_of("/") + 1) + ".frag");
 		return _shader->get_compile_status();
 	}
 

@@ -5,74 +5,81 @@
 
 DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 
-	class glsl_mesh_pipeline_program : public glsl_graphics_pipeline_program
-	{
-	public:
+	def_graphicsPipelineProgram(mesh)
 
-		uniformBlock(0, STD140, Material)
+		def_uniformBlock(0, STD140, Material)
 			sampler1D(Powder);
 			sampler2DArrayShadow(Waiter);
 			samplerBuffer(Rect);
-		} * Material = _create_uniform_block<glsl_Material>();
+		};
 	
-		shaderStorageBlock(0, STD430, ReadPosition)
+		def_shaderStorageBlock(0, STD430, ReadPosition)
 
-		} *ReadPosition = _create_shader_storage_block<glsl_ReadPosition>();
+		};
 
-		class glsl_vs : public glsl_vertex_shader 
-		{
-		public:
-			
+		decl_uniformBlock(Material);
+		decl_shaderStorageBlock(ReadPosition);
 
-		} *vs = _create_shader<glsl_vs>();
+		def_vertexShader()
+			ref_uniformBlock(Material);
+			ref_shaderStorageBlock(ReadPosition);
+		}; decl_vertexShader();
 
-		class glsl_tesc : public glsl_tessellation_control_shader
-		{
+		def_tessellationControlShader()
+			ref_uniformBlock(Material);
+			ref_shaderStorageBlock(ReadPosition);
+		}; decl_tessellationControlShader();
 
-		} *tesc = _create_shader<glsl_tesc>();
+		def_tessellationEvaluationShader()
+			ref_uniformBlock(Material);
+			ref_shaderStorageBlock(ReadPosition);
+		}; decl_tessellationEvaludationShader();
 
-		class glsl_tese : public glsl_tessellation_evaluation_shader
-		{
+		def_geometryShader()
+			ref_uniformBlock(Material);
+			ref_shaderStorageBlock(ReadPosition);
+		}; decl_geometryShader();
 
-		} *tese = _create_shader<glsl_tese>();
+		def_fragmentShader()
+			ref_uniformBlock(Material);
+			ref_shaderStorageBlock(ReadPosition);
+		}; decl_fragmentShader();
 
-		class glsl_gs : public glsl_geometry_shader
-		{
+	}; decl_graphicsPipelineProgram(mesh);
 
-		} *gs = _create_shader<glsl_gs>();
+	def_computePipelineProgram(mat)
 
-		class glsl_fs : public glsl_fragment_shader
-		{
-
-		} *fs = _create_shader<glsl_fs>();
-
-	} * _mesh_pipeline_program = new glsl_mesh_pipeline_program();
-
-	class glsl_mat_pipeline_program : public glsl_program
-	{
-		uniformBlock(0, STD140, Materials)
+		def_uniformBlock(0, STD140, Materials)
 			sampler2DArray(albedoMaps);
 			sampler2DArray(roughnessMaps);
-		};
+		}; decl_uniformBlock(Materials);
 
-		shaderStorageBlock(0, STD430, OutMaterial)
-			//sampler2D(combinedAlbedoMap);
-			//sampler2D(combinedRoughnessMap);
-		};
+		def_uniformBlock(1, STD140, NormalCalculatorStruct)
+			sampler2DArray(slate);
+			sampler1D(inputScalar);
+			sampler2D(inputNormal);
+			sampler3D(inputShadowScalar);
+		}; decl_uniformBlock(NormalCalculatorStruct);
 
-		computeShader()
-			
-		};
+		def_shaderStorageBlock(0, STD430, OutMaterial)
+			sampler2D(combinedAlbedoMap);
+			sampler2D(combinedRoughnessMap);
+		}; decl_shaderStorageBlock(OutMaterial);
 
-	}* _mat_pipeline_program;
+		def_computeShader()
+			ref_uniformBlock(Materials);
+			ref_uniformBlock(NormalCalculatorStruct);
+			ref_shaderStorageBlock(OutMaterial);
+		}; decl_computeShader();
+
+	};
 	
 	gl_graphics_pipeline* _mesh_pipeline;
 
-	gl_compute_pipeline* _mat_pipeline;
+	//gl_compute_pipeline* _mat_pipeline;
 	
 	IMPLEMENTATION_FUNC_BUILD()
 	{
-
 		auto _albedo_tex = builder.build_texture_2d(gl_texture_internal_format::NOR_RGBA_UI8, 1024, 1024, 1);
 		_albedo_tex->set_base_level(0);
 		_albedo_tex->fill(0, 0, 0, 1024, 1024, gl_texture_pixel_format::RGBA, gl_texture_pixel_type::UINT8, nullptr);

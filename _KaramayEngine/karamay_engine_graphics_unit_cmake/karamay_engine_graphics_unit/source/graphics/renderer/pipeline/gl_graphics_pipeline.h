@@ -388,7 +388,7 @@ public:
     gl_graphics_pipeline(glsl_graphics_pipeline_program* graphics_pipeline_program)
     {
         _program.reset(graphics_pipeline_program);
-        _program->load();
+        _program->load("C:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/shaders/Mesh/PBRMesh");
 
         // initialize vertex launcher and render target according to program
         gl_vertex_launcher_descriptor _descriptor;

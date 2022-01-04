@@ -1,4 +1,21 @@
-#version 450 core
+#version 460 core
+#extension GL_ARB_bindless_texture : require
+
+layout(binding = 0, std140) uniform GlobalUniformBuffer
+{
+	vec4 validationPosition;
+	sampler2D albedoMap;
+	sampler2DArray albedoMaps;
+	sampler2DArrayShadow shadowAlbedoMaps;
+};
+
+layout(binding = 0, std430) buffer GlobalBuffer
+{
+	vec4 aa;
+	layout(r32f) image1D readBackPosition1;
+};
+
+layout(binding = 0, offset = 0) uniform atomic_uint xs;
 
 struct PBRMaterial
 {
