@@ -1,4 +1,11 @@
-#version 450 core
+#version 460 core
+#extension GL_ARB_bindless_texture : require
+
+layout(binding = 0, std430) buffer GlobalBuffer
+{
+	vec4 aa;
+	layout(r32f) image1D readBackPosition1;
+};
 
 struct PBRMaterial
 {

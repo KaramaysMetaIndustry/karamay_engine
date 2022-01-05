@@ -217,7 +217,6 @@ public:
 	bool generate_template(const std::string& pipeline_dir) override
 	{
 		std::ifstream _file;
-
 		std::string _content = "#version 460\n";
 		return false;
 	}
@@ -228,10 +227,18 @@ public:
 		return _shader->get_compile_status();
 	}
 
-protected:
-
+private:
 	std::vector<glsl_fragment_shader_input_item> _input_items;
 	std::vector<glsl_fragment_shader_output_item> _output_items;
+
+protected:
+	
+	void _add_input_item(glsl_fragment_shader_input_item input_item)
+	{}
+
+	void _add_output_item(glsl_fragment_shader_output_item output_item)
+	{}
+
 
 };
 

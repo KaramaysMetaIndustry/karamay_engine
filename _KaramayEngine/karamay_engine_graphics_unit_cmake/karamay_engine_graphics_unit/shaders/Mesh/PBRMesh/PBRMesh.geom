@@ -1,7 +1,16 @@
-#version 450 core
+#version 460 core
+#extension GL_ARB_bindless_texture : require
 
 layout(triangles) in;
 layout(triangle_strip, max_vertices = 3) out;
+
+layout(binding = 0, std140) uniform GlobalUniformBuffer
+{
+	vec4 validationPosition;
+	sampler2D albedoMap;
+	sampler2DArray albedoMaps;
+	sampler2DArrayShadow shadowAlbedoMaps;
+};
 
 in vec3 gs_position[];
 in vec2 gs_uv[];

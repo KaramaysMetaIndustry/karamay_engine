@@ -13,7 +13,8 @@ enum class gl_shader_type : GLenum
 	COMPUTE_SHADER = GL_COMPUTE_SHADER
 };
 
-class gl_shader final : public gl_object{
+class gl_shader final : public gl_object
+{
 public:
 	gl_shader() = delete;
 	gl_shader(gl_shader_type shader_type, const std::string& shader_path) :

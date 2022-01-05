@@ -28,7 +28,8 @@ public:
 		return false;
 	}
 
-	virtual bool load(const std::string& pipeline_dir) { return false; }
+	virtual bool load(const std::string& pipeline_dir) = 0;
+	virtual bool generate_template(const std::string& pipeline_dir) = 0;
 
 public:
 
@@ -53,12 +54,18 @@ public:
 		return nullptr;
 	}
 
+	void enable() { if (_program) _program->enable(); }
+
+	void disable() { if (_program) _program->disable(); }
+
 protected:
 
 	std::vector<glsl_shader*> _shaders;
 	std::unordered_map<std::string, glsl_uniform_block*> _uniform_blocks;
 	std::unordered_map<std::string, glsl_shader_storage_block*> _shader_storage_blocks;
 	std::unordered_map<std::string, glsl_atomic_counter*> _atomic_counters;
+
+	gl_program* _program;
 
 protected:
 
@@ -124,63 +131,46 @@ public:
 			_real_shaders.push_back(_shader->get_shader());
 		}
 
+
 		_program = new gl_program();
 		if (_program->load(_real_shaders))
 		{
-			std::cout << "program load successful" << std::endl;
 			return true;
 		}
 		else
 		{
-			std::cerr << "program load failed" << std::endl;
 			return false;
 		}
 	}
 
-	void enable() {}
-
-	void disable() {}
-
-private:
-	gl_program* _program;
+	bool generate_template(const std::string& pipeline_dir) override
+	{
+		return false;
+	}
 };
 
 class glsl_compute_pipeline_program : public glsl_program
 {
 public:
-	glsl_compute_pipeline_program(glsl_compute_shader* compute_shader) :
-		_program(nullptr),
-		_cs(compute_shader)
-	{}
+	glsl_compute_pipeline_program() = default;
 
 	glsl_compute_pipeline_program(const glsl_compute_pipeline_program&) = delete;
 	glsl_compute_pipeline_program& operator=(const glsl_compute_pipeline_program&) = delete;
 
-	~glsl_compute_pipeline_program()
-	{
-		delete _program;
-		delete _cs;
-	}
-
-private:
-	gl_program* _program;
-	glsl_compute_shader* _cs;
+	~glsl_compute_pipeline_program() = default;
 
 public:
 	
 	bool load(const std::string& pipeline_dir) override
 	{
+		if (_shaders.size() != 1) return false;
+
+		return true;
+	}
+
+	bool generate_template(const std::string& pipeline_dir) override
+	{
 		return false;
-	}
-
-	void enable()
-	{
-
-	}
-
-	void disable()
-	{
-
 	}
 
 };

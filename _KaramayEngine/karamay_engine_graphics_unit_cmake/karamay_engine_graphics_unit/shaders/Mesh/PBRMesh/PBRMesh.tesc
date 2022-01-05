@@ -1,6 +1,27 @@
-#version 450 core
+#version 460 core
+#extension GL_ARB_bindless_texture : require
+#extension GL_ARB_shading_language_include : require
 
-float GetTessLevel(float distance0, float distance1);
+#include "/common.glsl" //! #include "common.glsl"
+
+#pragma STDGL invariant(all)
+#pragma optimize(on)
+#pragma debug(on)
+
+#define _PAMATERS
+
+#ifdef _PAMATERS
+
+layout(binding = 0, std430) buffer GlobalBuffer
+{
+	vec4 aa;
+	layout(r32f) image1D readBackPosition1;
+};
+
+#endif
+
+//----------------------------
+//float GetTessLevel(float distance0, float distance1);
 
 uniform vec3 camera_position;
 
@@ -35,22 +56,22 @@ void main()
 	}
 }
 
-float GetTessLevel(float distance0, float distance1)
-{
-	float avg_distance = (distance0 + distance1) / 2;
-	// if(avg_distance <= 2.0)
-	// {
-	// 	return 100.0;
-	// }
-	// else if(avg_distance <= 5.0)
-	// {
-	// 	return 7.0;
-	// }
-	// else
-	// {
-	// 	return 3.0;
-	// }
-
-	return 100;
-}
+//float GetTessLevel(float distance0, float distance1)
+//{
+//	float avg_distance = (distance0 + distance1) / 2;
+//	// if(avg_distance <= 2.0)
+//	// {
+//	// 	return 100.0;
+//	// }
+//	// else if(avg_distance <= 5.0)
+//	// {
+//	// 	return 7.0;
+//	// }
+//	// else
+//	// {
+//	// 	return 3.0;
+//	// }
+//
+//	return 100;
+//}
 
