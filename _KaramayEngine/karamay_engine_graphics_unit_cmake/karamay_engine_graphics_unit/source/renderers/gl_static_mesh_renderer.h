@@ -72,11 +72,11 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 			ref_shaderStorageBlock(OutMaterial);
 		}; decl_computeShader();
 
-	};
+	} * _mat_pipeline_program = new glsl_mat_pipeline_program();
 	
 	gl_graphics_pipeline* _mesh_pipeline;
 
-	//gl_compute_pipeline* _mat_pipeline;
+	gl_compute_pipeline* _mat_pipeline;
 	
 	IMPLEMENTATION_FUNC_BUILD()
 	{
@@ -84,6 +84,9 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		_mesh_pipeline = builder.build_graphics_pipeline(_mesh_pipeline_program);
 		if (!_mesh_pipeline->load("C:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/shaders/Mesh/PBRMesh")) return false;
 		
+		_mat_pipeline = builder.build_compute_pipeline(_mat_pipeline_program);
+		if (!_mat_pipeline->load("C:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/shaders/Mesh/PBRMesh")) return false;
+
 		// set pipeline fixed stage
 		// can also change these when rendering
 		{

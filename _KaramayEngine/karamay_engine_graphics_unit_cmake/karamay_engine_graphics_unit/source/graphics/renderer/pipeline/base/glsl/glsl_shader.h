@@ -81,11 +81,13 @@ public:
 
 		}
 
+		return true;
 	}
 
 	bool load(const std::string& pipeline_dir) override
 	{
-		_shader = new gl_shader(gl_shader_type::COMPUTE_SHADER, pipeline_dir + "/"+ pipeline_dir.substr(pipeline_dir.find_last_of("/") + 1) + ".cs");
+		_shader = new gl_shader(gl_shader_type::COMPUTE_SHADER, pipeline_dir + "/"+ pipeline_dir.substr(pipeline_dir.find_last_of("/") + 1) + ".comp");
+		return false;
 	}
 
 };

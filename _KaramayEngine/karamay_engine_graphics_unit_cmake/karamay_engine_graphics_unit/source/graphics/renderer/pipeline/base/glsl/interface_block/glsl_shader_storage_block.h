@@ -46,7 +46,7 @@ protected:
         std::shared_ptr<T> _sampler = std::make_shared<T>(name);
         // _sampler->manager = this;
         glsl_block_item _item;
-        _add_item(_item);
+        //_add_item(_item);
         return _sampler;
     }
 

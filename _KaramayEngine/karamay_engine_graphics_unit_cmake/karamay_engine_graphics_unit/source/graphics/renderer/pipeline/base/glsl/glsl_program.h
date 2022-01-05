@@ -165,6 +165,23 @@ public:
 	{
 		if (_shaders.size() != 1) return false;
 
+		std::vector<gl_shader*> _real_shaders;
+		for (auto _shader : _shaders)
+		{
+			_shader->load(pipeline_dir);
+			_real_shaders.push_back(_shader->get_shader());
+		}
+
+		_program = new gl_program();
+		if (_program->load(_real_shaders))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
 		return true;
 	}
 
