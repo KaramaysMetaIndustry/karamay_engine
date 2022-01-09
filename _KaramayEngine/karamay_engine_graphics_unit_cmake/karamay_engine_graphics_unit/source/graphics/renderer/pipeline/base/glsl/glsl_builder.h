@@ -185,6 +185,20 @@ void* name = _ref_uniform_block(ExtractStr(name))\
 void* name = _ref_shader_storage_block(ExtractStr(name))\
 
 
+#define def_taskShader()\
+class glsl_ts : public glsl_task_shader\
+{\
+
+#define decl_taskShader()\
+glsl_ts* ts = _create_shader<glsl_ts>()\
+
+#define def_meshShader()\
+class glsl_ms : public glsl_mesh_shader\
+{\
+
+#define decl_meshShader()\
+glsl_ms* ms = _create_shader<glsl_ms>()\
+
 
 
 #endif

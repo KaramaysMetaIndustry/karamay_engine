@@ -3,6 +3,7 @@
 
 #include "pipeline/gl_graphics_pipeline.h"
 #include "pipeline/gl_compute_pipeline.h"
+#include "pipeline/gl_mesh_pipeline.h"
 
 enum class gl_renderer_state
 {
@@ -301,6 +302,11 @@ protected:
         {
             if (!program) return nullptr;
             return new gl_graphics_pipeline(program);
+        }
+        gl_mesh_pipeline* build_mesh_pipeline(glsl_mesh_pipeline_program* program)
+        {
+            if (!program) return nullptr;
+            return new gl_mesh_pipeline(program);
         }
         gl_compute_pipeline* build_compute_pipeline(glsl_compute_pipeline_program* program)
         {

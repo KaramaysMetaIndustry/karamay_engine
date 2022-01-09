@@ -24,6 +24,21 @@ public:
 
 	gl_shader* get_shader() const { return _shader; }
 
+	glsl_uniform_block* uniform_block(const std::string& block_name)
+	{
+		return nullptr;
+	}
+
+	glsl_shader_storage_block* shader_storage_block(const std::string& block_name)
+	{
+		return nullptr;
+	}
+
+	glsl_atomic_counter* atomic_uint(const std::string& block_name)
+	{
+		return nullptr;
+	}
+
 protected:
 
 	gl_shader* _shader;
@@ -92,6 +107,9 @@ public:
 
 };
 
+struct glsl_vertex_attribute {};
+struct glsl_instance_attribute {};
+
 // .vert
 class glsl_vertex_shader: public glsl_graphics_shader
 {
@@ -115,6 +133,20 @@ public:
 		_shader = new gl_shader(gl_shader_type::VERTEX_SHADER, pipeline_dir + "/" + pipeline_dir.substr(pipeline_dir.find_last_of("/") + 1) + ".vert");
 		return _shader->get_compile_status();
 	}
+
+	const std::vector<glsl_vertex_attribute>& vertex_attributes() const { return _vertex_attributes; }
+
+	const std::vector<glsl_instance_attribute>& instance_attributes() const { return _instance_attributes; }
+
+private:
+	
+	std::vector<glsl_vertex_attribute> _vertex_attributes;
+	
+	std::vector<glsl_instance_attribute> _instance_attributes;
+
+protected:
+
+	void _create_vertex_attribute() {}
 
 };
 
@@ -245,28 +277,77 @@ protected:
 };
 
 
-
 // .task
-class glsl_task_shader final {}; 
+class glsl_task_shader : public glsl_shader
+{
+public:
+
+	glsl_task_shader() = default;
+
+	glsl_task_shader(const glsl_task_shader&) = delete;
+	glsl_task_shader& operator=(const glsl_task_shader&) = delete;
+
+	~glsl_task_shader() = default;
+
+public:
+
+	bool generate_template(const std::string& pipeline_dir) override
+	{
+		std::ifstream _file;
+		std::string _content = "#version 460\n";
+		return false;
+	}
+
+	bool load(const std::string& pipeline_dir) override
+	{
+		_shader = new gl_shader(gl_shader_type::TASK_SHADER, pipeline_dir + "/" + pipeline_dir.substr(pipeline_dir.find_last_of("/") + 1) + ".task");
+		return _shader->get_compile_status();
+	}
+}; 
 
 // .mesh
-class glsl_mesh_shader final{}; 
+class glsl_mesh_shader : public glsl_shader
+{
+public:
+	glsl_mesh_shader() = default;
 
-// .rgen  Ray Generation shader
-class glsl_ray_generation_shader final{};
+	glsl_mesh_shader(const glsl_mesh_shader&) = delete;
+	glsl_mesh_shader& operator=(const glsl_mesh_shader&) = delete;
 
-// .rchit Closest Hit Shader
-class glsl_closest_hit_shader final {};
+	~glsl_mesh_shader() = default;
 
-// .rmiss Miss Shader
-class glsl_miss_shader final {};
+public:
 
-// .rint Intersection Shader
-class glsl_intersection_shader final {};
+	bool generate_template(const std::string& pipeline_dir) override
+	{
+		std::ifstream _file;
+		std::string _content = "#version 460\n";
+		return false;
+	}
 
-// .rahit  Any Hit shader
-class glsl_any_hit_shader final {};
+	bool load(const std::string& pipeline_dir) override
+	{
+		_shader = new gl_shader(gl_shader_type::MESH_SHADER, pipeline_dir + "/" + pipeline_dir.substr(pipeline_dir.find_last_of("/") + 1) + ".mesh");
+		return _shader->get_compile_status();
+	}
+}; 
 
-// .rcall 
+//
+//// .rgen  Ray Generation shader
+//class glsl_ray_generation_shader final{};
+//
+//// .rchit Closest Hit Shader
+//class glsl_closest_hit_shader final {};
+//
+//// .rmiss Miss Shader
+//class glsl_miss_shader final {};
+//
+//// .rint Intersection Shader
+//class glsl_intersection_shader final {};
+//
+//// .rahit  Any Hit shader
+//class glsl_any_hit_shader final {};
+//
+//// .rcall 
 
 #endif

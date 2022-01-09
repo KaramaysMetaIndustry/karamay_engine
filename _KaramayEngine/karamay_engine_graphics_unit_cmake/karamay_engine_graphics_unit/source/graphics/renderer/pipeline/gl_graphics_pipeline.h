@@ -4,6 +4,118 @@
 #include "base/gl_pipeline.h"
 #include "graphics/renderer/pipeline/base/resource/buffers/common_buffer/gl_element_array_buffer.h"
 
+enum class gl_stencil_op : GLenum
+{
+	KEEP = GL_KEEP, 
+	ZERO = GL_ZERO,
+	REPLACE = GL_REPLACE,
+	INCR = GL_INCR,
+	INCR_WRAP = GL_INCR_WRAP,
+	DECR = GL_DECR,
+    DECR_WRAP = GL_DECR_WRAP,
+	INVERT = GL_INVERT
+};
+enum class gl_stencil_func : GLenum
+{
+	NEVER = GL_NEVER, // fail
+	ALWAYS = GL_ALWAYS, // pass
+	LESS = GL_LESS, // <
+	LEQUAL = GL_LEQUAL, // <=
+	GREATER = GL_GREATER, // >
+	GEQUAL = GL_GEQUAL, // >=
+	EQUAL = GL_EQUAL, // ==
+	NOTEQUAL = GL_NOTEQUAL // !=
+};
+enum class gl_logic_op : GLenum
+{
+    CLEAR = GL_CLEAR, // set all values to 0
+    SET = GL_SET, // set all values to 1
+    COPY = GL_COPY, // src
+    COPY_INVERTED = GL_COPY_INVERTED, // ~ src
+    NOOP = GL_NOOP, // dst
+    INVERT = GL_INVERT, // ~ dst
+    AND = GL_AND, // src & dst
+    NAND = GL_NAND, // ~ (src & dst)
+    OR = GL_OR, // src | dst
+    NOR = GL_NOR, // ~ (src | dst)
+    XOR = GL_XOR, // src ^ dst
+    EQUIV = GL_EQUIV, // ~ (src ^ dst)
+    AND_REVERSE = GL_AND_REVERSE, // src & ~ dst
+    AND_INVERTED = GL_AND_INVERTED, // ~ src & dst
+    OR_REVERSE = GL_OR_REVERSE, // src | ~ dst
+    OR_INVERTED = GL_OR_INVERTED // ~ src | dst
+};
+enum class gl_face : GLenum
+{
+    FRONT = GL_FRONT, 
+    BACK = GL_BACK, // default
+    FRONT_AND_BACK = GL_FRONT_AND_BACK
+};
+enum class gl_depth_func : GLenum
+{
+    NEVER = GL_NEVER, // fail
+    ALWAYS = GL_ALWAYS, // pass
+    LESS = GL_LESS, // <
+    EQUAL = GL_EQUAL, // ==
+    LEQUAL = GL_LEQUAL, // <=
+    GREATER = GL_GREATER, // >
+    NOTEQUAL = GL_NOTEQUAL, // !=
+    GEQUAL = GL_GEQUAL // >=
+};
+enum class gl_blend_func_factor : GLenum
+{
+    ZERO = GL_ZERO,
+    ONE = GL_ONE,
+    SRC_COLOR = GL_SRC_COLOR,
+    ONE_MINUS_SRC_COLOR = GL_ONE_MINUS_SRC_COLOR,
+    DST_COLOR = GL_DST_COLOR,
+    ONE_MINUS_DST_COLOR = GL_ONE_MINUS_DST_COLOR,
+
+    SRC_ALPHA = GL_SRC_ALPHA,
+    ONE_MINUS_SRC_ALPHA = GL_ONE_MINUS_SRC_ALPHA,
+    DST_ALPHA = GL_DST_ALPHA,
+    ONE_MINUS_DST_ALPHA = GL_ONE_MINUS_DST_ALPHA,
+
+    CONSTANT_COLOR = GL_CONSTANT_COLOR,
+    ONE_MINUS_CONSTANT_COLOR = GL_ONE_MINUS_CONSTANT_COLOR,
+    CONSTANT_ALPHA = GL_CONSTANT_ALPHA,
+    ONE_MINUS_CONSTANT_ALPHA = GL_ONE_MINUS_CONSTANT_ALPHA,
+};
+enum class gl_blend_equation_mode : GLenum
+{
+    FUNC_ADD = GL_FUNC_ADD, // default
+    FUNC_SUBTRACT = GL_FUNC_SUBTRACT,
+    FUNC_REVERSE_SUBTRACT = GL_FUNC_REVERSE_SUBTRACT,
+    FUNC_MAX = GL_MAX,
+    FUNC_MIN = GL_MIN
+};
+enum class gl_clip_control_origin : GLenum
+{
+    LOWER_LEFT = GL_LOWER_LEFT,
+    UPPER_LEFT = GL_UPPER_LEFT
+};
+enum class gl_clip_control_depth_mode : GLenum
+{
+    NEGATIVE_ONE_TO_ONE = GL_NEGATIVE_ONE_TO_ONE,
+    ZERO_TO_ONE = GL_ZERO_TO_ONE
+};
+enum class gl_provoke_mode : GLenum
+{
+    FIRST_VERTEX_CONVENTION = GL_FIRST_VERTEX_CONVENTION,
+    LAST_VERTEX_CONVENTION = GL_LAST_VERTEX_CONVENTION
+};
+enum class gl_front_face_mode : GLenum
+{
+    CW = GL_CW,
+    CCW = GL_CCW
+};
+enum class gl_polygon_mode : GLenum
+{
+    POINT = GL_POINT,
+    LINE = GL_LINE,
+    FILL = GL_FILL
+};
+
 struct gl_draw_arrays_indirect_command {
     uint32  count;
     uint32  primCount;
@@ -211,7 +323,7 @@ class gl_render_target
 {
 public:
 
-    gl_render_target() : 
+    gl_render_target() :
         _framebuffer(nullptr)
     {}
 
@@ -258,118 +370,6 @@ private:
 
 };
 
-enum class gl_stencil_op : GLenum
-{
-	KEEP = GL_KEEP, 
-	ZERO = GL_ZERO,
-	REPLACE = GL_REPLACE,
-	INCR = GL_INCR,
-	INCR_WRAP = GL_INCR_WRAP,
-	DECR = GL_DECR,
-    DECR_WRAP = GL_DECR_WRAP,
-	INVERT = GL_INVERT
-};
-enum class gl_stencil_func : GLenum
-{
-	NEVER = GL_NEVER, // fail
-	ALWAYS = GL_ALWAYS, // pass
-	LESS = GL_LESS, // <
-	LEQUAL = GL_LEQUAL, // <=
-	GREATER = GL_GREATER, // >
-	GEQUAL = GL_GEQUAL, // >=
-	EQUAL = GL_EQUAL, // ==
-	NOTEQUAL = GL_NOTEQUAL // !=
-};
-enum class gl_logic_op : GLenum
-{
-    CLEAR = GL_CLEAR, // set all values to 0
-    SET = GL_SET, // set all values to 1
-    COPY = GL_COPY, // src
-    COPY_INVERTED = GL_COPY_INVERTED, // ~ src
-    NOOP = GL_NOOP, // dst
-    INVERT = GL_INVERT, // ~ dst
-    AND = GL_AND, // src & dst
-    NAND = GL_NAND, // ~ (src & dst)
-    OR = GL_OR, // src | dst
-    NOR = GL_NOR, // ~ (src | dst)
-    XOR = GL_XOR, // src ^ dst
-    EQUIV = GL_EQUIV, // ~ (src ^ dst)
-    AND_REVERSE = GL_AND_REVERSE, // src & ~ dst
-    AND_INVERTED = GL_AND_INVERTED, // ~ src & dst
-    OR_REVERSE = GL_OR_REVERSE, // src | ~ dst
-    OR_INVERTED = GL_OR_INVERTED // ~ src | dst
-};
-enum class gl_face : GLenum
-{
-    FRONT = GL_FRONT, 
-    BACK = GL_BACK, // default
-    FRONT_AND_BACK = GL_FRONT_AND_BACK
-};
-enum class gl_depth_func : GLenum
-{
-    NEVER = GL_NEVER, // fail
-    ALWAYS = GL_ALWAYS, // pass
-    LESS = GL_LESS, // <
-    EQUAL = GL_EQUAL, // ==
-    LEQUAL = GL_LEQUAL, // <=
-    GREATER = GL_GREATER, // >
-    NOTEQUAL = GL_NOTEQUAL, // !=
-    GEQUAL = GL_GEQUAL // >=
-};
-enum class gl_blend_func_factor : GLenum
-{
-    ZERO = GL_ZERO,
-    ONE = GL_ONE,
-    SRC_COLOR = GL_SRC_COLOR,
-    ONE_MINUS_SRC_COLOR = GL_ONE_MINUS_SRC_COLOR,
-    DST_COLOR = GL_DST_COLOR,
-    ONE_MINUS_DST_COLOR = GL_ONE_MINUS_DST_COLOR,
-
-    SRC_ALPHA = GL_SRC_ALPHA,
-    ONE_MINUS_SRC_ALPHA = GL_ONE_MINUS_SRC_ALPHA,
-    DST_ALPHA = GL_DST_ALPHA,
-    ONE_MINUS_DST_ALPHA = GL_ONE_MINUS_DST_ALPHA,
-
-    CONSTANT_COLOR = GL_CONSTANT_COLOR,
-    ONE_MINUS_CONSTANT_COLOR = GL_ONE_MINUS_CONSTANT_COLOR,
-    CONSTANT_ALPHA = GL_CONSTANT_ALPHA,
-    ONE_MINUS_CONSTANT_ALPHA = GL_ONE_MINUS_CONSTANT_ALPHA,
-};
-enum class gl_blend_equation_mode : GLenum
-{
-    FUNC_ADD = GL_FUNC_ADD, // default
-    FUNC_SUBTRACT = GL_FUNC_SUBTRACT,
-    FUNC_REVERSE_SUBTRACT = GL_FUNC_REVERSE_SUBTRACT,
-    FUNC_MAX = GL_MAX,
-    FUNC_MIN = GL_MIN
-};
-enum class gl_clip_control_origin : GLenum
-{
-    LOWER_LEFT = GL_LOWER_LEFT,
-    UPPER_LEFT = GL_UPPER_LEFT
-};
-enum class gl_clip_control_depth_mode : GLenum
-{
-    NEGATIVE_ONE_TO_ONE = GL_NEGATIVE_ONE_TO_ONE,
-    ZERO_TO_ONE = GL_ZERO_TO_ONE
-};
-enum class gl_provoke_mode : GLenum
-{
-    FIRST_VERTEX_CONVENTION = GL_FIRST_VERTEX_CONVENTION,
-    LAST_VERTEX_CONVENTION = GL_LAST_VERTEX_CONVENTION
-};
-enum class gl_front_face_mode : GLenum
-{
-    CW = GL_CW,
-    CCW = GL_CCW
-};
-enum class gl_polygon_mode : GLenum
-{
-    POINT = GL_POINT,
-    LINE = GL_LINE,
-    FILL = GL_FILL
-};
-
 /*
  * graphics pipeline : 
  * vertex shader + fragment shader
@@ -382,7 +382,7 @@ enum class gl_polygon_mode : GLenum
  * vertex shader + geometry shader
  * vertex shader + tessellation control shader + tessellation evaluation shader + geometry shader
  * */
-class gl_graphics_pipeline : public gl_pipeline
+class gl_graphics_pipeline final : public gl_pipeline
 {
 public:
     gl_graphics_pipeline(glsl_graphics_pipeline_program* graphics_pipeline_program)
@@ -397,30 +397,65 @@ public:
 
 public:
 
-    bool load(const std::string& pipeline_dir) override
+    bool load(const std::string& pipeline_dir) noexcept override
     {
-        if (!_program->load(pipeline_dir)) return false;
+        if (!_program || !_program->load(pipeline_dir)) return false;
 
-        // initialize vertex launcher and render target according to program
         gl_vertex_launcher_descriptor _descriptor;
+        // primitive mode
         _descriptor.primitive_mode = gl_primitive_mode::TRIANGLES;
         _descriptor.primitive_vertices_num = 3;
+        // indices
+        _descriptor.elements_num = 99; // 99 / 3 = 33
+        // vertices
+        _descriptor.vertex_array_descriptor.vertices_num = 47;
+        //_allocate_attributes(_descriptor.vertex_array_descriptor.vertex_descriptor.attribute_descriptors);
+        // instance attributes
+        //_allocate_instance_attributes(_descriptor.vertex_array_descriptor.instance_attribute_descriptors);
+        auto _vl = new gl_vertex_launcher(_descriptor);
+        
+        auto _rt = new gl_render_target();
 
-        _vertex_launcher.reset(new gl_vertex_launcher(_descriptor));
-        _render_target.reset(new gl_render_target());
-
+        _vertex_launcher.reset(_vl);
+        _render_target.reset(_rt);
         return true;
+    }
+
+    void enable() noexcept override
+    {
+#ifdef _DEBUG
+        if (!_program || !_vertex_launcher || !_render_target)
+            throw std::exception("vertex launcher, program, render target must not be nullptr");
+#endif // _DEBUG
+        _program->enable();
+        _vertex_launcher->bind();
+        if (_transform_feedback)  _transform_feedback->bind();
+        _render_target->bind();
+
+        _set_pipeline_fixed_functions();
+    }
+
+    void disable() noexcept override
+    {
+#ifdef _DEBUG
+        if (!_program || !_vertex_launcher || !_render_target)
+            throw std::exception("vertex launcher, program, render target must not be nullptr");
+#endif // _DEBUG
+        _render_target->unbind();
+        if (_transform_feedback) _transform_feedback->unbind();
+        _vertex_launcher->unbind();
+        _program->disable();
     }
 
 public:
 
-    const std::unique_ptr<glsl_graphics_pipeline_program>& program() const { return _program; }
+    glsl_graphics_pipeline_program& program() { return *_program; }
 
-    const std::unique_ptr<gl_vertex_launcher>& vertex_launcher() const { return _vertex_launcher; }
+    gl_vertex_launcher& vertex_launcher() { return *_vertex_launcher; }
+
+    gl_render_target& render_target() { return *_render_target; }
 
     const std::unique_ptr<gl_transform_feedback>& transform_feedback() const { return _transform_feedback; }
-
-    const std::unique_ptr<gl_render_target>& render_target() const { return _render_target; }
 
 private:
 
@@ -428,17 +463,19 @@ private:
 
     std::unique_ptr<gl_vertex_launcher> _vertex_launcher = {};
 
-    std::unique_ptr<gl_transform_feedback> _transform_feedback = {};
-
     std::unique_ptr<gl_render_target> _render_target = {};
+
+    std::unique_ptr<gl_transform_feedback> _transform_feedback = {};
 
 public:
 
-    bool _enable_debug_output;
-    bool _enable_debug_output_synchronous;
+    bool _enable_debug_output = false;
+    bool _enable_debug_output_synchronous = false;
 
-    bool _enable_depth_clamp;
-    bool _enable_clip_distance0;
+    bool _enable_depth_clamp = false;
+    bool _enable_clip_distance0 = false;
+
+    bool _enable_texture_cube_map_sampless = false;
 
     struct gl_vertex_postprocessor
     {
@@ -615,43 +652,6 @@ public:
             {}
         } logical_operation; // <=> framebuffer
     } fragment_postprocessor;
-
-    bool _enable_texture_cube_map_sampless;
-
-public:
-
-    void enable()
-    {
-#ifdef _DEBUG
-        if (!_program || !_vertex_launcher || !_render_target)
-            throw std::exception("vertex launcher, program, render target must not be nullptr");
-#endif // _DEBUG
-        _program->enable();
-        _vertex_launcher->bind();
-        if (_transform_feedback)  _transform_feedback->bind();
-        _render_target->bind();
-
-        _set_pipeline_fixed_functions();
-    }
-
-    void disable()
-    {
-#ifdef _DEBUG
-        if (!_program || !_vertex_launcher || !_render_target)
-            throw std::exception("vertex launcher, program, render target must not be nullptr");
-#endif // _DEBUG
-        _render_target->unbind();
-        if (_transform_feedback) _transform_feedback->unbind();
-        _vertex_launcher->unbind();
-        _program->disable();
-    }
-
-    void capture_commands(const std::function<void(void)>& launcher)
-    {
-        enable();
-        launcher();
-        disable();
-    }
 
 public:
 
@@ -1125,6 +1125,21 @@ private:
         _set_rasterizer();
         _set_fragment_preprocessor();
         _set_fragment_postprocessor();
+    }
+
+    void _allocate_attributes(std::vector<gl_vertex_attribute_descriptor>& attributes)
+    {
+        for (const auto& _vertex_attribute : _program->vertex_shader->vertex_attributes())
+        {
+
+        }
+    }
+    void _allocate_instance_attributes(std::vector<gl_instance_attribute_descriptor>& instance_attributes)
+    {
+        for (const auto& _instance_attribute : _program->vertex_shader->instance_attributes())
+        {
+
+        }
     }
 
 };

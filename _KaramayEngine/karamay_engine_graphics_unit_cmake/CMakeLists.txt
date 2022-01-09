@@ -9,7 +9,7 @@ link_libraries(opengl32.lib)
 
 link_libraries(glew32s.lib)
 #link_directories(karamay_engine_graphics_unit/dependencies/glew-2.1.0/lib/Release/Win32/)
-link_directories(karamay_engine_graphics_unit/dependencies/glew-2.1.0/lib/Release/x64/)
+link_directories(karamay_engine_graphics_unit/dependencies/glew-2.2.0/lib/Release/x64/)
 
 link_libraries(glfw3.lib)
 #link_directories(karamay_engine_graphics_unit/dependencies/glfw-3.3.bin.WIN32/lib-vc2019/)

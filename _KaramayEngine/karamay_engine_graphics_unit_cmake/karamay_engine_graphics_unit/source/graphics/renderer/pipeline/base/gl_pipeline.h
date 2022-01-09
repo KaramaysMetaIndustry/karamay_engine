@@ -7,7 +7,10 @@
 class gl_pipeline
 {
 public:
-	virtual bool load(const std::string& pipeline_dir) = 0;
+	virtual bool load(const std::string& pipeline_dir) noexcept = 0;
+	virtual void enable() noexcept = 0;
+	virtual void disable() noexcept = 0;
+
 };
 
 #endif

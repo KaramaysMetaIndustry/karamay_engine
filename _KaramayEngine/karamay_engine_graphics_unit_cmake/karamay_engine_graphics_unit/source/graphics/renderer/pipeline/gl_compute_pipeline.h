@@ -16,34 +16,32 @@ public:
 
     ~gl_compute_pipeline() = default;
 
-private:
-
-    std::unique_ptr<glsl_compute_pipeline_program> _program = {};
-
 public:
 
-    bool load(const std::string& pipeline_dir) override
+    bool load(const std::string& pipeline_dir) noexcept override
     {
         if (!_program->load(pipeline_dir)) return false;
 
         return true;
     }
 
-    const std::unique_ptr<glsl_compute_pipeline_program>& program() const noexcept { return _program; }
-
-public:
-
-    void enable() noexcept
+    void enable() noexcept override
     {
-        if (!_program) return;
         _program->enable();
     }
 
-    void disable() noexcept
+    void disable() noexcept override
     {
-        if (_program) return;
         _program->disable();
     }
+
+private:
+
+    std::unique_ptr<glsl_compute_pipeline_program> _program = {};
+
+public:
+
+    const std::unique_ptr<glsl_compute_pipeline_program>& program() const noexcept { return _program; }
 
 public:
 

@@ -327,6 +327,28 @@ MessageCallback( GLenum source,
 
 #include "graphics/gltf/gltf_loader.h"
 
+void load_templates(const std::string& include_token)
+{
+    static std::string _templates_path = "C:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/shaders/templates";
+    std::string _path = _templates_path + include_token;
+    std::ifstream file;
+    std::string content;
+    file.exceptions(std::fstream::failbit | std::fstream::badbit);
+    try {
+        file.open(_path);
+        std::stringstream sstream;
+        sstream << file.rdbuf();
+        file.close();
+        content = sstream.str();
+    }
+    catch (const std::exception& e) {
+        std::cout << "Exception: [ " << e.what() << " ]" << std::endl;
+    }
+    glNamedStringARB(GL_SHADER_INCLUDE_ARB,
+        include_token.size(), include_token.c_str(),
+        content.size(), content.c_str());
+}
+
 void test0()
 {
 	auto* window = new glfw_window();
@@ -347,25 +369,8 @@ void test0()
    
     auto _file = gltf_loader::load("");
     
-    std::string _common_path = "C:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/shaders/Mesh/PBRMesh/common.glsl";
-    const std::string _include = "/common.glsl";
-    std::ifstream file;
-    std::string content;
-    file.exceptions(std::fstream::failbit | std::fstream::badbit);
-    try {
-        file.open(_common_path);
-        std::stringstream sstream;
-        sstream << file.rdbuf();
-        file.close();
-        content = sstream.str();
-    }
-    catch (const std::exception& e) {
-        std::cout << "Exception: [ " << e.what() << " ]" << std::endl;
-    }
-
-    glNamedStringARB(GL_SHADER_INCLUDE_ARB, 
-        _include.size(), _include.c_str(),
-        content.size(), content.c_str());
+    load_templates("/common.glsl");
+    load_templates("/common.frag.glsl");
 
     gl_static_mesh_renderer* _static_mesh_renderer = new gl_static_mesh_renderer();
 

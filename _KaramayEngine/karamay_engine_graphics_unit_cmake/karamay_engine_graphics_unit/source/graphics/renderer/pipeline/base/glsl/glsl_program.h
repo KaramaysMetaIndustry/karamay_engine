@@ -17,21 +17,21 @@ public:
 	~glsl_program() = default;
 
 public:
-
-	bool generate_templates(const std::string& dir)
-	{
-		for (auto _shader : _shaders)
-		{
-			_shader->generate_template(dir);
-		}
-
-		return false;
-	}
-
+	
 	virtual bool load(const std::string& pipeline_dir) = 0;
 	virtual bool generate_template(const std::string& pipeline_dir) = 0;
 
 public:
+
+	glsl_vertex_shader* vertex_shader;
+
+	glsl_tessellation_control_shader* tessellation_control_shader;
+
+	glsl_tessellation_evaluation_shader* tessellation_evaludation_shader;
+
+	glsl_geometry_shader* geometry_shader;
+
+	glsl_fragment_shader* fragment_shader;
 
 	glsl_uniform_block* uniform_block(const std::string& block_name)
 	{
@@ -131,16 +131,46 @@ public:
 			_real_shaders.push_back(_shader->get_shader());
 		}
 
+		_program = new gl_program();
+		if (_program->load(_real_shaders)) 
+			return true;
+		else 
+			return false;
+	}
+
+	bool generate_template(const std::string& pipeline_dir) override
+	{
+		return false;
+	}
+
+};
+
+class glsl_mesh_pipeline_program : public glsl_program
+{
+public:
+	glsl_mesh_pipeline_program() = default;
+
+	glsl_mesh_pipeline_program(const glsl_mesh_pipeline_program&) = delete;
+	glsl_mesh_pipeline_program& operator=(const glsl_mesh_pipeline_program&) = delete;
+
+	~glsl_mesh_pipeline_program() = default;
+
+public:
+
+	bool load(const std::string& pipeline_dir) override
+	{
+		std::vector<gl_shader*> _real_shaders;
+		for (auto _shader : _shaders)
+		{
+			_shader->load(pipeline_dir);
+			_real_shaders.push_back(_shader->get_shader());
+		}
 
 		_program = new gl_program();
 		if (_program->load(_real_shaders))
-		{
 			return true;
-		}
 		else
-		{
 			return false;
-		}
 	}
 
 	bool generate_template(const std::string& pipeline_dir) override
