@@ -349,8 +349,13 @@ void load_templates(const std::string& include_token)
         content.size(), content.c_str());
 }
 
+#include "lua/lvm.h"
+
 void test0()
 {
+
+    lua_vm _lvm;
+
 	auto* window = new glfw_window();
 	window->load_context();
     std::cout << "VENDOR: " << glGetString(GL_VENDOR) << std::endl;
@@ -397,7 +402,10 @@ void test0()
         auto _frame_end = std::chrono::steady_clock::now();
         _frame_delta_time = std::chrono::duration_cast<std::chrono::seconds>(_frame_end - _frame_start).count();
         ++_frame_count;
+
+        if (_frame_count == 500) break;
 	}
+
 }
 
 //
