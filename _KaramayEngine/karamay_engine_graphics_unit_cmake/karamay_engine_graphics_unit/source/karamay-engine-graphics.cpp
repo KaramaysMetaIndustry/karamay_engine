@@ -350,11 +350,16 @@ void load_templates(const std::string& include_token)
 }
 
 #include "lua/lvm.h"
+#include "lua/lvm_class_example.h"
 
 void test0()
 {
 
     lua_vm _lvm;
+    int x = _lvm.get_classes_num();
+
+    CTest* a = new CTest();
+    a->getA();
 
 	auto* window = new glfw_window();
 	window->load_context();
