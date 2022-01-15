@@ -1,18 +1,17 @@
 #include "lvm_class_example.h"
 #include "lvm.h"
+#include "graphics/renderer/pipeline/gl_graphics_pipeline.h"
+#include "graphics/renderer/pipeline/gl_compute_pipeline.h"
+#include "graphics/renderer/pipeline/gl_mesh_pipeline.h"
 
-#define __GC(FULL_FUNC_NAME)\
-{"__gc", FULL_FUNC_NAME}\
-
-#define __CALL(FULL_FUNC_NAME)\
-{"__call", FULL_FUNC_NAME}\
-
-#define FUNC(FUNC_NAME, FUNC_PTR)\
-{FUNC_NAME, FUNC_PTR}\
-
-struct CTest_lua_proxy
+namespace CTest_for_lua
 {
-	static int lua_construct(lua_State* L)
+	static int desctroy(lua_State* L)
+	{
+		return lua_api::lua_desctroy_userdata<CTest>(L, "gl_renderer_clazz");
+	}
+
+	static int construct(lua_State* L)
 	{
 		CTest** ppTest = (CTest**)lua_newuserdata(L, sizeof(CTest*)); // -1
 		*ppTest = new CTest;
@@ -21,116 +20,252 @@ struct CTest_lua_proxy
 		return 1;
 	}
 
-	static int lua_getA(lua_State* L)
+	static int getA(lua_State* L)
 	{
-		CTest** ppTest = (CTest**)luaL_checkudata(L, 1, "gl_renderer_clazz");
-		luaL_argcheck(L, ppTest != NULL, 1, "invalid user data");
-		lua_pushnumber(L, (int)(*ppTest)->getA());
+		auto ppTest = (CTest*)lua_api::get_cpp_instance(L, 1, "gl_renderer_clazz");
+		if (!ppTest)
+		{
+			luaL_argcheck(L, false, 1, "invalid user data");
+			return 0;
+		}
+		lua_api::push_integer(L, ppTest->getA());
 		return 1;
 	}
 
-	static int lua_setA(lua_State* L)
+	static int setA(lua_State* L)
+	{
+		auto _params_num = lua_api::get_stack_top_index(L);
+		if (_params_num < 2)
+		{
+#ifdef _DEBUG
+			std::cerr << __FUNCTION__ << " : Invalid parameters" << std::endl;
+#endif
+			return 0;
+		}
+
+		auto ppTest = (CTest*)lua_api::get_cpp_instance(L, 1, "gl_renderer_clazz");
+
+		if (!ppTest)
+		{
+			luaL_argcheck(L, false, 1, "invalid user data");
+			return 0;
+		}
+		auto a = lua_api::get_integer<int32>(L, 2);
+		ppTest->setA(a);
+
+		return 1;
+	}
+
+	static int finishNewCTest(lua_State* L)
+	{
+		int32 _params_num = lua_gettop(L) - 1;
+		if (_params_num != 1) return 0;
+
+		CTest** ppTest = (CTest**)luaL_checkudata(L, 1, "gl_renderer_clazz");
+		luaL_argcheck(L, ppTest != NULL, 1, "invalid user data");
+
+		if (_params_num == 1)
+		{
+			auto* test = (CTest*)lua_api::get_cpp_instance(L, 2);
+			CTest* pResult = (*ppTest)->finishNewCTest(test); 
+			lua_api::push_light_userdata(L, pResult);
+		}
+		if (_params_num == 2)
+		{
+			auto test = (CTest*)lua_api::get_cpp_instance(L, 2);
+			auto i = lua_api::get_integer<int32>(L, 3);
+			CTest* pResult = (*ppTest)->finishNewCTest(test, i);
+			lua_api::push_light_userdata(L, pResult);
+		}
+
+		return 1;
+	}
+
+	LUA_LIBS_B()
+		
+	LUA_LIBS_E()
+
+	LUA_FUNCS_B()
+		__GC(desctroy)
+		__CALL(construct)
+		FUNC("get", getA)
+		FUNC("set", setA)
+		FUNC("finish", finishNewCTest)
+	LUA_FUNCS_E()
+
+	IMPLEMENT_EXPORTER(CTest)
+};
+
+namespace gl_graphics_pipline_for_lua
+{
+	static int __call(lua_State* L)
+	{
+		auto _pipeline = new gl_graphics_pipeline(nullptr);
+		luaL_getmetatable(L, "gl_renderer_clazz"); // -1 ; userdata -2
+		lua_setmetatable(L, -2);  // set -1 as -2 's metatable
+		return 1;
+	}
+
+	static int __gc(lua_State* L)
+	{
+		return 1;
+	}
+
+	static int load(lua_State* L)
+	{
+
+		return 1;
+	}
+
+	static int enable(lua_State* L)
+	{
+		gl_graphics_pipeline** _pp_gp = (gl_graphics_pipeline**)luaL_checkudata(L, 1, "gl_renderer_clazz");
+		luaL_argcheck(L, _pp_gp != nullptr, 1, "invalid user data");
+		if (_pp_gp)
+		{
+			(*_pp_gp)->enable();
+		}
+		return 1;
+	}
+
+	static int disable(lua_State* L)
+	{
+		gl_graphics_pipeline** _pp_gp = (gl_graphics_pipeline**)luaL_checkudata(L, 1, "gl_renderer_clazz");
+		luaL_argcheck(L, _pp_gp != nullptr, 1, "invalid user data");
+		if (_pp_gp)
+		{
+			(*_pp_gp)->disable();
+		}
+		return 1;
+	}
+
+	static int syncable_draw_arrays(lua_State* L)
 	{
 		int args_num = lua_gettop(L);
-
-		CTest** ppTest = (CTest**)luaL_checkudata(L, 1, "gl_renderer_clazz");
-		luaL_argcheck(L, ppTest != NULL, 1, "invalid user data");
-
 		int a = (int)lua_tointeger(L, 2);
-		(*ppTest)->setA(a);
 
-		return 0;
+		gl_graphics_pipeline** _pp_gp = (gl_graphics_pipeline**)luaL_checkudata(L, 1, "gl_renderer_clazz");
+		luaL_argcheck(L, _pp_gp != nullptr, 1, "invalid user data");
+		if (_pp_gp)
+		{
+			(*_pp_gp)->syncable_draw_arrays(0, 1);
+		}
+		return 1;
 	}
 
-	template<typename T>
-	static T* get_parameter(lua_State* l, int index)
+	LUA_FUNCS_B()
+		__CALL(__call)
+		__GC(__gc)
+		FUNC("load", load)
+		FUNC("enbale", enable)
+		FUNC("disable", disable)
+		FUNC("syncable_draw_arrays", syncable_draw_arrays)
+	LUA_FUNCS_E()
+	
+	IMPLEMENT_EXPORTER(gl_graphics_pipeline)
+}
+
+namespace gl_compute_pipeline_for_lua
+{
+	static int construct(lua_State* L)
 	{
-		T** ppParam = (T**)lua_touserdata(l, index);
-		luaL_argcheck(l, ppParam != NULL, index, "input val test, invalid user data");
-		return ppParam;
+		auto _pipeline = new gl_compute_pipeline(nullptr);
+		lua_api::push_light_userdata(L, _pipeline);
+		lua_api::get_metatable(L, "gl_compute_pipeline_clazz");
+		lua_api::set_metatable(L, -2);
+		return 1;
 	}
 
-	static int lua_finishNewCTest(lua_State* L)
+	static int load(lua_State* L)
 	{
-		// when this func called, 调用改方法的metatable的userdata压入栈，并依次压入栈
-		// get this pointer, param 1
-		int top = lua_gettop(L);
-		if (top != 2) return 0;
+		auto _num = lua_api::get_stack_top_index(L);
+		if (_num < 2)
+		{
+			return 0;
+		}
 
-		std::cout << "params num : " << top << std::endl;
+		auto _comp_pipeline = (gl_compute_pipeline*)lua_api::get_cpp_instance(L, 1);
+		if (!_comp_pipeline)
+		{
+			return 0;
+		}
 
-		CTest** ppTest = (CTest**)luaL_checkudata(L, 1, "gl_renderer_clazz");
-		luaL_argcheck(L, ppTest != NULL, 1, "invalid user data");
+		auto _pipeline_dir = lua_api::get_string(L, 2);
+		lua_api::push_boolean(L, _comp_pipeline->load(_pipeline_dir));
+		return 1;
+	}
 
-		std::function<int(lua_State*)> lua_func;
+	static int enable(lua_State* L)
+	{
+		auto _num = lua_api::get_stack_top_index(L);
+		if (_num < 1)
+		{
+			return 0;
+		}
 
-		auto a = lua_func.target<lua_CFunction>();
-
-		// get param 2
-		CTest** ppParamTest = (CTest**)lua_touserdata(L, 2);
-		luaL_argcheck(L, ppTest != NULL, 2, "input val test, invalid user data");
-
-		// invoke
-		CTest* pResult = (*ppTest)->finishNewCTest(*ppParamTest);
-
-		// 返回传入参数
-		lua_pushvalue(L, 2);
+		auto _comp_pipeline = (gl_compute_pipeline*)lua_api::get_cpp_instance(L, 1);
+		if (!_comp_pipeline)
+		{
+			return 0;
+		}
+		_comp_pipeline->enable();
 
 		return 1;
 	}
 
-	template<typename T>
-	static int lua_desctroy_userdata(lua_State* l, const char* metatable_name)
+	static int disable(lua_State* L)
 	{
-		T** pp_userdata = (T**)luaL_checkudata(l, 1, metatable_name);
-		delete* pp_userdata;
-		printf("userdata type of %s is deleted.", metatable_name);
-		return 0;
+		auto _num = lua_api::get_stack_top_index(L);
+		if (_num < 1)
+		{
+			return 0;
+		}
+
+		auto _comp_pipeline = (gl_compute_pipeline*)lua_api::get_cpp_instance(L, 1);
+		if (!_comp_pipeline)
+		{
+			return 0;
+		}
+		_comp_pipeline->disable();
+
+		return 1;
 	}
 
-	static int desctroy(lua_State* L)
+	static int dispatch(lua_State* L)
 	{
-		return lua_desctroy_userdata<CTest>(L, "gl_renderer_clazz");
+		auto _num = lua_api::get_stack_top_index(L);
+		if (_num < 4)
+		{
+			return 0;
+		}
+
+		auto _comp_pipeline = (gl_compute_pipeline*)lua_api::get_cpp_instance(L, 1);
+		if (!_comp_pipeline)
+		{
+			return 0;
+		}
+
+		auto _x = lua_api::get_integer<uint32>(L, 2);
+		auto _y = lua_api::get_integer<uint32>(L, 3);
+		auto _z = lua_api::get_integer<uint32>(L, 4);
+
+		_comp_pipeline->dispatch(_x, _y, _z);
+
+		return 1;
 	}
 
-};
+	LUA_FUNCS_B()
+		__CALL(construct)
+		FUNC("load", load)
+		FUNC("enable", enable)
+		FUNC("disable", disable)
+		FUNC("dispatch", dispatch)
+	LUA_FUNCS_E()
 
-static const luaL_Reg libs[] =
-{
-	/*{"gl_renderer", CTest::lua_construct},*/
-	{NULL, NULL},
-};
-
-static const luaL_Reg funcs[] =
-{
-	FUNC("TestGetA", CTest_lua_proxy::lua_getA),
-	FUNC("TestSetA", CTest_lua_proxy::lua_setA),
-	FUNC("FinishTest", CTest_lua_proxy::lua_finishNewCTest),
-	__GC(CTest_lua_proxy::desctroy),
-	__CALL(CTest_lua_proxy::lua_construct),
-	{NULL, NULL}
-};
-
-struct CTest_export_helper
-{
-	static CTest_export_helper instance;
-
-	CTest_export_helper()
-	{
-		std::cout << "aaa" << std::endl;
-		lua_vm::register_class_t("gl_renderer", funcs);
-	}
-
-	~CTest_export_helper() {}
-};
-
-CTest_export_helper CTest_export_helper::instance;
-
-
-int CTest::getA()
-{
-	return value;
+	IMPLEMENT_EXPORTER(gl_compute_pipeline)
 }
 
+namespace gl_mesh_pipeline_for_lua
+{
 
-
+}

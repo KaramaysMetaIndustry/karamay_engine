@@ -52,6 +52,23 @@ print('value is : ' .. test2:TestGetA())
 print('value is : ' .. test3:TestGetA())
 
 
+function calculate_mats( ... )
+	local _compute_pipeline = gl_compute_pipeline()
+	_compute_pipeline:load("/static_mesh_renderer")
+	_compute_pipeline:enable()
+
+	for i=1,10 do
+		_compute_pipeline:dispatch(i, i+1, i+3)
+	end
+
+	_compute_pipeline:disable()
+end
+
+
+
+
+
+
 
 
 --local test = {

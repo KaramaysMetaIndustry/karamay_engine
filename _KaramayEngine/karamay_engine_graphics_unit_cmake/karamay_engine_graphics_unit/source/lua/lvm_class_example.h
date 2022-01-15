@@ -8,20 +8,26 @@ public:
 
 	~CTest() = default;
 
-	int getA();
+public:
+
+	int getA() { return value; }
 
 	void setA(int a) { value = a; }
 
 	CTest* finishNewCTest(CTest* test) 
 	{
-		if (test)
-		{
-			test->setA(10);
-		}
+		if (test) test->setA(10);
+		return test;
+	}
+
+	CTest* finishNewCTest(CTest* test, int i)
+	{
+		if (test) test->setA(10);
 		return test;
 	}
 
 private:
+
 	int value;
 
 };

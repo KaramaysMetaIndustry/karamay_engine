@@ -206,7 +206,6 @@ void test0();
 
 int main()
 {
-	//karamay_lua::load();
 	test0();
 }
 
@@ -354,7 +353,6 @@ void load_templates(const std::string& include_token)
 
 void test0()
 {
-
     lua_vm _lvm;
     int x = _lvm.get_classes_num();
 
