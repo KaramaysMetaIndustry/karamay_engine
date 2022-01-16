@@ -42,31 +42,6 @@
 
 --gl_renderer = setmetatable({}, gl_renderer_clazz);
 
-local test1 = gl_renderer()
-local test2 = gl_renderer()
-
-print('value is : ' .. test2:TestGetA())
-local test3 = test1:FinishTest(test2)
-
-print('value is : ' .. test2:TestGetA())
-print('value is : ' .. test3:TestGetA())
-
-
-function calculate_mats( ... )
-	local _compute_pipeline = gl_compute_pipeline()
-	_compute_pipeline:load("/static_mesh_renderer")
-	_compute_pipeline:enable()
-
-	for i=1,10 do
-		_compute_pipeline:dispatch(i, i+1, i+3)
-	end
-
-	_compute_pipeline:disable()
-end
-
-
-
-
 
 
 
@@ -80,3 +55,48 @@ end
 --}
 --
 --local testInstance = setmetatable({"userdata"}, test)
+
+
+local gl_static_mesh_renderer = gl_renderer()
+
+function gl_static_mesh_renderer:build( ... )
+
+	local test1 = CTest()
+	local test2 = CTest()
+	print('test2 value is : ' .. test2:get())
+	local test3 = test1:finish(test2)
+	print('test2 value is : ' .. test2:get())
+	print('test3 value is : ' .. test3:get())
+
+	local _graphics_pipeline = gl_graphics_pipeline()
+	_graphics_pipeline:load("/static_mesh_renderer")
+	_graphics_pipeline:set_enable_depth_test(true)
+	_graphics_pipeline:set_enable_stencil_test(false)
+	_graphics_pipeline:set_enable_scissor_test(false)
+	_graphics_pipeline:set_blend_func()
+
+	local _compute_pipeline = gl_compute_pipeline()
+	_compute_pipeline:load("/static_mesh_renderer")
+end
+
+function gl_static_mesh_renderer:render( delta_time )
+	local _compute_pipeline = self.renderer_builder.compute_pipeline("mat_pipeline")
+	local _graphics_pipeline = self.renderer_builder.graphics_pipeline("mesh_pipeline")
+
+	if(delta_time < 0) then return end
+
+	_compute_pipeline:enable()
+
+	for i=1,10 do
+		_compute_pipeline:dispatch(i, i+1, i+3)
+	end
+
+	_compute_pipeline:disable()
+
+	_graphics_pipeline:enable()
+	for i, v in ipairs() do
+		_graphics_pipeline:syncable_draw_arrays(0, 1024)
+	end
+	_graphics_pipeline:disable()
+
+end
