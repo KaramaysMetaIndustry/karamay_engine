@@ -6,46 +6,57 @@
 
 namespace lua_api
 {
-	namespace origin
+	enum class lua_compare_op : int
 	{
-		enum class lua_compare_op : int
-		{
-			EQ = LUA_OPEQ, // ==
-			LT = LUA_OPLT, // <
-			LE = LUA_OPLE // <=
-		};
+		EQ = LUA_OPEQ, // ==
+		LT = LUA_OPLT, // <
+		LE = LUA_OPLE // <=
+	};
 
-		enum class lua_gc_option : int
-		{
-			GCCOLLECT = LUA_GCCOLLECT, //Performs a full garbage - collection cycle.
-			GCSTOP = LUA_GCSTOP, //Stops the garbage collector.
-			GCRESTART = LUA_GCRESTART, //Restarts the garbage collector.
-			GCCOUNT = LUA_GCCOUNT, //Returns the current amount of memory(in Kbytes) in use by Lua.
-			GCCOUNTB = LUA_GCCOUNTB, //Returns the remainder of dividing the current amount of bytes of memory in use by Lua by 1024.
-			GCSTEP = LUA_GCSTEP, //Performs an incremental step of garbage collection, corresponding to the allocation of stepsize Kbytes.
-			GCISRUNNING = LUA_GCISRUNNING, //Returns a boolean that tells whether the collector is running(i.e., not stopped).
-			GCINC = LUA_GCINC, //Changes the collector to incremental mode with the given parameters(see ¡ì2.5.1).Returns the previous mode(LUA_GCGEN or LUA_GCINC).
-			GCGEN = LUA_GCGEN //Changes the collector to generational mode with the given parameters(see ¡ì2.5.2).Returns the previous mode(LUA_GCGEN or LUA_GCINC).
-		};
+	enum class lua_gc_option : int
+	{
+		GCCOLLECT = LUA_GCCOLLECT, //Performs a full garbage - collection cycle.
+		GCSTOP = LUA_GCSTOP, //Stops the garbage collector.
+		GCRESTART = LUA_GCRESTART, //Restarts the garbage collector.
+		GCCOUNT = LUA_GCCOUNT, //Returns the current amount of memory(in Kbytes) in use by Lua.
+		GCCOUNTB = LUA_GCCOUNTB, //Returns the remainder of dividing the current amount of bytes of memory in use by Lua by 1024.
+		GCSTEP = LUA_GCSTEP, //Performs an incremental step of garbage collection, corresponding to the allocation of stepsize Kbytes.
+		GCISRUNNING = LUA_GCISRUNNING, //Returns a boolean that tells whether the collector is running(i.e., not stopped).
+		GCINC = LUA_GCINC, //Changes the collector to incremental mode with the given parameters(see ¡ì2.5.1).Returns the previous mode(LUA_GCGEN or LUA_GCINC).
+		GCGEN = LUA_GCGEN //Changes the collector to generational mode with the given parameters(see ¡ì2.5.2).Returns the previous mode(LUA_GCGEN or LUA_GCINC).
+	};
 
-		enum class lua_t : int
-		{
-			NONE = LUA_TNONE,
-			NIL = LUA_TNIL,
-			BOOLEAN = LUA_TBOOLEAN,
-			LIGHTUSERDATA = LUA_TLIGHTUSERDATA,
-			NUMBER = LUA_TNUMBER,
-			STRING = LUA_TSTRING,
-			TABLE = LUA_TTABLE,
-			FUNCTION = LUA_TFUNCTION,
-			USERDATA = LUA_TUSERDATA,
-			THREAD = LUA_TTHREAD,
+	enum class lua_t : int
+	{
+		NONE = LUA_TNONE,
+		NIL = LUA_TNIL,
+		BOOLEAN = LUA_TBOOLEAN,
+		LIGHTUSERDATA = LUA_TLIGHTUSERDATA,
+		NUMBER = LUA_TNUMBER,
+		STRING = LUA_TSTRING,
+		TABLE = LUA_TTABLE,
+		FUNCTION = LUA_TFUNCTION,
+		USERDATA = LUA_TUSERDATA,
+		THREAD = LUA_TTHREAD,
 
-			NUMTYPES = LUA_NUMTYPES
-		};
-		//nil, boolean, number, string, function, userdata, thread, and table.
+		NUMTYPES = LUA_NUMTYPES
+	};
+	//nil, boolean, number, string, function, userdata, thread, and table.
 
+	enum class lua_status : int
+	{
+		OK = LUA_OK, // : no errors.
+		ERR_RUN = LUA_ERRRUN, // : a runtime error.
+		ERR_MEM = LUA_ERRMEM, // : memory allocation error.For such errors, Lua does not call the message handler.
+		ERR_ERR = LUA_ERRERR, //: error while running the message handler.
+		ERR_SYNTAX = LUA_ERRSYNTAX, // : syntax error during precompilation.
+		YIELD = LUA_YIELD, //: the thread(coroutine) yields.
+		ERR_FILE = LUA_ERRFILE // : a file - related error; e.g., it cannot open or read the file.
+	};
 
+	namespace basic
+	{
+		
 		inline bool check_stack_available_capacity(lua_State* L, int32 num)
 		{
 			return lua_checkstack(L, num) == 1;
@@ -98,6 +109,13 @@ namespace lua_api
 			return 0;
 		}
 
+		inline void pop(lua_State* L, int32 num)
+		{
+			lua_pop(L, num);
+		}
+
+		////// push*  : push value onto the stack from C
+
 		inline void push_nil(lua_State* L) { lua_pushnil(L); }
 
 		inline void push_boolean(lua_State* L, bool value) { lua_pushboolean(L, static_cast<int>(value)); }
@@ -136,12 +154,6 @@ namespace lua_api
 		inline void push_string(lua_State* L, const std::string& value) { lua_pushstring(L, value.c_str()); }
 		inline void push_string(lua_State* L, std::string&& value) { lua_pushstring(L, value.c_str()); }
 
-		inline void new_userdata(lua_State* L, void* userdata)
-		{
-			void** p_userdata = (void**)lua_newuserdata(L, sizeof(void*)); // -1
-			*p_userdata = userdata;
-		}
-
 		inline void push_light_userdata(lua_State* L, void* userdata)
 		{
 			lua_pushlightuserdata(L, userdata);
@@ -165,6 +177,43 @@ namespace lua_api
 		{
 			lua_pushvalue(L, index);
 		}
+
+		/*
+		* Loads a Lua chunk without running it. 
+		* If there are no errors, lua_load pushes the compiled chunk as a Lua function on top of the stack. 
+		* Otherwise, it pushes an error message.
+		* 
+		* The lua_load function uses a user-supplied reader function to read the chunk (see lua_Reader). 
+		* The data argument is an opaque value passed to the reader function.
+		* The chunkname argument gives a name to the chunk, which is used for error messages and in debug information (see ¡ì4.7).
+		* lua_load automatically detects whether the chunk is text or binary and loads it accordingly (see program luac). 
+		* The string mode works as in function load, with the addition that a NULL value is equivalent to the string "bt".
+		* 
+		* lua_load uses the stack internally, so the reader function must always leave the stack unmodified when returning.
+		* lua_load can return LUA_OK, LUA_ERRSYNTAX, or LUA_ERRMEM. The function may also return other values corresponding to errors raised by the read function (see ¡ì4.4.1).
+		* If the resulting function has upvalues, its first upvalue is set to the value of the global environment stored at index LUA_RIDX_GLOBALS in the registry (see ¡ì4.3). 
+		* When loading main chunks, this upvalue will be the _ENV variable (see ¡ì2.2). Other upvalues are initialized with nil.
+		*/
+		inline lua_status load(lua_State* L, lua_Reader reader, void* data, const char* chunk_name, const char* mode)
+		{
+			return static_cast<lua_status>(lua_load(L, reader, data, chunk_name, mode));
+		}
+
+		/*
+		* Creates a new empty table and pushes it onto the stack. 
+		* It is equivalent to createtable(L, 0, 0).
+		*/
+		inline void new_table(lua_State* L)
+		{
+			lua_newtable(L);
+		}
+		
+		inline void new_table(lua_State* L, int32 narr, int32 nrec)
+		{
+			lua_createtable(L, narr, nrec);
+		}
+
+		////////// to* : fetch value form stack to C
 
 		template<typename INTEGER_T>
 		inline INTEGER_T to_integer(lua_State* L, int32 stack_index)
@@ -194,18 +243,24 @@ namespace lua_api
 			return static_cast<NUMBER_T>(lua_tonumber(L, stack_index));
 		}
 
-		inline bool to_boolean(lua_State* L, int32 stack_index) { return lua_toboolean(L, stack_index) == 1; }
-		
-		inline std::string to_string(lua_State* L, int32 stack_index) { return std::string(lua_tostring(L, stack_index)); }
-		
-		inline lua_CFunction to_cfunction(lua_State* L, int32 stack_index) { return lua_tocfunction(L, stack_index); }
-		
+		inline bool to_boolean(lua_State* L, int32 stack_index) 
+		{ 
+			return lua_toboolean(L, stack_index) == 1; 
+		}
+
+		inline std::string to_string(lua_State* L, int32 stack_index) 
+		{ 
+			return std::string(lua_tostring(L, stack_index)); 
+		}
+
 		inline void* to_userdata(lua_State* L, int32 index)
 		{
 			return lua_touserdata(L, index);
 		}
 		
 		inline lua_State* to_thread(lua_State* L, int32 stack_index) { return lua_tothread(L, stack_index); }
+
+		inline lua_CFunction to_cfunction(lua_State* L, int32 stack_index) { return lua_tocfunction(L, stack_index); }
 
 #ifdef _DEBUG
 		inline const void* to_pointer(lua_State* L, int32 stack_index)
@@ -220,8 +275,10 @@ namespace lua_api
 		*/
 		inline int32 stack_top_index(lua_State* L) { return lua_gettop(L); }
 
+		/////// fetch value from lua, push onto stack
+
 		/*
-		* get the value with global name and push onto stack
+		* Pushes onto the stack the value of the global name. Returns the type of that value.
 		* @return the type of value
 		*/
 		inline int32 get_global(lua_State* L, const char* name)
@@ -230,14 +287,15 @@ namespace lua_api
 		}
 
 		/*
-		* get the value (stack_index) 's value (index)
+		* Pushes onto the stack the value t[i], where t is the value at the given index. 
+		* As in Lua, this function may trigger a metamethod for the "index" event (see ¡ì2.4).
+		* Returns the type of the pushed value.
 		* @return the type of value
 		*/
 		inline int32 geti(lua_State* L, int32 stack_index, int32 index)
 		{
 			return lua_geti(L, stack_index, index);
 		}
-
 
 		/*
 		* Pushes onto the stack the value t[k], where t is the value at the given index and k is the value on the top of the stack.
@@ -253,34 +311,12 @@ namespace lua_api
 		* Does the equivalent to t[k] = v, where t is the value at the given index, v is the value on the top of the stack, and k is the value just below the top.
 		* This function pops both the key and the value from the stack. 
 		* As in Lua, this function may trigger a metamethod for the "newindex" event (see ¡ì2.4).
+		* stack : value, key, ...[index]
 		*/
 		inline void set_table_value(lua_State* L, int32 stack_index)
 		{
+			if (!lua_istable(L, stack_index)) return;
 			lua_settable(L, stack_index);
-		}
-
-		/*
-		* If the registry already has the key tname, returns 0. 
-		* 
-		* Otherwise, creates a new table to be used as a metatable for userdata, adds to this new table the pair __name = tname, 
-		* adds to the registry the pair [tname] = new table, and returns 1.
-		* 
-		* In both cases, the function pushes onto the stack the final value associated with tname in the registry.
-		* 
-		*/
-		inline int32 new_metatable(lua_State* L, const char* name)
-		{
-			return luaL_newmetatable(L, name);
-		}
-
-		/*
-		* Pushes onto the stack the metatable associated with the name tname in the registry (see luaL_newmetatable), 
-		* or nil if there is no metatable associated with that name. Returns the type of the pushed value.
-		* @return type of value
-		*/
-		inline int32 get_metatable(lua_State* L, const char* metatable_name)
-		{
-			return luaL_getmetatable(L, metatable_name);
 		}
 
 		/*
@@ -303,14 +339,10 @@ namespace lua_api
 			return lua_getmetatable(L, stack_index);
 		}
 
-
 		inline int32 getiuservalue(lua_State* L, int32 index, int32 n)
 		{
 			return lua_getiuservalue(L, index, n);
 		}
-		
-
-		
 
 		inline void set_top(lua_State* L, int32 stack_index)
 		{
@@ -327,11 +359,18 @@ namespace lua_api
 			lua_seti(L, stack_index, n);
 		}
 
+		/*
+		* Pops a value from the stack and sets it as the new value of global name.
+		*/
 		inline void set_global(lua_State* L, const char* name)
 		{
 			lua_setglobal(L, name);
 		}
 
+		/*
+		* Does the equivalent to t[k] = v, where t is the value at the given index and v is the value on the top of the stack.
+		* This function pops the value from the stack. As in Lua, this function may trigger a metamethod for the "newindex" event
+		*/
 		inline void set_field(lua_State* L, int32 stack_index, const char* k)
 		{
 			lua_setfield(L, stack_index, k);
@@ -341,7 +380,6 @@ namespace lua_api
 		{
 			lua_setallocf(L, f, ud);
 		}
-
 
 		inline bool is_number(lua_State* L, int32 stack_index) { return lua_isnumber(L, stack_index) == 1; }
 		
@@ -356,6 +394,156 @@ namespace lua_api
 		inline bool is_light_userdata(lua_State* L, int32 stack_index) { return lua_islightuserdata(L, stack_index) == 1; }
 
 		inline lua_t get_type(lua_State* L, int32 stack_index) { return static_cast<lua_t>(lua_type(L, stack_index)); }
+	
+		inline void new_userdata(lua_State* L, void* userdata)
+		{
+			void** p_userdata = (void**)lua_newuserdata(L, sizeof(void*)); // -1
+			*p_userdata = userdata;
+		}
+
+	}
+
+	namespace auxiliary
+	{
+		/*
+		* If the registry already has the key name, returns 0.
+		*
+		* Otherwise, creates a new table to be used as a metatable for userdata, 
+		* adds to this new table the pair __name = name,
+		* adds to the registry the pair [name] = new table, 
+		* and returns 1.
+		*
+		* In both cases, 
+		* the function pushes onto the stack the final value associated with tname in the registry.
+		*/
+		inline int32 new_metatable(lua_State* L, const char* name)
+		{
+			return luaL_newmetatable(L, name);
+		}
+
+		/*
+		* Pushes onto the stack the metatable associated with the name tname in the registry,
+		* or nil if there is no metatable associated with that name. 
+		* 
+		* Returns the type of the pushed value.
+		*/
+		inline int32 get_metatable(lua_State* L, const char* name)
+		{
+			return luaL_getmetatable(L, name);
+		}
+
+		/*
+		* Sets the metatable of the object on the top of the stack 
+		* as the metatable associated with name tname in the registry (see luaL_newmetatable).
+		*/
+		inline void set_metatable(lua_State* L, const char* name)
+		{
+			luaL_setmetatable(L, name);
+		}
+
+		/*
+		* Registers all functions in the array l  into the table on the top of the stack (below optional upvalues, see next).
+		* When nup is not zero, all functions are created with nup upvalues, initialized with copies of the nup values previously pushed on the stack on top of the library table. 
+		* These values are popped from the stack after the registration.
+		* 
+		*/
+		inline void set_funcs(lua_State* L, const luaL_Reg* funcs, int32 nup)
+		{
+			luaL_setfuncs(L, funcs, nup);
+		}
+
+
+		/*
+		* Adds the byte c to the buffer B
+		*/
+		inline void add_char(luaL_Buffer* B, char c)
+		{
+			luaL_addchar(B, c);
+		}
+
+		inline void add_gsub() {}
+
+		inline void add_lstring() {}
+
+		inline void add_size() {}
+
+		inline void add_string() {}
+
+		inline void add_value() {}
+
+		inline void arg_check() {}
+
+		inline void arg_error() {}
+
+		inline void arg_expected() {}
+
+		inline char* buff_addr(luaL_Buffer* B) {}
+
+		inline void buf_init_size(lua_State* L, luaL_Buffer* B, size_t sz) {}
+
+		inline void buff_sub() {}
+
+		inline void open_libs(lua_State* L)
+		{
+			luaL_openlibs(L);
+		}
+
+		/*
+		* If package.loaded[modname] is not true, calls the function openf with the string modname as an argument and sets the call result to package.loaded[modname], 
+		* as if that function has been called through require.
+		* If glb is true, also stores the module into the global modname.
+		* Leaves a copy of the module on the stack.
+		*/
+		inline void requiref(lua_State* L, const char* modname, lua_CFunction openf, int glb)
+		{
+			luaL_requiref(L, modname, openf, glb);
+		}
+
+		inline lua_State* new_state()
+		{
+			return luaL_newstate();
+		}
+
+		/*
+		* Loads a string as a Lua chunk. This function uses lua_load to load the chunk in the zero-terminated string s.
+		* This function returns the same results as lua_load.
+		* Also as lua_load, this function only loads the chunk; it does not run it.
+		*/
+		inline lua_status load_string(lua_State* L, const char* str)
+		{
+			return static_cast<lua_status>(luaL_loadstring(L, str));
+		}
+
+		inline lua_status do_string(lua_State* L, const char* str)
+		{
+			return static_cast<lua_status>(luaL_dostring(L, str));
+		}
+
+		inline lua_status load_file(lua_State* L, const char* file_name)
+		{
+			return static_cast<lua_status>(luaL_loadfile(L, file_name));
+		}
+
+		inline lua_status load_file(lua_State* L, const char* file_name, const char* mode)
+		{
+			return static_cast<lua_status>(luaL_loadfilex(L, file_name, mode));
+		}
+
+		inline lua_status do_file(lua_State* L, const char* file_name)
+		{
+			return static_cast<lua_status>(luaL_dofile(L, file_name));
+		}
+
+		inline lua_status load_buffer(lua_State* L, const char* buff, size_t sz, const char* name, const char* mode)
+		{
+			return static_cast<lua_status>(luaL_loadbufferx(L, buff, sz, name, mode));
+		}
+
+		inline lua_status load_buffer(lua_State* L, const char* buff, size_t sz, const char* name)
+		{
+			return static_cast<lua_status>(luaL_loadbuffer(L, buff, sz, name));
+		}
+
 	}
 
 	/*struct lua_index
@@ -472,23 +660,8 @@ namespace lua_api
 	template<typename T>
 	inline T* to_cpp_instance_with_validation(lua_State* L, int32 stack_index, const char* metatable_name)
 	{
-		return (T*)luaL_checkudata(L, stack_index, metatable_name);
-	}
-
-	template<typename T>
-	static int lua_desctroy_userdata(lua_State* l, const char* metatable_name)
-	{
-		T** pp_userdata = (T**)luaL_checkudata(l, 1, metatable_name);
-		delete* pp_userdata;
-		printf("userdata type of %s is deleted.", metatable_name);
-		return 0;
-	}
-
-
-	static int testModelOpen(lua_State* L)
-	{
-		//luaL_newlib(L, libs);
-		return 1;
+		T** pp_userdata = (T**)luaL_checkudata(L, stack_index, metatable_name);
+		return (T*)*pp_userdata;
 	}
 
 	struct lua_class
@@ -500,16 +673,21 @@ namespace lua_api
 	class lua_vm
 	{
 	public:
+
 		lua_vm() = default;
 
-		static int register_class_t(const char* name, const luaL_Reg* funcs)
+		static void register_class(const char* name, const luaL_Reg* funcs)
 		{
 			std::cout << "register class : " << name << std::endl;
 			auto _class = new lua_class();
 			_class->name = name;
 			_class->funcs = funcs;
 			_classes.push_back(_class);
-			return 0;
+		}
+
+		static void register_functions(const luaL_Reg* funcs)
+		{
+
 		}
 
 	private:
@@ -526,39 +704,33 @@ namespace lua_api
 
 		void _load_class(const std::string& class_name, const luaL_Reg* funcs)
 		{
-			std::string _clazz_name = class_name + "_clazz";
+			const auto _clazz_name = class_name + "_clazz";
 
-			luaL_newmetatable(_state, _clazz_name.c_str()); // -1 table, push onto top
-			lua_pushvalue(_state, -1); // -1 table new -2 table old
-			lua_setfield(_state, -2, "__index"); // set -1 table to -2 table's __index // -1 pop
-			luaL_setfuncs(_state, funcs, 0); // set funcs to -1 table
-			lua_pop(_state, 1); // pop 1 ele
+			// stack : null
+			lua_api::auxiliary::new_metatable(_state, _clazz_name.c_str());
+			// stack : metatable
+			lua_api::basic::push_value(_state, -1);
+			// stack : metatable, metatable
+			lua_api::basic::set_field(_state, -2, "__index");
+			// stack : metable
+			lua_api::auxiliary::set_funcs(_state, funcs, 0);
+			lua_api::basic::pop(_state, 1);
+			// stack : null
 
-			lua_newtable(_state);
-			luaL_setmetatable(_state, _clazz_name.c_str());
-			lua_setglobal(_state, class_name.c_str());
+			lua_api::basic::new_table(_state);
+			// stack : table
+			lua_api::auxiliary::set_metatable(_state, _clazz_name.c_str());
+			lua_api::basic::set_global(_state, class_name.c_str());
+			// stack : null
+
+			std::cout << "load class : " << class_name << std::endl;
 		}
 
-		void _open_libs()
+		void _load_libs()
 		{
-			luaL_openlibs(_state);
+			lua_api::auxiliary::open_libs(_state); // std
 
-			// open std
-			//luaopen_base(_state);
-			//luaopen_package(_state);
-			//luaopen_coroutine(_state);
-			//luaopen_string(_state);
-			//luaopen_utf8(_state);
-			//luaopen_table(_state);
-			//luaopen_math(_state);
-			//luaopen_io(_state);
-			//luaopen_os(_state);
-			//luaopen_debug(_state);
-		}
-
-		void _register()
-		{
-			luaL_requiref(_state, "karamay_RHI", testModelOpen, 0);
+			//luaL_requiref(_state, "karamay_RHI", testModelOpen, 0);
 
 			for (auto _class : _classes)
 			{
@@ -570,12 +742,9 @@ namespace lua_api
 
 		bool start()
 		{
-			_state = luaL_newstate();
+			_state = lua_api::auxiliary::new_state();
 			if (!_state) return false;
-			int top = lua_gettop(_state);
-
-			_open_libs();
-			_register();
+			_load_libs();
 
 			// start dispatcher thread
 			/*_vm_thread = std::make_unique<std::thread>(
@@ -604,6 +773,15 @@ namespace lua_api
 			//_vm_thread->detach();
 		}
 
+		void notify_to_exit()
+		{
+			_should_exit = true;
+
+			while (_should_exit) {}
+		}
+
+	public:
+
 		bool do_file(const std::string& path)
 		{
 			int _result = luaL_dofile(_state, path.c_str());
@@ -628,15 +806,6 @@ namespace lua_api
 			return true;
 		}
 
-	public:
-
-		void notify_to_exit()
-		{
-			_should_exit = true;
-
-			while (_should_exit) {}
-		}
-
 	};
 }
 
@@ -659,30 +828,36 @@ static const luaL_Reg functions[] =\
 };\
 
 
-#define __GC(FULL_FUNC_NAME)\
-{"__gc", FULL_FUNC_NAME},\
+#define __INDEX(FULL_FUNC_NAME)\
+{"__index", FULL_FUNC_NAME},\
 
 #define __CALL(FULL_FUNC_NAME)\
 {"__call", FULL_FUNC_NAME},\
 
-#define __INDEX(FULL_FUNC_NAME)\
-{"__index", FULL_FUNC_NAME},\
+#define __GC(FULL_FUNC_NAME)\
+{"__gc", FULL_FUNC_NAME},\
 
+// +
 #define __ADD(FULL_FUNC_NAME)\
 {"__add", FULL_FUNC_NAME},\
 
+// -
 #define __SUB(FULL_FUNC_NAME)\
 {"__sub", FULL_FUNC_NAME},\
 
+// *
 #define __MUL(FULL_FUNC_NAME)\
 {"__mul", FULL_FUNC_NAME},\
 
+// /
 #define __DIV(FULL_FUNC_NAME)\
 {"__div", FULL_FUNC_NAME},\
 
+// %
 #define __MOD(FULL_FUNC_NAME)\
 {"__mod", FULL_FUNC_NAME},\
 
+// ^
 #define __POW(FULL_FUNC_NAME)\
 {"__pow", FULL_FUNC_NAME},\
 
@@ -716,23 +891,20 @@ static const luaL_Reg functions[] =\
 #define __LEN(FULL_FUNC_NAME)\
 {"__len", FULL_FUNC_NAME},\
 
+// ==
 #define __EQ(FULL_FUNC_NAME)\
 {"__eq", FULL_FUNC_NAME},\
 
+// <
 #define __LT(FULL_FUNC_NAME)\
 {"__lt", FULL_FUNC_NAME},\
 
+// <=
 #define __LE(FULL_FUNC_NAME)\
 {"__le", FULL_FUNC_NAME},\
 
-#define __INDEX(FULL_FUNC_NAME)\
-{"__eq", FULL_FUNC_NAME},\
-
 #define FUNC(FUNC_NAME, FUNC_PTR)\
 {FUNC_NAME, FUNC_PTR},\
-
-
-#define ExtractStr(Specifier) #Specifier
 
 #define IMPLEMENT_EXPORTER(NAME)\
 struct NAME##_exporter\
@@ -740,7 +912,7 @@ struct NAME##_exporter\
 	static NAME##_exporter instance;\
 	NAME##_exporter()\
 	{\
-		lua_api::lua_vm::register_class_t(ExtractStr(NAME), functions);\
+		lua_api::lua_vm::register_class(#NAME, functions);\
 	}\
 	~NAME##_exporter() = default;\
 };\

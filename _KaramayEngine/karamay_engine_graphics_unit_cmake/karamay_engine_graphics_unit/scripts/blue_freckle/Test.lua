@@ -4,7 +4,6 @@
 --- DateTime: 2021/9/17 23:17
 ---
 
-
 --gl_renderer_clazz = {
 --    __call = function(t, ...)
 --        print("new instance")
@@ -38,13 +37,7 @@
 --print(renderer0)
 --print(renderer1)
 
-
-
 --gl_renderer = setmetatable({}, gl_renderer_clazz);
-
-
-
-
 
 --local test = {
 --    __index = self,
