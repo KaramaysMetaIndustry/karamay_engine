@@ -136,13 +136,19 @@ namespace lua_api
 		inline void push_string(lua_State* L, const std::string& value) { lua_pushstring(L, value.c_str()); }
 		inline void push_string(lua_State* L, std::string&& value) { lua_pushstring(L, value.c_str()); }
 
-		inline void push_light_userdata(lua_State* L, void* value)
+		inline void new_userdata(lua_State* L, void* userdata)
 		{
-			lua_pushlightuserdata(L, value);
+			void** p_userdata = (void**)lua_newuserdata(L, sizeof(void*)); // -1
+			*p_userdata = userdata;
 		}
-		inline void push_light_userdata(lua_State* L, const void* value)
+
+		inline void push_light_userdata(lua_State* L, void* userdata)
 		{
-			lua_pushlightuserdata(L, (void*)value);
+			lua_pushlightuserdata(L, userdata);
+		}
+		inline void push_light_userdata(lua_State* L, const void* userdata)
+		{
+			lua_pushlightuserdata(L, (void*)userdata);
 		}
 
 		inline void push_thread(lua_State* L)
@@ -161,7 +167,7 @@ namespace lua_api
 		}
 
 		template<typename INTEGER_T>
-		inline INTEGER_T get_integer(lua_State* L, int32 stack_index)
+		inline INTEGER_T to_integer(lua_State* L, int32 stack_index)
 		{
 			static_assert(
 				std::is_same_v<uint8, INTEGER_T> ||
@@ -172,46 +178,47 @@ namespace lua_api
 				std::is_same_v<int16, INTEGER_T> ||
 				std::is_same_v<int32, INTEGER_T> ||
 				std::is_same_v<int64, INTEGER_T>,
-				"must be uint8, uint16, uin32, uint64, int8, int16, int32, int64"
+				"integer must be uint8, uint16, uin32, uint64, int8, int16, int32, int64."
 				);
 			return static_cast<INTEGER_T>(lua_tointeger(L, stack_index));
 		}
 
 		template<typename NUMBER_T>
-		inline NUMBER_T get_number(lua_State* L, int32 stack_index)
+		inline NUMBER_T to_number(lua_State* L, int32 stack_index)
 		{
 			static_assert(
 				std::is_same_v<float, NUMBER_T> ||
 				std::is_same_v<double, NUMBER_T>,
-				"number must be float or double"
+				"number must be float or double."
 				);
 			return static_cast<NUMBER_T>(lua_tonumber(L, stack_index));
 		}
 
-		inline bool get_boolean(lua_State* L, int32 stack_index) { return lua_toboolean(L, stack_index) == 1; }
+		inline bool to_boolean(lua_State* L, int32 stack_index) { return lua_toboolean(L, stack_index) == 1; }
 		
-		inline std::string get_string(lua_State* L, int32 stack_index) { return std::string(lua_tostring(L, stack_index)); }
+		inline std::string to_string(lua_State* L, int32 stack_index) { return std::string(lua_tostring(L, stack_index)); }
 		
-		inline lua_CFunction get_cfunction(lua_State* L, int32 stack_index) { return lua_tocfunction(L, stack_index); }
+		inline lua_CFunction to_cfunction(lua_State* L, int32 stack_index) { return lua_tocfunction(L, stack_index); }
 		
-		inline void* get_userdata(lua_State* L, int32 index)
+		inline void* to_userdata(lua_State* L, int32 index)
 		{
 			return lua_touserdata(L, index);
 		}
 		
-		inline lua_State* get_thread(lua_State* L, int32 stack_index) { return lua_tothread(L, stack_index); }
+		inline lua_State* to_thread(lua_State* L, int32 stack_index) { return lua_tothread(L, stack_index); }
 
 #ifdef _DEBUG
-		inline const void* get_pointer(lua_State* L, int32 stack_index)
+		inline const void* to_pointer(lua_State* L, int32 stack_index)
 		{
 			return lua_topointer(L, stack_index);
 		}
 #endif
 
 		/*
+		* Returns the index of the top element in the stack. Because indices start at 1, this result is equal to the number of elements in the stack; in particular, 0 means an empty stack.
 		* @return stack top index (1 ~ N)
 		*/
-		inline int32 get_stack_top_index(lua_State* L) { return lua_gettop(L); }
+		inline int32 stack_top_index(lua_State* L) { return lua_gettop(L); }
 
 		/*
 		* get the value with global name and push onto stack
@@ -231,44 +238,110 @@ namespace lua_api
 			return lua_geti(L, stack_index, index);
 		}
 
+
 		/*
-		* stack[index][stack[top_index]]
+		* Pushes onto the stack the value t[k], where t is the value at the given index and k is the value on the top of the stack.
+		* This function pops the key from the stack, pushing the resulting value in its place. As in Lua, this function may trigger a metamethod for the "index" event (see ¡ì2.4).
 		* @return the type of pushed value
 		*/
-		inline int32 get_table(lua_State* L, int32 index)
+		inline int32 get_table_value(lua_State* L, int32 stack_index)
 		{
-			return lua_gettable(L, index);
+			return lua_gettable(L, stack_index);
 		}
 
 		/*
+		* Does the equivalent to t[k] = v, where t is the value at the given index, v is the value on the top of the stack, and k is the value just below the top.
+		* This function pops both the key and the value from the stack. 
+		* As in Lua, this function may trigger a metamethod for the "newindex" event (see ¡ì2.4).
+		*/
+		inline void set_table_value(lua_State* L, int32 stack_index)
+		{
+			lua_settable(L, stack_index);
+		}
+
+		/*
+		* If the registry already has the key tname, returns 0. 
+		* 
+		* Otherwise, creates a new table to be used as a metatable for userdata, adds to this new table the pair __name = tname, 
+		* adds to the registry the pair [tname] = new table, and returns 1.
+		* 
+		* In both cases, the function pushes onto the stack the final value associated with tname in the registry.
+		* 
+		*/
+		inline int32 new_metatable(lua_State* L, const char* name)
+		{
+			return luaL_newmetatable(L, name);
+		}
+
+		/*
+		* Pushes onto the stack the metatable associated with the name tname in the registry (see luaL_newmetatable), 
+		* or nil if there is no metatable associated with that name. Returns the type of the pushed value.
+		* @return type of value
+		*/
+		inline int32 get_metatable(lua_State* L, const char* metatable_name)
+		{
+			return luaL_getmetatable(L, metatable_name);
+		}
+
+		/*
+		* sets top value as the new metatable for the value at the given index 
+		* and Pops it( table or nil) from the stack and
+		* @return type of value
+		*/
+		inline void set_top_as_value_metatable(lua_State* L, int32 value_stack_index)
+		{
+			lua_setmetatable(L, value_stack_index);
+		}
+
+		/*
+		* If the value at the given index has a metatable, the function pushes that metatable onto the stack and returns 1.
+		* Otherwise, the function returns 0 and pushes nothing on the stack.
 		* @return 1 has metatable and push the metatable onto stack, 0 has no metatable and push nothing
 		*/
-		inline int32 get_metatable(lua_State* L, int32 stack_index)
+		inline int32 get_value_metatable(lua_State* L, int32 stack_index)
 		{
 			return lua_getmetatable(L, stack_index);
 		}
+
 
 		inline int32 getiuservalue(lua_State* L, int32 index, int32 n)
 		{
 			return lua_getiuservalue(L, index, n);
 		}
+		
 
-		/*
-		* @return type of value
-		*/
-		inline int32 get_metatable(lua_State* L, const char* name)
+		
+
+		inline void set_top(lua_State* L, int32 stack_index)
 		{
-			return luaL_getmetatable(L, name);
+			lua_settop(L, stack_index);
 		}
 
-		/*
-		* set the top value as the stack[stack_index]'s metatable, then pop the top val
-		* @return type of value
-		*/
-		inline void set_metatable(lua_State* L, int32 stack_index)
+		inline void set_warnf(lua_State* L, lua_WarnFunction f, void* ud)
 		{
-			lua_setmetatable(L, stack_index);
+
 		}
+
+		inline void seti(lua_State* L, int32 stack_index, int64 n)
+		{
+			lua_seti(L, stack_index, n);
+		}
+
+		inline void set_global(lua_State* L, const char* name)
+		{
+			lua_setglobal(L, name);
+		}
+
+		inline void set_field(lua_State* L, int32 stack_index, const char* k)
+		{
+			lua_setfield(L, stack_index, k);
+		}
+
+		inline void set_allocf(lua_State* L, lua_Alloc f, void* ud)
+		{
+			lua_setallocf(L, f, ud);
+		}
+
 
 		inline bool is_number(lua_State* L, int32 stack_index) { return lua_isnumber(L, stack_index) == 1; }
 		
@@ -365,7 +438,7 @@ namespace lua_api
 	};*/
 
 	template<typename T>
-	inline T* get_cpp_instance(lua_State* L, int32 stack_index)
+	inline T* to_cpp_instance(lua_State* L, int32 stack_index)
 	{
 		int32 _type = lua_type(L, stack_index);
 		switch (_type)
@@ -397,7 +470,7 @@ namespace lua_api
 	}
 
 	template<typename T>
-	inline T* get_cpp_instance(lua_State* L, int32 stack_index, const char* metatable_name)
+	inline T* to_cpp_instance_with_validation(lua_State* L, int32 stack_index, const char* metatable_name)
 	{
 		return (T*)luaL_checkudata(L, stack_index, metatable_name);
 	}
