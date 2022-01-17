@@ -6,6 +6,34 @@
 
 namespace lua_api
 {
+	//nil, boolean, number, string, function, userdata, thread, and table.
+	enum class lua_t : int
+	{
+		NONE = LUA_TNONE,
+		NIL = LUA_TNIL,
+		BOOLEAN = LUA_TBOOLEAN,
+		LIGHTUSERDATA = LUA_TLIGHTUSERDATA,
+		NUMBER = LUA_TNUMBER,
+		STRING = LUA_TSTRING,
+		TABLE = LUA_TTABLE,
+		FUNCTION = LUA_TFUNCTION,
+		USERDATA = LUA_TUSERDATA,
+		THREAD = LUA_TTHREAD,
+
+		NUMTYPES = LUA_NUMTYPES
+	};
+
+	enum class lua_status : int
+	{
+		OK = LUA_OK, // : no errors.
+		ERR_RUN = LUA_ERRRUN, // : a runtime error.
+		ERR_MEM = LUA_ERRMEM, // : memory allocation error.For such errors, Lua does not call the message handler.
+		ERR_ERR = LUA_ERRERR, //: error while running the message handler.
+		ERR_SYNTAX = LUA_ERRSYNTAX, // : syntax error during precompilation.
+		YIELD = LUA_YIELD, //: the thread(coroutine) yields.
+		ERR_FILE = LUA_ERRFILE // : a file - related error; e.g., it cannot open or read the file.
+	};
+
 	enum class lua_compare_op : int
 	{
 		EQ = LUA_OPEQ, // ==
@@ -26,37 +54,8 @@ namespace lua_api
 		GCGEN = LUA_GCGEN //Changes the collector to generational mode with the given parameters(see ¡ì2.5.2).Returns the previous mode(LUA_GCGEN or LUA_GCINC).
 	};
 
-	enum class lua_t : int
-	{
-		NONE = LUA_TNONE,
-		NIL = LUA_TNIL,
-		BOOLEAN = LUA_TBOOLEAN,
-		LIGHTUSERDATA = LUA_TLIGHTUSERDATA,
-		NUMBER = LUA_TNUMBER,
-		STRING = LUA_TSTRING,
-		TABLE = LUA_TTABLE,
-		FUNCTION = LUA_TFUNCTION,
-		USERDATA = LUA_TUSERDATA,
-		THREAD = LUA_TTHREAD,
-
-		NUMTYPES = LUA_NUMTYPES
-	};
-	//nil, boolean, number, string, function, userdata, thread, and table.
-
-	enum class lua_status : int
-	{
-		OK = LUA_OK, // : no errors.
-		ERR_RUN = LUA_ERRRUN, // : a runtime error.
-		ERR_MEM = LUA_ERRMEM, // : memory allocation error.For such errors, Lua does not call the message handler.
-		ERR_ERR = LUA_ERRERR, //: error while running the message handler.
-		ERR_SYNTAX = LUA_ERRSYNTAX, // : syntax error during precompilation.
-		YIELD = LUA_YIELD, //: the thread(coroutine) yields.
-		ERR_FILE = LUA_ERRFILE // : a file - related error; e.g., it cannot open or read the file.
-	};
-
 	namespace basic
 	{
-		
 		inline bool check_stack_available_capacity(lua_State* L, int32 num)
 		{
 			return lua_checkstack(L, num) == 1;
@@ -116,9 +115,15 @@ namespace lua_api
 
 		////// push*  : push value onto the stack from C
 
-		inline void push_nil(lua_State* L) { lua_pushnil(L); }
+		inline void push_nil(lua_State* L) 
+		{ 
+			lua_pushnil(L);
+		}
 
-		inline void push_boolean(lua_State* L, bool value) { lua_pushboolean(L, static_cast<int>(value)); }
+		inline void push_boolean(lua_State* L, bool value) 
+		{
+			lua_pushboolean(L, static_cast<int>(value)); 
+		}
 
 		template<typename INTEGER_T>
 		inline void push_integer(lua_State* L, INTEGER_T value)
@@ -148,11 +153,26 @@ namespace lua_api
 			lua_pushnumber(L, static_cast<lua_Number>(value));
 		}
 
-		inline void push_string(lua_State* L, char* value) { lua_pushstring(L, value); }
-		inline void push_string(lua_State* L, const char* value) { lua_pushstring(L, value); }
-		inline void push_string(lua_State* L, std::string& value) { lua_pushstring(L, value.c_str()); }
-		inline void push_string(lua_State* L, const std::string& value) { lua_pushstring(L, value.c_str()); }
-		inline void push_string(lua_State* L, std::string&& value) { lua_pushstring(L, value.c_str()); }
+		inline void push_string(lua_State* L, char* value) 
+		{ 
+			lua_pushstring(L, value); 
+		}
+		inline void push_string(lua_State* L, const char* value) 
+		{ 
+			lua_pushstring(L, value);
+		}
+		inline void push_string(lua_State* L, std::string& value) 
+		{ 
+			lua_pushstring(L, value.c_str()); 
+		}
+		inline void push_string(lua_State* L, const std::string& value) 
+		{ 
+			lua_pushstring(L, value.c_str());
+		}
+		inline void push_string(lua_State* L, std::string&& value) 
+		{ 
+			lua_pushstring(L, value.c_str());
+		}
 
 		inline void push_light_userdata(lua_State* L, void* userdata)
 		{
@@ -250,7 +270,7 @@ namespace lua_api
 
 		inline std::string to_string(lua_State* L, int32 stack_index) 
 		{ 
-			return std::string(lua_tostring(L, stack_index)); 
+			return std::string(lua_tostring(L, stack_index));
 		}
 
 		inline void* to_userdata(lua_State* L, int32 index)
@@ -258,9 +278,15 @@ namespace lua_api
 			return lua_touserdata(L, index);
 		}
 		
-		inline lua_State* to_thread(lua_State* L, int32 stack_index) { return lua_tothread(L, stack_index); }
+		inline lua_State* to_thread(lua_State* L, int32 stack_index) 
+		{ 
+			return lua_tothread(L, stack_index); 
+		}
 
-		inline lua_CFunction to_cfunction(lua_State* L, int32 stack_index) { return lua_tocfunction(L, stack_index); }
+		inline lua_CFunction to_cfunction(lua_State* L, int32 stack_index) 
+		{ 
+			return lua_tocfunction(L, stack_index); 
+		}
 
 #ifdef _DEBUG
 		inline const void* to_pointer(lua_State* L, int32 stack_index)
@@ -270,15 +296,20 @@ namespace lua_api
 #endif
 
 		/*
-		* Returns the index of the top element in the stack. Because indices start at 1, this result is equal to the number of elements in the stack; in particular, 0 means an empty stack.
+		* Returns the index of the top element in the stack. 
+		* Because indices start at 1, this result is equal to the number of elements in the stack; in particular, 0 means an empty stack.
 		* @return stack top index (1 ~ N)
 		*/
-		inline int32 stack_top_index(lua_State* L) { return lua_gettop(L); }
+		inline int32 top_index(lua_State* L) 
+		{ 
+			return lua_gettop(L);
+		}
 
 		/////// fetch value from lua, push onto stack
 
 		/*
-		* Pushes onto the stack the value of the global name. Returns the type of that value.
+		* Pushes onto the stack the value of the global name. 
+		* Returns the type of that value.
 		* @return the type of value
 		*/
 		inline int32 get_global(lua_State* L, const char* name)
@@ -381,19 +412,40 @@ namespace lua_api
 			lua_setallocf(L, f, ud);
 		}
 
-		inline bool is_number(lua_State* L, int32 stack_index) { return lua_isnumber(L, stack_index) == 1; }
+		inline bool is_number(lua_State* L, int32 stack_index) 
+		{ 
+			return lua_isnumber(L, stack_index) == 1; 
+		}
 		
-		inline bool is_integer(lua_State* L, int32 stack_index) { return lua_isinteger(L, stack_index) == 1; }
+		inline bool is_integer(lua_State* L, int32 stack_index) 
+		{ 
+			return lua_isinteger(L, stack_index) == 1;
+		}
 		
-		inline bool is_string(lua_State* L, int32 stack_index) { return lua_isstring(L, stack_index) == 1; }
+		inline bool is_string(lua_State* L, int32 stack_index) 
+		{
+			return lua_isstring(L, stack_index) == 1; 
+		}
 		
-		inline bool is_cfunction(lua_State* L, int32 stack_index) { return lua_iscfunction(L, stack_index) == 1; }
+		inline bool is_cfunction(lua_State* L, int32 stack_index) 
+		{ 
+			return lua_iscfunction(L, stack_index) == 1; 
+		}
 		
-		inline bool is_userdata(lua_State* L, int32 stack_index) { return lua_isuserdata(L, stack_index) == 1; }
+		inline bool is_userdata(lua_State* L, int32 stack_index) 
+		{ 
+			return lua_isuserdata(L, stack_index) == 1; 
+		}
 		
-		inline bool is_light_userdata(lua_State* L, int32 stack_index) { return lua_islightuserdata(L, stack_index) == 1; }
+		inline bool is_light_userdata(lua_State* L, int32 stack_index) 
+		{ 
+			return lua_islightuserdata(L, stack_index) == 1;
+		}
 
-		inline lua_t get_type(lua_State* L, int32 stack_index) { return static_cast<lua_t>(lua_type(L, stack_index)); }
+		inline lua_t get_type(lua_State* L, int32 stack_index) 
+		{ 
+			return static_cast<lua_t>(lua_type(L, stack_index));
+		}
 	
 		inline void new_userdata(lua_State* L, void* userdata)
 		{
@@ -623,7 +675,7 @@ namespace lua_api
 
 	private:
 		mutable int32 PushedValues;
-	};*/
+	};*/ 
 
 	template<typename T>
 	inline T* to_cpp_instance(lua_State* L, int32 stack_index)
@@ -807,6 +859,7 @@ namespace lua_api
 		}
 
 	};
+
 }
 
 

@@ -17,32 +17,36 @@ namespace CTest_for_lua
 	static int construct(lua_State* L)
 	{
 		// stack : null
-		int32 _num = lua_api::basic::stack_top_index(L); // index = 0
+		int32 _num = lua_api::basic::top_index(L);
+		if (_num != 0)
+		{
+			return 0;
+		}
 		CTest* test = new CTest();
-		//lua_api::origin::new_userdata(L, test); // this creation will make lua take over its lifecycle
 		lua_api::basic::push_light_userdata(L, test); // this creation you should manager its lifecycle
 		// stack : lightuserdata
-		lua_api::auxiliary::get_metatable(L, "CTest_clazz");
-		// stack : metatable, lightuserdata
-		lua_api::basic::set_top_as_value_metatable(L, -2);
-		// stack : (lightuserdata)
+		lua_api::auxiliary::set_metatable(L, "CTest_clazz");
 		return 1;
 	}
 
 	static int getA(lua_State* L)
 	{
-		// stack : lightuserdata
-		auto _num = lua_api::basic::stack_top_index(L); // 1
+		// stack : userdata
+		auto _num = lua_api::basic::top_index(L);
+		if (_num != 1)
+		{
+			return 0;
+		}
 		auto ppTest = lua_api::to_cpp_instance_with_validation<CTest>(L, 1, "CTest_clazz");
 		lua_api::basic::push_integer(L, ppTest->getA());
-		// stack : (integer), lightuserdata
+		// stack : integer, lightuserdata
 		return 1;
 	}
 
 	static int setA(lua_State* L)
 	{
-		// stack : integer, lighteruserdata
-		auto _num = lua_api::basic::stack_top_index(L); // 2
+		// stack : integer, userdata
+		auto _num = lua_api::basic::top_index(L);
 		if (_num < 2)
 		{
 #ifdef _DEBUG
@@ -53,21 +57,22 @@ namespace CTest_for_lua
 		auto ppTest = lua_api::to_cpp_instance_with_validation<CTest>(L, 1, "CTest_clazz");
 		auto a = lua_api::basic::to_integer<int32>(L, 2);
 		ppTest->setA(a);
-		// stack : integer, lighteruserdata
 		return 0;
 	}
 
 	static int finishNewCTest(lua_State* L)
 	{
 		// stack : userdata, userdata
-		int32 _num = lua_gettop(L); // 2
+		// stack : integer, userdata, userdata
+		int32 _num = lua_gettop(L);
+	
 		auto test = lua_api::to_cpp_instance_with_validation<CTest>(L, 1, "CTest_clazz");
 		if (_num == 1)
 		{
 			auto testParam = lua_api::to_cpp_instance<CTest>(L, 2);
 			auto testReturn = test->finishNewCTest(testParam);
 			lua_api::basic::push_light_userdata(L, testReturn);
-			// stack : (userdata), userdata, userdata
+			// stack : userdata, userdata, userdata
 		}
 		if (_num == 2)
 		{
@@ -75,7 +80,7 @@ namespace CTest_for_lua
 			auto i = lua_api::basic::to_integer<int32>(L, 3);
 			auto testReturn = test->finishNewCTest(test, i);
 			lua_api::basic::push_light_userdata(L, testReturn);
-			// stack : (userdata), userdata, userdata
+			// stack : userdata, integer, userdata, userdata
 		}
 		return 1;
 	}
@@ -99,12 +104,15 @@ namespace gl_renderer_for_lua
 	static int construct(lua_State* L)
 	{
 		// stack : null
-		auto _num = lua_api::basic::stack_top_index(L); // index : 0
+		auto _num = lua_api::basic::top_index(L);
+		if (_num != 0)
+		{
+			return 0;
+		}
 		gl_renderer* _renderer = new gl_static_mesh_renderer();
 		lua_api::basic::push_light_userdata(L, _renderer);
-		lua_api::auxiliary::new_metatable(L, "gl_renderer_clazz");
-		lua_api::basic::set_top_as_value_metatable(L, -2);
 		// stack : userdata
+		lua_api::auxiliary::set_metatable(L, "gl_renderer_clazz");
 		return 1;
 	}
 
@@ -119,15 +127,17 @@ namespace gl_graphics_pipline_for_lua
 {
 	static int __call(lua_State* L)
 	{
-		// stack : null
-		auto _num = lua_api::basic::stack_top_index(L); // index : 0
-		auto _pipeline = new gl_graphics_pipeline(nullptr);
+		// stack : userdata
+		auto _num = lua_api::basic::top_index(L);
+		if (_num != 1)
+		{
+			return 0;
+		}
+		auto _program = lua_api::to_cpp_instance_with_validation<glsl_graphics_pipeline_program>(L, 1, "glsl_graphics_pipeline_program");
+		auto _pipeline = new gl_graphics_pipeline(_program);
 		lua_api::basic::push_light_userdata(L, _pipeline);
-		// stack : lightuserdata
-		lua_api::auxiliary::get_metatable(L, "gl_graphics_pipeline_clazz");
-		// stack : metatable, lightuserdata
-		lua_api::basic::set_top_as_value_metatable(L, -2);
-		// stack : lightuserdata
+		// stack : userdata, userdata
+		lua_api::auxiliary::set_metatable(L, "gl_graphics_pipeline_clazz");
 		return 1;
 	}
 
@@ -139,9 +149,12 @@ namespace gl_graphics_pipline_for_lua
 	static int enable(lua_State* L)
 	{
 		// stack : userdata
-		int32 _num = lua_api::basic::stack_top_index(L); // index : 1
+		int32 _num = lua_api::basic::top_index(L);
+		if (_num != 1)
+		{
+			return 0;
+		}
 		auto _pipeline = lua_api::to_cpp_instance_with_validation<gl_graphics_pipeline>(L, 1, "gl_graphics_pipeline_clazz");
-		if (!_pipeline) return 0;
 		_pipeline->enable();
 		return 0;
 	}
@@ -149,7 +162,7 @@ namespace gl_graphics_pipline_for_lua
 	static int disable(lua_State* L)
 	{
 		// stack : userdata
-		int32 _num = lua_api::basic::stack_top_index(L); // index : 1
+		int32 _num = lua_api::basic::top_index(L);
 		auto _pipeline = lua_api::to_cpp_instance_with_validation<gl_graphics_pipeline>(L, 1, "gl_graphics_pipeline_clazz");
 		if (!_pipeline) return 0;
 		_pipeline->disable();
@@ -159,7 +172,7 @@ namespace gl_graphics_pipline_for_lua
 	static int syncable_draw_arrays(lua_State* L)
 	{
 		// stack : (2)/(4) userdata
-		int32 _num = lua_api::basic::stack_top_index(L); // index : 4+1 or 2+1
+		int32 _num = lua_api::basic::top_index(L); // index : 4+1 or 2+1
 		auto _pipeline = lua_api::to_cpp_instance_with_validation<gl_graphics_pipeline>(L, 1, "gl_graphics_pipeline_clazz");
 		if (!_pipeline) return 0;
 
@@ -188,10 +201,8 @@ namespace gl_graphics_pipline_for_lua
 	static int unsyncable_draw_arrays(lua_State* L)
 	{
 		// stack : (2)/(4) userdata
-		int32 _num = lua_api::basic::stack_top_index(L); // index : 2+1 or 4+1
+		int32 _num = lua_api::basic::top_index(L); // index : 2+1 or 4+1
 		auto _pipeline = lua_api::to_cpp_instance_with_validation<gl_graphics_pipeline>(L, 1, "gl_graphics_pipeline_clazz");
-		if (!_pipeline) return 0;
-
 		if (_num == 3)
 		{
 			_pipeline->unsyncable_draw_arrays(
@@ -227,21 +238,27 @@ namespace gl_compute_pipeline_for_lua
 {
 	static int construct(lua_State* L)
 	{
-		// stack : null
-		auto _pipeline = new gl_compute_pipeline(nullptr);
+		auto _num = lua_api::basic::top_index(L);
+		if (_num != 1)
+		{
+			return 0;
+		}
+
+		// stack : userdata
+		auto _program = lua_api::to_cpp_instance_with_validation<glsl_compute_pipeline_program>(L, 1, "glsl_compute_pipeline_program_clazz");
+		auto _pipeline = new gl_compute_pipeline(_program);
 		lua_api::basic::push_light_userdata(L, _pipeline);
-		// stack : userdata
-		lua_api::auxiliary::get_metatable(L, "gl_compute_pipeline_clazz");
-		// stack : metatable, userdata 
-		lua_api::basic::set_top_as_value_metatable(L, -2);
-		// stack : userdata
+		// stack : userdata, userdata
+		lua_api::auxiliary::set_metatable(L, "gl_compute_pipeline_clazz");
+		// stack : (userdata), userdata
 		return 1;
 	}
 
 	static int load(lua_State* L)
 	{
+		auto _num = lua_api::basic::top_index(L); // index : 2
+
 		// stack : string, userdata
-		auto _num = lua_api::basic::stack_top_index(L); // index : 2
 		auto _comp_pipeline = lua_api::to_cpp_instance<gl_compute_pipeline>(L, 1);
 		auto _pipeline_dir = lua_api::basic::to_string(L, 2);
 		auto _result = _comp_pipeline->load(_pipeline_dir);
@@ -252,8 +269,9 @@ namespace gl_compute_pipeline_for_lua
 
 	static int enable(lua_State* L)
 	{
+		auto _num = lua_api::basic::top_index(L); // index : 1
+
 		// stack : userdata
-		auto _num = lua_api::basic::stack_top_index(L); // index : 1
 		auto _comp_pipeline = lua_api::to_cpp_instance<gl_compute_pipeline>(L, 1);
 		_comp_pipeline->enable();
 		return 0;
@@ -261,8 +279,9 @@ namespace gl_compute_pipeline_for_lua
 
 	static int disable(lua_State* L)
 	{
+		auto _num = lua_api::basic::top_index(L); // index : 1
+
 		// stack : userdata
-		auto _num = lua_api::basic::stack_top_index(L); // index : 1
 		auto _comp_pipeline =lua_api::to_cpp_instance<gl_compute_pipeline>(L, 1);
 		_comp_pipeline->disable();
 		return 0;
@@ -270,10 +289,10 @@ namespace gl_compute_pipeline_for_lua
 
 	static int dispatch(lua_State* L)
 	{
-		// stack : integer, integer, integer, userdata
-		auto _num = lua_api::basic::stack_top_index(L); // index : 4
-		auto _comp_pipeline = lua_api::to_cpp_instance<gl_compute_pipeline>(L, 1);
+		auto _num = lua_api::basic::top_index(L); // index : 4
 
+		// stack : integer, integer, integer, userdata
+		auto _comp_pipeline = lua_api::to_cpp_instance<gl_compute_pipeline>(L, 1);
 		auto _x = lua_api::basic::to_integer<uint32>(L, 2);
 		auto _y = lua_api::basic::to_integer<uint32>(L, 3);
 		auto _z = lua_api::basic::to_integer<uint32>(L, 4);
