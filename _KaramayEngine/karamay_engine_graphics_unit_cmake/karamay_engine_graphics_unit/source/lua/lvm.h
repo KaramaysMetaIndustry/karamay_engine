@@ -12,12 +12,15 @@ namespace lua_api
 		NONE = LUA_TNONE,
 		NIL = LUA_TNIL,
 		BOOLEAN = LUA_TBOOLEAN,
-		LIGHTUSERDATA = LUA_TLIGHTUSERDATA,
 		NUMBER = LUA_TNUMBER,
 		STRING = LUA_TSTRING,
-		TABLE = LUA_TTABLE,
+		
 		FUNCTION = LUA_TFUNCTION,
+		
+		TABLE = LUA_TTABLE,
 		USERDATA = LUA_TUSERDATA,
+		LIGHTUSERDATA = LUA_TLIGHTUSERDATA,
+		
 		THREAD = LUA_TTHREAD,
 
 		NUMTYPES = LUA_NUMTYPES
@@ -333,9 +336,9 @@ namespace lua_api
 		* This function pops the key from the stack, pushing the resulting value in its place. As in Lua, this function may trigger a metamethod for the "index" event (see ¡ì2.4).
 		* @return the type of pushed value
 		*/
-		inline int32 get_table_value(lua_State* L, int32 stack_index)
+		inline lua_t get_table(lua_State* L, int32 stack_index)
 		{
-			return lua_gettable(L, stack_index);
+			return static_cast<lua_t>(lua_gettable(L, stack_index));
 		}
 
 		/*
@@ -344,10 +347,30 @@ namespace lua_api
 		* As in Lua, this function may trigger a metamethod for the "newindex" event (see ¡ì2.4).
 		* stack : value, key, ...[index]
 		*/
-		inline void set_table_value(lua_State* L, int32 stack_index)
+		inline void set_table(lua_State* L, int32 stack_index)
 		{
 			if (!lua_istable(L, stack_index)) return;
 			lua_settable(L, stack_index);
+		}
+
+		inline lua_t raw_get_table(lua_State* L, int32 stack_index)
+		{
+			return static_cast<lua_t>(lua_rawget(L, stack_index));
+		}
+		
+		inline void raw_set_table(lua_State* L, int32 stack_index)
+		{
+			lua_rawset(L, stack_index);
+		}
+
+		inline lua_t raw_get_table(lua_State* L, int32 stack_index, int64 key)
+		{
+			return static_cast<lua_t>(lua_rawgeti(L, stack_index, key));
+		}
+
+		inline void raw_set_table(lua_State* L, int32 stack_index, int64 key)
+		{
+			lua_rawseti(L, stack_index, key);
 		}
 
 		/*
@@ -442,7 +465,7 @@ namespace lua_api
 			return lua_islightuserdata(L, stack_index) == 1;
 		}
 
-		inline lua_t get_type(lua_State* L, int32 stack_index) 
+		inline lua_t type(lua_State* L, int32 stack_index) 
 		{ 
 			return static_cast<lua_t>(lua_type(L, stack_index));
 		}
@@ -677,25 +700,55 @@ namespace lua_api
 		mutable int32 PushedValues;
 	};*/ 
 
-	template<typename T>
-	inline T* to_cpp_instance(lua_State* L, int32 stack_index)
+	inline void* to_userdata_fast(lua_State* L, int32 stack_index, bool two_level_ptr)
 	{
-		int32 _type = lua_type(L, stack_index);
+		bool _two_level_ptr = false;
+		void* _userdata = nullptr;
+
+
+
+	}
+
+	inline void* to_userdata(lua_State* L, int32 stack_index, bool* two_level_ptr)
+	{
+		if (stack_index < 0 && stack_index > LUA_REGISTRYINDEX)
+		{
+			int32 _top = basic::top_index(L);
+			stack_index += _top + 1;
+		}
+
+		void* _userdata = nullptr;
+		bool _two_level_ptr = false, _class_metatable = false;
+
+		lua_t _type = basic::type(L, stack_index);
 		switch (_type)
 		{
-		case LUA_TTABLE:
+		case lua_t::TABLE:
 		{
-			_type = lua_rawget(L, stack_index);
-			if (_type == LUA_TUSERDATA)
+			basic::push_string(L, "Object");
+			_type = basic::raw_get_table(L, stack_index);
+			if (_type == lua_t::USERDATA)
 			{
-
+				_userdata = basic::to_userdata(L, -1);
 			}
 			else {
-
+				basic::pop(L, 1);
+				basic::push_string(L, "ClassDesc");
+				_type = basic::raw_get_table(L, stack_index);
+				if (_type == lua_t::LIGHTUSERDATA)
+				{
+					_userdata = basic::to_userdata(L, -1);
+					_class_metatable = true;
+				}
 			}
+			_two_level_ptr = true;
+			basic::pop(L, 1);
 		}
 		break;
-		case LUA_TUSERDATA: break;
+		case lua_t::USERDATA: 
+		{
+		}
+		break;
 		default:
 			break;
 		}
@@ -706,7 +759,18 @@ namespace lua_api
 			luaL_argcheck(L, false, stack_index, "input val test, invalid user data");
 			return nullptr;
 		}
-		return (T*)*_instance_ptr;
+		return (void*)*_instance_ptr;
+	}
+
+	inline void* to_cpp_instance(lua_State* L, int32 stack_index)
+	{
+		bool _two_level_ptr = false;
+		void* _userdata = to_userdata(L, stack_index, &_two_level_ptr);
+		if (_userdata)
+		{
+			return _two_level_ptr ? *((void**)_userdata) : _userdata;
+		}
+		return nullptr;
 	}
 
 	template<typename T>

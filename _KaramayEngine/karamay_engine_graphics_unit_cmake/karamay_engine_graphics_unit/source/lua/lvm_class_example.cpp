@@ -69,14 +69,14 @@ namespace CTest_for_lua
 		auto test = lua_api::to_cpp_instance_with_validation<CTest>(L, 1, "CTest_clazz");
 		if (_num == 1)
 		{
-			auto testParam = lua_api::to_cpp_instance<CTest>(L, 2);
+			auto testParam = (CTest*)lua_api::to_cpp_instance(L, 2);
 			auto testReturn = test->finishNewCTest(testParam);
 			lua_api::basic::push_light_userdata(L, testReturn);
 			// stack : userdata, userdata, userdata
 		}
 		if (_num == 2)
 		{
-			auto test = lua_api::to_cpp_instance<CTest>(L, 2);
+			auto test = (CTest*)lua_api::to_cpp_instance(L, 2);
 			auto i = lua_api::basic::to_integer<int32>(L, 3);
 			auto testReturn = test->finishNewCTest(test, i);
 			lua_api::basic::push_light_userdata(L, testReturn);
@@ -257,9 +257,13 @@ namespace gl_compute_pipeline_for_lua
 	static int load(lua_State* L)
 	{
 		auto _num = lua_api::basic::top_index(L); // index : 2
-
+		if (_num != 2)
+		{
+			std::cerr << __FUNCTION__ << " invalid parameters" << std::endl;
+			return 0;
+		}
 		// stack : string, userdata
-		auto _comp_pipeline = lua_api::to_cpp_instance<gl_compute_pipeline>(L, 1);
+		auto _comp_pipeline = (gl_compute_pipeline*)lua_api::to_cpp_instance(L, 1);
 		auto _pipeline_dir = lua_api::basic::to_string(L, 2);
 		auto _result = _comp_pipeline->load(_pipeline_dir);
 		lua_api::basic::push_boolean(L, _result);
@@ -270,9 +274,8 @@ namespace gl_compute_pipeline_for_lua
 	static int enable(lua_State* L)
 	{
 		auto _num = lua_api::basic::top_index(L); // index : 1
-
 		// stack : userdata
-		auto _comp_pipeline = lua_api::to_cpp_instance<gl_compute_pipeline>(L, 1);
+		auto _comp_pipeline = (gl_compute_pipeline*)lua_api::to_cpp_instance(L, 1);
 		_comp_pipeline->enable();
 		return 0;
 	}
@@ -280,9 +283,8 @@ namespace gl_compute_pipeline_for_lua
 	static int disable(lua_State* L)
 	{
 		auto _num = lua_api::basic::top_index(L); // index : 1
-
 		// stack : userdata
-		auto _comp_pipeline =lua_api::to_cpp_instance<gl_compute_pipeline>(L, 1);
+		auto _comp_pipeline = (gl_compute_pipeline*)lua_api::to_cpp_instance(L, 1);
 		_comp_pipeline->disable();
 		return 0;
 	}
@@ -292,7 +294,7 @@ namespace gl_compute_pipeline_for_lua
 		auto _num = lua_api::basic::top_index(L); // index : 4
 
 		// stack : integer, integer, integer, userdata
-		auto _comp_pipeline = lua_api::to_cpp_instance<gl_compute_pipeline>(L, 1);
+		auto _comp_pipeline = (gl_compute_pipeline*)lua_api::to_cpp_instance(L, 1);
 		auto _x = lua_api::basic::to_integer<uint32>(L, 2);
 		auto _y = lua_api::basic::to_integer<uint32>(L, 3);
 		auto _z = lua_api::basic::to_integer<uint32>(L, 4);

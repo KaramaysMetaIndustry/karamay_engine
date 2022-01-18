@@ -355,7 +355,7 @@ void test0()
 {
     lua_api::lua_vm _lvm;
     _lvm.start();
-    _lvm.do_file("C:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\scripts\\blue_freckle\\Test.lua");
+    _lvm.do_file("G:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\scripts\\blue_freckle\\Test.lua");
 
 	auto* window = new glfw_window();
 	window->load_context();
