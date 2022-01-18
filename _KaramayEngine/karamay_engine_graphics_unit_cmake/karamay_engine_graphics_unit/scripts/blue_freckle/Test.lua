@@ -50,16 +50,25 @@
 --local testInstance = setmetatable({"userdata"}, test)
 
 
+local test1 = CTest()
+local test2 = CTest()
+print('test2 value is : ' .. test2:get())
+test2:set(10)
+local test3 = test1:finish(test2)
+print('test2 value is : ' .. test2:get())
+print('test3 value is : ' .. test3:get())
+
+
+
 local gl_static_mesh_renderer = gl_renderer()
 
-function gl_static_mesh_renderer:build( ... )
+if gl_static_mesh_renderer:load("/static_mesh_renderer") then
+	print("xxxxxx")
+end
 
-	local test1 = CTest()
-	local test2 = CTest()
-	print('test2 value is : ' .. test2:get())
-	local test3 = test1:finish(test2)
-	print('test2 value is : ' .. test2:get())
-	print('test3 value is : ' .. test3:get())
+
+
+function gl_static_mesh_renderer:build( ... )
 
 	local _graphics_pipeline = gl_graphics_pipeline()
 	_graphics_pipeline:load("/static_mesh_renderer")

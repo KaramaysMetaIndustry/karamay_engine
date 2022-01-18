@@ -14,22 +14,22 @@ namespace CTest_for_lua
 	// The first argument (if any) is at index 1 and its last argument is at index lua_gettop(L).
 	// To return values to Lua, a C function just pushes them onto the stack, in direct order (the first result is pushed first), and returns in C the number of results. 
 	// Any other value in the stack below the results will be properly discarded by Lua. Like a Lua function, a C function called by Lua can also return many results.
-	static int construct(lua_State* L)
+	static int __call(lua_State* L)
 	{
-		// stack : null
+		// stack : self
 		int32 _num = lua_api::basic::top_index(L);
-		if (_num != 0)
+		/*if (_num != 0)
 		{
 			return 0;
-		}
+		}*/
 		CTest* test = new CTest();
-		lua_api::basic::push_light_userdata(L, test); // this creation you should manager its lifecycle
-		// stack : lightuserdata
+		lua_api::basic::push_light_userdata(L, test);
+		// stack : userdata, self
 		lua_api::auxiliary::set_metatable(L, "CTest_clazz");
 		return 1;
 	}
 
-	static int getA(lua_State* L)
+	static int get(lua_State* L)
 	{
 		// stack : userdata
 		auto _num = lua_api::basic::top_index(L);
@@ -37,13 +37,13 @@ namespace CTest_for_lua
 		{
 			return 0;
 		}
-		auto ppTest = lua_api::to_cpp_instance_with_validation<CTest>(L, 1, "CTest_clazz");
+		auto ppTest = (CTest*)lua_api::to_cpp_instance(L, 1, "CTest_clazz");
 		lua_api::basic::push_integer(L, ppTest->getA());
 		// stack : integer, lightuserdata
 		return 1;
 	}
 
-	static int setA(lua_State* L)
+	static int set(lua_State* L)
 	{
 		// stack : integer, userdata
 		auto _num = lua_api::basic::top_index(L);
@@ -54,27 +54,27 @@ namespace CTest_for_lua
 #endif
 			return 0;
 		}
-		auto ppTest = lua_api::to_cpp_instance_with_validation<CTest>(L, 1, "CTest_clazz");
+		auto ppTest = (CTest*)lua_api::to_cpp_instance(L, 1, "CTest_clazz");
 		auto a = lua_api::basic::to_integer<int32>(L, 2);
 		ppTest->setA(a);
 		return 0;
 	}
 
-	static int finishNewCTest(lua_State* L)
+	static int finish(lua_State* L)
 	{
 		// stack : userdata, userdata
 		// stack : integer, userdata, userdata
 		int32 _num = lua_gettop(L);
 	
-		auto test = lua_api::to_cpp_instance_with_validation<CTest>(L, 1, "CTest_clazz");
-		if (_num == 1)
+		auto test = (CTest*)lua_api::to_cpp_instance(L, 1, "CTest_clazz");
+		if (_num == 2)
 		{
-			auto testParam = (CTest*)lua_api::to_cpp_instance(L, 2);
+			auto testParam = (CTest*)lua_api::to_cpp_instance(L, 2, "CTest_clazz");
 			auto testReturn = test->finishNewCTest(testParam);
 			lua_api::basic::push_light_userdata(L, testReturn);
 			// stack : userdata, userdata, userdata
 		}
-		if (_num == 2)
+		if (_num == 3)
 		{
 			auto test = (CTest*)lua_api::to_cpp_instance(L, 2);
 			auto i = lua_api::basic::to_integer<int32>(L, 3);
@@ -90,91 +90,163 @@ namespace CTest_for_lua
 	LUA_LIBS_E()
 
 	LUA_FUNCS_B()
-		__CALL(construct)
-		FUNC("get", getA)
-		FUNC("set", setA)
-		FUNC("finish", finishNewCTest)
+		__CALL()
+		FUNC(get)
+		FUNC(set)
+		FUNC(finish)
 	LUA_FUNCS_E()
 
 	IMPLEMENT_EXPORTER(CTest)
 };
 
-namespace gl_renderer_for_lua
+
+namespace glsl_vertex_shader_for_lua
 {
-	static int construct(lua_State* L)
+
+}
+
+namespace glsl_tessellation_control_shader_for_lua
+{
+
+}
+
+namespace glsl_tessellation_evaluation_shader_for_lua
+{
+
+}
+
+namespace glsl_geometry_shader_for_lua
+{
+
+}
+
+namespace glsl_fragment_shader_for_lua
+{
+
+}
+
+namespace glsl_graphics_pipeline_program_for_lua
+{
+
+	static int __call(lua_State* l)
 	{
-		// stack : null
-		auto _num = lua_api::basic::top_index(L);
-		if (_num != 0)
-		{
-			return 0;
-		}
-		gl_renderer* _renderer = new gl_static_mesh_renderer();
-		lua_api::basic::push_light_userdata(L, _renderer);
-		// stack : userdata
-		lua_api::auxiliary::set_metatable(L, "gl_renderer_clazz");
+		// stack : 
+		auto _num = lua_api::basic::top_index(l);
+
 		return 1;
 	}
 
+
+
 	LUA_FUNCS_B()
-		__CALL(construct)
+		__CALL()
 	LUA_FUNCS_E()
 
-	IMPLEMENT_EXPORTER(gl_renderer)
+}
+
+namespace glsl_compute_shader_for_lua
+{
+
+}
+
+namespace glsl_compute_pipeline_program_for_lua
+{
+
+}
+
+namespace glsl_mesh_pipeline_program_for_lua
+{
+
 }
 
 namespace gl_graphics_pipline_for_lua
 {
-	static int __call(lua_State* L)
+	static int __call(lua_State* l)
 	{
 		// stack : userdata
-		auto _num = lua_api::basic::top_index(L);
+		auto _num = lua_api::basic::top_index(l);
 		if (_num != 1)
 		{
 			return 0;
 		}
-		auto _program = lua_api::to_cpp_instance_with_validation<glsl_graphics_pipeline_program>(L, 1, "glsl_graphics_pipeline_program");
+		auto _program = (glsl_graphics_pipeline_program*)lua_api::to_cpp_instance(l, 1, "glsl_graphics_pipeline_program");
+		if (!_program)
+		{
+			return 0;
+		}
 		auto _pipeline = new gl_graphics_pipeline(_program);
-		lua_api::basic::push_light_userdata(L, _pipeline);
-		// stack : userdata, userdata
-		lua_api::auxiliary::set_metatable(L, "gl_graphics_pipeline_clazz");
+		if (!_pipeline)
+		{
+			return 0;
+		}
+		lua_api::basic::push_light_userdata(l, _pipeline);
+		// stack : (userdata), userdata
+		lua_api::auxiliary::set_metatable(l, "gl_graphics_pipeline_clazz");
 		return 1;
 	}
 
-	static int load(lua_State* L)
+
+	static int load(lua_State* l)
 	{
-		return 0;
+		// stack : string, userdata
+		auto _num = lua_api::basic::top_index(l);
+		if (_num != 2)
+		{
+			return 0;
+		}
+		
+		auto _pipeline = (gl_graphics_pipeline*)lua_api::to_cpp_instance(l, 1, "gl_graphics_pipeline");
+		if (!_pipeline)
+		{
+			return 0;
+		}
+		auto _pipeline_dir = lua_api::basic::to_string(l, 2);
+		auto _result = _pipeline->load(_pipeline_dir);
+		lua_api::basic::push_boolean(l, _result);
+		// stack : (boolean), string, userdata
+		return 1;
 	}
 
-	static int enable(lua_State* L)
+	static int enable(lua_State* l)
 	{
 		// stack : userdata
-		int32 _num = lua_api::basic::top_index(L);
+		int32 _num = lua_api::basic::top_index(l);
 		if (_num != 1)
 		{
 			return 0;
 		}
-		auto _pipeline = lua_api::to_cpp_instance_with_validation<gl_graphics_pipeline>(L, 1, "gl_graphics_pipeline_clazz");
+		auto _pipeline = (gl_graphics_pipeline*)lua_api::to_cpp_instance(l, 1, "gl_graphics_pipeline_clazz");
 		_pipeline->enable();
 		return 0;
 	}
 
-	static int disable(lua_State* L)
+	static int disable(lua_State* l)
 	{
 		// stack : userdata
-		int32 _num = lua_api::basic::top_index(L);
-		auto _pipeline = lua_api::to_cpp_instance_with_validation<gl_graphics_pipeline>(L, 1, "gl_graphics_pipeline_clazz");
-		if (!_pipeline) return 0;
+		int32 _num = lua_api::basic::top_index(l);
+		auto _pipeline = (gl_graphics_pipeline*)lua_api::to_cpp_instance(l, 1, "gl_graphics_pipeline_clazz");
+		if (!_pipeline)
+		{
+			return 0;
+		}
 		_pipeline->disable();
 		return 0;
 	}
 
 	static int syncable_draw_arrays(lua_State* L)
 	{
-		// stack : (2)/(4) userdata
-		int32 _num = lua_api::basic::top_index(L); // index : 4+1 or 2+1
-		auto _pipeline = lua_api::to_cpp_instance_with_validation<gl_graphics_pipeline>(L, 1, "gl_graphics_pipeline_clazz");
-		if (!_pipeline) return 0;
+		// integer, integer, userdata
+		// integer, integer, integer, integer, userdata
+		int32 _num = lua_api::basic::top_index(L);
+		if (_num < 3)
+		{
+			return 0;
+		}
+		auto _pipeline = (gl_graphics_pipeline*)lua_api::to_cpp_instance(L, 1, "gl_graphics_pipeline_clazz");
+		if (!_pipeline)
+		{
+			return 0;
+		}
 
 		if (_num == 3)
 		{
@@ -200,9 +272,10 @@ namespace gl_graphics_pipline_for_lua
 
 	static int unsyncable_draw_arrays(lua_State* L)
 	{
-		// stack : (2)/(4) userdata
+		// integer, integer, userdata
+		// integer, integer, integer, integer, userdata
 		int32 _num = lua_api::basic::top_index(L); // index : 2+1 or 4+1
-		auto _pipeline = lua_api::to_cpp_instance_with_validation<gl_graphics_pipeline>(L, 1, "gl_graphics_pipeline_clazz");
+		auto _pipeline = (gl_graphics_pipeline*)lua_api::to_cpp_instance(L, 1, "gl_graphics_pipeline_clazz");
 		if (_num == 3)
 		{
 			_pipeline->unsyncable_draw_arrays(
@@ -223,12 +296,12 @@ namespace gl_graphics_pipline_for_lua
 	}
 
 	LUA_FUNCS_B()
-		__CALL(__call)
-		FUNC("load", load)
-		FUNC("enbale", enable)
-		FUNC("disable", disable)
-		FUNC("syncable_draw_arrays", syncable_draw_arrays)
-		FUNC("unsyncable_draw_arrays", unsyncable_draw_arrays)
+		__CALL()
+		FUNC(load)
+		FUNC(enable)
+		FUNC(disable)
+		FUNC(syncable_draw_arrays)
+		FUNC(unsyncable_draw_arrays)
 	LUA_FUNCS_E()
 	
 	IMPLEMENT_EXPORTER(gl_graphics_pipeline)
@@ -236,79 +309,77 @@ namespace gl_graphics_pipline_for_lua
 
 namespace gl_compute_pipeline_for_lua
 {
-	static int construct(lua_State* L)
+	static int __call(lua_State* l)
 	{
-		auto _num = lua_api::basic::top_index(L);
+		// stack : userdata
+		auto _num = lua_api::basic::top_index(l);
 		if (_num != 1)
 		{
 			return 0;
 		}
-
-		// stack : userdata
-		auto _program = lua_api::to_cpp_instance_with_validation<glsl_compute_pipeline_program>(L, 1, "glsl_compute_pipeline_program_clazz");
+		auto _program = (glsl_compute_pipeline_program*)lua_api::to_cpp_instance(l, 1, "glsl_compute_pipeline_program_clazz");
 		auto _pipeline = new gl_compute_pipeline(_program);
-		lua_api::basic::push_light_userdata(L, _pipeline);
+		lua_api::basic::push_light_userdata(l, _pipeline);
 		// stack : userdata, userdata
-		lua_api::auxiliary::set_metatable(L, "gl_compute_pipeline_clazz");
+		lua_api::auxiliary::set_metatable(l, "gl_compute_pipeline_clazz");
 		// stack : (userdata), userdata
 		return 1;
 	}
 
-	static int load(lua_State* L)
+
+	static int load(lua_State* l)
 	{
-		auto _num = lua_api::basic::top_index(L); // index : 2
+		// stack : string, userdata
+		auto _num = lua_api::basic::top_index(l);
 		if (_num != 2)
 		{
 			std::cerr << __FUNCTION__ << " invalid parameters" << std::endl;
 			return 0;
 		}
-		// stack : string, userdata
-		auto _comp_pipeline = (gl_compute_pipeline*)lua_api::to_cpp_instance(L, 1);
-		auto _pipeline_dir = lua_api::basic::to_string(L, 2);
+		auto _comp_pipeline = (gl_compute_pipeline*)lua_api::to_cpp_instance(l, 1, "gl_compute_pipeline_clazz");
+		auto _pipeline_dir = lua_api::basic::to_string(l, 2);
 		auto _result = _comp_pipeline->load(_pipeline_dir);
-		lua_api::basic::push_boolean(L, _result);
+		lua_api::basic::push_boolean(l, _result);
 		// stack : (boolean), string, userdata
 		return 1;
 	}
 
-	static int enable(lua_State* L)
+	static int enable(lua_State* l)
 	{
-		auto _num = lua_api::basic::top_index(L); // index : 1
 		// stack : userdata
-		auto _comp_pipeline = (gl_compute_pipeline*)lua_api::to_cpp_instance(L, 1);
+		auto _num = lua_api::basic::top_index(l);
+		auto _comp_pipeline = (gl_compute_pipeline*)lua_api::to_cpp_instance(l, 1, "gl_compute_pipeline_clazz");
 		_comp_pipeline->enable();
 		return 0;
 	}
 
-	static int disable(lua_State* L)
+	static int disable(lua_State* l)
 	{
-		auto _num = lua_api::basic::top_index(L); // index : 1
 		// stack : userdata
-		auto _comp_pipeline = (gl_compute_pipeline*)lua_api::to_cpp_instance(L, 1);
+		auto _num = lua_api::basic::top_index(l);
+		auto _comp_pipeline = (gl_compute_pipeline*)lua_api::to_cpp_instance(l, 1, "gl_compute_pipeline_clazz");
 		_comp_pipeline->disable();
 		return 0;
 	}
 
-	static int dispatch(lua_State* L)
+	static int dispatch(lua_State* l)
 	{
-		auto _num = lua_api::basic::top_index(L); // index : 4
-
 		// stack : integer, integer, integer, userdata
-		auto _comp_pipeline = (gl_compute_pipeline*)lua_api::to_cpp_instance(L, 1);
-		auto _x = lua_api::basic::to_integer<uint32>(L, 2);
-		auto _y = lua_api::basic::to_integer<uint32>(L, 3);
-		auto _z = lua_api::basic::to_integer<uint32>(L, 4);
+		auto _num = lua_api::basic::top_index(l);
+		auto _comp_pipeline = (gl_compute_pipeline*)lua_api::to_cpp_instance(l, 1, "gl_compute_pipeline_clazz");
+		auto _x = lua_api::basic::to_integer<uint32>(l, 2);
+		auto _y = lua_api::basic::to_integer<uint32>(l, 3);
+		auto _z = lua_api::basic::to_integer<uint32>(l, 4);
 		_comp_pipeline->dispatch(_x, _y, _z);
-
 		return 0;
 	}
 
 	LUA_FUNCS_B()
-		__CALL(construct)
-		FUNC("load", load)
-		FUNC("enable", enable)
-		FUNC("disable", disable)
-		FUNC("dispatch", dispatch)
+		__CALL()
+		FUNC(load)
+		FUNC(enable)
+		FUNC(disable)
+		FUNC(dispatch)
 	LUA_FUNCS_E()
 
 	IMPLEMENT_EXPORTER(gl_compute_pipeline)
@@ -317,4 +388,43 @@ namespace gl_compute_pipeline_for_lua
 namespace gl_mesh_pipeline_for_lua
 {
 
+}
+
+namespace gl_renderer_for_lua
+{
+	static int __call(lua_State* l)
+	{
+		// stack : self
+		auto _num = lua_api::basic::top_index(l);
+		if (_num != 1)
+		{
+			return 0;
+		}
+		gl_renderer* _renderer = new gl_static_mesh_renderer();
+		lua_api::basic::push_light_userdata(l, _renderer);
+		// stack : userdata, self
+		lua_api::auxiliary::set_metatable(l, "gl_renderer_clazz");
+		return 1;
+	}
+
+	static int load(lua_State* l) 
+	{
+		// stack : userdata, string
+		auto _num = lua_api::basic::top_index(l);
+		if (_num != 2)
+		{
+			return 0;
+		}
+		auto s = lua_api::basic::to_string(l, 2);
+		std::cout << "s : " << s << std::endl;
+		lua_api::basic::push_boolean(l, true);
+		return 1; 
+	}
+
+	LUA_FUNCS_B()
+		__CALL()
+		FUNC(load)
+	LUA_FUNCS_E()
+
+	IMPLEMENT_EXPORTER(gl_renderer)
 }

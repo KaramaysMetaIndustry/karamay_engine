@@ -4,6 +4,10 @@
 #include "public/stl.h"
 #include "public/_lua.h"
 
+
+// 只有 userdata table lightuserdata 有权利去修改
+// 
+
 namespace lua_api
 {
 	//nil, boolean, number, string, function, userdata, thread, and table.
@@ -177,10 +181,18 @@ namespace lua_api
 			lua_pushstring(L, value.c_str());
 		}
 
+		/*
+		* Pushes a light userdata onto the stack.
+		* Userdata represent C values in Lua. A light userdata represents a pointer, a void*.
+		* It is a value (like a number): you do not create it, 
+		* it has no individual metatable, and it is not collected (as it was never created). 
+		* A light userdata is equal to "any" light userdata with the same C address.
+		*/
 		inline void push_light_userdata(lua_State* L, void* userdata)
 		{
 			lua_pushlightuserdata(L, userdata);
 		}
+		
 		inline void push_light_userdata(lua_State* L, const void* userdata)
 		{
 			lua_pushlightuserdata(L, (void*)userdata);
@@ -288,7 +300,7 @@ namespace lua_api
 
 		inline lua_CFunction to_cfunction(lua_State* L, int32 stack_index) 
 		{ 
-			return lua_tocfunction(L, stack_index); 
+			return lua_tocfunction(L, stack_index);
 		}
 
 #ifdef _DEBUG
@@ -303,9 +315,9 @@ namespace lua_api
 		* Because indices start at 1, this result is equal to the number of elements in the stack; in particular, 0 means an empty stack.
 		* @return stack top index (1 ~ N)
 		*/
-		inline int32 top_index(lua_State* L) 
+		inline int32 top_index(lua_State* l)
 		{ 
-			return lua_gettop(L);
+			return lua_gettop(l);
 		}
 
 		/////// fetch value from lua, push onto stack
@@ -315,9 +327,9 @@ namespace lua_api
 		* Returns the type of that value.
 		* @return the type of value
 		*/
-		inline int32 get_global(lua_State* L, const char* name)
+		inline int32 get_global(lua_State* l, const char* name)
 		{
-			return lua_getglobal(L, name);
+			return lua_getglobal(l, name);
 		}
 
 		/*
@@ -326,51 +338,85 @@ namespace lua_api
 		* Returns the type of the pushed value.
 		* @return the type of value
 		*/
-		inline int32 geti(lua_State* L, int32 stack_index, int32 index)
+		inline int32 geti(lua_State* l, int32 stack_index, int32 index)
 		{
-			return lua_geti(L, stack_index, index);
+			return lua_geti(l, stack_index, index);
 		}
 
 		/*
 		* Pushes onto the stack the value t[k], where t is the value at the given index and k is the value on the top of the stack.
-		* This function pops the key from the stack, pushing the resulting value in its place. As in Lua, this function may trigger a metamethod for the "index" event (see §2.4).
-		* @return the type of pushed value
+		* This function pops the key from the stack, pushing the resulting value in its place. 
+		* As in Lua, this function may trigger a metamethod for the "index" event
 		*/
-		inline lua_t get_table(lua_State* L, int32 stack_index)
+		inline lua_t get_table(lua_State* l, int32 index)
 		{
-			return static_cast<lua_t>(lua_gettable(L, stack_index));
+			return static_cast<lua_t>(lua_gettable(l , index));
 		}
 
 		/*
 		* Does the equivalent to t[k] = v, where t is the value at the given index, v is the value on the top of the stack, and k is the value just below the top.
 		* This function pops both the key and the value from the stack. 
-		* As in Lua, this function may trigger a metamethod for the "newindex" event (see §2.4).
-		* stack : value, key, ...[index]
+		* As in Lua, this function may trigger a metamethod for the "__newindex" event
 		*/
-		inline void set_table(lua_State* L, int32 stack_index)
+		inline void set_table(lua_State* l, int32 index)
 		{
-			if (!lua_istable(L, stack_index)) return;
-			lua_settable(L, stack_index);
+			lua_settable(l, index);
 		}
 
-		inline lua_t raw_get_table(lua_State* L, int32 stack_index)
+		/*
+		*
+		*/
+		inline lua_t raw_get(lua_State* l, int32 index)
 		{
-			return static_cast<lua_t>(lua_rawget(L, stack_index));
+			return static_cast<lua_t>(lua_rawget(l, index));
 		}
 		
-		inline void raw_set_table(lua_State* L, int32 stack_index)
+		/*
+		* 
+		*/
+		inline void raw_set(lua_State* l, int32 index)
 		{
-			lua_rawset(L, stack_index);
+			lua_rawset(l, index);
 		}
 
-		inline lua_t raw_get_table(lua_State* L, int32 stack_index, int64 key)
+		/*
+		* Pushes onto the stack the value t[n], where t is the table at the given index.
+		* The access is raw, that is, it does not use the __index metavalue.
+		* Returns the type of the pushed value.
+		*/
+		inline lua_t raw_get(lua_State* l, int32 index, int64 key)
 		{
-			return static_cast<lua_t>(lua_rawgeti(L, stack_index, key));
+			return static_cast<lua_t>(lua_rawgeti(l, index, key));
 		}
 
-		inline void raw_set_table(lua_State* L, int32 stack_index, int64 key)
+		/*
+		* Does the equivalent of t[i] = v, where t is the table at the given index and v is the value on the top of the stack.
+		* This function pops the value from the stack. 
+		* The assignment is raw, that is, it does not use the __newindex metavalue.
+		*/
+		inline void raw_set(lua_State* l, int32 index, int64 key)
 		{
-			lua_rawseti(L, stack_index, key);
+			lua_rawseti(l, index, key);
+		}
+
+		/*
+		* Pushes onto the stack the value t[k], where t is the value at the given index.
+		* As in Lua, this function may trigger a metamethod for the "index" event
+		*/
+		inline lua_t get_field(lua_State* l, int32 index, const char* key)
+		{
+			return static_cast<lua_t>(lua_getfield(l, index, key));
+		}
+
+		/*
+		* Does the equivalent to t[k] = v, where t is the value at the given index and v is the value on the top of the stack.
+		* This function pops the value from the stack. 
+		* As in Lua, this function may trigger a metamethod for the "newindex" event
+		*/
+		inline void set_field(lua_State* l, int32 index, const char* key)
+		{
+			// v, ..., t 
+			lua_setfield(l, index, key);
 		}
 
 		/*
@@ -378,9 +424,9 @@ namespace lua_api
 		* and Pops it( table or nil) from the stack and
 		* @return type of value
 		*/
-		inline void set_top_as_value_metatable(lua_State* L, int32 value_stack_index)
+		inline void set_metatable(lua_State* l, int32 index)
 		{
-			lua_setmetatable(L, value_stack_index);
+			lua_setmetatable(l, index);
 		}
 
 		/*
@@ -388,9 +434,9 @@ namespace lua_api
 		* Otherwise, the function returns 0 and pushes nothing on the stack.
 		* @return 1 has metatable and push the metatable onto stack, 0 has no metatable and push nothing
 		*/
-		inline int32 get_value_metatable(lua_State* L, int32 stack_index)
+		inline bool get_metatable(lua_State* l, int32 index)
 		{
-			return lua_getmetatable(L, stack_index);
+			return lua_getmetatable(l, index) == 1;
 		}
 
 		inline int32 getiuservalue(lua_State* L, int32 index, int32 n)
@@ -398,9 +444,9 @@ namespace lua_api
 			return lua_getiuservalue(L, index, n);
 		}
 
-		inline void set_top(lua_State* L, int32 stack_index)
+		inline void set_top(lua_State* l, int32 index)
 		{
-			lua_settop(L, stack_index);
+			lua_settop(l, index);
 		}
 
 		inline void set_warnf(lua_State* L, lua_WarnFunction f, void* ud)
@@ -419,15 +465,6 @@ namespace lua_api
 		inline void set_global(lua_State* L, const char* name)
 		{
 			lua_setglobal(L, name);
-		}
-
-		/*
-		* Does the equivalent to t[k] = v, where t is the value at the given index and v is the value on the top of the stack.
-		* This function pops the value from the stack. As in Lua, this function may trigger a metamethod for the "newindex" event
-		*/
-		inline void set_field(lua_State* L, int32 stack_index, const char* k)
-		{
-			lua_setfield(L, stack_index, k);
 		}
 
 		inline void set_allocf(lua_State* L, lua_Alloc f, void* ud)
@@ -517,10 +554,11 @@ namespace lua_api
 		}
 
 		/*
-		* Registers all functions in the array l  into the table on the top of the stack (below optional upvalues, see next).
-		* When nup is not zero, all functions are created with nup upvalues, initialized with copies of the nup values previously pushed on the stack on top of the library table. 
+		* Registers all functions in the array l  
+		* into the table on the top of the stack (below optional upvalues, see next).
+		* When nup is not zero, all functions are created with nup upvalues, 
+		* initialized with copies of the nup values previously pushed on the stack on top of the library table. 
 		* These values are popped from the stack after the registration.
-		* 
 		*/
 		inline void set_funcs(lua_State* L, const luaL_Reg* funcs, int32 nup)
 		{
@@ -726,7 +764,7 @@ namespace lua_api
 		case lua_t::TABLE:
 		{
 			basic::push_string(L, "Object");
-			_type = basic::raw_get_table(L, stack_index);
+			_type = basic::raw_get(L, stack_index);
 			if (_type == lua_t::USERDATA)
 			{
 				_userdata = basic::to_userdata(L, -1);
@@ -734,7 +772,7 @@ namespace lua_api
 			else {
 				basic::pop(L, 1);
 				basic::push_string(L, "ClassDesc");
-				_type = basic::raw_get_table(L, stack_index);
+				_type = basic::raw_get(L, stack_index);
 				if (_type == lua_t::LIGHTUSERDATA)
 				{
 					_userdata = basic::to_userdata(L, -1);
@@ -773,11 +811,12 @@ namespace lua_api
 		return nullptr;
 	}
 
-	template<typename T>
-	inline T* to_cpp_instance_with_validation(lua_State* L, int32 stack_index, const char* metatable_name)
+	inline void* to_cpp_instance(lua_State* L, int32 stack_index, const char* metatable_name)
 	{
-		T** pp_userdata = (T**)luaL_checkudata(L, stack_index, metatable_name);
-		return (T*)*pp_userdata;
+		//void** pp_userdata = (void**)luaL_checkudata(L, stack_index, metatable_name);
+		//return (void*)*pp_userdata;
+		void* pp_userdata = (void*)luaL_checkudata(L, stack_index, metatable_name);
+		return pp_userdata;
 	}
 
 	struct lua_class
@@ -944,84 +983,110 @@ static const luaL_Reg functions[] =\
 {nullptr}, {nullptr}\
 };\
 
-
-#define __INDEX(FULL_FUNC_NAME)\
-{"__index", FULL_FUNC_NAME},\
-
-#define __CALL(FULL_FUNC_NAME)\
-{"__call", FULL_FUNC_NAME},\
-
-#define __GC(FULL_FUNC_NAME)\
-{"__gc", FULL_FUNC_NAME},\
+/////////// metatable functions helper
 
 // +
-#define __ADD(FULL_FUNC_NAME)\
-{"__add", FULL_FUNC_NAME},\
+#define __ADD()\
+{"__add", __add},\
 
 // -
-#define __SUB(FULL_FUNC_NAME)\
-{"__sub", FULL_FUNC_NAME},\
+#define __SUB()\
+{"__sub", __sub},\
 
 // *
-#define __MUL(FULL_FUNC_NAME)\
-{"__mul", FULL_FUNC_NAME},\
+#define __MUL()\
+{"__mul", __mul},\
 
 // /
-#define __DIV(FULL_FUNC_NAME)\
-{"__div", FULL_FUNC_NAME},\
+#define __DIV()\
+{"__div", __div},\
 
 // %
-#define __MOD(FULL_FUNC_NAME)\
-{"__mod", FULL_FUNC_NAME},\
+#define __MOD()\
+{"__mod", __mod},\
 
 // ^
-#define __POW(FULL_FUNC_NAME)\
-{"__pow", FULL_FUNC_NAME},\
+#define __POW()\
+{"__pow", __pow},\
 
-#define __UNM(FULL_FUNC_NAME)\
-{"__unm", FULL_FUNC_NAME},\
+// 
+#define __UNM()\
+{"__unm", __unm},\
 
-#define __IDIV(FULL_FUNC_NAME)\
-{"__idiv", FULL_FUNC_NAME},\
+// //
+#define __IDIV()\
+{"__idiv", __idiv},\
 
-#define __BAND(FULL_FUNC_NAME)\
-{"__band", FULL_FUNC_NAME},\
+// &
+#define __BAND()\
+{"__band", __band},\
 
-#define __BOR(FULL_FUNC_NAME)\
-{"__bor", FULL_FUNC_NAME},\
+// |
+#define __BOR()\
+{"__bor", __bor},\
 
-#define __BXOR(FULL_FUNC_NAME)\
-{"__bxor", FULL_FUNC_NAME},\
+#define __BXOR()\
+{"__bxor", __bxor},\
 
-#define __BNOT(FULL_FUNC_NAME)\
-{"__bnot", FULL_FUNC_NAME},\
+#define __BNOT()\
+{"__bnot", __bnot},\
 
-#define __SHL(FULL_FUNC_NAME)\
-{"__shl", FULL_FUNC_NAME},\
+// <<
+#define __SHL()\
+{"__shl", __shl},\
 
-#define __SHR(FULL_FUNC_NAME)\
-{"__shr", FULL_FUNC_NAME},\
+// >>
+#define __SHR()\
+{"__shr", __shr},\
 
-#define __CONCAT(FULL_FUNC_NAME)\
-{"__concat", FULL_FUNC_NAME},\
+// ..
+#define __CONCAT()\
+{"__concat", __concat},\
 
-#define __LEN(FULL_FUNC_NAME)\
-{"__len", FULL_FUNC_NAME},\
+// #
+#define __LEN()\
+{"__len", __len},\
 
 // ==
-#define __EQ(FULL_FUNC_NAME)\
-{"__eq", FULL_FUNC_NAME},\
+#define __EQ()\
+{"__eq", __eq},\
 
 // <
-#define __LT(FULL_FUNC_NAME)\
-{"__lt", FULL_FUNC_NAME},\
+#define __LT()\
+{"__lt", __lt},\
 
 // <=
-#define __LE(FULL_FUNC_NAME)\
-{"__le", FULL_FUNC_NAME},\
+#define __LE()\
+{"__le", __le},\
 
-#define FUNC(FUNC_NAME, FUNC_PTR)\
-{FUNC_NAME, FUNC_PTR},\
+
+#define __INDEX()\
+{"__index", __index},\
+
+#define __NEWINDEX()\
+{"__newindex", __newindex},\
+
+#define __CALL()\
+{"__call", __call},\
+
+
+#define __GC()\
+{"__gc", __gc},\
+
+#define __CLOSE()\
+{"__close", __close},\
+
+#define __NAME()\
+{"__name", __name},\
+
+#define __MODE()\
+{"__mode", __mode},\
+
+#define __PAIRS()\
+{"__pairs", __pairs}\
+
+#define FUNC(FUNC_PTR)\
+{#FUNC_PTR, FUNC_PTR},\
 
 #define IMPLEMENT_EXPORTER(NAME)\
 struct NAME##_exporter\
