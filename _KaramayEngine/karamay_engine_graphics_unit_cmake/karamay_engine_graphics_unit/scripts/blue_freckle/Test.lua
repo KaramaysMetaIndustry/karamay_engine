@@ -84,6 +84,14 @@ function gl_static_mesh_renderer:render( delta_time )
 		_compute_pipeline:dispatch(i, i+1, i+3)
 	end
 
+	for k,v in pairs(table_name) do
+	print(k,v)
+	end
+
+	for i,v in ipairs(table_name) do
+	print(i,v)
+    end
+
 	_compute_pipeline:disable()
 
 	_graphics_pipeline:enable()
