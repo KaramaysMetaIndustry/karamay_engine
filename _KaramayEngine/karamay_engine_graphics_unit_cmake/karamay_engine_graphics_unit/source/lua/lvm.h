@@ -120,187 +120,118 @@ namespace lua_api
 			lua_pop(L, num);
 		}
 
-		////// push*  : push value onto the stack from C
-
-		inline void push_nil(lua_State* L) 
-		{ 
-			lua_pushnil(L);
-		}
-
-		inline void push_boolean(lua_State* L, bool value) 
+		template<typename T> inline void push(lua_State* l, T value) { static_assert(false, "push<T> , T is not supported"); }
+		template<typename T> inline void push(lua_State* l, T* value) { lua_pushlightuserdata(l, (void*)value); }
+		template<typename T> inline void push(lua_State* l, const T* value) { lua_pushlightuserdata(l, (void*)value); }
+		template<> inline void push(lua_State* l, bool value) { lua_pushboolean(l, static_cast<int>(value)); }
+		template<> inline void push(lua_State* l, uint8 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
+		template<> inline void push(lua_State* l, uint16 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
+		template<> inline void push(lua_State* l, uint32 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
+		template<> inline void push(lua_State* l, uint64 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
+		template<> inline void push(lua_State* l, int8 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
+		template<> inline void push(lua_State* l, int16 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
+		template<> inline void push(lua_State* l, int32 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
+		template<> inline void push(lua_State* l, int64 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
+		template<> inline void push(lua_State* l, float value) { lua_pushboolean(l, static_cast<lua_Number>(value)); }
+		template<> inline void push(lua_State* l, double value) { lua_pushboolean(l, static_cast<lua_Number>(value)); }
+		template<> inline void push(lua_State* l, char* value)
 		{
-			lua_pushboolean(L, static_cast<int>(value)); 
+			lua_pushstring(l, value);
 		}
-
-		template<typename INTEGER_T>
-		inline void push_integer(lua_State* L, INTEGER_T value)
+		template<> inline void push(lua_State* l, const char* value)
 		{
-			static_assert(
-				std::is_same_v<uint8, INTEGER_T> ||
-				std::is_same_v<uint16, INTEGER_T> ||
-				std::is_same_v<uint32, INTEGER_T> ||
-				std::is_same_v<uint64, INTEGER_T> ||
-				std::is_same_v<int8, INTEGER_T> ||
-				std::is_same_v<int16, INTEGER_T> ||
-				std::is_same_v<int32, INTEGER_T> ||
-				std::is_same_v<int64, INTEGER_T>,
-				"integer must be std(uint8, uint16, uin32, uint64, int8, int16, int32, int64)"
-				);
-			lua_pushinteger(L, static_cast<lua_Integer>(value));
+			lua_pushstring(l, value);
 		}
-
-		template<typename NUMBER_T>
-		inline void push_number(lua_State* L, NUMBER_T value)
+		template<> inline void push(lua_State* l, std::string& value)
 		{
-			static_assert(
-				std::is_same_v<float, NUMBER_T> ||
-				std::is_same_v<double, NUMBER_T>,
-				"number must be std(float, double)"
-				);
-			lua_pushnumber(L, static_cast<lua_Number>(value));
+			lua_pushstring(l, value.c_str());
 		}
-
-		inline void push_string(lua_State* L, char* value) 
-		{ 
-			lua_pushstring(L, value); 
-		}
-		inline void push_string(lua_State* L, const char* value) 
-		{ 
-			lua_pushstring(L, value);
-		}
-		inline void push_string(lua_State* L, std::string& value) 
-		{ 
-			lua_pushstring(L, value.c_str()); 
-		}
-		inline void push_string(lua_State* L, const std::string& value) 
-		{ 
-			lua_pushstring(L, value.c_str());
-		}
-		inline void push_string(lua_State* L, std::string&& value) 
-		{ 
-			lua_pushstring(L, value.c_str());
-		}
-
-		/*
-		* Pushes a light userdata onto the stack.
-		* Userdata represent C values in Lua. A light userdata represents a pointer, a void*.
-		* It is a value (like a number): you do not create it, 
-		* it has no individual metatable, and it is not collected (as it was never created). 
-		* A light userdata is equal to "any" light userdata with the same C address.
-		*/
-		inline void push_light_userdata(lua_State* L, void* userdata)
+		template<> inline void push(lua_State* l, const std::string& value)
 		{
-			lua_pushlightuserdata(L, userdata);
+			lua_pushstring(l, value.c_str());
+		}
+		template<> inline void push(lua_State* l, std::string&& value)
+		{
+			lua_pushstring(l, value.c_str());
 		}
 		
-		inline void push_light_userdata(lua_State* L, const void* userdata)
+		inline void push_nil(lua_State* l) { lua_pushnil(l); }
+		inline void push_value(lua_State* l, int32 index)
 		{
-			lua_pushlightuserdata(L, (void*)userdata);
+			lua_pushvalue(l, index);
 		}
-
-		inline void push_thread(lua_State* L)
+		inline void push_table(lua_State* l)
 		{
-			lua_pushthread(L);
+			lua_pushglobaltable(l);
 		}
-
-		inline void push_table(lua_State* L)
-		{
-			lua_pushglobaltable(L);
-		}
+		inline void push_thread(lua_State* l) { lua_pushthread(l); }
 		
-		inline void push_value(lua_State* L, int32 index)
-		{
-			lua_pushvalue(L, index);
-		}
-
 		/*
-		* Loads a Lua chunk without running it. 
-		* If there are no errors, lua_load pushes the compiled chunk as a Lua function on top of the stack. 
-		* Otherwise, it pushes an error message.
-		* 
-		* The lua_load function uses a user-supplied reader function to read the chunk (see lua_Reader). 
-		* The data argument is an opaque value passed to the reader function.
-		* The chunkname argument gives a name to the chunk, which is used for error messages and in debug information (see ¡ì4.7).
-		* lua_load automatically detects whether the chunk is text or binary and loads it accordingly (see program luac). 
-		* The string mode works as in function load, with the addition that a NULL value is equivalent to the string "bt".
-		* 
-		* lua_load uses the stack internally, so the reader function must always leave the stack unmodified when returning.
-		* lua_load can return LUA_OK, LUA_ERRSYNTAX, or LUA_ERRMEM. The function may also return other values corresponding to errors raised by the read function (see ¡ì4.4.1).
-		* If the resulting function has upvalues, its first upvalue is set to the value of the global environment stored at index LUA_RIDX_GLOBALS in the registry (see ¡ì4.3). 
-		* When loading main chunks, this upvalue will be the _ENV variable (see ¡ì2.2). Other upvalues are initialized with nil.
-		*/
-		inline lua_status load(lua_State* L, lua_Reader reader, void* data, const char* chunk_name, const char* mode)
-		{
-			return static_cast<lua_status>(lua_load(L, reader, data, chunk_name, mode));
-		}
-
-		/*
-		* Creates a new empty table and pushes it onto the stack. 
+		* Creates a new empty table and pushes it onto the stack.
 		* It is equivalent to createtable(L, 0, 0).
 		*/
 		inline void new_table(lua_State* L)
 		{
 			lua_newtable(L);
 		}
-		
+
 		inline void new_table(lua_State* L, int32 narr, int32 nrec)
 		{
 			lua_createtable(L, narr, nrec);
 		}
 
-		////////// to* : fetch value form stack to C
-
-		template<typename INTEGER_T>
-		inline INTEGER_T to_integer(lua_State* L, int32 stack_index)
+		/*
+		* This function creates and pushes on the stack a new full userdata,
+		* with nuvalue associated Lua values, called user values, plus an associated block of raw memory with size bytes.
+		* (The user values can be set and read with the functions lua_setiuservalue and lua_getiuservalue.)
+		* The function returns the address of the block of memory.
+		* Lua ensures that this address is valid as long as the corresponding userdata is alive (see ¡ì2.5).
+		* Moreover, if the userdata is marked for finalization (see ¡ì2.5.3), its address is valid at least until the call to its finalizer.
+		*/
+		inline void new_userdata(lua_State* l, size_t size, int32 nuvalue)
 		{
-			static_assert(
-				std::is_same_v<uint8, INTEGER_T> ||
-				std::is_same_v<uint16, INTEGER_T> ||
-				std::is_same_v<uint32, INTEGER_T> ||
-				std::is_same_v<uint64, INTEGER_T> ||
-				std::is_same_v<int8, INTEGER_T> ||
-				std::is_same_v<int16, INTEGER_T> ||
-				std::is_same_v<int32, INTEGER_T> ||
-				std::is_same_v<int64, INTEGER_T>,
-				"integer must be uint8, uint16, uin32, uint64, int8, int16, int32, int64."
-				);
-			return static_cast<INTEGER_T>(lua_tointeger(L, stack_index));
+			std::vector<int> a;
+			void* _nuserdata = lua_newuserdatauv(l, size, nuvalue);
 		}
 
-		template<typename NUMBER_T>
-		inline NUMBER_T to_number(lua_State* L, int32 stack_index)
+		inline void new_userdata(lua_State* L, void* userdata)
 		{
-			static_assert(
-				std::is_same_v<float, NUMBER_T> ||
-				std::is_same_v<double, NUMBER_T>,
-				"number must be float or double."
-				);
-			return static_cast<NUMBER_T>(lua_tonumber(L, stack_index));
+			void** p_userdata = (void**)lua_newuserdata(L, sizeof(void*));
+			*p_userdata = userdata;
 		}
-
-		inline bool to_boolean(lua_State* L, int32 stack_index) 
-		{ 
-			return lua_toboolean(L, stack_index) == 1; 
-		}
-
-		inline std::string to_string(lua_State* L, int32 stack_index) 
-		{ 
-			return std::string(lua_tostring(L, stack_index));
-		}
-
-		inline void* to_userdata(lua_State* L, int32 index)
+		
+		inline int32 set_uservalue(lua_State* l, int32 index, int32 n)
 		{
-			return lua_touserdata(L, index);
+			return lua_setiuservalue(l, index, n);
 		}
+
+		inline int32 get_uservalue(lua_State* l, int32 index, int32 n)
+		{
+			return lua_getiuservalue(l, index, n);
+		}
+
+
+
+		template<typename T> inline T to(lua_State* l, int32 index) { static_assert(false, "to<T> , T is not supported"); return T(); }
+		template<> inline int8 to<int8>(lua_State* l, int32 index) { return static_cast<int8>(lua_tointeger(l, index)); }
+		template<> inline int16 to<int16>(lua_State* l, int32 index) { return static_cast<int16>(lua_tointeger(l, index)); }
+		template<> inline int32 to<int32>(lua_State* l, int32 index) { return static_cast<int32>(lua_tointeger(l, index)); }
+		template<> inline int64 to<int64>(lua_State* l, int32 index) { return static_cast<int64>(lua_tointeger(l, index)); }
+		template<> inline uint8 to<uint8>(lua_State* l, int32 index) { return static_cast<uint8>(lua_tointeger(l, index)); }
+		template<> inline uint16 to<uint16>(lua_State* l, int32 index) { return static_cast<uint16>(lua_tointeger(l, index)); }
+		template<> inline uint32 to<uint32>(lua_State* l, int32 index) { return static_cast<uint32>(lua_tointeger(l, index)); }
+		template<> inline uint64 to<uint64>(lua_State* l, int32 index) { return static_cast<uint64>(lua_tointeger(l, index)); }
+		template<> inline float to<float>(lua_State* l, int32 index) { return static_cast<float>(lua_tonumber(l, index)); }
+		template<> inline double to<double>(lua_State* l, int32 index) { return static_cast<double>(lua_tonumber(l, index)); }
+		template<> inline bool to<bool>(lua_State* l, int32 index) { return static_cast<bool>(lua_toboolean(l, index)); }
+		template<> inline std::string to<std::string>(lua_State* l, int32 index) { return std::string(lua_tostring(l, index)); }
+		template<> inline void* to<void*>(lua_State* l, int32 index) { return lua_touserdata(l, index); }
+		template<> inline const void* to<const void*>(lua_State* l, int32 index) { return static_cast<const void*>(lua_touserdata(l, index)); }
+		template<> inline lua_CFunction to<lua_CFunction>(lua_State* l, int32 index) { return lua_tocfunction(l ,index); }
 		
 		inline lua_State* to_thread(lua_State* L, int32 stack_index) 
 		{ 
 			return lua_tothread(L, stack_index); 
-		}
-
-		inline lua_CFunction to_cfunction(lua_State* L, int32 stack_index) 
-		{ 
-			return lua_tocfunction(L, stack_index);
 		}
 
 #ifdef _DEBUG
@@ -472,45 +403,35 @@ namespace lua_api
 			lua_setallocf(L, f, ud);
 		}
 
-		inline bool is_number(lua_State* L, int32 stack_index) 
+		inline lua_t type(lua_State* l, int32 index) 
 		{ 
-			return lua_isnumber(L, stack_index) == 1; 
-		}
-		
-		inline bool is_integer(lua_State* L, int32 stack_index) 
-		{ 
-			return lua_isinteger(L, stack_index) == 1;
-		}
-		
-		inline bool is_string(lua_State* L, int32 stack_index) 
-		{
-			return lua_isstring(L, stack_index) == 1; 
-		}
-		
-		inline bool is_cfunction(lua_State* L, int32 stack_index) 
-		{ 
-			return lua_iscfunction(L, stack_index) == 1; 
-		}
-		
-		inline bool is_userdata(lua_State* L, int32 stack_index) 
-		{ 
-			return lua_isuserdata(L, stack_index) == 1; 
-		}
-		
-		inline bool is_light_userdata(lua_State* L, int32 stack_index) 
-		{ 
-			return lua_islightuserdata(L, stack_index) == 1;
+			return static_cast<lua_t>(lua_type(l, index));
 		}
 
-		inline lua_t type(lua_State* L, int32 stack_index) 
-		{ 
-			return static_cast<lua_t>(lua_type(L, stack_index));
+		inline bool is_type(lua_State* l, int32 index, lua_t t)
+		{
+			return t == type(l, index);
 		}
 	
-		inline void new_userdata(lua_State* L, void* userdata)
+		/*
+		* Loads a Lua chunk without running it.
+		* If there are no errors, lua_load pushes the compiled chunk as a Lua function on top of the stack.
+		* Otherwise, it pushes an error message.
+		*
+		* The lua_load function uses a user-supplied reader function to read the chunk (see lua_Reader).
+		* The data argument is an opaque value passed to the reader function.
+		* The chunkname argument gives a name to the chunk, which is used for error messages and in debug information (see ¡ì4.7).
+		* lua_load automatically detects whether the chunk is text or binary and loads it accordingly (see program luac).
+		* The string mode works as in function load, with the addition that a NULL value is equivalent to the string "bt".
+		*
+		* lua_load uses the stack internally, so the reader function must always leave the stack unmodified when returning.
+		* lua_load can return LUA_OK, LUA_ERRSYNTAX, or LUA_ERRMEM. The function may also return other values corresponding to errors raised by the read function (see ¡ì4.4.1).
+		* If the resulting function has upvalues, its first upvalue is set to the value of the global environment stored at index LUA_RIDX_GLOBALS in the registry (see ¡ì4.3).
+		* When loading main chunks, this upvalue will be the _ENV variable (see ¡ì2.2). Other upvalues are initialized with nil.
+		*/
+		inline lua_status load(lua_State* L, lua_Reader reader, void* data, const char* chunk_name, const char* mode)
 		{
-			void** p_userdata = (void**)lua_newuserdata(L, sizeof(void*)); // -1
-			*p_userdata = userdata;
+			return static_cast<lua_status>(lua_load(L, reader, data, chunk_name, mode));
 		}
 
 	}
@@ -659,91 +580,81 @@ namespace lua_api
 
 	}
 
-	/*struct lua_index
+	//#include <vector>
+	//#include <list>
+	//#include <forward_list>
+	//#include <deque>
+	//#include <set>
+	//#include <unordered_set>
+	//#include <map>
+	//#include <unordered_map>
+	//#include <stack>
+	//#include <queue>
+
+	template <typename T, typename U>
+	void vector_to_table(lua_State* l, T begin, U end) {
+		lua_api::basic::new_table(l);
+		for (size_t i = 0; begin != end; ++begin, ++i) {
+			lua_api::basic::push(l, i + 1);
+			lua_api::basic::to<T::value_type>(l, *begin);
+			lua_api::basic::set_table(l, -3);
+		}
+	}
+
+	template <typename T, typename U>
+	void vector_from_table(lua_State* l, T begin, U end) {
+		//assert(lua_istable(l, -1));
+		for (size_t i = 0; begin != end; ++begin, ++i) {
+			lua_api::basic::push(l, i + 1);
+			lua_api::basic::get_table(l, -2);
+			*begin = lua_api::basic::to<T::value_type>(l, -1);
+			lua_api::basic::pop(l, 1);
+		}
+	}
+
+	template<typename T, typename U>
+	void list_to_table(lua_State* l, T begin, U end)
 	{
-		explicit lua_index(int32 _Index);
 
-		int32 GetIndex() const { return Index; }
+	}
 
-	protected:
-		int32 Index;
-	};
-
-	struct lua_value : public lua_index
+	template<typename T, typename U>
+	void list_from_table(lua_State* l, T begin, U end)
 	{
-		explicit lua_value(int32 _Index);
-		explicit lua_value(int32 _Index, int32 _Type);
 
-		int32 GetType() const { return Type; }
+	}
 
-		template <typename T>
-		T Value() const;
-
-		template <typename T>
-		operator T() const;
-
-		template <typename T, typename Allocator>
-		operator std::vector<T, Allocator>& () const;
-
-		template <typename T, typename KeyFunc, typename Allocator>
-		operator std::set<T, KeyFunc, Allocator>& () const;
-
-		template <typename KeyType, typename ValueType, typename Allocator, typename KeyFunc>
-		operator std::map<KeyType, ValueType, Allocator, KeyFunc>& () const;
-
-	private:
-		int32 Type;
-	};
-
-	struct lua_ret_values
+	template<typename T, typename U>
+	void set_to_table(lua_State* l, T begin, U end)
 	{
-		explicit lua_ret_values(int32 NumResults);
-		lua_ret_values(lua_ret_values&& Src);
-		~lua_ret_values();
 
-		void Pop();
-		bool IsValid() const { return bValid; }
-		int32 Num() const { return values.size(); }
+	}
 
-		const lua_value& operator[](int32 i) const;
-
-	private:
-		lua_ret_values(const lua_ret_values& Src);
-
-		std::vector<lua_value> values;
-		bool bValid;
-	};
-
-	struct lua_table : public lua_index
+	template<typename T, typename U>
+	void set_from_table(lua_State* l, T begin, U end)
 	{
-		explicit lua_table(int32 index);
-		explicit lua_table(lua_value value);
-		~lua_table();
 
-		void Reset();
-		int32 Length() const;
+	}
 
-		lua_value operator[](int32 i) const;
-		lua_value operator[](int64 i) const;
-		lua_value operator[](double d) const;
-		lua_value operator[](const char* s) const;
-		lua_value operator[](const void* p) const;
-		lua_value operator[](lua_index stack_index) const;
-		lua_value operator[](lua_value key) const;
+	template<typename T, typename U>
+	void umap_to_table(lua_State* l, T begin, U end)
+	{
 
-		template <typename... T>
-		lua_ret_values Call(const char* FuncName, T&&... Args) const;
+	}
 
-	private:
-		mutable int32 PushedValues;
-	};*/ 
+	template<typename T, typename U>
+	void umap_from_table(lua_State* l, T begin, U end) 
+	{
+
+	}
+
+
+
 
 	inline void* to_userdata_fast(lua_State* L, int32 stack_index, bool two_level_ptr)
 	{
 		bool _two_level_ptr = false;
 		void* _userdata = nullptr;
-
-
 
 	}
 
@@ -763,19 +674,19 @@ namespace lua_api
 		{
 		case lua_t::TABLE:
 		{
-			basic::push_string(L, "Object");
+			basic::push(L, "Object");
 			_type = basic::raw_get(L, stack_index);
 			if (_type == lua_t::USERDATA)
 			{
-				_userdata = basic::to_userdata(L, -1);
+				_userdata = basic::to<void*>(L, -1);
 			}
 			else {
 				basic::pop(L, 1);
-				basic::push_string(L, "ClassDesc");
+				basic::push(L, "ClassDesc");
 				_type = basic::raw_get(L, stack_index);
 				if (_type == lua_t::LIGHTUSERDATA)
 				{
-					_userdata = basic::to_userdata(L, -1);
+					_userdata = basic::to<void*>(L, -1);
 					_class_metatable = true;
 				}
 			}

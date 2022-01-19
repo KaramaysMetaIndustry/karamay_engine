@@ -53,7 +53,7 @@
 local test1 = CTest()
 local test2 = CTest()
 print('test2 value is : ' .. test2:get())
-test2:set(10)
+test2:set()
 local test3 = test1:finish(test2)
 print('test2 value is : ' .. test2:get())
 print('test3 value is : ' .. test3:get())

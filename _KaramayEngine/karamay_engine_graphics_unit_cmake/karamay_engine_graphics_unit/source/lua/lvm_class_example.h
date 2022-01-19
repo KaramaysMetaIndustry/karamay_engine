@@ -16,7 +16,7 @@ public:
 
 	CTest* finishNewCTest(CTest* test) 
 	{
-		if (test) test->setA(10);
+		if (test) test->setA(test->getA());
 		return test;
 	}
 

@@ -8,6 +8,7 @@
 
 namespace CTest_for_lua
 {
+
 	// In order to communicate properly with Lua, a C function must use the following protocol, which defines the way parameters and results are passed: 
 	// a C function receives its arguments from Lua in its stack in direct order (the first argument is pushed first). 
 	//So, when the function starts, lua_gettop(L) returns the number of arguments received by the function. 
@@ -18,27 +19,28 @@ namespace CTest_for_lua
 	{
 		// stack : self
 		int32 _num = lua_api::basic::top_index(L);
-		/*if (_num != 0)
+		if (_num != 1)
 		{
 			return 0;
-		}*/
+		}
 		CTest* test = new CTest();
-		lua_api::basic::push_light_userdata(L, test);
+		lua_api::basic::push(L, test);
 		// stack : userdata, self
 		lua_api::auxiliary::set_metatable(L, "CTest_clazz");
 		return 1;
 	}
 
-	static int get(lua_State* L)
+	static int get(lua_State* l)
 	{
 		// stack : userdata
-		auto _num = lua_api::basic::top_index(L);
-		if (_num != 1)
+		auto _num = lua_api::basic::top_index(l);
+		if (_num != 1 || !lua_api::basic::is_type(l, 1, lua_api::lua_t::LIGHTUSERDATA))
 		{
 			return 0;
 		}
-		auto ppTest = (CTest*)lua_api::to_cpp_instance(L, 1, "CTest_clazz");
-		lua_api::basic::push_integer(L, ppTest->getA());
+
+		auto ppTest = (CTest*)lua_api::to_cpp_instance(l, 1, "CTest_clazz");
+		lua_api::basic::push(l, ppTest->getA());
 		// stack : integer, lightuserdata
 		return 1;
 	}
@@ -55,7 +57,7 @@ namespace CTest_for_lua
 			return 0;
 		}
 		auto ppTest = (CTest*)lua_api::to_cpp_instance(L, 1, "CTest_clazz");
-		auto a = lua_api::basic::to_integer<int32>(L, 2);
+		auto a = lua_api::basic::to<int32>(L, 2);
 		ppTest->setA(a);
 		return 0;
 	}
@@ -71,17 +73,24 @@ namespace CTest_for_lua
 		{
 			auto testParam = (CTest*)lua_api::to_cpp_instance(L, 2, "CTest_clazz");
 			auto testReturn = test->finishNewCTest(testParam);
-			lua_api::basic::push_light_userdata(L, testReturn);
+			lua_api::basic::push(L, testReturn);
 			// stack : userdata, userdata, userdata
 		}
 		if (_num == 3)
 		{
 			auto test = (CTest*)lua_api::to_cpp_instance(L, 2);
-			auto i = lua_api::basic::to_integer<int32>(L, 3);
+			auto i = lua_api::basic::to<int32>(L, 3);
 			auto testReturn = test->finishNewCTest(test, i);
-			lua_api::basic::push_light_userdata(L, testReturn);
+			lua_api::basic::push(L, testReturn);
 			// stack : userdata, integer, userdata, userdata
 		}
+		return 1;
+	}
+
+	static int set_array(lua_State* l)
+	{
+		std::vector<const void*> a;
+		lua_api::vector_from_table(l, a.begin(), a.end());
 		return 1;
 	}
 
@@ -94,6 +103,7 @@ namespace CTest_for_lua
 		FUNC(get)
 		FUNC(set)
 		FUNC(finish)
+		FUNC(set_array)
 	LUA_FUNCS_E()
 
 	IMPLEMENT_EXPORTER(CTest)
@@ -179,7 +189,7 @@ namespace gl_graphics_pipline_for_lua
 		{
 			return 0;
 		}
-		lua_api::basic::push_light_userdata(l, _pipeline);
+		lua_api::basic::push(l, _pipeline);
 		// stack : (userdata), userdata
 		lua_api::auxiliary::set_metatable(l, "gl_graphics_pipeline_clazz");
 		return 1;
@@ -200,9 +210,9 @@ namespace gl_graphics_pipline_for_lua
 		{
 			return 0;
 		}
-		auto _pipeline_dir = lua_api::basic::to_string(l, 2);
+		auto _pipeline_dir = lua_api::basic::to<std::string>(l, 2);
 		auto _result = _pipeline->load(_pipeline_dir);
-		lua_api::basic::push_boolean(l, _result);
+		lua_api::basic::push(l, _result);
 		// stack : (boolean), string, userdata
 		return 1;
 	}
@@ -251,18 +261,18 @@ namespace gl_graphics_pipline_for_lua
 		if (_num == 3)
 		{
 			auto _fence = _pipeline->syncable_draw_arrays(
-				lua_api::basic::to_integer<uint32>(L, 2),
-				lua_api::basic::to_integer<uint32>(L, 3)
+				lua_api::basic::to<uint32>(L, 2),
+				lua_api::basic::to<uint32>(L, 3)
 			);
 			//lua_api::origin::push_light_userdata(L, nullptr);
 		}
 		if (_num == 5)
 		{
 			auto _fence = _pipeline->syncable_draw_arrays(
-				lua_api::basic::to_integer<uint32>(L, 2),
-				lua_api::basic::to_integer<uint32>(L, 3),
-				lua_api::basic::to_integer<uint32>(L, 4),
-				lua_api::basic::to_integer<uint32>(L, 5)
+				lua_api::basic::to<uint32>(L, 2),
+				lua_api::basic::to<uint32>(L, 3),
+				lua_api::basic::to<uint32>(L, 4),
+				lua_api::basic::to<uint32>(L, 5)
 			);
 			//lua_api::origin::push_light_userdata(L, nullptr);
 		}
@@ -279,17 +289,17 @@ namespace gl_graphics_pipline_for_lua
 		if (_num == 3)
 		{
 			_pipeline->unsyncable_draw_arrays(
-				lua_api::basic::to_integer<uint32>(L, 2),
-				lua_api::basic::to_integer<uint32>(L, 3)
+				lua_api::basic::to<uint32>(L, 2),
+				lua_api::basic::to<uint32>(L, 3)
 			);
 		}
 		if (_num == 5)
 		{
 			_pipeline->unsyncable_draw_arrays(
-				lua_api::basic::to_integer<uint32>(L, 2),
-				lua_api::basic::to_integer<uint32>(L, 3),
-				lua_api::basic::to_integer<uint32>(L, 4),
-				lua_api::basic::to_integer<uint32>(L, 5)
+				lua_api::basic::to<uint32>(L, 2),
+				lua_api::basic::to<uint32>(L, 3),
+				lua_api::basic::to<uint32>(L, 4),
+				lua_api::basic::to<uint32>(L, 5)
 			);
 		}
 		return 0;
@@ -319,7 +329,7 @@ namespace gl_compute_pipeline_for_lua
 		}
 		auto _program = (glsl_compute_pipeline_program*)lua_api::to_cpp_instance(l, 1, "glsl_compute_pipeline_program_clazz");
 		auto _pipeline = new gl_compute_pipeline(_program);
-		lua_api::basic::push_light_userdata(l, _pipeline);
+		lua_api::basic::push(l, _pipeline);
 		// stack : userdata, userdata
 		lua_api::auxiliary::set_metatable(l, "gl_compute_pipeline_clazz");
 		// stack : (userdata), userdata
@@ -337,9 +347,9 @@ namespace gl_compute_pipeline_for_lua
 			return 0;
 		}
 		auto _comp_pipeline = (gl_compute_pipeline*)lua_api::to_cpp_instance(l, 1, "gl_compute_pipeline_clazz");
-		auto _pipeline_dir = lua_api::basic::to_string(l, 2);
+		auto _pipeline_dir = lua_api::basic::to<std::string>(l, 2);
 		auto _result = _comp_pipeline->load(_pipeline_dir);
-		lua_api::basic::push_boolean(l, _result);
+		lua_api::basic::push(l, _result);
 		// stack : (boolean), string, userdata
 		return 1;
 	}
@@ -367,9 +377,9 @@ namespace gl_compute_pipeline_for_lua
 		// stack : integer, integer, integer, userdata
 		auto _num = lua_api::basic::top_index(l);
 		auto _comp_pipeline = (gl_compute_pipeline*)lua_api::to_cpp_instance(l, 1, "gl_compute_pipeline_clazz");
-		auto _x = lua_api::basic::to_integer<uint32>(l, 2);
-		auto _y = lua_api::basic::to_integer<uint32>(l, 3);
-		auto _z = lua_api::basic::to_integer<uint32>(l, 4);
+		auto _x = lua_api::basic::to<uint32>(l, 2);
+		auto _y = lua_api::basic::to<uint32>(l, 3);
+		auto _z = lua_api::basic::to<uint32>(l, 4);
 		_comp_pipeline->dispatch(_x, _y, _z);
 		return 0;
 	}
@@ -401,7 +411,7 @@ namespace gl_renderer_for_lua
 			return 0;
 		}
 		gl_renderer* _renderer = new gl_static_mesh_renderer();
-		lua_api::basic::push_light_userdata(l, _renderer);
+		lua_api::basic::push(l, _renderer);
 		// stack : userdata, self
 		lua_api::auxiliary::set_metatable(l, "gl_renderer_clazz");
 		return 1;
@@ -415,9 +425,9 @@ namespace gl_renderer_for_lua
 		{
 			return 0;
 		}
-		auto s = lua_api::basic::to_string(l, 2);
+		auto s = lua_api::basic::to<std::string>(l, 2);
 		std::cout << "s : " << s << std::endl;
-		lua_api::basic::push_boolean(l, true);
+		lua_api::basic::push(l, true);
 		return 1; 
 	}
 
