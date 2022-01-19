@@ -63,94 +63,176 @@ namespace lua_api
 
 	namespace basic
 	{
-		inline bool check_stack_available_capacity(lua_State* L, int32 num)
+		/*
+		* Ensures that the stack has space for at least n extra elements, 
+		* that is, that you can safely push up to n values into it. 
+		* It returns false if it cannot fulfill the request, 
+		* either because it would cause the stack to be greater than a fixed maximum size 
+		* (typically at least several thousand elements) or 
+		* because it cannot allocate memory for the extra space. 
+		* This function never shrinks the stack; if the stack already has space for the extra elements, 
+		* it is left unchanged.
+		*/
+		inline bool check_stack(lua_State* l, int32 n)
 		{
-			return lua_checkstack(L, num) == 1;
+			return lua_checkstack(l, n) == 1;
 		}
 
-		inline void close(lua_State* L)
+		/*
+		* Close all active to-be-closed variables in the main thread, 
+		* release all objects in the given Lua state (calling the corresponding garbage-collection metamethods, if any), 
+		* and frees all dynamic memory used by this state.
+		* On several platforms, you may not need to call this function, 
+		* because all resources are naturally released when the host program ends. 
+		* On the other hand, long-running programs that create multiple states, 
+		* such as daemons or web servers, will probably need to close states as soon as they are not needed.
+		*/
+		inline void close(lua_State* l)
 		{
-			lua_close(L);
+			lua_close(l);
 		}
 
-		inline void compare(lua_State* L, int32 left_index, int32 right_index, lua_compare_op op)
+		/*
+		* Compares two Lua values. 
+		* Returns 1 if the value at index index1 satisfies op when compared with the value at index index2, 
+		* following the semantics of the corresponding Lua operator (that is, it may call metamethods). 
+		* Otherwise returns 0. Also returns 0 if any of the indices is not valid.
+		*/
+		inline bool compare(lua_State* l, int32 left_index, int32 right_index, lua_compare_op op)
 		{
-			lua_compare(L, left_index, right_index, static_cast<int>(op));
+			return lua_compare(l, left_index, right_index, static_cast<int>(op)) == 1;
 		}
 
-		inline void concat(lua_State* L, int32 num)
+		/*
+		* Concatenates the n values at the top of the stack, pops them, and leaves the result on the top.
+		* If n is 1, the result is the single value on the stack (that is, the function does nothing); 
+		* if n is 0, the result is the empty string. 
+		* Concatenation is performed following the usual semantics of Lua.
+		*/
+		inline void concat(lua_State* l, int32 n)
 		{
-			lua_concat(L, num);
+			lua_concat(l, n);
 		}
 
-		inline void copy(lua_State* L, int32 src_index, int32  dst_index)
+		/*
+		* Copies the element at index src_index into the valid index dst_index, replacing the value at that position. 
+		* Values at other positions are not affected.
+		*/
+		inline void copy(lua_State* l, int32 src_index, int32  dst_index)
 		{
-			lua_copy(L, src_index, dst_index);
+			lua_copy(l, src_index, dst_index);
 		}
 
-		inline void create_table(lua_State* L, int32 size, int32 capacity)
+		/*
+		* Dumps a function as a binary chunk. 
+		* Receives a Lua function on the top of the stack and produces a binary chunk that, 
+		* if loaded again, results in a function equivalent to the one dumped. 
+		* As it produces parts of the chunk, 
+		* lua_dump calls function writer (see lua_Writer) with the given data to write them.
+		* If strip is true, the binary representation may not include all debug information about the function, to save space.
+		* The value returned is the error code returned by the last call to the writer; 
+		* 0 means no errors.
+		* This function does not pop the Lua function from the stack.
+		*/
+		inline lua_status dump(lua_State* l, lua_Writer writer, void* data, int strip)
 		{
-			lua_createtable(L, 0, 0);
+			return static_cast<lua_status>(lua_dump(l, writer, data, strip));
 		}
 
-		inline void create_table(lua_State* L)
+		/*
+		* Raises a Lua error, using the value on the top of the stack as the error object. 
+		* This function does a long jump, and therefore never returns (see luaL_error).
+		*/
+		inline int32 error(lua_State* l)
 		{
-			lua_newtable(L);
+			return lua_error(l);
 		}
 
-		inline int32 dump(lua_State* L)
-		{
-			//lua_dump(L,)
-			return 0;
-		}
-
-		inline int32 error(lua_State* L)
-		{
-			return lua_error(L);
-		}
-
-		inline int32 gc(lua_State* L, lua_gc_option option)
+		inline int32 gc(lua_State* l, lua_gc_option option)
 		{
 			//lua_gc(L, static_cast<int>(option), )
 			return 0;
 		}
 
-		inline void pop(lua_State* L, int32 num)
+		/*
+		* Returns the index of the top element in the stack.
+		* Because indices start at 1, this result is equal to the number of elements in the stack; in particular, 0 means an empty stack.
+		* @return stack top index (1 ~ N)
+		*/
+		inline int32 top_index(lua_State* l)
 		{
-			lua_pop(L, num);
+			return lua_gettop(l);
 		}
 
-		template<typename T> inline void push(lua_State* l, T value) { static_assert(false, "push<T> , T is not supported"); }
-		template<typename T> inline void push(lua_State* l, T* value) { lua_pushlightuserdata(l, (void*)value); }
-		template<typename T> inline void push(lua_State* l, const T* value) { lua_pushlightuserdata(l, (void*)value); }
-		template<> inline void push(lua_State* l, bool value) { lua_pushboolean(l, static_cast<int>(value)); }
-		template<> inline void push(lua_State* l, uint8 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
-		template<> inline void push(lua_State* l, uint16 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
-		template<> inline void push(lua_State* l, uint32 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
-		template<> inline void push(lua_State* l, uint64 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
-		template<> inline void push(lua_State* l, int8 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
-		template<> inline void push(lua_State* l, int16 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
-		template<> inline void push(lua_State* l, int32 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
-		template<> inline void push(lua_State* l, int64 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
-		template<> inline void push(lua_State* l, float value) { lua_pushboolean(l, static_cast<lua_Number>(value)); }
-		template<> inline void push(lua_State* l, double value) { lua_pushboolean(l, static_cast<lua_Number>(value)); }
-		template<> inline void push(lua_State* l, char* value)
+		/*
+		* Accepts any index, or 0, and sets the stack top to this index. 
+		* If the new top is greater than the old one, then the new elements are filled with nil. 
+		* If index is 0, then all stack elements are removed.
+		* This function can run arbitrary code when removing an index marked as to-be-closed from the stack.
+		*/
+		inline void set_top(lua_State* l, int32 index)
+		{
+			lua_settop(l, index);
+		}
+
+		/*
+		* Pops n elements from the stack. It is implemented as a macro over lua_settop.
+		*/
+		inline void pop(lua_State* l, int32 n)
+		{
+			lua_pop(l, n);
+		}
+
+		template<typename T> 
+		inline void push(lua_State* l, T value) { static_assert(false, "push<T> , T is not supported"); }
+		template<typename T> 
+		inline void push(lua_State* l, T* value) { lua_pushlightuserdata(l, (void*)value); }
+		template<typename T> 
+		inline void push(lua_State* l, const T* value) { lua_pushlightuserdata(l, (void*)value); }
+		template<> 
+		inline void push(lua_State* l, bool value) { lua_pushboolean(l, static_cast<int>(value)); }
+		template<> 
+		inline void push(lua_State* l, uint8 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
+		template<> 
+		inline void push(lua_State* l, uint16 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
+		template<> 
+		inline void push(lua_State* l, uint32 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
+		template<> 
+		inline void push(lua_State* l, uint64 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
+		template<> 
+		inline void push(lua_State* l, int8 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
+		template<> 
+		inline void push(lua_State* l, int16 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
+		template<> 
+		inline void push(lua_State* l, int32 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
+		template<> 
+		inline void push(lua_State* l, int64 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
+		template<> 
+		inline void push(lua_State* l, float value) { lua_pushboolean(l, static_cast<lua_Number>(value)); }
+		template<> 
+		inline void push(lua_State* l, double value) { lua_pushboolean(l, static_cast<lua_Number>(value)); }
+		template<> 
+		inline void push(lua_State* l, char* value)
 		{
 			lua_pushstring(l, value);
 		}
-		template<> inline void push(lua_State* l, const char* value)
+		template<> 
+		inline void push(lua_State* l, const char* value)
 		{
 			lua_pushstring(l, value);
 		}
-		template<> inline void push(lua_State* l, std::string& value)
+		template<> 
+		inline void push(lua_State* l, std::string& value)
 		{
 			lua_pushstring(l, value.c_str());
 		}
-		template<> inline void push(lua_State* l, const std::string& value)
+		template<> 
+		inline void push(lua_State* l, const std::string& value)
 		{
 			lua_pushstring(l, value.c_str());
 		}
-		template<> inline void push(lua_State* l, std::string&& value)
+		template<> 
+		inline void push(lua_State* l, std::string&& value)
 		{
 			lua_pushstring(l, value.c_str());
 		}
@@ -165,19 +247,19 @@ namespace lua_api
 			lua_pushglobaltable(l);
 		}
 		inline void push_thread(lua_State* l) { lua_pushthread(l); }
-		
+
 		/*
 		* Creates a new empty table and pushes it onto the stack.
 		* It is equivalent to createtable(L, 0, 0).
 		*/
-		inline void new_table(lua_State* L)
+		inline void new_table(lua_State* l)
 		{
-			lua_newtable(L);
+			lua_newtable(l);
 		}
 
-		inline void new_table(lua_State* L, int32 narr, int32 nrec)
+		inline void new_table(lua_State* l, int32 narr, int32 nrec)
 		{
-			lua_createtable(L, narr, nrec);
+			lua_createtable(l, narr, nrec);
 		}
 
 		/*
@@ -200,34 +282,59 @@ namespace lua_api
 			*p_userdata = userdata;
 		}
 		
+		/*
+		* Pops a value from the stack 
+		* and sets it as the new n-th user value associated to the full userdata at the given index. 
+		* Returns 0 if the userdata does not have that value.
+		*/
 		inline int32 set_uservalue(lua_State* l, int32 index, int32 n)
 		{
 			return lua_setiuservalue(l, index, n);
 		}
 
+		/*
+		* Pushes onto the stack the n-th user value associated with the full userdata at the given index
+		* and returns the type of the pushed value.
+		* If the userdata does not have that value, pushes nil and returns LUA_TNONE.
+		*/
 		inline int32 get_uservalue(lua_State* l, int32 index, int32 n)
 		{
 			return lua_getiuservalue(l, index, n);
 		}
 
 
-
-		template<typename T> inline T to(lua_State* l, int32 index) { static_assert(false, "to<T> , T is not supported"); return T(); }
-		template<> inline int8 to<int8>(lua_State* l, int32 index) { return static_cast<int8>(lua_tointeger(l, index)); }
-		template<> inline int16 to<int16>(lua_State* l, int32 index) { return static_cast<int16>(lua_tointeger(l, index)); }
-		template<> inline int32 to<int32>(lua_State* l, int32 index) { return static_cast<int32>(lua_tointeger(l, index)); }
-		template<> inline int64 to<int64>(lua_State* l, int32 index) { return static_cast<int64>(lua_tointeger(l, index)); }
-		template<> inline uint8 to<uint8>(lua_State* l, int32 index) { return static_cast<uint8>(lua_tointeger(l, index)); }
-		template<> inline uint16 to<uint16>(lua_State* l, int32 index) { return static_cast<uint16>(lua_tointeger(l, index)); }
-		template<> inline uint32 to<uint32>(lua_State* l, int32 index) { return static_cast<uint32>(lua_tointeger(l, index)); }
-		template<> inline uint64 to<uint64>(lua_State* l, int32 index) { return static_cast<uint64>(lua_tointeger(l, index)); }
-		template<> inline float to<float>(lua_State* l, int32 index) { return static_cast<float>(lua_tonumber(l, index)); }
-		template<> inline double to<double>(lua_State* l, int32 index) { return static_cast<double>(lua_tonumber(l, index)); }
-		template<> inline bool to<bool>(lua_State* l, int32 index) { return static_cast<bool>(lua_toboolean(l, index)); }
-		template<> inline std::string to<std::string>(lua_State* l, int32 index) { return std::string(lua_tostring(l, index)); }
-		template<> inline void* to<void*>(lua_State* l, int32 index) { return lua_touserdata(l, index); }
-		template<> inline const void* to<const void*>(lua_State* l, int32 index) { return static_cast<const void*>(lua_touserdata(l, index)); }
-		template<> inline lua_CFunction to<lua_CFunction>(lua_State* l, int32 index) { return lua_tocfunction(l ,index); }
+		template<typename T> 
+		inline T to(lua_State* l, int32 index) { static_assert(false, "to<T> , T is not supported"); return T(); }
+		template<> 
+		inline int8 to<int8>(lua_State* l, int32 index) { return static_cast<int8>(lua_tointeger(l, index)); }
+		template<> 
+		inline int16 to<int16>(lua_State* l, int32 index) { return static_cast<int16>(lua_tointeger(l, index)); }
+		template<> 
+		inline int32 to<int32>(lua_State* l, int32 index) { return static_cast<int32>(lua_tointeger(l, index)); }
+		template<> 
+		inline int64 to<int64>(lua_State* l, int32 index) { return static_cast<int64>(lua_tointeger(l, index)); }
+		template<> 
+		inline uint8 to<uint8>(lua_State* l, int32 index) { return static_cast<uint8>(lua_tointeger(l, index)); }
+		template<> 
+		inline uint16 to<uint16>(lua_State* l, int32 index) { return static_cast<uint16>(lua_tointeger(l, index)); }
+		template<> 
+		inline uint32 to<uint32>(lua_State* l, int32 index) { return static_cast<uint32>(lua_tointeger(l, index)); }
+		template<> 
+		inline uint64 to<uint64>(lua_State* l, int32 index) { return static_cast<uint64>(lua_tointeger(l, index)); }
+		template<> 
+		inline float to<float>(lua_State* l, int32 index) { return static_cast<float>(lua_tonumber(l, index)); }
+		template<> 
+		inline double to<double>(lua_State* l, int32 index) { return static_cast<double>(lua_tonumber(l, index)); }
+		template<> 
+		inline bool to<bool>(lua_State* l, int32 index) { return static_cast<bool>(lua_toboolean(l, index)); }
+		template<> 
+		inline std::string to<std::string>(lua_State* l, int32 index) { return std::string(lua_tostring(l, index)); }
+		template<> 
+		inline void* to<void*>(lua_State* l, int32 index) { return lua_touserdata(l, index); }
+		template<> 
+		inline const void* to<const void*>(lua_State* l, int32 index) { return static_cast<const void*>(lua_touserdata(l, index)); }
+		template<> 
+		inline lua_CFunction to<lua_CFunction>(lua_State* l, int32 index) { return lua_tocfunction(l ,index); }
 		
 		inline lua_State* to_thread(lua_State* L, int32 stack_index) 
 		{ 
@@ -240,18 +347,6 @@ namespace lua_api
 			return lua_topointer(L, stack_index);
 		}
 #endif
-
-		/*
-		* Returns the index of the top element in the stack. 
-		* Because indices start at 1, this result is equal to the number of elements in the stack; in particular, 0 means an empty stack.
-		* @return stack top index (1 ~ N)
-		*/
-		inline int32 top_index(lua_State* l)
-		{ 
-			return lua_gettop(l);
-		}
-
-		/////// fetch value from lua, push onto stack
 
 		/*
 		* Pushes onto the stack the value of the global name. 
@@ -275,6 +370,18 @@ namespace lua_api
 		}
 
 		/*
+		* Does the equivalent to t[n] = v,
+		* where t is the value at the given index and
+		* v is the value on the top of the stack.
+		* This function pops the value from the stack.
+		* As in Lua, this function may trigger a metamethod for the "newindex" event.
+		*/
+		inline void seti(lua_State* L, int32 stack_index, int64 n)
+		{
+			lua_seti(L, stack_index, n);
+		}
+
+		/*
 		* Pushes onto the stack the value t[k], where t is the value at the given index and k is the value on the top of the stack.
 		* This function pops the key from the stack, pushing the resulting value in its place. 
 		* As in Lua, this function may trigger a metamethod for the "index" event
@@ -285,7 +392,10 @@ namespace lua_api
 		}
 
 		/*
-		* Does the equivalent to t[k] = v, where t is the value at the given index, v is the value on the top of the stack, and k is the value just below the top.
+		* Does the equivalent to t[k] = v, 
+		* where t is the value at the given index, 
+		* v is the value on the top of the stack, 
+		* and k is the value just below the top.
 		* This function pops both the key and the value from the stack. 
 		* As in Lua, this function may trigger a metamethod for the "__newindex" event
 		*/
@@ -295,7 +405,7 @@ namespace lua_api
 		}
 
 		/*
-		*
+		* Similar to lua_gettable, but does a raw access (i.e., without metamethods).
 		*/
 		inline lua_t raw_get(lua_State* l, int32 index)
 		{
@@ -303,7 +413,7 @@ namespace lua_api
 		}
 		
 		/*
-		* 
+		* Similar to lua_settable, but does a raw assignment (i.e., without metamethods).
 		*/
 		inline void raw_set(lua_State* l, int32 index)
 		{
@@ -331,6 +441,18 @@ namespace lua_api
 		}
 
 		/*
+		* Returns the raw "length" of the value at the given index: 
+		* for strings, this is the string length; for tables, 
+		* this is the result of the length operator ('#') with no metamethods; for userdata, 
+		* this is the size of the block of memory allocated for the userdata. 
+		* For other values, this call returns 0.
+		*/
+		inline uint64 raw_len(lua_State* l, int32 index)
+		{
+			lua_rawlen(l, index);
+		}
+
+		/*
 		* Pushes onto the stack the value t[k], where t is the value at the given index.
 		* As in Lua, this function may trigger a metamethod for the "index" event
 		*/
@@ -351,16 +473,6 @@ namespace lua_api
 		}
 
 		/*
-		* sets top value as the new metatable for the value at the given index 
-		* and Pops it( table or nil) from the stack and
-		* @return type of value
-		*/
-		inline void set_metatable(lua_State* l, int32 index)
-		{
-			lua_setmetatable(l, index);
-		}
-
-		/*
 		* If the value at the given index has a metatable, the function pushes that metatable onto the stack and returns 1.
 		* Otherwise, the function returns 0 and pushes nothing on the stack.
 		* @return 1 has metatable and push the metatable onto stack, 0 has no metatable and push nothing
@@ -370,14 +482,14 @@ namespace lua_api
 			return lua_getmetatable(l, index) == 1;
 		}
 
-		inline int32 getiuservalue(lua_State* L, int32 index, int32 n)
+		/*
+		* sets top value as the new metatable for the value at the given index
+		* and Pops it( table or nil) from the stack and
+		* @return type of value
+		*/
+		inline void set_metatable(lua_State* l, int32 index)
 		{
-			return lua_getiuservalue(L, index, n);
-		}
-
-		inline void set_top(lua_State* l, int32 index)
-		{
-			lua_settop(l, index);
+			lua_setmetatable(l, index);
 		}
 
 		inline void set_warnf(lua_State* L, lua_WarnFunction f, void* ud)
@@ -385,17 +497,13 @@ namespace lua_api
 
 		}
 
-		inline void seti(lua_State* L, int32 stack_index, int64 n)
-		{
-			lua_seti(L, stack_index, n);
-		}
-
 		/*
+		* _G : global table
 		* Pops a value from the stack and sets it as the new value of global name.
 		*/
-		inline void set_global(lua_State* L, const char* name)
+		inline void set_global(lua_State* l, const char* name)
 		{
-			lua_setglobal(L, name);
+			lua_setglobal(l, name);
 		}
 
 		inline void set_allocf(lua_State* L, lua_Alloc f, void* ud)
@@ -580,16 +688,14 @@ namespace lua_api
 
 	}
 
-	//#include <vector>
-	//#include <list>
-	//#include <forward_list>
-	//#include <deque>
-	//#include <set>
-	//#include <unordered_set>
-	//#include <map>
-	//#include <unordered_map>
-	//#include <stack>
-	//#include <queue>
+	namespace debug
+	{
+
+	}
+
+	// vector, list, forward_list,  deque,
+	// set, unordered_set, map, unordered_map
+	// stack, queue
 
 	template <typename T, typename U>
 	void vector_to_table(lua_State* l, T begin, U end) {
