@@ -4,10 +4,6 @@
 #include "public/stl.h"
 #include "public/_lua.h"
 
-
-// 只有 userdata table lightuserdata 有权利去修改
-// 
-
 namespace lua_api
 {
 	//nil, boolean, number, string, function, userdata, thread, and table.
@@ -252,12 +248,20 @@ namespace lua_api
 		* Creates a new empty table and pushes it onto the stack.
 		* It is equivalent to createtable(L, 0, 0).
 		*/
-		inline void new_table(lua_State* l)
+		inline void create_table(lua_State* l)
 		{
 			lua_newtable(l);
 		}
 
-		inline void new_table(lua_State* l, int32 narr, int32 nrec)
+		/*
+		* Creates a new empty table and pushes it onto the stack. (-1)
+		* Parameter narr is a hint for how many elements the table will have as a sequence; 
+		* parameter nrec is a hint for how many other elements the table will have. 
+		* Lua may use these hints to preallocate memory for the new table. 
+		* This preallocation may help performance when you know in advance how many elements the table will have. 
+		* Otherwise you can use the function lua_newtable.
+		*/
+		inline void create_table(lua_State* l, int32 narr, int32 nrec)
 		{
 			lua_createtable(l, narr, nrec);
 		}
@@ -557,9 +561,9 @@ namespace lua_api
 		* In both cases, 
 		* the function pushes onto the stack the final value associated with tname in the registry.
 		*/
-		inline int32 new_metatable(lua_State* L, const char* name)
+		inline int32 new_metatable(lua_State* l, const char* name)
 		{
-			return luaL_newmetatable(L, name);
+			return luaL_newmetatable(l, name);
 		}
 
 		/*
@@ -568,18 +572,18 @@ namespace lua_api
 		* 
 		* Returns the type of the pushed value.
 		*/
-		inline int32 get_metatable(lua_State* L, const char* name)
+		inline int32 get_metatable(lua_State* l, const char* name)
 		{
-			return luaL_getmetatable(L, name);
+			return luaL_getmetatable(l, name);
 		}
 
 		/*
 		* Sets the metatable of the object on the top of the stack 
 		* as the metatable associated with name tname in the registry (see luaL_newmetatable).
 		*/
-		inline void set_metatable(lua_State* L, const char* name)
+		inline void set_metatable(lua_State* l, const char* name)
 		{
-			luaL_setmetatable(L, name);
+			luaL_setmetatable(l, name);
 		}
 
 		/*
@@ -589,9 +593,9 @@ namespace lua_api
 		* initialized with copies of the nup values previously pushed on the stack on top of the library table. 
 		* These values are popped from the stack after the registration.
 		*/
-		inline void set_funcs(lua_State* L, const luaL_Reg* funcs, int32 nup)
+		inline void set_funcs(lua_State* l, const luaL_Reg* funcs, int32 nup)
 		{
-			luaL_setfuncs(L, funcs, nup);
+			luaL_setfuncs(l, funcs, nup);
 		}
 
 
@@ -889,7 +893,7 @@ namespace lua_api
 			lua_api::basic::pop(_state, 1);
 			// stack : null
 
-			lua_api::basic::new_table(_state);
+			lua_api::basic::create_table(_state);
 			// stack : table
 			lua_api::auxiliary::set_metatable(_state, _clazz_name.c_str());
 			lua_api::basic::set_global(_state, class_name.c_str());
