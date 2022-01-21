@@ -1,6 +1,5 @@
 #ifndef GL_PIXELS_H
 #define GL_PIXELS_H
-
 #include "public/_glew.h"
 
 enum class gl_image_format : GLenum
@@ -28,7 +27,7 @@ enum class gl_image_format : GLenum
 //	F_R16 = GL_R16F,
 //	F_RG16 = GL_RG16F,
 //	F_RGB16 = GL_RGB16F,
-//	F_RGBA16 = GL_RGBA16F,
+//	F_RGBA16 = GL_RGBA16F, 3 * uint8
 	F_R32 = GL_R32F,
 	F_RG32 = GL_RG32F,
 	F_RGB32 = GL_RGB32F,

@@ -50,63 +50,93 @@
 --local testInstance = setmetatable({"userdata"}, test)
 
 
-local test1 = CTest()
-local test2 = CTest()
-print('test2 value is : ' .. test2:get())
-test2:set()
-local test3 = test1:finish(test2)
-print('test2 value is : ' .. test2:get())
-print('test3 value is : ' .. test3:get())
+--local test1 = CTest()
+--local test2 = CTest()
+--print('test2 value is : ' .. test2:get())
+--test2:set()
+--local test3 = test1:finish(test2)
+--print('test2 value is : ' .. test2:get())
+--print('test3 value is : ' .. test3:get())
+--
+--
+--
+--local gl_static_mesh_renderer = gl_renderer()
+--
+--if gl_static_mesh_renderer:load("/static_mesh_renderer") then
+--	print("xxxxxx")
+--end
+--
+--
+--
+--function gl_static_mesh_renderer:build( ... )
+--
+--	local _graphics_pipeline = gl_graphics_pipeline()
+--	_graphics_pipeline:load("/static_mesh_renderer")
+--	_graphics_pipeline:set_enable_depth_test(true)
+--	_graphics_pipeline:set_enable_stencil_test(false)
+--	_graphics_pipeline:set_enable_scissor_test(false)
+--	_graphics_pipeline:set_blend_func()
+--
+--	local _compute_pipeline = gl_compute_pipeline()
+--	_compute_pipeline:load("/static_mesh_renderer")
+--end
+--
+--function gl_static_mesh_renderer:render( delta_time )
+--	local _compute_pipeline = self.renderer_builder.compute_pipeline("mat_pipeline")
+--	local _graphics_pipeline = self.renderer_builder.graphics_pipeline("mesh_pipeline")
+--
+--	if(delta_time < 0) then return end
+--
+--	_compute_pipeline:enable()
+--
+--	for i=1,10 do
+--		_compute_pipeline:dispatch(i, i+1, i+3)
+--	end
+--
+--	for k,v in pairs(table_name) do
+--	print(k,v)
+--	end
+--
+--	for i,v in ipairs(table_name) do
+--	print(i,v)
+--    end
+--
+--	_compute_pipeline:disable()
+--
+--	_graphics_pipeline:enable()
+--	for i, v in ipairs() do
+--		_graphics_pipeline:syncable_draw_arrays(0, 1024)
+--	end
+--	_graphics_pipeline:disable()
+--
+--end
 
+var0 = "Lua"
+var1 = 'Java'
+var2 = [[
+C#
+]]
 
+var3 = 3 var4 = 2
 
-local gl_static_mesh_renderer = gl_renderer()
+-- 并发 并行
 
-if gl_static_mesh_renderer:load("/static_mesh_renderer") then
-	print("xxxxxx")
-end
+print(var0)
+print(var1)
+print(var2)
+print(var3)
+print(var4)
 
+co = coroutine.create(
+		function(i)
+			while true do
+				print(i)
+			end
+		end
+)
 
+coroutine.resume(co, 1)
+coroutine.resume(co, 2)
 
-function gl_static_mesh_renderer:build( ... )
+print(coroutine.status(co))
 
-	local _graphics_pipeline = gl_graphics_pipeline()
-	_graphics_pipeline:load("/static_mesh_renderer")
-	_graphics_pipeline:set_enable_depth_test(true)
-	_graphics_pipeline:set_enable_stencil_test(false)
-	_graphics_pipeline:set_enable_scissor_test(false)
-	_graphics_pipeline:set_blend_func()
-
-	local _compute_pipeline = gl_compute_pipeline()
-	_compute_pipeline:load("/static_mesh_renderer")
-end
-
-function gl_static_mesh_renderer:render( delta_time )
-	local _compute_pipeline = self.renderer_builder.compute_pipeline("mat_pipeline")
-	local _graphics_pipeline = self.renderer_builder.graphics_pipeline("mesh_pipeline")
-
-	if(delta_time < 0) then return end
-
-	_compute_pipeline:enable()
-
-	for i=1,10 do
-		_compute_pipeline:dispatch(i, i+1, i+3)
-	end
-
-	for k,v in pairs(table_name) do
-	print(k,v)
-	end
-
-	for i,v in ipairs(table_name) do
-	print(i,v)
-    end
-
-	_compute_pipeline:disable()
-
-	_graphics_pipeline:enable()
-	for i, v in ipairs() do
-		_graphics_pipeline:syncable_draw_arrays(0, 1024)
-	end
-	_graphics_pipeline:disable()
-
-end
