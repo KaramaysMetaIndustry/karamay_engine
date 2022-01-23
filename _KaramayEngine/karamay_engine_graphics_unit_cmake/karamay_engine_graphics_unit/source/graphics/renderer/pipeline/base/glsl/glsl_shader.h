@@ -125,7 +125,7 @@ public:
 
 	bool generate_template(const std::string& pipeline_dir) override
 	{
-		return nullptr;
+		return false;
 	}
 
 	bool load(const std::string& pipeline_dir) override

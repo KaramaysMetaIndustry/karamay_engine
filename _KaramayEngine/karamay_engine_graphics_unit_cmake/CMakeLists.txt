@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 project(karamay_engine_graphics_unit)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(BUILD_ARCH "-m64") 
 
 link_libraries(opengl32.lib)

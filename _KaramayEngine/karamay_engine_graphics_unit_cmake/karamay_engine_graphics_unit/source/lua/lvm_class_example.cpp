@@ -15,18 +15,18 @@ namespace CTest_for_lua
 	// The first argument (if any) is at index 1 and its last argument is at index lua_gettop(L).
 	// To return values to Lua, a C function just pushes them onto the stack, in direct order (the first result is pushed first), and returns in C the number of results. 
 	// Any other value in the stack below the results will be properly discarded by Lua. Like a Lua function, a C function called by Lua can also return many results.
-	static int __call(lua_State* L)
+	static int __call(lua_State* l)
 	{
-		// stack : self
-		int32 _num = lua_api::basic::top_index(L);
+		// stack : metatable
+		int32 _num = lua_api::basic::top_index(l);
 		if (_num != 1)
 		{
 			return 0;
 		}
 		CTest* test = new CTest();
-		lua_api::basic::push(L, test);
-		// stack : userdata, self
-		lua_api::auxiliary::set_metatable(L, "CTest_clazz");
+		lua_api::basic::push(l, test);
+		// stack : userdata, metatable
+		lua_api::auxiliary::set_metatable(l, "CTest_clazz");
 		return 1;
 	}
 
@@ -38,7 +38,6 @@ namespace CTest_for_lua
 		{
 			return 0;
 		}
-
 		auto ppTest = (CTest*)lua_api::to_cpp_instance(l, 1, "CTest_clazz");
 		lua_api::basic::push(l, ppTest->getA());
 		// stack : integer, lightuserdata
@@ -66,7 +65,7 @@ namespace CTest_for_lua
 	{
 		// stack : userdata, userdata
 		// stack : integer, userdata, userdata
-		int32 _num = lua_gettop(L);
+		int32 _num = lua_api::basic::top_index(L);
 	
 		auto test = (CTest*)lua_api::to_cpp_instance(L, 1, "CTest_clazz");
 		if (_num == 2)
@@ -89,9 +88,34 @@ namespace CTest_for_lua
 
 	static int set_array(lua_State* l)
 	{
-		std::vector<const void*> a;
-		lua_api::vector_from_table(l, a.begin(), a.end());
-		return 1;
+		// stack : table, userdata 
+		int32 _num = lua_api::basic::top_index(l);
+		if (_num != 2)
+		{
+			return 0;
+		}
+		std::set<int32> b;
+		if (lua_api::set_from_table(l, 2, b))
+		{
+			return 0;
+		}
+		return 0;
+	}
+
+	static int get_array(lua_State* l)
+	{
+		std::unordered_map<std::string, int32> a =
+		{
+			{"wait", 2},
+			{"wuda", 3},
+			{"pat", 1}
+		};
+
+		if (lua_api::push(l, a))
+		{
+			return 1;
+		}
+		return 0;
 	}
 
 	LUA_LIBS_B()
@@ -104,6 +128,7 @@ namespace CTest_for_lua
 		FUNC(set)
 		FUNC(finish)
 		FUNC(set_array)
+		FUNC(get_array)
 	LUA_FUNCS_E()
 
 	IMPLEMENT_EXPORTER(CTest)
@@ -335,7 +360,6 @@ namespace gl_compute_pipeline_for_lua
 		// stack : (userdata), userdata
 		return 1;
 	}
-
 
 	static int load(lua_State* l)
 	{

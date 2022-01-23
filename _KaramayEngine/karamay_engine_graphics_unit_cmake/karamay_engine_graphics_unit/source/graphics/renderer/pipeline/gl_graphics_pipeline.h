@@ -429,7 +429,6 @@ public:
 #endif // _DEBUG
         _program->enable();
         _vertex_launcher->bind();
-        if (_transform_feedback)  _transform_feedback->bind();
         _render_target->bind();
 
         _set_pipeline_fixed_functions();
@@ -442,7 +441,6 @@ public:
             throw std::exception("vertex launcher, program, render target must not be nullptr");
 #endif // _DEBUG
         _render_target->unbind();
-        if (_transform_feedback) _transform_feedback->unbind();
         _vertex_launcher->unbind();
         _program->disable();
     }
@@ -455,8 +453,6 @@ public:
 
     gl_render_target& render_target() { return *_render_target; }
 
-    const std::unique_ptr<gl_transform_feedback>& transform_feedback() const { return _transform_feedback; }
-
 private:
 
     std::unique_ptr<glsl_graphics_pipeline_program> _program = {};
@@ -465,7 +461,7 @@ private:
 
     std::unique_ptr<gl_render_target> _render_target = {};
 
-    std::unique_ptr<gl_transform_feedback> _transform_feedback = {};
+    /*std::unique_ptr<gl_transform_feedback> _transform_feedback = {};*/
 
 public:
 
@@ -505,7 +501,7 @@ public:
             origin(gl_clip_control_origin::LOWER_LEFT), depth_mode(gl_clip_control_depth_mode::NEGATIVE_ONE_TO_ONE),
             discard(false)
         {}
-    } vertex_postprocessor;
+    } vertex_postprocessor = {};
 
     struct gl_rasterizer
     {
@@ -545,7 +541,7 @@ public:
             polygon_mode(gl_polygon_mode::FILL),
             front_face_mode(gl_front_face_mode::CCW) // 逆时针
         {}
-    } rasterizer;
+    } rasterizer = {};
 
     struct gl_fragment_preprocessor 
     {
@@ -568,7 +564,7 @@ public:
             uint32 mask_index;
             uint32 mask_bitfield;
         } multisample_fragment_operations; // early
-    } fragment_preprocessor;
+    } fragment_preprocessor = {};
 
     struct gl_fragment_postprocessor 
     {
@@ -651,7 +647,7 @@ public:
                 enable(false), op(gl_logic_op::COPY)
             {}
         } logical_operation; // <=> framebuffer
-    } fragment_postprocessor;
+    } fragment_postprocessor = {};
 
 public:
 
@@ -871,7 +867,7 @@ public:
 
 public:
 
-    void begin_transform_feedback()
+  /*  void begin_transform_feedback()
     {
         if (!_vertex_launcher || !_transform_feedback) return;
         gl_primitive_mode _TransformFeedbackPrimitiveMode = _vertex_launcher->get_primitive_mode();
@@ -891,7 +887,7 @@ public:
     {
         if (!_vertex_launcher || !_transform_feedback) return;
         _transform_feedback->end_transform_feedback();
-    }
+    }*/
     void begin_conditional_render()
     {
         glBeginConditionalRender(0, GL_QUERY_WAIT);
@@ -901,31 +897,31 @@ public:
         glEndConditionalRender();
     }
 
-    auto syncable_draw_feedback(uint32 stream_index) const ->std::shared_ptr<gl_fence>
-    {
-        if (!_vertex_launcher || !_transform_feedback) return nullptr;
-        _transform_feedback->draw(_vertex_launcher->get_primitive_mode(), stream_index);
-        return std::make_shared<gl_fence>();
-    }
-    auto syncable_draw_feedback(uint32 stream_index, uint32 instances_num) const ->std::shared_ptr<gl_fence>
-    {
-        if (!_vertex_launcher || !_transform_feedback) return nullptr;
-        gl_primitive_mode _TransformFeedbackPrimitiveMode = _vertex_launcher->get_primitive_mode();
-        _transform_feedback->draw(_TransformFeedbackPrimitiveMode, stream_index, instances_num);
-        return std::make_shared<gl_fence>();
-    }
-    
-    void unsyncable_draw_feedback(uint32 stream_index) const
-    {
-        if (!_vertex_launcher || !_transform_feedback) return;
-        _transform_feedback->draw(_vertex_launcher->get_primitive_mode(), stream_index);
-    }
-    void unsyncable_draw_feedback(uint32 stream_index, uint32 instances_num) const
-    {
-        if (!_vertex_launcher || !_transform_feedback) return;
-        gl_primitive_mode _TransformFeedbackPrimitiveMode = _vertex_launcher->get_primitive_mode();
-        _transform_feedback->draw(_TransformFeedbackPrimitiveMode, stream_index, instances_num);
-    }
+    //auto syncable_draw_feedback(uint32 stream_index) const ->std::shared_ptr<gl_fence>
+    //{
+    //    if (!_vertex_launcher || !_transform_feedback) return nullptr;
+    //    _transform_feedback->draw(_vertex_launcher->get_primitive_mode(), stream_index);
+    //    return std::make_shared<gl_fence>();
+    //}
+    //auto syncable_draw_feedback(uint32 stream_index, uint32 instances_num) const ->std::shared_ptr<gl_fence>
+    //{
+    //    if (!_vertex_launcher || !_transform_feedback) return nullptr;
+    //    gl_primitive_mode _TransformFeedbackPrimitiveMode = _vertex_launcher->get_primitive_mode();
+    //    _transform_feedback->draw(_TransformFeedbackPrimitiveMode, stream_index, instances_num);
+    //    return std::make_shared<gl_fence>();
+    //}
+    //
+    //void unsyncable_draw_feedback(uint32 stream_index) const
+    //{
+    //    if (!_vertex_launcher || !_transform_feedback) return;
+    //    _transform_feedback->draw(_vertex_launcher->get_primitive_mode(), stream_index);
+    //}
+    //void unsyncable_draw_feedback(uint32 stream_index, uint32 instances_num) const
+    //{
+    //    if (!_vertex_launcher || !_transform_feedback) return;
+    //    gl_primitive_mode _TransformFeedbackPrimitiveMode = _vertex_launcher->get_primitive_mode();
+    //    _transform_feedback->draw(_TransformFeedbackPrimitiveMode, stream_index, instances_num);
+    //}
 
 private:
 
@@ -1129,17 +1125,11 @@ private:
 
     void _allocate_attributes(std::vector<gl_vertex_attribute_descriptor>& attributes)
     {
-        for (const auto& _vertex_attribute : _program->vertex_shader->vertex_attributes())
-        {
-
-        }
+        
     }
     void _allocate_instance_attributes(std::vector<gl_instance_attribute_descriptor>& instance_attributes)
     {
-        for (const auto& _instance_attribute : _program->vertex_shader->instance_attributes())
-        {
-
-        }
+        
     }
 
 };

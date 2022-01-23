@@ -111,32 +111,20 @@
 --
 --end
 
-var0 = "Lua"
-var1 = 'Java'
-var2 = [[
-C#
-]]
 
-var3 = 3 var4 = 2
+local test = CTest()
+local t =
+{
+	1,2,3,4,5,6,7
+}
 
--- 并发 并行
+test:set_array(t)
 
-print(var0)
-print(var1)
-print(var2)
-print(var3)
-print(var4)
+local at = test:get_array()
 
-co = coroutine.create(
-		function(i)
-			while true do
-				print(i)
-			end
-		end
-)
+for i, v in pairs(at) do
+	print(i..","..v)
+end
 
-coroutine.resume(co, 1)
-coroutine.resume(co, 2)
 
-print(coroutine.status(co))
 

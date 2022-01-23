@@ -23,16 +23,6 @@ public:
 
 public:
 
-	glsl_vertex_shader* vertex_shader;
-
-	glsl_tessellation_control_shader* tessellation_control_shader;
-
-	glsl_tessellation_evaluation_shader* tessellation_evaludation_shader;
-
-	glsl_geometry_shader* geometry_shader;
-
-	glsl_fragment_shader* fragment_shader;
-
 	glsl_uniform_block* uniform_block(const std::string& block_name)
 	{
 		auto _it = _uniform_blocks.find(block_name);
@@ -54,9 +44,18 @@ public:
 		return nullptr;
 	}
 
-	void enable() { if (_program) _program->enable(); }
+	void enable() 
+	{ 
+		if (_program) _program->enable(); 
+	}
 
-	void disable() { if (_program) _program->disable(); }
+	void disable() 
+	{ 
+		if (_program)
+		{
+			_program->disable();
+		}
+	}
 
 protected:
 
@@ -142,6 +141,15 @@ public:
 	{
 		return false;
 	}
+
+	//glsl_vertex_shader* vertex_shader;
+
+	//glsl_tessellation_control_shader* tessc;
+	//glsl_tessellation_evaluation_shader* tesse;
+
+	//glsl_geometry_shader* geometry_shader;
+
+	//glsl_fragment_shader* fragment_shader;
 
 };
 
