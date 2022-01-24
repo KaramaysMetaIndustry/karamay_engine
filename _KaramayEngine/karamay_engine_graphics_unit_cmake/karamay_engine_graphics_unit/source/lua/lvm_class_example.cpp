@@ -56,8 +56,8 @@ namespace CTest_for_lua
 			return 0;
 		}
 		auto ppTest = (CTest*)lua_api::to_cpp_instance(L, 1, "CTest_clazz");
-		auto a = lua_api::basic::to<int32>(L, 2);
-		ppTest->setA(a);
+		auto a = lua_api::to<int32>(L, 2);
+		ppTest->setA(a.value_or(0));
 		return 0;
 	}
 
@@ -90,15 +90,18 @@ namespace CTest_for_lua
 	{
 		// stack : table, userdata 
 		int32 _num = lua_api::basic::top_index(l);
+
 		if (_num != 2)
 		{
 			return 0;
 		}
-		std::set<int32> b;
-		if (lua_api::set_from_table(l, 2, b))
+		std::vector<int32> b;
+
+		if (lua_api::to(l, 2, b))
 		{
 			return 0;
 		}
+		
 		return 0;
 	}
 
@@ -111,11 +114,9 @@ namespace CTest_for_lua
 			{"pat", 1}
 		};
 
-		if (lua_api::push(l, a))
-		{
-			return 1;
-		}
-		return 0;
+		lua_api::push(l, a);
+
+		return 1;
 	}
 
 	LUA_LIBS_B()

@@ -3,6 +3,8 @@
 #include "graphics/renderer/pipeline/base/resource/buffers/raw_buffer/gl_buffer.h"
 #include "window/window.h"
 #include "renderers/gl_static_mesh_renderer.h"
+#include "lua/lvm.h"
+#include "lua/lvm_class_example.h"
 
 float vertices[] = {
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f, //0
@@ -345,29 +347,14 @@ void load_templates(const std::string& include_token)
         content.size(), content.c_str());
 }
 
-#include "lua/lvm.h"
-#include "lua/lvm_class_example.h"
 
-//template <typename T>
-//concept integral = std::is_integral_v<T>;
-//
-//template <integral T>
-//T _add(T a, T b) {
-//    return a + b;
-//}
-//
-//template <typename T, std::enable_if_t<std::is_integral_v<T>, T> = 0 >
-//T add_original(T a, T b) {
-//    return a + b;
-//}
 
 void test0()
 {
-    std::cout << std::format("{}, {}, {}, {}", "wait", 1, 2, 4.1f) << std::endl;
 
     lua_api::lua_vm _lvm;
     _lvm.start();
-    _lvm.do_file("C:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\scripts\\blue_freckle\\Test.lua");
+    _lvm.do_file("G:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\scripts\\blue_freckle\\Test.lua");
 
 	auto* window = new glfw_window();
 	window->load_context();

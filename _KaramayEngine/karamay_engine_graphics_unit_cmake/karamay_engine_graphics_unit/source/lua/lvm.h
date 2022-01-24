@@ -11,6 +11,7 @@ namespace lua_api
 	{
 		NONE = LUA_TNONE,
 		NIL = LUA_TNIL,
+
 		BOOLEAN = LUA_TBOOLEAN,
 		NUMBER = LUA_TNUMBER,
 		STRING = LUA_TSTRING,
@@ -60,13 +61,13 @@ namespace lua_api
 	namespace basic
 	{
 		/*
-		* Ensures that the stack has space for at least n extra elements, 
-		* that is, that you can safely push up to n values into it. 
-		* It returns false if it cannot fulfill the request, 
-		* either because it would cause the stack to be greater than a fixed maximum size 
-		* (typically at least several thousand elements) or 
-		* because it cannot allocate memory for the extra space. 
-		* This function never shrinks the stack; if the stack already has space for the extra elements, 
+		* Ensures that the stack has space for at least n extra elements,
+		* that is, that you can safely push up to n values into it.
+		* It returns false if it cannot fulfill the request,
+		* either because it would cause the stack to be greater than a fixed maximum size
+		* (typically at least several thousand elements) or
+		* because it cannot allocate memory for the extra space.
+		* This function never shrinks the stack; if the stack already has space for the extra elements,
 		* it is left unchanged.
 		*/
 		static bool check_stack(lua_State* l, int32 n)
@@ -75,12 +76,12 @@ namespace lua_api
 		}
 
 		/*
-		* Close all active to-be-closed variables in the main thread, 
-		* release all objects in the given Lua state (calling the corresponding garbage-collection metamethods, if any), 
+		* Close all active to-be-closed variables in the main thread,
+		* release all objects in the given Lua state (calling the corresponding garbage-collection metamethods, if any),
 		* and frees all dynamic memory used by this state.
-		* On several platforms, you may not need to call this function, 
-		* because all resources are naturally released when the host program ends. 
-		* On the other hand, long-running programs that create multiple states, 
+		* On several platforms, you may not need to call this function,
+		* because all resources are naturally released when the host program ends.
+		* On the other hand, long-running programs that create multiple states,
 		* such as daemons or web servers, will probably need to close states as soon as they are not needed.
 		*/
 		static void close(lua_State* l)
@@ -89,9 +90,9 @@ namespace lua_api
 		}
 
 		/*
-		* Compares two Lua values. 
-		* Returns 1 if the value at index index1 satisfies op when compared with the value at index index2, 
-		* following the semantics of the corresponding Lua operator (that is, it may call metamethods). 
+		* Compares two Lua values.
+		* Returns 1 if the value at index index1 satisfies op when compared with the value at index index2,
+		* following the semantics of the corresponding Lua operator (that is, it may call metamethods).
 		* Otherwise returns 0. Also returns 0 if any of the indices is not valid.
 		*/
 		static bool compare(lua_State* l, int32 left_index, int32 right_index, lua_compare_op op)
@@ -101,8 +102,8 @@ namespace lua_api
 
 		/*
 		* Concatenates the n values at the top of the stack, pops them, and leaves the result on the top.
-		* If n is 1, the result is the single value on the stack (that is, the function does nothing); 
-		* if n is 0, the result is the empty string. 
+		* If n is 1, the result is the single value on the stack (that is, the function does nothing);
+		* if n is 0, the result is the empty string.
 		* Concatenation is performed following the usual semantics of Lua.
 		*/
 		static void concat(lua_State* l, int32 n)
@@ -111,7 +112,7 @@ namespace lua_api
 		}
 
 		/*
-		* Copies the element at index src_index into the valid index dst_index, replacing the value at that position. 
+		* Copies the element at index src_index into the valid index dst_index, replacing the value at that position.
 		* Values at other positions are not affected.
 		*/
 		static void copy(lua_State* l, int32 src_index, int32  dst_index)
@@ -120,13 +121,13 @@ namespace lua_api
 		}
 
 		/*
-		* Dumps a function as a binary chunk. 
-		* Receives a Lua function on the top of the stack and produces a binary chunk that, 
-		* if loaded again, results in a function equivalent to the one dumped. 
-		* As it produces parts of the chunk, 
+		* Dumps a function as a binary chunk.
+		* Receives a Lua function on the top of the stack and produces a binary chunk that,
+		* if loaded again, results in a function equivalent to the one dumped.
+		* As it produces parts of the chunk,
 		* lua_dump calls function writer (see lua_Writer) with the given data to write them.
 		* If strip is true, the binary representation may not include all debug information about the function, to save space.
-		* The value returned is the error code returned by the last call to the writer; 
+		* The value returned is the error code returned by the last call to the writer;
 		* 0 means no errors.
 		* This function does not pop the Lua function from the stack.
 		*/
@@ -136,7 +137,7 @@ namespace lua_api
 		}
 
 		/*
-		* Raises a Lua error, using the value on the top of the stack as the error object. 
+		* Raises a Lua error, using the value on the top of the stack as the error object.
 		* This function does a long jump, and therefore never returns (see luaL_error).
 		*/
 		static int32 error(lua_State* l)
@@ -161,8 +162,8 @@ namespace lua_api
 		}
 
 		/*
-		* Accepts any index, or 0, and sets the stack top to this index. 
-		* If the new top is greater than the old one, then the new elements are filled with nil. 
+		* Accepts any index, or 0, and sets the stack top to this index.
+		* If the new top is greater than the old one, then the new elements are filled with nil.
 		* If index is 0, then all stack elements are removed.
 		* This function can run arbitrary code when removing an index marked as to-be-closed from the stack.
 		*/
@@ -178,6 +179,46 @@ namespace lua_api
 		{
 			lua_pop(l, n);
 		}
+
+		static lua_t type(lua_State* l, int32 index)
+		{
+			return static_cast<lua_t>(lua_type(l, index));
+		}
+
+		static bool is_type(lua_State* l, int32 index, lua_t t)
+		{
+			return t == type(l, index);
+		}
+
+		template<typename T>
+		static bool is(lua_State* l, int32 index)
+		{
+			return false;
+		}
+
+		template<>
+		static bool is<bool>(lua_State* l, int32 index) { return is_type(l, index, lua_t::BOOLEAN); }
+
+		template<>
+		static bool is<uint8>(lua_State* l, int32 index) { return is_type(l, index, lua_t::NUMBER); }
+		template<>
+		static bool is<uint16>(lua_State* l, int32 index) { return is_type(l, index, lua_t::NUMBER); }
+		template<>
+		static bool is<uint32>(lua_State* l, int32 index) { return is_type(l, index, lua_t::NUMBER); }
+		template<>
+		static bool is<uint64>(lua_State* l, int32 index) { return is_type(l, index, lua_t::NUMBER); }
+		template<>
+		static bool is<int8>(lua_State* l, int32 index) { return is_type(l, index, lua_t::NUMBER); }
+		template<>
+		static bool is<int16>(lua_State* l, int32 index) { return is_type(l, index, lua_t::NUMBER); }
+		template<>
+		static bool is<int32>(lua_State* l, int32 index) { return is_type(l, index, lua_t::NUMBER); }
+		template<>
+		static bool is<int64>(lua_State* l, int32 index) { return is_type(l, index, lua_t::NUMBER); }
+		
+		template<>
+		static bool is<std::string>(lua_State* l, int32 index) { return is_type(l, index, lua_t::STRING); }
+
 
 		template<typename T> 
 		static void push(lua_State* l, T value) 
@@ -332,7 +373,6 @@ namespace lua_api
 			return lua_getiuservalue(l, index, n);
 		}
 
-
 		template<typename T> 
 		static T to(lua_State* l, int32 index) { static_assert(false, "to<T> , T is not supported"); return T(); }
 		template<> 
@@ -386,6 +426,15 @@ namespace lua_api
 		static int32 get_global(lua_State* l, const char* name)
 		{
 			return lua_getglobal(l, name);
+		}
+
+		/*
+		* _G : global table
+		* Pops a value from the stack and sets it as the new value of global name.
+		*/
+		static void set_global(lua_State* l, const char* name)
+		{
+			lua_setglobal(l, name);
 		}
 
 		/*
@@ -482,6 +531,12 @@ namespace lua_api
 			return lua_rawlen(l, index);
 		}
 
+		/*
+		* Pops a key from the stack, and pushes a key¨Cvalue pair from the table at the given index, 
+		* the "next" pair after the given key. 
+		* If there are no more elements in the table, 
+		* then lua_next returns 0 and pushes nothing.
+		*/
 		static bool table_next(lua_State* l, int32 index)
 		{
 			return lua_next(l, index) == 1;
@@ -532,29 +587,14 @@ namespace lua_api
 
 		}
 
-		/*
-		* _G : global table
-		* Pops a value from the stack and sets it as the new value of global name.
-		*/
-		static void set_global(lua_State* l, const char* name)
-		{
-			lua_setglobal(l, name);
-		}
+		
 
 		static void set_allocf(lua_State* L, lua_Alloc f, void* ud)
 		{
 			lua_setallocf(L, f, ud);
 		}
 
-		static lua_t type(lua_State* l, int32 index) 
-		{ 
-			return static_cast<lua_t>(lua_type(l, index));
-		}
-
-		static bool is_type(lua_State* l, int32 index, lua_t t)
-		{
-			return t == type(l, index);
-		}
+		
 	
 		/*
 		* Loads a Lua chunk without running it.
@@ -629,6 +669,16 @@ namespace lua_api
 			luaL_setfuncs(l, funcs, nup);
 		}
 
+		static const char* check_string()
+		{
+			//luaL_checkstring()
+			return "";
+		}
+
+		static void* check_userdata(lua_State* l, int32 n, const char* metatable)
+		{
+			return luaL_checkudata(l, n, metatable);
+		}
 
 		/*
 		* Adds the byte c to the buffer B
@@ -733,65 +783,176 @@ namespace lua_api
 	// stack, queue
 
 	// Containerizable
-	static bool is_table_vectorizable(lua_State* l, int32 index)
+
+	namespace helper
 	{
-		if(!basic::is_type(l, index, lua_t::TABLE)) return false;
-
-		return  true;
-	}
-
-	template <typename T>
-	static bool vector_from_table(lua_State* l, int32 index, std::vector<T>& container) 
-	{
-		if (!is_table_vectorizable(l, index)) return false;
-		size_t len = basic::raw_len(l, index);
-		container.reserve(len);
-
-		lua_pushnil(l);
-		while (basic::table_next(l, index)) 
+		static bool is_table_vectorizable(lua_State* l, int32 index)
 		{
-			container.push_back(basic::to<T>(l, -1));
-			lua_pop(l, 1);
+			if (!basic::is_type(l, index, lua_t::TABLE)) return false;
+
+			return  true;
 		}
-		return true;
+		static bool is_table_sequenceable(lua_State* l, int32 index)
+		{
+
+			return true;
+		}
 	}
 
+
+	static void* to_userdata_fast(lua_State* L, int32 index, bool two_level_ptr)
+	{
+		bool _two_level_ptr = false;
+		void* _userdata = nullptr;
+
+	}
+
+	static void* to_userdata(lua_State* l, int32 index, bool* two_level_ptr)
+	{
+		if (index < 0 && index > LUA_REGISTRYINDEX)
+		{
+			int32 _top = basic::top_index(l);
+			index += _top + 1;
+		}
+
+		void* _userdata = nullptr;
+		bool _two_level_ptr = false, _class_metatable = false;
+
+		lua_t _type = basic::type(l, index);
+		switch (_type)
+		{
+		case lua_t::TABLE:
+		{
+			basic::push(l, "Object");
+			_type = basic::raw_get(l, index);
+			if (_type == lua_t::USERDATA)
+			{
+				_userdata = basic::to<void*>(l, -1);
+			}
+			else {
+				basic::pop(l, 1);
+				basic::push(l, "ClassDesc");
+				_type = basic::raw_get(l, index);
+				if (_type == lua_t::LIGHTUSERDATA)
+				{
+					_userdata = basic::to<void*>(l, -1);
+					_class_metatable = true;
+				}
+			}
+			_two_level_ptr = true;
+			basic::pop(l, 1);
+		}
+		break;
+		case lua_t::USERDATA:
+		{
+		}
+		break;
+		default:
+			break;
+		}
+
+		void** _instance_ptr = (void**)lua_touserdata(l, index);
+		if (!_instance_ptr || !(*_instance_ptr))
+		{
+			luaL_argcheck(l, false, index, "input val test, invalid user data");
+			return nullptr;
+		}
+		return (void*)*_instance_ptr;
+	}
+
+	static void* to_cpp_instance(lua_State* l, int32 index)
+	{
+		bool _two_level_ptr = false;
+		void* _userdata = to_userdata(l, index, &_two_level_ptr);
+		if (_userdata)
+		{
+			return _two_level_ptr ? *((void**)_userdata) : _userdata;
+		}
+		return nullptr;
+	}
+
+	static void* to_cpp_instance(lua_State* l, int32 index, const char* metatable_name)
+	{
+		//void** pp_userdata = (void**)luaL_checkudata(L, stack_index, metatable_name);
+		//return (void*)*pp_userdata;
+		void* pp_userdata = (void*)luaL_checkudata(l, index, metatable_name);
+		return pp_userdata;
+	}
+
+
 	template <typename T>
-	static bool push(lua_State* l, const std::vector<T>& container)
+	static void push(lua_State* l, const std::vector<T>& container)
+	{
+		// stack : ...
+		basic::create_table(l, container.size(), 0);
+		// stack : table, ...
+		for (size_t i = 0; i < container.size(); ++i) 
+		{
+			lua_api::basic::push(l, i + 1);
+			// stack : key, table, ...
+			lua_api::basic::push(l, container.at(i));
+			// stack : value, key, table, ...
+			lua_api::basic::set_table(l, -3);
+			// stack : table, ...
+		}
+	}
+
+	template<typename T>
+	static void push(lua_State* l, const std::list<T>& container)
+	{
+	}
+
+	template<typename T>
+	static void push(lua_State* l, const std::deque<T>& container)
+	{
+	}
+
+	template<typename T>
+	static void push(lua_State* l, const std::forward_list<T>& container)
+	{
+	}
+
+	template<typename T>
+	static void push(lua_State* l, const std::set<T>& container)
 	{
 		basic::create_table(l);
-		//basic::create_table(l, 10, 10);
-		// table
-		for (size_t i = 0; i < container.size(); ++i) {
-			lua_api::basic::push(l, i + 1);
-			// key, table
-			lua_api::basic::push(l, container.at(i));
-			// value, key, table
-			lua_api::basic::set_table(l, -3);
-			// table
+		for (auto it = container.cbegin(); it != container.cend(); ++it)
+		{
+
 		}
-		return true;
 	}
 
 	template<typename T>
-	static bool push(lua_State* l, const std::list<T>& container)
+	static void push(lua_State* l, const std::unordered_set<T>& container)
 	{
-
-
-		return true;
 	}
 
 	template<typename T>
-	static bool push(lua_State* l, const std::set<T>& container)
+	static void push(lua_State* l, const std::multiset<T>& container)
 	{
+	}
 
-		return true;
+	template<typename T>
+	static void push(lua_State* l, const std::unordered_multiset<T>& container)
+	{
 	}
 
 	template<typename KT, typename VT>
-	static bool push(lua_State* l, const std::unordered_map<KT, VT>& container)
+	static void push(lua_State* l, const std::map<KT, VT>& container)
 	{
-		basic::create_table(l);
+
+	}
+
+	template<typename KT, typename VT>
+	static void push(lua_State* l, const std::multimap<KT, VT>& container)
+	{
+
+	}
+
+	template<typename KT, typename VT>
+	static void push(lua_State* l, const std::unordered_map<KT, VT>& container)
+	{
+		basic::create_table(l, 0, container.size());
 		// table
 		for (const auto& pair : container)
 		{
@@ -802,153 +963,128 @@ namespace lua_api
 			lua_api::basic::set_table(l, -3);
 			// table
 		}
-		return true;
 	}
 
 	template<typename KT, typename VT>
-	static bool push(lua_State* l, const std::unordered_multimap<KT, VT>& container)
+	static void push(lua_State* l, const std::unordered_multimap<KT, VT>& container)
 	{
-
-		return true;
 	}
 	
+	template<typename T>
+	static void push(lua_State* l, const std::stack<T>& container)
+	{
+
+	}
 
 	template<typename T>
-	static bool list_from_table(lua_State* l, int32 index, std::list<T>& container)
+	static void push(lua_State* l, const std::queue<T>& container)
 	{
-		//if (!is_table_vectorizable(l, index)) return false;
-		size_t len = basic::raw_len(l, index);
+
+	}
+
+	template<typename T>
+	static void push(lua_State* l, T value)
+	{
+		basic::push(l, value);
+	}
+
+
+	template <typename T>
+	static bool to(lua_State* l, int32 index, std::vector<T>& container)
+	{
+		if (!helper::is_table_vectorizable(l, index))
+		{
+			return false;
+		}
+		auto _len = basic::raw_len(l, index);
+		if (_len < 1) return true;
+
+		container.reserve(_len);
+
 		lua_pushnil(l);
 		while (basic::table_next(l, index))
 		{
-			printf("%s - %s\n",
-				lua_typename(l, lua_type(l, -2)),
-				lua_typename(l, lua_type(l, -1)));
 			container.push_back(basic::to<T>(l, -1));
 			lua_pop(l, 1);
 		}
+
 		return true;
 	}
 
 	template<typename T>
-	static bool set_from_table(lua_State* l, int32 index, std::set<T>& container)
+	static bool to(lua_State* l, int32 index, std::list<T>& container)
 	{
 		size_t len = basic::raw_len(l, index);
+		if (len < 1) return true;
+
+		container.reverse(len);
+		
+		lua_pushnil(l);
+		while (basic::table_next(l, index))
+		{
+			container.push_back(basic::to<T>(l, -1));
+			lua_pop(l, 1);
+		}
+
+		return true;
+	}
+
+	template<typename T>
+	static bool to(lua_State* l, int32 index, std::set<T>& container)
+	{
+		size_t _len = basic::raw_len(l, index);
+		if (_len < 1) return true;
+
 		lua_pushnil(l);
 		while (basic::table_next(l, index))
 		{
 			container.insert(basic::to<T>(l, -1));
 			lua_pop(l, 1);
 		}
+
 		return true;
 	}
 
 	template<typename KT, typename VT>
-	static bool umap_from_table(lua_State* l, int32 index, std::unordered_map<KT, VT>& container) 
+	static bool to(lua_State* l, int32 index, std::unordered_map<KT, VT>& container) 
 	{
-		size_t len = basic::raw_len(l, index);
+		size_t _len = basic::raw_len(l, index);
+		if (_len < 1) return true;
+
 		lua_pushnil(l);
 		while (basic::table_next(l, index))
 		{
 			container.emplace(basic::to<KT>(l, -2), basic::to<VT>(l, -1));
 			lua_pop(l, 1);
 		}
+
 		return true;
 	}
 
 	template<typename KT, typename VT>
-	static bool umap_from_table(lua_State* l, int32 index, std::unordered_multimap<KT, VT>& container)
+	static bool to(lua_State* l, int32 index, std::unordered_multimap<KT, VT>& container)
 	{
-		size_t len = basic::raw_len(l, index);
+		size_t _len = basic::raw_len(l, index);
+		if (_len < 1) return true;
+
 		lua_pushnil(l);
 		while (basic::table_next(l, index))
 		{
 			container.emplace(basic::to<KT>(l, -2), basic::to<VT>(l, -1));
 			lua_pop(l, 1);
 		}
+
 		return true;
 	}
 
-
-
-	static void* to_userdata_fast(lua_State* L, int32 stack_index, bool two_level_ptr)
+	template<typename T>
+	static std::optional<T> to(lua_State* l, int32 index)
 	{
-		bool _two_level_ptr = false;
-		void* _userdata = nullptr;
-
+		if (!basic::is<T>(l, index))
+			return std::nullopt;
+		return basic::to<T>(l, index);
 	}
 
-	static void* to_userdata(lua_State* L, int32 stack_index, bool* two_level_ptr)
-	{
-		if (stack_index < 0 && stack_index > LUA_REGISTRYINDEX)
-		{
-			int32 _top = basic::top_index(L);
-			stack_index += _top + 1;
-		}
-
-		void* _userdata = nullptr;
-		bool _two_level_ptr = false, _class_metatable = false;
-
-		lua_t _type = basic::type(L, stack_index);
-		switch (_type)
-		{
-		case lua_t::TABLE:
-		{
-			basic::push(L, "Object");
-			_type = basic::raw_get(L, stack_index);
-			if (_type == lua_t::USERDATA)
-			{
-				_userdata = basic::to<void*>(L, -1);
-			}
-			else {
-				basic::pop(L, 1);
-				basic::push(L, "ClassDesc");
-				_type = basic::raw_get(L, stack_index);
-				if (_type == lua_t::LIGHTUSERDATA)
-				{
-					_userdata = basic::to<void*>(L, -1);
-					_class_metatable = true;
-				}
-			}
-			_two_level_ptr = true;
-			basic::pop(L, 1);
-		}
-		break;
-		case lua_t::USERDATA: 
-		{
-		}
-		break;
-		default:
-			break;
-		}
-
-		void** _instance_ptr = (void**)lua_touserdata(L, stack_index);
-		if (!_instance_ptr || !(*_instance_ptr))
-		{
-			luaL_argcheck(L, false, stack_index, "input val test, invalid user data");
-			return nullptr;
-		}
-		return (void*)*_instance_ptr;
-	}
-
-	static void* to_cpp_instance(lua_State* L, int32 stack_index)
-	{
-		bool _two_level_ptr = false;
-		void* _userdata = to_userdata(L, stack_index, &_two_level_ptr);
-		if (_userdata)
-		{
-			return _two_level_ptr ? *((void**)_userdata) : _userdata;
-		}
-		return nullptr;
-	}
-
-	static void* to_cpp_instance(lua_State* L, int32 stack_index, const char* metatable_name)
-	{
-		//void** pp_userdata = (void**)luaL_checkudata(L, stack_index, metatable_name);
-		//return (void*)*pp_userdata;
-		void* pp_userdata = (void*)luaL_checkudata(L, stack_index, metatable_name);
-		return pp_userdata;
-	}
 
 	struct lua_class
 	{
