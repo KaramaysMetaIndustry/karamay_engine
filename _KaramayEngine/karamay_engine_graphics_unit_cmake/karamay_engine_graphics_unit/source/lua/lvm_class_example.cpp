@@ -38,8 +38,8 @@ namespace CTest_for_lua
 		{
 			return 0;
 		}
-		auto ppTest = (CTest*)lua_api::to_cpp_instance(l, 1, "CTest_clazz");
-		lua_api::basic::push(l, ppTest->getA());
+		auto test = (CTest*)lua_api::to_cpp_instance(l, 1, "CTest_clazz");
+		lua_api::basic::push(l, test->getA());
 		// stack : integer, lightuserdata
 		return 1;
 	}
@@ -77,7 +77,7 @@ namespace CTest_for_lua
 		}
 		if (_num == 3)
 		{
-			auto test = (CTest*)lua_api::to_cpp_instance(L, 2);
+			auto test = (CTest*)lua_api::to_cpp_instance(L, 2, "CTest_clazz");
 			auto i = lua_api::basic::to<int32>(L, 3);
 			auto testReturn = test->finishNewCTest(test, i);
 			lua_api::basic::push(L, testReturn);

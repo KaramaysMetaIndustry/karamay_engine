@@ -4,8 +4,19 @@
 #pragma STDGL invariant(all)
 #pragma optimize(on)
 #pragma debug(on)
-#include "/common.glsl" //! #include "../../templates/common.glsl"
-#include "/common.frag.glsl" //! #include "../../templates/common.frag.glsl"
+#include "/common.glsl" //! #include "../../../templates/common.glsl"
+#include "/common.frag.glsl" //! #include "../../../templates/common.frag.glsl"
+
+subroutine vec3 BaseColorScalarFunc(vec4, vec2);
+
+subroutine (BaseColorScalarFunc ) vec3 redColor0(vec4 v0, vec2 v1){
+    return vec3(1.0, 0.0, 0.0);
+}
+subroutine (BaseColorScalarFunc ) vec3 redColor1(vec4 v0, vec2 v1){
+    return vec3(1.0, 0.0, 0.0);
+} 
+
+subroutine uniform BaseColorScalarFunc BaseColorScalar;
 
 in FragData
 {
@@ -19,6 +30,9 @@ layout(location = 0) out vec4 final_frag_color;
 
 void main()
 {
+
+	vec3 a = BaseColorScalar(vec4(0), vec2(1));
+
 	vec3 N = GetNormalFromMap(inData.normal, mat.normal_map, inData.uv, inData.position);
 
 	vec3 albedo = pow(texture(mat.albedo_map, inData.uv).rgb, vec3(2.2));

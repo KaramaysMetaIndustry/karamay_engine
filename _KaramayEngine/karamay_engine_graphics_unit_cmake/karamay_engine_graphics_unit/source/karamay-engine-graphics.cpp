@@ -347,10 +347,10 @@ void load_templates(const std::string& include_token)
         content.size(), content.c_str());
 }
 
-
-
 void test0()
 {
+    std::vector<int> a;
+
 
     lua_api::lua_vm _lvm;
     _lvm.start();

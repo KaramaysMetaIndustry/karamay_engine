@@ -4,9 +4,25 @@
 #include "public/stl.h"
 #include "public/_lua.h"
 
+/*
+* cpp data <=> lua data
+* 
+* bool <=> boolean
+* uint8, uint16, uint32, uint64, int8, int16, int32, int64 <=> integer
+* float, double <=> number
+* c-style string, std::string <=> string
+* void*, const void* <=> userdata
+* lua_CFuntion <=> function
+* std::containers <=> tables
+* 
+* 
+* 
+*
+*/
 namespace lua_api
 {
-	//nil, boolean, number, string, function, userdata, thread, and table.
+	// nil, thread
+	// boolean, number, string, userdata, table, function
 	enum class lua_t : int
 	{
 		NONE = LUA_TNONE,
@@ -145,6 +161,9 @@ namespace lua_api
 			return lua_error(l);
 		}
 
+		/*
+		*
+		*/
 		static int32 gc(lua_State* l, lua_gc_option option)
 		{
 			//lua_gc(L, static_cast<int>(option), )
@@ -180,11 +199,55 @@ namespace lua_api
 			lua_pop(l, n);
 		}
 
+		/*
+		* Removes the element at the given valid index, 
+		* shifting down the elements above this index to fill the gap. 
+		* This function cannot be called with a pseudo-index, 
+		* because a pseudo-index is not an actual stack position.
+		*/
+		static void remove(lua_State* l, int32 index)
+		{
+			lua_remove(l, index);
+		}
+
+		/*
+		* Moves the top element into the given valid index without shifting any element 
+		* (therefore replacing the value at that given index),
+		* and then pops the top element.
+		*/
+		static void replace(lua_State* l, int32 index)
+		{
+			lua_replace(l, index);
+		}
+
+		/*
+		* Rotates the stack elements between the valid index idx and the top of the stack. 
+		* The elements are rotated n positions in the direction of the top, for a positive n, or -n positions 
+		* in the direction of the bottom, for a negative n. 
+		* The absolute value of n must not be greater than the size of the slice being rotated. 
+		* This function cannot be called with a pseudo-index, because a pseudo-index is not an actual stack position.
+		*/
+		static void rotate(lua_State* l, int32 index, int32 num)
+		{
+			lua_rotate(l, index, num);
+		}
+
+		/*
+		* Returns the type of the value in the given valid index, 
+		* or LUA_TNONE for a non-valid but acceptable index. 
+		* The types returned by lua_type are coded by the following constants defined in lua.h: 
+		* NIL, THREAD, 
+		* NUMBER, BOOLEAN,  STRING,  TABLE, 
+		* FUNCTION,  USERDATA, LIGHTUSERDATA
+		*/
 		static lua_t type(lua_State* l, int32 index)
 		{
 			return static_cast<lua_t>(lua_type(l, index));
 		}
 
+		/*
+		* 
+		*/
 		static bool is_type(lua_State* l, int32 index, lua_t t)
 		{
 			return t == type(l, index);
@@ -225,73 +288,28 @@ namespace lua_api
 		{ 
 			static_assert(false, "lua_api::basic::push<T> , T is not supported"); 
 		}
-		template<typename T>
-		static void push(lua_State* l, T* value)
-		{
-			static_assert(std::is_class_v<T>, "must be class or struct pointer");
-			lua_pushlightuserdata(l, (void*)value);
-		}
-		template<typename T>
-		static void push(lua_State* l, const T* value)
-		{
-			static_assert(std::is_class_v<T>, "must be class or struct pointer");
-			lua_pushlightuserdata(l, (void*)value);
-		}
-
-		template<> 
-		static void push(lua_State* l, bool value) { lua_pushboolean(l, static_cast<int>(value)); }
-		template<> 
-		static void push(lua_State* l, uint8 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
-		template<> 
-		static void push(lua_State* l, uint16 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
-		template<> 
-		static void push(lua_State* l, uint32 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
-		template<> 
-		static void push(lua_State* l, uint64 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
-		template<> 
-		static void push(lua_State* l, int8 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
-		template<> 
-		static void push(lua_State* l, int16 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
-		template<> 
-		static void push(lua_State* l, int32 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
-		template<> 
-		static void push(lua_State* l, int64 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
-		template<> 
-		static void push(lua_State* l, float value) { lua_pushboolean(l, static_cast<lua_Number>(value)); }
-		template<> 
-		static void push(lua_State* l, double value) { lua_pushboolean(l, static_cast<lua_Number>(value)); }
-		
-		template<> 
-		static void push(lua_State* l, char* value)
-		{
-			lua_pushstring(l, value);
-		}
-		template<> 
-		static void push(lua_State* l, const char* value)
-		{
-			lua_pushstring(l, value);
-		}
-		template<> 
-		static void push(lua_State* l, std::string& value)
-		{
-			lua_pushstring(l, value.c_str());
-		}
-		template<> 
-		static void push(lua_State* l, const std::string value)
-		{
-			lua_pushstring(l, value.c_str());
-		}
 		template<>
-		static void push(lua_State* l, const std::string& value)
-		{
-			lua_pushstring(l, value.c_str());
-		}
-		template<> 
-		static void push(lua_State* l, std::string&& value)
-		{
-			lua_pushstring(l, value.c_str());
-		}
-		
+		static void push(lua_State* l, bool value) { lua_pushboolean(l, static_cast<int>(value)); }
+		template<>
+		static void push(lua_State* l, uint8 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
+		template<>
+		static void push(lua_State* l, uint16 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
+		template<>
+		static void push(lua_State* l, uint32 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
+		template<>
+		static void push(lua_State* l, uint64 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
+		template<>
+		static void push(lua_State* l, int8 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
+		template<>
+		static void push(lua_State* l, int16 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
+		template<>
+		static void push(lua_State* l, int32 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
+		template<>
+		static void push(lua_State* l, int64 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
+		template<>
+		static void push(lua_State* l, float value) { lua_pushboolean(l, static_cast<lua_Number>(value)); }
+		template<>
+		static void push(lua_State* l, double value) { lua_pushboolean(l, static_cast<lua_Number>(value)); }
 		struct lua_nil_t {};
 		template<>
 		static void push(lua_State* l, lua_nil_t nil) { lua_pushnil(l); }
@@ -304,12 +322,62 @@ namespace lua_api
 		struct lua_thread_t {};
 		template<>
 		static void push(lua_State* l, lua_thread_t thread) { lua_pushthread(l); }
+
+		template<>
+		static void push(lua_State* l, std::string& value)
+		{
+			lua_pushstring(l, value.c_str());
+		}
+		template<>
+		static void push(lua_State* l, const std::string& value)
+		{
+			lua_pushstring(l, value.c_str());
+		}
 		
+		template<typename T>
+		static void push(lua_State* l, T* value)
+		{
+			static_assert(std::is_class_v<T>, "must be class or struct pointer");
+			lua_pushlightuserdata(l, (void*)value);
+		}
+		template<>
+		static void push(lua_State* l, char* value)
+		{
+			lua_pushstring(l, value);
+		}
+
+		template<typename T>
+		static void push(lua_State* l, const T* value)
+		{
+			static_assert(std::is_class_v<T>, "must be class or struct pointer");
+			lua_pushlightuserdata(l, (void*)value);
+		}
+		template<>
+		static void push(lua_State* l, const char* value)
+		{
+			lua_pushstring(l, value);
+		}
+
+		template<> 
+		static void push(lua_State* l, const std::string value)
+		{
+			lua_pushstring(l, value.c_str());
+		}
+		template<> 
+		static void push(lua_State* l, std::string&& value)
+		{
+			lua_pushstring(l, value.c_str());
+		}
 		static void push_value(lua_State* l, int32 index)
 		{
 			lua_pushvalue(l, index);
 		}
 		
+		template<>
+		static void push(lua_State* l, const std::string_view& value)
+		{
+			value.data();
+		}
 
 		/*
 		* Creates a new empty table and pushes it onto the stack.
@@ -587,14 +655,26 @@ namespace lua_api
 
 		}
 
-		
-
 		static void set_allocf(lua_State* L, lua_Alloc f, void* ud)
 		{
 			lua_setallocf(L, f, ud);
 		}
-
 		
+		//static void call()
+		//{
+		//	//lua_pcallk()
+		//}
+
+		//static void call()
+		//{
+		//	//lua_pcall();
+		//}
+
+		//static void call()
+		//{
+		//	//lua_call()
+		//}
+
 	
 		/*
 		* Loads a Lua chunk without running it.
@@ -799,82 +879,8 @@ namespace lua_api
 		}
 	}
 
-
-	static void* to_userdata_fast(lua_State* L, int32 index, bool two_level_ptr)
-	{
-		bool _two_level_ptr = false;
-		void* _userdata = nullptr;
-
-	}
-
-	static void* to_userdata(lua_State* l, int32 index, bool* two_level_ptr)
-	{
-		if (index < 0 && index > LUA_REGISTRYINDEX)
-		{
-			int32 _top = basic::top_index(l);
-			index += _top + 1;
-		}
-
-		void* _userdata = nullptr;
-		bool _two_level_ptr = false, _class_metatable = false;
-
-		lua_t _type = basic::type(l, index);
-		switch (_type)
-		{
-		case lua_t::TABLE:
-		{
-			basic::push(l, "Object");
-			_type = basic::raw_get(l, index);
-			if (_type == lua_t::USERDATA)
-			{
-				_userdata = basic::to<void*>(l, -1);
-			}
-			else {
-				basic::pop(l, 1);
-				basic::push(l, "ClassDesc");
-				_type = basic::raw_get(l, index);
-				if (_type == lua_t::LIGHTUSERDATA)
-				{
-					_userdata = basic::to<void*>(l, -1);
-					_class_metatable = true;
-				}
-			}
-			_two_level_ptr = true;
-			basic::pop(l, 1);
-		}
-		break;
-		case lua_t::USERDATA:
-		{
-		}
-		break;
-		default:
-			break;
-		}
-
-		void** _instance_ptr = (void**)lua_touserdata(l, index);
-		if (!_instance_ptr || !(*_instance_ptr))
-		{
-			luaL_argcheck(l, false, index, "input val test, invalid user data");
-			return nullptr;
-		}
-		return (void*)*_instance_ptr;
-	}
-
-	static void* to_cpp_instance(lua_State* l, int32 index)
-	{
-		bool _two_level_ptr = false;
-		void* _userdata = to_userdata(l, index, &_two_level_ptr);
-		if (_userdata)
-		{
-			return _two_level_ptr ? *((void**)_userdata) : _userdata;
-		}
-		return nullptr;
-	}
-
 	static void* to_cpp_instance(lua_State* l, int32 index, const char* metatable_name)
 	{
-		//void** pp_userdata = (void**)luaL_checkudata(L, stack_index, metatable_name);
-		//return (void*)*pp_userdata;
 		void* pp_userdata = (void*)luaL_checkudata(l, index, metatable_name);
 		return pp_userdata;
 	}
@@ -888,11 +894,11 @@ namespace lua_api
 		// stack : table, ...
 		for (size_t i = 0; i < container.size(); ++i) 
 		{
-			lua_api::basic::push(l, i + 1);
+			basic::push(l, i + 1);
 			// stack : key, table, ...
-			lua_api::basic::push(l, container.at(i));
+			basic::push(l, container.at(i));
 			// stack : value, key, table, ...
-			lua_api::basic::set_table(l, -3);
+			basic::set_table(l, -3);
 			// stack : table, ...
 		}
 	}
@@ -900,6 +906,16 @@ namespace lua_api
 	template<typename T>
 	static void push(lua_State* l, const std::list<T>& container)
 	{
+		// stack : ...
+		basic::create_table(l, container.size(), 0);
+		// stack: table, ...
+		int i = 1;
+		for (auto it = container.cbegin(); it != container.cend(); ++it, ++i)
+		{
+			basic::push(l, i);
+			basic::push(l, *it);
+			basic::set_table(l, -3);
+		}
 	}
 
 	template<typename T>
@@ -989,6 +1005,17 @@ namespace lua_api
 	}
 
 
+	template<typename T>
+	concept _LUA_IMME_T = std::is_same_v<uint8, T>;
+
+	template<typename T>
+	static std::optional<T> to(lua_State* l, int32 index)
+	{
+		if (!basic::is<T>(l, index))
+			return std::nullopt;
+		return basic::to<T>(l, index);
+	}
+
 	template <typename T>
 	static bool to(lua_State* l, int32 index, std::vector<T>& container)
 	{
@@ -1077,12 +1104,11 @@ namespace lua_api
 		return true;
 	}
 
+
+
 	template<typename T>
-	static std::optional<T> to(lua_State* l, int32 index)
+	static void invoke()
 	{
-		if (!basic::is<T>(l, index))
-			return std::nullopt;
-		return basic::to<T>(l, index);
 	}
 
 
