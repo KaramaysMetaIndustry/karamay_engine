@@ -27,7 +27,6 @@
 #include <regex>
 #include <functional>
 
-
 // C++ 17
 #include <any >
 #include <charconv>

@@ -347,13 +347,28 @@ void load_templates(const std::string& include_token)
         content.size(), content.c_str());
 }
 
+class ICounter {};
+
+template <typename T> 
+void inc_counter(T& counterObj, typename std::enable_if_t<std::is_base_of_v<T, ICounter>>* = nullptr)
+{
+
+}
+
+template<typename T>
+void inc_counter(T& counterObj, typename std::enable_if_t<std::is_integral_v<T>>* = nullptr)
+{
+
+}
 
 void test0()
 {
+    float a = 1;
+    inc_counter(a, &a);
 
     lua_api::lua_vm _lvm;
     _lvm.start();
-    _lvm.do_file("C:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\scripts\\blue_freckle\\Test.lua");
+    _lvm.do_file("G:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\scripts\\blue_freckle\\Test.lua");
 
 	auto* window = new glfw_window();
 	window->load_context();

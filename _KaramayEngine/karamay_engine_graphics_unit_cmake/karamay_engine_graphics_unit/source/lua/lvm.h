@@ -308,12 +308,20 @@ namespace lua_api
 		{
 			static_assert(std::is_class_v<T>, "must be class or struct pointer");
 			lua_pushlightuserdata(l, (void*)value);
+			/*if (!luaL_testudata(l, -1, ""))
+			{
+				luaL_setmetatable(l, "");
+			}*/
 		}
 		template<typename T>
 		static void push(lua_State* l, const T* value)
 		{
 			static_assert(std::is_class_v<T>, "must be class or struct pointer");
 			lua_pushlightuserdata(l, (void*)value);
+			/*if (!luaL_testudata(l, -1, ""))
+			{
+				luaL_setmetatable(l, "");
+			}*/
 		}
 
 		static void push(lua_State* l, char* value)
@@ -831,7 +839,7 @@ namespace lua_api
 
 	static void* to_cpp_instance(lua_State* l, int32 index, const char* metatable_name)
 	{
-		void* pp_userdata = (void*)luaL_checkudata(l, index, metatable_name);
+		void* pp_userdata = (void*)luaL_testudata(l, index, metatable_name);
 		return pp_userdata;
 	}
 
@@ -845,14 +853,14 @@ namespace lua_api
 
 
 
-	template<typename T>
-	static void push(lua_State* l, T value)
+	template<typename _Ty>
+	static void push(lua_State* l, _Ty value)
 	{
 		basic::push(l, value);
 	}
 
-	template <typename T>
-	static void push(lua_State* l, const std::vector<T>& container)
+	template <typename _Ty>
+	static void push(lua_State* l, const std::vector<_Ty>& container)
 	{
 		// stack : ...
 		basic::create_table(l, container.size(), 0);
@@ -868,8 +876,8 @@ namespace lua_api
 		}
 	}
 
-	template<typename T>
-	static void push(lua_State* l, const std::deque<T>& container)
+	template<typename _Ty>
+	static void push(lua_State* l, const std::deque<_Ty>& container)
 	{
 		// stack : ...
 		basic::create_table(l, container.size(), 0);
@@ -885,8 +893,8 @@ namespace lua_api
 		}
 	}
 
-	template<typename T>
-	static void push(lua_State* l, const std::list<T>& container)
+	template<typename _Ty>
+	static void push(lua_State* l, const std::list<_Ty>& container)
 	{
 		// stack : ...
 		basic::create_table(l, container.size(), 0);
@@ -903,8 +911,8 @@ namespace lua_api
 		}
 	}
 	
-	template<typename T>
-	static void push(lua_State* l, const std::forward_list<T>& container)
+	template<typename _Ty>
+	static void push(lua_State* l, const std::forward_list<_Ty>& container)
 	{
 		// stack : ...
 		basic::create_table(l);
@@ -921,8 +929,8 @@ namespace lua_api
 		}
 	}
 
-	template<typename T>
-	static void push(lua_State* l, const std::set<T>& container)
+	template<typename _Ty>
+	static void push(lua_State* l, const std::set<_Ty>& container)
 	{
 		// stack : ...
 		basic::create_table(l, container.size(), 0);
@@ -939,8 +947,8 @@ namespace lua_api
 		}
 	}
 
-	template<typename T>
-	static void push(lua_State* l, const std::unordered_set<T>& container)
+	template<typename _Ty>
+	static void push(lua_State* l, const std::unordered_set<_Ty>& container)
 	{
 		// stack : ...
 		basic::create_table(l, container.size(), 0);
@@ -957,8 +965,8 @@ namespace lua_api
 		}
 	}
 
-	template<typename T>
-	static void push(lua_State* l, const std::multiset<T>& container)
+	template<typename _Ty>
+	static void push(lua_State* l, const std::multiset<_Ty>& container)
 	{
 		// ...
 		basic::create_table(l, container.size(), 0);
@@ -975,8 +983,8 @@ namespace lua_api
 		}
 	}
 
-	template<typename T>
-	static void push(lua_State* l, const std::unordered_multiset<T>& container)
+	template<typename _Ty>
+	static void push(lua_State* l, const std::unordered_multiset<_Ty>& container)
 	{
 		// ...
 		basic::create_table(l, container.size(), 0);
@@ -993,8 +1001,8 @@ namespace lua_api
 		}
 	}
 
-	template<typename KT, typename VT>
-	static void push(lua_State* l, const std::map<KT, VT>& container)
+	template<typename _Kty, typename _Ty>
+	static void push(lua_State* l, const std::map<_Kty, _Ty>& container)
 	{
 		// ...
 		basic::create_table(l, 0, container.size());
@@ -1010,8 +1018,8 @@ namespace lua_api
 		}
 	}
 
-	template<typename KT, typename VT>
-	static void push(lua_State* l, const std::unordered_map<KT, VT>& container)
+	template<typename _Kty, typename _Ty>
+	static void push(lua_State* l, const std::unordered_map<_Kty, _Ty>& container)
 	{
 		// ...
 		basic::create_table(l, 0, container.size());
