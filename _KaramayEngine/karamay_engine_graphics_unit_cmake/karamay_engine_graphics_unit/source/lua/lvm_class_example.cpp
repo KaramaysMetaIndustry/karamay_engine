@@ -24,7 +24,7 @@ namespace CTest_for_lua
 			return 0;
 		}
 		CTest* test = new CTest();
-		lua_api::basic::push(l, test);
+		lua_api::push(l, test);
 		// stack : userdata, metatable
 		lua_api::auxiliary::set_metatable(l, "CTest_clazz");
 		return 1;
@@ -34,20 +34,20 @@ namespace CTest_for_lua
 	{
 		// stack : userdata
 		auto _num = lua_api::basic::top_index(l);
-		if (_num != 1 || !lua_api::basic::is_type(l, 1, lua_api::lua_t::LIGHTUSERDATA))
+		if (_num != 1)
 		{
 			return 0;
 		}
 		auto test = (CTest*)lua_api::to_cpp_instance(l, 1, "CTest_clazz");
-		lua_api::basic::push(l, test->getA());
+		lua_api::push(l, test->getA());
 		// stack : integer, lightuserdata
 		return 1;
 	}
 
-	static int set(lua_State* L)
+	static int set(lua_State* l)
 	{
 		// stack : integer, userdata
-		auto _num = lua_api::basic::top_index(L);
+		auto _num = lua_api::basic::top_index(l);
 		if (_num < 2)
 		{
 #ifdef _DEBUG
@@ -55,32 +55,32 @@ namespace CTest_for_lua
 #endif
 			return 0;
 		}
-		auto ppTest = (CTest*)lua_api::to_cpp_instance(L, 1, "CTest_clazz");
-		auto a = lua_api::to<int32>(L, 2);
+		auto ppTest = (CTest*)lua_api::to_cpp_instance(l, 1, "CTest_clazz");
+		auto a = lua_api::to<int32>(l, 2);
 		ppTest->setA(a.value_or(0));
 		return 0;
 	}
 
-	static int finish(lua_State* L)
+	static int finish(lua_State* l)
 	{
 		// stack : userdata, userdata
 		// stack : integer, userdata, userdata
-		int32 _num = lua_api::basic::top_index(L);
+		int32 _num = lua_api::basic::top_index(l);
 	
-		auto test = (CTest*)lua_api::to_cpp_instance(L, 1, "CTest_clazz");
+		auto test = (CTest*)lua_api::to_cpp_instance(l, 1, "CTest_clazz");
 		if (_num == 2)
 		{
-			auto testParam = (CTest*)lua_api::to_cpp_instance(L, 2, "CTest_clazz");
+			auto testParam = (CTest*)lua_api::to_cpp_instance(l, 2, "CTest_clazz");
 			auto testReturn = test->finishNewCTest(testParam);
-			lua_api::basic::push(L, testReturn);
+			lua_api::push(l, testReturn);
 			// stack : userdata, userdata, userdata
 		}
 		if (_num == 3)
 		{
-			auto test = (CTest*)lua_api::to_cpp_instance(L, 2, "CTest_clazz");
-			auto i = lua_api::basic::to<int32>(L, 3);
+			auto test = (CTest*)lua_api::to_cpp_instance(l, 2, "CTest_clazz");
+			auto i = lua_api::basic::to<int32>(l, 3);
 			auto testReturn = test->finishNewCTest(test, i);
-			lua_api::basic::push(L, testReturn);
+			lua_api::push(l, testReturn);
 			// stack : userdata, integer, userdata, userdata
 		}
 		return 1;
@@ -107,15 +107,21 @@ namespace CTest_for_lua
 
 	static int get_array(lua_State* l)
 	{
-		std::unordered_map<std::string, int32> a =
+		/*std::unordered_map<std::string, int32> a =
 		{
 			{"wait", 2},
 			{"wuda", 3},
 			{"pat", 1}
-		};
+		};*/
+
+		auto test0 = new CTest();
+		auto test1 = new CTest();
+		auto test2 = new CTest();
+
+		std::vector<CTest*> a = { test0, test1, test2 };
 
 		lua_api::push(l, a);
-
+		
 		return 1;
 	}
 
@@ -215,7 +221,7 @@ namespace gl_graphics_pipline_for_lua
 		{
 			return 0;
 		}
-		lua_api::basic::push(l, _pipeline);
+		lua_api::push(l, _pipeline);
 		// stack : (userdata), userdata
 		lua_api::auxiliary::set_metatable(l, "gl_graphics_pipeline_clazz");
 		return 1;
@@ -238,7 +244,7 @@ namespace gl_graphics_pipline_for_lua
 		}
 		auto _pipeline_dir = lua_api::basic::to<std::string>(l, 2);
 		auto _result = _pipeline->load(_pipeline_dir);
-		lua_api::basic::push(l, _result);
+		lua_api::push(l, _result);
 		// stack : (boolean), string, userdata
 		return 1;
 	}
@@ -269,16 +275,16 @@ namespace gl_graphics_pipline_for_lua
 		return 0;
 	}
 
-	static int syncable_draw_arrays(lua_State* L)
+	static int syncable_draw_arrays(lua_State* l)
 	{
 		// integer, integer, userdata
 		// integer, integer, integer, integer, userdata
-		int32 _num = lua_api::basic::top_index(L);
+		int32 _num = lua_api::basic::top_index(l);
 		if (_num < 3)
 		{
 			return 0;
 		}
-		auto _pipeline = (gl_graphics_pipeline*)lua_api::to_cpp_instance(L, 1, "gl_graphics_pipeline_clazz");
+		auto _pipeline = (gl_graphics_pipeline*)lua_api::to_cpp_instance(l, 1, "gl_graphics_pipeline_clazz");
 		if (!_pipeline)
 		{
 			return 0;
@@ -287,18 +293,18 @@ namespace gl_graphics_pipline_for_lua
 		if (_num == 3)
 		{
 			auto _fence = _pipeline->syncable_draw_arrays(
-				lua_api::basic::to<uint32>(L, 2),
-				lua_api::basic::to<uint32>(L, 3)
+				lua_api::to<uint32>(l, 2).value_or(0),
+				lua_api::to<uint32>(l, 3).value_or(0)
 			);
 			//lua_api::origin::push_light_userdata(L, nullptr);
 		}
 		if (_num == 5)
 		{
 			auto _fence = _pipeline->syncable_draw_arrays(
-				lua_api::basic::to<uint32>(L, 2),
-				lua_api::basic::to<uint32>(L, 3),
-				lua_api::basic::to<uint32>(L, 4),
-				lua_api::basic::to<uint32>(L, 5)
+				lua_api::basic::to<uint32>(l, 2),
+				lua_api::basic::to<uint32>(l, 3),
+				lua_api::basic::to<uint32>(l, 4),
+				lua_api::basic::to<uint32>(l, 5)
 			);
 			//lua_api::origin::push_light_userdata(L, nullptr);
 		}
@@ -306,26 +312,26 @@ namespace gl_graphics_pipline_for_lua
 		return 1;
 	}
 
-	static int unsyncable_draw_arrays(lua_State* L)
+	static int unsyncable_draw_arrays(lua_State* l)
 	{
 		// integer, integer, userdata
 		// integer, integer, integer, integer, userdata
-		int32 _num = lua_api::basic::top_index(L); // index : 2+1 or 4+1
-		auto _pipeline = (gl_graphics_pipeline*)lua_api::to_cpp_instance(L, 1, "gl_graphics_pipeline_clazz");
+		int32 _num = lua_api::basic::top_index(l); // index : 2+1 or 4+1
+		auto _pipeline = (gl_graphics_pipeline*)lua_api::to_cpp_instance(l, 1, "gl_graphics_pipeline_clazz");
 		if (_num == 3)
 		{
 			_pipeline->unsyncable_draw_arrays(
-				lua_api::basic::to<uint32>(L, 2),
-				lua_api::basic::to<uint32>(L, 3)
+				lua_api::basic::to<uint32>(l, 2),
+				lua_api::basic::to<uint32>(l, 3)
 			);
 		}
 		if (_num == 5)
 		{
 			_pipeline->unsyncable_draw_arrays(
-				lua_api::basic::to<uint32>(L, 2),
-				lua_api::basic::to<uint32>(L, 3),
-				lua_api::basic::to<uint32>(L, 4),
-				lua_api::basic::to<uint32>(L, 5)
+				lua_api::basic::to<uint32>(l, 2),
+				lua_api::basic::to<uint32>(l, 3),
+				lua_api::basic::to<uint32>(l, 4),
+				lua_api::basic::to<uint32>(l, 5)
 			);
 		}
 		return 0;

@@ -113,7 +113,9 @@
 
 
 local test = CTest()
-test:set(14);
+test:set(14)
+local x = test:get()
+
 local t =
 {
 	1,2,3,4,5,6,7
