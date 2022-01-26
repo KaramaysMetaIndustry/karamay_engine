@@ -347,24 +347,19 @@ void load_templates(const std::string& include_token)
         content.size(), content.c_str());
 }
 
-class ICounter {};
+template<class T>
+concept Integral = std::is_integral<T>::value;
+template<class T>
+concept SignedIntegral = Integral<T> && std::is_signed<T>::value;
+template<class T>
+concept UnsignedIntegral = Integral<T> && !SignedIntegral<T>;
 
-template <typename T> 
-void inc_counter(T& counterObj, typename std::enable_if_t<std::is_base_of_v<T, ICounter>>* = nullptr)
-{
-
-}
-
-template<typename T>
-void inc_counter(T& counterObj, typename std::enable_if_t<std::is_integral_v<T>>* = nullptr)
-{
-
-}
 
 void test0()
 {
-    float a = 1;
-    inc_counter(a, &a);
+    using std::operator""s;
+
+    std::sort()
 
     lua_api::lua_vm _lvm;
     _lvm.start();
