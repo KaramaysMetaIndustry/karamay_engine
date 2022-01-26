@@ -359,7 +359,6 @@ void test0()
 {
     using std::operator""s;
 
-    std::sort()
 
     lua_api::lua_vm _lvm;
     _lvm.start();

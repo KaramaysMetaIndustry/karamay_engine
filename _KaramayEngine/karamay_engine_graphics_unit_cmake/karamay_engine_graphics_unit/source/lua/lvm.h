@@ -851,58 +851,89 @@ namespace lua_api
 		return pp_userdata;
 	}
 
+	// [array], vector, list, forward_list, deque,
+	// set, unordered_set, multiset, unordered_multiset
+	// map, unordered_map, [ multimap, unordered_multimap]
+	// [stack, queue]
+
+	// bool, uint8/16/32/64, int8/16/32/64, float, double, 
+	// const char*, std::string
+	// void*, const void*
+
+	template<typename T>
+	concept callable = requires(T f)
+	{
+		f();
+		{*f} -> std::same_as<int>;
+	};
+
+	template<typename T>
+	concept compatible_with_lua_t = true;
 
 
-	template<typename _Ty>
-	static void push(lua_State* l, _Ty value)
+	template<typename T> requires compatible_with_lua_t<T>
+	static void push(lua_State* l, T value)
 	{
 		basic::push(l, value);
 	}
 
-	template <typename _Ty>
-	static void push(lua_State* l, const std::vector<_Ty>& container)
+
+	template<typename T, size_t SIZE> requires compatible_with_lua_t<T>
+	static void push(lua_State* l, const std::array<T, SIZE>& c) 
+	{
+		basic::create_table(l, SIZE, 0);
+		for (size_t _index = 0; _index < SIZE; ++_index)
+		{
+			push(l, _index + 1);
+			push(l, c[_index]);
+			basic::set_table(l, -3);
+		}
+	}
+
+	template <typename T> requires compatible_with_lua_t<T>
+	static void push(lua_State* l, const std::vector<T>& c)
 	{
 		// stack : ...
-		basic::create_table(l, container.size(), 0);
+		basic::create_table(l, c.size(), 0);
 		// stack : table, ...
-		for (std::size_t i = 0; i < container.size(); ++i)
+		for (std::size_t _index = 0; _index < c.size(); ++_index)
 		{
-			push(l, i + 1);
+			push(l, _index + 1);
 			// stack : key, table, ...
-			push(l, container[i]);
+			push(l, c[_index]);
 			// stack : value, key, table, ...
 			basic::set_table(l, -3);
 			// stack : table, ...
 		}
 	}
 
-	template<typename _Ty>
-	static void push(lua_State* l, const std::deque<_Ty>& container)
+	template<typename T> requires compatible_with_lua_t<T>
+	static void push(lua_State* l, const std::deque<T>& c)
 	{
 		// stack : ...
-		basic::create_table(l, container.size(), 0);
+		basic::create_table(l, c.size(), 0);
 		// stack : table, ...
-		for (std::size_t i = 0; i < container.size(); ++i)
+		for (std::size_t _index = 0; _index < c.size(); ++_index)
 		{
-			push(l, i + 1);
+			push(l, _index + 1);
 			// stack : key, table, ...
-			push(l, container[i]);
+			push(l, c[_index]);
 			// stack : value, key, table, ...
 			basic::set_table(l, -3);
 			// stack : table, ...
 		}
 	}
 
-	template<typename _Ty>
-	static void push(lua_State* l, const std::list<_Ty>& container)
+	template<typename T> requires compatible_with_lua_t<T>
+	static void push(lua_State* l, const std::list<T>& c)
 	{
 		// stack : ...
-		basic::create_table(l, container.size(), 0);
+		basic::create_table(l, c.size(), 0);
 		// stack: table, ...
-		std::size_t i = 1;
-		for (auto it = container.cbegin(); it != container.cend(); ++it, ++i)
+		size_t _index = 1;
+		for (auto it = c.cbegin(); it != c.cend(); ++it, ++_index)
 		{
-			push(l, i);
+			push(l, _index);
 			// stack : key, table, ...
 			push(l, *it);
 			// stack : value, key, table, ...
@@ -911,16 +942,16 @@ namespace lua_api
 		}
 	}
 	
-	template<typename _Ty>
-	static void push(lua_State* l, const std::forward_list<_Ty>& container)
+	template<typename T> requires compatible_with_lua_t<T>
+	static void push(lua_State* l, const std::forward_list<T>& c)
 	{
 		// stack : ...
 		basic::create_table(l);
 		// stack: table, ...
-		std::size_t i = 1;
-		for (auto it = container.cbegin(); it != container.cend(); ++it, ++i)
+		size_t _index = 1;
+		for (auto it = c.cbegin(); it != c.cend(); ++it, ++_index)
 		{
-			push(l, i);
+			push(l, _index);
 			// stack : key, table, ...
 			push(l, *it);
 			// stack : value, key, table, ...
@@ -929,16 +960,16 @@ namespace lua_api
 		}
 	}
 
-	template<typename _Ty>
-	static void push(lua_State* l, const std::set<_Ty>& container)
+	template<typename T> requires compatible_with_lua_t<T>
+	static void push(lua_State* l, const std::set<T>& c)
 	{
 		// stack : ...
-		basic::create_table(l, container.size(), 0);
+		basic::create_table(l, c.size(), 0);
 		// stack: table, ...
-		std::size_t i = 1;
-		for (auto it = container.cbegin(); it != container.cend(); ++it, ++i)
+		std::size_t _index = 1;
+		for (auto it = c.cbegin(); it != c.cend(); ++it, ++_index)
 		{
-			push(l, i);
+			push(l, _index);
 			// stack : key, table, ...
 			push(l, *it);
 			// stack : value, key, table, ...
@@ -947,16 +978,16 @@ namespace lua_api
 		}
 	}
 
-	template<typename _Ty>
-	static void push(lua_State* l, const std::unordered_set<_Ty>& container)
+	template<typename T> requires compatible_with_lua_t<T>
+	static void push(lua_State* l, const std::unordered_set<T>& c)
 	{
 		// stack : ...
-		basic::create_table(l, container.size(), 0);
+		basic::create_table(l, c.size(), 0);
 		// stack: table, ...
-		std::size_t i = 1;
-		for (auto it = container.cbegin(); it != container.cend(); ++it, ++i)
+		std::size_t _index = 1;
+		for (auto it = c.cbegin(); it != c.cend(); ++it, ++_index)
 		{
-			push(l, i);
+			push(l, _index);
 			// stack : key, table, ...
 			push(l, *it);
 			// stack : value, key, table, ...
@@ -965,14 +996,14 @@ namespace lua_api
 		}
 	}
 
-	template<typename _Ty>
-	static void push(lua_State* l, const std::multiset<_Ty>& container)
+	template<typename T> requires compatible_with_lua_t<T>
+	static void push(lua_State* l, const std::multiset<T>& c)
 	{
 		// ...
-		basic::create_table(l, container.size(), 0);
+		basic::create_table(l, c.size(), 0);
 		// table, ...
 		std::size_t _index = 1;
-		for (auto _it = container.cbegin(); _it != container.cend(); ++_it, ++_index)
+		for (auto _it = c.cbegin(); _it != c.cend(); ++_it, ++_index)
 		{
 			push(l, _index);
 			// key, table, ...
@@ -983,14 +1014,14 @@ namespace lua_api
 		}
 	}
 
-	template<typename _Ty>
-	static void push(lua_State* l, const std::unordered_multiset<_Ty>& container)
+	template<typename T> requires compatible_with_lua_t<T>
+	static void push(lua_State* l, const std::unordered_multiset<T>& c)
 	{
 		// ...
-		basic::create_table(l, container.size(), 0);
+		basic::create_table(l, c.size(), 0);
 		// table, ...
 		std::size_t _index = 1;
-		for (auto _it = container.cbegin(); _it != container.cend(); ++_it, ++_index)
+		for (auto _it = c.cbegin(); _it != c.cend(); ++_it, ++_index)
 		{
 			push(l, _index);
 			// key, table, ...
@@ -1001,13 +1032,13 @@ namespace lua_api
 		}
 	}
 
-	template<typename _Kty, typename _Ty>
-	static void push(lua_State* l, const std::map<_Kty, _Ty>& container)
+	template<typename KT, typename VT> 
+	static void push(lua_State* l, const std::map<KT, VT>& c)
 	{
 		// ...
-		basic::create_table(l, 0, container.size());
+		basic::create_table(l, 0, c.size());
 		// table, ...
-		for (const auto& pair : container)
+		for (const auto& pair : c)
 		{
 			push(l, pair.first);
 			// key, table, ...
@@ -1018,13 +1049,13 @@ namespace lua_api
 		}
 	}
 
-	template<typename _Kty, typename _Ty>
-	static void push(lua_State* l, const std::unordered_map<_Kty, _Ty>& container)
+	template<typename KT, typename VT>
+	static void push(lua_State* l, const std::unordered_map<KT, VT>& c)
 	{
 		// ...
-		basic::create_table(l, 0, container.size());
+		basic::create_table(l, 0, c.size());
 		// table, ...
-		for (const auto& pair : container)
+		for (const auto& pair : c)
 		{
 			push(l, pair.first);
 			// key, table, ...
@@ -1036,7 +1067,7 @@ namespace lua_api
 	}
 	
 
-	template<typename T>
+	template<typename T> requires compatible_with_lua_t<T>
 	static std::optional<T> to(lua_State* l, int32 index)
 	{
 		if (!basic::is<T>(l, index))
@@ -1044,73 +1075,102 @@ namespace lua_api
 		return basic::to<T>(l, index);
 	}
 
-	template <typename T>
-	static bool to(lua_State* l, int32 index, std::vector<T>& container)
+
+	template<typename T, size_t size> requires compatible_with_lua_t<T>
+	static bool to(lua_State* l, int32 index, std::array<T, size>& c)
+	{
+		auto _table_len = basic::raw_len(l, index);
+		if (_table_len > size) return false;
+
+		lua_pushnil(l);
+		size_t _array_index = 0;
+		while (basic::table_next(l, index))
+		{
+			auto _optional_v = to<T>(l, -1);
+			if (!_optional_v.has_value())
+			{
+				basic::pop(l, 2);
+				return false;
+			}
+
+			c[_array_index] = _optional_v.value();
+			++_array_index;
+		}
+		return true;
+	}
+
+	template <typename T> requires compatible_with_lua_t<T>
+	static bool to(lua_State* l, int32 index, std::vector<T>& c)
 	{
 		if (!helper::is_table_vectorizable(l, index))
 		{
 			return false;
 		}
-
 		auto _len = basic::raw_len(l, index);
 		if (_len < 1)
 		{
 			return true;
 		}
-
-		container.reserve(_len);
-
+		c.reserve(_len);
+		// table, ...
 		lua_pushnil(l);
+		// key, table, ...
 		while (basic::table_next(l, index))
 		{
+			// value, key, table, ...
 			auto _result = to<T>(l, -1);
 			if (!_result.has_value())
 			{
-				lua_pop(l, 2);
+				basic::pop(l, 2);
+				// table, ...
 				return false;
 			}
-			container.push_back(_result.value());
-			lua_pop(l, 1);
+			c.push_back(_result.value());
+			basic::pop(l, 1);
+			// key, table, ...
 		}
-
+		// table, ...
 		return true;
 	}
 
-	template<typename T>
-	static bool to(lua_State* l, int32 index, std::list<T>& container)
-	{
-		auto _len = basic::raw_len(l, index);
-		if (_len < 1)
-		{
-			return true;
-		}
-
-		container.reverse(_len);
-		
+	template<typename T> requires compatible_with_lua_t<T>
+	static bool to(lua_State* l, int32 index, std::list<T>& c)
+	{	
 		lua_pushnil(l);
 		while (basic::table_next(l, index))
 		{
-			auto _result = to<T>(l, -1);
-			if (_result.has_value())
+			auto _optional_v = to<T>(l, -1);
+			if (!_optional_v.has_value())
 			{
-				lua_pop(l, 2);
+				basic::pop(l, 2);
 				return false;
 			}
-			container.push_back(_result.value());
-			lua_pop(l, 1);
+			c.push_back(_optional_v.value());
+			basic::pop(l, 1);
 		}
-
 		return true;
 	}
 
-	template<typename T>
-	static bool to(lua_State* l, int32 index, std::forward_list<T>& container)
+	template<typename T> requires compatible_with_lua_t<T>
+	static bool to(lua_State* l, int32 index, std::forward_list<T>& c)
 	{
-		return false;
+		lua_pushnil(l);
+		while (basic::table_next(l, index))
+		{
+			auto _optional_v = to<T>(l, -1);
+			if (!_optional_v.has_value())
+			{
+				basic::pop(l, 2);
+				return false;
+			}
+			c.push_front(_optional_v.value());
+			basic::pop(l, 1);
+		}
+		return true;
 	}
 
-	template<typename T>
-	static bool to(lua_State* l, int32 index, std::set<T>& container)
+	template<typename T> requires compatible_with_lua_t<T>
+	static bool to(lua_State* l, int32 index, std::set<T>& c)
 	{
 		size_t _len = basic::raw_len(l, index);
 		if (_len < 1) return true;
@@ -1118,47 +1178,124 @@ namespace lua_api
 		lua_pushnil(l);
 		while (basic::table_next(l, index))
 		{
-			container.insert(basic::to<T>(l, -1));
-			lua_pop(l, 1);
+			auto _optional_v = to<T>(l, -1);
+			if (!_optional_v.has_value())
+			{
+				basic::pop(l, 2);
+				return false;
+			}
+			c.insert(_optional_v.value());
+			basic::pop(l, 1);
 		}
-
 		return true;
 	}
 
-	template<typename T>
-	static bool to(lua_State* l, int32 index, std::multiset<T>& container) { return false; }
-
-	template<typename T>
-	static bool to(lua_State* l, int32 index, std::unordered_set<T>& container) { return false; }
-
-	template<typename T>
-	static bool to(lua_State* l, int32 index, std::unordered_multiset<T>& container) { return false; }
-
-	template<typename KT, typename VT>
-	static bool to(lua_State* l, int32 index, std::map<KT, VT>& container)
+	template<typename T> requires compatible_with_lua_t<T>
+	static bool to(lua_State* l, int32 index, std::multiset<T>& c) 
 	{
-		return false;
-	}
-
-	template<typename KT, typename VT>
-	static bool to(lua_State* l, int32 index, std::unordered_map<KT, VT>& container) 
-	{
-		std::size_t _len = basic::raw_len(l, index);
-		if (_len < 1)
-		{
-			return true;
-		}
+		auto _table_len = basic::raw_len(l, index);
+		if (_table_len < 1) return true;
 
 		lua_pushnil(l);
 		while (basic::table_next(l, index))
 		{
-			container.emplace(basic::to<KT>(l, -2), basic::to<VT>(l, -1));
-			lua_pop(l, 1);
+			auto _optional_v = to<T>(l, -1);
+			if (!_optional_v.has_value())
+			{
+				basic::pop(l, 2);
+				return false;
+			}
+			c.insert(_optional_v.value());
+			basic::pop(l, 1);
 		}
+		return true; 
+	}
 
+	template<typename T> requires compatible_with_lua_t<T>
+	static bool to(lua_State* l, int32 index, std::unordered_set<T>& c) 
+	{
+		auto _table_len = basic::raw_len(l, index);
+		if (_table_len < 1) return true;
+
+		lua_pushnil(l);
+		while (basic::table_next(l, index))
+		{
+			auto _optional_v = to<T>(l, -1);
+			if (!_optional_v.has_value())
+			{
+				basic::pop(l, 2);
+				return false;
+			}
+			c.insert(_optional_v.value());
+			basic::pop(l, 1);
+		}
 		return true;
 	}
 
+	template<typename T> requires compatible_with_lua_t<T>
+	static bool to(lua_State* l, int32 index, std::unordered_multiset<T>& c) 
+	{
+		auto _table_len = basic::raw_len(l, index);
+		if (_table_len < 1) return true;
+
+		lua_pushnil(l);
+		while (basic::table_next(l, index))
+		{
+			auto _optional_v = to<T>(l, -1);
+			if (!_optional_v.has_value())
+			{
+				basic::pop(l, 2);
+				return false;
+			}
+			c.insert(_optional_v.value());
+			basic::pop(l, 1);
+		}
+		return true;
+	}
+
+	template<typename KT, typename VT>
+	static bool to(lua_State* l, int32 index, std::map<KT, VT>& c)
+	{
+		auto _table_len = basic::raw_len(l, index);
+		if (_table_len < 1) return true;
+
+		lua_pushnil(l);
+		while (basic::table_next(l, index))
+		{
+			auto _optional_k = to<KT>(l, -1);
+			auto _optional_v = to<VT>(l, -1);
+			if (!_optional_k.has_value() || !_optional_v.has_value())
+			{
+				basic::pop(l, 2);
+				return false;
+			}
+			c.emplace(_optional_k.value(), _optional_v.value());
+			basic::pop(l, 1);
+		}
+		return true;
+	}
+
+	template<typename KT, typename VT>
+	static bool to(lua_State* l, int32 index, std::unordered_map<KT, VT>& c) 
+	{
+		auto _table_len = basic::raw_len(l, index);
+		if (_table_len < 1) return true;
+
+		lua_pushnil(l);
+		while (basic::table_next(l, index))
+		{
+			auto _optional_k = to<KT>(l, -2);
+			auto _optional_v = to<VT>(l, -1);
+			if (!_optional_k.has_value() || !_optional_v.has_value())
+			{
+				basic::pop(l, 2);
+				return false;
+			}
+			c.emplace(_optional_k.value(), _optional_v.value());
+			basic::pop(l, 1);
+		}
+		return true;
+	}
 
 
 	struct lua_class

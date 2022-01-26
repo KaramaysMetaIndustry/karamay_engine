@@ -95,7 +95,7 @@ namespace CTest_for_lua
 		{
 			return 0;
 		}
-		std::vector<int32> b;
+		std::array<int32, 6> b;
 
 		if (lua_api::to(l, 2, b))
 		{
@@ -107,18 +107,12 @@ namespace CTest_for_lua
 
 	static int get_array(lua_State* l)
 	{
-		/*std::unordered_map<std::string, int32> a =
+		std::map<std::string, int32> a =
 		{
 			{"wait", 2},
 			{"wuda", 3},
 			{"pat", 1}
-		};*/
-
-		auto test0 = new CTest();
-		auto test1 = new CTest();
-		auto test2 = new CTest();
-
-		std::vector<CTest*> a = { test0, test1, test2 };
+		};
 
 		lua_api::push(l, a);
 		
