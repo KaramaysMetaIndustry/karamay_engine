@@ -280,8 +280,9 @@ namespace lua_api
 		template<>
 		static bool is<std::string>(lua_State* l, int32 index) { return is_type(l, index, lua_t::STRING); }
 
-
+		// lua boolean
 		static void push(lua_State* l, bool value) { lua_pushboolean(l, static_cast<int>(value)); }
+		// lua number
 		static void push(lua_State* l, uint8 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
 		static void push(lua_State* l, uint16 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
 		static void push(lua_State* l, uint32 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
@@ -290,19 +291,9 @@ namespace lua_api
 		static void push(lua_State* l, int16 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
 		static void push(lua_State* l, int32 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
 		static void push(lua_State* l, int64 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
-		static void push(lua_State* l, float value) { lua_pushboolean(l, static_cast<lua_Number>(value)); }
-		static void push(lua_State* l, double value) { lua_pushboolean(l, static_cast<lua_Number>(value)); }
-		
-		struct lua_nil_t {};
-		static void push(lua_State* l, lua_nil_t nil) { lua_pushnil(l); }
-		struct lua_table_t {};
-		static void push(lua_State* l, lua_table_t table)
-		{
-			lua_pushglobaltable(l);
-		}
-		struct lua_thread_t {};
-		static void push(lua_State* l, lua_thread_t thread) { lua_pushthread(l); }
-		
+		static void push(lua_State* l, float value) { lua_pushnumber(l, static_cast<lua_Number>(value)); }
+		static void push(lua_State* l, double value) { lua_pushnumber(l, static_cast<lua_Number>(value)); }
+		// lua userdata
 		template<typename T>
 		static void push(lua_State* l, T* value)
 		{
@@ -323,7 +314,7 @@ namespace lua_api
 				luaL_setmetatable(l, "");
 			}*/
 		}
-
+		// lua string
 		static void push(lua_State* l, char* value)
 		{
 			lua_pushstring(l, value);
@@ -348,7 +339,13 @@ namespace lua_api
 		{
 			value.data();
 		}
-
+		// nil, thread
+		static void push_nil(lua_State* l) { lua_pushnil(l); }
+		static void push_table(lua_State* l)
+		{
+			lua_pushglobaltable(l);
+		}
+		static void push_thread(lua_State* l) { lua_pushthread(l); }
 		static void push_value(lua_State* l, int32 index)
 		{
 			lua_pushvalue(l, index);
@@ -356,13 +353,17 @@ namespace lua_api
 		
 		template<typename T>
 		static T to(lua_State* l, int32 index) { static_assert(false, "to<T> , T is not supported"); return T(); }
-		template<>
+		// bool 
+		template<> // 1-byte
+		static bool to<bool>(lua_State* l, int32 index) { return static_cast<bool>(lua_toboolean(l, index)); }
+		// number
+		template<> // 1-byte
 		static int8 to<int8>(lua_State* l, int32 index) { return static_cast<int8>(lua_tointeger(l, index)); }
-		template<>
+		template<> // 2-byte
 		static int16 to<int16>(lua_State* l, int32 index) { return static_cast<int16>(lua_tointeger(l, index)); }
-		template<>
+		template<> // 4-byte
 		static int32 to<int32>(lua_State* l, int32 index) { return static_cast<int32>(lua_tointeger(l, index)); }
-		template<>
+		template<> // 8-byte
 		static int64 to<int64>(lua_State* l, int32 index) { return static_cast<int64>(lua_tointeger(l, index)); }
 		template<>
 		static uint8 to<uint8>(lua_State* l, int32 index) { return static_cast<uint8>(lua_tointeger(l, index)); }
@@ -372,21 +373,26 @@ namespace lua_api
 		static uint32 to<uint32>(lua_State* l, int32 index) { return static_cast<uint32>(lua_tointeger(l, index)); }
 		template<>
 		static uint64 to<uint64>(lua_State* l, int32 index) { return static_cast<uint64>(lua_tointeger(l, index)); }
-		template<>
+		template<> // 4 - byte
 		static float to<float>(lua_State* l, int32 index) { return static_cast<float>(lua_tonumber(l, index)); }
-		template<>
+		template<> // 8 - byte
 		static double to<double>(lua_State* l, int32 index) { return static_cast<double>(lua_tonumber(l, index)); }
-		template<>
-		static bool to<bool>(lua_State* l, int32 index) { return static_cast<bool>(lua_toboolean(l, index)); }
-		template<>
+		// string
+		template<> // 8 - byte
+		static const char* to<const char*>(lua_State* l, int32 index) { return lua_tostring(l, index); }
+		template<> // 40 - byte
 		static std::string to<std::string>(lua_State* l, int32 index) { return std::string(lua_tostring(l, index)); }
+		template<> // 16 - byte
+		static std::string_view to<std::string_view>(lua_State* l, int32 index) { return std::string_view(lua_tostring(l, index)); }
+		// userdata
 		template<>
 		static void* to<void*>(lua_State* l, int32 index) { return lua_touserdata(l, index); }
 		template<>
 		static const void* to<const void*>(lua_State* l, int32 index) { return static_cast<const void*>(lua_touserdata(l, index)); }
+		// function
 		template<>
 		static lua_CFunction to<lua_CFunction>(lua_State* l, int32 index) { return lua_tocfunction(l, index); }
-
+		
 		/*
 		* Creates a new empty table and pushes it onto the stack.
 		* It is equivalent to createtable(L, 0, 0).
@@ -860,17 +866,26 @@ namespace lua_api
 	// const char*, std::string
 	// void*, const void*
 
-	template<typename T>
-	concept callable = requires(T f)
-	{
-		f();
-		{*f} -> std::same_as<int>;
-	};
+	//  nil, thread,
+	// boolean, number, string, 
+	// userdata, 
+	// table,
+	// function                                                                                                   
+	template<class T>
+	concept Integral = std::is_integral<T>::value;
+	template<class T>
+	concept SignedIntegral = Integral<T> && std::is_signed<T>::value;
+	template<class T>
+	concept UnsignedIntegral = Integral<T> && !SignedIntegral<T>;
 
 	template<typename T>
 	concept compatible_with_lua_t = true;
 
 
+	/*
+	* std common t => lua t
+	* 
+	*/
 	template<typename T> requires compatible_with_lua_t<T>
 	static void push(lua_State* l, T value)
 	{
@@ -878,6 +893,10 @@ namespace lua_api
 	}
 
 
+	/*
+	* std container => lua table
+	* 
+	*/
 	template<typename T, size_t SIZE> requires compatible_with_lua_t<T>
 	static void push(lua_State* l, const std::array<T, SIZE>& c) 
 	{
@@ -1066,6 +1085,10 @@ namespace lua_api
 		}
 	}
 	
+	/*
+	* lua t => std common t
+	*
+	*/
 
 	template<typename T> requires compatible_with_lua_t<T>
 	static std::optional<T> to(lua_State* l, int32 index)
@@ -1075,6 +1098,10 @@ namespace lua_api
 		return basic::to<T>(l, index);
 	}
 
+	/*
+	* lua table => std container
+	* 
+	*/
 
 	template<typename T, size_t size> requires compatible_with_lua_t<T>
 	static bool to(lua_State* l, int32 index, std::array<T, size>& c)

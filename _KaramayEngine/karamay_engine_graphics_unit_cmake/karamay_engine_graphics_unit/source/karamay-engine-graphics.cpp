@@ -347,22 +347,21 @@ void load_templates(const std::string& include_token)
         content.size(), content.c_str());
 }
 
-template<class T>
-concept Integral = std::is_integral<T>::value;
-template<class T>
-concept SignedIntegral = Integral<T> && std::is_signed<T>::value;
-template<class T>
-concept UnsignedIntegral = Integral<T> && !SignedIntegral<T>;
+
 
 
 void test0()
 {
-    using std::operator""s;
+
+    std::cout << "number: " << sizeof(lua_CFunction) << std::endl;
+    std::cout << "string: " << sizeof(std::string) << std::endl;
+    std::cout << "string_view: " << sizeof(std::string_view) << std::endl;
+    std::cout << "pointer: " << sizeof(void*) << std::endl;
 
 
     lua_api::lua_vm _lvm;
     _lvm.start();
-    _lvm.do_file("G:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\scripts\\blue_freckle\\Test.lua");
+    _lvm.do_file("C:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\scripts\\blue_freckle\\Test.lua");
 
 	auto* window = new glfw_window();
 	window->load_context();
