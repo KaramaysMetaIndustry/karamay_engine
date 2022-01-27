@@ -353,12 +353,6 @@ void load_templates(const std::string& include_token)
 void test0()
 {
 
-    std::cout << "number: " << sizeof(lua_CFunction) << std::endl;
-    std::cout << "string: " << sizeof(std::string) << std::endl;
-    std::cout << "string_view: " << sizeof(std::string_view) << std::endl;
-    std::cout << "pointer: " << sizeof(void*) << std::endl;
-
-
     lua_api::lua_vm _lvm;
     _lvm.start();
     _lvm.do_file("C:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\scripts\\blue_freckle\\Test.lua");

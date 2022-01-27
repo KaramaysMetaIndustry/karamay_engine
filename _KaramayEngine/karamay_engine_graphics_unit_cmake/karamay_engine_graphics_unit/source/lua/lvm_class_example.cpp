@@ -32,6 +32,7 @@ namespace CTest_for_lua
 
 	static int get(lua_State* l)
 	{
+		std::sort
 		// stack : userdata
 		auto _num = lua_api::basic::top_index(l);
 		if (_num != 1)
@@ -56,8 +57,8 @@ namespace CTest_for_lua
 			return 0;
 		}
 		auto ppTest = (CTest*)lua_api::to_cpp_instance(l, 1, "CTest_clazz");
-		auto a = lua_api::to<int32>(l, 2);
-		ppTest->setA(a.value_or(0));
+		auto _optional_v = lua_api::to<int32>(l, 2);
+		ppTest->setA(_optional_v.value_or(0));
 		return 0;
 	}
 

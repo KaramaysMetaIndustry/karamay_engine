@@ -12,9 +12,10 @@ subroutine vec3 BaseColorScalarFunc(vec4, vec2);
 subroutine (BaseColorScalarFunc ) vec3 redColor0(vec4 v0, vec2 v1){
     return vec3(1.0, 0.0, 0.0);
 }
-subroutine (BaseColorScalarFunc ) vec3 redColor1(vec4 v0, vec2 v1){
-    return vec3(1.0, 0.0, 0.0);
-} 
+subroutine (BaseColorScalarFunc ) vec3 redColor1(vec4 v0, vec2 v1)
+{
+	return vec3(1);
+};
 
 subroutine uniform BaseColorScalarFunc BaseColorScalar;
 

@@ -140,7 +140,7 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		// explicitly specify the resource parameter uses
 		// you can also change these when rendering
 		auto& _program = _vp_pipeline->program();
-		_program.uniform_block("");
+		_program.uniform_block("wait");
 		_program.shader_storage_block("");
 		_program.atomic_uint("");
 
