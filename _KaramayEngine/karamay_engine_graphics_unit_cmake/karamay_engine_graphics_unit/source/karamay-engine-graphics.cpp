@@ -4,7 +4,7 @@
 #include "window/window.h"
 #include "renderers/gl_static_mesh_renderer.h"
 #include "lua/lvm.h"
-#include "lua/lvm_class_example.h"
+#include "lua/lvm_graphics_class.h"
 
 float vertices[] = {
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f, //0
@@ -346,9 +346,6 @@ void load_templates(const std::string& include_token)
         include_token.size(), include_token.c_str(),
         content.size(), content.c_str());
 }
-
-
-
 
 void test0()
 {

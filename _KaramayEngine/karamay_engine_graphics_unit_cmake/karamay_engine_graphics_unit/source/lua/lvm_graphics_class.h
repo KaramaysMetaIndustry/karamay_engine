@@ -1,5 +1,5 @@
-#ifndef LVM_CLASS_EXAMPLE_H
-#define LVM_CLASS_EXAMPLE_H
+#ifndef LVM_GRAPHICS_CLASS_H
+#define LVM_GRAPHICS_CLASS_H
 
 class CTest
 {
@@ -31,6 +31,8 @@ private:
 	int value;
 
 };
+
+#include "graphics/renderer/gl_renderer.h"
 
 
 #endif

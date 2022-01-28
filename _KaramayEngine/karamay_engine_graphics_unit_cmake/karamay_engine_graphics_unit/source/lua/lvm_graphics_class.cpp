@@ -1,4 +1,4 @@
-#include "lvm_class_example.h"
+#include "lvm_graphics_class.h"
 #include "lvm.h"
 #include "graphics/renderer/gl_renderer.h"
 #include "graphics/renderer/pipeline/gl_graphics_pipeline.h"
