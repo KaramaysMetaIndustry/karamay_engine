@@ -885,8 +885,9 @@ namespace lua_api
 	* std common t => lua t
 	* 
 	*/
-	template<typename T> requires compatible_with_lua_t<T>
-	static void push(lua_State* l, T value)
+	template<typename t> 
+	requires compatible_with_lua_t<t>
+	static void push(lua_State* l, t value) noexcept
 	{
 		basic::push(l, value);
 	}
@@ -895,13 +896,14 @@ namespace lua_api
 	* std container => lua table
 	* 
 	*/
-	template<typename T, size_t SIZE> requires compatible_with_lua_t<T>
-	static void push(lua_State* l, const std::array<T, SIZE>& c) noexcept
+	template<typename t, size_t size> 
+	requires compatible_with_lua_t<t>
+	static void push(lua_State* l, const std::array<t, size>& c) noexcept
 	{
 		// ...
-		basic::create_table(l, SIZE, 0);
+		basic::create_table(l, size, 0);
 		// table, ...
-		for (size_t _index = 0; _index < SIZE; ++_index)
+		for (size_t _index = 0; _index < size; ++_index)
 		{
 			push(l, _index + 1);
 			// key, table, ...
@@ -912,25 +914,9 @@ namespace lua_api
 		}
 	}
 
-	template <typename T> requires compatible_with_lua_t<T>
-	static void push(lua_State* l, const std::vector<T>& c) noexcept
-	{
-		// ...
-		basic::create_table(l, c.size(), 0);
-		// table, ...
-		for (std::size_t _index = 0; _index < c.size(); ++_index)
-		{
-			push(l, _index + 1);
-			// key, table, ...
-			push(l, c[_index]);
-			// value, key, table, ...
-			basic::set_table(l, -3);
-			// table, ...
-		}
-	}
-
-	template<typename T> requires compatible_with_lua_t<T>
-	static void push(lua_State* l, const std::deque<T>& c) noexcept
+	template <typename t, typename allocator = std::allocator<t>> 
+	requires compatible_with_lua_t<t>
+	static void push(lua_State* l, const std::vector<t, allocator>& c) noexcept
 	{
 		// ...
 		basic::create_table(l, c.size(), 0);
@@ -946,8 +932,27 @@ namespace lua_api
 		}
 	}
 
-	template<typename T> requires compatible_with_lua_t<T>
-	static void push(lua_State* l, const std::list<T>& c) noexcept
+	template<typename t, typename allocator = std::allocator<t>> 
+	requires compatible_with_lua_t<t>
+	static void push(lua_State* l, const std::deque<t, allocator>& c) noexcept
+	{
+		// ...
+		basic::create_table(l, c.size(), 0);
+		// table, ...
+		for (std::size_t _index = 0; _index < c.size(); ++_index)
+		{
+			push(l, _index + 1);
+			// key, table, ...
+			push(l, c[_index]);
+			// value, key, table, ...
+			basic::set_table(l, -3);
+			// table, ...
+		}
+	}
+
+	template<typename t, typename allocator = std::allocator<t>>
+	requires compatible_with_lua_t<t>
+	static void push(lua_State* l, const std::list<t, allocator>& c) noexcept
 	{
 		// ...
 		basic::create_table(l, c.size(), 0);
@@ -964,8 +969,9 @@ namespace lua_api
 		}
 	}
 	
-	template<typename T> requires compatible_with_lua_t<T>
-	static void push(lua_State* l, const std::forward_list<T>& c) noexcept
+	template<typename t, typename allocator = std::allocator<t>>
+	requires compatible_with_lua_t<t>
+	static void push(lua_State* l, const std::forward_list<t, allocator>& c) noexcept
 	{
 		// ...
 		basic::create_table(l);
@@ -982,8 +988,9 @@ namespace lua_api
 		}
 	}
 
-	template<typename T> requires compatible_with_lua_t<T>
-	static void push(lua_State* l, const std::set<T>& c) noexcept
+	template<typename t, typename predicate = std::less<t>, typename allocator = std::allocator<t>>
+	requires compatible_with_lua_t<t>
+	static void push(lua_State* l, const std::set<t, predicate, allocator>& c) noexcept
 	{
 		// ...
 		basic::create_table(l, c.size(), 0);
@@ -1000,26 +1007,9 @@ namespace lua_api
 		}
 	}
 
-	template<typename T> requires compatible_with_lua_t<T>
-	static void push(lua_State* l, const std::unordered_set<T>& c) noexcept
-	{
-		// ...
-		basic::create_table(l, c.size(), 0);
-		// table, ...
-		std::size_t _index = 1;
-		for (auto it = c.cbegin(); it != c.cend(); ++it, ++_index)
-		{
-			push(l, _index);
-			// key, table, ...
-			push(l, *it);
-			// value, key, table, ...
-			basic::set_table(l, -3);
-			// table, ...
-		}
-	}
-
-	template<typename T> requires compatible_with_lua_t<T>
-	static void push(lua_State* l, const std::multiset<T>& c) noexcept
+	template<typename t, typename predicate = std::less<t>, typename allocator = std::allocator<t>> 
+	requires compatible_with_lua_t<t>
+	static void push(lua_State* l, const std::multiset<t, predicate, allocator>& c) noexcept
 	{
 		// ...
 		basic::create_table(l, c.size(), 0);
@@ -1036,8 +1026,38 @@ namespace lua_api
 		}
 	}
 
-	template<typename T> requires compatible_with_lua_t<T>
-	static void push(lua_State* l, const std::unordered_multiset<T>& c) noexcept
+	template<
+		typename t,
+		typename hasher = std::hash<t>,
+		typename predicate = std::equal_to<t>,
+		typename allocator = std::allocator<t>
+	>
+	requires compatible_with_lua_t<t>
+	static void push(lua_State* l, const std::unordered_set<t, hasher, predicate, allocator>& c) noexcept
+	{
+		// ...
+		basic::create_table(l, c.size(), 0);
+		// table, ...
+		std::size_t _index = 1;
+		for (auto it = c.cbegin(); it != c.cend(); ++it, ++_index)
+		{
+			push(l, _index);
+			// key, table, ...
+			push(l, *it);
+			// value, key, table, ...
+			basic::set_table(l, -3);
+			// table, ...
+		}
+	}
+
+	template<
+		typename t,
+		typename hasher = std::hash<t>,
+		typename predicate = std::equal_to<t>,
+		typename allocator = std::allocator<t>
+	>
+	requires compatible_with_lua_t<t>
+	static void push(lua_State* l, const std::unordered_multiset<t, hasher, predicate, allocator>& c) noexcept
 	{
 		// ...
 		basic::create_table(l, c.size(), 0);
@@ -1056,10 +1076,11 @@ namespace lua_api
 
 	template<
 		typename key_t, typename value_t,
-		typename pred = std::less<key_t>, 
-		typename alloc = std::allocator<std::pair<const key_t, value_t>>
-	> requires compatible_with_lua_t<key_t> && compatible_with_lua_t<value_t>
-	static void push(lua_State* l, const std::map<key_t, value_t>& c) noexcept
+		typename predicate = std::less<key_t>, 
+		typename allocator = std::allocator<std::pair<const key_t, value_t>>
+	> 
+	requires compatible_with_lua_t<key_t> && compatible_with_lua_t<value_t>
+	static void push(lua_State* l, const std::map<key_t, value_t, predicate, allocator>& c) noexcept
 	{
 		// ...
 		basic::create_table(l, 0, c.size());
@@ -1078,10 +1099,11 @@ namespace lua_api
 	template<
 		typename key_t, typename value_t, 
 		typename hasher = std::hash<key_t>,
-		typename key_eq = std::equal_to<key_t>,
-		typename alloc = std::allocator<std::pair<const key_t, value_t>>
-	> requires compatible_with_lua_t<key_t> && compatible_with_lua_t<key_t>
-	static void push(lua_State* l, const std::unordered_map<key_t, value_t>& c) noexcept
+		typename predicate = std::equal_to<key_t>,
+		typename allocator = std::allocator<std::pair<const key_t, value_t>>
+	> 
+	requires compatible_with_lua_t<key_t> && compatible_with_lua_t<key_t>
+	static void push(lua_State* l, const std::unordered_map<key_t, value_t, hasher, predicate, allocator>& c) noexcept
 	{
 		// ...
 		basic::create_table(l, 0, c.size());
@@ -1104,55 +1126,77 @@ namespace lua_api
 	* 
 	*/
 
-	template<typename T> requires compatible_with_lua_t<T>
-	static std::optional<T> to(lua_State* l, int32 index) noexcept
+	template<typename t> requires compatible_with_lua_t<t>
+	static std::optional<t> to(lua_State* l, int32 index) noexcept
 	{
-		if (!basic::is<T>(l, index))
+		if (!basic::is<t>(l, index))
 			return std::nullopt;
-		return basic::to<T>(l, index);
+		return basic::to<t>(l, index);
 	}
 
 	/*
 	* lua table => 
-	* std container<T> requires compatible_with_lua_t<T>
+	* std container<t> requires compatible_with_lua_t<t>
 	* 
 	*/
 
-	template<typename T, size_t SIZE> requires compatible_with_lua_t<T>
-	static bool to(lua_State* l, int32 index, std::array<T, SIZE>& c) noexcept
+	template<typename t, size_t size> 
+	requires compatible_with_lua_t<t>
+	static bool to(lua_State* l, int32 index, std::array<t, size>& c) noexcept
 	{
-		auto _table_len = basic::raw_len(l, index);
-		if (_table_len > SIZE) return false;
+		if (!basic::is_type(l, index, lua_t::TABLE))
+		{
+			return false;
+		}
 
-		lua_pushnil(l);
+		auto _table_len = basic::raw_len(l, index);
+		if (_table_len != size)
+		{
+			return false;
+		}
+
+		// table, ...
+		basic::push_nil(l);
+		// nil, table, ...
 		size_t _array_index = 0;
 		while (basic::table_next(l, index))
 		{
-			auto _optional_v = to<T>(l, -1);
+			// value, key, table, ....
+			auto _optional_v = to<t>(l, -1);
 			if (!_optional_v.has_value())
 			{
 				basic::pop(l, 2);
+				// table, ....
 				return false;
 			}
-
-			c[_array_index] = _optional_v.value();
-			++_array_index;
+			c[_array_index++] = _optional_v.value();
+			basic::pop(l, 1);
+			// key, table, ...
 		}
+		// table, ...
 		return true;
 	}
 
-	template <typename T> requires compatible_with_lua_t<T>
-	static bool to(lua_State* l, int32 index, std::vector<T>& c) noexcept
+	template <typename t> 
+	requires compatible_with_lua_t<t>
+	static bool to(lua_State* l, int32 index, std::vector<t>& c) noexcept
 	{
+		if (!basic::is_type(l, index, lua_t::TABLE))
+		{
+			return false;
+		}
+
 		if (!helper::is_table_vectorizable(l, index))
 		{
 			return false;
 		}
+		
 		auto _len = basic::raw_len(l, index);
 		if (_len < 1)
 		{
 			return true;
 		}
+
 		c.reserve(_len);
 		// table, ...
 		lua_pushnil(l);
@@ -1160,14 +1204,14 @@ namespace lua_api
 		while (basic::table_next(l, index))
 		{
 			// value, key, table, ...
-			auto _result = to<T>(l, -1);
-			if (!_result.has_value())
+			auto _optional_v = to<t>(l, -1);
+			if (!_optional_v.has_value())
 			{
 				basic::pop(l, 2);
 				// table, ...
 				return false;
 			}
-			c.push_back(_result.value());
+			c.push_back(_optional_v.value());
 			basic::pop(l, 1);
 			// key, table, ...
 		}
@@ -1175,21 +1219,28 @@ namespace lua_api
 		return true;
 	}
 
-	template <typename T> requires compatible_with_lua_t<T>
-	static bool to(lua_State* l, int32 index, std::deque<T>& c) noexcept
+	template <typename t> 
+	requires compatible_with_lua_t<t>
+	static bool to(lua_State* l, int32 index, std::deque<t>& c) noexcept
 	{
-		auto _len = basic::raw_len(l, index);
-		if (_len < 1)
+		if (!basic::is_type(l, index, lua_t::TABLE))
+		{
+			return false;
+		}
+
+		auto _table_len = basic::raw_len(l, index);
+		if (_table_len < 1)
 		{
 			return true;
 		}
+
 		// table, ...
-		lua_pushnil(l);
+		basic::push_nil(l);
 		// key, table, ...
 		while (basic::table_next(l, index))
 		{
 			// value, key, table, ...
-			auto _optional_v = to<T>(l, -1);
+			auto _optional_v = to<t>(l, -1);
 			if (!_optional_v.has_value())
 			{
 				basic::pop(l, 2);
@@ -1204,13 +1255,28 @@ namespace lua_api
 		return true;
 	}
 
-	template<typename T> requires compatible_with_lua_t<T>
-	static bool to(lua_State* l, int32 index, std::list<T>& c) noexcept
-	{	
-		lua_pushnil(l);
+	template<typename t> 
+	requires compatible_with_lua_t<t>
+	static bool to(lua_State* l, int32 index, std::list<t>& c) noexcept
+	{
+		if (!basic::is_type(l, index, lua_t::TABLE))
+		{
+			return false;
+		}
+
+		auto _table_len = basic::raw_len(l, index);
+		if (_table_len < 1)
+		{
+			return true;
+		}
+
+		// table, ...
+		basic::push_nil(l);
+		// nil, table, ...
 		while (basic::table_next(l, index))
 		{
-			auto _optional_v = to<T>(l, -1);
+			// value, key, table, ...
+			auto _optional_v = to<t>(l, -1);
 			if (!_optional_v.has_value())
 			{
 				basic::pop(l, 2);
@@ -1218,153 +1284,271 @@ namespace lua_api
 			}
 			c.push_back(_optional_v.value());
 			basic::pop(l, 1);
+			// key, table, ...
 		}
+		// table, ...
 		return true;
 	}
 
-	template<typename T> requires compatible_with_lua_t<T>
-	static bool to(lua_State* l, int32 index, std::forward_list<T>& c) noexcept
+	template<typename t> 
+	requires compatible_with_lua_t<t>
+	static bool to(lua_State* l, int32 index, std::forward_list<t>& c) noexcept
 	{
-		lua_pushnil(l);
+		if (!basic::is_type(l, index, lua_t::TABLE))
+		{
+			return false;
+		}
+
+		auto _table_len = basic::raw_len(l, index);
+		if (_table_len < 1)
+		{
+			return true;
+		}
+
+		// table, ...
+		basic::push_nil(l);
+		// nil, table, ...
 		while (basic::table_next(l, index))
 		{
-			auto _optional_v = to<T>(l, -1);
+			// value, key, table, ...
+			auto _optional_v = to<t>(l, -1);
 			if (!_optional_v.has_value())
 			{
 				basic::pop(l, 2);
+				// table, ...
 				return false;
 			}
 			c.push_front(_optional_v.value());
 			basic::pop(l, 1);
+			// key, value, ...
 		}
+		// table, ...
 		return true;
 	}
 
-	template<typename T> requires compatible_with_lua_t<T>
-	static bool to(lua_State* l, int32 index, std::set<T>& c) noexcept
+	template<typename t> 
+	requires compatible_with_lua_t<t>
+	static bool to(lua_State* l, int32 index, std::set<t>& c) noexcept
 	{
-		size_t _len = basic::raw_len(l, index);
-		if (_len < 1) return true;
+		if (!basic::is_type(l, index, lua_t::TABLE))
+		{
+			return false;
+		}
 
-		lua_pushnil(l);
+		size_t _table_len = basic::raw_len(l, index);
+		if (_table_len < 1)
+		{
+			return true;
+		}
+
+		// table, ...
+		basic::push_nil(l);
+		// nil, table, ...
 		while (basic::table_next(l, index))
 		{
-			auto _optional_v = to<T>(l, -1);
+			// value, key, table, ....
+			auto _optional_v = to<t>(l, -1);
 			if (!_optional_v.has_value())
 			{
 				basic::pop(l, 2);
+				// table, ...
 				return false;
 			}
 			c.insert(_optional_v.value());
 			basic::pop(l, 1);
+			// key, table, ...
 		}
+		// table, ...
 		return true;
 	}
 
-	template<typename T> requires compatible_with_lua_t<T>
-	static bool to(lua_State* l, int32 index, std::multiset<T>& c) noexcept
+	template<typename t> 
+	requires compatible_with_lua_t<t>
+	static bool to(lua_State* l, int32 index, std::multiset<t>& c) noexcept
 	{
+		if (!basic::is_type(l, index, lua_t::TABLE))
+		{
+			return false;
+		}
+
 		auto _table_len = basic::raw_len(l, index);
-		if (_table_len < 1) return true;
+		if (_table_len < 1)
+		{
+			return true;
+		}
 
-		lua_pushnil(l);
+		// table, ...
+		basic::push_nil(l);
+		// nil, table, ...
 		while (basic::table_next(l, index))
 		{
-			auto _optional_v = to<T>(l, -1);
+			// value, key, table, ...
+			auto _optional_v = to<t>(l, -1);
 			if (!_optional_v.has_value())
 			{
 				basic::pop(l, 2);
+				// table, ...
 				return false;
 			}
 			c.insert(_optional_v.value());
 			basic::pop(l, 1);
+			// key, table, ...
 		}
+		// table, ...
 		return true; 
 	}
 
-	template<typename T> requires compatible_with_lua_t<T>
-	static bool to(lua_State* l, int32 index, std::unordered_set<T>& c)  noexcept
+	template<typename t> 
+	requires compatible_with_lua_t<t>
+	static bool to(lua_State* l, int32 index, std::unordered_set<t>& c)  noexcept
 	{
-		auto _table_len = basic::raw_len(l, index);
-		if (_table_len < 1) return true;
+		if (!basic::is_type(l, index, lua_t::TABLE))
+		{
+			return false;
+		}
 
-		lua_pushnil(l);
+		auto _table_len = basic::raw_len(l, index);
+		if (_table_len < 1)
+		{
+			return true;
+		}
+		// table, ...
+		basic::push_nil(l);
+		// nil, table, ...
 		while (basic::table_next(l, index))
 		{
-			auto _optional_v = to<T>(l, -1);
+			// value, key, table, ...
+			auto _optional_v = to<t>(l, -1);
 			if (!_optional_v.has_value())
 			{
 				basic::pop(l, 2);
+				// table, ...
 				return false;
 			}
 			c.insert(_optional_v.value());
 			basic::pop(l, 1);
+			// key, value, ...
 		}
+		// table, ...
 		return true;
 	}
 
-	template<typename T> requires compatible_with_lua_t<T>
-	static bool to(lua_State* l, int32 index, std::unordered_multiset<T>& c) noexcept
+	template<typename t> 
+	requires compatible_with_lua_t<t>
+	static bool to(lua_State* l, int32 index, std::unordered_multiset<t>& c) noexcept
 	{
-		auto _table_len = basic::raw_len(l, index);
-		if (_table_len < 1) return true;
+		if (!basic::is_type(l, index, lua_t::TABLE))
+		{
+			return false;
+		}
 
-		lua_pushnil(l);
+		auto _table_len = basic::raw_len(l, index);
+		if (_table_len < 1)
+		{
+			return true;
+		}
+
+		// table, ...
+		basic::push_nil(l);
+		// nil, table, ...
 		while (basic::table_next(l, index))
 		{
-			auto _optional_v = to<T>(l, -1);
+			// value, key, table, ...
+			auto _optional_v = to<t>(l, -1);
 			if (!_optional_v.has_value())
 			{
 				basic::pop(l, 2);
+				// table, ...
 				return false;
 			}
 			c.insert(_optional_v.value());
 			basic::pop(l, 1);
+			// key, table, ...
 		}
+		// table, ...
 		return true;
 	}
 
-	template<typename KT, typename VT> requires compatible_with_lua_t<KT> && compatible_with_lua_t<VT>
-	static bool to(lua_State* l, int32 index, std::map<KT, VT>& c) noexcept
+	template<
+		typename key_t, typename value_t,
+		typename predicate = std::less<key_t>,
+		typename allocator = std::allocator<std::pair<const key_t, value_t>>
+	> 
+	requires compatible_with_lua_t<key_t> && compatible_with_lua_t<value_t>
+	static bool to(lua_State* l, int32 index, std::map<key_t, value_t, predicate, allocator>& c) noexcept
 	{
-		auto _table_len = basic::raw_len(l, index);
-		if (_table_len < 1) return true;
+		if (!basic::is_type(l, index, lua_t::TABLE))
+		{
+			return false;
+		}
 
-		lua_pushnil(l);
+		auto _table_len = basic::raw_len(l, index);
+		if (_table_len < 1)
+		{
+			return true;
+		}
+
+		// table, ...
+		basic::push_nil(l);
+		// nil, table, ...
 		while (basic::table_next(l, index))
 		{
-			auto _optional_k = to<KT>(l, -1);
-			auto _optional_v = to<VT>(l, -1);
+			// value, key, table, ...
+			auto _optional_k = to<key_t>(l, -1);
+			auto _optional_v = to<value_t>(l, -1);
 			if (!_optional_k.has_value() || !_optional_v.has_value())
 			{
 				basic::pop(l, 2);
+				// table, ...
 				return false;
 			}
 			c.emplace(_optional_k.value(), _optional_v.value());
 			basic::pop(l, 1);
+			// key, table, ...
 		}
+		// table, ...
 		return true;
 	}
 
-	template<typename KT, typename VT> requires compatible_with_lua_t<KT>&& compatible_with_lua_t<VT>
-	static bool to(lua_State* l, int32 index, std::unordered_map<KT, VT>& c) noexcept
+	template<
+		typename key_t, typename value_t,
+		typename hasher = std::hash<key_t>,
+		typename predicate = std::equal_to<key_t>,
+		typename allocator = std::allocator<std::pair<const key_t, value_t>>
+	> 
+	requires compatible_with_lua_t<key_t>&& compatible_with_lua_t<value_t>
+	static bool to(lua_State* l, int32 index, std::unordered_map<key_t, value_t, hasher, predicate, allocator>& c) noexcept
 	{
-		auto _table_len = basic::raw_len(l, index);
-		if (_table_len < 1) return true;
+		if (!basic::is_type(l, index, lua_t::TABLE))
+		{
+			return false;
+		}
 
-		lua_pushnil(l);
+		auto _table_len = basic::raw_len(l, index);
+		if (_table_len < 1)
+		{
+			return true;
+		}
+
+		// table, ...
+		basic::push_nil(l);
+		// nil, table, ...
 		while (basic::table_next(l, index))
 		{
-			auto _optional_k = to<KT>(l, -2);
-			auto _optional_v = to<VT>(l, -1);
+			// value, key, table, ...
+			auto _optional_k = to<key_t>(l, -2);
+			auto _optional_v = to<value_t>(l, -1);
 			if (!_optional_k.has_value() || !_optional_v.has_value())
 			{
 				basic::pop(l, 2);
+				// table, ...
 				return false;
 			}
 			c.emplace(_optional_k.value(), _optional_v.value());
 			basic::pop(l, 1);
+			// key, table, ...
 		}
+		// table, ...
 		return true;
 	}
 
@@ -1462,7 +1646,7 @@ namespace lua_api
 					{
 						std::cout << "lvm tick" << std::endl;
 
-						int ret = luaL_dofile(_state, "G:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\scripts\\blue_freckle\\Test.lua");
+						int ret = luaL_dofile(_state, "G:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\scripts\\blue_freckle\\test.lua");
 						if (ret != 0)
 						{
 							printf("%s", lua_tostring(_state, -1));

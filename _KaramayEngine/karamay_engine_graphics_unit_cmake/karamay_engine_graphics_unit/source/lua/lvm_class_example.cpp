@@ -32,7 +32,6 @@ namespace CTest_for_lua
 
 	static int get(lua_State* l)
 	{
-		std::sort
 		// stack : userdata
 		auto _num = lua_api::basic::top_index(l);
 		if (_num != 1)
@@ -96,7 +95,7 @@ namespace CTest_for_lua
 		{
 			return 0;
 		}
-		std::array<int32, 6> b;
+		std::array<int32, 7> b;
 
 		if (lua_api::to(l, 2, b))
 		{

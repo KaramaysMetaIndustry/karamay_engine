@@ -352,6 +352,7 @@ void load_templates(const std::string& include_token)
 
 void test0()
 {
+    std::string_view _sv("aaaa");
 
     lua_api::lua_vm _lvm;
     _lvm.start();
