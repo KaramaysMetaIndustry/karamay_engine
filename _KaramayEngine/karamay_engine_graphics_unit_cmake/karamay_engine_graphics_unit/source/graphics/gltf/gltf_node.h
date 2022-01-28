@@ -1,8 +1,8 @@
 #ifndef GLTF_NODE_H
 #define GLTF_NODE_H
 
-#include "public/nlohmann_json.h"
-#include "public/_glew.h"
+#include "public/json.h"
+#include "public/glm.h"
 #include "gltf_camera.h"
 #include "gltf_mesh.h"
 #include "gltf_skin.h"

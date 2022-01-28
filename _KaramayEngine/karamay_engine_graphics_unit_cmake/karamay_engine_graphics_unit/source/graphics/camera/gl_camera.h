@@ -1,7 +1,7 @@
 #ifndef GL_CAMERA_H
 #define GL_CAMERA_H
 
-#include "public/_glew.h"
+#include "public/glew.h"
 #include "public/glm.h"
 #include "public/stl.h"
 

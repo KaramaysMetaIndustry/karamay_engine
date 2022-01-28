@@ -1,7 +1,7 @@
 #ifndef GL_SYNC_H
 #define GL_SYNC_H
 
-#include "public/_glew.h"
+#include "public/glew.h"
 
 enum class gl_sync_result : GLenum
 {

@@ -3,7 +3,7 @@
 
 #include "public/stl.h"
 #include "public/glm.h"
-#include "public/_glew.h"
+#include "public/glew.h"
 
 enum class gl_uniform_type : GLenum
 {

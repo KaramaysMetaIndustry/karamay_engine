@@ -2,7 +2,7 @@
 #define LVM_H
 
 #include "public/stl.h"
-#include "public/_lua.h"
+#include "public/lua.h"
 
 /*
 * cpp data <=> lua data

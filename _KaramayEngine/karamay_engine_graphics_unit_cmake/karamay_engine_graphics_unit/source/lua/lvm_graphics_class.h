@@ -1,6 +1,14 @@
 #ifndef LVM_GRAPHICS_CLASS_H
 #define LVM_GRAPHICS_CLASS_H
 
+#include "graphics/renderer/gl_renderer.h"
+
+
+
+
+
+
+
 class CTest
 {
 public:
@@ -14,7 +22,7 @@ public:
 
 	void setA(int a) { value = a; }
 
-	CTest* finishNewCTest(CTest* test) 
+	CTest* finishNewCTest(CTest* test)
 	{
 		if (test) test->setA(test->getA());
 		return test;
@@ -31,8 +39,5 @@ private:
 	int value;
 
 };
-
-#include "graphics/renderer/gl_renderer.h"
-
 
 #endif

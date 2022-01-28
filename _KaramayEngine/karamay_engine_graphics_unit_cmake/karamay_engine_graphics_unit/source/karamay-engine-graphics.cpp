@@ -2,9 +2,10 @@
 #include "graphics/renderer/pipeline/base/resource/program/gl_program.h"
 #include "graphics/renderer/pipeline/base/resource/buffers/raw_buffer/gl_buffer.h"
 #include "window/window.h"
-#include "renderers/gl_static_mesh_renderer.h"
 #include "lua/lvm.h"
 #include "lua/lvm_graphics_class.h"
+#include "renderers/gl_static_mesh_renderer.h"
+#include "public/json.h"
 
 float vertices[] = {
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f, //0
@@ -347,13 +348,32 @@ void load_templates(const std::string& include_token)
         content.size(), content.c_str());
 }
 
+struct wait
+{
+    std::string name = "ak";
+    int age = 17;
+};
+
+void to_json(nlohmann::json& j, const wait& w)
+{
+    j = nlohmann::json{ {"name", w.name}, {"age", w.age} };
+}
+
+void from_json(const nlohmann::json& j, wait& w)
+{
+    w.name = j["name"];
+    w.age = j["age"];
+}
+
 void test0()
 {
-    std::string_view _sv("aaaa");
 
-    lua_api::lua_vm _lvm;
+    gltf_file _file;
+    _file.load("C:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\assets\\gltf_files\\adamHead");
+
+  /*  lua_api::lua_vm _lvm;
     _lvm.start();
-    _lvm.do_file("C:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\scripts\\blue_freckle\\Test.lua");
+    _lvm.do_file("C:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\scripts\\blue_freckle\\Test.lua");*/
 
 	auto* window = new glfw_window();
 	window->load_context();
@@ -371,7 +391,7 @@ void test0()
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 #endif 
    
-    auto _file = gltf_loader::load("");
+    //auto _file = gltf_loader::load("");
     
     load_templates("/common.glsl");
     load_templates("/common.frag.glsl");

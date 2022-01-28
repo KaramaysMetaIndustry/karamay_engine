@@ -1,7 +1,7 @@
 #ifndef GLTF_BUFFER_VIEW_H
 #define GLTF_BUFFER_VIEW_H
 
-#include "public/nlohmann_json.h"
+#include "public/json.h"
 
 class gltf_buffer_view
 {

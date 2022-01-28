@@ -1,5 +1,5 @@
 #pragma once
-#include "public/_glfw.h"
+#include "public/glfw.h"
 #include "public/stl.h"
 
 class glfw_window

@@ -1,7 +1,7 @@
 #ifndef GLTF_IMAGE_H
 #define GLTF_IMAGE_H
 
-#include "public/nlohmann_json.h"
+#include "public/json.h"
 
 class gltf_image
 {

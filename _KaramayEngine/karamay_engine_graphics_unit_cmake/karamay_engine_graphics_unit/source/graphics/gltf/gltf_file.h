@@ -1,5 +1,6 @@
 #ifndef GLTF_FILE
 #define GLTF_FILE
+
 #include "gltf_scene.h"
 #include "gltf_asset.h"
 #include "gltf_node.h"
@@ -14,7 +15,6 @@
 #include "gltf_buffer_view.h"
 #include "gltf_animation.h"
 #include "gltf_skin.h"
-#include "public/stl.h"
 
 class gltf_file
 {
@@ -31,7 +31,8 @@ public:
 	bool load(const std::string& path)
 	{
 		std::string _scene_gltf_path = path + "\\*.gltf";
-		if (!std::filesystem::exists(_scene_gltf_path))  return false;
+		if (!std::filesystem::exists(path))  return false;
+
 		nlohmann::json _file;
 		std::ifstream(_scene_gltf_path) >> _file;
 

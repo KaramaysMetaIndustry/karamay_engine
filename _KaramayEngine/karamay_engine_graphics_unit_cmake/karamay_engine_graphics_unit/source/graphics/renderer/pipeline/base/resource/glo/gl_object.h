@@ -1,7 +1,7 @@
 #ifndef GL_OBJECT_H
 #define GL_OBJECT_H
 
-#include "public/_glew.h"
+#include "public/glew.h"
 #include "public/glm.h"
 #include "public/stl.h"
 #include "../sync/gl_sync.h"

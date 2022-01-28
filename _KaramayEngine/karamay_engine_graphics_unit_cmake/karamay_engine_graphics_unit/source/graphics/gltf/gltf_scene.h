@@ -2,7 +2,7 @@
 #define GLTF_SCENE_H
 
 #include "public/stl.h"
-#include "public/nlohmann_json.h"
+#include "public/json.h"
 
 class gltf_scene
 {
