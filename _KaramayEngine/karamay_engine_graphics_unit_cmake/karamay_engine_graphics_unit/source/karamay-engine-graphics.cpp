@@ -2,8 +2,8 @@
 #include "graphics/renderer/pipeline/base/resource/program/gl_program.h"
 #include "graphics/renderer/pipeline/base/resource/buffers/raw_buffer/gl_buffer.h"
 #include "window/window.h"
-#include "lua/lvm.h"
-#include "lua/lvm_graphics_class.h"
+#include "embedded/lua/lvm.h"
+#include "embedded/lua/lvm_graphics_class.h"
 #include "renderers/gl_static_mesh_renderer.h"
 #include "public/json.h"
 
@@ -364,14 +364,17 @@ void from_json(const nlohmann::json& j, wait& w)
     w.age = j["age"];
 }
 
-#include "public/vui.h"
+#include "embedded/python/pvm.h"
 
 void test0()
 {
+
+    python_api::pvm _pvm;
+    _pvm.load();
     
   /*  lua_api::lua_vm _lvm;
     _lvm.start();
-    _lvm.do_file("C:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\scripts\\blue_freckle\\Test.lua");*/
+    _lvm.do_file("C:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\scripts\\lua\\Test.lua");*/
 
 	auto* window = new glfw_window();
 	window->load_context();

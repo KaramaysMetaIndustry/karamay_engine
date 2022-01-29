@@ -18,6 +18,9 @@ link_directories(karamay_engine_graphics_unit/dependencies/glfw-3.3.4.bin.WIN64/
 link_libraries(lua54.lib)
 link_directories(karamay_engine_graphics_unit/dependencies/lua54/)
 
+link_libraries(python39_d.lib)
+link_directories(karamay_engine_graphics_unit/dependencies/python/python39/libs/)
+
 include_directories(karamay_engine_graphics_unit/dependencies)
 include_directories(karamay_engine_graphics_unit/dependencies/glm_pack/include)
 include_directories(karamay_engine_graphics_unit/dependencies/lua54/include)
