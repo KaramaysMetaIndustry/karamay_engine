@@ -1,7 +1,6 @@
 #ifndef GLTF_NODE_H
 #define GLTF_NODE_H
 
-#include "public/json.h"
 #include "public/glm.h"
 #include "gltf_camera.h"
 #include "gltf_mesh.h"

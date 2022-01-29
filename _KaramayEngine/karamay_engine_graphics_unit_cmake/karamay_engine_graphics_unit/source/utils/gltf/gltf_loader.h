@@ -1,7 +1,7 @@
-#ifndef GLTF_LOADER
-#define GLTF_LOADER
+#ifndef GLTF_LOADER_H
+#define GLTF_LOADER_H
 
-#include "gltf_file.h"
+#include "components/gltf_file.h"
 
 class gltf_loader
 {

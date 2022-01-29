@@ -324,11 +324,10 @@ MessageCallback( GLenum source,
 
 }
 
-#include "graphics/gltf/gltf_loader.h"
 
 void load_templates(const std::string& include_token)
 {
-    static std::string _templates_path = "C:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/shaders/templates";
+    static std::string _templates_path = "G:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/shaders/templates";
     std::string _path = _templates_path + include_token;
     std::ifstream file;
     std::string content;
@@ -365,12 +364,11 @@ void from_json(const nlohmann::json& j, wait& w)
     w.age = j["age"];
 }
 
+#include "public/vui.h"
+
 void test0()
 {
-
-    gltf_file _file;
-    _file.load("C:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\assets\\gltf_files\\adamHead");
-
+    
   /*  lua_api::lua_vm _lvm;
     _lvm.start();
     _lvm.do_file("C:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\scripts\\blue_freckle\\Test.lua");*/

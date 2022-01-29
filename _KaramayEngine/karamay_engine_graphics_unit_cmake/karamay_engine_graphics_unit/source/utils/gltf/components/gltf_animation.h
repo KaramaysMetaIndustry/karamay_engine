@@ -1,6 +1,9 @@
 #ifndef GLTF_ANIMATION_H
 #define GLTF_ANIMATION_H
 
+#include "public/stl.h"
+#include "public/json.h"
+
 class gltf_animation
 {
 public:
@@ -9,6 +12,7 @@ public:
 	{
 		return true;
 	}
+
 };
 
 #endif

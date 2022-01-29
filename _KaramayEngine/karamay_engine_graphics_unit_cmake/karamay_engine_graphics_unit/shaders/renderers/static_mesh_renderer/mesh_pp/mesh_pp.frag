@@ -7,18 +7,6 @@
 #include "/common.glsl" //! #include "../../../templates/common.glsl"
 #include "/common.frag.glsl" //! #include "../../../templates/common.frag.glsl"
 
-subroutine vec3 BaseColorScalarFunc(vec4, vec2);
-
-subroutine (BaseColorScalarFunc ) vec3 redColor0(vec4 v0, vec2 v1){
-    return vec3(1.0, 0.0, 0.0);
-}
-subroutine (BaseColorScalarFunc ) vec3 redColor1(vec4 v0, vec2 v1)
-{
-	return vec3(1);
-};
-
-subroutine uniform BaseColorScalarFunc BaseColorScalar;
-
 in FragData
 {
 	vec3 position;
@@ -31,8 +19,6 @@ layout(location = 0) out vec4 final_frag_color;
 
 void main()
 {
-
-	vec3 a = BaseColorScalar(vec4(0), vec2(1));
 
 	vec3 N = GetNormalFromMap(inData.normal, mat.normal_map, inData.uv, inData.position);
 
@@ -79,6 +65,7 @@ void main()
         Kd *= 1.0 - metalness; //纯金属，进入表面的光会被完全吸收，不会具有漫反射效应
 
         float NdotL = max(dot(N, L), 0.0f);// scale light by NdotL cosTheta
+
 		float NdotV = max(dot(N, V), 0.0f);
 
 		// do as formula

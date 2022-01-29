@@ -1,15 +1,14 @@
 #ifndef GLTF_BUFFER_VIEW_H
 #define GLTF_BUFFER_VIEW_H
 
+#include "public/stl.h"
 #include "public/json.h"
 
 class gltf_buffer_view
 {
 public:
 
-	gltf_buffer_view()
-	{
-	}
+	gltf_buffer_view() = default;
 
 	bool load(const nlohmann::json& object)
 	{

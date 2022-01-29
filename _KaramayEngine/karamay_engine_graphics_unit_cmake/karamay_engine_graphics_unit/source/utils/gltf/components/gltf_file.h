@@ -1,5 +1,5 @@
-#ifndef GLTF_FILE
-#define GLTF_FILE
+#ifndef GLTF_FILE_H
+#define GLTF_FILE_H
 
 #include "gltf_scene.h"
 #include "gltf_asset.h"
@@ -19,10 +19,7 @@
 class gltf_file
 {
 public:
-	gltf_file()
-	{
-
-	}
+	gltf_file() = default;
 
 	~gltf_file() = default;
 

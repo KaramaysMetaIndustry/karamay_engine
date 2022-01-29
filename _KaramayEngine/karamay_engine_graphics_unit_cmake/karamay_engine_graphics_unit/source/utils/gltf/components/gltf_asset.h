@@ -1,5 +1,8 @@
-#ifndef GLTF_ASSET
-#define GLTF_ASSET
+#ifndef GLTF_ASSET_H
+#define GLTF_ASSET_H
+
+#include "public/stl.h"
+#include "public/json.h"
 
 class gltf_asset
 {
