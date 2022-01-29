@@ -31,10 +31,10 @@ public:
 
 		// run other threads
 		_renderer_dispathcer_thread = std::thread(
-			[this]() 
-			{ 
+			[this]()
+			{
 				_renderer_dispatcher.initialize();
-				_renderer_dispatcher.start(); 
+				_renderer_dispatcher.start();
 			}
 		);
 
