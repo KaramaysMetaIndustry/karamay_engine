@@ -337,8 +337,7 @@ void glfw_window::load_context()
 		glfwWindowHintString(GLFW_X11_INSTANCE_NAME, "");
 
 		is_full_screen = true;
-		_window = glfwCreateWindow(PrimaryVideoMode->width, PrimaryVideoMode->height, 
-			"default glfw window", NULL, NULL); // default init by full screen
+		_window = glfwCreateWindow(PrimaryVideoMode->width, PrimaryVideoMode->height, "default glfw window", NULL, NULL); // default init by full screen
 	}
 
 	if (_window == NULL) {

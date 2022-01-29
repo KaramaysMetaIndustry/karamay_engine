@@ -1562,24 +1562,80 @@ namespace lua_api
 		const luaL_Reg* funcs;
 	};
 
-	class lua_vm
+	class lua_vm final
 	{
 	public:
 
 		lua_vm() = default;
+		lua_vm(const lua_vm&) = delete;
+		lua_vm& operator=(const lua_vm&) = delete;
 
-		static void register_class(const char* name, const luaL_Reg* funcs)
+		~lua_vm() = default;
+
+	public:
+
+		bool initialize() noexcept
 		{
-			std::cout << "register class : " << name << std::endl;
-			auto _class = new lua_class();
-			_class->name = name;
-			_class->funcs = funcs;
-			_classes.push_back(_class);
+			std::cout << "lvm starts to initialize." << std::endl;
+
+			std::cout << "lvm has initialized." << std::endl;
+			return true;
 		}
 
-		static void register_functions(const luaL_Reg* funcs)
+		void start() noexcept
 		{
+			std::cout << "lvm is running." << std::endl;
 
+			_state = lua_api::auxiliary::new_state();
+			if (!_state) return;
+			_load_libs();
+
+			while (!_should_exit)
+			{
+				std::cout << "lvm tick" << std::endl;
+
+				int ret = luaL_dofile(_state, "C:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\scripts\\blue_freckle\\test.lua");
+				if (ret != 0)
+				{
+					printf("%s", lua_tostring(_state, -1));
+				}
+
+				std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			}
+
+			lua_close(_state);
+			std::cout << "Lua virtual machine exit." << std::endl;
+		}
+
+		void notify_to_exit()
+		{
+			_should_exit = true;
+
+			while (_should_exit) {}
+		}
+
+		bool do_file(const std::string& path)
+		{
+			int _result = luaL_dofile(_state, path.c_str());
+			switch (_result)
+			{
+			case LUA_OK(0): std::cout << "no errors." << std::endl; break;
+			case LUA_ERRRUN: std::cout << "a runtime error." << std::endl; break;
+			case LUA_ERRMEM: std::cout << "memory allocation error.For such errors, Lua does not call the message handler." << std::endl; break;
+			case LUA_ERRERR: std::cout << "error while running the message handler." << std::endl; break;
+			case LUA_ERRSYNTAX: std::cout << "syntax error during precompilation." << std::endl; break;
+			case LUA_YIELD: std::cout << "the thread(coroutine) yields." << std::endl; break;
+			case LUA_ERRFILE: std::cout << "a file - related error; e.g., it cannot open or read the file." << std::endl; break;
+			default:
+				break;
+			}
+			if (_result != 0)
+			{
+				printf("%s", lua_tostring(_state, -1));
+				return false;
+			}
+
+			return true;
 		}
 
 	private:
@@ -1589,8 +1645,6 @@ namespace lua_api
 		std::unique_ptr<std::thread> _vm_thread = {};
 
 		bool _should_exit = false;
-
-		static std::vector<lua_class*> _classes;
 
 	private:
 
@@ -1632,71 +1686,23 @@ namespace lua_api
 
 	public:
 
-		bool start()
+		static void register_class(const char* name, const luaL_Reg* funcs)
 		{
-			_state = lua_api::auxiliary::new_state();
-			if (!_state) return false;
-			_load_libs();
-
-			// start dispatcher thread
-			/*_vm_thread = std::make_unique<std::thread>(
-				[this](int i)
-				{
-					while (!_should_exit)
-					{
-						std::cout << "lvm tick" << std::endl;
-
-						int ret = luaL_dofile(_state, "G:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\scripts\\blue_freckle\\test.lua");
-						if (ret != 0)
-						{
-							printf("%s", lua_tostring(_state, -1));
-						}
-
-						std::this_thread::sleep_for(std::chrono::milliseconds(100));
-					}
-
-					lua_close(_state);
-					std::cout << "Lua virtual machine exit." << std::endl;
-					_should_exit = false;
-				}, 1
-			);*/
-
-			std::cout << "Lua virtual machine has been initialized, now is running." << std::endl;
-			//_vm_thread->detach();
+			std::cout << "register class : " << name << std::endl;
+			auto _class = new lua_class();
+			_class->name = name;
+			_class->funcs = funcs;
+			_classes.push_back(_class);
 		}
 
-		void notify_to_exit()
+		static void register_functions(const luaL_Reg* funcs)
 		{
-			_should_exit = true;
 
-			while (_should_exit) {}
 		}
 
-	public:
+	private:
 
-		bool do_file(const std::string& path)
-		{
-			int _result = luaL_dofile(_state, path.c_str());
-			switch (_result)
-			{
-			case LUA_OK(0): std::cout << "no errors." << std::endl; break;
-			case LUA_ERRRUN: std::cout << "a runtime error." << std::endl; break;
-			case LUA_ERRMEM: std::cout << "memory allocation error.For such errors, Lua does not call the message handler." << std::endl; break;
-			case LUA_ERRERR: std::cout << "error while running the message handler." << std::endl; break;
-			case LUA_ERRSYNTAX: std::cout << "syntax error during precompilation." << std::endl; break;
-			case LUA_YIELD: std::cout << "the thread(coroutine) yields." << std::endl; break;
-			case LUA_ERRFILE: std::cout << "a file - related error; e.g., it cannot open or read the file." << std::endl; break;
-			default:
-				break;
-			}
-			if (_result != 0)
-			{
-				printf("%s", lua_tostring(_state, -1));
-				return false;
-			}
-
-			return true;
-		}
+		static std::vector<lua_class*> _classes;
 
 	};
 
