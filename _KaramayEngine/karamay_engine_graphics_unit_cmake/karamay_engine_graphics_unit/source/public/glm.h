@@ -1,5 +1,5 @@
-#ifndef H_GLM
-#define H_GLM
+#ifndef GLM_H
+#define GLM_H
 
 #include "glm_pack/include/glm/glm.hpp"
 #include "glm_pack/include/glm/gtc/matrix_transform.hpp"

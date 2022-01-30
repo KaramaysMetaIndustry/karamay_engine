@@ -2,7 +2,8 @@
 #define KARAMAY_ENGINE_H
 
 #include "embedded/lua/lvm.h"
-#include "embedded/lua/lvm_graphics_class.h"
+#include "embedded/lua/lvm_graphics_module.h"
+#include "embedded/python/pvm.h"
 #include "graphics/gl_renderer_dispatcher.h"
 
 class karamay_engine final
@@ -17,47 +18,9 @@ public:
 
 public:
 
-	bool initialize() noexcept
-	{
-		std::cout << "karamay engine starts to initialize." << std::endl;
+	bool initialize() noexcept;
 
-		std::cout << "karamay engine has initialized." << std::endl;
-		return true;
-	}
-
-	void run() noexcept
-	{
-		std::cout << "karamay engine is running." << std::endl;
-
-		// run other threads
-		_renderer_dispathcer_thread = std::thread(
-			[this]()
-			{
-				_renderer_dispatcher.initialize();
-				_renderer_dispatcher.start();
-			}
-		);
-
-		_lvm_thread = std::thread(
-			[this]()
-			{
-				_lvm.initialize();
-				_lvm.start();
-			}
-		);
-
-		_renderer_dispathcer_thread.detach();
-		_lvm_thread.detach();
-
-		while (!_should_exit)
-		{
-
-		}
-
-		_lvm.notify_to_exit();
-		_renderer_dispatcher.notify_exit();
-		std::cout << "karamay engine has exited." << std::endl;
-	}
+	void run() noexcept;
 
 private:
 
@@ -69,6 +32,21 @@ private:
 	lua_api::lua_vm _lvm;
 	std::thread _lvm_thread;
 
+public:
+
+	static void set_engine_root(const std::string& engine_root)
+	{
+		_engine_root_dir = engine_root;
+	}
+
+	static const std::string& get_engine_root() { return _engine_root_dir; }
+
+private:
+
+	static std::string _engine_root_dir;
+
 };
+
+
 
 #endif

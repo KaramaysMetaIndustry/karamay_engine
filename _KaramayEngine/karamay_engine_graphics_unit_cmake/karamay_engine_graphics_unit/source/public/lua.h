@@ -1,5 +1,5 @@
-#ifndef __LUA_H
-#define __LUA_H
+#ifndef LUA_H
+#define LUA_H
 
 extern "C"
 {

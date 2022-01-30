@@ -1,5 +1,5 @@
-#ifndef H_STB
-#define H_STB
+#ifndef STB_H
+#define STB_H
 
 #define STB_IMAGE_IMPLEMENTATION
 // audio

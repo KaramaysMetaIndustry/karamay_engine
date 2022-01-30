@@ -314,6 +314,7 @@ namespace lua_api
 				luaL_setmetatable(l, "");
 			}*/
 		}
+
 		// lua string
 		static void push(lua_State* l, char* value)
 		{

@@ -91,7 +91,7 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 	{
 		// build pipeline
 		_vp_pipeline = builder.build_graphics_pipeline(_vp_pipeline_program);
-		if (!_vp_pipeline->load("C:/PrivateRepos/karamay_engine/_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/shaders/renderers/static_mesh_renderer/mesh_pp")) return false;
+		if (!_vp_pipeline->load("shaders\\renderers\\static_mesh_renderer\\mesh_pp")) return false;
 		
 		/*_mat_pipeline = builder.build_compute_pipeline(_mat_pipeline_program);
 		if (!_mat_pipeline->load("G:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/shaders/renderers/static_mesh_renderer/mat_pp")) return false;

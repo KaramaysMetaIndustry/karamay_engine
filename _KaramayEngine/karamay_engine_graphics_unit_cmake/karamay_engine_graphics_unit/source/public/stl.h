@@ -1,5 +1,5 @@
-#ifndef H_STL
-#define H_STL
+#ifndef STL_H
+#define STL_H
 
 #include <iostream>
 #include <sstream>
