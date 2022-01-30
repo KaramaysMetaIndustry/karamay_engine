@@ -34,6 +34,12 @@ namespace CTest_for_lua
 		return 1;
 	}
 
+	static int __gc(lua_State* l)
+	{
+
+		return 0;
+	}
+
 	static int get(lua_State* l)
 	{
 		// stack : userdata
@@ -124,11 +130,12 @@ namespace CTest_for_lua
 	}
 
 	LUA_LIBS_B()
-		
-	LUA_LIBS_E()
 
-	LUA_FUNCS_B()
+		LUA_LIBS_E()
+
+		LUA_FUNCS_B()
 		__CALL()
+		__GC()
 		FUNC(get)
 		FUNC(set)
 		FUNC(finish)

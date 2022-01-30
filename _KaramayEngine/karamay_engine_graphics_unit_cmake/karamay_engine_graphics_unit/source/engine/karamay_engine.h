@@ -4,6 +4,8 @@
 #include "embedded/lua/lvm.h"
 #include "embedded/lua/lvm_graphics_module.h"
 #include "embedded/python/pvm.h"
+#include "commandlet/karamray_engine_commandlet.h"
+#include "filesystem/karamay_engine_filesystem.h"
 #include "graphics/gl_renderer_dispatcher.h"
 
 class karamay_engine final
