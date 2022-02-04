@@ -13,7 +13,7 @@ int main()
     if (!_engine.initialize())
     {
         return 1;
-    }
+    } 
     _engine.run();
     return 0;
 }

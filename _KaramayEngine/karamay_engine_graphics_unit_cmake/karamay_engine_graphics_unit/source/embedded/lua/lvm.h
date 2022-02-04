@@ -21,37 +21,31 @@
 */
 namespace lua_api
 {
-	// nil, thread
-	// boolean, number, string, userdata, table, function
+
 	enum class lua_t : int
 	{
 		NONE = LUA_TNONE,
-		NIL = LUA_TNIL,
-
-		BOOLEAN = LUA_TBOOLEAN,
-		NUMBER = LUA_TNUMBER,
-		STRING = LUA_TSTRING,
-		
-		FUNCTION = LUA_TFUNCTION,
-		
-		TABLE = LUA_TTABLE,
-		USERDATA = LUA_TUSERDATA,
-		LIGHTUSERDATA = LUA_TLIGHTUSERDATA,
-		
-		THREAD = LUA_TTHREAD,
-
+		NIL = LUA_TNIL, //nil
+		BOOLEAN = LUA_TBOOLEAN, // boolean
+		NUMBER = LUA_TNUMBER, // number
+		STRING = LUA_TSTRING, // string
+		FUNCTION = LUA_TFUNCTION, // function
+		TABLE = LUA_TTABLE, // table
+		USERDATA = LUA_TUSERDATA, // userdata
+		LIGHTUSERDATA = LUA_TLIGHTUSERDATA, // userdata
+		THREAD = LUA_TTHREAD, // thread
 		NUMTYPES = LUA_NUMTYPES
 	};
 
 	enum class lua_status : int
 	{
-		OK = LUA_OK, // : no errors.
-		ERR_RUN = LUA_ERRRUN, // : a runtime error.
-		ERR_MEM = LUA_ERRMEM, // : memory allocation error.For such errors, Lua does not call the message handler.
-		ERR_ERR = LUA_ERRERR, //: error while running the message handler.
-		ERR_SYNTAX = LUA_ERRSYNTAX, // : syntax error during precompilation.
-		YIELD = LUA_YIELD, //: the thread(coroutine) yields.
-		ERR_FILE = LUA_ERRFILE // : a file - related error; e.g., it cannot open or read the file.
+		OK = LUA_OK, // no errors.
+		ERR_RUN = LUA_ERRRUN, // a runtime error.
+		ERR_MEM = LUA_ERRMEM, // memory allocation error.For such errors, Lua does not call the message handler.
+		ERR_ERR = LUA_ERRERR, // error while running the message handler.
+		ERR_SYNTAX = LUA_ERRSYNTAX, // syntax error during precompilation.
+		YIELD = LUA_YIELD, // the thread(coroutine) yields.
+		ERR_FILE = LUA_ERRFILE // a file - related error; e.g., it cannot open or read the file.
 	};
 
 	enum class lua_compare_op : int
@@ -70,8 +64,8 @@ namespace lua_api
 		GCCOUNTB = LUA_GCCOUNTB, //Returns the remainder of dividing the current amount of bytes of memory in use by Lua by 1024.
 		GCSTEP = LUA_GCSTEP, //Performs an incremental step of garbage collection, corresponding to the allocation of stepsize Kbytes.
 		GCISRUNNING = LUA_GCISRUNNING, //Returns a boolean that tells whether the collector is running(i.e., not stopped).
-		GCINC = LUA_GCINC, //Changes the collector to incremental mode with the given parameters(see ¡ì2.5.1).Returns the previous mode(LUA_GCGEN or LUA_GCINC).
-		GCGEN = LUA_GCGEN //Changes the collector to generational mode with the given parameters(see ¡ì2.5.2).Returns the previous mode(LUA_GCGEN or LUA_GCINC).
+		GCINC = LUA_GCINC, //Changes the collector to incremental mode with the given parameters(see ï¿½ï¿½2.5.1).Returns the previous mode(LUA_GCGEN or LUA_GCINC).
+		GCGEN = LUA_GCGEN //Changes the collector to generational mode with the given parameters(see ï¿½ï¿½2.5.2).Returns the previous mode(LUA_GCGEN or LUA_GCINC).
 	};
 
 	namespace basic
@@ -293,7 +287,7 @@ namespace lua_api
 		static void push(lua_State* l, int64 value) { lua_pushinteger(l, static_cast<lua_Integer>(value)); }
 		static void push(lua_State* l, float value) { lua_pushnumber(l, static_cast<lua_Number>(value)); }
 		static void push(lua_State* l, double value) { lua_pushnumber(l, static_cast<lua_Number>(value)); }
-		// lua userdata
+		// lua (light)userdata
 		template<typename T>
 		static void push(lua_State* l, T* value)
 		{
@@ -313,6 +307,14 @@ namespace lua_api
 			{
 				luaL_setmetatable(l, "");
 			}*/
+		}
+		// lua userdata
+		template<typename T>
+		static void push(lua_State* l, std::shared_ptr<T> ptr)
+		{
+			auto* _userdata = (std::shared_ptr<T>*)lua_newuserdata(l, sizeof(std::shared_ptr<T>));
+			*_userdata = ptr;
+			luaL_setmetatable(l, "shared_ptr_clazz");
 		}
 
 		// lua string
@@ -421,12 +423,11 @@ namespace lua_api
 		* with nuvalue associated Lua values, called user values, plus an associated block of raw memory with size bytes.
 		* (The user values can be set and read with the functions lua_setiuservalue and lua_getiuservalue.)
 		* The function returns the address of the block of memory.
-		* Lua ensures that this address is valid as long as the corresponding userdata is alive (see ¡ì2.5).
-		* Moreover, if the userdata is marked for finalization (see ¡ì2.5.3), its address is valid at least until the call to its finalizer.
+		* Lua ensures that this address is valid as long as the corresponding userdata is alive (see ï¿½ï¿½2.5).
+		* Moreover, if the userdata is marked for finalization (see ï¿½ï¿½2.5.3), its address is valid at least until the call to its finalizer.
 		*/
 		static void new_userdata(lua_State* l, size_t size, int32 nuvalue)
 		{
-			std::vector<int> a;
 			void* _nuserdata = lua_newuserdatauv(l, size, nuvalue);
 		}
 
@@ -493,7 +494,7 @@ namespace lua_api
 
 		/*
 		* Pushes onto the stack the value t[i], where t is the value at the given index. 
-		* As in Lua, this function may trigger a metamethod for the "index" event (see ¡ì2.4).
+		* As in Lua, this function may trigger a metamethod for the "index" event (see ï¿½ï¿½2.4).
 		* Returns the type of the pushed value.
 		* @return the type of value
 		*/
@@ -586,7 +587,7 @@ namespace lua_api
 		}
 
 		/*
-		* Pops a key from the stack, and pushes a key¨Cvalue pair from the table at the given index, 
+		* Pops a key from the stack, and pushes a keyï¿½Cvalue pair from the table at the given index, 
 		* the "next" pair after the given key. 
 		* If there are no more elements in the table, 
 		* then lua_next returns 0 and pushes nothing.
@@ -654,14 +655,14 @@ namespace lua_api
 		*
 		* The lua_load function uses a user-supplied reader function to read the chunk (see lua_Reader).
 		* The data argument is an opaque value passed to the reader function.
-		* The chunkname argument gives a name to the chunk, which is used for error messages and in debug information (see ¡ì4.7).
+		* The chunkname argument gives a name to the chunk, which is used for error messages and in debug information (see ï¿½ï¿½4.7).
 		* lua_load automatically detects whether the chunk is text or binary and loads it accordingly (see program luac).
 		* The string mode works as in function load, with the addition that a NULL value is equivalent to the string "bt".
 		*
 		* lua_load uses the stack internally, so the reader function must always leave the stack unmodified when returning.
-		* lua_load can return LUA_OK, LUA_ERRSYNTAX, or LUA_ERRMEM. The function may also return other values corresponding to errors raised by the read function (see ¡ì4.4.1).
-		* If the resulting function has upvalues, its first upvalue is set to the value of the global environment stored at index LUA_RIDX_GLOBALS in the registry (see ¡ì4.3).
-		* When loading main chunks, this upvalue will be the _ENV variable (see ¡ì2.2). Other upvalues are initialized with nil.
+		* lua_load can return LUA_OK, LUA_ERRSYNTAX, or LUA_ERRMEM. The function may also return other values corresponding to errors raised by the read function (see ï¿½ï¿½4.4.1).
+		* If the resulting function has upvalues, its first upvalue is set to the value of the global environment stored at index LUA_RIDX_GLOBALS in the registry (see ï¿½ï¿½4.3).
+		* When loading main chunks, this upvalue will be the _ENV variable (see ï¿½ï¿½2.2). Other upvalues are initialized with nil.
 		*/
 		static lua_status load(lua_State* L, lua_Reader reader, void* data, const char* chunk_name, const char* mode)
 		{
@@ -1593,15 +1594,15 @@ namespace lua_api
 
 			while (!_should_exit)
 			{
-				std::cout << "lvm tick" << std::endl;
-
-				int ret = luaL_dofile(_state, "C:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\scripts\\blue_freckle\\test.lua");
+				//std::cout << "lvm tick" << std::endl;
+				 
+				/*int ret = luaL_dofile(_state, "C:\\PrivateRepos\\Karamays\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\scripts\\blue_freckle\\test.lua");
 				if (ret != 0)
 				{
 					printf("%s", lua_tostring(_state, -1));
-				}
+				}*/
 
-				std::this_thread::sleep_for(std::chrono::milliseconds(100));
+				//std::this_thread::sleep_for(std::chrono::milliseconds(100));
 			}
 
 			lua_close(_state);
@@ -1611,8 +1612,6 @@ namespace lua_api
 		void notify_to_exit()
 		{
 			_should_exit = true;
-
-			while (_should_exit) {}
 		}
 
 		bool do_file(const std::string& path)
@@ -1645,7 +1644,9 @@ namespace lua_api
 
 		std::unique_ptr<std::thread> _vm_thread = {};
 
-		bool _should_exit = false;
+		std::atomic_bool _should_exit = false;
+
+		std::mutex _mtx;
 
 	private:
 
