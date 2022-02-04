@@ -14,7 +14,7 @@ public:
 
 public:
 
-    void initialize() noexcept;
+    bool initialize() noexcept;
 
     void start() noexcept;
 
@@ -24,7 +24,7 @@ private:
 
     void load_templates(const std::string& include_token);
 
-    bool _should_exit = false;
+    std::atomic_bool _should_exit = false;
 
 private:
 

@@ -1,110 +1,124 @@
 #include "gl_renderer_dispatcher.h"
 #include "engine/karamay_engine.h"
 
-enum class gl_debug_type : GLenum
+
+namespace opengl
 {
-    DEPRECATED_BEHAVIOR = GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR,
-    UNDEFINED_BEHAVIOR = GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR,
-    ERROR = GL_DEBUG_TYPE_ERROR,
-    MARKER = GL_DEBUG_TYPE_MARKER,
-    OTHER = GL_DEBUG_TYPE_OTHER,
-    PERFORMANCE = GL_DEBUG_TYPE_PERFORMANCE,
-    POP_GROUP = GL_DEBUG_TYPE_POP_GROUP,
-    PORTABILITY = GL_DEBUG_TYPE_PORTABILITY,
-    PUSH_GROUP = GL_DEBUG_TYPE_PUSH_GROUP
-};
+    enum class gl_debug_type : GLenum
+    {
+        DEPRECATED_BEHAVIOR = GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR,
+        UNDEFINED_BEHAVIOR = GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR,
+        ERROR = GL_DEBUG_TYPE_ERROR,
+        MARKER = GL_DEBUG_TYPE_MARKER,
+        OTHER = GL_DEBUG_TYPE_OTHER,
+        PERFORMANCE = GL_DEBUG_TYPE_PERFORMANCE,
+        POP_GROUP = GL_DEBUG_TYPE_POP_GROUP,
+        PORTABILITY = GL_DEBUG_TYPE_PORTABILITY,
+        PUSH_GROUP = GL_DEBUG_TYPE_PUSH_GROUP
+    };
 
-enum class gl_debug_source : GLenum
-{
-    API = GL_DEBUG_SOURCE_API,
-    APPLICATION = GL_DEBUG_SOURCE_APPLICATION,
-    OTHER = GL_DEBUG_SOURCE_OTHER,
-    SHADER_COMPILER = GL_DEBUG_SOURCE_SHADER_COMPILER,
-    THIRD_PARTY = GL_DEBUG_SOURCE_THIRD_PARTY,
-    WINDOW_SYSTEM = GL_DEBUG_SOURCE_WINDOW_SYSTEM
-};
+    enum class gl_debug_source : GLenum
+    {
+        API = GL_DEBUG_SOURCE_API,
+        APPLICATION = GL_DEBUG_SOURCE_APPLICATION,
+        OTHER = GL_DEBUG_SOURCE_OTHER,
+        SHADER_COMPILER = GL_DEBUG_SOURCE_SHADER_COMPILER,
+        THIRD_PARTY = GL_DEBUG_SOURCE_THIRD_PARTY,
+        WINDOW_SYSTEM = GL_DEBUG_SOURCE_WINDOW_SYSTEM
+    };
 
-enum class gl_debug_severity : GLenum
-{
-    SEVERITY_HIGH = GL_DEBUG_SEVERITY_HIGH, // 高级
-    SEVERITY_LOW = GL_DEBUG_SEVERITY_LOW, // 低级
-    SEVERITY_MEDIUM = GL_DEBUG_SEVERITY_MEDIUM, // 中级
-    SEVERITY_NOTIFICATION = GL_DEBUG_SEVERITY_NOTIFICATION, // 通知
-};
+    enum class gl_debug_severity : GLenum
+    {
+        SEVERITY_HIGH = GL_DEBUG_SEVERITY_HIGH,
+        SEVERITY_LOW = GL_DEBUG_SEVERITY_LOW,
+        SEVERITY_MEDIUM = GL_DEBUG_SEVERITY_MEDIUM,
+        SEVERITY_NOTIFICATION = GL_DEBUG_SEVERITY_NOTIFICATION,
+    };
 
-void GLAPIENTRY message_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
-{
-    auto _source = static_cast<gl_debug_source>(source);
-    auto _type = static_cast<gl_debug_type>(type);
-    auto _severity = static_cast<gl_debug_severity>(severity);
+    void GLAPIENTRY message_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+    {
+        auto _source = static_cast<gl_debug_source>(source);
+        auto _type = static_cast<gl_debug_type>(type);
+        auto _severity = static_cast<gl_debug_severity>(severity);
 
-    std::string _source_str;
-    std::string _type_str;
-    std::string _severity_str;
+        std::string _source_str;
+        std::string _type_str;
+        std::string _severity_str;
 
-    switch (_source) {
+        switch (_source) {
 
-    case gl_debug_source::API: _source_str = "API";
-        break;
-    case gl_debug_source::APPLICATION: _source_str = "APPLICATION";
-        break;
-    case gl_debug_source::OTHER: _source_str = "OTHER";
-        break;
-    case gl_debug_source::SHADER_COMPILER: _source_str = "SHADER_COMPILER";
-        break;
-    case gl_debug_source::THIRD_PARTY: _source_str = "THIRD_PARTY";
-        break;
-    case gl_debug_source::WINDOW_SYSTEM: _source_str = "WINDOW_SYSTEM";
-        break;
+        case gl_debug_source::API: _source_str = "API";
+            break;
+        case gl_debug_source::APPLICATION: _source_str = "APPLICATION";
+            break;
+        case gl_debug_source::OTHER: _source_str = "OTHER";
+            break;
+        case gl_debug_source::SHADER_COMPILER: _source_str = "SHADER_COMPILER";
+            break;
+        case gl_debug_source::THIRD_PARTY: _source_str = "THIRD_PARTY";
+            break;
+        case gl_debug_source::WINDOW_SYSTEM: _source_str = "WINDOW_SYSTEM";
+            break;
+        }
+
+        switch (_type) {
+        case gl_debug_type::DEPRECATED_BEHAVIOR: _type_str = "DEPRECATED_BEHAVIOR";
+            break;
+        case gl_debug_type::UNDEFINED_BEHAVIOR: _type_str = "UNDEFINED_BEHAVIOR";
+            break;
+        case gl_debug_type::ERROR: _type_str = "ERROR";
+            break;
+        case gl_debug_type::MARKER: _type_str = "MARKER";
+            break;
+        case gl_debug_type::OTHER: _type_str = "OTHER";
+            break;
+        case gl_debug_type::PERFORMANCE: _type_str = "PERFORMANCE";
+            break;
+        case gl_debug_type::POP_GROUP: _type_str = "POP_GROUP";
+            break;
+        case gl_debug_type::PORTABILITY: _type_str = "PORTABILITY";
+            break;
+        case gl_debug_type::PUSH_GROUP: _type_str = "PUSH_GROUP";
+            break;
+        }
+
+        switch (_severity) {
+        case gl_debug_severity::SEVERITY_HIGH: _severity_str = "SEVERITY_HIGH";
+            break;
+        case gl_debug_severity::SEVERITY_LOW: _severity_str = "SEVERITY_LOW";
+            break;
+        case gl_debug_severity::SEVERITY_MEDIUM: _severity_str = "SEVERITY_MEDIUM";
+            break;
+        case gl_debug_severity::SEVERITY_NOTIFICATION: _severity_str = "SEVERITY_NOTIFICATION";
+            break;
+        }
+
+        std::string _message_str(message, length);
+
+        std::cerr << "[" << std::endl;
+        std::cerr << "  DEBUG SOURCE: " << _source_str << std::endl;
+        std::cerr << "  DEBUG TYPE: " << _type_str << std::endl;
+        std::cerr << "  DEBUG ID: " << id << std::endl;
+        std::cerr << "  DEBUG SEVERITY: " << _severity_str << std::endl;
+        std::cerr << "  DEBUG MESSAGE: " << _message_str << std::endl;
+        std::cerr << "]" << std::endl;
+
     }
-
-    switch (_type) {
-    case gl_debug_type::DEPRECATED_BEHAVIOR: _type_str = "DEPRECATED_BEHAVIOR";
-        break;
-    case gl_debug_type::UNDEFINED_BEHAVIOR: _type_str = "UNDEFINED_BEHAVIOR";
-        break;
-    case gl_debug_type::ERROR: _type_str = "ERROR";
-        break;
-    case gl_debug_type::MARKER: _type_str = "MARKER";
-        break;
-    case gl_debug_type::OTHER: _type_str = "OTHER";
-        break;
-    case gl_debug_type::PERFORMANCE: _type_str = "PERFORMANCE";
-        break;
-    case gl_debug_type::POP_GROUP: _type_str = "POP_GROUP";
-        break;
-    case gl_debug_type::PORTABILITY: _type_str = "PORTABILITY";
-        break;
-    case gl_debug_type::PUSH_GROUP: _type_str = "PUSH_GROUP";
-        break;
-    }
-
-    switch (_severity) {
-    case gl_debug_severity::SEVERITY_HIGH: _severity_str = "SEVERITY_HIGH";
-        break;
-    case gl_debug_severity::SEVERITY_LOW: _severity_str = "SEVERITY_LOW";
-        break;
-    case gl_debug_severity::SEVERITY_MEDIUM: _severity_str = "SEVERITY_MEDIUM";
-        break;
-    case gl_debug_severity::SEVERITY_NOTIFICATION: _severity_str = "SEVERITY_NOTIFICATION";
-        break;
-    }
-
-    std::string _message_str(message, length);
-
-    std::cerr << "[" << std::endl;
-    std::cerr << "  DEBUG SOURCE: " << _source_str << std::endl;
-    std::cerr << "  DEBUG TYPE: " << _type_str << std::endl;
-    std::cerr << "  DEBUG ID: " << id << std::endl;
-    std::cerr << "  DEBUG SEVERITY: " << _severity_str << std::endl;
-    std::cerr << "  DEBUG MESSAGE: " << _message_str << std::endl;
-    std::cerr << "]" << std::endl;
-
 }
 
-void gl_renderer_dispatcher::initialize() noexcept
+
+bool gl_renderer_dispatcher::initialize() noexcept
 {
     std::cout << "renderer dispatcher start to initialize." << std::endl;
+    
+
+    std::cout << "renderer dispatcher has initialized." << std::endl;
+    return true;
+}
+
+void gl_renderer_dispatcher::start() noexcept
+{
+    // opengl context must be at the same thread space
 
     _window = new glfw_window();
     _window->load_context();
@@ -120,7 +134,7 @@ void gl_renderer_dispatcher::initialize() noexcept
 
 #ifdef _DEBUG
     glEnable(GL_DEBUG_OUTPUT);
-    glDebugMessageCallback(message_callback, 0);
+    glDebugMessageCallback(opengl::message_callback, 0);
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 #endif 
 
@@ -130,11 +144,6 @@ void gl_renderer_dispatcher::initialize() noexcept
     gl_static_mesh_renderer* _static_mesh_renderer = new gl_static_mesh_renderer();
     _renderers.push_back(_static_mesh_renderer);
 
-    std::cout << "renderer dispatcher has initialized." << std::endl;
-}
-
-void gl_renderer_dispatcher::start() noexcept
-{
     std::cout << "renderer dispatcher is running" << std::endl;
     std::vector<gl_renderer*> _standby_renderers;
     for (auto _renderer : _renderers)
@@ -148,6 +157,7 @@ void gl_renderer_dispatcher::start() noexcept
     float _frame_delta_time = 0.0f;
     while (!_should_exit)
     {
+        //std::cout << "renderer dispatcher tick" << std::endl;
         auto _frame_start = std::chrono::steady_clock::now();
         _window->tick(_frame_delta_time);
         for (auto _standby_renderer : _standby_renderers)
