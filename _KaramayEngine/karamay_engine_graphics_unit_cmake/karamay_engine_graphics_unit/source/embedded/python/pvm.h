@@ -1,6 +1,8 @@
 #ifndef PVM_H
 #define PVM_H
 
+#include "public/stl.h"
+
 namespace python_api
 {
 	namespace basic
@@ -12,7 +14,24 @@ namespace python_api
 	class python_vm
 	{
 	public:
-		void initialize() {}
+
+		bool initialize()  noexcept
+		{
+			return true;
+		}
+
+		void run() noexcept;
+
+	public:
+
+		void notify_to_exit() noexcept
+		{
+			_should_exit = true;
+		}
+
+	private:
+
+		std::atomic_bool _should_exit = false;
 
 	};
 

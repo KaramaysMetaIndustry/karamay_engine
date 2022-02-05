@@ -193,7 +193,7 @@ DEFINE_RENDERER_BEGIN(gl_static_mesh_renderer)
 		default_framebuffer->set_color_cache(0.0f + delta_time, 0.0f, 0.0f, 1.0f);
 		default_framebuffer->switch_draw_buffer(gl_default_framebuffer_draw_buffer::LEFT);
 		default_framebuffer->clear_color_buffer();
-		std::cout << delta_time << std::endl;
+		//std::cout << delta_time << std::endl;
 	#ifdef _DEBUG
 		if (!_vp_pipeline) throw std::exception("mesh pipeline must not be null");
 	#endif
