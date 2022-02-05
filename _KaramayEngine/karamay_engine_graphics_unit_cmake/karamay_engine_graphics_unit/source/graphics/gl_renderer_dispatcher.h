@@ -18,7 +18,7 @@ public:
 
     void start() noexcept;
 
-    void notify_exit();
+    void notify_to_exit();
 
 private:
 

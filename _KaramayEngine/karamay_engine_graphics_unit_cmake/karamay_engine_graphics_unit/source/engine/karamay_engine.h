@@ -28,10 +28,11 @@ private:
 
 	bool _should_exit = false;
 
-	//gl_renderer_dispatcher _renderer_dispatcher;
+	// renderer dispatcher
 	std::unique_ptr<gl_renderer_dispatcher> _renderer_dispatcher;
 	std::thread _renderer_dispatcher_thread;
 
+	// lua vm
 	std::unique_ptr<lua_api::lua_vm> _lvm;
 	std::thread _lvm_thread;
 

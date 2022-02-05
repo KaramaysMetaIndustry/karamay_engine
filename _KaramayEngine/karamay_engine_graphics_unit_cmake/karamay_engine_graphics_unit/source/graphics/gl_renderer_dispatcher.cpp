@@ -171,7 +171,7 @@ void gl_renderer_dispatcher::start() noexcept
     std::cout << "renderer dispatcher has exited." << std::endl;
 }
 
-void gl_renderer_dispatcher::notify_exit()
+void gl_renderer_dispatcher::notify_to_exit()
 {
     _should_exit = true;
 }
