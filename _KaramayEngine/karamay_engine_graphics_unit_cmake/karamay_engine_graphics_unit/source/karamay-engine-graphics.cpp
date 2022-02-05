@@ -5,8 +5,9 @@
 
 int main()
 {
+
     karamay_engine::set_engine_root(
-        "G:\\PrivateRepos\\karamay_engine\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\"
+        "C:\\PrivateRepos\\karamay_engine\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\"
     );
 
     karamay_engine _engine;
@@ -15,5 +16,6 @@ int main()
         return 1;
     } 
     _engine.run();
+
     return 0;
 }

@@ -130,7 +130,7 @@ public:
 
 	bool load(const std::string& pipeline_dir) override
 	{
-		_shader = new gl_shader(gl_shader_type::VERTEX_SHADER, pipeline_dir + "/" + pipeline_dir.substr(pipeline_dir.find_last_of("/") + 1) + ".vert");
+		_shader = new gl_shader(gl_shader_type::VERTEX_SHADER, pipeline_dir + "/" + pipeline_dir.substr(pipeline_dir.find_last_of("\\") + 1) + ".vert");
 		return _shader->get_compile_status();
 	}
 
@@ -170,7 +170,7 @@ public:
 
 	bool load(const std::string& pipeline_dir) override
 	{
-		_shader = new gl_shader(gl_shader_type::TESS_CONTROL_SHADER, pipeline_dir + "/" + pipeline_dir.substr(pipeline_dir.find_last_of("/") + 1) + ".tesc");
+		_shader = new gl_shader(gl_shader_type::TESS_CONTROL_SHADER, pipeline_dir + "/" + pipeline_dir.substr(pipeline_dir.find_last_of("\\") + 1) + ".tesc");
 		return true;
 	}
 
@@ -196,7 +196,7 @@ public:
 
 	bool load(const std::string & pipeline_dir) override
 	{
-		_shader = new gl_shader(gl_shader_type::TESS_EVALUATION_SHADER, pipeline_dir + "/" + pipeline_dir.substr(pipeline_dir.find_last_of("/") + 1) + ".tese");
+		_shader = new gl_shader(gl_shader_type::TESS_EVALUATION_SHADER, pipeline_dir + "/" + pipeline_dir.substr(pipeline_dir.find_last_of("\\") + 1) + ".tese");
 		return false;
 	}
 
@@ -222,7 +222,7 @@ public:
 
 	bool load(const std::string& pipeline_dir) override
 	{
-		_shader = new gl_shader(gl_shader_type::GEOMETRY_SHADER, pipeline_dir + "/" + pipeline_dir.substr(pipeline_dir.find_last_of("/") + 1) + ".geom");
+		_shader = new gl_shader(gl_shader_type::GEOMETRY_SHADER, pipeline_dir + "/" + pipeline_dir.substr(pipeline_dir.find_last_of("\\") + 1) + ".geom");
 		return _shader->get_compile_status();
 	}
 
@@ -257,7 +257,7 @@ public:
 
 	bool load(const std::string& pipeline_dir) override
 	{
-		_shader = new gl_shader(gl_shader_type::FRAGMENT_SHADER, pipeline_dir + "/" + pipeline_dir.substr(pipeline_dir.find_last_of("/") + 1) + ".frag");
+		_shader = new gl_shader(gl_shader_type::FRAGMENT_SHADER, pipeline_dir + "/" + pipeline_dir.substr(pipeline_dir.find_last_of("\\") + 1) + ".frag");
 		return _shader->get_compile_status();
 	}
 
@@ -272,7 +272,6 @@ protected:
 
 	void _add_output_item(glsl_fragment_shader_output_item output_item)
 	{}
-
 
 };
 

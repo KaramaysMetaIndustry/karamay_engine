@@ -9,6 +9,8 @@ class gl_renderer_dispatcher
 public:
 
     gl_renderer_dispatcher() = default;
+    gl_renderer_dispatcher(const gl_renderer_dispatcher&) = delete;
+    gl_renderer_dispatcher& operator=(const gl_renderer_dispatcher&) = delete;
 
     ~gl_renderer_dispatcher() = default;
 
@@ -16,7 +18,7 @@ public:
 
     bool initialize() noexcept;
 
-    void start() noexcept;
+    void run() noexcept;
 
     void notify_to_exit();
 

@@ -1,7 +1,6 @@
 #include "gl_renderer_dispatcher.h"
 #include "engine/karamay_engine.h"
 
-
 namespace opengl
 {
     enum class gl_debug_type : GLenum
@@ -106,7 +105,6 @@ namespace opengl
     }
 }
 
-
 bool gl_renderer_dispatcher::initialize() noexcept
 {
     std::cout << "renderer dispatcher start to initialize." << std::endl;
@@ -116,7 +114,7 @@ bool gl_renderer_dispatcher::initialize() noexcept
     return true;
 }
 
-void gl_renderer_dispatcher::start() noexcept
+void gl_renderer_dispatcher::run() noexcept
 {
     // opengl context must be at the same thread space
 
@@ -193,7 +191,7 @@ void gl_renderer_dispatcher::load_templates(const std::string& include_token)
     catch (const std::exception& e) {
         std::cout << "Exception: [ " << e.what() << " ]" << std::endl;
     }
-    glNamedStringARB(GL_SHADER_INCLUDE_ARB,
-        include_token.size(), include_token.c_str(),
-        content.size(), content.c_str());
+    
+    glNamedStringARB(GL_SHADER_INCLUDE_ARB, 
+        include_token.size(), include_token.c_str(), content.size(), content.c_str());
 }
