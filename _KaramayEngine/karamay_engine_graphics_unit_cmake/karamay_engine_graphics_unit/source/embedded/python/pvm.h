@@ -10,24 +10,17 @@ namespace python_api
 
 	}
 
-
 	class python_vm
 	{
 	public:
 
-		bool initialize()  noexcept
-		{
-			return true;
-		}
+		bool initialize()  noexcept;
 
 		void run() noexcept;
 
 	public:
 
-		void notify_to_exit() noexcept
-		{
-			_should_exit = true;
-		}
+		void notify_to_exit() noexcept;
 
 	private:
 

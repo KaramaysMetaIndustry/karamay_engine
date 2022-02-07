@@ -142,15 +142,6 @@ public:
 		return false;
 	}
 
-	//glsl_vertex_shader* vertex_shader;
-
-	//glsl_tessellation_control_shader* tessc;
-	//glsl_tessellation_evaluation_shader* tesse;
-
-	//glsl_geometry_shader* geometry_shader;
-
-	//glsl_fragment_shader* fragment_shader;
-
 };
 
 class glsl_mesh_pipeline_program : public glsl_program

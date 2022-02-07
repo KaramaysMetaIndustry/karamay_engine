@@ -6,14 +6,18 @@ bool karamay_engine::initialize() noexcept
 {
 	std::cout << "karamay engine starts to initialize." << std::endl;
 
-	_renderer_dispatcher = std::make_unique<gl_renderer_dispatcher>();
-	_network_dispatcher = std::make_unique<network_dispatcher>();
 	_lvm = std::make_unique<lua_api::lua_vm>();
 	_pvm = std::make_unique<python_api::python_vm>();
+	_renderer_dispatcher = std::make_unique<gl_renderer_dispatcher>();
+	_network_dispatcher = std::make_unique<network_dispatcher>();
+	
+	if (!_lvm || !_pvm || !_renderer_dispatcher || !_network_dispatcher)
+	{
+		return false;
+	}
 
-	if (!_renderer_dispatcher || !_network_dispatcher || !_lvm || !_pvm || 
-		!_renderer_dispatcher->initialize() || !_network_dispatcher->initialize() || !_lvm->initialize() || !_pvm->initialize()
-		)
+	// run sequence
+	if (!_renderer_dispatcher->initialize() || !_lvm->initialize() || !_pvm->initialize() || !_network_dispatcher->initialize())
 	{
 		return false;
 	}
@@ -24,7 +28,7 @@ bool karamay_engine::initialize() noexcept
 
 void karamay_engine::run() noexcept
 {
-	std::cout << "karamay engine is running." << std::endl; 
+	std::cout << "karamay engine is running." << std::endl;
 
 	// renderer dispatcher thread
 	_renderer_dispatcher_thread = std::thread([&]() { _renderer_dispatcher->run(); });

@@ -7,6 +7,7 @@ bool network_dispatcher::initialize() noexcept
 
 void network_dispatcher::run() noexcept
 {
+    std::cout << "network dispatcher is running." << std::endl;
     while (!_should_exit)
     {
 
