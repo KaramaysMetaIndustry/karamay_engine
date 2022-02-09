@@ -167,7 +167,6 @@ void gl_renderer_dispatcher::run() noexcept
     float _frame_delta_time = 0.0f;
     while (!_should_exit)
     {
-        //std::cout << "renderer dispatcher tick" << std::endl;
         auto _frame_start = std::chrono::steady_clock::now();
         _window->tick(_frame_delta_time);
         for (auto _standby_renderer : _standby_renderers)
@@ -175,7 +174,8 @@ void gl_renderer_dispatcher::run() noexcept
             _standby_renderer->render(_frame_delta_time);
         }
         auto _frame_end = std::chrono::steady_clock::now();
-        _frame_delta_time = std::chrono::duration_cast<std::chrono::nanoseconds>(_frame_end - _frame_start).count();
+        //_frame_delta_time = std::chrono::duration_cast<std::chrono::seconds>(_frame_end - _frame_start).count();
+        _frame_delta_time = 0.01f;
     }
 
     std::cout << "renderer dispatcher has exited." << std::endl;

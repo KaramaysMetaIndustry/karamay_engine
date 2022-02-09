@@ -42,7 +42,6 @@ void karamay_engine::run() noexcept
 	uint64 _count = 0;
 	while (!_should_exit)
 	{
-		if (_count > 20000000000) break;
 		_count++;
 	}
 

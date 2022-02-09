@@ -21,6 +21,10 @@ public:
 	virtual bool load(const std::string& pipeline_dir) = 0;
 	virtual bool generate_template(const std::string& pipeline_dir) = 0;
 
+	uint32 get_program_handle() const {
+		return _program->get_handle();
+	}
+
 public:
 
 	glsl_uniform_block* uniform_block(const std::string& block_name)

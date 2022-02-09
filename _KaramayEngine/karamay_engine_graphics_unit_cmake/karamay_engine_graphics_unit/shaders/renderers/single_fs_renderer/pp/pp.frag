@@ -8,8 +8,8 @@
 #include "/common.frag.glsl" //! #include "../../../templates/common.frag.glsl"
 
 
-uniform vec3      iResolution;           // viewport resolution (in pixels)
-uniform float     iTime;                 // shader playback time (in seconds)
+uniform vec3      iResolution = vec3(1024, 1024, 1);           // viewport resolution (in pixels)
+uniform float     iTime = 1.5;                 // shader playback time (in seconds)
 //uniform float     iTimeDelta;            // render time (in seconds)
 //uniform int       iFrame;                // shader playback frame
 //uniform float     iChannelTime[4];       // channel playback time (in seconds)
@@ -183,4 +183,6 @@ out vec4 out_color;
 void main()
 {
 	out_color = vec4(1.0f, 0.0f, 1.0f, 1.0f);
+
+    mainImage(out_color, gl_FragCoord.xy);
 }

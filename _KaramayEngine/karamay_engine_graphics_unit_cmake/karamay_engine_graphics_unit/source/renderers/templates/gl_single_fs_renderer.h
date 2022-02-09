@@ -68,13 +68,17 @@ DEFINE_RENDERER_BEGIN(gl_single_fs_renderer)
 		if (!_pp) throw std::exception("mesh pipeline must not be null");
 #endif
 		_pp->enable();
+		_acc_time += delta_time * 2;
+		glUniform1f(glGetUniformLocation(_pp->program().get_program_handle(), "iTime"), _acc_time);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
 		_pp->disable();
 	}
 
 private:
 	gl_graphics_pipeline* _pp;
 
+	float _acc_time = 0.0f;
 
 DEFINE_RENDERER_END
 
