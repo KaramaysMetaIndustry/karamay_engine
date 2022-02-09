@@ -3,6 +3,7 @@
 
 #include "commandlet/karamray_engine_commandlet.h"
 #include "filesystem/karamay_engine_filesystem.h"
+#include "log/karamay_engine_log.h"
 #include "embedded/lua/lvm.h"
 #include "embedded/lua/lvm_graphics_module.h"
 #include "embedded/python/pvm.h"
@@ -27,7 +28,7 @@ public:
 
 private:
 
-	bool _should_exit = false;
+	std::atomic_bool _should_exit = false;
 
 	// renderer dispatcher
 	std::unique_ptr<gl_renderer_dispatcher> _renderer_dispatcher;

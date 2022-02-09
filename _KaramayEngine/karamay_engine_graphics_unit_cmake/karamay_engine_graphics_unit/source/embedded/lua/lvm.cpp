@@ -12,7 +12,7 @@ bool lua_api::lua_vm::initialize() noexcept
 
 void lua_api::lua_vm::run() noexcept
 {
-	std::cout << "lvm is running." << std::endl;
+	std::cout << "Lua virtual machine is running." << std::endl;
 
 	_state = lua_api::auxiliary::new_state();
 	if (!_state) return;

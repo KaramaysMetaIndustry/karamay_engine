@@ -21,6 +21,10 @@ public:
 	virtual bool load(const std::string& pipeline_dir) = 0;
 	virtual bool generate_template(const std::string& pipeline_dir) = 0;
 
+	uint32 get_program_handle() const {
+		return _program->get_handle();
+	}
+
 public:
 
 	glsl_uniform_block* uniform_block(const std::string& block_name)
@@ -141,15 +145,6 @@ public:
 	{
 		return false;
 	}
-
-	//glsl_vertex_shader* vertex_shader;
-
-	//glsl_tessellation_control_shader* tessc;
-	//glsl_tessellation_evaluation_shader* tesse;
-
-	//glsl_geometry_shader* geometry_shader;
-
-	//glsl_fragment_shader* fragment_shader;
 
 };
 
