@@ -5,6 +5,12 @@ std::string karamay_engine::_engine_root_dir;
 bool karamay_engine::initialize() noexcept
 {
 	std::cout << "karamay engine starts to initialize." << std::endl;
+	_renderer_dispatcher = std::make_unique<gl_renderer_dispatcher>();
+	_lvm = std::make_unique<lua_api::lua_vm>();
+
+
+	if (!_renderer_dispatcher->initialize() || !_lvm->initialize()) return false;
+	
 
 	_lvm = std::make_unique<lua_api::lua_vm>();
 	_pvm = std::make_unique<python_api::python_vm>();
