@@ -722,6 +722,11 @@ public:
         return std::make_shared<gl_fence>();
     }
 
+    void test_draw_arrays()
+    {
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+    }
+
     void unsyncable_draw_arrays(uint32 vertex_offset, uint32 vertices_num)
     {
         if (!_vertex_launcher || vertex_offset + vertices_num >= _vertex_launcher->get_vertices_num()) return;

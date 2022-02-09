@@ -1,5 +1,9 @@
 #include "gl_renderer_dispatcher.h"
 #include "engine/karamay_engine.h"
+#include "renderers/templates/gl_static_mesh_renderer.h"
+#include "renderers/templates/gl_single_cs_renderer.h"
+#include "renderers/templates/gl_single_fs_renderer.h"
+#include "renderers/templates/gl_single_gp_renderer.h"
 
 namespace opengl
 {
@@ -139,8 +143,16 @@ void gl_renderer_dispatcher::run() noexcept
     load_templates("/common.glsl");
     load_templates("/common.frag.glsl");
 
-    gl_static_mesh_renderer* _static_mesh_renderer = new gl_static_mesh_renderer();
-    _renderers.push_back(_static_mesh_renderer);
+    gl_static_mesh_renderer* _sm_rd = new gl_static_mesh_renderer();
+    gl_single_fs_renderer* _sfs_rd = new gl_single_fs_renderer();
+
+    /*gl_single_cs_renderer* _scs_rd = new gl_single_cs_renderer();
+    gl_single_gp_renderer* _sgp_rd = new gl_single_gp_renderer();*/
+
+    //_renderers.push_back(_sm_rd);
+    _renderers.push_back(_sfs_rd);
+    /*_renderers.push_back(_scs_rd);
+    _renderers.push_back(_sgp_rd);*/
 
     std::cout << "renderer dispatcher is running" << std::endl;
     std::vector<gl_renderer*> _standby_renderers;

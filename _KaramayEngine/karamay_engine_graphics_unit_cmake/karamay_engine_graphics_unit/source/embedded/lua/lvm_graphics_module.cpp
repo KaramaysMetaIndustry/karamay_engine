@@ -4,7 +4,7 @@
 #include "graphics/renderer/pipeline/gl_graphics_pipeline.h"
 #include "graphics/renderer/pipeline/gl_compute_pipeline.h"
 #include "graphics/renderer/pipeline/gl_mesh_pipeline.h"
-#include "renderers/gl_static_mesh_renderer.h"
+#include "renderers/templates/gl_static_mesh_renderer.h"
 
 namespace CTest_for_lua
 {
