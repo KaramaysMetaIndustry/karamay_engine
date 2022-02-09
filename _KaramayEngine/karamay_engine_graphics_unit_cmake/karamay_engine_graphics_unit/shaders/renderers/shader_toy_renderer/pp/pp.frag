@@ -8,8 +8,8 @@
 #include "/common.frag.glsl" //! #include "../../../templates/common.frag.glsl"
 
 
-uniform vec3 iResolution = vec3(1024, 1024, 1); // viewport resolution (in pixels)
-uniform float iTime = 1.5; // shader playback time (in seconds)
+uniform vec3      iResolution = vec3(1024, 1024, 1);           // viewport resolution (in pixels)
+uniform float     iTime = 1.5;                 // shader playback time (in seconds)
 //uniform float     iTimeDelta;            // render time (in seconds)
 //uniform int       iFrame;                // shader playback frame
 //uniform float     iChannelTime[4];       // channel playback time (in seconds)
@@ -17,7 +17,7 @@ uniform float iTime = 1.5; // shader playback time (in seconds)
 //uniform vec4      iMouse;                // mouse pixel coords. xy: current (if MLB down), zw: click
 //uniform samplerXX iChannel0..3;          // input channel. XX = 2D/Cube
 //uniform vec4      iDate;                 // (year, month, day, time in seconds)
-//uniform float     iSampleRate;
+//uniform float     iSampleRate;  
 
 #define MAXDIST 20.
 #define GIFLENGTH 1.570795
@@ -27,8 +27,7 @@ struct Ray {
     vec3 rd;
 };
 
-void pR(inout vec2 p, float a) 
-{
+void pR(inout vec2 p, float a) {
 	p = cos(a)*p + sin(a)*vec2(p.y, -p.x);
 }
 
@@ -50,14 +49,19 @@ float fractal(vec3 p)
     
     vec2 rotationAnimAmp = vec2(0.05,0.04);
 	vec2 rotationPhase = vec2(.45 + sin(iTime*4. + len*0.4) * 0.025,0.15 + cos(-0.2+iTime*4. + len*0.2) * 0.05);
+	
     // uncomment this to find good spots with the mouse :)
     //m = iMouse.xy / iResolution.xy;
+    
     vec3 juliaOffset = vec3(-3.,-1.15,-.5);
+    
     pR(p.xy,.5+sin(-0.25+iTime*4.)*0.1);
+    
     for (int i=0; i<iterations; i++) {
 		p = abs(p);
         // scale and offset the position
 		p = p*scale + juliaOffset;
+        
         // Rotate the position
         pR(p.xz,rotationPhase.x*3.14 + cos(iTime*4. + len)*rotationAnimAmp.y);
 		pR(p.yz,rotationPhase.y*3.14 + sin(iTime*4. + len)*rotationAnimAmp.x);		
@@ -68,24 +72,30 @@ float fractal(vec3 p)
 
 vec2 map(vec3 pos) {
     float l = length(pos);
+
     float dist = fractal(pos);
+
     return vec2(dist, 0.);
 }
 
 vec2 march(Ray ray) 
 {
-    const int steps = 30; // 最大步数，同时超出MAXDIST终止
-    const float prec = 0.001; // 最小距离，小于这个距离判相交
+    const int steps = 30;
+    const float prec = 0.001;
     vec2 res = vec2(0.);
+    
     for (int i = 0; i < steps; i++) 
     {        
         vec2 s = map(ray.ro + ray.rd * res.x);
-        if (res.x > MAXDIST || s.x < prec)
+        
+        if (res.x > MAXDIST || s.x < prec) 
         {
         	break;    
         }
+        
         res.x += s.x;
         res.y = s.y;
+        
     }
    
     return res;
@@ -94,18 +104,17 @@ vec2 march(Ray ray)
 vec3 calcNormal(vec3 pos) 
 {
 	const vec3 eps = vec3(0.005, 0.0, 0.0);
+                          
     return normalize(
-        vec3(
-        map(pos + eps).x - map(pos - eps).x, 
-        map(pos + eps.yxz).x - map(pos - eps.yxz).x, 
-        map(pos + eps.yzx).x - map(pos - eps.yzx).x
-        ) 
+        vec3(map(pos + eps).x - map(pos - eps).x,
+             map(pos + eps.yxz).x - map(pos - eps.yxz).x,
+             map(pos + eps.yzx).x - map(pos - eps.yzx).x ) 
     );
 }
 
 float calcAO( in vec3 pos, in vec3 nor )
 {
-    float occ = 0.0;
+float occ = 0.0;
     float sca = 1.0;
     for( int i=0; i<5; i++ )
     {
@@ -115,9 +124,8 @@ float calcAO( in vec3 pos, in vec3 nor )
         occ += -(dd-hr)*sca;
         sca *= .95;
     }
-    return clamp( 1.0 - 2.0*occ, 0.0, 1.0 );
+    return clamp( 1.0 - 2.0*occ, 0.0, 1.0 );    
 }
-
 vec4 render(Ray ray) 
 {
     vec3 col = vec3(0.);
@@ -138,7 +146,6 @@ vec4 render(Ray ray)
     col = mix(col, vec3(0.), clamp(res.x/MAXDIST, 0., 1.));
    	return vec4(col, res.x);
 }
-
 mat3 camera(in vec3 ro, in vec3 rd, float rot) 
 {
 	vec3 forward = normalize(rd - ro);
@@ -166,9 +173,10 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
     vec4 col = render(ray);
     col.xyz = pow(col.xyz, vec3(0.6));
-	fragColor = vec4(col.xyz, clamp(1.-col.w/MAXDIST, 0., 1.));
-
+	fragColor = vec4(col.xyz,clamp(1.-col.w/MAXDIST, 0., 1.));
 }
+
+
 
 out vec4 out_color;
 

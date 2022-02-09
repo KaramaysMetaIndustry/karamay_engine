@@ -35,7 +35,7 @@ void gl_graphics_pipeline::enable() noexcept
     _vertex_launcher->bind();
     _render_target->bind();
 
-    //_set_pipeline_fixed_functions();
+    _set_pipeline_fixed_functions();
 }
 
 void gl_graphics_pipeline::disable() noexcept
