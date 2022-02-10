@@ -11,13 +11,11 @@ int main()
     karamay_engine::set_engine_root(
         "G:\\PrivateRepos\\karamay_engine\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\"
     );
-
-    karamay_engine _engine;
-    if (!_engine.initialize())
+    karamay_engine _ke;
+    if (!_ke.initialize())
     {
         return 1;
     } 
-    _engine.run();
-
+    _ke.run();
     return 0;
 }

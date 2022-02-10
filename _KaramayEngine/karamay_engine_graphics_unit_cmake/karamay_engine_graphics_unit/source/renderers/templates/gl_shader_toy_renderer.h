@@ -5,7 +5,6 @@
 
 DEFINE_RENDERER_BEGIN(gl_shader_toy_renderer)
 
-
 	def_graphicsPipelineProgram(pp)
 	def_vertexShader()
 			}; decl_vertexShader();

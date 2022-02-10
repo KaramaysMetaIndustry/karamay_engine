@@ -1,5 +1,5 @@
-#ifndef _GL_COMPUTE_PIPELINE_H_
-#define _GL_COMPUTE_PIPELINE_H_
+#ifndef GL_COMPUTE_PIPELINE_H
+#define GL_COMPUTE_PIPELINE_H
 
 #include "base/gl_pipeline.h"
 

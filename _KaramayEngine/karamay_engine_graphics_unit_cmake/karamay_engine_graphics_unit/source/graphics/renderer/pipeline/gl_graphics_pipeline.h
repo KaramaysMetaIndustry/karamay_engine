@@ -1,5 +1,5 @@
-﻿#ifndef GRAPHICS_PIPELINE_H
-#define GRAPHICS_PIPELINE_H
+﻿#ifndef GL_GRAPHICS_PIPELINE_H
+#define GL_GRAPHICS_PIPELINE_H
 
 #include "base/gl_pipeline.h"
 #include "graphics/renderer/pipeline/base/resource/buffers/common_buffer/gl_element_array_buffer.h"

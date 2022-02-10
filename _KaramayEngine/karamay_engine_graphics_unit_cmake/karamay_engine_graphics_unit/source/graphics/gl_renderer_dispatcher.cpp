@@ -133,31 +133,34 @@ void gl_renderer_dispatcher::run() noexcept
     //std::cout << "GL_EXTENSIONS: " << glGetString(GL_EXTENSIONS) << std::endl;
 
     glewInit();
-    glViewport(0, 0, _window->get_framebuffer_width(), _window->get_framebuffer_height());
-
+    
+    // debug settings
 #ifdef _DEBUG
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(opengl::message_callback, 0);
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 #endif 
 
+    // glsl templates
     load_templates("/common.glsl");
     load_templates("/common.frag.glsl");
 
+    // load renderers
     gl_static_mesh_renderer* _sm_rd = new gl_static_mesh_renderer();
     //gl_single_fs_renderer* _sfs_rd = new gl_single_fs_renderer();
-    //gl_single_cs_renderer* _scs_rd = new gl_single_cs_renderer();
+    gl_single_cs_renderer* _scs_rd = new gl_single_cs_renderer();
     //gl_single_gp_renderer* _sgp_rd = new gl_single_gp_renderer();
     gl_shader_toy_renderer* _st_rd = new gl_shader_toy_renderer();
 
+    _renderers.push_back(_scs_rd); // cs
+    _renderers.push_back(_st_rd); // shadertoy
     //_renderers.push_back(_sm_rd);
-    //_renderers.push_back(_sfs_rd);
-    //_renderers.push_back(_scs_rd);
     //_renderers.push_back(_sgp_rd);
-    _renderers.push_back(_st_rd);
+    //_renderers.push_back(_sfs_rd);
 
     std::cout << "renderer dispatcher is running" << std::endl;
     std::vector<gl_renderer*> _standby_renderers;
+    // initialize all ready renderers
     for (auto _renderer : _renderers)
     {
         if (_renderer->initialize())
@@ -166,6 +169,9 @@ void gl_renderer_dispatcher::run() noexcept
         }
     }
 
+    glViewport(0, 0, _window->get_framebuffer_width(), _window->get_framebuffer_height());
+
+    // tick all renderers
     float _frame_delta_time = 0.0f;
     while (!_should_exit)
     {

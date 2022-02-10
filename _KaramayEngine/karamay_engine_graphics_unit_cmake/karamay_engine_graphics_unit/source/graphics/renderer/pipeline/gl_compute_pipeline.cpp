@@ -1,8 +1,9 @@
 #include "gl_compute_pipeline.h"
+#include "engine/karamay_engine.h"
 
 bool gl_compute_pipeline::load(const std::string& pipeline_dir) noexcept
 {
-    if (!_program->load(pipeline_dir))
+    if (!_program->load(karamay_engine::get_engine_root() + pipeline_dir))
     {
         return false;
     }
