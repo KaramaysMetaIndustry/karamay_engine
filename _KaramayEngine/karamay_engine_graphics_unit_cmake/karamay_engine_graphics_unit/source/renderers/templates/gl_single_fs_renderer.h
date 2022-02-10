@@ -71,7 +71,8 @@ DEFINE_RENDERER_BEGIN(gl_single_fs_renderer)
 		_acc_time += delta_time * 2;
 		glUniform1f(glGetUniformLocation(_pp->program().get_program_handle(), "iTime"), _acc_time);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
+		/*auto _fence = std::make_shared<gl_fence>();
+		_fence->client_wait(1);*/
 		_pp->disable();
 	}
 

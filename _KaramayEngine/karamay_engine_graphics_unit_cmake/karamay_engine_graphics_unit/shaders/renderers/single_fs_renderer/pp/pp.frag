@@ -150,24 +150,26 @@ mat3 camera(in vec3 ro, in vec3 rd, float rot)
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-	vec2 uv = fragCoord.xy / iResolution.xy;
-    uv = uv * 2.0 - 1.0;
-    uv.x *= iResolution.x / iResolution.y;
+    // screen uv
+	vec2 _uv = fragCoord.xy / iResolution.xy;
+    _uv = _uv * 2.0 - 1.0;
+    _uv.x *= iResolution.x / iResolution.y;
     
-    vec3 camPos = vec3(9., 6.5, 12.);
-    vec3 camDir = camPos + vec3(-.85, -.5, -1. );
-    mat3 cam = camera(camPos, camDir, 0.);
+    // camera mat
+    vec3 _cam_pos = vec3(9.0f, 6.5f, 12.0f);
+    vec3 _cam_dir = _cam_pos + vec3(-0.85f, -0.5f, -1.0f);
+    mat3 _cam = camera(_cam_pos, _cam_dir, 0.0f);
     
-    vec3 rayDir = cam * normalize( vec3(uv, 1. + sin(iTime*4.)*0.05) );
+    // initial ray dir
+    vec3 _ray_dir = _cam * normalize(vec3(_uv, 1.0f + sin(iTime * 4.0f) * 0.05f));
     
-    Ray ray;
-    ray.ro = camPos;
-    ray.rd = rayDir;
-    
-    vec4 col = render(ray);
-    col.xyz = pow(col.xyz, vec3(0.6));
-	fragColor = vec4(col.xyz, clamp(1.-col.w/MAXDIST, 0., 1.));
+    Ray _ray;
+    _ray.ro = _cam_pos;
+    _ray.rd = _ray_dir;
+    vec4 _color = render(_ray);
 
+    _color.xyz = pow(_color.xyz, vec3(0.6f));
+	fragColor = vec4(_color.xyz, clamp(1.0f - _color.w / MAXDIST, 0.0f, 1.0f));
 }
 
 out vec4 out_color;

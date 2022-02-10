@@ -3,7 +3,10 @@
 
 bool gl_graphics_pipeline::load(const std::string& pipeline_dir) noexcept
 {
-    if (!_program || !_program->load(karamay_engine::get_engine_root() + pipeline_dir)) return false;
+    if (!_program || !_program->load(karamay_engine::get_engine_root() + pipeline_dir))
+    {
+        return false;
+    }
 
     gl_vertex_launcher_descriptor _descriptor;
     // primitive mode
@@ -17,10 +20,13 @@ bool gl_graphics_pipeline::load(const std::string& pipeline_dir) noexcept
     // instance attributes
     //_allocate_instance_attributes(_descriptor.vertex_array_descriptor.instance_attribute_descriptors);
     auto _vl = new gl_vertex_launcher(_descriptor);
-
+    // feedback stream
+    auto _fb = new gl_feedback();
+    //default framebuffer or custom framebuffer
     auto _rt = new gl_render_target();
 
     _vertex_launcher.reset(_vl);
+    _feedback.reset(_fb);
     _render_target.reset(_rt);
     return true;
 }

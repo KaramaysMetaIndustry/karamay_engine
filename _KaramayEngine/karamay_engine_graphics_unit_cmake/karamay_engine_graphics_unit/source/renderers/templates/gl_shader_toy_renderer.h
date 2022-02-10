@@ -20,11 +20,11 @@ DEFINE_RENDERER_BEGIN(gl_shader_toy_renderer)
 
 		{
 			_pp->vertex_postprocessor.provoke_mode;
-			_pp->vertex_postprocessor.viewport.index = 1;
+			/*_pp->vertex_postprocessor.viewport.index = 1;
 			_pp->vertex_postprocessor.viewport.x = 0;
 			_pp->vertex_postprocessor.viewport.y = 0;
 			_pp->vertex_postprocessor.viewport.width = 0;
-			_pp->vertex_postprocessor.viewport.height = 0;
+			_pp->vertex_postprocessor.viewport.height = 0;*/
 			_pp->vertex_postprocessor.origin;
 			_pp->vertex_postprocessor.depth_mode;
 
@@ -36,7 +36,7 @@ DEFINE_RENDERER_BEGIN(gl_shader_toy_renderer)
 			_pp->rasterizer.enable_polygon_offset_fill = true;
 			_pp->rasterizer.cull_face.enable = false; // diable cull face
 
-			_pp->fragment_preprocessor.scissor_test.enable = true;
+			_pp->fragment_preprocessor.scissor_test.enable = false;
 			_pp->fragment_preprocessor.scissor_test.rectangle.x = 100;
 			_pp->fragment_preprocessor.scissor_test.rectangle.y = 100;
 			_pp->fragment_preprocessor.scissor_test.rectangle.width = 900;
