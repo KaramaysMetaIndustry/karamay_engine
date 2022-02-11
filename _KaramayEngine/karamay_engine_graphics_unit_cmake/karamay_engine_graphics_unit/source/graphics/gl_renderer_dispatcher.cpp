@@ -110,6 +110,8 @@ namespace opengl
     }
 }
 
+gl_renderer_dispatcher::static_block gl_renderer_dispatcher::_static_block;
+
 bool gl_renderer_dispatcher::initialize() noexcept
 {
     std::cout << "renderer dispatcher start to initialize." << std::endl;
@@ -122,7 +124,6 @@ bool gl_renderer_dispatcher::initialize() noexcept
 void gl_renderer_dispatcher::run() noexcept
 {
     // opengl context must be at the same thread space
-
     _window = new glfw_window();
     _window->load_context();
 
@@ -130,7 +131,6 @@ void gl_renderer_dispatcher::run() noexcept
     std::cout << "VERSION: " << glGetString(GL_VERSION) << std::endl;
     std::cout << "RENDERER: " << glGetString(GL_RENDERER) << std::endl;
     std::cout << "SHADING_LANGUAGE_VERSION: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
-    //std::cout << "GL_EXTENSIONS: " << glGetString(GL_EXTENSIONS) << std::endl;
 
     glewInit();
     
@@ -139,57 +139,52 @@ void gl_renderer_dispatcher::run() noexcept
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(opengl::message_callback, 0);
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-#endif 
+#endif
 
     // glsl templates
     load_templates("/common.glsl");
     load_templates("/common.frag.glsl");
 
-    // load renderers
-    gl_static_mesh_renderer* _sm_rd = new gl_static_mesh_renderer();
-    gl_single_fs_renderer* _sfs_rd = new gl_single_fs_renderer();
-    gl_single_cs_renderer* _scs_rd = new gl_single_cs_renderer();
-    gl_single_gp_renderer* _sgp_rd = new gl_single_gp_renderer();
-    gl_shader_toy_renderer* _st_rd = new gl_shader_toy_renderer();
+    // initialize context
 
-    //_renderers.push_back(_scs_rd); // cs
-    //_renderers.push_back(_st_rd); // shadertoy
-    //_renderers.push_back(_sm_rd);
-    //_renderers.push_back(_sgp_rd);
-    _renderers.push_back(_sfs_rd);
-
-    std::cout << "renderer dispatcher is running" << std::endl;
-    std::vector<gl_renderer*> _standby_renderers;
-    // initialize all ready renderers
-    for (auto _renderer : _renderers)
+    // initialize frameworks
+    for (const auto& _pair : _static_block.frameworks)
     {
-        if (_renderer->initialize())
+        auto _framework = _pair.second;
+        if (_framework)
         {
-            _standby_renderers.push_back(_renderer);
+            _framework->initialize();
         }
     }
 
     glViewport(0, 0, _window->get_framebuffer_width(), _window->get_framebuffer_height());
 
-    // tick all renderers
-    float _frame_delta_time = 0.0f;
+    // tick
+    double _delta_time = 0.0f;
     while (!_should_exit)
     {
-        auto _frame_start = std::chrono::steady_clock::now();
-        _window->tick(_frame_delta_time);
-        for (auto _standby_renderer : _standby_renderers)
+        auto _start_point = std::chrono::steady_clock::now();
+        // window tick
+        _window->tick(_delta_time);
+        // renderer frameworks tick
+        for (const auto& _name_to_framework : _static_block.frameworks)
         {
-            _standby_renderer->render(_frame_delta_time);
+            auto _framework = _name_to_framework.second;
+            if (_framework && _framework->is_active())
+            {
+                _framework->tick(_delta_time);
+            }
         }
-        auto _frame_end = std::chrono::steady_clock::now();
-        //_frame_delta_time = std::chrono::duration_cast<std::chrono::seconds>(_frame_end - _frame_start).count();
-        _frame_delta_time = 0.01f;
+        auto _end_point = std::chrono::steady_clock::now();
+        _delta_time = std::chrono::duration_cast<std::chrono::seconds>(_end_point - _start_point).count();
+        // make sure system normal
+        if(_delta_time < 0.01f) _delta_time = 0.01f;
     }
 
     std::cout << "renderer dispatcher has exited." << std::endl;
 }
 
-void gl_renderer_dispatcher::notify_to_exit()
+void gl_renderer_dispatcher::notify_to_exit() noexcept
 {
     _should_exit = true;
 }
@@ -212,6 +207,5 @@ void gl_renderer_dispatcher::load_templates(const std::string& include_token)
         std::cout << "Exception: [ " << e.what() << " ]" << std::endl;
     }
     
-    glNamedStringARB(GL_SHADER_INCLUDE_ARB, 
-        include_token.size(), include_token.c_str(), content.size(), content.c_str());
+    glNamedStringARB(GL_SHADER_INCLUDE_ARB, include_token.size(), include_token.c_str(), content.size(), content.c_str());
 }

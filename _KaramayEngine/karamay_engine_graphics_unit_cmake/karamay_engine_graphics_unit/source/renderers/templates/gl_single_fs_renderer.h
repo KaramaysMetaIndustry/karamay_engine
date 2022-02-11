@@ -21,10 +21,6 @@ DEFINE_RENDERER_BEGIN(gl_single_fs_renderer)
 		}
 
 		{
-			_pp->vertex_postprocessor.provoke_mode;
-			_pp->vertex_postprocessor.origin;
-			_pp->vertex_postprocessor.depth_mode;
-
 			_pp->rasterizer.enable_multisample = true;
 			_pp->rasterizer.enable_sample_shading = true;
 			_pp->rasterizer.sample_shading_rate = 1.1f;
@@ -33,7 +29,6 @@ DEFINE_RENDERER_BEGIN(gl_single_fs_renderer)
 			_pp->rasterizer.enable_polygon_offset_fill = true;
 			_pp->rasterizer.cull_face.enable = false; //  disable cull face
 
-			// ²Ã¼ô²âÊÔ
 			_pp->fragment_preprocessor.scissor_test.enable = false;
 			_pp->fragment_preprocessor.scissor_test.rectangle.x = 100;
 			_pp->fragment_preprocessor.scissor_test.rectangle.y = 100;
@@ -60,10 +55,7 @@ DEFINE_RENDERER_BEGIN(gl_single_fs_renderer)
 
 	IMPLEMENTATION_FUNC_RENDER()
 	{
-		//default_framebuffer->set_color_cache(0.0f, 1.0f, 0.0f, 1.0f);
-		default_framebuffer->switch_draw_buffer(gl_default_framebuffer_draw_buffer::LEFT);
-		default_framebuffer->clear_color_buffer();
-
+		default_framebuffer->switch_draw_buffer(gl_default_framebuffer_draw_buffer::FRONT_RIGHT);
 		_pp->enable();
 		_acc_time += delta_time * 2;
 		glUniform1f(glGetUniformLocation(_pp->program().get_program_handle(), "iTime"), _acc_time);

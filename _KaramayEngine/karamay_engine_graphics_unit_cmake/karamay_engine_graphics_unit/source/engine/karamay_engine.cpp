@@ -1,5 +1,6 @@
 #include "karamay_engine.h"
-#include "clipp/clipp.h"
+#include "framework/meta_framework/avatar.h"
+#include "framework/meta_framework/entity_prosthesis.h"
 
 std::string karamay_engine::_engine_root_dir;
 
@@ -67,10 +68,26 @@ void karamay_engine::run() noexcept
 		}
 	);*/
 
-	uint64 _count = 0;
+	auto _entity = new entity_prosthesis();
+	auto _actor = new avatar();
+	_actor->wake();
+	_actor->attach_prothesis(_entity);
+
+	std::vector<avatar*> _avatars;
+	_avatars.push_back(_actor);
+
+	float _delta_time = 0.0f;
 	while (!_should_exit)
 	{
-		_count++;
+		auto _start_point = std::chrono::steady_clock::now();
+		
+		for (auto _avatar : _avatars)
+		{
+			if(_avatar) _avatar->heartbeat(_delta_time);
+		}
+
+		auto _end_point = std::chrono::steady_clock::now();
+		_delta_time = std::chrono::duration_cast<std::chrono::seconds>(_end_point - _start_point).count();
 	}
 
 	// notify to exit

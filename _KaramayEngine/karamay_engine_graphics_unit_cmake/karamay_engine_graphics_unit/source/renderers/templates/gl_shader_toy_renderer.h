@@ -18,15 +18,6 @@ DEFINE_RENDERER_BEGIN(gl_shader_toy_renderer)
 		if (!_pp->load("shaders\\renderers\\shader_toy_renderer\\pp")) return false;
 
 		{
-			_pp->vertex_postprocessor.provoke_mode;
-			/*_pp->vertex_postprocessor.viewport.index = 1;
-			_pp->vertex_postprocessor.viewport.x = 0;
-			_pp->vertex_postprocessor.viewport.y = 0;
-			_pp->vertex_postprocessor.viewport.width = 0;
-			_pp->vertex_postprocessor.viewport.height = 0;*/
-			_pp->vertex_postprocessor.origin;
-			_pp->vertex_postprocessor.depth_mode;
-
 			_pp->rasterizer.enable_multisample = true;
 			_pp->rasterizer.enable_sample_shading = true;
 			_pp->rasterizer.sample_shading_rate = 1.1f;
@@ -61,9 +52,7 @@ DEFINE_RENDERER_BEGIN(gl_shader_toy_renderer)
 
 	IMPLEMENTATION_FUNC_RENDER()
 	{
-		//default_framebuffer->set_color_cache(0.0f + delta_time, 1.0f, 0.0f, 1.0f);
 		default_framebuffer->switch_draw_buffer(gl_default_framebuffer_draw_buffer::LEFT);
-		default_framebuffer->clear_color_buffer();
 #ifdef _DEBUG
 		if (!_pp) throw std::exception("mesh pipeline must not be null");
 #endif
@@ -71,7 +60,6 @@ DEFINE_RENDERER_BEGIN(gl_shader_toy_renderer)
 		_acc_time += delta_time * 2;
 		glUniform1f(glGetUniformLocation(_pp->program().get_program_handle(), "iTime"), _acc_time);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
 		_pp->disable();
 	}
 
