@@ -4,9 +4,6 @@
 #pragma STDGL invariant(all)
 #pragma optimize(on)
 #pragma debug(on)
-#include "/common.glsl" //! #include "../../../templates/common.glsl"
-#include "/common.frag.glsl" //! #include "../../../templates/common.frag.glsl"
-
 
 uniform vec3 iResolution = vec3(1024, 1024, 1); // viewport resolution (in pixels)
 uniform float iTime = 1.5; // shader playback time (in seconds)
@@ -176,7 +173,6 @@ out vec4 out_color;
 
 void main()
 {
-	out_color = vec4(1.0f, 0.0f, 1.0f, 1.0f);
-
+	//out_color = vec4(1.0f, 0.0f, 1.0f, 1.0f);
     mainImage(out_color, gl_FragCoord.xy);
 }

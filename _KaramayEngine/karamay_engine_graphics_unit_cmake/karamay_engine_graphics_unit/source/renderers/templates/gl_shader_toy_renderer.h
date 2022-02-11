@@ -33,7 +33,7 @@ DEFINE_RENDERER_BEGIN(gl_shader_toy_renderer)
 			_pp->rasterizer.enable_line_smooth = true;
 			_pp->rasterizer.enable_polygon_smooth = true;
 			_pp->rasterizer.enable_polygon_offset_fill = true;
-			_pp->rasterizer.cull_face.enable = false; // diable cull face
+			_pp->rasterizer.cull_face.enable = false; // disable cull face
 
 			_pp->fragment_preprocessor.scissor_test.enable = false;
 			_pp->fragment_preprocessor.scissor_test.rectangle.x = 100;
@@ -56,6 +56,7 @@ DEFINE_RENDERER_BEGIN(gl_shader_toy_renderer)
 		}
 
 		_pp->render_target().set_default();
+		return true;
 	}
 
 	IMPLEMENTATION_FUNC_RENDER()
@@ -79,7 +80,7 @@ private:
 
 	float _acc_time = 0.0f;
 
-	DEFINE_RENDERER_END
+DEFINE_RENDERER_END
 
 
 #endif

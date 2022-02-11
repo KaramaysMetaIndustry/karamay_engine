@@ -35,34 +35,28 @@ void karamay_engine::run() noexcept
 {
 	std::cout << "karamay engine is running." << std::endl;
 
-	auto _tex_1d_array = std::make_shared<gl_texture_1d_array>();
-	_tex_1d_array->build_mipmaps();
-	_tex_1d_array->fetch(0, 0, 0, 1024, gl_texture_pixel_format::BGR, gl_texture_pixel_type::FLOAT, 32, nullptr);
-	_tex_1d_array->fill(0, 0, 512, 512, gl_texture_pixel_format::BGR, gl_texture_pixel_type::FLOAT, nullptr);
-	_tex_1d_array->set_border_color(glm::vec4(0.1f));
-
 	// renderer dispatcher thread
-	_renderer_dispatcher_thread = std::thread([&]() {
+	_renderer_dispatcher_thread = std::move(std::thread([&]() {
 		_renderer_dispatcher->run(); 
 		}
-	);
+	));
 	// network dispatcher thread
-	_network_dispatcher_thread = std::thread([&]() { 
+	_network_dispatcher_thread = std::move(std::thread([&]() { 
 		_network_dispatcher->run(); 
 		}
-	);
+	));
 	// lvm thread
-	_lvm_thread = std::thread([&]() {
+	_lvm_thread = std::move(std::thread([&]() {
 		_lvm->run(); 
 		}
-	);
+	));
 	// pvm thread
-	_pvm_thread = std::thread([&]() { 
+	_pvm_thread = std::move(std::thread([&]() { 
 		_pvm->run(); 
 		}
-	);
+	));
 
-	std::thread _commandlet([&]() {
+	/*std::thread _commandlet([&]() {
 		std::string _com;
 		while (true)
 		{
@@ -71,7 +65,7 @@ void karamay_engine::run() noexcept
 			std::cout << "command {" << _com << "} done." << std::endl;
 		}
 		}
-	);
+	);*/
 
 	uint64 _count = 0;
 	while (!_should_exit)

@@ -4,6 +4,7 @@
 #include "commandlet/karamray_engine_commandlet.h"
 #include "filesystem/karamay_engine_filesystem.h"
 #include "log/karamay_engine_log.h"
+#include "commandlet/karamray_engine_commandlet.h"
 #include "embedded/lua/lvm.h"
 #include "embedded/lua/lvm_graphics_module.h"
 #include "embedded/python/pvm.h"

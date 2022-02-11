@@ -35,6 +35,7 @@ public:
         {
             return _implementation_build();
         }
+        return true;
     }
 
     void render(float delta_time) noexcept

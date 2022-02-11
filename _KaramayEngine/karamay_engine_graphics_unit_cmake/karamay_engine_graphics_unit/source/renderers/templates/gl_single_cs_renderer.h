@@ -17,7 +17,6 @@ DEFINE_RENDERER_BEGIN(gl_single_cs_renderer)
 		{
 			return false;
 		}
-
 		return true;
 	}
 
