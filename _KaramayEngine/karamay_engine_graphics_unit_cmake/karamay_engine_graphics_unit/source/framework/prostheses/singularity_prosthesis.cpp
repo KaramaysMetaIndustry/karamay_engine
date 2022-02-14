@@ -1,7 +1,7 @@
 #include "singularity_prosthesis.h"
 
-singularity_prosthesis::singularity_prosthesis(avatar* owner) :
-	prosthesis(owner)
+singularity_prosthesis::singularity_prosthesis(avatar* owner, const std::string_view& name) :
+	prosthesis(owner, name)
 {
 }
 

@@ -1,18 +1,20 @@
 #ifndef AVATAR_H
 #define AVATAR_H
-#include "public/stl.h"
+#include "framework/prostheses/prosthesis.h"
+#include "framework/prostheses/singularity_prosthesis.h"
+#include "framework/prostheses/entity_prosthesis.h"
 
 class world;
-class prosthesis;
-class entity_prosthesis;
-class singularity_prosthesis;
+
+struct transform
+{
+};
 
 class avatar
 {
 public:
-
-	avatar(world* owner);
-
+	avatar() = delete;
+	avatar(world* owner, const std::string_view& name);
 	avatar(const avatar&) = delete;
 	avatar& operator=(const avatar&) = delete;
 
@@ -20,16 +22,24 @@ public:
 
 private:
 
+	// the invoked ptr keeper's lifesycle must <= the instance pointed by invoked ptr's lifesycle
 	world* _owner = nullptr;
+	
+	// the unique name in the world
+	std::string_view _name = {};
 
 public:
 
+	// invoke the owner  : world
 	world* owner() const noexcept { return _owner; }
+
+	// invoke the unique name
+	const std::string_view& name() const noexcept { return _name; }
 
 private:
 
 	// keep ownership of prosthesis
-	std::unordered_map<std::string, std::unique_ptr<prosthesis>> _name_to_prosthesis_map = {};
+	std::unordered_map<std::string_view, std::unique_ptr<prosthesis>> _name_to_prosthesis_map = {};
 	
 	// singularity sequence
 	std::vector<singularity_prosthesis*> _singularities = {};
@@ -39,31 +49,23 @@ private:
 	// entity root
 	entity_prosthesis* _entity_root = nullptr;
 
-protected:
-
-	void _register_entity_prostheses();
-
-	void _unregister_entity_prostheses();
-
-	void _recycle_prostheses();
-
 public:
 
-	//template<class singularity_prosthesis_t>
-	//singularity_prosthesis_t* create_singularity(const std::string& name) noexcept
-	//{
-	//	if (_name_to_prosthesis_map.find(name) == _name_to_prosthesis_map.cend())
-	//	{
-	//		std::cerr << "name exists" << std::endl;
-	//		return nullptr;
-	//	}
+	template<class singularity_prosthesis_t>
+	singularity_prosthesis_t* create_singularity(const std::string_view& name) noexcept
+	{
+		if (_name_to_prosthesis_map.find(name) == _name_to_prosthesis_map.cend())
+		{
+			std::cerr << "name exists" << std::endl;
+			return nullptr;
+		}
 
-	//	auto _prosthesis = std::make_unique<singularity_prosthesis_t>(this);
-	//	auto _raw_prosthesis = _prosthesis.get();
-	//	_name_to_prosthesis_map.emplace(name, std::move(_prosthesis));
-	//	_singularities.push_back(_raw_prosthesis);
-	//	return _raw_prosthesis;
-	//}
+		auto _prosthesis = std::make_unique<singularity_prosthesis_t>(this);
+		auto _raw_prosthesis = _prosthesis.get();
+		_name_to_prosthesis_map.emplace(name, std::move(_prosthesis));
+		_singularities.push_back(_raw_prosthesis);
+		return _raw_prosthesis;
+	}
 
 	//template<class entity_prosthesis_t>
 	//entity_prosthesis_t* create_entity(const std::string& name, uint64 parent_index = std::numeric_limits<uint64> ::max()) noexcept
@@ -97,34 +99,60 @@ public:
 	//	return _raw_entity;
 	//}
 
-
-	void destroy_entity(uint64 index) noexcept;
-
-	void destroy_singularity(uint64 index) noexcept;
-
-
-	// invoke prosthesis
-	prosthesis* invoke(const std::string& name) const noexcept;
+	// invoke prosthesis by [unique name]
+	prosthesis* invoke(const std::string_view& name) const noexcept;
 
 	// invoke all prostheses
-	void invoke_all(std::vector<prosthesis*>& out) const noexcept;
+	// promise sequence :singularities ->  entities
+	void invoke_all(std::vector<prosthesis*>& out_prostheses) const noexcept;
 
 
-	// invoke singularity by index
+	// invoke singularity prosthesis by index
 	singularity_prosthesis* invoke_singularity(uint64 index) const noexcept;
 
-	// invoke all singularities
+	// invoke all singularity prostheses
+	// promise sequence : creation sequence
 	void invoke_singularities_all(std::vector<singularity_prosthesis*>& out_singularities) const noexcept;
 
 
-	// invoke entity root
-	entity_prosthesis* invoke_entity_root() const noexcept;
-
-	// invoke entity by index
+	// invoke entity prosthesis by index
 	entity_prosthesis* invoke_entity(uint64 index) const noexcept;
 
-	// invoke all entities
+	// invoke all entity prostheses
+	// promise sequence : creation sequence
 	void invoke_entities_all(std::vector<entity_prosthesis*>& out_entities) const noexcept;
+
+	// invoke entity root
+	// when you create an entity prosthesis for avatar, it will be 
+	entity_prosthesis* invoke_entity_root() const noexcept;
+
+	// make an entity prosthesis to dispace the old root, if do not have root, return 
+	// if old_root_recipient is nullptr, the old root will be destroy otherwise it will be attach to the recipient
+	void displace_entity_root(entity_prosthesis* invoked_insurgent, entity_prosthesis* invoked_old_root_recipient = nullptr) noexcept;
+
+
+	// destroy prosthesis by name
+	void destroy(const std::string_view& prosthesis_name) noexcept;
+
+	// destroy entity prosthesis by index
+	void destroy_entity(uint64 index) noexcept;
+
+	// destroy entiy prosthesis by ptr
+	void destroy_entity(entity_prosthesis* entity) noexcept;
+
+	// destroy singularity prosthesis by index
+	void destroy_singularity(uint64 index) noexcept;
+
+	// destroy singularity prosthesis by ptr
+	void destroy_singularity(singularity_prosthesis* singularity) noexcept;
+
+public:
+
+	uint64 num_of_prostheses() const noexcept { return _name_to_prosthesis_map.size(); }
+
+	uint64 num_of_entities() const noexcept { return _entities.size(); }
+
+	uint64 num_of_singularities() const noexcept { return _singularities.size(); }
 
 public:
 

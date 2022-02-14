@@ -6,7 +6,7 @@ class mesh_prosthesis : public entity_prosthesis
 {
 public:
 
-	mesh_prosthesis(avatar* owner) : entity_prosthesis(owner) {}
+	mesh_prosthesis(avatar* owner, const std::string_view& name) : entity_prosthesis(owner, name) {}
 	mesh_prosthesis(const mesh_prosthesis&) = delete;
 	mesh_prosthesis& operator=(const mesh_prosthesis&) = delete;
 

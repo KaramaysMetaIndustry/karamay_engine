@@ -1,7 +1,7 @@
 #include "prosthesis.h"
 
-prosthesis::prosthesis(avatar* owner) :
-	_owner(owner)
+prosthesis::prosthesis(avatar* owner, const std::string_view& name) :
+	_owner(owner), _name(name)
 {
 }
 

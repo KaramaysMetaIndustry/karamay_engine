@@ -8,8 +8,10 @@ class avatar;
 class prosthesis
 {
 public:
-
-	prosthesis(avatar* owner);
+	prosthesis() = delete;
+	prosthesis(avatar* owner, const std::string_view& name);
+	prosthesis(const prosthesis&) = delete;
+	prosthesis& operator=(const prosthesis&) = delete;
 	
 	virtual ~prosthesis() = default;
 
@@ -18,6 +20,8 @@ private:
 	avatar* _owner = nullptr;
 
 	prosthesis* _parent = nullptr;
+
+	std::string_view _name = {};
 
 	std::vector<prosthesis*> _children = {};
 
@@ -30,9 +34,6 @@ public:
 	virtual void drive(float delta_time);
 
 	virtual void hibernate();
-
-public:
-
 
 };
 

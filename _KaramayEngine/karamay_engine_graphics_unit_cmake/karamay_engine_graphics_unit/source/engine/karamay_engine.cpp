@@ -71,7 +71,15 @@ void karamay_engine::run() noexcept
 	);*/
 
 	auto _world = new world();
+	auto _avatar0 = _world->create<avatar>("avatar0");
+	std::vector<avatar*> _avatars;
+	_world->invoke_avatars_all(_avatars);
+	for (auto _avatar : _avatars)
+	{
+		_avatar = nullptr;
+	}
 
+	 
 
 	float _delta_time = 0.0f;
 	while (!_should_exit)
