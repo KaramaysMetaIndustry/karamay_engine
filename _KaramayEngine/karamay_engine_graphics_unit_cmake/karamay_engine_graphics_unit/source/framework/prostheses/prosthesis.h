@@ -9,13 +9,19 @@ class prosthesis
 {
 public:
 
-	prosthesis() = default;
-
+	prosthesis(avatar* owner);
+	
 	virtual ~prosthesis() = default;
 
-public:
+private:
 
-	std::weak_ptr<avatar> owner;
+	avatar* _owner = nullptr;
+
+	prosthesis* _parent = nullptr;
+
+	std::vector<prosthesis*> _children = {};
+
+	bool _is_awake = false;
 
 public:
 

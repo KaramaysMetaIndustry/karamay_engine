@@ -2,6 +2,7 @@
 #include "framework/world/world.h"
 #include "framework/avatars/avatar.h"
 #include "framework/prostheses/entity_prosthesis.h"
+#include "framework/prostheses/singularity_prosthesis.h"
 
 std::string karamay_engine::_engine_root_dir;
 
@@ -69,16 +70,14 @@ void karamay_engine::run() noexcept
 		}
 	);*/
 
-	auto _instance_world = new world();
-	auto _avatar = new avatar();
-	auto _entity = new entity_prosthesis();
-	_avatar->attach(_entity);
+	auto _world = new world();
+
 
 	float _delta_time = 0.0f;
 	while (!_should_exit)
 	{
 		auto _start_point = std::chrono::steady_clock::now();
-		_instance_world->tick(_delta_time);
+		_world->tick(_delta_time);
 		auto _end_point = std::chrono::steady_clock::now();
 		_delta_time = std::chrono::duration_cast<std::chrono::seconds>(_end_point - _start_point).count();
 	}
