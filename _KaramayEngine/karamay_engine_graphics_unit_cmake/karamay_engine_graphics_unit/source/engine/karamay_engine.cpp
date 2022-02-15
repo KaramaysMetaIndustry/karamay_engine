@@ -44,7 +44,7 @@ void karamay_engine::run() noexcept
 		}
 	));
 	// network dispatcher thread
-	_network_dispatcher_thread = std::move(std::thread([&]() { 
+	_network_dispatcher_thread = std::move(std::thread([&]() {
 		_network_dispatcher->run(); 
 		}
 	));
@@ -59,7 +59,7 @@ void karamay_engine::run() noexcept
 		}
 	));
 
-	/*std::thread _commandlet([&]() {
+	std::thread _commandlet([&]() {
 		std::string _com;
 		while (true)
 		{
@@ -68,18 +68,12 @@ void karamay_engine::run() noexcept
 			std::cout << "command {" << _com << "} done." << std::endl;
 		}
 		}
-	);*/
+	);
 
-	auto _world = new world();
+	auto _world = std::make_unique<world>();
 	auto _avatar0 = _world->create<avatar>("avatar0");
 	std::vector<avatar*> _avatars;
 	_world->invoke_avatars_all(_avatars);
-	for (auto _avatar : _avatars)
-	{
-		_avatar = nullptr;
-	}
-
-	 
 
 	float _delta_time = 0.0f;
 	while (!_should_exit)

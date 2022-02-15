@@ -1,14 +1,8 @@
 #ifndef AVATAR_H
 #define AVATAR_H
-#include "framework/prostheses/prosthesis.h"
+#include "framework/world/world.h"
 #include "framework/prostheses/singularity_prosthesis.h"
 #include "framework/prostheses/entity_prosthesis.h"
-
-class world;
-
-struct transform
-{
-};
 
 class avatar
 {
@@ -22,8 +16,8 @@ public:
 
 private:
 
-	// the invoked ptr keeper's lifesycle must <= the instance pointed by invoked ptr's lifesycle
-	world* _owner = nullptr;
+	// for invoked ptr, the keeper's lifesycle must <= the invoked ptr's instance's lifesycle
+	world* _invoked_owner = nullptr;
 	
 	// the unique name in the world
 	std::string_view _name = {};
@@ -31,7 +25,7 @@ private:
 public:
 
 	// invoke the owner  : world
-	world* owner() const noexcept { return _owner; }
+	world* owner() const noexcept { return _invoked_owner; }
 
 	// invoke the unique name
 	const std::string_view& name() const noexcept { return _name; }
@@ -54,12 +48,12 @@ public:
 	template<class singularity_prosthesis_t>
 	singularity_prosthesis_t* create_singularity(const std::string_view& name) noexcept
 	{
-		if (_name_to_prosthesis_map.find(name) == _name_to_prosthesis_map.cend())
+		if (_name_to_prosthesis_map.find(name) != _name_to_prosthesis_map.cend())
 		{
 			std::cerr << "name exists" << std::endl;
 			return nullptr;
 		}
-
+		// create the unique ptr and return the invoked ptr
 		auto _prosthesis = std::make_unique<singularity_prosthesis_t>(this);
 		auto _raw_prosthesis = _prosthesis.get();
 		_name_to_prosthesis_map.emplace(name, std::move(_prosthesis));
@@ -67,37 +61,40 @@ public:
 		return _raw_prosthesis;
 	}
 
-	//template<class entity_prosthesis_t>
-	//entity_prosthesis_t* create_entity(const std::string& name, uint64 parent_index = std::numeric_limits<uint64> ::max()) noexcept
-	//{
-	//	if (_name_to_prosthesis_map.find(name) == _name_to_prosthesis_map.cend())
-	//	{
-	//		std::cerr << "name exists" << std::endl;
-	//		return nullptr;
-	//	}
+	template<class entity_prosthesis_t>
+	entity_prosthesis_t* create_entity(const std::string_view& name, uint64 parent_index = std::numeric_limits<uint64> ::max()) noexcept
+	{
+		if (_name_to_prosthesis_map.find(name) != _name_to_prosthesis_map.cend())
+		{
+			std::cerr << "name exists" << std::endl;
+			return nullptr;
+		}
 
-	//	if (parent_index >= _entities.size() && 
-	//		parent_index != std::numeric_limits<uint64> ::max())
-	//	{
-	//		return nullptr;
-	//	}
+		if (parent_index >= _entities.size() && 
+			parent_index != std::numeric_limits<uint64> ::max())
+		{
+			std::cerr << "parent index must does not exist" << std::endl;
+			return nullptr;
+		}
 
-	//	auto _entity = std::make_unique<entity_prosthesis_t>(this);
-	//	auto _raw_entity = _entity.get();
-	//	_name_to_prosthesis_map.emplace(name, std::move(_entity));
-	//	_entities.push_back(_raw_entity);
+		auto _entity = std::make_unique<entity_prosthesis_t>(this);
+		auto _raw_entity = _entity.get();
+		_name_to_prosthesis_map.emplace(name, std::move(_entity));
+		_entities.push_back(_raw_entity);
 
-	//	// root index
-	//	if (parent_index == std::numeric_limits<uint64> ::max())
-	//	{
+		// root index
+		if (parent_index == std::numeric_limits<uint64> ::max())
+		{
 
-	//	}
+		}
 
-	//	auto _parent_entity = _entities[parent_index];
-	//	_parent_entity->collect(_raw_entity);
-	//	_raw_entity->attch_to(_parent_entity);
-	//	return _raw_entity;
-	//}
+		auto _parent_entity = _entities[parent_index];
+		_parent_entity->collect(_raw_entity);
+		_raw_entity->attch_to(_parent_entity);
+		return _raw_entity;
+	}
+
+public:
 
 	// invoke prosthesis by [unique name]
 	prosthesis* invoke(const std::string_view& name) const noexcept;
@@ -126,10 +123,13 @@ public:
 	// when you create an entity prosthesis for avatar, it will be 
 	entity_prosthesis* invoke_entity_root() const noexcept;
 
-	// make an entity prosthesis to dispace the old root, if do not have root, return 
+public:
+
+	// make an entity prosthesis to dispace the old root, if do not have root, return;
 	// if old_root_recipient is nullptr, the old root will be destroy otherwise it will be attach to the recipient
 	void displace_entity_root(entity_prosthesis* invoked_insurgent, entity_prosthesis* invoked_old_root_recipient = nullptr) noexcept;
 
+public:
 
 	// destroy prosthesis by name
 	void destroy(const std::string_view& prosthesis_name) noexcept;

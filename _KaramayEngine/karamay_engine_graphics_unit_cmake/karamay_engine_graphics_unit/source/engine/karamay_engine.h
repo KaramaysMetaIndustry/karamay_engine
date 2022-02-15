@@ -21,12 +21,6 @@ public:
 
 	~karamay_engine() = default;
 
-public:
-
-	bool initialize() noexcept;
-
-	void run() noexcept;
-
 private:
 
 	std::atomic_bool _should_exit = false;
@@ -49,12 +43,18 @@ private:
 
 public:
 
-	static void set_engine_root(const std::string& engine_root)
+	bool initialize() noexcept;
+
+	void run() noexcept;
+
+public:
+
+	static void set_engine_root(const std::string& engine_root) noexcept
 	{
 		_engine_root_dir = engine_root;
 	}
 
-	static const std::string& get_engine_root() { return _engine_root_dir; }
+	static const std::string& get_engine_root() noexcept { return _engine_root_dir; }
 
 private:
 

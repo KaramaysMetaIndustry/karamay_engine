@@ -28,6 +28,8 @@ avatar* world::invoke_avatar(uint64 index) const noexcept
 
 void world::invoke_avatars_all(std::vector<avatar*>& out_avatars) noexcept
 {
+	out_avatars.reserve(_avatars.size());
+	out_avatars.insert(out_avatars.cend(), _avatars.cbegin(), _avatars.cend());
 }
 
 void world::destroy(const std::string& name) noexcept
