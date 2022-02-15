@@ -1,5 +1,6 @@
 #ifndef AVATAR_H
 #define AVATAR_H
+#include "public/glm.h"
 #include "framework/world/world.h"
 #include "framework/prostheses/singularity_prosthesis.h"
 #include "framework/prostheses/entity_prosthesis.h"

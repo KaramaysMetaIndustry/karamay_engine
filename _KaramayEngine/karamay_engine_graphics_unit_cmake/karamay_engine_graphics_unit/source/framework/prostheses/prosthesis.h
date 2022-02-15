@@ -17,15 +17,11 @@ public:
 
 private:
 
-	avatar* _owner = nullptr;
-
-	prosthesis* _parent = nullptr;
-
 	std::string_view _name = {};
 
-	std::vector<prosthesis*> _children = {};
-
 	bool _is_awake = false;
+
+	avatar *_invoked_owner = nullptr;
 
 public:
 

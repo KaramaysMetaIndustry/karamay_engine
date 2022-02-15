@@ -1,9 +1,15 @@
 #version 460 core
-#extension GL_ARB_bindless_texture : require
-#extension GL_ARB_shading_language_include : require
 #pragma STDGL invariant(all)
 #pragma optimize(on)
 #pragma debug(on)
+
+// warn, disable
+//#extension all : disable
+
+// require, enable, warn, disable, 
+#extension GL_ARB_bindless_texture : require
+#extension GL_ARB_shading_language_include : require
+
 
 uniform vec3 iResolution = vec3(1024, 1024, 1); // viewport resolution (in pixels)
 uniform float iTime = 1.5; // shader playback time (in seconds)

@@ -21,14 +21,13 @@ public:
 
 private:
 
-	entity_prosthesis* _parent = nullptr;
+	entity_prosthesis* _invoked_parent = nullptr;
 
-	std::vector<entity_prosthesis*> _children = {};
+	std::vector<entity_prosthesis*> _invoked_children = {};
 
 public:
 
 	void attach_to(entity_prosthesis* parent_entity) noexcept;
-
 
 	void collect(entity_prosthesis* entity) noexcept;
 
