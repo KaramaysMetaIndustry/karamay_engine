@@ -8,10 +8,10 @@ void world::initialize()
 
 void world::tick(float delta_time)
 {
-	std::cout << "world tick" << std::endl;
+	//std::cout << "world tick" << std::endl;
 	for (const auto& _avatar : _avatars)
 	{
-		if (_avatar) _avatar->heartbeat(delta_time);
+		_avatar->heartbeat(delta_time);
 	}
 }
 

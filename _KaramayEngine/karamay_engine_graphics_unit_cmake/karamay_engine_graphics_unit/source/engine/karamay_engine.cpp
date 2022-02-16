@@ -71,7 +71,11 @@ void karamay_engine::run() noexcept
 	);
 
 	auto _world = std::make_unique<world>();
-	auto _avatar0 = _world->create<avatar>("avatar0");
+	
+	for (uint64 _index = 0; _index < 1000000; ++_index)
+	{
+		_world->create<avatar>(std::format("{}", _index));
+	}
 	std::vector<avatar*> _avatars;
 	_world->invoke_avatars_all(_avatars);
 
