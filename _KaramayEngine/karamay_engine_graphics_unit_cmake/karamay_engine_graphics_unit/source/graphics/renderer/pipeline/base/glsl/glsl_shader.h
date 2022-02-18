@@ -101,7 +101,7 @@ public:
 
 	bool load(const std::string& pipeline_dir) override
 	{
-		_shader = new gl_shader(gl_shader_type::COMPUTE_SHADER, pipeline_dir + "/"+ pipeline_dir.substr(pipeline_dir.find_last_of("/") + 1) + ".comp");
+		_shader = new gl_shader(gl_shader_type::COMPUTE_SHADER, pipeline_dir + "/"+ pipeline_dir.substr(pipeline_dir.find_last_of("\\") + 1) + ".comp");
 		return false;
 	}
 
@@ -276,6 +276,7 @@ protected:
 };
 
 
+// only supported by NV Turing GPU
 // .task
 class glsl_task_shader : public glsl_shader
 {
@@ -331,22 +332,23 @@ public:
 	}
 }; 
 
-//
-//// .rgen  Ray Generation shader
-//class glsl_ray_generation_shader final{};
-//
-//// .rchit Closest Hit Shader
-//class glsl_closest_hit_shader final {};
-//
-//// .rmiss Miss Shader
-//class glsl_miss_shader final {};
-//
-//// .rint Intersection Shader
-//class glsl_intersection_shader final {};
-//
-//// .rahit  Any Hit shader
-//class glsl_any_hit_shader final {};
-//
-//// .rcall 
+
+// only for Vulkan
+// .rgen  Ray Generation shader
+class glsl_ray_generation_shader final{};
+
+// .rchit Closest Hit Shader
+class glsl_closest_hit_shader final {};
+
+// .rmiss Miss Shader
+class glsl_miss_shader final {};
+
+// .rint Intersection Shader
+class glsl_intersection_shader final {};
+
+// .rahit  Any Hit shader
+class glsl_any_hit_shader final {};
+
+// .rcall 
 
 #endif

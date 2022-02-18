@@ -1,14 +1,18 @@
-#ifndef _GL_COMPUTE_PIPELINE_H_
-#define _GL_COMPUTE_PIPELINE_H_
+#ifndef GL_COMPUTE_PIPELINE_H
+#define GL_COMPUTE_PIPELINE_H
 
 #include "base/gl_pipeline.h"
 
+/*
+* compute pipeline only need a compute shader to link program
+* 
+*/
 class gl_compute_pipeline final : public gl_pipeline
 {
 public:
-    gl_compute_pipeline(glsl_compute_pipeline_program* compute_pipeline_program)
+    gl_compute_pipeline(glsl_compute_pipeline_program* program)
     {
-        _program.reset(compute_pipeline_program);
+        _program.reset(program);
     }
 
 	gl_compute_pipeline(const gl_compute_pipeline&) = delete;
@@ -18,22 +22,11 @@ public:
 
 public:
 
-    bool load(const std::string& pipeline_dir) noexcept override
-    {
-        if (!_program->load(pipeline_dir)) return false;
+    bool load(const std::string& pipeline_dir) noexcept override;
 
-        return true;
-    }
+    void enable() noexcept override;
 
-    void enable() noexcept override
-    {
-        _program->enable();
-    }
-
-    void disable() noexcept override
-    {
-        _program->disable();
-    }
+    void disable() noexcept override;
 
 private:
 

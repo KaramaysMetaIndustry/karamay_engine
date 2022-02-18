@@ -1,5 +1,5 @@
-﻿#ifndef GRAPHICS_PIPELINE_H
-#define GRAPHICS_PIPELINE_H
+﻿#ifndef GL_GRAPHICS_PIPELINE_H
+#define GL_GRAPHICS_PIPELINE_H
 
 #include "base/gl_pipeline.h"
 #include "graphics/renderer/pipeline/base/resource/buffers/common_buffer/gl_element_array_buffer.h"
@@ -139,6 +139,11 @@ struct gl_vertex_launcher_descriptor
     uint32 elements_num;
 };
 
+class gl_vertex_factory
+{
+
+};
+
 class gl_vertex_launcher
 {
 public:
@@ -151,7 +156,8 @@ public:
     using element_slot_reader = gl_element_array_buffer::element_buffer_reader;
     using element_slot_writer = gl_element_array_buffer::element_buffer_writer;
     using element_slot_handler = gl_element_array_buffer::element_buffer_handler;
-
+    
+    gl_vertex_launcher() = default;
     gl_vertex_launcher(const gl_vertex_launcher_descriptor& descriptor) :
         _primitive_mode(descriptor.primitive_mode),
         _primitive_vertices_num(descriptor.primitive_vertices_num),
@@ -166,6 +172,10 @@ public:
     gl_vertex_launcher& operator=(const gl_vertex_launcher&) = delete;
 
     ~gl_vertex_launcher() = default;
+
+public:
+
+    void set_factory(gl_vertex_factory* factory) {}
 
 private:
 
@@ -319,6 +329,11 @@ private:
 
 };
 
+class gl_feedback
+{
+
+};
+
 class gl_render_target
 {
 public:
@@ -371,23 +386,20 @@ private:
 };
 
 /*
- * graphics pipeline : 
- * vertex shader + fragment shader
- * vertex shader + tessellation control shader + tessellation evaluation shader + fragment shader
- * vertex shader + geometry shader + fragment shader
- * vertex shader + tessellation control shader + tessellation evaluation shader + geometry shader + fragment shader
+ * traditional rasterization pipeline, also you can specify 'discard' to disable rasterizer, then fragment shader wont work too.
  * 
- * vertex shader
- * vertex shader + tessellation control shader + tessellation evaluation shader
- * vertex shader + geometry shader
- * vertex shader + tessellation control shader + tessellation evaluation shader + geometry shader
+ * graphics pipeline : 
+ * vertex shader [+ fragment shader]
+ * vertex shader + tessellation control shader + tessellation evaluation shader [+ fragment shader]
+ * vertex shader + geometry shader [+ fragment shader]
+ * vertex shader + tessellation control shader + tessellation evaluation shader + geometry shader [+ fragment shader]
  * */
 class gl_graphics_pipeline final : public gl_pipeline
 {
 public:
-    gl_graphics_pipeline(glsl_graphics_pipeline_program* graphics_pipeline_program)
+    gl_graphics_pipeline(glsl_graphics_pipeline_program* program)
     {
-        _program.reset(graphics_pipeline_program);
+        _program.reset(program);
     }
 
     gl_graphics_pipeline(const gl_graphics_pipeline&) = delete;
@@ -409,6 +421,8 @@ public:
 
     gl_vertex_launcher& vertex_launcher() { return *_vertex_launcher; }
 
+    gl_feedback& feedback() { return *_feedback; }
+
     gl_render_target& render_target() { return *_render_target; }
 
 private:
@@ -417,9 +431,9 @@ private:
 
     std::unique_ptr<gl_vertex_launcher> _vertex_launcher = {};
 
-    std::unique_ptr<gl_render_target> _render_target = {};
+    std::unique_ptr<gl_feedback> _feedback = {};
 
-    /*std::unique_ptr<gl_transform_feedback> _transform_feedback = {};*/
+    std::unique_ptr<gl_render_target> _render_target = {};
 
 public:
 
@@ -722,11 +736,6 @@ public:
         return std::make_shared<gl_fence>();
     }
 
-    void test_draw_arrays()
-    {
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-    }
-
     void unsyncable_draw_arrays(uint32 vertex_offset, uint32 vertices_num)
     {
         if (!_vertex_launcher || vertex_offset + vertices_num >= _vertex_launcher->get_vertices_num()) return;
@@ -908,12 +917,12 @@ private:
         _enable_clip_distance0 ? glEnable(GL_CLIP_DISTANCE0) : glDisable(GL_CLIP_DISTANCE0);
 
         // coordinate transformations
-        glViewportIndexedf(vertex_postprocessor.viewport.index,
+        /*glViewportIndexedf(vertex_postprocessor.viewport.index,
             vertex_postprocessor.viewport.x, 
             vertex_postprocessor.viewport.y, 
             vertex_postprocessor.viewport.width, 
             vertex_postprocessor.viewport.height
-        );
+        );*/
         vertex_postprocessor.discard ? glEnable(GL_RASTERIZER_DISCARD) : glDisable(GL_RASTERIZER_DISCARD);
     }
     void _set_rasterizer()
@@ -1101,16 +1110,11 @@ private:
 #define DEFINE_GRAPHICS_PIPELINE_PARAMETERS(PIPELINE_NAME)\
 struct gl_##PIPELINE_NAME##_graphics_pipeline_parameters : public gl_graphics_pipeline_parameters\
 
-#define CLASS_NAME(__CLASS__)  #__CLASS__
-
-
-
 #define DEFINE_PROGRAM_PARAMETER_IMAGE(GLSL_IMAGE_T, V_NAME) \
-glsl_##GLSL_IMAGE_T V_NAME{CLASS_NAME(V_NAME)};\
+glsl_##GLSL_IMAGE_T V_NAME{#V_NAME};\
 
 #define DEFINE_PROGRAM_PARAMETER_SAMPLER(GLSL_SAMPLER_T, V_NAME)\
 glsl_##GLSL_SAMPLER_T V_NAME;\
-
 
 #define DEFINE_PROGRAM_PARAMETER_ATOMIC_COUNTER(V_NAME)\
 glsl_atomic_uint V_NAME;\
@@ -1129,7 +1133,6 @@ GLSL_SHADER_STORAGE_BLOCK_T V_NAME; \
 
 #define DEFINE_PROGRAM_PARAMETER_SHADER_STORAGE_BLOCK_ARRAY(GLSL_SHADER_STORAGE_BLOCK_T, V_NAME, ARRAY_SIZE)\
 GLSL_SHADER_STORAGE_BLOCK_T V_NAME[ARRAY_SIZE];\
-
 
 // Shader Parameters Definition
 #define SHADER_PARAMETER_REF(TOKEN_NAME)\
@@ -1153,7 +1156,6 @@ GLSL_SHADER_STORAGE_BLOCK_T V_NAME[ARRAY_SIZE];\
 #define DEFINE_FRAGMENT_SHADER_PARAMETERS_BEGIN()
 #define DEFINE_FRAGMENT_SHADER_PARAMETERS_END()
 
-
 // Shader Stream Definition
 #define DEFINE_STREAM_INPUT_BEGIN()
 #define DEFINE_STREAM_INPUT_END()
@@ -1175,4 +1177,3 @@ GLSL_SHADER_STORAGE_BLOCK_T V_NAME[ARRAY_SIZE];\
 #define DEFINE_STREAM_OUTPUT_END()
 
 #endif
-

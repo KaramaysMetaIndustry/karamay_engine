@@ -10,12 +10,20 @@ public:
 
 };
 
+/*
+* advanced rasterization pipeline, which is only supported by NV Turing GPU
+* 
+* task shader + mesh shader [+ fragment shader]
+* mesh shader [+ fragment shader]
+* 
+*/
 class gl_mesh_pipeline final : public gl_pipeline
 {
 public:
-    gl_mesh_pipeline(glsl_mesh_pipeline_program* mesh_pipeline_program)
+    gl_mesh_pipeline() = default;
+    gl_mesh_pipeline(glsl_mesh_pipeline_program* program)
     {
-        _mesh_pipeline_program.reset(mesh_pipeline_program);
+        _mesh_pipeline_program.reset(program);
     }
 
     gl_mesh_pipeline(const gl_mesh_pipeline&) = delete;
@@ -25,22 +33,11 @@ public:
 
 public:
 
-    bool load(const std::string& pipeline_dir) noexcept override
-    {
-        if(!_mesh_pipeline_program || !_mesh_pipeline_program->load(pipeline_dir)) return false;
-        std::cout << "pipeline : " << long long(this) << " load succuessfully." << std::endl;
-        return true;
-    }
+    bool load(const std::string& pipeline_dir) noexcept override;
 
-    void enable() noexcept override
-    {
-        _mesh_pipeline_program->enable();
-    }
+    void enable() noexcept override;
 
-    void disable() noexcept override
-    {
-        _mesh_pipeline_program->disable();
-    }
+    void disable() noexcept override;
 
 public:
 
