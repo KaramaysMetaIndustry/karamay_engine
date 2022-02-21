@@ -4,88 +4,34 @@
 #include "pipeline/gl_graphics_pipeline.h"
 #include "pipeline/gl_compute_pipeline.h"
 #include "pipeline/gl_mesh_pipeline.h"
-
-enum class gl_renderer_state
-{
-    uninitialized,
-    standby,
-    running,
-    paused,
-    stopped
-};
+#include "pass/gl_pass.h"
 
 class gl_renderer
 {
 public:
-    gl_renderer() :
-        _state(gl_renderer_state::uninitialized),
-        _exit(false)
-    {}
-
+    gl_renderer() = default;
     gl_renderer(const gl_renderer&) = delete;
     gl_renderer& operator=(const gl_renderer&) = delete;
 
-    ~gl_renderer() = default;
-
-public:
-
-    bool initialize() noexcept
-    {
-        if (_state == gl_renderer_state::uninitialized)
-        {
-            return _implementation_build();
-        }
-        return true;
-    }
-
-    void render(float delta_time) noexcept
-    {
-        _implementation_render(delta_time);
-    }
-
-public:
-
-    bool should_exit()
-    {
-        return _exit;
-    }
-
-    void set_exit(bool exit)
-    {
-        _exit = exit;
-    }
-
-    void switch_state(gl_renderer_state state)
-    {
-        switch (state)
-        {
-        case gl_renderer_state::uninitialized:
-            break;
-        case gl_renderer_state::standby:
-            break;
-        case gl_renderer_state::running:
-            break;
-        case gl_renderer_state::paused:
-            break;
-        case gl_renderer_state::stopped:
-            break;
-        default:
-            break;
-        }
-    }
+    virtual ~gl_renderer() = default;
 
 private:
 
-    gl_renderer_state _state;
+    virtual bool initialize() noexcept { return true; };
 
-    bool _exit;
+public:
+
+    virtual bool attach() noexcept = 0;
+
+    virtual void render(float delta_time) noexcept = 0;
+
+    virtual bool detach() noexcept = 0;
 
 protected:
-    virtual bool _implementation_build() = 0;
-    virtual void _implementation_render(float delta_time) = 0;
 
-    void _flush_commands() { glFlush(); }
-    void _finish_commands() { glFinish(); }
+    static void _flush_commands() noexcept { glFlush(); }
+
+    static void _finish_commands() noexcept { glFinish(); }
 
 protected:
 
@@ -345,10 +291,6 @@ std::function<void(uint32, uint32)>  _on_window_size_changed;
 std::function<void(void)> _on_renderer_detached;
 std::function<void(void)> _on_renderer_attached;
 
-#define on_window_size_changed _on_window_size_changed
-#define on_renderer_detached _on_renderer_detached
-#define on_renderer_attached _on_renderer_attached
-
 };
 
 #define DEFINE_RENDERER_CONSTRUCTOR(RENDERER_NAME)\
@@ -376,6 +318,19 @@ DEFINE_RENDERER_CONSTRUCTOR(RENDERER_NAME)\
 
 
 
+#define RENDERER_HEADER(NAME)\
+private:\
+static std::unique_ptr<gl_scene_renderer> _instance;\
+gl_scene_renderer() = default;\
+public:\
+    static gl_scene_renderer& invoke() noexcept\
+    {\
+        if (!_instance)\
+        {\
+            _instance = std::make_unique<gl_scene_renderer>();\
+        }\
+        return *_instance;\
+    }\
 
 #endif
 

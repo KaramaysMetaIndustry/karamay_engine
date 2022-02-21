@@ -6,6 +6,7 @@
 #include "glsl_shader.h"
 #include "graphics/renderer/pipeline/base/resource/program/gl_program.h"
 
+
 class glsl_program 
 {
 public:
@@ -109,15 +110,19 @@ protected:
 
 };
 
+
 class glsl_graphics_pipeline_program : public glsl_program 
 {
 public:
 	glsl_graphics_pipeline_program() = default;
-
 	glsl_graphics_pipeline_program(const glsl_graphics_pipeline_program&) = delete;
 	glsl_graphics_pipeline_program& operator=(const glsl_graphics_pipeline_program&) = delete;
 
 	~glsl_graphics_pipeline_program() = default;
+
+protected:
+	
+	std::string _path;
 
 public:
 
@@ -147,6 +152,81 @@ public:
 	}
 
 };
+
+class glsl_graphic_pipeline_template_parameters
+{};
+
+class glsl_graphics_pipeline_template
+{
+public:
+
+	glsl_graphics_pipeline_program* generate(glsl_graphic_pipeline_template_parameters* parameters) noexcept
+	{
+		return nullptr;
+	}
+
+};
+
+
+
+class glsl_compute_pipeline_program : public glsl_program
+{
+public:
+	glsl_compute_pipeline_program() = default;
+
+	glsl_compute_pipeline_program(const glsl_compute_pipeline_program&) = delete;
+	glsl_compute_pipeline_program& operator=(const glsl_compute_pipeline_program&) = delete;
+
+	~glsl_compute_pipeline_program() = default;
+
+public:
+
+	bool load(const std::string& pipeline_dir) override
+	{
+		if (_shaders.size() != 1) return false;
+
+		std::vector<gl_shader*> _real_shaders;
+		for (auto _shader : _shaders)
+		{
+			_shader->load(pipeline_dir);
+			_real_shaders.push_back(_shader->get_shader());
+		}
+
+		_program = new gl_program();
+		if (_program->load(_real_shaders))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	bool generate_template(const std::string& pipeline_dir) override
+	{
+		return false;
+	}
+
+};
+
+class glsl_compute_pipeline_template_parameters
+{};
+
+class glsl_compute_pipeline_template
+{
+public:
+
+	glsl_compute_pipeline_program* generate(glsl_compute_pipeline_template_parameters* parameters) noexcept
+	{
+		return nullptr;
+	}
+
+};
+
+
 
 class glsl_mesh_pipeline_program : public glsl_program
 {
@@ -182,48 +262,13 @@ public:
 	}
 };
 
-class glsl_compute_pipeline_program : public glsl_program
+class glsl_mesh_pipeline_template_parameters
+{};
+
+class glsl_mesh_pipeline_template
 {
-public:
-	glsl_compute_pipeline_program() = default;
-
-	glsl_compute_pipeline_program(const glsl_compute_pipeline_program&) = delete;
-	glsl_compute_pipeline_program& operator=(const glsl_compute_pipeline_program&) = delete;
-
-	~glsl_compute_pipeline_program() = default;
-
-public:
-	
-	bool load(const std::string& pipeline_dir) override
-	{
-		if (_shaders.size() != 1) return false;
-
-		std::vector<gl_shader*> _real_shaders;
-		for (auto _shader : _shaders)
-		{
-			_shader->load(pipeline_dir);
-			_real_shaders.push_back(_shader->get_shader());
-		}
-
-		_program = new gl_program();
-		if (_program->load(_real_shaders))
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-
-		return true;
-	}
-
-	bool generate_template(const std::string& pipeline_dir) override
-	{
-		return false;
-	}
-
 };
+
 
 #define def_graphicsPipelineProgram(name)\
 class glsl_##name##_pipeline_program : public glsl_graphics_pipeline_program\

@@ -4,7 +4,6 @@
 #include "graphics/renderer/pipeline/gl_graphics_pipeline.h"
 #include "graphics/renderer/pipeline/gl_compute_pipeline.h"
 #include "graphics/renderer/pipeline/gl_mesh_pipeline.h"
-#include "renderers/templates/gl_static_mesh_renderer.h"
 
 namespace CTest_for_lua
 {
@@ -446,7 +445,7 @@ namespace gl_renderer_for_lua
 		{
 			return 0;
 		}
-		gl_renderer* _renderer = new gl_static_mesh_renderer();
+		gl_renderer* _renderer = nullptr;
 		lua_api::basic::push(l, _renderer);
 		// stack : userdata, self
 		lua_api::auxiliary::set_metatable(l, "gl_renderer_clazz");

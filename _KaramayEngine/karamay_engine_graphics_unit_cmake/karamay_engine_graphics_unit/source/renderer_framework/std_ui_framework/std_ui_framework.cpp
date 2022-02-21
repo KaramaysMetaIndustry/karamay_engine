@@ -4,8 +4,8 @@
 
 bool std_ui_framework::framework::initialize() noexcept
 {
-    auto _st_renderer = new gl_shader_toy_renderer();
-    if(_st_renderer && _st_renderer->initialize())
+    auto _st_renderer = gl_shader_toy_renderer::invoke();
+    if(_st_renderer && _st_renderer->attach())
         _renderers.push_back(_st_renderer);
     return true;
 }

@@ -20,6 +20,14 @@ public:
 
     ~gl_compute_pipeline() = default;
 
+private:
+
+    std::unique_ptr<glsl_compute_pipeline_program> _program = {};
+
+public:
+
+    glsl_compute_pipeline_program& program() noexcept { return *_program; }
+
 public:
 
     bool load(const std::string& pipeline_dir) noexcept override;
@@ -28,21 +36,15 @@ public:
 
     void disable() noexcept override;
 
-private:
-
-    std::unique_ptr<glsl_compute_pipeline_program> _program = {};
-
 public:
 
-    const std::unique_ptr<glsl_compute_pipeline_program>& program() const noexcept { return _program; }
-
-public:
-
-    void dispatch(uint32 num_groups_x, uint32 num_groups_y, uint32 num_groups_z) noexcept
-    {
-        if (!_program) return;
-        glDispatchCompute(num_groups_x, num_groups_y, num_groups_z);
-    }
+    /*
+    * dispatch the compute program.
+    * x : group size x
+    * y : group size y
+    * z : group size z
+    */
+    void dispatch(uint32 x, uint32 y, uint32 z) noexcept;
 
 };
 

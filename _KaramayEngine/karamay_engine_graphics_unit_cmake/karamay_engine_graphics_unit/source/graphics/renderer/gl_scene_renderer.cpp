@@ -1,1 +1,0 @@
-#include "gl_scene_renderer.h"

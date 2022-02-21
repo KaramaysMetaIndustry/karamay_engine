@@ -397,6 +397,7 @@ private:
 class gl_graphics_pipeline final : public gl_pipeline
 {
 public:
+    gl_graphics_pipeline() = default;
     gl_graphics_pipeline(glsl_graphics_pipeline_program* program)
     {
         _program.reset(program);
@@ -410,6 +411,8 @@ public:
 public:
 
     bool load(const std::string& pipeline_dir) noexcept override;
+
+    bool load(glsl_graphics_pipeline_program* program) noexcept;
 
     void enable() noexcept override;
 

@@ -1,9 +1,6 @@
 #include "gl_renderer_dispatcher.h"
 #include "engine/karamay_engine.h"
-#include "renderers/templates/gl_static_mesh_renderer.h"
-#include "renderers/templates/gl_single_cs_renderer.h"
-#include "renderers/templates/gl_single_fs_renderer.h"
-#include "renderers/templates/gl_single_gp_renderer.h"
+#include "renderers/templates/gl_scene_renderer.h"
 #include "renderers/templates/gl_shader_toy_renderer.h"
 
 namespace opengl
