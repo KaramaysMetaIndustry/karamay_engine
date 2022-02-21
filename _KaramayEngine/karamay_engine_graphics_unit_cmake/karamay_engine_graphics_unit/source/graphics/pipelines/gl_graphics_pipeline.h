@@ -1,7 +1,7 @@
 ﻿#ifndef GL_GRAPHICS_PIPELINE_H
 #define GL_GRAPHICS_PIPELINE_H
 #include "graphics/pipelines/gl_pipeline.h"
-#include "graphics/glsl/program/glsl_graphics_program.h"
+#include "graphics/glsl/program/glsl_graphics_pipeline_program.h"
 #include "graphics/resource/buffers/common_buffer/gl_element_array_buffer.h"
 
 enum class gl_stencil_op : GLenum

@@ -1,10 +1,10 @@
 #ifndef GLSL_MESH_PROGRAM_H
 #define GLSL_MESH_PROGRAM_H
-#include "glsl_program.h"
+#include "glsl_pipeline_program.h"
 #include "graphics/glsl/shader/glsl_task_shader.h"
 #include "graphics/glsl/shader/glsl_mesh_shader.h"
 
-class glsl_mesh_pipeline_program : public glsl_program
+class glsl_mesh_pipeline_program : public glsl_pipeline_program
 {
 public:
 	glsl_mesh_pipeline_program() = default;

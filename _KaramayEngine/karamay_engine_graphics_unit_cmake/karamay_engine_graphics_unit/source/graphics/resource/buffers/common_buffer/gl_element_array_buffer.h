@@ -3,7 +3,6 @@
 
 #include "../../buffers/raw_buffer/gl_buffer.h"
 
-
 enum class gl_element_type
 {
     NONE,
@@ -12,7 +11,8 @@ enum class gl_element_type
     UNSIGNED_INT = GL_UNSIGNED_INT
 };
 
-class gl_element_array_buffer final{
+class gl_element_array_buffer final
+{
 public:
     using element_buffer_writer = std::function<void(void*, uint32)>;
     using element_buffer_reader = std::function<void(const void*, uint32)>;

@@ -292,6 +292,18 @@ std::function<void(void)> _on_renderer_attached;
 
 };
 
+template<typename gl_renderer_t>
+class gl_renderer_template
+{
+public:
+    gl_renderer_t* load_instance(const std::string& path) noexcept { return nullptr; }
+
+    void load_all(std::vector<gl_renderer_t*>& out_renderers) noexcept {}
+
+
+};
+
+
 #define DEFINE_RENDERER_CONSTRUCTOR(RENDERER_NAME)\
 public:\
     RENDERER_NAME() = default;\

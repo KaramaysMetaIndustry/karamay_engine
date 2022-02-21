@@ -47,5 +47,22 @@ public:
 
 };
 
+class gl_shader_toy_template
+{
+	gl_shader_toy_template()
+	{
+
+	}
+
+public:
+
+	void load_all(std::vector<gl_shader_toy_renderer*>& invoked_renderers) noexcept
+	{
+	}
+
+	gl_shader_toy_renderer* load(const std::string& path) noexcept;
+
+};
+
 
 #endif

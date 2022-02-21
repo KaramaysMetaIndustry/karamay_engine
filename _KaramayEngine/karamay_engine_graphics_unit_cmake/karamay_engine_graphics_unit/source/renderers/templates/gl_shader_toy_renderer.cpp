@@ -1,5 +1,5 @@
 #include "gl_shader_toy_renderer.h"
-#include "graphics/glsl/program/glsl_graphics_program.h"
+#include "graphics/glsl/program/glsl_graphics_pipeline_program.h"
 #include "engine/karamay_engine.h"
 
 namespace gl_shader_toy_renderer_resource

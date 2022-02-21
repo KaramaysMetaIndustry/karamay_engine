@@ -1,13 +1,13 @@
 #ifndef GLSL_GRAPHICS_PROGRAM_H
 #define GLSL_GRAPHICS_PROGRAM_H
-#include "glsl_program.h"
+#include "glsl_pipeline_program.h"
 #include "graphics/glsl/shader/glsl_vertex_shader.h"
 #include "graphics/glsl/shader/glsl_tessellation_control_shader.h"
 #include "graphics/glsl/shader/glsl_tessellation_evaluation_shader.h"
 #include "graphics/glsl/shader/glsl_geometry_shader.h"
 #include "graphics/glsl/shader/glsl_fragment_shader.h"
 
-class glsl_graphics_pipeline_program : public glsl_program
+class glsl_graphics_pipeline_program : public glsl_pipeline_program
 {
 public:
 	glsl_graphics_pipeline_program() = default;
@@ -71,18 +71,17 @@ private:
 	glsl_geometry_shader_template* _gs_template;
 	glsl_fragment_shader_template* _frag_template;
 
+	std::unordered_map<std::string, std::unique_ptr<glsl_graphics_pipeline_program>> _program_map;
+
 public:
 
-	glsl_graphics_pipeline_program* generate(glsl_graphic_pipeline_template_parameters* parameters) noexcept
-	{
-		return nullptr;
-	}
+	glsl_graphics_pipeline_program* create_instance(const std::string& name) noexcept { return nullptr; }
 
+	glsl_graphics_pipeline_program* load_instance(const std::string& path) noexcept { return nullptr; }
 
-
+	glsl_graphics_pipeline_program* invoke_instance(const std::string& name) noexcept { return nullptr; }
 
 };
-
 
 #define def_graphicsPipelineProgram(name)\
 class glsl_##name##_pipeline_program : public glsl_graphics_pipeline_program\

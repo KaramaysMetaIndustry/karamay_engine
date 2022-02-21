@@ -1,7 +1,7 @@
 #ifndef GL_COMPUTE_PIPELINE_H
 #define GL_COMPUTE_PIPELINE_H
 #include "gl_pipeline.h"
-#include "graphics/glsl/program/glsl_compute_program.h"
+#include "graphics/glsl/program/glsl_compute_pipeline_program.h"
 
 /*
 * compute pipeline only need a compute shader to link program

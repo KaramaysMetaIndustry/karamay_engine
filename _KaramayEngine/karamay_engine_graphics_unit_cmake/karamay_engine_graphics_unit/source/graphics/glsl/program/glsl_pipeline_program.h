@@ -4,15 +4,15 @@
 #include "graphics/glsl/glsl_builder.h"
 #include "graphics/resource/program/gl_program.h"
 
-class glsl_program
+class glsl_pipeline_program
 {
 public:
-	glsl_program() = default;
+	glsl_pipeline_program() = default;
 
-	glsl_program(const glsl_program&) = delete;
-	glsl_program& operator=(const glsl_program&) = delete;
+	glsl_pipeline_program(const glsl_pipeline_program&) = delete;
+	glsl_pipeline_program& operator=(const glsl_pipeline_program&) = delete;
 
-	~glsl_program() = default;
+	~glsl_pipeline_program() = default;
 
 public:
 	

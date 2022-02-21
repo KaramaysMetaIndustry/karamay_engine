@@ -1,9 +1,9 @@
 #ifndef GLSL_COMPUTE_PROGRAM_H
 #define GLSL_COMPUTE_PROGRAM_H
-#include "glsl_program.h"
+#include "glsl_pipeline_program.h"
 #include "graphics/glsl/shader/glsl_compute_shader.h"
 
-class glsl_compute_pipeline_program : public glsl_program
+class glsl_compute_pipeline_program : public glsl_pipeline_program
 {
 public:
 	glsl_compute_pipeline_program() = default;

@@ -2,8 +2,21 @@
 #include "graphics/dispatcher/gl_renderer_dispatcher.h"
 #include "renderers/templates/gl_shader_toy_renderer.h"
 
+namespace std_ui_framework
+{
+    gl_renderer_template<gl_shader_toy_renderer> _shader_toy_renderer_template;
+}
+
 bool std_ui_framework::framework::initialize() noexcept
 {
+    std::vector<gl_shader_toy_renderer*> _invoked_st_renderers;
+    _shader_toy_renderer_template.load_all(_invoked_st_renderers);
+    for (auto _invoked_st_renderer : _invoked_st_renderers)
+    {
+        if (_invoked_st_renderer && _invoked_st_renderer->attach())
+            _renderers.push_back(_invoked_st_renderer);
+    }
+
     auto _st_renderer = gl_shader_toy_renderer::invoke();
     if(_st_renderer && _st_renderer->attach())
         _renderers.push_back(_st_renderer);
