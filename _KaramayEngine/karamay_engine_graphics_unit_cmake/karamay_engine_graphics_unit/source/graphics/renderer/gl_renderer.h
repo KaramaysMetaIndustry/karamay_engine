@@ -1,10 +1,9 @@
-#ifndef H_RENDERER
-#define H_RENDERER
-
-#include "pipeline/gl_graphics_pipeline.h"
-#include "pipeline/gl_compute_pipeline.h"
-#include "pipeline/gl_mesh_pipeline.h"
-#include "pass/gl_pass.h"
+#ifndef RENDERER_H
+#define RENDERER_H
+#include "graphics/pipelines/gl_graphics_pipeline.h"
+#include "graphics/pipelines/gl_compute_pipeline.h"
+#include "graphics/pipelines/gl_mesh_pipeline.h"
+#include "graphics/pass/gl_pass.h"
 
 class gl_renderer
 {

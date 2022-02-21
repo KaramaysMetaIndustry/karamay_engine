@@ -137,9 +137,9 @@ bool gl_scene_renderer::attach() noexcept
 		// explicitly specify the resource parameter uses
 		// you can also change these when rendering
 		auto& _program = _gpp->program();
-		_program.uniform_block("wait");
-		_program.shader_storage_block("");
-		_program.atomic_uint("");
+		_program.invoke_uniform_block("wait");
+		_program.invoke_shader_storage_block("");
+		_program.invoke_atomic_uint("");
 
 		// you can reallocate or fill vertex attributes, indices, instance attributes
 		// all data format are fixed after initialization, only thing you can changed only number of these attribs

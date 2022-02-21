@@ -3,7 +3,7 @@
 
 #include "../base/glsl_class.h"
 #include "../../resource/texture/gl_texture.h"
-#include "graphics/renderer/pipeline/base/glsl/interface_block/glsl_uniform_block.h"
+#include "graphics/glsl/interface_block/glsl_uniform_block.h"
 
 class glsl_sampler_t : public glsl_opaque_t
 {

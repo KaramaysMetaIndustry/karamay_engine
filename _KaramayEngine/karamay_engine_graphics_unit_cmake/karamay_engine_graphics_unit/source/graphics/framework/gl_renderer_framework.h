@@ -1,6 +1,6 @@
 #ifndef GL_RENDERER_FRAMEWORK_H
 #define GL_RENDERER_FRAMEWORK_H
-#include "renderer/gl_renderer.h"
+#include "graphics/renderer/gl_renderer.h"
 
 class gl_renderer_framework
 {

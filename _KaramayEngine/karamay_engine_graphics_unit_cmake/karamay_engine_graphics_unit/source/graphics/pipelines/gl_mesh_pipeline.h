@@ -1,7 +1,7 @@
 #ifndef GL_MESH_PIPELINE_H
 #define GL_MESH_PIPELINE_H
-
-#include "base/gl_pipeline.h"
+#include "graphics/pipelines/gl_pipeline.h"
+#include "graphics/glsl/program/glsl_mesh_program.h"
 
 class gl_mesh_launcher
 {

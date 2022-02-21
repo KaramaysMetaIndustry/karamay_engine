@@ -1,6 +1,6 @@
 #ifndef STD_SCENE_FRAMEWORK_H
 #define STD_SCENE_FRAMEWORK_H
-#include "graphics/gl_renderer_framework.h"
+#include "graphics/framework/gl_renderer_framework.h"
 
 namespace std_scene_framework
 {

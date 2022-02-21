@@ -1,6 +1,5 @@
-#ifndef GLSL_BUILDER
-#define GLSL_BUILDER
-
+#ifndef GLSL_BUILDER_H
+#define GLSL_BUILDER_H
 #include "glsl.h"
 
 #define def_uniformBlock(binding, layout, name)\

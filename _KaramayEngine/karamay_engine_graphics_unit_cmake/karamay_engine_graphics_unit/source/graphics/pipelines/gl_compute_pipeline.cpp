@@ -1,6 +1,6 @@
 #include "gl_compute_pipeline.h"
 #include "engine/karamay_engine.h"
-#include "base/resource/glo/gl_object.h"
+#include "graphics/resource/glo/gl_object.h"
 
 bool gl_compute_pipeline::load(const std::string& pipeline_dir) noexcept
 {
