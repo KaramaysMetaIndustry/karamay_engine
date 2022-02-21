@@ -5,6 +5,11 @@
 #include "graphics/pipelines/gl_mesh_pipeline.h"
 #include "graphics/pass/gl_pass.h"
 
+class gl_resource
+{
+
+};
+
 class gl_renderer
 {
 public:
@@ -31,6 +36,28 @@ protected:
     static void _flush_commands() noexcept { glFlush(); }
 
     static void _finish_commands() noexcept { glFinish(); }
+
+private:
+
+    std::unordered_map<std::string_view, std::unique_ptr<gl_resource>> _resouce_map;
+
+protected:
+
+    template<typename resource_t, typename... parameter_ts>
+    resource_t* _create(const std::string_view& name, parameter_ts&&... args) noexcept
+    {
+        auto _v = std::make_unique<resource_t>(args...);
+        return _v.get(); 
+    }
+
+    template<typename resource_t>
+    resource_t* _invoke(const std::string_view& name) { return nullptr; }
+
+    template<typename resource_t>
+    bool _delete(const std::string_view& name) noexcept { return false; }
+
+    template<typename resource_t>
+    bool _delete(resource_t* value) noexcept { return false; }
 
 protected:
 
@@ -280,6 +307,8 @@ protected:
         std::vector<gl_framebuffer*> _framebuffers;
         std::vector<gl_graphics_pipeline*> _graphics_pipelines;
         std::vector<gl_compute_pipeline*> _compute_pipelines;
+
+        
 
     }_renderer_builder;
     

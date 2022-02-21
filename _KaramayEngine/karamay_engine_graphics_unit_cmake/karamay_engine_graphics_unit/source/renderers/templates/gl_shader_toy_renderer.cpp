@@ -21,9 +21,14 @@ bool gl_shader_toy_renderer::attach() noexcept
 {
 	if (!_shader_toy_gpp)
 	{
+		auto _pp = _create<gl_graphics_pipeline>(nullptr);
+		_delete(_pp);
+
 		auto _vp = new gl_shader_toy_renderer_resource::glsl_vp_pipeline_program();
 		_vp->load(karamay_engine::get_engine_root() + "shaders\\renderers\\shader_toy_renderer\\pp");
+		
 		_shader_toy_gpp = std::make_unique<gl_graphics_pipeline>();
+
 		if (!_shader_toy_gpp || !_shader_toy_gpp->load(_vp))
 		{
 			return false;
