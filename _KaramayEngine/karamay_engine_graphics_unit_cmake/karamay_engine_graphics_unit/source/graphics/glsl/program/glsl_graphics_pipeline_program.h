@@ -29,6 +29,11 @@ public:
 
 	bool load(const std::string& pipeline_dir) override;
 
+	glsl_vertex_shader* invoke_vertex_shader() const noexcept { return _vert.get(); }
+	glsl_tessellation_control_shader* invoke_tessellation_control_shader() const noexcept { return _tesc.get(); }
+	glsl_tessellation_evaluation_shader* invoke_tessellation_evaluation_shader() const noexcept { return _tese.get(); }
+	glsl_geometry_shader* invoke_geometry_shader() const noexcept { return _geom.get(); }
+	glsl_fragment_shader* invoke_fragment_shader() const noexcept { return _frag.get(); }
 
 };
 

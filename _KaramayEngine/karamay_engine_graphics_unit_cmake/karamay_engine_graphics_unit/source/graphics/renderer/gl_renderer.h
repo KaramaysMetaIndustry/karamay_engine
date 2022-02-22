@@ -26,21 +26,23 @@ public:
 
     virtual ~gl_renderer() = default;
 
-private:
-
-    virtual bool initialize() noexcept { return true; };
-
 public:
+
+    virtual bool initialize() noexcept = 0;
+
+    virtual bool hibernate() noexcept = 0;
 
     virtual bool attach() noexcept = 0;
 
     virtual void render(float delta_time) noexcept = 0;
 
+    virtual bool wake() noexcept = 0;
+
     virtual bool detach() noexcept = 0;
 
 protected:
 
-    static gl_renderer_template_instance* load_rti(const std::string_view& rti_path) { return nullptr; }
+    static gl_renderer_template_instance* _load_rti(const std::string_view& rti_path) { return nullptr; }
 
     static void _flush_commands() noexcept { glFlush(); }
 

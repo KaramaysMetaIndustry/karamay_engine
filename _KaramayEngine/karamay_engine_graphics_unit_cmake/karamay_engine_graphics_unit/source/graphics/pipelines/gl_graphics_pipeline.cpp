@@ -1,15 +1,28 @@
 #include "gl_graphics_pipeline.h"
 #include "engine/karamay_engine.h"
 
-bool gl_graphics_pipeline::load(glsl_graphics_pipeline_program* program) noexcept
+bool gl_graphics_pipeline::load(glsl_graphics_pipeline_program* glsl) noexcept
 {
-    if (!program)
+    if (!glsl)
+    {
         return false;
+    }
 
     _program = std::make_unique<gl_program>();
-    if (!_program || _program->load(program))
+    if (!_program || _program->load(glsl))
+    {
         return false;
+    }
 
+    auto _invoked_vert = glsl->invoke_vertex_shader();
+    if (!_invoked_vert)
+    {
+        std::cerr << "a graphics pipeline must have a vertex shader" << std::endl;
+        return false;
+    }
+
+    const auto& _vert_input = _invoked_vert->input();
+    // initialize with vertex input
     gl_vertex_launcher_descriptor _descriptor;
     // primitive mode
     _descriptor.primitive_mode = gl_primitive_mode::TRIANGLES;
@@ -22,14 +35,34 @@ bool gl_graphics_pipeline::load(glsl_graphics_pipeline_program* program) noexcep
     // instance attributes
     //_allocate_instance_attributes(_descriptor.vertex_array_descriptor.instance_attribute_descriptors);
     auto _vl = new gl_vertex_launcher(_descriptor);
-    // feedback stream
-    auto _fb = new gl_feedback();
-    //default framebuffer or custom framebuffer
-    auto _rt = new gl_render_target();
 
+    auto _invoked_geom = glsl->invoke_geometry_shader();
+    auto _invoked_tese = glsl->invoke_tessellation_evaluation_shader();
+    
+    // feedback stream
+    gl_feedback* _fb = nullptr;
+    if (_invoked_geom)
+    {
+
+    }
+    else if(_invoked_tese) {
+
+    }
+
+
+    //default framebuffer or custom framebuffer
+    gl_render_target* _rt = nullptr;
+    
+    auto _invoked_frag = glsl->invoke_fragment_shader();
+    if (!_invoked_frag)
+    {
+
+    }
+    
     _vertex_launcher.reset(_vl);
-    _feedback.reset(_fb);
-    _render_target.reset(_rt);
+    if(_fb) _feedback.reset(_fb);
+    if(_render_target) _render_target.reset(_rt);
+
     return true;
 }
 
@@ -42,7 +75,6 @@ void gl_graphics_pipeline::enable() noexcept
     _program->enable();
     _vertex_launcher->bind();
     _render_target->bind();
-
     _set_pipeline_fixed_functions();
 }
 

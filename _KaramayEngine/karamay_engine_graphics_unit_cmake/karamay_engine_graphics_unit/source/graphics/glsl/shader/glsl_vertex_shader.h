@@ -24,14 +24,15 @@ public:
 
 private:
 
-	vertex_shader_input _input;
-	vertex_shader_output _output;
+	glsl_vertex_shader_input _input;
+
+	glsl_vertex_shader_output _output;
 
 public:
 
-	const vertex_shader_input& input() const noexcept { return _input; }
+	const glsl_vertex_shader_input& input() const noexcept { return _input; }
 
-	const vertex_shader_output& output() const noexcept { return _output; }
+	const glsl_vertex_shader_output& output() const noexcept { return _output; }
 
 };
 

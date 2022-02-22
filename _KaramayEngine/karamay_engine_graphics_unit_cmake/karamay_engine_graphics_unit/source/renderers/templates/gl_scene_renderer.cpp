@@ -139,21 +139,11 @@ bool gl_scene_renderer::attach() noexcept
 
 		// you can reallocate or fill vertex attributes, indices, instance attributes
 		// all data format are fixed after initialization, only thing you can changed only number of these attribs
-		auto& _vl = _gpp->vertex_launcher();
-		_vl.reallocate_vertex_slot(16);
-		_vl.reallocate_element_slot(10);
-		_vl.execute_mapped_element_slot_writer(0, 1024,
-			[=](void* _dst, uint64 _dst_size)
-			{
-			}
-		);
 
 		// set pipeline render target
 		// default : global device framebuffer
 		// custom framebuffer : you can operate every component of it
 		// you can also change it when rendering
-		auto& _rt = _gpp->render_target();
-		_rt.set_default();
 
 		auto _albedo_tex = builder.build_texture_2d(gl_texture_internal_format::NOR_RGBA_UI8, 1024, 1024, 1);
 		_albedo_tex->set_base_level(0);

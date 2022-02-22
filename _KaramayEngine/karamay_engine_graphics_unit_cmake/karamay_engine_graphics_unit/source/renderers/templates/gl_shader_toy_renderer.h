@@ -27,18 +27,19 @@ public:
 
 private:
 
-	std::unique_ptr<gl_graphics_pipeline> _shader_toy_gpp = {};
+	std::unique_ptr<gl_graphics_pipeline> _main_graphics_pipeline = {};
+
+	std::unique_ptr<gl_graphics_pipeline> _post_processing_pipeline = {};
 
 	float _acc_time = 0.0f;
 
-	void load_rti(const std::string_view& rti_name) {}
-
 public:
 
+	bool initialize() noexcept override;
 	bool attach() noexcept override;
-
+	bool hibernate() noexcept override;
 	void render(float delta_time) noexcept override;
-
+	bool wake() noexcept override;
 	bool detach() noexcept override;
 
 };

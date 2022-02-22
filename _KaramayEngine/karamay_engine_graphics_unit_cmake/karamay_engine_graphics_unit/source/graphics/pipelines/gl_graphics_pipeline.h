@@ -406,21 +406,11 @@ public:
 
 public:
 
-    bool load(glsl_graphics_pipeline_program* program) noexcept;
+    bool load(glsl_graphics_pipeline_program* glsl) noexcept;
 
     void enable() noexcept override;
 
     void disable() noexcept override;
-
-public:
-
-    gl_program& program() { return *_program; }
-
-    gl_vertex_launcher& vertex_launcher() { return *_vertex_launcher; }
-
-    gl_feedback& feedback() { return *_feedback; }
-
-    gl_render_target& render_target() { return *_render_target; }
 
 private:
 
@@ -431,6 +421,16 @@ private:
     std::unique_ptr<gl_feedback> _feedback = {};
 
     std::unique_ptr<gl_render_target> _render_target = {};
+
+public:
+
+    gl_program* invoke_program() const noexcept { return _program.get(); }
+
+    gl_vertex_launcher* invoke_vertex_launcher()  const noexcept { return _vertex_launcher.get(); }
+
+    gl_feedback* invoke_feedback()  const noexcept { return _feedback.get(); }
+
+    gl_render_target* invoke_render_target()  const noexcept { return _render_target.get(); }
 
 public:
 
@@ -836,62 +836,16 @@ public:
 
 public:
 
-  /*  void begin_transform_feedback()
-    {
-        if (!_vertex_launcher || !_transform_feedback) return;
-        gl_primitive_mode _TransformFeedbackPrimitiveMode = _vertex_launcher->get_primitive_mode();
-        _transform_feedback->begin_transform_feedback(_TransformFeedbackPrimitiveMode);
-    }
-    void pause_transform_feedback()
-    {
-        if (!_vertex_launcher || !_transform_feedback) return;
-        _transform_feedback->pause_transform_feedback();
-    }
-    void resume_transform_feedback()
-    {
-        if (!_vertex_launcher || !_transform_feedback) return;
-        _transform_feedback->resume_transform_feedback();
-    }
-    void end_transform_feedback()
-    {
-        if (!_vertex_launcher || !_transform_feedback) return;
-        _transform_feedback->end_transform_feedback();
-    }*/
     void begin_conditional_render()
     {
         glBeginConditionalRender(0, GL_QUERY_WAIT);
     }
+
     void end_conditional_render()
     {
         glEndConditionalRender();
     }
-
-    //auto syncable_draw_feedback(uint32 stream_index) const ->std::shared_ptr<gl_fence>
-    //{
-    //    if (!_vertex_launcher || !_transform_feedback) return nullptr;
-    //    _transform_feedback->draw(_vertex_launcher->get_primitive_mode(), stream_index);
-    //    return std::make_shared<gl_fence>();
-    //}
-    //auto syncable_draw_feedback(uint32 stream_index, uint32 instances_num) const ->std::shared_ptr<gl_fence>
-    //{
-    //    if (!_vertex_launcher || !_transform_feedback) return nullptr;
-    //    gl_primitive_mode _TransformFeedbackPrimitiveMode = _vertex_launcher->get_primitive_mode();
-    //    _transform_feedback->draw(_TransformFeedbackPrimitiveMode, stream_index, instances_num);
-    //    return std::make_shared<gl_fence>();
-    //}
-    //
-    //void unsyncable_draw_feedback(uint32 stream_index) const
-    //{
-    //    if (!_vertex_launcher || !_transform_feedback) return;
-    //    _transform_feedback->draw(_vertex_launcher->get_primitive_mode(), stream_index);
-    //}
-    //void unsyncable_draw_feedback(uint32 stream_index, uint32 instances_num) const
-    //{
-    //    if (!_vertex_launcher || !_transform_feedback) return;
-    //    gl_primitive_mode _TransformFeedbackPrimitiveMode = _vertex_launcher->get_primitive_mode();
-    //    _transform_feedback->draw(_TransformFeedbackPrimitiveMode, stream_index, instances_num);
-    //}
-
+    
 private:
 
     void _set_vertex_postprocessor()
