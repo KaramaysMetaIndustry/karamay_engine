@@ -2,14 +2,10 @@
 #define GLSL_FRAGMENT_SHADER_H
 #include "glsl_shader.h"
 
-struct glsl_fragment_shader_input_item
-{
-	std::string type_name;
-	std::string var_name;
-};
-struct glsl_fragment_shader_output_item {};
+struct glsl_fragment_shader_input {};
 
-// .frag
+struct glsl_fragment_shader_output {};
+
 class glsl_fragment_shader : public glsl_shader
 {
 public:
@@ -19,6 +15,12 @@ public:
 	glsl_fragment_shader operator=(const glsl_fragment_shader&) = delete;
 
 	~glsl_fragment_shader() = default;
+
+private:
+
+	glsl_fragment_shader_input _input;
+
+	glsl_fragment_shader_output _output;
 
 public:
 
@@ -35,28 +37,6 @@ public:
 		return _shader->get_compile_status();
 	}
 
-private:
-	std::vector<glsl_fragment_shader_input_item> _input_items;
-	std::vector<glsl_fragment_shader_output_item> _output_items;
-
-protected:
-
-	void _add_input_item(glsl_fragment_shader_input_item input_item)
-	{}
-
-	void _add_output_item(glsl_fragment_shader_output_item output_item)
-	{}
-
-};
-
-class glsl_fragment_shader_template_parameters
-{
-
-};
-
-class glsl_fragment_shader_template final : glsl_fragment_shader
-{
-	glsl_fragment_shader* generate_instance() noexcept { return nullptr; }
 };
 
 

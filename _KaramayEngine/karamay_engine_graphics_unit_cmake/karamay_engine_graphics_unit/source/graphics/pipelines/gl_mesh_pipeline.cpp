@@ -6,13 +6,3 @@ bool gl_mesh_pipeline::load(const std::string& pipeline_dir) noexcept
     std::cout << "pipeline : " << long long(this) << " load succuessfully." << std::endl;
     return true;
 }
-
-void gl_mesh_pipeline::enable() noexcept
-{
-    _mesh_pipeline_program->enable();
-}
-
-void gl_mesh_pipeline::disable() noexcept
-{
-    _mesh_pipeline_program->disable();
-}

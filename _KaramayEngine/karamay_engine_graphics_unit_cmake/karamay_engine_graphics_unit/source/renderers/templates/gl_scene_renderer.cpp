@@ -88,14 +88,10 @@ bool gl_scene_renderer::attach() noexcept
 	{
 		// build pipeline
 		gl_scene_renderer_resource::glsl_vp_pipeline_program* _vp_pipeline_program = nullptr;
-		_gpp.reset(builder.build_graphics_pipeline(_vp_pipeline_program));
-		if (!_gpp->load("shaders\\renderers\\static_mesh_renderer\\mesh_pp")) return false;
 
-		/*_mat_pipeline = builder.build_compute_pipeline(_mat_pipeline_program);
-		if (!_mat_pipeline->load("G:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/shaders/renderers/static_mesh_renderer/mat_pp")) return false;
-
-		_nv_mesh_pipeline = builder.build_mesh_pipeline(_nv_mesh_pipeline_program);
-		if (!_nv_mesh_pipeline->load("G:/PrivateRepos/Karamays/_KaramayEngine/karamay_engine_graphics_unit_cmake/karamay_engine_graphics_unit/shaders/renderers/static_mesh_renderer/nv_mesh_pp")) return false;*/
+		_gpp.reset(builder.build_graphics_pipeline());
+		if (!_gpp->load(_vp_pipeline_program)) 
+			return false;
 
 		{
 			_gpp->vertex_postprocessor.provoke_mode;
@@ -136,10 +132,10 @@ bool gl_scene_renderer::attach() noexcept
 		// set pipeline shader program parameters
 		// explicitly specify the resource parameter uses
 		// you can also change these when rendering
-		auto& _program = _gpp->program();
+		/*auto& _program = _gpp->program();
 		_program.invoke_uniform_block("wait");
 		_program.invoke_shader_storage_block("");
-		_program.invoke_atomic_uint("");
+		_program.invoke_atomic_uint("");*/
 
 		// you can reallocate or fill vertex attributes, indices, instance attributes
 		// all data format are fixed after initialization, only thing you can changed only number of these attribs

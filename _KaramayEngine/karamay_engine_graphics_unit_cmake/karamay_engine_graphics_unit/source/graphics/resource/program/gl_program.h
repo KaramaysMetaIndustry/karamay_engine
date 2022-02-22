@@ -8,6 +8,7 @@
 #include "../framebuffer/gl_framebuffer.h"
 #include "../texture/gl_texture.h"
 
+class glsl_pipeline_program;
 
 enum class gl_program_interface
 {
@@ -47,19 +48,16 @@ enum class gl_program_interface
 class gl_program final : public gl_object
 {
 public:
-    gl_program() : 
-        gl_object(gl_object_type::PROGRAM_OBJ) 
-    {
-        _handle = glCreateProgram();
-    }
+    gl_program();
 
     gl_program(const gl_program&) = delete;
     gl_program& operator=(const gl_program&) = delete;
 
-    ~gl_program() 
-    {
-        glDeleteProgram(_handle);
-    }
+    ~gl_program();
+
+private:
+
+    glsl_pipeline_program* _invoked_glsl_pipeline_program = nullptr;
 
 public:
 
@@ -74,38 +72,17 @@ public:
 	 * (3) introspection
 	 * (4) state setting
 	 */
-    bool load(const std::vector<gl_shader*>& shaders) noexcept
-    {
-        // attach shaders
-        for (const auto& _shader : shaders)
-        {
-            glAttachShader(_handle, _shader->get_handle());
-        }
+    bool load(glsl_pipeline_program* glsl_program) noexcept;
 
-        // set linking parameters
-        //glBindAttribLocation(_handle, 0, ""); // input
-        //glBindFragDataLocation(_handle, 0, ""); // output
-        //glTransformFeedbackVaryings(_handle, 10, {"", ""}, GL_INTERLEAVED_ATTRIBS );
+    /*
+    *
+    */
+    bool is_loaded() const noexcept;
 
-        // link
-        glLinkProgram(_handle);
-
-        // check the program state
-        if (!is_linked())
-        {
-            std::int32_t _log_length = info_log_length();
-            std::vector<char> _log;
-            _log.resize(_log_length);
-            glGetProgramInfoLog(_handle, _log_length, nullptr, _log.data());
-            _log.push_back('\0');
-            std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << _log_length << std::endl;
-            std::cerr << _log.data() << std::endl;
-            glValidateProgram(_handle);
-            return false;
-        }
-        std::cout << "program load successful.\n" << std::endl;
-        return true;
-    }
+    /*
+    *
+    */
+    glsl_pipeline_program* proxy() const noexcept;
 
 public:
 
@@ -113,18 +90,12 @@ public:
      * check the program state, and bind the program to current context,
      * there is only one program can be bound to context at the same time
      * */
-    void enable() noexcept
-    {
-        glUseProgram(_handle);
-    }
+    void enable() noexcept;
 
     /*
      * unbind the program from current context
      * */
-	void disable() noexcept
-    {
-        glUseProgram(0);
-    }
+    void disable() noexcept;
 
 public:
 

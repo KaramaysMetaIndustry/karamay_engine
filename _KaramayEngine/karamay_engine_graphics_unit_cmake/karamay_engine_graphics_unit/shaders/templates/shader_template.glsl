@@ -4,8 +4,9 @@
 #pragma STDGL invariant(all)
 #pragma optimize(on)
 #pragma debug(on)
-#include "/common.glsl"
-#include "/common.frag.glsl"
+#include "/shader_common.glsl" //! #include "shader_common.glsl"
+
+
 
 
 

@@ -10,31 +10,12 @@
 class gl_compute_pipeline final : public gl_pipeline
 {
 public:
-    gl_compute_pipeline(glsl_compute_pipeline_program* program)
-    {
-        _program.reset(program);
-    }
+    gl_compute_pipeline() = default;
 
 	gl_compute_pipeline(const gl_compute_pipeline&) = delete;
 	gl_compute_pipeline& operator=(const gl_compute_pipeline&) = delete;
 
     ~gl_compute_pipeline() = default;
-
-private:
-
-    std::unique_ptr<glsl_compute_pipeline_program> _program = {};
-
-public:
-
-    glsl_compute_pipeline_program& program() noexcept { return *_program; }
-
-public:
-
-    bool load(const std::string& pipeline_dir) noexcept override;
-
-    void enable() noexcept override;
-
-    void disable() noexcept override;
 
 public:
 

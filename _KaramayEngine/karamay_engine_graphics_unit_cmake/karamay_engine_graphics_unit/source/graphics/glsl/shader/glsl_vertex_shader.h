@@ -2,10 +2,10 @@
 #define GLSL_VERTEX_SHADER_H
 #include "glsl_shader.h"
 
-struct glsl_vertex_attribute {};
-struct glsl_instance_attribute {};
+struct glsl_vertex_shader_input {};
 
-// .vert
+struct glsl_vertex_shader_output {};
+
 class glsl_vertex_shader : public glsl_shader
 {
 public:
@@ -18,24 +18,20 @@ public:
 
 public:
 
-	bool generate_template(const std::string& pipeline_dir) override
-	{
-		return false;
-	}
+	bool load(const std::string& pipeline_dir) override;
 
-	bool load(const std::string& pipeline_dir) override
-	{
-		_shader = new gl_shader(gl_shader_type::VERTEX_SHADER, pipeline_dir + "/" + pipeline_dir.substr(pipeline_dir.find_last_of("\\") + 1) + ".vert");
-		return _shader->get_compile_status();
-	}
+	bool load();
 
-};
+private:
 
-class glsl_vertex_shader_template_parameters
-{};
+	vertex_shader_input _input;
+	vertex_shader_output _output;
 
-class glsl_vertex_shader_template
-{
+public:
+
+	const vertex_shader_input& input() const noexcept { return _input; }
+
+	const vertex_shader_output& output() const noexcept { return _output; }
 
 };
 

@@ -2,27 +2,19 @@
 #include "graphics/glsl/program/glsl_graphics_pipeline_program.h"
 #include "engine/karamay_engine.h"
 
-namespace gl_shader_toy_renderer_resource
-{
-	def_graphicsPipelineProgram(vp)
-		def_vertexShader() 
-		}; decl_vertexShader();
-		def_fragmentShader()
-		}; decl_fragmentShader();
-	};
-}
-
 gl_shader_toy_renderer* gl_shader_toy_renderer::_instance = nullptr;
 
 bool gl_shader_toy_renderer::attach() noexcept
 {
 	if (!_shader_toy_gpp)
 	{
-		auto _vp = new gl_shader_toy_renderer_resource::glsl_vp_pipeline_program();
-		_vp->load(karamay_engine::get_engine_root() + "shaders\\renderers\\shader_toy_renderer\\pp");
-		
-		_shader_toy_gpp = std::make_unique<gl_graphics_pipeline>();
+		auto _vp = new glsl_graphics_pipeline_program();
+		if (!_vp || !_vp->load(karamay_engine::get_engine_root() + "shaders\\renderers\\shader_toy_renderer\\pp"))
+		{
+			return false;
+		}
 
+		_shader_toy_gpp = std::make_unique<gl_graphics_pipeline>();
 		if (!_shader_toy_gpp || !_shader_toy_gpp->load(_vp))
 		{
 			return false;
@@ -74,7 +66,7 @@ void gl_shader_toy_renderer::render(float delta_time) noexcept
 		_acc_time += delta_time * 2;
 
 		_shader_toy_gpp->enable();
-		glUniform1f(glGetUniformLocation(_shader_toy_gpp->program().get_program_handle(), "iTime"), _acc_time);
+		glUniform1f(glGetUniformLocation(_shader_toy_gpp->program().get_handle(), "iTime"), _acc_time);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		_shader_toy_gpp->disable();
 	}

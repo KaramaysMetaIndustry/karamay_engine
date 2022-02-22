@@ -15,58 +15,16 @@ public:
 
 public:
 
-	bool load(const std::string& pipeline_dir) override
-	{
-		if (_shaders.size() != 1) return false;
-
-		std::vector<gl_shader*> _real_shaders;
-		for (auto _shader : _shaders)
-		{
-			_shader->load(pipeline_dir);
-			_real_shaders.push_back(_shader->get_shader());
-		}
-
-		_program = new gl_program();
-		if (_program->load(_real_shaders))
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-
-		return true;
-	}
-
-	bool generate_template(const std::string& pipeline_dir) override
-	{
-		return false;
-	}
+	bool load(const std::string& pipeline_dir) override;
 
 };
 
 class glsl_compute_pipeline_template_parameters
 {
-private:
-
-	glsl_compute_shader_template_parameters* _comp_shader_template_parameters;
-
 };
 
 class glsl_compute_pipeline_template
 {
-private:
-
-	glsl_compute_shader_template* _comp_template;
-
-public:
-
-	glsl_compute_pipeline_program* generate(glsl_compute_pipeline_template_parameters* parameters) noexcept
-	{
-		return nullptr;
-	}
-
 };
 
 

@@ -14,20 +14,22 @@ public:
 
 	~glsl_pipeline_program() = default;
 
-public:
-	
-	virtual bool load(const std::string& pipeline_dir) = 0;
-
-	virtual bool generate_template(const std::string& pipeline_dir) = 0;
-
 protected:
 
 	std::vector<glsl_shader*> _shaders;
 
+public:
+
+	virtual bool load(const std::string& pipeline_dir) = 0;
+
+	void invoke_shaders(std::vector<glsl_shader*>& out_shaders);
+
+protected:
+
 	std::unordered_map<std::string, glsl_uniform_block*> _uniform_blocks;
-	
+
 	std::unordered_map<std::string, glsl_shader_storage_block*> _shader_storage_blocks;
-	
+
 	std::unordered_map<std::string, glsl_atomic_counter*> _atomic_counters;
 
 public:
@@ -52,25 +54,6 @@ public:
 		if (_it != _atomic_counters.cend()) return _it->second;
 		return nullptr;
 	}
-
-public:
-
-	gl_program* _program;
-
-	void enable() 
-	{ 
-		if (_program) _program->enable(); 
-	}
-
-	void disable() 
-	{ 
-		if (_program)
-		{
-			_program->disable();
-		}
-	}
-
-	uint32 get_program_handle() const { return _program->get_handle(); }
 
 protected:
 

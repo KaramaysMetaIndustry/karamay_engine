@@ -26,7 +26,6 @@ namespace std_ui_framework
 
 	private:
 
-
 		std::vector<gl_renderer*> _renderers;
 
 	public:

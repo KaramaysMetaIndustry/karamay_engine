@@ -2,7 +2,10 @@
 #define GLSL_TESSELLATION_EVALUATION_SHADER_H
 #include "glsl_shader.h"
 
-// .tese
+struct glsl_tessellation_evaluation_shader_input {};
+
+struct glsl_tessellation_evaluation_shader_output {};
+
 class glsl_tessellation_evaluation_shader : public glsl_shader
 {
 public:
@@ -12,6 +15,11 @@ public:
 	glsl_tessellation_evaluation_shader& operator=(const glsl_tessellation_evaluation_shader&) = delete;
 
 	~glsl_tessellation_evaluation_shader() = default;
+
+private:
+
+	glsl_tessellation_evaluation_shader_input _input;
+	glsl_tessellation_evaluation_shader_output _output;
 
 public:
 
@@ -27,11 +35,5 @@ public:
 	}
 
 };
-
-class glsl_tessellation_evaluation_shader_template_parameters
-{};
-
-class glsl_tessellation_evaluation_shader_template
-{};
 
 #endif

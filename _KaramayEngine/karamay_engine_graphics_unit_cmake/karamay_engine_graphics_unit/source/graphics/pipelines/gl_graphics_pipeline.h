@@ -398,10 +398,6 @@ class gl_graphics_pipeline final : public gl_pipeline
 {
 public:
     gl_graphics_pipeline() = default;
-    gl_graphics_pipeline(glsl_graphics_pipeline_program* program)
-    {
-        _program.reset(program);
-    }
 
     gl_graphics_pipeline(const gl_graphics_pipeline&) = delete;
     gl_graphics_pipeline& operator=(const gl_graphics_pipeline&) = delete;
@@ -409,8 +405,6 @@ public:
     ~gl_graphics_pipeline() = default;
 
 public:
-
-    bool load(const std::string& pipeline_dir) noexcept override;
 
     bool load(glsl_graphics_pipeline_program* program) noexcept;
 
@@ -420,7 +414,7 @@ public:
 
 public:
 
-    glsl_graphics_pipeline_program& program() { return *_program; }
+    gl_program& program() { return *_program; }
 
     gl_vertex_launcher& vertex_launcher() { return *_vertex_launcher; }
 
@@ -430,7 +424,7 @@ public:
 
 private:
 
-    std::unique_ptr<glsl_graphics_pipeline_program> _program = {};
+    std::unique_ptr<gl_program> _program = {};
 
     std::unique_ptr<gl_vertex_launcher> _vertex_launcher = {};
 

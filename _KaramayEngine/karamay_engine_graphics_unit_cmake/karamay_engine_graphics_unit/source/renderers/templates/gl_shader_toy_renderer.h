@@ -31,6 +31,8 @@ private:
 
 	float _acc_time = 0.0f;
 
+	void load_rti(const std::string_view& rti_name) {}
+
 public:
 
 	bool attach() noexcept override;

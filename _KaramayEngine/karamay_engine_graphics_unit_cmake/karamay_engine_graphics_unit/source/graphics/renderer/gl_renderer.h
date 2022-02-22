@@ -3,12 +3,19 @@
 #include "graphics/pipelines/gl_graphics_pipeline.h"
 #include "graphics/pipelines/gl_compute_pipeline.h"
 #include "graphics/pipelines/gl_mesh_pipeline.h"
-#include "graphics/pass/gl_pass.h"
 
 class gl_resource
 {
 
 };
+
+struct gl_renderer_template_instance
+{
+    std::unordered_map<std::string_view, glsl_graphics_pipeline_program*> name_to_graphics_pipeline;
+    std::unordered_map<std::string_view, glsl_mesh_pipeline_program*> name_to_mesh_pipeline;
+    std::unordered_map<std::string_view, glsl_compute_pipeline_program*> name_to_compute_pipeline;
+};
+
 
 class gl_renderer
 {
@@ -32,6 +39,8 @@ public:
     virtual bool detach() noexcept = 0;
 
 protected:
+
+    static gl_renderer_template_instance* load_rti(const std::string_view& rti_path) { return nullptr; }
 
     static void _flush_commands() noexcept { glFlush(); }
 
@@ -271,20 +280,17 @@ protected:
             return _framebuffer;
         }
         
-        gl_graphics_pipeline* build_graphics_pipeline(glsl_graphics_pipeline_program* program)
+        gl_graphics_pipeline* build_graphics_pipeline()
         {
-            if (!program) return nullptr;
-            return new gl_graphics_pipeline(program);
+            return new gl_graphics_pipeline();
         }
-        gl_mesh_pipeline* build_mesh_pipeline(glsl_mesh_pipeline_program* program)
+        gl_mesh_pipeline* build_mesh_pipeline()
         {
-            if (!program) return nullptr;
-            return new gl_mesh_pipeline(program);
+            return new gl_mesh_pipeline();
         }
-        gl_compute_pipeline* build_compute_pipeline(glsl_compute_pipeline_program* program)
+        gl_compute_pipeline* build_compute_pipeline()
         {
-            if (!program) return nullptr;
-            return new gl_compute_pipeline(program);
+            return new gl_compute_pipeline();
         }
 
     private:

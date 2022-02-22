@@ -2,7 +2,11 @@
 #define GLSL_TESSELLATION_CONTROL_SHADER_H
 #include "glsl_shader.h"
 
-// .tesc
+struct glsl_tessellation_control_shader_input {};
+									  
+struct glsl_tessellation_control_shader_output {};
+
+
 class glsl_tessellation_control_shader : public glsl_shader
 {
 public:
@@ -12,6 +16,12 @@ public:
 	glsl_tessellation_control_shader& operator=(const glsl_tessellation_control_shader&) = delete;
 
 	~glsl_tessellation_control_shader() = default;
+
+private:
+
+	glsl_tessellation_control_shader_input _input;
+
+	glsl_tessellation_control_shader_output _output;
 
 public:
 

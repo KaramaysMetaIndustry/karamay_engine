@@ -1,4 +1,87 @@
 #include "gl_program.h"
+#include "graphics/glsl/program/glsl_pipeline_program.h"
+#include "graphics/glsl/shader/glsl_shader.h"
+
+gl_program::gl_program() :
+	gl_object(gl_object_type::PROGRAM_OBJ)
+{
+	_handle = glCreateProgram();
+}
+
+gl_program::~gl_program()
+{
+	glDeleteProgram(_handle);
+}
+
+bool gl_program::load(glsl_pipeline_program* glsl_program) noexcept
+{
+	if (!glsl_program)
+		return false;
+
+	std::vector<glsl_shader*> _invoked_glsl_shaders;
+	glsl_program->invoke_shaders(_invoked_glsl_shaders);
+
+	// load shaders
+	std::vector<gl_shader*> _shaders;
+
+	// attach shaders
+	for (const auto& _shader : _shaders)
+	{
+		glAttachShader(_handle, _shader->get_handle());
+	}
+
+	// set linking parameters
+	//glBindAttribLocation(_handle, 0, ""); // input
+	//glBindFragDataLocation(_handle, 0, ""); // output
+	//glTransformFeedbackVaryings(_handle, 10, {"", ""}, GL_INTERLEAVED_ATTRIBS );
+
+	// link
+	glLinkProgram(_handle);
+
+	// check the program state
+	if (!is_linked())
+	{
+		std::int32_t _log_length = info_log_length();
+		std::vector<char> _log;
+		_log.resize(_log_length);
+		glGetProgramInfoLog(_handle, _log_length, nullptr, _log.data());
+		_log.push_back('\0');
+		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << _log_length << std::endl;
+		std::cerr << _log.data() << std::endl;
+		glValidateProgram(_handle);
+		return false;
+	}
+	std::cout << "program load successful.\n" << std::endl;
+
+	_invoked_glsl_pipeline_program = glsl_program;
+	return true;
+}
+
+glsl_pipeline_program* gl_program::proxy() const noexcept
+{
+	return _invoked_glsl_pipeline_program;
+}
+
+bool gl_program::is_loaded() const noexcept
+{
+	return _invoked_glsl_pipeline_program != nullptr;
+}
+
+void gl_program::enable() noexcept
+{
+	if (_invoked_glsl_pipeline_program)
+	{
+		glUseProgram(_handle);
+	}
+}
+
+void gl_program::disable() noexcept
+{
+	if (_invoked_glsl_pipeline_program)
+	{
+		glUseProgram(0);
+	}
+}
 
 void gl_program::_install()
 {

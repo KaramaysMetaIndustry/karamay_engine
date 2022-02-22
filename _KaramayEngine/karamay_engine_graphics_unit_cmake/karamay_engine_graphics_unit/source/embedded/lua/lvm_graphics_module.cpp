@@ -220,7 +220,7 @@ namespace gl_graphics_pipline_for_lua
 		{
 			return 0;
 		}
-		auto _pipeline = new gl_graphics_pipeline(_program);
+		auto _pipeline = new gl_graphics_pipeline();
 		if (!_pipeline)
 		{
 			return 0;
@@ -247,8 +247,8 @@ namespace gl_graphics_pipline_for_lua
 			return 0;
 		}
 		auto _pipeline_dir = lua_api::basic::to<std::string>(l, 2);
-		auto _result = _pipeline->load(_pipeline_dir);
-		lua_api::push(l, _result);
+		/*auto _result = _pipeline->load(_pipeline_dir);
+		lua_api::push(l, _result);*/
 		// stack : (boolean), string, userdata
 		return 1;
 	}
@@ -364,8 +364,8 @@ namespace gl_compute_pipeline_for_lua
 			return 0;
 		}
 		auto _program = (glsl_compute_pipeline_program*)lua_api::to_cpp_instance(l, 1, "glsl_compute_pipeline_program_clazz");
-		auto _pipeline = new gl_compute_pipeline(_program);
-		lua_api::basic::push(l, _pipeline);
+		/*auto _pipeline = new gl_compute_pipeline(_program);
+		lua_api::basic::push(l, _pipeline);*/
 		// stack : userdata, userdata
 		lua_api::auxiliary::set_metatable(l, "gl_compute_pipeline_clazz");
 		// stack : (userdata), userdata

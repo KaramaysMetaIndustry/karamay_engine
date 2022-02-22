@@ -2,6 +2,10 @@
 #define GLSL_GEOMETRY_SHADER_H
 #include "glsl_shader.h"
 
+struct glsl_geometry_input {};
+
+struct glsl_geometry_output {};
+
 class glsl_geometry_shader : public glsl_shader
 {
 public:
@@ -11,6 +15,12 @@ public:
 	glsl_geometry_shader operator=(const glsl_geometry_shader&) = delete;
 
 	~glsl_geometry_shader() = default;
+
+private:
+
+	glsl_geometry_input _input;
+
+	glsl_geometry_output _output;
 
 public:
 
@@ -25,15 +35,6 @@ public:
 		return _shader->get_compile_status();
 	}
 
-};
-
-class glsl_geometry_shader_template_parameters final
-{
-};
-
-class glsl_geometry_shader_template final : public glsl_geometry_shader
-{
-	glsl_geometry_shader* generate_instance(glsl_geometry_shader_template_parameters* parameters) noexcept { return nullptr; }
 };
 
 
