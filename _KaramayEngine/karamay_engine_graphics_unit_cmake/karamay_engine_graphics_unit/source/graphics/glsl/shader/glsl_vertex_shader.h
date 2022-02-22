@@ -29,20 +29,6 @@ public:
 		return _shader->get_compile_status();
 	}
 
-	const std::vector<glsl_vertex_attribute>& vertex_attributes() const { return _vertex_attributes; }
-
-	const std::vector<glsl_instance_attribute>& instance_attributes() const { return _instance_attributes; }
-
-private:
-
-	std::vector<glsl_vertex_attribute> _vertex_attributes;
-
-	std::vector<glsl_instance_attribute> _instance_attributes;
-
-protected:
-
-	void _create_vertex_attribute() {}
-
 };
 
 class glsl_vertex_shader_template_parameters

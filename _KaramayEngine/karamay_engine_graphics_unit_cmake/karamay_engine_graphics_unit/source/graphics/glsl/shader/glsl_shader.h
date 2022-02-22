@@ -12,14 +12,16 @@ class glsl_shader
 public:
 
 	glsl_shader() = default;
+	glsl_shader(const glsl_shader&) = delete;
+	glsl_shader& operator=(const glsl_shader&) = delete;
 
-	~glsl_shader() = default;
+	virtual ~glsl_shader() = default;
 
 public:
 
-	virtual bool generate_template(const std::string& pipeline_dir) = 0;
+	virtual bool generate_template(const std::string& pipeline_dir) { return false; };
 
-	virtual bool load(const std::string& path) = 0;
+	virtual bool load(const std::string& path) { return false; };
 
 	gl_shader* get_shader() const { return _shader; }
 
@@ -41,16 +43,13 @@ public:
 protected:
 
 	gl_shader* _shader;
-
 	std::vector<glsl_uniform_block*> _uniform_block_refs;
 	std::vector<glsl_shader_storage_block*> _shader_storage_block_refs;
 	std::vector<glsl_atomic_counter*> _atomic_counter_refs;
-
 	void* _ref_uniform_block(const std::string& name)
 	{
 		return nullptr;
 	}
-
 	void* _ref_shader_storage_block(const std::string& name)
 	{
 		return nullptr;

@@ -14,6 +14,8 @@ private:
 
 public:
 
+	~gl_shader_toy_renderer() = default;
+
 	static gl_shader_toy_renderer* invoke() noexcept
 	{
 		if (!_instance)
@@ -22,8 +24,6 @@ public:
 		}
 		return _instance;
 	}
-
-	~gl_shader_toy_renderer() = default;
 
 private:
 
@@ -39,15 +39,9 @@ public:
 
 	bool detach() noexcept override;
 
-public:
-
-	void add_template(const std::string& name) noexcept {}
-
-	void switch_template(const std::string& name) noexcept {}
-
 };
 
-class gl_shader_toy_template
+class gl_shader_toy_template final
 {
 	gl_shader_toy_template()
 	{
