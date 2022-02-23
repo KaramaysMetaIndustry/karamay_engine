@@ -27,6 +27,10 @@ public:
 
 private:
 
+	bool _attached = false;
+
+	bool _awake = false;
+
 	std::unique_ptr<gl_graphics_pipeline> _main_graphics_pipeline = {};
 
 	std::unique_ptr<gl_graphics_pipeline> _post_processing_pipeline = {};
@@ -36,10 +40,15 @@ private:
 public:
 
 	bool initialize() noexcept override;
+
 	bool attach() noexcept override;
+
 	bool hibernate() noexcept override;
+
 	void render(float delta_time) noexcept override;
+
 	bool wake() noexcept override;
+
 	bool detach() noexcept override;
 
 };
@@ -48,7 +57,6 @@ class gl_shader_toy_template final
 {
 	gl_shader_toy_template()
 	{
-
 	}
 
 public:

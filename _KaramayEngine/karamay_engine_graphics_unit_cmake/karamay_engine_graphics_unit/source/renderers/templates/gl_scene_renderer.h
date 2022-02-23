@@ -2,21 +2,6 @@
 #define GL_SCENE_RENDERER_H
 #include "graphics/renderer/gl_renderer.h"
 
-class landscape
-{
-
-};
-
-class static_mesh
-{
-
-};
-
-class dynamic_mesh
-{
-
-};
-
 class gl_scene_renderer : public gl_renderer
 {
 private:
@@ -46,19 +31,17 @@ private:
 
 public:
 
+	bool initialize() noexcept override;
+
 	bool attach() noexcept override;
+
+	bool hibernate() noexcept override;
 
 	void render(float delta_time) noexcept override;
 
+	bool wake() noexcept override;
+
 	bool detach() noexcept override;
-
-public:
-
-	void add(static_mesh* mesh) noexcept {}
-
-	void add(dynamic_mesh* mesh) noexcept {}
-
-	void add(landscape* ls) noexcept {}
 
 };
 

@@ -82,6 +82,11 @@ namespace gl_scene_renderer_resource
 
 gl_scene_renderer* gl_scene_renderer::_instance = nullptr;
 
+bool gl_scene_renderer::initialize() noexcept
+{
+	return false;
+}
+
 bool gl_scene_renderer::attach() noexcept
 {
 	if (!_gpp && !_cpp && !_mpp)
@@ -173,6 +178,11 @@ bool gl_scene_renderer::attach() noexcept
 	return false;
 }
 
+bool gl_scene_renderer::hibernate() noexcept
+{
+	return false;
+}
+
 void gl_scene_renderer::render(float delta_time) noexcept
 {
 	if (_gpp && _cpp && _mpp)
@@ -187,6 +197,11 @@ void gl_scene_renderer::render(float delta_time) noexcept
 		//_gpp->unsyncable_draw_arrays(0, 1024);
 		_gpp->disable();
 	}
+}
+
+bool gl_scene_renderer::wake() noexcept
+{
+	return false;
 }
 
 bool gl_scene_renderer::detach() noexcept
