@@ -6,6 +6,7 @@ gl_shader_toy_renderer* gl_shader_toy_renderer::_instance = nullptr;
 
 bool gl_shader_toy_renderer::initialize() noexcept
 {
+	
 	return false;
 }
 
@@ -102,6 +103,14 @@ void gl_shader_toy_renderer::render(float delta_time) noexcept
 		_main_graphics_pipeline->enable();
 		glUniform1f(glGetUniformLocation(_main_graphics_pipeline->invoke_program()->get_handle(), "iTime"), _acc_time);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+		_main_graphics_pipeline->draw_with_query(gl_query(gl_query_type::TIMESTAMP),
+			[](gl_graphics_pipeline& pipeline) 
+			{
+				
+			}
+		);
+
 		_main_graphics_pipeline->disable();
 	}
 }

@@ -324,14 +324,14 @@ namespace gl_graphics_pipline_for_lua
 		auto _pipeline = (gl_graphics_pipeline*)lua_api::to_cpp_instance(l, 1, "gl_graphics_pipeline_clazz");
 		if (_num == 3)
 		{
-			_pipeline->unsyncable_draw_arrays(
+			_pipeline->draw_arrays(
 				lua_api::basic::to<uint32>(l, 2),
 				lua_api::basic::to<uint32>(l, 3)
 			);
 		}
 		if (_num == 5)
 		{
-			_pipeline->unsyncable_draw_arrays(
+			_pipeline->draw_arrays(
 				lua_api::basic::to<uint32>(l, 2),
 				lua_api::basic::to<uint32>(l, 3),
 				lua_api::basic::to<uint32>(l, 4),

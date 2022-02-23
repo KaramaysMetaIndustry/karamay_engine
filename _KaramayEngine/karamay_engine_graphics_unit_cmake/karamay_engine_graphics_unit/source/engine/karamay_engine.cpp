@@ -1,8 +1,8 @@
 #include "karamay_engine.h"
 #include "framework/world/world.h"
 #include "framework/avatars/avatar.h"
-#include "framework/prostheses/entity_prosthesis.h"
-#include "framework/prostheses/singularity_prosthesis.h"
+#include "framework/prostheses/entities/entity_prosthesis.h"
+#include "framework/prostheses/singularities/singularity_prosthesis.h"
 
 std::string karamay_engine::_engine_root_dir;
 

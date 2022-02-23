@@ -1,9 +1,4 @@
 #include "avatar.h"
-#include "framework/prostheses/singularity_prosthesis.h"
-#include "framework/prostheses/entity_prosthesis.h"
-#include "framework/prostheses/mesh_prosthesis.h"
-#include "renderer_framework/std_scene_framework/std_scene_framework.h"
-#include "framework/world/world.h"
 
 avatar::avatar(world* owner, const std::string_view& name) :
     _invoked_owner(owner), _name(name)

@@ -1,6 +1,6 @@
 #ifndef SINGULARITY_PROSTHESIS_H
 #define SINGULARITY_PROSTHESIS_H
-#include "prosthesis.h"
+#include "framework/prostheses/prosthesis.h"
 
 class singularity_prosthesis : public prosthesis
 {

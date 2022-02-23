@@ -1,26 +1,6 @@
 #ifndef MESH_PROSTHESIS_H
 #define MESH_PROSTHESIS_H
-#include "entity_prosthesis.h"
-
-class material
-{
-
-};
-
-class mesh
-{
-
-};
-
-class static_mesh : public mesh
-{
-
-};
-
-class dynamic_mesh : public mesh
-{
-
-};
+#include "framework/prostheses/entities/entity_prosthesis.h"
 
 class mesh_prosthesis : public entity_prosthesis
 {
@@ -31,14 +11,6 @@ public:
 	mesh_prosthesis& operator=(const mesh_prosthesis&) = delete;
 
 	virtual ~mesh_prosthesis() = default;
-
-private:
-
-	std::unique_ptr<mesh> _mesh = {};
-
-public:
-
-	mesh* invoke_mesh() const noexcept { return _mesh.get(); }
 
 };
 

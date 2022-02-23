@@ -1,9 +1,11 @@
 #ifndef AVATAR_H
 #define AVATAR_H
 #include "public/glm.h"
+#include "framework/prostheses/prosthesis.h"
+#include "framework/prostheses/singularities/singularity_prosthesis.h"
+#include "framework/prostheses/entities/entity_prosthesis.h"
+#include "framework/prostheses/entities/mesh_prostheses/mesh_prosthesis.h"
 #include "framework/world/world.h"
-#include "framework/prostheses/singularity_prosthesis.h"
-#include "framework/prostheses/entity_prosthesis.h"
 
 class avatar
 {

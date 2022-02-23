@@ -3,6 +3,7 @@
 #include "graphics/pipelines/gl_pipeline.h"
 #include "graphics/glsl/program/glsl_graphics_pipeline_program.h"
 #include "graphics/resource/buffers/common_buffer/gl_element_array_buffer.h"
+#include "graphics/resource/query/gl_query.h"
 
 enum class gl_stencil_op : GLenum
 {
@@ -436,10 +437,8 @@ public:
 
     bool _enable_debug_output = false;
     bool _enable_debug_output_synchronous = false;
-
     bool _enable_depth_clamp = false;
     bool _enable_clip_distance0 = false;
-
     bool _enable_texture_cube_map_sampless = false;
 
     struct gl_vertex_postprocessor
@@ -618,188 +617,104 @@ public:
         } logical_operation; // <=> framebuffer
     } fragment_postprocessor = {};
 
-public:
+public: 
+    // draw commands
 
-    auto syncable_draw_arrays(uint32 vertex_offset, uint32 vertices_num) const -> std::shared_ptr<gl_fence>
+    void draw_arrays(uint32 offset, uint32 num) noexcept
     {
-        if (!_vertex_launcher || vertex_offset + vertices_num >= _vertex_launcher->get_vertices_num()) return nullptr;
-        glDrawArrays(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), vertex_offset, vertices_num);
-        return std::make_shared<gl_fence>();
-    }
-    auto syncable_draw_arrays(uint32 vertex_offset, uint32 vertices_num, uint32 instances_num, uint32 base_instance) const -> std::shared_ptr<gl_fence>
-    {
-        if (!_vertex_launcher || vertex_offset + vertices_num >= _vertex_launcher->get_vertices_num()) return nullptr;
-        if (base_instance >= instances_num) return nullptr;
-        glDrawArraysInstancedBaseInstance(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), vertex_offset, vertices_num, instances_num, base_instance);
-        return std::make_shared<gl_fence>();
-    }
-    auto syncable_draw_elements(uint32 element_offset, uint32 elements_num) const -> std::shared_ptr<gl_fence>
-    {
-        if (element_offset + elements_num >= _vertex_launcher->get_elements_num()) return nullptr;
-        glDrawElements(
-            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
-            elements_num, static_cast<GLenum>(_vertex_launcher->get_element_type()),
-            (void*)(_vertex_launcher->get_element_size() * element_offset)
-        );
-        return std::make_shared<gl_fence>();
-    }
-    auto syncable_draw_elements(uint32 element_offset, uint32 elements_num, uint32 instances_num, uint32 base_instance) const -> std::shared_ptr<gl_fence>
-    {
-        if (!_vertex_launcher) return nullptr;
-        glDrawElementsInstancedBaseInstance(
-            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
-            elements_num, static_cast<GLenum>(_vertex_launcher->get_element_type()), (void*)(_vertex_launcher->get_element_size() * element_offset),
-            instances_num, base_instance
-        );
-        return std::make_shared<gl_fence>();
-    }
-    auto syncable_draw_elements(uint32 element_offset, uint32 elements_num, uint32 base_vertex) const -> std::shared_ptr<gl_fence>
-    {
-        if (!_vertex_launcher) return nullptr;
-        glDrawElementsBaseVertex(
-            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
-            elements_num, static_cast<GLenum>(_vertex_launcher->get_element_type()), (void*)(_vertex_launcher->get_element_size() * element_offset),
-            base_vertex
-        );
-        return std::make_shared<gl_fence>();
-    }
-    auto syncable_draw_elements(uint32 element_offset, uint32 elements_num, uint32 base_vertex, uint32 instances_num, uint32 base_instance) const -> std::shared_ptr<gl_fence>
-    {
-        if (!_vertex_launcher) return nullptr;
-        glDrawElementsInstancedBaseVertexBaseInstance(
-            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
-            elements_num, static_cast<GLenum>(_vertex_launcher->get_element_type()), (void*)(_vertex_launcher->get_element_size() * element_offset),
-            instances_num, base_vertex, base_instance
-        );
-        return std::make_shared<gl_fence>();
-    }
-    auto syncable_draw_range_elements(uint32 element_start, uint32 element_end, uint32 element_offset, uint32 elements_num, uint32 base_vertex) const -> std::shared_ptr<gl_fence>
-    {
-        if (!_vertex_launcher) return nullptr;
-        glDrawRangeElementsBaseVertex(
-            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
-            element_start, element_end,
-            elements_num, static_cast<GLenum>(_vertex_launcher->get_element_type()), (void*)(_vertex_launcher->get_element_size() * element_offset),
-            base_vertex
-        );
-        return std::make_shared<gl_fence>();
-    }
-    auto syncable_multi_draw_arrays(const std::vector<uint32>& vertex_offsets, const std::vector<uint32>& vertices_nums) const -> std::shared_ptr<gl_fence>
-    {
-        if (!_vertex_launcher) return nullptr;
-        if (vertex_offsets.size() != vertices_nums.size()) return nullptr;
-        glMultiDrawArrays(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
-            (const int32*)vertex_offsets.data(), (const int32*)vertices_nums.data(), vertex_offsets.size()
-        );
-        return std::make_shared<gl_fence>();
-    }
-    auto syncable_multi_draw_elements(const std::vector<uint32>& element_offsets, std::vector<uint32>& elements_nums) const -> std::shared_ptr<gl_fence>
-    {
-        if (!_vertex_launcher) return nullptr;
-        glMultiDrawElements(
-            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), (const int32*)elements_nums.data(),
-            static_cast<GLenum>(_vertex_launcher->get_element_type()),
-            nullptr, element_offsets.size()
-        );
-        return std::make_shared<gl_fence>();
+        if (!_vertex_launcher || offset + num >= _vertex_launcher->get_vertices_num())
+        {
+            return;
+        }
+        glDrawArrays(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), offset, num);
     }
     
-    auto syncable_indirect_draw_arrays(const gl_draw_arrays_indirect_command& command) const -> std::shared_ptr<gl_fence>
+    void draw_arrays(uint32 offset, uint32 num, uint32 instances_num, uint32 base_instance)
     {
-        glDrawArraysIndirect(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), (const void*)&command);
-        return std::make_shared<gl_fence>();
-    }
-    auto syncable_indirect_draw_elements(const gl_draw_elements_indirect_command& command) const -> std::shared_ptr<gl_fence>
-    {
-        glDrawElementsIndirect(
-            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
-            static_cast<GLenum>(_vertex_launcher->get_element_type()),
-            (const void*)&command
-        );
-        return std::make_shared<gl_fence>();
-    }
-    auto syncable_indirect_multi_draw_arrays(const std::vector<gl_draw_arrays_indirect_command>& commands) const -> std::shared_ptr<gl_fence>
-    {
-        //glMultiDrawArraysIndirect()
-        return std::make_shared<gl_fence>();
-    }
-    auto syncable_indirect_multi_draw_elements(const std::vector<gl_draw_elements_indirect_command>& commands) const -> std::shared_ptr<gl_fence>
-    {
-        glMultiDrawElementsIndirect(GL_TRIANGLES, 
-            static_cast<GLenum>(_vertex_launcher->get_element_type()),
-            commands.data(), commands.size(), 
-            0
-        );
-        return std::make_shared<gl_fence>();
-    }
-
-    void unsyncable_draw_arrays(uint32 vertex_offset, uint32 vertices_num)
-    {
-        if (!_vertex_launcher || vertex_offset + vertices_num >= _vertex_launcher->get_vertices_num()) return;
-        glDrawArrays(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), vertex_offset, vertices_num);
-    }
-    void unsyncable_draw_arrays(uint32 vertex_offset, uint32 vertices_num, uint32 instances_num, uint32 base_instance) const
-    {
-        if (!_vertex_launcher || vertex_offset + vertices_num >= _vertex_launcher->get_vertices_num()) return;
+        if (!_vertex_launcher || offset + num >= _vertex_launcher->get_vertices_num()) return;
         if (base_instance >= instances_num) return;
-        glDrawArraysInstancedBaseInstance(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), vertex_offset, vertices_num, instances_num, base_instance);
+        glDrawArraysInstancedBaseInstance(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), offset, num, instances_num, base_instance);
     }
-    void unsyncable_draw_elements(uint32 element_offset, uint32 elements_num) const
+    
+    void draw_arrays(const gl_draw_arrays_indirect_command& command)
     {
-        if (element_offset + elements_num >= _vertex_launcher->get_elements_num()) return;
-        glDrawElements(
-            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
-            elements_num, static_cast<GLenum>(_vertex_launcher->get_element_type()),
-            (void*)(_vertex_launcher->get_element_size() * element_offset)
-        );
+        glDrawArraysIndirect(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), (const void*)&command);
     }
 
-    void unsyncable_draw_elements(uint32 element_offset, uint32 elements_num, uint32 instances_num, uint32 base_instance) const
+    void draw_elements(uint32 offset, uint32 num)
+    {
+        if (offset + num >= _vertex_launcher->get_elements_num()) return;
+        glDrawElements(
+            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            num, static_cast<GLenum>(_vertex_launcher->get_element_type()),
+            (void*)(_vertex_launcher->get_element_size() * offset)
+        );
+    }
+   
+    void draw_elements(uint32 offset, uint32 num, uint32 instances_num, uint32 base_instance)
     {
         if (!_vertex_launcher) return;
         glDrawElementsInstancedBaseInstance(
             static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
-            elements_num, static_cast<GLenum>(_vertex_launcher->get_element_type()), (void*)(_vertex_launcher->get_element_size() * element_offset),
+            num, static_cast<GLenum>(_vertex_launcher->get_element_type()), (void*)(_vertex_launcher->get_element_size() * offset),
             instances_num, base_instance
         );
     }
-    void unsyncable_draw_elements(uint32 element_offset, uint32 elements_num, uint32 base_vertex) const 
+    
+    void draw_elements(uint32 offset, uint32 num, uint32 base_vertex)
     {
         if (!_vertex_launcher) return;
         glDrawElementsBaseVertex(
             static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
-            elements_num, static_cast<GLenum>(_vertex_launcher->get_element_type()), (void*)(_vertex_launcher->get_element_size() * element_offset),
+            num, static_cast<GLenum>(_vertex_launcher->get_element_type()), (void*)(_vertex_launcher->get_element_size() * offset),
             base_vertex
         );
     }
-    void unsyncable_draw_elements(uint32 element_offset, uint32 elements_num, uint32 base_vertex, uint32 instances_num, uint32 base_instance) const
+    
+    void draw_elements(uint32 offset, uint32 num, uint32 base_vertex, uint32 instances_num, uint32 base_instance)
     {
         if (!_vertex_launcher) return;
         glDrawElementsInstancedBaseVertexBaseInstance(
             static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
-            elements_num, static_cast<GLenum>(_vertex_launcher->get_element_type()), (void*)(_vertex_launcher->get_element_size() * element_offset),
+            num, static_cast<GLenum>(_vertex_launcher->get_element_type()), (void*)(_vertex_launcher->get_element_size() * offset),
             instances_num, base_vertex, base_instance
         );
     }
-    void unsyncable_draw_range_elements(uint32 element_start, uint32 element_end, uint32 element_offset, uint32 elements_num, uint32 base_vertex) const
+    
+    void draw_elements(const gl_draw_elements_indirect_command& command)
+    {
+        glDrawElementsIndirect(
+            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            static_cast<GLenum>(_vertex_launcher->get_element_type()),
+            (const void*)&command
+        );
+    }
+
+    void draw_range_elements(uint32 start, uint32 end, uint32 offset, uint32 num, uint32 base_vertex)
     {
         if (!_vertex_launcher) return;
         glDrawRangeElementsBaseVertex(
             static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
-            element_start, element_end,
-            elements_num, static_cast<GLenum>(_vertex_launcher->get_element_type()), (void*)(_vertex_launcher->get_element_size() * element_offset),
+            start, end,
+            num, static_cast<GLenum>(_vertex_launcher->get_element_type()), (void*)(_vertex_launcher->get_element_size() * offset),
             base_vertex
         );
     }
-    void unsyncable_multi_draw_arrays(const std::vector<uint32>& vertex_offsets, const std::vector<uint32>& vertices_nums) const
+    
+    void multi_draw_arrays(const std::vector<std::pair<uint32, uint32>>& offset_to_num_array) noexcept
     {
         if (!_vertex_launcher) return;
-        if (vertex_offsets.size() != vertices_nums.size()) return;
-        glMultiDrawArrays(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+        /*glMultiDrawArrays(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
             (const int32*)vertex_offsets.data(), (const int32*)vertices_nums.data(), vertex_offsets.size()
-        );
+        );*/
     }
-    void unsyncable_multi_draw_elements(const std::vector<uint32>& element_offsets, std::vector<uint32>& elements_nums) const
+    
+    void multi_draw_arrays(const std::vector<gl_draw_arrays_indirect_command>& commands) noexcept
+    {
+        //glMultiDrawArraysIndirect()
+    }
+
+    void multi_draw_elements(const std::vector<uint32>& element_offsets, std::vector<uint32>& elements_nums) noexcept
     {
         if (!_vertex_launcher) return;
         glMultiDrawElements(
@@ -809,23 +724,7 @@ public:
         );
     }
     
-    void unsyncable_indirect_draw_arrays(const gl_draw_arrays_indirect_command& command) const
-    {
-        glDrawArraysIndirect(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), (const void*)&command);
-    }
-    void unsyncable_indirect_draw_elements(const gl_draw_elements_indirect_command& command) const
-    {
-        glDrawElementsIndirect(
-            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
-            static_cast<GLenum>(_vertex_launcher->get_element_type()),
-            (const void*)&command
-        );
-    }
-    void unsyncable_indirect_multi_draw_arrays(const std::vector<gl_draw_arrays_indirect_command>& commands) const
-    {
-        //glMultiDrawArraysIndirect()
-    }
-    void unsyncable_indirect_multi_draw_elements(const std::vector<gl_draw_elements_indirect_command>& commands) const
+    void multi_draw_elements(const std::vector<gl_draw_elements_indirect_command>& commands) noexcept
     {
         glMultiDrawElementsIndirect(GL_TRIANGLES, 
             static_cast<GLenum>(_vertex_launcher->get_element_type()), 
@@ -834,18 +733,162 @@ public:
         );
     }
 
-public:
-
-    void begin_conditional_render()
+    std::shared_ptr<gl_fence> syncable_draw_arrays(uint32 offset, uint32 num)
     {
-        glBeginConditionalRender(0, GL_QUERY_WAIT);
-    }
-
-    void end_conditional_render()
-    {
-        glEndConditionalRender();
+        if (!_vertex_launcher || offset + num >= _vertex_launcher->get_vertices_num())
+        {
+            return nullptr;
+        }
+        glDrawArrays(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), offset, num);
+        return std::make_shared<gl_fence>();
     }
     
+    std::shared_ptr<gl_fence> syncable_draw_arrays(uint32 offset, uint32 num, uint32 instances_num, uint32 base_instance)
+    {
+        if (!_vertex_launcher || offset + num >= _vertex_launcher->get_vertices_num()) return nullptr;
+        if (base_instance >= instances_num) return nullptr;
+        glDrawArraysInstancedBaseInstance(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), offset, num, instances_num, base_instance);
+        return std::make_shared<gl_fence>();
+    }
+    
+    std::shared_ptr<gl_fence> syncable_draw_arrays(const gl_draw_arrays_indirect_command& command)
+    {
+        glDrawArraysIndirect(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), (const void*)&command);
+        return std::make_shared<gl_fence>();
+    }
+
+    std::shared_ptr<gl_fence> syncable_draw_elements(uint32 offset, uint32 num)
+    {
+        if (offset + num >= _vertex_launcher->get_elements_num())
+        {
+            return nullptr;
+        }
+
+        glDrawElements(
+            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            num, static_cast<GLenum>(_vertex_launcher->get_element_type()),
+            (void*)(_vertex_launcher->get_element_size() * offset)
+        );
+        return std::make_shared<gl_fence>();
+    }
+   
+    std::shared_ptr<gl_fence> syncable_draw_elements(uint32 offset, uint32 num, uint32 instances_num, uint32 base_instance)
+    {
+        if (!_vertex_launcher) return nullptr;
+        glDrawElementsInstancedBaseInstance(
+            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            num, static_cast<GLenum>(_vertex_launcher->get_element_type()), (void*)(_vertex_launcher->get_element_size() * offset),
+            instances_num, base_instance
+        );
+        return std::make_shared<gl_fence>();
+    }
+    
+    std::shared_ptr<gl_fence> syncable_draw_elements(uint32 offset, uint32 num, uint32 base_vertex)
+    {
+        if (!_vertex_launcher) return nullptr;
+        glDrawElementsBaseVertex(
+            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            num, static_cast<GLenum>(_vertex_launcher->get_element_type()), (void*)(_vertex_launcher->get_element_size() * offset),
+            base_vertex
+        );
+        return std::make_shared<gl_fence>();
+    }
+    
+    std::shared_ptr<gl_fence> syncable_draw_elements(uint32 offset, uint32 num, uint32 base_vertex, uint32 instances_num, uint32 base_instance)
+    {
+        if (!_vertex_launcher) return nullptr;
+        glDrawElementsInstancedBaseVertexBaseInstance(
+            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            num, static_cast<GLenum>(_vertex_launcher->get_element_type()), (void*)(_vertex_launcher->get_element_size() * offset),
+            instances_num, base_vertex, base_instance
+        );
+        return std::make_shared<gl_fence>();
+    }
+    
+    std::shared_ptr<gl_fence> syncable_draw_elements(const gl_draw_elements_indirect_command& command)
+    {
+        glDrawElementsIndirect(
+            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            static_cast<GLenum>(_vertex_launcher->get_element_type()),
+            (const void*)&command
+        );
+        return std::make_shared<gl_fence>();
+    }
+
+    std::shared_ptr<gl_fence> syncable_multi_draw_arrays(const std::vector<uint32>& vertex_offsets, const std::vector<uint32>& vertices_nums)
+    {
+        if (!_vertex_launcher) return nullptr;
+        if (vertex_offsets.size() != vertices_nums.size()) return nullptr;
+        glMultiDrawArrays(static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            (const int32*)vertex_offsets.data(), (const int32*)vertices_nums.data(), vertex_offsets.size()
+        );
+        return std::make_shared<gl_fence>();
+    }
+    
+    std::shared_ptr<gl_fence> syncable_multi_draw_arrays(const std::vector<gl_draw_arrays_indirect_command>& commands)
+    {
+        //glMultiDrawArraysIndirect()
+        return std::make_shared<gl_fence>();
+    }
+
+    std::shared_ptr<gl_fence> syncable_multi_draw_elements(const std::vector<uint32>& element_offsets, std::vector<uint32>& elements_nums)
+    {
+        if (!_vertex_launcher) return nullptr;
+        glMultiDrawElements(
+            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()), (const int32*)elements_nums.data(),
+            static_cast<GLenum>(_vertex_launcher->get_element_type()),
+            nullptr, element_offsets.size()
+        );
+        return std::make_shared<gl_fence>();
+    }
+    
+    std::shared_ptr<gl_fence> syncable_multi_draw_elements(const std::vector<gl_draw_elements_indirect_command>& commands)
+    {
+        glMultiDrawElementsIndirect(GL_TRIANGLES,
+            static_cast<GLenum>(_vertex_launcher->get_element_type()),
+            commands.data(), commands.size(),
+            0
+        );
+        return std::make_shared<gl_fence>();
+    }
+
+    std::shared_ptr<gl_fence> syncable_draw_range_elements(uint32 element_start, uint32 element_end, uint32 element_offset, uint32 elements_num, uint32 base_vertex)
+    {
+        if (!_vertex_launcher) return nullptr;
+        glDrawRangeElementsBaseVertex(
+            static_cast<GLenum>(_vertex_launcher->get_primitive_mode()),
+            element_start, element_end,
+            elements_num, static_cast<GLenum>(_vertex_launcher->get_element_type()), (void*)(_vertex_launcher->get_element_size() * element_offset),
+            base_vertex
+        );
+        return std::make_shared<gl_fence>();
+    }
+
+public:
+
+    /*
+    * begin conditional render/ end conditional render
+    */
+    void draw_with_condition(const gl_query& occlusion_query, bool wait, const std::function<void(gl_graphics_pipeline&)>& commands) noexcept
+    {
+        glBeginConditionalRender(occlusion_query.get_handle(), wait ? GL_QUERY_BY_REGION_WAIT : GL_QUERY_BY_REGION_NO_WAIT);
+        commands(*this);
+        glEndConditionalRender();
+    }
+
+    /*
+    * begin query/ end query
+    */
+    void draw_with_query(const gl_query& query, const std::function<void(gl_graphics_pipeline&)>& commands) noexcept
+    {
+        glBeginQuery(static_cast<GLenum>(query.get_type()), query.get_handle());
+        commands(*this);
+        glEndQuery(static_cast<GLenum>(query.get_type()));
+        glFinish();
+        uint32 nb;
+        glGetQueryObjectuiv(0, GL_QUERY_RESULT, &nb);
+    }
+
 private:
 
     void _set_vertex_postprocessor()

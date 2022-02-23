@@ -1,6 +1,6 @@
 #ifndef ENTITY_PROSTHESIS_H
 #define ENTITY_PROSTHESIS_H
-#include "prosthesis.h"
+#include "framework/prostheses/prosthesis.h"
 
 class entity_prosthesis : public prosthesis
 {
@@ -12,12 +12,6 @@ public:
 	entity_prosthesis& operator=(const entity_prosthesis&) = delete;
 
 	virtual ~entity_prosthesis() = default;
-
-public:
-
-	//glm::vec3 position;
-	//glm::vec3 rotation;
-	//glm::vec3 scale;
 
 private:
 
