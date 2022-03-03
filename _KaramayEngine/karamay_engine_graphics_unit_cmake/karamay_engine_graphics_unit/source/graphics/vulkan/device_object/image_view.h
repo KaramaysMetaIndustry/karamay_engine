@@ -12,21 +12,9 @@ private:
 
 public:
 
-	bool allocate(image* target)
-	{
-		VkImageViewCreateInfo _create_info;
-		vkCreateImageView(_device->handle(), &_create_info, nullptr, &_handle);
-		return true;
-	}
+	bool allocate(image* target);
 
-	void deallocate()
-	{
-
-	}
-
-public:
-
-
+	void deallocate();
 
 };
 

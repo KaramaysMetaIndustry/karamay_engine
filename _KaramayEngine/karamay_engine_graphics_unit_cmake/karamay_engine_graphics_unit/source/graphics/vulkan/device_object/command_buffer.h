@@ -8,11 +8,11 @@ class command_buffer final : public device_object<VkCommandBuffer>
 {
 private:
 
-	command_pool* _pool = nullptr;
+	command_pool& _pool;
 
 public:
 
-	command_buffer(device* dev, command_pool* pool) : device_object(dev), _pool(pool) {}
+	command_buffer(device& dev, command_pool& pool);
 
 	bool allocate(VkCommandBufferLevel level);
 

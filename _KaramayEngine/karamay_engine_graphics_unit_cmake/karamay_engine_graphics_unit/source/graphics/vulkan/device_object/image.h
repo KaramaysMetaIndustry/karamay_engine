@@ -9,18 +9,11 @@ class image final :public device_object<VkImage>
 
 public:
 
-	bool allocate()
-	{
-		VkImageCreateInfo _create_info;
-		vkCreateImage(_device->handle(), &_create_info, nullptr, &_handle);
+	image(device& dev);
 
-		return true;
-	}
+	bool allocate();
 
-	void deallocate()
-	{
-
-	}
+	void deallocate();
 
 };
 

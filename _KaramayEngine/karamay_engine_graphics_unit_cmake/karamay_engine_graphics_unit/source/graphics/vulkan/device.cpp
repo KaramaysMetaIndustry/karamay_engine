@@ -18,11 +18,11 @@
 
 std::shared_ptr<buffer> device::create_buffer()
 {
-	return std::make_shared<buffer>(this);
+	return std::make_shared<buffer>(*this);
 }
 
 std::shared_ptr<command_pool> device::create_command_pool()
 {
-	return std::make_shared<command_pool>(this);
+	return std::make_shared<command_pool>(*this);
 }
 

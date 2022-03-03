@@ -6,20 +6,16 @@ class device_memory final : public device_object<VkDeviceMemory>
 {
 public:
 
-	bool allocate(uint64 size, uint32 memory_type_index)
-	{
-		VkMemoryAllocateInfo _allocate_info;
-		_allocate_info.allocationSize = size;
-		_allocate_info.memoryTypeIndex = memory_type_index;
-		vkAllocateMemory(_device->handle(), &_allocate_info, nullptr, &_handle);
-		return true;
-	}
+	device_memory(device& dev);
 
-	void deallocate()
-	{
-		vkFreeMemory(_device->handle(), _handle, nullptr);
-	}
+	~device_memory() override;
 
+public:
+
+	bool allocate(uint64 size, uint32 memory_type_index);
+
+	void deallocate();
+	
 };
 
 #endif

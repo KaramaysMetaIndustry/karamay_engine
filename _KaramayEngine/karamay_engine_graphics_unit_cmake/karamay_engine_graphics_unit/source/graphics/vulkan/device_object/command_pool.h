@@ -8,7 +8,7 @@ class command_pool final : public device_object<VkCommandPool>
 {
 public:
 
-	command_pool(device* dev) : device_object(dev) {}
+	command_pool(device& dev);
 
 	bool allocate(uint32 queue_family_index);
 
@@ -16,7 +16,7 @@ public:
 
 public:
 
-	std::shared_ptr<command_buffer> create_buffer();
+	std::shared_ptr<command_buffer> create_command_buffer();
 
 };
 

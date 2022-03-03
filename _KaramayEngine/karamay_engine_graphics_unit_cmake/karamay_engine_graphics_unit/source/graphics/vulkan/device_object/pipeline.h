@@ -2,12 +2,23 @@
 #define PIPELINE_H
 #include "device_object.h"
 
+class command_buffer;
 class pipeline_cache;
 class pipeline_layout;
-class command_buffer;
+
 
 class pipeline : public device_object<VkPipeline>
 {
+public:
+	pipeline(device& dev);
+
+	void deallocate();
+
+protected:
+
+	std::shared_ptr<pipeline_cache> _cache;
+
+	std::shared_ptr<pipeline_layout> _layout;
 
 };
 
@@ -15,13 +26,17 @@ class graphics_pipeline final : public pipeline
 {
 public:
 
-	bool allocate(pipeline_cache* cache, pipeline_layout* layout);
+	graphics_pipeline(device& dev);
 
-	void deallocate();
+	~graphics_pipeline() override;
 
 public:
 
-	void draw(command_buffer* recorder);
+	bool allocate(pipeline_cache* cache, pipeline_layout* layout);
+
+public:
+
+	void draw(command_buffer* recorder, uint32 vertex_count, uint32 instance_count, uint32 first_vertex, uint32 first_instance);
 
 	void draw_indirect(command_buffer* recorder);
 
@@ -41,8 +56,6 @@ public:
 
 	bool allocate(pipeline_cache* cache, pipeline_layout* layout);
 
-	void deallocate();
-
 public:
 
 	void draw(command_buffer* recorder);
@@ -56,8 +69,6 @@ class compute_pipeline final : public pipeline
 public:
 
 	bool allocate(pipeline_cache* cache, pipeline_layout* layout);
-
-	void deallocate();
 
 public:
 
@@ -82,9 +93,10 @@ class ray_tracing_pipeline final : public pipeline
 {
 public:
 
-	bool allocate(pipeline_cache* cache, pipeline_layout* layout);
-
-	void deallocate();
+	bool allocate(
+		pipeline_cache* cache, pipeline_layout* layout, 
+		uint32 max_ray_recursion_depth
+	);
 
 public:
 

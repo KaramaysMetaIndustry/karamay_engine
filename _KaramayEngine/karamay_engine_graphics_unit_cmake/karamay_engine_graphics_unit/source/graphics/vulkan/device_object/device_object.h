@@ -7,11 +7,14 @@ class device_object : public vulkan_object<vk_handle_t>
 {
 protected:
 
-	device* _device = nullptr;
+	// device object lifecycle < device
+	device& _device;
 
 public:
 
-	device_object(device* dev) : _device(dev) {}
+	device_object(device& dev) : _device(dev) {}
+
+	~device_object() override {}
 
 };
 

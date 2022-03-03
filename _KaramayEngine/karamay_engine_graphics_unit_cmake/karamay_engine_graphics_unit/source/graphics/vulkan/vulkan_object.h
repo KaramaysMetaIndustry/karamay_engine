@@ -18,6 +18,7 @@ public:
 
 	vulkan_object() = default;
 
+	virtual ~vulkan_object() = default;
 
 };
 

@@ -8,7 +8,8 @@ class image;
 class buffer final : public device_object<VkBuffer>
 {
 public:
-	buffer(device* dev) : device_object(dev) {}
+
+	buffer(device& dev);
 
 	bool allocate(uint64 size)
 	{
@@ -17,14 +18,14 @@ public:
 		_create_info.usage = VkBufferUsageFlagBits::VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 		_create_info.size = size;
 		_create_info.sharingMode = VkSharingMode::VK_SHARING_MODE_CONCURRENT;
-		auto _ret = vkCreateBuffer(_device->handle(), &_create_info, nullptr, &_handle);
+		auto _ret = vkCreateBuffer(_device.handle(), &_create_info, nullptr, &_handle);
 
 		return true;
 	}
 
 	void deallocate()
 	{
-		vkDestroyBuffer(_device->handle(), _handle, nullptr);
+		vkDestroyBuffer(_device.handle(), _handle, nullptr);
 	}
 
 public:
