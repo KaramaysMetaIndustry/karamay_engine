@@ -1,4 +1,6 @@
 #include "engine/karamay_engine.h"
+#include "graphics/vulkan/device.h"
+#include "graphics/vulkan/device_object/buffer.h"
 
 int main()
 {

@@ -1,6 +1,7 @@
 #ifndef VULKAN_OBJECT_H
 #define VULKAN_OBJECT_H
 #include "public/stl.h"
+#include "public/vulkan_core.h"
 
 template<typename vk_handle_t>
 class vulkan_object
