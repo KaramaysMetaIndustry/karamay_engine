@@ -2,7 +2,7 @@
 #define GLSL_IMAGE_H
 
 #include "../base/glsl_class.h"
-#include "../../resource/texture/gl_texture.h"
+#include "graphics/opengl/resource/texture/gl_texture.h"
 
 #define ExtractStr(Specifier) #Specifier
 

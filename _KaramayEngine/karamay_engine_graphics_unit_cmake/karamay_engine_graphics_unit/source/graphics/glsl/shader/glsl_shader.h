@@ -5,7 +5,7 @@
 #include "graphics/glsl/opaque_t/glsl_sampler.h"
 #include "graphics/glsl/interface_block/glsl_uniform_block.h"
 #include "graphics/glsl/interface_block/glsl_shader_storage_block.h"
-#include "graphics/resource/shader/gl_shader.h"
+#include "graphics/opengl/resource/shader/gl_shader.h"
 
 class glsl_shader
 {

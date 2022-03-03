@@ -1,8 +1,8 @@
 #ifndef RENDERER_H
 #define RENDERER_H
-#include "graphics/pipelines/gl_graphics_pipeline.h"
-#include "graphics/pipelines/gl_compute_pipeline.h"
-#include "graphics/pipelines/gl_mesh_pipeline.h"
+#include "graphics/opengl/pipelines/gl_graphics_pipeline.h"
+#include "graphics/opengl/pipelines/gl_compute_pipeline.h"
+#include "graphics/opengl/pipelines/gl_mesh_pipeline.h"
 
 class gl_resource
 {
@@ -15,7 +15,6 @@ struct gl_renderer_template_instance
     std::unordered_map<std::string_view, glsl_mesh_pipeline_program*> name_to_mesh_pipeline;
     std::unordered_map<std::string_view, glsl_compute_pipeline_program*> name_to_compute_pipeline;
 };
-
 
 class gl_renderer
 {

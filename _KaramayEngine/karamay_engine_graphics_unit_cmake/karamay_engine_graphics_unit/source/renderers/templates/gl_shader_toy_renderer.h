@@ -1,6 +1,6 @@
 #ifndef GL_SHADER_TOY_RENDERER_H
 #define GL_SHADER_TOY_RENDERER_H
-#include "graphics/renderer/gl_renderer.h"
+#include "graphics/opengl/renderer/gl_renderer.h"
 
 class gl_shader_toy_renderer final : public gl_renderer
 {

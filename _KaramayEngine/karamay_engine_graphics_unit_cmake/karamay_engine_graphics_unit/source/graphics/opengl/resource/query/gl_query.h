@@ -1,7 +1,7 @@
 #ifndef GL_QUERY_H
 #define GL_QUERY_H
 
-#include "graphics/resource/glo/gl_object.h"
+#include "graphics/opengl/resource/glo/gl_object.h"
 #include "../buffers/common_buffer/gl_query_buffer.h"
 
 enum class gl_query_type

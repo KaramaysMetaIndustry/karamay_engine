@@ -1,6 +1,6 @@
 #ifndef STD_UI_FRAMEWORK
 #define STD_UI_FRAMEWORK
-#include "graphics/framework/gl_renderer_framework.h"
+#include "graphics/opengl/framework/gl_renderer_framework.h"
 
 namespace std_ui_framework
 {

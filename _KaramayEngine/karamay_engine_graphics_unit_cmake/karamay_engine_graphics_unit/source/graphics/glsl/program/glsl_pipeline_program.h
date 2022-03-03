@@ -2,7 +2,7 @@
 #define GLSL_PROGRAM_H
 #include "graphics/glsl/glsl.h"
 #include "graphics/glsl/glsl_builder.h"
-#include "graphics/resource/program/gl_program.h"
+#include "graphics/opengl/resource/program/gl_program.h"
 
 class glsl_pipeline_program
 {

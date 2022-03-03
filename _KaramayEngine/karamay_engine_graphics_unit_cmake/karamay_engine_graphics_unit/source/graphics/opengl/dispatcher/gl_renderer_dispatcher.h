@@ -1,6 +1,6 @@
 #ifndef GL_RENDERER_DISPATCHER_H
 #define GL_RENDERER_DISPATCHER_H
-#include "graphics/framework/gl_renderer_framework.h"
+#include "graphics/opengl/framework/gl_renderer_framework.h"
 #include "window/window.h"
 
 class gl_renderer_dispatcher final

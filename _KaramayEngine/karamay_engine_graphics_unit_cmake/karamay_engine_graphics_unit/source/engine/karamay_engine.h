@@ -8,7 +8,7 @@
 #include "embedded/lua/lvm.h"
 #include "embedded/lua/lvm_graphics_module.h"
 #include "embedded/python/pvm.h"
-#include "graphics/dispatcher/gl_renderer_dispatcher.h"
+#include "graphics/opengl/dispatcher/gl_renderer_dispatcher.h"
 #include "network/network_dispatcher.h"
 
 class karamay_engine final

@@ -2,7 +2,7 @@
 #define GLSL_SAMPLER_H
 
 #include "../base/glsl_class.h"
-#include "../../resource/texture/gl_texture.h"
+#include "graphics/opengl/resource/texture/gl_texture.h"
 #include "graphics/glsl/interface_block/glsl_uniform_block.h"
 
 class glsl_sampler_t : public glsl_opaque_t

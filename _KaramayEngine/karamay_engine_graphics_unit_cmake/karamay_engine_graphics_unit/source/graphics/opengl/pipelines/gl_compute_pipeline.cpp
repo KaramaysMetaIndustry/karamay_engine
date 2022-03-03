@@ -1,6 +1,6 @@
 #include "gl_compute_pipeline.h"
 #include "engine/karamay_engine.h"
-#include "graphics/resource/glo/gl_object.h"
+#include "graphics/opengl/resource/glo/gl_object.h"
 
 void gl_compute_pipeline::dispatch(uint32 x, uint32 y, uint32 z) noexcept
 {

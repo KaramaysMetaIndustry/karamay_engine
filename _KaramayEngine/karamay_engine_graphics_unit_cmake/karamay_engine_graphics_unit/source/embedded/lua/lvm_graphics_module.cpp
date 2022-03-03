@@ -1,9 +1,9 @@
 #include "lvm_graphics_module.h"
 #include "lvm.h"
-#include "graphics/renderer/gl_renderer.h"
-#include "graphics/pipelines/gl_graphics_pipeline.h"
-#include "graphics/pipelines/gl_compute_pipeline.h"
-#include "graphics/pipelines/gl_mesh_pipeline.h"
+#include "graphics/opengl/renderer/gl_renderer.h"
+#include "graphics/opengl/pipelines/gl_graphics_pipeline.h"
+#include "graphics/opengl/pipelines/gl_compute_pipeline.h"
+#include "graphics/opengl/pipelines/gl_mesh_pipeline.h"
 
 namespace CTest_for_lua
 {

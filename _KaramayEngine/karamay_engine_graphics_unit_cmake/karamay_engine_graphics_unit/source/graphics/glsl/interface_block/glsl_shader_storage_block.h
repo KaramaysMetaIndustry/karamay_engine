@@ -2,7 +2,7 @@
 #define GLSL_SHADER_STORAGE_BLOCK_H
 
 #include "../base/glsl_class.h"
-#include "../../resource/buffers/Indexed_buffer/gl_shader_storage_buffer.h"
+#include "graphics/opengl/resource/buffers/Indexed_buffer/gl_shader_storage_buffer.h"
 
 enum class glsl_shader_storage_block_memory_layout
 {

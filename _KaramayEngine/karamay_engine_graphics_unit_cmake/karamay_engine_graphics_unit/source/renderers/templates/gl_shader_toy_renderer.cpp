@@ -105,7 +105,7 @@ void gl_shader_toy_renderer::render(float delta_time) noexcept
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 		_main_graphics_pipeline->draw_with_query(gl_query(gl_query_type::TIMESTAMP),
-			[](gl_graphics_pipeline& pipeline) 
+			[](gl_graphics_pipeline& pipeline)
 			{
 				
 			}

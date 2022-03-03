@@ -1,7 +1,7 @@
 #ifndef GL_PIPELINE_H
 #define GL_PIPELINE_H
 #include "graphics/glsl/glsl.h"
-#include "graphics/resource/program/gl_program.h"
+#include "graphics/opengl/resource/program/gl_program.h"
 
 class gl_pipeline
 {

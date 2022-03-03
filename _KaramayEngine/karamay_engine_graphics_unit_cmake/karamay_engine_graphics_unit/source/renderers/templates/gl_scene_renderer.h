@@ -1,6 +1,6 @@
 ﻿#ifndef GL_SCENE_RENDERER_H
 #define GL_SCENE_RENDERER_H
-#include "graphics/renderer/gl_renderer.h"
+#include "graphics/opengl/renderer/gl_renderer.h"
 
 class gl_scene_renderer : public gl_renderer
 {

@@ -2,7 +2,7 @@
 #define GLSL_UNIFORM_BLOCK_H
 
 #include "../base/glsl_class.h"
-#include "../../resource/buffers/Indexed_buffer/gl_uniform_buffer.h"
+#include "graphics/opengl/resource/buffers/Indexed_buffer/gl_uniform_buffer.h"
 
 enum class glsl_uniform_block_memory_layout
 {

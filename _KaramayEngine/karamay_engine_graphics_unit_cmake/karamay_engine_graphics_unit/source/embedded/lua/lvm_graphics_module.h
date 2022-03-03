@@ -1,7 +1,7 @@
 #ifndef LVM_GRAPHICS_CLASS_H
 #define LVM_GRAPHICS_CLASS_H
 
-#include "graphics/renderer/gl_renderer.h"
+#include "graphics/opengl/renderer/gl_renderer.h"
 
 
 class CTest

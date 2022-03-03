@@ -1,5 +1,5 @@
 #include "std_ui_framework.h"
-#include "graphics/dispatcher/gl_renderer_dispatcher.h"
+#include "graphics/opengl/dispatcher/gl_renderer_dispatcher.h"
 #include "renderers/templates/gl_shader_toy_renderer.h"
 
 namespace std_ui_framework
