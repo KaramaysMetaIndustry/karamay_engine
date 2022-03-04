@@ -34,6 +34,14 @@ public:
 
 	void copy_to(command_buffer* recorder, buffer* dst, const std::vector<VkBufferImageCopy>& regions);
 
+	void blit_to(command_buffer* recorder, image* dst, const std::vector<VkImageBlit>& regions, VkFilter filter);
+
+	void resolve_to(command_buffer* recorder, image* dst, const std::vector<VkImageResolve>& regions);
+
+	void clear(command_buffer* recorder, VkClearColorValue value, const std::vector<VkImageSubresourceRange>& ranges);
+
+	void clear(command_buffer* recorder, VkClearDepthStencilValue value, const std::vector<VkImageSubresourceRange>& ranges);
+
 };
 
 #endif

@@ -9,7 +9,7 @@ pipeline_cache::~pipeline_cache()
     deallocate();
 }
 
-bool pipeline_cache::allocate(uint64 size, void* data)
+bool pipeline_cache::allocate(uint64 size, void* data) noexcept
 {
     if (!data || size < 1) return false;
 
@@ -28,8 +28,26 @@ bool pipeline_cache::allocate(uint64 size, void* data)
     return true;
 }
 
-void pipeline_cache::deallocate()
+void pipeline_cache::deallocate() noexcept
 {
     vkDestroyPipelineCache(_device.handle(), _handle, nullptr);
     _handle = nullptr;
+}
+
+bool pipeline_cache::fetch(uint64 size, void* data) const noexcept
+{
+    vkGetPipelineCacheData(_device.handle(), _handle, &size, data);
+    return true;
+}
+
+bool pipeline_cache::merge(const std::vector<pipeline_cache*>& caches) noexcept
+{
+    std::vector<VkPipelineCache> _caches(caches.size());
+    for (auto cache : caches)
+    {
+        _caches.push_back(cache->handle());
+    }
+
+    vkMergePipelineCaches(_device.handle(), _handle, _caches.size(), _caches.data());
+    return true;
 }

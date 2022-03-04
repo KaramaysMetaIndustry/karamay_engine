@@ -29,6 +29,15 @@ public:
 
 	void deallocate();
 
+public:
+
+	void s()
+	{
+		vkCmdBindDescriptorSets;
+		vkCmdPushDescriptorSetKHR;
+		vkCmdPushDescriptorSetWithTemplateKHR;
+	}
+
 };
 
 #endif

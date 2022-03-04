@@ -20,6 +20,8 @@ public:
 
 	vk_handle_t handle() const noexcept { return _handle; }
 
+	virtual bool is_valid() const noexcept { return _handle != nullptr; }
+
 public:
 
 	vulkan_object() = default;

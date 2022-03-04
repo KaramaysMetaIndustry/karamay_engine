@@ -8,11 +8,14 @@ public:
 
 	pipeline_layout(device& dev);
 
+	pipeline_layout(const pipeline_layout&) = delete;
+	pipeline_layout& operator=(const pipeline_layout&) = delete;
+
 	~pipeline_layout() override;
 
 public:
 
-	bool allocate();
+	bool allocate(const std::vector<VkDescriptorSetLayout>& layouts, const std::vector<VkPushConstantRange>& ranges);
 
 	void deallocate();
 

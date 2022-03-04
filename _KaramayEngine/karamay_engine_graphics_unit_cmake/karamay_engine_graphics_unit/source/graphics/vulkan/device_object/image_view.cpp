@@ -1,6 +1,14 @@
 #include "image_view.h"
 #include "image.h"
 
+image_view::image_view(device& dev) : device_object(dev)
+{
+}
+
+image_view::~image_view()
+{
+}
+
 bool image_view::allocate(image* target)
 {
 	VkImageViewCreateInfo _create_info;

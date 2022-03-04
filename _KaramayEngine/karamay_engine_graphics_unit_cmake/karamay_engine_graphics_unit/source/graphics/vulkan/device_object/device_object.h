@@ -14,7 +14,14 @@ public:
 
 	device_object(device& dev) : _device(dev) {}
 
+	device_object(const device_object&) = delete;
+	device_object& operator=(const device_object&) = delete;
+
 	~device_object() override {}
+
+public:
+
+	bool is_valid() const noexcept override { return vulkan_object<vk_handle_t>::is_valid() && true; }
 
 };
 

@@ -1,6 +1,8 @@
 #ifndef BUFFER_VIEW_H
 #define BUFFER_VIEW_H
-#include "buffer.h"
+#include "device_object.h"
+
+class buffer;
 
 class buffer_view final : public device_object<VkBufferView>
 {
@@ -8,11 +10,16 @@ public:
 
 	buffer_view(device& dev);
 
+	buffer_view(const buffer_view&) = delete;
+	buffer_view& operator=(const buffer_view&) = delete;
+
+	~buffer_view() override;
+
 private:
 
 	buffer* _target = nullptr;
 
-	VkFormat _format = {};
+	VkFormat _format;
 
 	uint64 _offset = 0;
 

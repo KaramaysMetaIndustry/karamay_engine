@@ -1,5 +1,5 @@
 #include "command_buffer.h"
-#include "command_pool.h"
+#include "../command_pool.h"
 
 command_buffer::command_buffer(device& dev, command_pool& pool) : device_object(dev), _pool(pool)
 {

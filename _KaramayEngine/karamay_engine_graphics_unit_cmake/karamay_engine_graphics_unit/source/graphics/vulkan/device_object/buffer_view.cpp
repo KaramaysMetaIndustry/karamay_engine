@@ -1,7 +1,13 @@
 #include "buffer_view.h"
+#include "buffer.h"
 
 buffer_view::buffer_view(device& dev) : device_object(dev)
 {
+}
+
+buffer_view::~buffer_view()
+{
+	deallocate();
 }
 
 bool buffer_view::allocate(buffer* target, uint64 offset, uint64 range, VkFormat format)

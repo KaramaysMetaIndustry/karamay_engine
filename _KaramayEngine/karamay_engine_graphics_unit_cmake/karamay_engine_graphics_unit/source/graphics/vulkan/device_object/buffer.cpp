@@ -1,7 +1,13 @@
 #include "buffer.h"
+#include "pooled_object/command_buffer.h"
 
 buffer::buffer(device& dev) : device_object(dev)
 {
+}
+
+buffer::~buffer()
+{
+	deallocate();
 }
 
 bool buffer::allocate(uint64 size, VkBufferUsageFlagBits usage_flags, VkSharingMode sharing_mode)
@@ -35,4 +41,14 @@ void buffer::copy_to(command_buffer* recorder, buffer* dst, const std::vector<Vk
 void buffer::copy_to(command_buffer* recorder, image* dst)
 {
 	//vkCmdCopyBuffer();
+}
+
+void buffer::fill(command_buffer* recorder, uint64 offset, uint64 size, uint32 data)
+{
+	vkCmdFillBuffer(recorder->handle(), _handle, offset, size, data);
+}
+
+void buffer::update(command_buffer* recorder, uint64 offset, uint64 size, void* data)
+{
+	vkCmdUpdateBuffer(recorder->handle(), _handle, offset, size, data);
 }

@@ -8,6 +8,9 @@ public:
 
 	device_memory(device& dev);
 
+	device_memory(const device_memory&) = delete;
+	device_memory& operator=(const device_memory&) = delete;
+
 	~device_memory() override;
 
 public:
