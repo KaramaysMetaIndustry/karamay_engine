@@ -25,3 +25,8 @@ void command_buffer::deallocate()
 {
 	vkFreeCommandBuffers(_device.handle(), _pool.handle(), 1, &_handle);
 }
+
+void command_buffer::reset(VkCommandBufferResetFlags flags) noexcept
+{
+	vkResetCommandBuffer(_handle, flags);
+}

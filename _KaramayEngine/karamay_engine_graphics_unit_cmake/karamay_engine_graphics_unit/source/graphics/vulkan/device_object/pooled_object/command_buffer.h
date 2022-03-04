@@ -14,9 +14,16 @@ public:
 
 	command_buffer(device& dev, command_pool& pool);
 
+public:
+
 	bool allocate(VkCommandBufferLevel level);
 
 	void deallocate();
+
+public:
+
+	void reset(VkCommandBufferResetFlags flags) noexcept;
+	
 
 };
 

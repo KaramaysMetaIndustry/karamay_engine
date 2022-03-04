@@ -16,6 +16,10 @@ public:
 
 public:
 
+	void reset(VkCommandPoolResetFlags flags) noexcept;
+	
+public:
+
 	std::shared_ptr<command_buffer> create_command_buffer();
 
 };

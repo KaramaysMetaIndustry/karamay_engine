@@ -17,8 +17,14 @@ bool command_pool::allocate(uint32 queue_family_index)
 void command_pool::deallocate()
 {
     vkDestroyCommandPool(_device.handle(), _handle, nullptr);
-    _handle = VK_NULL_HANDLE;
+    _handle = nullptr;
 }
+
+void command_pool::reset(VkCommandPoolResetFlags flags) noexcept
+{
+    vkResetCommandPool(_device.handle(), _handle, flags);
+}
+
 
 std::shared_ptr<command_buffer> command_pool::create_command_buffer()
 {

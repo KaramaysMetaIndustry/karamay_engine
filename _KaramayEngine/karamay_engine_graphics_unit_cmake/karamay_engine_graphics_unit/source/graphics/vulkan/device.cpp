@@ -17,3 +17,9 @@
 #include "device_object/sampler.h"
 #include "device_object/shader_module.h"
 
+bool device::wait() noexcept
+{
+	vkDeviceWaitIdle(_handle);
+
+	return true;
+}

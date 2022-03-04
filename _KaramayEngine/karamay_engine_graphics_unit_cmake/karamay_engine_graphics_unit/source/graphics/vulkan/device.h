@@ -31,6 +31,10 @@ public:
 		_handle = new_handle;
 	}
 
+public:
+
+	bool wait() noexcept;
+
 };
 
 #endif

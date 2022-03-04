@@ -5,6 +5,10 @@
 class descriptor_pool final : public device_object<VkDescriptorPool>
 {
 
+public:
+
+	void reset(VkDescriptorPoolResetFlags flags) noexcept;
+
 };
 
 

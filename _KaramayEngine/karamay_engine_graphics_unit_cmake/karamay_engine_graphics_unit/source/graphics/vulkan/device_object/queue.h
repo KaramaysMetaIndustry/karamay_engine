@@ -2,6 +2,8 @@
 #define QUEUE_H
 #include "device_object.h"
 
+class fence;
+
 class queue final : public device_object<VkQueue>
 {
 public:
@@ -11,9 +13,15 @@ public:
 		vkGetDeviceQueue(_device.handle(), queue_family_index, queue_index, &_handle);
 	}
 
-	void submit(std::vector<VkSubmitInfo>& submits, VkFence fence)
+public:
+	
+	void submit(const VkSubmitInfo& submit, fence* f);
+
+	void submit(const std::vector<VkSubmitInfo>& submits, fence* f);
+
+	void present(VkPresentInfoKHR info)
 	{
-		vkQueueSubmit(_handle, submits.size(), submits.data(), fence);
+		vkQueuePresentKHR(_handle, &info);
 	}
 
 };

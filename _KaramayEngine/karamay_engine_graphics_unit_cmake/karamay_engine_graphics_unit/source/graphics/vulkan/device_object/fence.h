@@ -21,6 +21,12 @@ public:
 		_handle = nullptr;
 	}
 
+public:
+
+	void wait(bool wait_all, uint64 timeout);
+
+	void reset();
+
 };
 
 

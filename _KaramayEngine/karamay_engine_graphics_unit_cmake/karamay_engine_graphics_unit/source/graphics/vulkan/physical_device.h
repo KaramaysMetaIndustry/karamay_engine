@@ -17,6 +17,25 @@ public:
 
 	device* create_device();
 
+	void get_features(VkPhysicalDeviceFeatures& features)
+	{
+		vkGetPhysicalDeviceFeatures(_handle, &features);
+	}
+
+	void get_properties(VkPhysicalDeviceProperties& properties)
+	{
+		vkGetPhysicalDeviceProperties(_handle, &properties);
+	}
+
+	void get_queue_family_properties(std::vector<VkQueueFamilyProperties>& properties)
+	{
+		uint32 _count = 0;
+		vkGetPhysicalDeviceQueueFamilyProperties(_handle, &_count, nullptr);
+		if (_count == 0) return;
+		properties.resize(_count);
+		vkGetPhysicalDeviceQueueFamilyProperties(_handle, &_count, properties.data());
+	}
+
 };
 
 #endif
