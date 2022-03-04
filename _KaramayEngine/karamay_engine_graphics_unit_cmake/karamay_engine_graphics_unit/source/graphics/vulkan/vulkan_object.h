@@ -3,6 +3,12 @@
 #include "public/stl.h"
 #include "public/vulkan_core.h"
 
+enum class sharing_mode
+{
+	exclusive = VK_SHARING_MODE_EXCLUSIVE,
+	concurrent = VK_SHARING_MODE_CONCURRENT
+};
+
 template<typename vk_handle_t>
 class vulkan_object
 {

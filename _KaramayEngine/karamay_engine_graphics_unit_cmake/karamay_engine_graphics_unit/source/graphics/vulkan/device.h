@@ -31,12 +31,6 @@ public:
 		_handle = new_handle;
 	}
 
-public:
-
-	std::shared_ptr<command_pool> create_command_pool();
-
-	std::shared_ptr<buffer> create_buffer();
-
 };
 
 #endif

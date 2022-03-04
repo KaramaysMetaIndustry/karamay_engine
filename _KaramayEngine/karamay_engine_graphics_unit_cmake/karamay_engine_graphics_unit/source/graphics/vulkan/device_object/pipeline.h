@@ -72,20 +72,11 @@ public:
 
 public:
 
-	void dispatch(command_buffer* recorder)
-	{
+	void dispatch(command_buffer* recorder);
 
-	}
+	void dispatch_base(command_buffer* recorder);
 
-	void dispatch_base(command_buffer* recorder)
-	{
-
-	}
-
-	void dispatch_indirect(command_buffer* recorder)
-	{
-
-	}
+	void dispatch_indirect(command_buffer* recorder);
 
 };
 
@@ -93,10 +84,7 @@ class ray_tracing_pipeline final : public pipeline
 {
 public:
 
-	bool allocate(
-		pipeline_cache* cache, pipeline_layout* layout, 
-		uint32 max_ray_recursion_depth
-	);
+	bool allocate(pipeline_cache* cache, pipeline_layout* layout, uint32 max_ray_recursion_depth);
 
 public:
 

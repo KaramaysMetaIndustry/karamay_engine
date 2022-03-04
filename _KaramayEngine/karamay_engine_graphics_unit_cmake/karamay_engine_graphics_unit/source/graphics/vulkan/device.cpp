@@ -16,13 +16,3 @@
 #include "device_object/sampler.h"
 #include "device_object/shader_module.h"
 
-std::shared_ptr<buffer> device::create_buffer()
-{
-	return std::make_shared<buffer>(*this);
-}
-
-std::shared_ptr<command_pool> device::create_command_pool()
-{
-	return std::make_shared<command_pool>(*this);
-}
-

@@ -44,7 +44,7 @@ bool ray_tracing_pipeline::allocate(pipeline_cache* cache, pipeline_layout* layo
     _create_info.pLibraryInfo;
     _create_info.pLibraryInterface;
 
-    vkCreateRayTracingPipelinesKHR(_device.handle(), {}, cache->handle(), 1, &_create_info, nullptr, &_handle);
+    //vkCreateRayTracingPipelinesKHR(_device.handle(), {}, cache->handle(), 1, &_create_info, nullptr, &_handle);
 
     return false;
 }

@@ -22,5 +22,5 @@ void command_pool::deallocate()
 
 std::shared_ptr<command_buffer> command_pool::create_command_buffer()
 {
-    return std::make_shared<command_buffer>(_device, this);
+    return std::make_shared<command_buffer>(_device, *this);
 }
