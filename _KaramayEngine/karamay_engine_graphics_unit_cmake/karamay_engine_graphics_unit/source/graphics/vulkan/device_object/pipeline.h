@@ -5,12 +5,16 @@
 class pipeline_cache;
 class pipeline_layout;
 class buffer;
+class deferred_operation;
 class command_buffer;
 
 class pipeline : public device_object<VkPipeline>
 {
 public:
 	pipeline(device& dev);
+
+	pipeline(const pipeline&) = delete;
+	pipeline& operator=(const pipeline&) = delete;
 
 	~pipeline() override;
 
@@ -83,15 +87,47 @@ class compute_pipeline final : public pipeline
 {
 public:
 
-	bool allocate(pipeline_cache* cache, pipeline_layout* layout);
+	compute_pipeline(device&  dev);
+
+	compute_pipeline(const compute_pipeline&) = delete;
+	compute_pipeline& operator=(const compute_pipeline&) = delete;
+
+	~compute_pipeline() override;
 
 public:
 
-	void dispatch(command_buffer* recorder, uint32 group_count_x, uint32 group_count_y, uint32 group_count_z);
+	bool allocate(
+		pipeline_cache* cache, 
+		pipeline_layout* layout, 
+		shader_module* compute_shader_module
+	);
 
-	void dispatch_base(command_buffer* recorder, uint32 base_group_x, uint32 base_group_y, uint32 base_group_z, uint32 group_count_x, uint32 group_count_y, uint32 group_count_z);
+public:
 
-	void dispatch_indirect(command_buffer* recorder, buffer* buf, uint64 size);
+	/*
+	* 
+	*/
+	void dispatch(
+		command_buffer* recorder, 
+		uint32 group_count_x, uint32 group_count_y, uint32 group_count_z
+	);
+
+	/*
+	* 
+	*/
+	void dispatch_base(
+		command_buffer* recorder, 
+		uint32 base_group_x, uint32 base_group_y, uint32 base_group_z, 
+		uint32 group_count_x, uint32 group_count_y, uint32 group_count_z
+	);
+
+	/*
+	* 
+	*/
+	void dispatch_indirect(
+		command_buffer* recorder, 
+		buffer* buf, uint64 size
+	);
 
 };
 
@@ -108,15 +144,22 @@ public:
 
 public:
 
-	bool allocate(pipeline_cache* cache, pipeline_layout* layout, uint32 max_ray_recursion_depth);
-
-	bool allocate(pipeline_cache* cache);
+	bool allocate(
+		pipeline_cache* cache, 
+		pipeline_layout* layout, 
+		deferred_operation* deferred_op, uint32 max_ray_recursion_depth
+	);
 
 public:
 
-	void trace_rays(command_buffer* recorder, uint32 width, uint32 height, uint32 depth);
+	void trace_rays(
+		command_buffer* recorder, 
+		uint32 width, uint32 height, uint32 depth
+	);
 
-	void trace_rays_indirect(command_buffer* recorder);
+	void trace_rays_indirect(
+		command_buffer* recorder
+	);
 
 };
 

@@ -11,12 +11,12 @@
 
 class renderer
 {
-
 public:
 
-	bool initialize()
+	bool initialize() noexcept
 	{
         instance _inst;
+        _inst.allocate(extensions, layers);
         std::vector<physical_device*> _physical_devices;
         _inst.enumerate_physical_devices(_physical_devices);
         auto _main_physical_device = _physical_devices[0];

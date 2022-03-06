@@ -2,6 +2,7 @@
 #define BUFFER_H
 #include "device_object.h"
 
+class device_memory;
 class image;
 class command_buffer;
 
@@ -15,6 +16,10 @@ public:
 	buffer& operator=(const buffer&) = delete;
 
 	~buffer() override;
+
+private:
+
+	device_memory* _memory;
 
 public:
 

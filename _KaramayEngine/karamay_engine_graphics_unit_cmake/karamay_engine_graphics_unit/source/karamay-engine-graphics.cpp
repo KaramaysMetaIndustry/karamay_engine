@@ -1,8 +1,18 @@
 #include "engine/karamay_engine.h"
+#include "graphics/vulkan/instance.h"
+#include "graphics/vulkan/device.h"
 
 int main()
 {
-    std::cout << "size: " << sizeof(std::string) << std::endl;
+    instance _inst;
+    _inst.allocate();
+
+    std::vector<physical_device*> _physical_devices;
+    _inst.enumerate_physical_devices(_physical_devices);
+
+    device _dev;
+    _dev.allocate(_physical_devices.at(0));
+
     karamay_engine::set_engine_root(
         "C:\\PrivateRepos\\karamay_engine\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\"
     );

@@ -19,7 +19,7 @@ bool pipeline_layout::allocate(const std::vector<VkDescriptorSetLayout>& layouts
     _create_info.pPushConstantRanges = ranges.data();
     _create_info.pushConstantRangeCount = ranges.size();
 
-    auto _ret = vkCreatePipelineLayout(_device.handle(), &_create_info, nullptr, &_handle);
+    VkResult _ret = vkCreatePipelineLayout(_device.handle(), &_create_info, nullptr, &_handle);
     if (_ret == VkResult::VK_SUCCESS)
     {
         return false;

@@ -21,15 +21,27 @@ class ray_tracing_pipeline;
 class shader_module;
 class command_pool;
 class render_pass;
+class physical_device;
+
+#define device_khr_func(func_name)\
+PFN_##func_name##(vkGetDeviceProcAddr(_device.handle(), #func_name))\
 
 class device final : public vulkan_object<VkDevice>
 {
 public:
 
-	device(VkDevice new_handle)
-	{
-		_handle = new_handle;
-	}
+	device();
+
+	device(const device&) = delete;
+	device& operator=(const device&) = delete;
+
+	~device();
+
+public:
+
+	bool allocate(physical_device* entity) noexcept;
+
+	void deallocate() noexcept;
 
 public:
 

@@ -2,39 +2,28 @@
 #define PHYSICAL_DEVICE_H
 #include "vulkan_object.h"
 
-class device;
-
 class physical_device final : public vulkan_object<VkPhysicalDevice>
 {
 public:
 
-	physical_device(VkPhysicalDevice new_handle)
-	{
-		_handle = new_handle;
-	}
+	physical_device(VkPhysicalDevice new_handle);
+	
+	physical_device(const physical_device&) = delete;
+	physical_device& operator=(const physical_device&) = delete;
+
+	~physical_device();
 
 public:
 
-	device* create_device();
+	void enumerate_extension_properties(const std::string& player_name, std::vector<VkExtensionProperties>& properties) noexcept;
 
-	void get_features(VkPhysicalDeviceFeatures& features)
-	{
-		vkGetPhysicalDeviceFeatures(_handle, &features);
-	}
+	void enumerate_layer_properties(std::vector<VkLayerProperties>& properties) noexcept;
 
-	void get_properties(VkPhysicalDeviceProperties& properties)
-	{
-		vkGetPhysicalDeviceProperties(_handle, &properties);
-	}
+	void get_features(VkPhysicalDeviceFeatures& features) noexcept;
 
-	void get_queue_family_properties(std::vector<VkQueueFamilyProperties>& properties)
-	{
-		uint32 _count = 0;
-		vkGetPhysicalDeviceQueueFamilyProperties(_handle, &_count, nullptr);
-		if (_count == 0) return;
-		properties.resize(_count);
-		vkGetPhysicalDeviceQueueFamilyProperties(_handle, &_count, properties.data());
-	}
+	void get_properties(VkPhysicalDeviceProperties& properties) noexcept;
+
+	void get_queue_family_properties(std::vector<VkQueueFamilyProperties>& properties) noexcept;
 
 };
 

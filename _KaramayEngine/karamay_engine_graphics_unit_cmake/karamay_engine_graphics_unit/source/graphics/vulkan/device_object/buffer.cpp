@@ -1,4 +1,5 @@
 #include "buffer.h"
+#include "device_memory.h"
 #include "pooled_object/command_buffer.h"
 
 buffer::buffer(device& dev) : device_object(dev)
@@ -12,6 +13,11 @@ buffer::~buffer()
 
 bool buffer::allocate(uint64 size, VkBufferUsageFlagBits usage_flags, VkSharingMode sharing_mode)
 {
+	if (!_memory->allocate(size, 0))
+	{
+		return false;
+	}
+
 	VkBufferCreateInfo _create_info;
 	_create_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 	_create_info.usage = usage_flags;
