@@ -25,7 +25,7 @@ public:
 
 	bool get_result() const noexcept;
 
-	uint32 get_max_concurrency() const noexcept;
+	std::optional<uint32> get_max_concurrency() const noexcept;
 	
 };
 

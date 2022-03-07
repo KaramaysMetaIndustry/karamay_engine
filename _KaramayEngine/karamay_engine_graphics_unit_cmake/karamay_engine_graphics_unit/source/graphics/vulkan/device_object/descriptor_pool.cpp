@@ -11,14 +11,21 @@ descriptor_pool::~descriptor_pool()
 
 bool descriptor_pool::allocate() noexcept
 {
+	deallocate();
+
 	VkDescriptorPoolCreateInfo _create_info{};
-	_create_info.sType;
+	_create_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 	_create_info.flags;
 	_create_info.maxSets;
 	_create_info.poolSizeCount;
 	_create_info.pPoolSizes;
 
-	vkCreateDescriptorPool(_device.handle(), &_create_info, nullptr, &_handle);
+	auto _result = vkCreateDescriptorPool(_device.handle(), &_create_info, nullptr, &_handle);
+
+	if (_result != VkResult::VK_SUCCESS)
+	{
+		return false;
+	}
 
 	return true;
 }

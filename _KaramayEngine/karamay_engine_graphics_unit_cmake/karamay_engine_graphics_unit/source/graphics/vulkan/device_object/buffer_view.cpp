@@ -10,24 +10,35 @@ buffer_view::~buffer_view()
 	deallocate();
 }
 
-bool buffer_view::allocate(buffer* target, uint64 offset, uint64 range, VkFormat format)
+bool buffer_view::allocate(std::shared_ptr<buffer> target, uint64 offset, uint64 range, VkFormat format) noexcept
 {
-	VkBufferViewCreateInfo _create_info;
+	if (!target || range == 0)
+	{
+		return false;
+	}
+
+	deallocate();
+
+	VkBufferViewCreateInfo _create_info{};
 	_create_info.sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO;
 	_create_info.buffer = _target->handle();
 	_create_info.format = format;
 	_create_info.offset = offset;
 	_create_info.range = range;
 
-	vkCreateBufferView(_device.handle(), &_create_info, nullptr, &_handle);
+	auto _result = vkCreateBufferView(_device.handle(), &_create_info, nullptr, &_handle);
 
-	if (_handle == VK_NULL_HANDLE)
+	if (_result != VkResult::VK_SUCCESS || _handle == nullptr)
+	{
 		return false;
+	}
+
+	_target = target;
 
 	return true;
 }
 
-void buffer_view::deallocate()
+void buffer_view::deallocate() noexcept
 {
 	if (_handle)
 	{

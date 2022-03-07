@@ -17,7 +17,7 @@ public:
 
 private:
 
-	buffer* _target = nullptr;
+	std::shared_ptr<buffer> _target = {};
 
 	VkFormat _format;
 
@@ -27,9 +27,9 @@ private:
 
 public:
 
-	bool allocate(buffer* target, uint64 offset, uint64 range, VkFormat format);
+	bool allocate(std::shared_ptr<buffer> target, uint64 offset, uint64 range, VkFormat format) noexcept;
 
-	void deallocate();
+	void deallocate() noexcept;
 
 };
 

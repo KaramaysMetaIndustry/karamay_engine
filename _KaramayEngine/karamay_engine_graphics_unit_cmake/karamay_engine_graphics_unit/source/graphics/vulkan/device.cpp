@@ -29,12 +29,15 @@ device::~device()
 
 bool device::allocate(physical_device* entity) noexcept
 {
+    deallocate();
+
     if (!entity)
     {
+#ifdef _DEBUG
+        std::cerr << "" << std::endl;
+#endif
         return false;
     }
-
-    this->entity = entity;
 
     // costruct queues
     std::vector<VkQueueFamilyProperties> _queue_family_properties;
@@ -94,24 +97,31 @@ bool device::allocate(physical_device* entity) noexcept
     _create_info.pQueueCreateInfos = _queues.data();
     _create_info.pEnabledFeatures = &_features;
 
-    VkResult _result =  vkCreateDevice(entity->handle(), &_create_info, nullptr, &_handle);
+    auto _result =  vkCreateDevice(entity->handle(), &_create_info, nullptr, &_handle);
 
     if (_result != VkResult::VK_SUCCESS)
     {
         return false;
     }
+
+    this->entity = entity;
     return true;
 }
 
 void device::deallocate() noexcept
 {
-	vkDestroyDevice(_handle, nullptr);
-	_handle = nullptr;
+    if (_handle)
+    {
+        vkDestroyDevice(_handle, nullptr);
+        _handle = nullptr;
+    }
 }
 
 bool device::wait() noexcept
 {
-	VkResult _result = vkDeviceWaitIdle(_handle);
+    if (!_handle) return false;
+
+	auto _result = vkDeviceWaitIdle(_handle);
     if (_result != VkResult::VK_SUCCESS)
     {
         return false;
@@ -121,6 +131,12 @@ bool device::wait() noexcept
 
 void device::get_descriptor_set_layout_support(VkDescriptorSetLayoutSupport& support) noexcept
 {
-    VkDescriptorSetLayoutCreateInfo _create_info;
+    if (!_handle) return;
+
+    VkDescriptorSetLayoutCreateInfo _create_info{};
+    _create_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    _create_info.flags;
+    _create_info.bindingCount;
+    _create_info.pBindings;
     vkGetDescriptorSetLayoutSupport(_handle, &_create_info, &support);
 }

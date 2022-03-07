@@ -15,9 +15,31 @@ public:
 
 public:
 
-	bool allocate();
+	bool allocate() noexcept;
 
-	void deallocate();
+	void deallocate() noexcept;
+
+	void bind()
+	{
+		vkSignalSemaphore;
+		VkTimelineSemaphoreSubmitInfo;
+		VkSemaphoreWaitInfo _wait;
+		_wait.sType;
+		_wait.pSemaphores;
+		_wait.semaphoreCount;
+
+		vkWaitSemaphores;
+	}
+
+};
+
+struct semaphore_group
+{
+
+	void wait()
+	{
+
+	}
 
 };
 

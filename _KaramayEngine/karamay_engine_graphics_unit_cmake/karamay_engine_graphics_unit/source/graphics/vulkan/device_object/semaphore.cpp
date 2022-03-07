@@ -9,15 +9,21 @@ semaphore::~semaphore()
 	deallocate();
 }
 
-bool semaphore::allocate()
+bool semaphore::allocate() noexcept
 {
-	VkSemaphoreCreateInfo _create_info;
-	_create_info.sType;
-	vkCreateSemaphore(_device.handle(), &_create_info, nullptr, &_handle);
+	deallocate();
+
+	VkSemaphoreCreateInfo _create_info{};
+	_create_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+	auto _result = vkCreateSemaphore(_device.handle(), &_create_info, nullptr, &_handle);
+	if (_result != VkResult::VK_SUCCESS)
+	{
+		return false;
+	}
 	return true;
 }
 
-void semaphore::deallocate()
+void semaphore::deallocate() noexcept
 {
 	if (_handle)
 	{

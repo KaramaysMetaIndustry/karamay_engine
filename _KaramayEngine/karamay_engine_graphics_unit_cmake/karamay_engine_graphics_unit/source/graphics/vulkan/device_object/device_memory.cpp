@@ -12,6 +12,8 @@ device_memory::~device_memory()
 
 bool device_memory::allocate(const VkMemoryRequirements& requirements) noexcept
 {
+	deallocate();
+
 	VkMemoryAllocateInfo _allocate_info{};
 	_allocate_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 	_allocate_info.allocationSize = requirements.size;
@@ -37,14 +39,11 @@ void device_memory::deallocate() noexcept
 	}
 }
 
-void device_memory::execute_handler(uint64 offset, uint64 size, VkMemoryMapFlags flags, const std::function<void(uint64 size, void* data)>& handler) noexcept
+void device_memory::execute_handler(uint64 offset, uint64 size, const std::function<void(uint64 size, void* data)>& handler, VkMemoryMapFlags flags) const noexcept
 {
 	void* _data = nullptr;
 	VkResult _result = vkMapMemory(_device.handle(), _handle, offset, size, flags, &_data);
-	if (_result != VkResult::VK_SUCCESS || !_data)
-	{
-		return;
-	}
+	if (_result != VkResult::VK_SUCCESS || !_data) return;
 	handler(size, _data);
 	vkUnmapMemory(_device.handle(), _handle);
 }

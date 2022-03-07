@@ -25,7 +25,7 @@ public:
 	* cpu ~ gpu
 	* this action will cost bandwidth, and this should be called in main thread
 	*/
-	void execute_handler(uint64 offset, uint64 size, VkMemoryMapFlags flags, const std::function<void(uint64 size, void* data)>& handler) noexcept;
+	void execute_handler(uint64 offset, uint64 size, const std::function<void(uint64 size, void* data)>& handler, VkMemoryMapFlags flags = {}) const noexcept;
 
 private:
 

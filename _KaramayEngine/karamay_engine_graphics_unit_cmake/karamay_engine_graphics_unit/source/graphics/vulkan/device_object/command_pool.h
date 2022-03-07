@@ -10,9 +10,16 @@ public:
 
 	command_pool(device& dev);
 
-	bool allocate(uint32 queue_family_index);
+	command_pool(const command_pool&) = delete;
+	command_pool& operator=(const command_pool&) = delete;
 
-	void deallocate();
+	~command_pool() override;
+
+public:
+
+	bool allocate(uint32 queue_family_index)  noexcept;
+
+	void deallocate()  noexcept;
 
 public:
 

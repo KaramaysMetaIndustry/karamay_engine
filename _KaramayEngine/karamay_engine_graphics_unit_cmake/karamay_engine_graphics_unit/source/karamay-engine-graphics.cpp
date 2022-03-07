@@ -3,6 +3,7 @@
 #include "graphics/vulkan/device.h"
 #include "graphics/vulkan/device_object/buffer.h"
 #include "graphics/vulkan/device_object/device_memory.h"
+#include "graphics/vulkan/device_object/event.h"
 
 int main()
 {
@@ -22,14 +23,27 @@ int main()
         VkSharingMode::VK_SHARING_MODE_EXCLUSIVE
     );
 
-    _buf->memory->execute_handler(0, 4, VkMemoryMapFlags(), 
+    event* _e = nullptr;
+
+    _buf->memory()->execute_handler(0, 4,
         [](uint64 size, void* data) 
         {
             float _v = 2.0f;
+            std::cout << "_v : " << _v << std::endl;
+            std::memcpy(&_v, data, 4);
+            std::cout << "_v : " << _v << std::endl;
+            _v = 11.01f;
             std::memcpy(data, &_v, 4);
         });
 
-
+    _buf->memory()->execute_handler(0, 4,
+        [](uint64 size, void* data)
+        {
+            float _v = 0.0f;
+            std::memcpy(&_v, data, 4);
+            std::cout << "_v : " << _v << std::endl;
+        });
+    
     karamay_engine::set_engine_root(
         "C:\\PrivateRepos\\karamay_engine\\_KaramayEngine\\karamay_engine_graphics_unit_cmake\\karamay_engine_graphics_unit\\"
     );

@@ -5,16 +5,35 @@ command_pool::command_pool(device& dev) : device_object(dev)
 {
 }
 
-bool command_pool::allocate(uint32 queue_family_index)
+command_pool::~command_pool()
 {
-    VkCommandPoolCreateInfo _create_info;
+    deallocate();
+}
+
+bool command_pool::allocate(uint32 queue_family_index) noexcept
+{
+    if (queue_family_index > 10)
+    {
+        return false;
+    }
+
+    deallocate();
+
+    VkCommandPoolCreateInfo _create_info{};
     _create_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
     _create_info.queueFamilyIndex = queue_family_index;
-    vkCreateCommandPool(_device.handle(), &_create_info, nullptr, &_handle);
+
+    auto _result = vkCreateCommandPool(_device.handle(), &_create_info, nullptr, &_handle);
+
+    if (_result != VkResult::VK_SUCCESS)
+    {
+        return false;
+    }
+
     return true;
 }
 
-void command_pool::deallocate()
+void command_pool::deallocate()  noexcept
 {
     if (_handle)
     {
@@ -25,9 +44,10 @@ void command_pool::deallocate()
 
 void command_pool::reset(VkCommandPoolResetFlags flags) noexcept
 {
+    if (!_handle) return;
+
     vkResetCommandPool(_device.handle(), _handle, flags);
 }
-
 
 std::shared_ptr<command_buffer> command_pool::create_command_buffer()
 {

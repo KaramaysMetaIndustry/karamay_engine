@@ -11,6 +11,8 @@ deferred_operation::~deferred_operation()
 
 bool deferred_operation::allocate() noexcept
 {
+	deallocate();
+
 	device_khr_func(vkCreateDeferredOperationKHR)(_device.handle(), nullptr, &_handle);
 	return true;
 }
@@ -26,17 +28,24 @@ void deferred_operation::deallocate() noexcept
 
 bool deferred_operation::join() noexcept
 {
+	if (!_handle) return false;
+
 	device_khr_func(vkDeferredOperationJoinKHR)(_device.handle(), _handle);
 	return true;
 }
 
-uint32 deferred_operation::get_max_concurrency() const noexcept
+std::optional<uint32> deferred_operation::get_max_concurrency() const noexcept
 {
+	if (!_handle) return std::nullopt;
 	return device_khr_func(vkGetDeferredOperationMaxConcurrencyKHR)(_device.handle(), _handle);
 }
 
 bool deferred_operation::get_result() const noexcept
 {
-	device_khr_func(vkGetDeferredOperationResultKHR)(_device.handle(), _handle);
+	auto _result = device_khr_func(vkGetDeferredOperationResultKHR)(_device.handle(), _handle);
+	if (_result != VkResult::VK_SUCCESS)
+	{
+		return false;
+	}
 	return true;
 }

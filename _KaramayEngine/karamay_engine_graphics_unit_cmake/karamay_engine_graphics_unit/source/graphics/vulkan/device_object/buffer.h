@@ -17,15 +17,27 @@ public:
 
 	~buffer() override;
 
+private:
+
+	std::shared_ptr<device_memory> _memory;
+
+	VkBufferUsageFlags _usage_flags;
+
+	VkSharingMode _sharing_mode;
+
 public:
 
-	std::shared_ptr<device_memory> memory;
-
-public:
-
-	bool allocate(uint64 size, VkBufferUsageFlagBits usage_flags, VkSharingMode sharing_mode) noexcept;
+	bool allocate(uint64 size, VkBufferUsageFlags usage_flags, VkSharingMode sharing_mode) noexcept;
 
 	void deallocate() noexcept;
+
+public:
+
+	std::shared_ptr<const device_memory> memory() const noexcept { return _memory; }
+
+	VkBufferUsageFlags usage() const noexcept { return _usage_flags; }
+
+	VkSharingMode sharing_mode() const noexcept { return _sharing_mode; }
 
 public:
 

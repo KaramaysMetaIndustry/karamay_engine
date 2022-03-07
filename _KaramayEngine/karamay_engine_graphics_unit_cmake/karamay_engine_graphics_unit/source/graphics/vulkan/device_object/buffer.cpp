@@ -12,8 +12,15 @@ buffer::~buffer()
 	deallocate();
 }
 
-bool buffer::allocate(uint64 size, VkBufferUsageFlagBits usage_flags, VkSharingMode sharing_mode) noexcept
+bool buffer::allocate(uint64 size, VkBufferUsageFlags usage_flags, VkSharingMode sharing_mode) noexcept
 {
+	if (size == 0)
+	{
+		return false;
+	}
+
+	deallocate();
+
 	VkBufferCreateInfo _create_info{};
 	_create_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 	_create_info.usage = usage_flags;
@@ -28,12 +35,17 @@ bool buffer::allocate(uint64 size, VkBufferUsageFlagBits usage_flags, VkSharingM
 
 	VkMemoryRequirements _requirements;
 	vkGetBufferMemoryRequirements(_device.handle(), _handle, &_requirements);
-	memory = _device.create<device_memory>();
-	if (!memory || !memory->allocate(_requirements))
+	
+	auto _memory = _device.create<device_memory>();
+	if (!_memory || !_memory->allocate(_requirements))
 	{
 		return false;
 	}
-	
+
+	this->_memory = _memory;
+	this->_sharing_mode = sharing_mode;
+	this->_usage_flags = usage_flags;
+
 	return true;
 }
 
