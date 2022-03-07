@@ -15,14 +15,16 @@ public:
 
 public:
 
-	bool allocate(uint64 size, uint32 memory_type_index) noexcept;
-
 	bool allocate(const VkMemoryRequirements& requirements) noexcept;
 
 	void deallocate() noexcept;
 
 public:
 
+	/*
+	* cpu ~ gpu
+	* this action will cost bandwidth, and this should be called in main thread
+	*/
 	void execute_handler(uint64 offset, uint64 size, VkMemoryMapFlags flags, const std::function<void(uint64 size, void* data)>& handler) noexcept;
 
 private:

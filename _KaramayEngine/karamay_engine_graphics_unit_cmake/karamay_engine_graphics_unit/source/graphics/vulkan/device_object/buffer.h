@@ -29,12 +29,24 @@ public:
 
 public:
 
+	/*
+	* gpu all controlled
+	*/
 	void copy_to(command_buffer* recorder, buffer* dst, const std::vector<VkBufferCopy>& regions);
 
-	void copy_to(command_buffer* recorder, image* dst);
+	/*
+	* gpu all controlled
+	*/
+	void copy_to(command_buffer* recorder, image* dst, const std::vector<VkBufferImageCopy>& regions);
 
+	/*
+	* gpu mostly all controlled
+	*/
 	void fill(command_buffer* recorder, uint64 offset, uint64 size, uint32 data);
 
+	/*
+	* gpu all controlled
+	*/
 	void update(command_buffer* recorder, uint64 offset, uint64 size, void* data);
 
 };

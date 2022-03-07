@@ -10,20 +10,6 @@ device_memory::~device_memory()
 	deallocate();
 }
 
-bool device_memory::allocate(uint64 size, uint32 memory_type_index) noexcept
-{
-	VkMemoryAllocateInfo _allocate_info{};
-	_allocate_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-	_allocate_info.allocationSize = size;
-	_allocate_info.memoryTypeIndex = memory_type_index;
-	VkResult _result = vkAllocateMemory(_device.handle(), &_allocate_info, nullptr, &_handle);
-	if (_result != VkResult::VK_SUCCESS)
-	{
-		return false;
-	}
-	return true;
-}
-
 bool device_memory::allocate(const VkMemoryRequirements& requirements) noexcept
 {
 	VkMemoryAllocateInfo _allocate_info{};

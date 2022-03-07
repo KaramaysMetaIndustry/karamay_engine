@@ -1,5 +1,6 @@
 #include "buffer.h"
 #include "device_memory.h"
+#include "image.h"
 #include "pooled_object/command_buffer.h"
 
 buffer::buffer(device& dev) : device_object(dev)
@@ -47,12 +48,12 @@ void buffer::deallocate() noexcept
 
 void buffer::copy_to(command_buffer* recorder, buffer* dst, const std::vector<VkBufferCopy>& regions)
 {
-	vkCmdCopyBuffer({}, _handle, dst->handle(), regions.size(), regions.data());
+	vkCmdCopyBuffer(recorder->handle(), _handle, dst->handle(), regions.size(), regions.data());
 }
 
-void buffer::copy_to(command_buffer* recorder, image* dst)
+void buffer::copy_to(command_buffer* recorder, image* dst, const std::vector<VkBufferImageCopy>& regions)
 {
-	//vkCmdCopyBuffer();
+	vkCmdCopyBufferToImage(recorder->handle(), _handle, dst->handle(), dst->layout(), regions.size(), regions.data());
 }
 
 void buffer::fill(command_buffer* recorder, uint64 offset, uint64 size, uint32 data)
