@@ -13,23 +13,26 @@ buffer::~buffer()
 
 bool buffer::allocate(uint64 size, VkBufferUsageFlagBits usage_flags, VkSharingMode sharing_mode) noexcept
 {
-	if (!_mem->allocate(size, 0))
-	{
-		return false;
-	}
-
-	VkBufferCreateInfo _create_info;
+	VkBufferCreateInfo _create_info{};
 	_create_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 	_create_info.usage = usage_flags;
 	_create_info.size = size;
 	_create_info.sharingMode = sharing_mode;
 
 	auto _ret = vkCreateBuffer(_device.handle(), &_create_info, nullptr, &_handle);
-
 	if (_ret != VkResult::VK_SUCCESS)
 	{
 		return false;
 	}
+
+	VkMemoryRequirements _requirements;
+	vkGetBufferMemoryRequirements(_device.handle(), _handle, &_requirements);
+	memory = _device.create<device_memory>();
+	if (!memory || !memory->allocate(_requirements))
+	{
+		return false;
+	}
+	
 	return true;
 }
 
@@ -61,3 +64,5 @@ void buffer::update(command_buffer* recorder, uint64 offset, uint64 size, void* 
 {
 	vkCmdUpdateBuffer(recorder->handle(), _handle, offset, size, data);
 }
+
+

@@ -7,10 +7,12 @@ class buffer;
 
 class image final :public device_object<VkImage>
 {
-
 public:
 
 	image(device& dev);
+
+	image(const image&) = delete;
+	image& operator=(const image&) = delete;
 
 	~image() override;
 
@@ -19,6 +21,8 @@ private:
 	VkImageLayout _layout;
 
 public:
+
+	std::shared_ptr<device_memory> memory;
 
 	VkImageLayout layout() const noexcept { return _layout; }
 
@@ -30,6 +34,10 @@ public:
 
 public:
 
+	void clear(command_buffer* recorder, VkClearColorValue value, const std::vector<VkImageSubresourceRange>& ranges);
+
+	void clear(command_buffer* recorder, VkClearDepthStencilValue value, const std::vector<VkImageSubresourceRange>& ranges);
+
 	void copy_to(command_buffer* recorder, image* dst, const std::vector<VkImageCopy>& regions);
 
 	void copy_to(command_buffer* recorder, buffer* dst, const std::vector<VkBufferImageCopy>& regions);
@@ -37,10 +45,6 @@ public:
 	void blit_to(command_buffer* recorder, image* dst, const std::vector<VkImageBlit>& regions, VkFilter filter);
 
 	void resolve_to(command_buffer* recorder, image* dst, const std::vector<VkImageResolve>& regions);
-
-	void clear(command_buffer* recorder, VkClearColorValue value, const std::vector<VkImageSubresourceRange>& ranges);
-
-	void clear(command_buffer* recorder, VkClearDepthStencilValue value, const std::vector<VkImageSubresourceRange>& ranges);
 
 };
 

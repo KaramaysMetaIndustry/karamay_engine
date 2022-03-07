@@ -39,6 +39,10 @@ public:
 
 public:
 
+	physical_device* entity = nullptr;
+
+public:
+
 	bool allocate(physical_device* entity) noexcept;
 
 	void deallocate() noexcept;
@@ -48,6 +52,14 @@ public:
 	void get_descriptor_set_layout_support(VkDescriptorSetLayoutSupport& support) noexcept;
 
 	bool wait() noexcept;
+
+public:
+
+	template<typename device_object_t>
+	std::shared_ptr<device_object_t> create() noexcept
+	{
+		return std::make_shared<device_object_t>(*this);
+	}
 
 };
 

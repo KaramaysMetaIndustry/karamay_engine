@@ -34,29 +34,63 @@ bool device::allocate(physical_device* entity) noexcept
         return false;
     }
 
-    VkDeviceQueueCreateInfo _queue;
-    _queue.sType;
-    _queue.queueFamilyIndex;
-    _queue.queueCount;
-    _queue.pQueuePriorities;
+    this->entity = entity;
 
+    // costruct queues
+    std::vector<VkQueueFamilyProperties> _queue_family_properties;
+    entity->get_queue_family_properties(_queue_family_properties);
     std::vector<VkDeviceQueueCreateInfo> _queues;
+    _queues.reserve(_queue_family_properties.size());
+    uint32 _family_index = 0;
+    std::array<float, 16> _priorities = { 0.8f };
+    for (const auto& _queue_family : _queue_family_properties)
+    {
+        /*VkQueueFlagBits::VK_QUEUE_COMPUTE_BIT;
+        VkQueueFlagBits::VK_QUEUE_GRAPHICS_BIT;
+        VkQueueFlagBits::VK_QUEUE_SPARSE_BINDING_BIT;
+        VkQueueFlagBits::VK_QUEUE_TRANSFER_BIT;
+        VkQueueFlagBits::VK_QUEUE_PROTECTED_BIT;*/
 
-    std::vector<VkExtensionProperties> _extenions;
+        VkDeviceQueueCreateInfo _queue{};
+        _queue.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        _queue.queueFamilyIndex = _family_index;
+        _queue.queueCount = _queue_family.queueCount;
+        _queue.pQueuePriorities = _priorities.data();
+        
+        _queues.push_back(_queue);
+        ++_family_index;
+        break;
+    }
+
+    // construct extensions and layers
+    std::vector<VkExtensionProperties> _extensions;
     std::vector<VkLayerProperties> _layers;
-    entity->enumerate_extension_properties("", _extenions);
+    entity->enumerate_extension_properties("", _extensions);
     entity->enumerate_layer_properties(_layers);
+    std::vector<const char*> _extension_names;
+    _extension_names.reserve(_layers.size());
+    std::vector<const char*> _layer_names;
+    _layer_names.reserve(_layers.size());
+    for (const auto& _extension : _extensions)
+    {
+        _extension_names.push_back(_extension.extensionName);
+    }
+    for (const auto& _layer : _layers)
+    {
+        _layer_names.push_back(_layer.layerName);
+    }
 
+    // features
     VkPhysicalDeviceFeatures _features; 
     entity->get_features(_features);
 
     VkDeviceCreateInfo _create_info{};
     _create_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    _create_info.enabledExtensionCount;
-    _create_info.ppEnabledExtensionNames;
-    _create_info.enabledLayerCount;
-    _create_info.ppEnabledLayerNames;
-    _create_info.queueCreateInfoCount = _queues.size();
+    //_create_info.enabledExtensionCount = _extension_names.size();
+    //_create_info.ppEnabledExtensionNames = _extension_names.data();
+    _create_info.enabledLayerCount = static_cast<uint32>(_layer_names.size());
+    _create_info.ppEnabledLayerNames = _layer_names.data();
+    _create_info.queueCreateInfoCount = static_cast<uint32>(_queues.size());
     _create_info.pQueueCreateInfos = _queues.data();
     _create_info.pEnabledFeatures = &_features;
 

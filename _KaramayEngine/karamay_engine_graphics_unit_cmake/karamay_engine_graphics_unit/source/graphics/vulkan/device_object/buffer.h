@@ -17,9 +17,9 @@ public:
 
 	~buffer() override;
 
-private:
+public:
 
-	std::unique_ptr<device_memory> _mem;
+	std::shared_ptr<device_memory> memory;
 
 public:
 

@@ -23,6 +23,8 @@ public:
 
 	void get_properties(VkPhysicalDeviceProperties& properties) noexcept;
 
+	void get_memory_properties(VkPhysicalDeviceMemoryProperties& properties) noexcept;
+	
 	void get_queue_family_properties(std::vector<VkQueueFamilyProperties>& properties) noexcept;
 
 };

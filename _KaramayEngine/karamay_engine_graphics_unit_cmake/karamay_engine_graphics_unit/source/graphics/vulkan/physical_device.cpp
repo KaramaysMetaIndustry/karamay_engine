@@ -37,6 +37,11 @@ void physical_device::get_properties(VkPhysicalDeviceProperties& properties) noe
     vkGetPhysicalDeviceProperties(_handle, &properties);
 }
 
+void physical_device::get_memory_properties(VkPhysicalDeviceMemoryProperties& properties) noexcept
+{
+    vkGetPhysicalDeviceMemoryProperties(_handle, &properties);
+}
+
 void physical_device::get_queue_family_properties(std::vector<VkQueueFamilyProperties>& properties) noexcept
 {
     uint32 _count = 0;
