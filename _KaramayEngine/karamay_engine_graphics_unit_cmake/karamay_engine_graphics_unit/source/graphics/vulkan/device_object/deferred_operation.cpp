@@ -17,8 +17,11 @@ bool deferred_operation::allocate() noexcept
 
 void deferred_operation::deallocate() noexcept
 {
-	device_khr_func(vkDestroyDeferredOperationKHR)(_device.handle(), _handle, nullptr);
-	_handle = nullptr;
+	if (_handle)
+	{
+		device_khr_func(vkDestroyDeferredOperationKHR)(_device.handle(), _handle, nullptr);
+		_handle = nullptr;
+	}
 }
 
 bool deferred_operation::join() noexcept

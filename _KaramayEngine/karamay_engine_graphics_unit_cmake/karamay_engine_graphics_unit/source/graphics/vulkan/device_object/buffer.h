@@ -19,13 +19,13 @@ public:
 
 private:
 
-	device_memory* _memory;
+	std::unique_ptr<device_memory> _mem;
 
 public:
 
-	bool allocate(uint64 size, VkBufferUsageFlagBits usage_flags, VkSharingMode sharing_mode);
+	bool allocate(uint64 size, VkBufferUsageFlagBits usage_flags, VkSharingMode sharing_mode) noexcept;
 
-	void deallocate();
+	void deallocate() noexcept;
 
 public:
 

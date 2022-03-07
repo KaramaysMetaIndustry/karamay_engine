@@ -6,20 +6,9 @@ class fence final : public device_object<VkFence>
 {
 public:
 
-	bool allocate()
-	{
-		VkFenceCreateInfo _create_info;
-		_create_info.sType;
-		vkCreateFence(_device.handle(), &_create_info, nullptr, &_handle);
+	bool allocate() noexcept;
 
-		return true;
-	}
-
-	void deallocate()
-	{
-		vkDestroyFence(_device.handle(), _handle, nullptr);
-		_handle = nullptr;
-	}
+	void deallocate() noexcept;
 
 public:
 

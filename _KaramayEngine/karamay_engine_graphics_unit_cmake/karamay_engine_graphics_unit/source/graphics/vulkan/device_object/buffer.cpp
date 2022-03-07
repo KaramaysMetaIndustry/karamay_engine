@@ -11,9 +11,9 @@ buffer::~buffer()
 	deallocate();
 }
 
-bool buffer::allocate(uint64 size, VkBufferUsageFlagBits usage_flags, VkSharingMode sharing_mode)
+bool buffer::allocate(uint64 size, VkBufferUsageFlagBits usage_flags, VkSharingMode sharing_mode) noexcept
 {
-	if (!_memory->allocate(size, 0))
+	if (!_mem->allocate(size, 0))
 	{
 		return false;
 	}
@@ -33,10 +33,13 @@ bool buffer::allocate(uint64 size, VkBufferUsageFlagBits usage_flags, VkSharingM
 	return true;
 }
 
-void buffer::deallocate()
+void buffer::deallocate() noexcept
 {
-	vkDestroyBuffer(_device.handle(), _handle, nullptr);
-	_handle = nullptr;
+	if (_handle)
+	{
+		vkDestroyBuffer(_device.handle(), _handle, nullptr);
+		_handle = nullptr;
+	}
 }
 
 void buffer::copy_to(command_buffer* recorder, buffer* dst, const std::vector<VkBufferCopy>& regions)

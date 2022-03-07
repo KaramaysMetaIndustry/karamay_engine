@@ -45,6 +45,8 @@ public:
 
 public:
 
+	void get_descriptor_set_layout_support(VkDescriptorSetLayoutSupport& support) noexcept;
+
 	bool wait() noexcept;
 
 };

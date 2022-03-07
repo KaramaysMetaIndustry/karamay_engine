@@ -6,9 +6,18 @@ class shader_module final : public device_object<VkShaderModule>
 {
 public:
 
-	bool allocate(uint64 size, uint32* code);
+	shader_module(device& dev);
 
-	void deallocate();
+	shader_module(const shader_module&) = delete;
+	shader_module& operator=(const shader_module&) = delete;
+
+	~shader_module() override;
+
+public:
+
+	bool allocate(uint64 size, uint32* code) noexcept;
+
+	void deallocate() noexcept;
 
 };
 

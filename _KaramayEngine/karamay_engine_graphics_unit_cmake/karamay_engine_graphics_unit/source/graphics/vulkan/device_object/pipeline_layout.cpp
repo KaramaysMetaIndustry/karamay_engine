@@ -29,5 +29,9 @@ bool pipeline_layout::allocate(const std::vector<VkDescriptorSetLayout>& layouts
 
 void pipeline_layout::deallocate()
 {
-    vkDestroyPipelineLayout(_device.handle(), _handle, nullptr);
+    if (_handle)
+    {
+        vkDestroyPipelineLayout(_device.handle(), _handle, nullptr);
+        _handle = nullptr;
+    }
 }

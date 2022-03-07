@@ -19,6 +19,9 @@ bool semaphore::allocate()
 
 void semaphore::deallocate()
 {
-	vkDestroySemaphore(_device.handle(), _handle, nullptr);
-	_handle = nullptr;
+	if (_handle)
+	{
+		vkDestroySemaphore(_device.handle(), _handle, nullptr);
+		_handle = nullptr;
+	}
 }

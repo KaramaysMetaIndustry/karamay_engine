@@ -29,6 +29,10 @@ bool buffer_view::allocate(buffer* target, uint64 offset, uint64 range, VkFormat
 
 void buffer_view::deallocate()
 {
-	vkDestroyBufferView(_device.handle(), _handle, nullptr);
+	if (_handle)
+	{
+		vkDestroyBufferView(_device.handle(), _handle, nullptr);
+		_handle = nullptr;
+	}
 }
 

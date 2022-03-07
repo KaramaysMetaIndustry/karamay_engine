@@ -9,7 +9,7 @@ descriptor_set_layout::~descriptor_set_layout()
     deallocate();
 }
 
-bool descriptor_set_layout::allocate(const std::vector<VkDescriptorSetLayoutBinding>& bindings)
+bool descriptor_set_layout::allocate(const std::vector<VkDescriptorSetLayoutBinding>& bindings) noexcept
 {
     VkDescriptorSetLayoutCreateInfo _create_info;
     _create_info.pBindings = bindings.data();
@@ -23,8 +23,11 @@ bool descriptor_set_layout::allocate(const std::vector<VkDescriptorSetLayoutBind
     return true;
 }
 
-void descriptor_set_layout::deallocate()
+void descriptor_set_layout::deallocate() noexcept
 {
-    vkDestroyDescriptorSetLayout(_device.handle(), _handle, nullptr);
-    _handle = nullptr;
+    if (_handle)
+    {
+        vkDestroyDescriptorSetLayout(_device.handle(), _handle, nullptr);
+        _handle = nullptr;
+    }
 }

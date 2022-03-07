@@ -213,8 +213,11 @@ pipeline::~pipeline()
 
 void pipeline::deallocate()
 {
-    vkDestroyPipeline(_device.handle(), _handle, nullptr);
-    _handle = nullptr;
+    if (_handle)
+    {
+        vkDestroyPipeline(_device.handle(), _handle, nullptr);
+        _handle = nullptr;
+    }
 }
 
 void pipeline::bind(command_buffer* recorder, VkPipelineBindPoint bind_point)

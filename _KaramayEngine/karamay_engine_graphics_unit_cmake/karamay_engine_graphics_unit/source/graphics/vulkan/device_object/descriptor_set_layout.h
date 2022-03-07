@@ -25,9 +25,9 @@ public:
 
 public:
 
-	bool allocate(const std::vector<VkDescriptorSetLayoutBinding>& bindings);
+	bool allocate(const std::vector<VkDescriptorSetLayoutBinding>& bindings) noexcept;
 
-	void deallocate();
+	void deallocate() noexcept;
 
 public:
 

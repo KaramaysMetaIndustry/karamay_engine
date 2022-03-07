@@ -84,3 +84,9 @@ bool device::wait() noexcept
     }
 	return true;
 }
+
+void device::get_descriptor_set_layout_support(VkDescriptorSetLayoutSupport& support) noexcept
+{
+    VkDescriptorSetLayoutCreateInfo _create_info;
+    vkGetDescriptorSetLayoutSupport(_handle, &_create_info, &support);
+}

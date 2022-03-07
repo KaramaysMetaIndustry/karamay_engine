@@ -9,7 +9,7 @@ device_memory::~device_memory()
 	deallocate();
 }
 
-bool device_memory::allocate(uint64 size, uint32 memory_type_index)
+bool device_memory::allocate(uint64 size, uint32 memory_type_index) noexcept
 {
 	VkMemoryAllocateInfo _allocate_info;
 	_allocate_info.allocationSize = size;
@@ -18,7 +18,7 @@ bool device_memory::allocate(uint64 size, uint32 memory_type_index)
 	return true;
 }
 
-void device_memory::deallocate()
+void device_memory::deallocate() noexcept
 {
 	if (_handle)
 	{

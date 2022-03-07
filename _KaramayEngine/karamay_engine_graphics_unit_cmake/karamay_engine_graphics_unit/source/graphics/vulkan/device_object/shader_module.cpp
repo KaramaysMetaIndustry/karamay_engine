@@ -1,6 +1,15 @@
 #include "shader_module.h"
 
-bool shader_module::allocate(uint64 size, uint32* code)
+shader_module::shader_module(device& dev) : device_object(dev)
+{
+}
+
+shader_module::~shader_module()
+{
+	deallocate();
+}
+
+bool shader_module::allocate(uint64 size, uint32* code) noexcept
 {
 	VkShaderModuleCreateInfo _create_info;
 	_create_info.sType;
@@ -13,7 +22,11 @@ bool shader_module::allocate(uint64 size, uint32* code)
 	return false;
 }
 
-void shader_module::deallocate()
+void shader_module::deallocate() noexcept
 {
-	vkDestroyShaderModule(_device.handle(), _handle, nullptr);
+	if (_handle)
+	{
+		vkDestroyShaderModule(_device.handle(), _handle, nullptr);
+		_handle = nullptr;
+	}
 }

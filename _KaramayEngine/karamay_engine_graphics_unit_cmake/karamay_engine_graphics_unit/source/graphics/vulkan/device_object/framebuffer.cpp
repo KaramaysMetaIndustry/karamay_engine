@@ -30,6 +30,9 @@ bool framebuffer::allocate(uint32 width, uint32 height, uint32 layers, const std
 
 void framebuffer::deallocate()
 {
-	vkDestroyFramebuffer(_device.handle(), _handle, nullptr);
-	_handle = nullptr;
+	if (_handle)
+	{
+		vkDestroyFramebuffer(_device.handle(), _handle, nullptr);
+		_handle = nullptr;
+	}
 }

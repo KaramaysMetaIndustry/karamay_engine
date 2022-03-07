@@ -35,6 +35,9 @@ bool sampler::allocate() noexcept
 
 void sampler::deallocate() noexcept
 {
-	vkDestroySampler(_device.handle(), _handle, nullptr);
-	_handle = nullptr;
+	if (_handle)
+	{
+		vkDestroySampler(_device.handle(), _handle, nullptr);
+		_handle = nullptr;
+	}
 }

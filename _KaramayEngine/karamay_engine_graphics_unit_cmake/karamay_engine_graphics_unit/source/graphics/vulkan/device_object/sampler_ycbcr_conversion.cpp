@@ -21,6 +21,9 @@ bool sampler_ycbcr_converion::allocate() noexcept
 
 void sampler_ycbcr_converion::deallocate() noexcept
 {
-	vkDestroySamplerYcbcrConversion(_device.handle(), _handle, nullptr);
-	_handle = nullptr;
+	if (_handle)
+	{
+		vkDestroySamplerYcbcrConversion(_device.handle(), _handle, nullptr);
+		_handle = nullptr;
+	}
 }

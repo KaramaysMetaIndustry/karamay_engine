@@ -15,9 +15,9 @@ public:
 
 public:
 
-	bool allocate(uint64 size, uint32 memory_type_index);
+	bool allocate(uint64 size, uint32 memory_type_index) noexcept;
 
-	void deallocate();
+	void deallocate() noexcept;
 	
 };
 

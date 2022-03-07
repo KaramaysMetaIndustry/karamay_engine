@@ -39,8 +39,11 @@ bool image::allocate()
 
 void image::deallocate()
 {
-	vkDestroyImage(_device.handle(), _handle, nullptr);
-	_handle = nullptr;
+	if (_handle)
+	{
+		vkDestroyImage(_device.handle(), _handle, nullptr);
+		_handle = nullptr;
+	}
 }
 
 void image::copy_to(command_buffer* recorder, image* dst, const std::vector<VkImageCopy>& regions)

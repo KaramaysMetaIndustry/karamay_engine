@@ -7,6 +7,7 @@ image_view::image_view(device& dev) : device_object(dev)
 
 image_view::~image_view()
 {
+	deallocate();
 }
 
 bool image_view::allocate(image* target)
@@ -18,4 +19,9 @@ bool image_view::allocate(image* target)
 
 void image_view::deallocate()
 {
+	if (_handle)
+	{
+		vkDestroyImageView(_device.handle(), _handle, nullptr);
+		_handle = nullptr;
+	}
 }

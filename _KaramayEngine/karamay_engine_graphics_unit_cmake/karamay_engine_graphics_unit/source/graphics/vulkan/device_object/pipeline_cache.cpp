@@ -30,8 +30,11 @@ bool pipeline_cache::allocate(uint64 size, void* data) noexcept
 
 void pipeline_cache::deallocate() noexcept
 {
-    vkDestroyPipelineCache(_device.handle(), _handle, nullptr);
-    _handle = nullptr;
+    if (_handle)
+    {
+        vkDestroyPipelineCache(_device.handle(), _handle, nullptr);
+        _handle = nullptr;
+    }
 }
 
 bool pipeline_cache::fetch(uint64 size, void* data) const noexcept

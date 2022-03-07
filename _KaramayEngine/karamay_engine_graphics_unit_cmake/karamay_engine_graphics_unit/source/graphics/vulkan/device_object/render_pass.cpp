@@ -32,8 +32,11 @@ bool render_pass::allocate(const std::vector<VkAttachmentDescription>& attachmen
 
 void render_pass::deallocate()
 {
-    vkDestroyRenderPass(_device.handle(), _handle, nullptr);
-    _handle = nullptr;
+    if (_handle)
+    {
+        vkDestroyRenderPass(_device.handle(), _handle, nullptr);
+        _handle = nullptr;
+    }
 }
 
 void render_pass::set(const std::function<void(framebuffer*, command_buffer*)>& sequence)
