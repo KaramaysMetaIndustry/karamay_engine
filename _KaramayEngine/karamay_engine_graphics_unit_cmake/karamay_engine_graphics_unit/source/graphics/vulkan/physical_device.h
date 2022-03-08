@@ -2,6 +2,8 @@
 #define PHYSICAL_DEVICE_H
 #include "vulkan_object.h"
 
+class device;
+
 class physical_device final : public vulkan_object<VkPhysicalDevice>
 {
 public:
@@ -12,6 +14,10 @@ public:
 	physical_device& operator=(const physical_device&) = delete;
 
 	~physical_device();
+
+public:
+
+	std::shared_ptr<device> create_device() noexcept;
 
 public:
 

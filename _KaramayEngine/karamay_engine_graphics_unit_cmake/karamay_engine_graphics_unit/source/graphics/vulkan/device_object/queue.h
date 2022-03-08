@@ -21,16 +21,19 @@ public:
 
 public:
 
-	void bind_sparse(const VkBindSparseInfo& bind_sparse_info, fence* f) noexcept;
+	bool bind_sparse(const VkBindSparseInfo& bind_sparse_info, fence* f) noexcept;
 
-	void bind_sparse(const std::vector<VkBindSparseInfo>& bind_spare_infos, fence* f) noexcept;
+	bool bind_sparse(const std::vector<VkBindSparseInfo>& bind_spare_infos, fence* f) noexcept;
 
-	void present(const VkPresentInfoKHR& info) noexcept;
+	bool present(const VkPresentInfoKHR& info) noexcept;
 
 	void submit(const VkSubmitInfo& submit, fence* f) noexcept;
 
 	void submit(const std::vector<VkSubmitInfo>& submits, fence* f) noexcept;
 
+	/*
+	* block, wait the queue finished all submitions
+	*/
 	void wait() noexcept;
 
 };

@@ -17,8 +17,9 @@
 #include "device_object/render_pass.h"
 #include "device_object/sampler.h"
 #include "device_object/shader_module.h"
+#include "renderers/renderer.h"
 
-device::device()
+device::device(physical_device& entity) : _entity(entity)
 {
 }
 
@@ -27,21 +28,13 @@ device::~device()
     deallocate();
 }
 
-bool device::allocate(physical_device* entity) noexcept
+bool device::allocate() noexcept
 {
     deallocate();
 
-    if (!entity)
-    {
-#ifdef _DEBUG
-        std::cerr << "" << std::endl;
-#endif
-        return false;
-    }
-
     // costruct queues
     std::vector<VkQueueFamilyProperties> _queue_family_properties;
-    entity->get_queue_family_properties(_queue_family_properties);
+    _entity.get_queue_family_properties(_queue_family_properties);
     std::vector<VkDeviceQueueCreateInfo> _queues;
     _queues.reserve(_queue_family_properties.size());
     uint32 _family_index = 0;
@@ -68,8 +61,8 @@ bool device::allocate(physical_device* entity) noexcept
     // construct extensions and layers
     std::vector<VkExtensionProperties> _extensions;
     std::vector<VkLayerProperties> _layers;
-    entity->enumerate_extension_properties("", _extensions);
-    entity->enumerate_layer_properties(_layers);
+    _entity.enumerate_extension_properties("", _extensions);
+    _entity.enumerate_layer_properties(_layers);
     std::vector<const char*> _extension_names;
     _extension_names.reserve(_layers.size());
     std::vector<const char*> _layer_names;
@@ -85,7 +78,7 @@ bool device::allocate(physical_device* entity) noexcept
 
     // features
     VkPhysicalDeviceFeatures _features; 
-    entity->get_features(_features);
+    _entity.get_features(_features);
 
     VkDeviceCreateInfo _create_info{};
     _create_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -97,14 +90,13 @@ bool device::allocate(physical_device* entity) noexcept
     _create_info.pQueueCreateInfos = _queues.data();
     _create_info.pEnabledFeatures = &_features;
 
-    auto _result =  vkCreateDevice(entity->handle(), &_create_info, nullptr, &_handle);
+    VkResult _result =  vkCreateDevice(_entity.handle(), &_create_info, nullptr, &_handle);
 
     if (_result != VkResult::VK_SUCCESS)
     {
         return false;
     }
 
-    this->entity = entity;
     return true;
 }
 
@@ -117,7 +109,7 @@ void device::deallocate() noexcept
     }
 }
 
-bool device::wait() noexcept
+bool device::wait() const noexcept
 {
     if (!_handle) return false;
 
@@ -127,6 +119,23 @@ bool device::wait() noexcept
         return false;
     }
 	return true;
+}
+
+void device::run() noexcept
+{
+    while (!_should_exit)
+    {
+        for (auto _renderer : _renderers)
+        {
+            _renderer->render(0.0f);
+        }
+    }
+}
+
+queue* device::invoke_queue(uint32 family_index, uint32 index) const noexcept
+{
+    if (family_index >= _queues.size() || index >= _queues[family_index].size()) return nullptr;
+    return _queues[family_index][index];
 }
 
 void device::get_descriptor_set_layout_support(VkDescriptorSetLayoutSupport& support) noexcept

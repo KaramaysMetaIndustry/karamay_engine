@@ -51,7 +51,7 @@ void device_memory::execute_handler(uint64 offset, uint64 size, const std::funct
 uint32 device_memory::_find_memory_type(uint32 typeFilter, VkMemoryPropertyFlags properties) noexcept
 {
 	VkPhysicalDeviceMemoryProperties memProperties;
-	_device.entity->get_memory_properties(memProperties);
+	_device.entity().get_memory_properties(memProperties);
 
 	for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++)
 	{

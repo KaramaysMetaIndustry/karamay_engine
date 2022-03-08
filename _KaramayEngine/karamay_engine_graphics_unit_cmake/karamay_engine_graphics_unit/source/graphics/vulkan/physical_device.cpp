@@ -1,4 +1,5 @@
 #include "physical_device.h"
+#include "device.h"
 
 physical_device::physical_device(VkPhysicalDevice new_handle)
 {
@@ -7,6 +8,11 @@ physical_device::physical_device(VkPhysicalDevice new_handle)
 
 physical_device::~physical_device()
 {
+}
+
+std::shared_ptr<device> physical_device::create_device() noexcept
+{
+    return std::make_shared<device>(*this);
 }
 
 void physical_device::enumerate_extension_properties(const std::string& player_name, std::vector<VkExtensionProperties>& properties) noexcept

@@ -36,16 +36,16 @@ bool buffer::allocate(uint64 size, VkBufferUsageFlags usage_flags, VkSharingMode
 	VkMemoryRequirements _requirements;
 	vkGetBufferMemoryRequirements(_device.handle(), _handle, &_requirements);
 	
-	auto _memory = _device.create<device_memory>();
+	auto _memory = _device.invoke<device_memory>();
 	if (!_memory || !_memory->allocate(_requirements))
 	{
 		return false;
 	}
 
+	// lazy cache
 	this->_memory = _memory;
 	this->_sharing_mode = sharing_mode;
 	this->_usage_flags = usage_flags;
-
 	return true;
 }
 

@@ -17,6 +17,18 @@ public:
 
 	~instance();
 
+private:
+
+	uint32 _version;
+
+	std::vector<std::unique_ptr<physical_device>> _physical_devices;
+
+	std::vector<VkPhysicalDeviceGroupProperties> _physical_device_groups;
+
+	std::unordered_map<std::string, std::vector<VkExtensionProperties>> _name_to_extension_properties;
+
+	std::vector<VkLayerProperties> _layers;
+
 public:
 
 	bool allocate() noexcept;
@@ -25,15 +37,15 @@ public:
 
 public:
 
-	uint32 enumerate_version() noexcept;
+	uint32 version() const noexcept { return _version; }
 
-	void enumerate_physical_devices(std::vector<physical_device*>& physical_devices) noexcept;
+	const auto& physical_devices() const noexcept { return _physical_devices; }
 
-	void enumerate_physical_device_groups(std::vector<VkPhysicalDeviceGroupProperties>& properties) noexcept;
+	const auto& physical_device_groups() const noexcept { return _physical_device_groups; }
 
-	void enumerate_extension_properties(const std::string& player_name, std::vector<VkExtensionProperties>& properties) noexcept;
+	const auto& extensions() const noexcept { return _name_to_extension_properties; }
 
-	void enumerate_layer_properties(std::vector<VkLayerProperties>& properties) noexcept;
+	const auto& layers() const noexcept { return _layers; }
 
 };
 
