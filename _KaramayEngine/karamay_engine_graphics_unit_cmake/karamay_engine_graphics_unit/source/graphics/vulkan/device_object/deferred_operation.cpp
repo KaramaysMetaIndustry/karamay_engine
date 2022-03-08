@@ -13,7 +13,7 @@ bool deferred_operation::allocate() noexcept
 {
 	deallocate();
 
-	device_khr_func(vkCreateDeferredOperationKHR)(_device.handle(), nullptr, &_handle);
+	VkResult _result = device_khr_func(vkCreateDeferredOperationKHR)(_device.handle(), nullptr, &_handle);
 	return true;
 }
 

@@ -21,7 +21,7 @@ bool buffer_view::allocate(std::shared_ptr<buffer> target, uint64 offset, uint64
 
 	VkBufferViewCreateInfo _create_info{};
 	_create_info.sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO;
-	_create_info.buffer = _target->handle();
+	_create_info.buffer = target->handle();
 	_create_info.format = format;
 	_create_info.offset = offset;
 	_create_info.range = range;

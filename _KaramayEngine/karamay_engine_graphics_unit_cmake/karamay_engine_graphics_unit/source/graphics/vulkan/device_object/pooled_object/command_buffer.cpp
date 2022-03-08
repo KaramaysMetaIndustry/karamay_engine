@@ -5,8 +5,15 @@ command_buffer::command_buffer(device& dev, command_pool& pool) : device_object(
 {
 }
 
+command_buffer::~command_buffer()
+{
+	deallocate();
+}
+
 bool command_buffer::allocate(VkCommandBufferLevel level)
 {
+	deallocate();
+
 	VkCommandBufferAllocateInfo _allocate_info;
 	_allocate_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 	_allocate_info.commandBufferCount = 1;
@@ -23,7 +30,11 @@ bool command_buffer::allocate(VkCommandBufferLevel level)
 
 void command_buffer::deallocate()
 {
-	vkFreeCommandBuffers(_device.handle(), _pool.handle(), 1, &_handle);
+	if (_handle)
+	{
+		vkFreeCommandBuffers(_device.handle(), _pool.handle(), 1, &_handle);
+		_handle = nullptr;
+	}
 }
 
 void command_buffer::reset(VkCommandBufferResetFlags flags) noexcept

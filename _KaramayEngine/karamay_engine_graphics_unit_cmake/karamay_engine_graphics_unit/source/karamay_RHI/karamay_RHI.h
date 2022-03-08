@@ -2,27 +2,45 @@
 #define KARAMAY_RHI_H
 #include "graphics/vulkan/instance.h"
 #include "graphics/vulkan/device.h"
-#include "graphics/vulkan/device_object/buffer.h"
 #include "graphics/vulkan/device_object/device_memory.h"
+#include "graphics/vulkan/device_object/buffer.h"
+#include "graphics/vulkan/device_object/buffer_view.h"
 #include "graphics/vulkan/device_object/image.h"
-
+#include "graphics/vulkan/device_object/image_view.h"
 #include "graphics/vulkan/renderers/renderer.h"
 
 namespace karamay_RHI
 {
-    class scene
-    {
 
-    };
+    class mesh {};
+
+    class atmosphere {};
+
+    class light {};
+
+    class camera {};
+
+    class scene {};
 
 
 	class dispatcher final
 	{
+    public:
+
+        dispatcher() = default;
+        
+        dispatcher(const dispatcher&) = delete;
+        dispatcher& operator=(const dispatcher&) = delete;
+
+        ~dispatcher() = default;
+
+    private:
+
         // vulkan instance
         instance _inst = {};
 
         // parallel devices
-        std::vector<device*> _invoked_devices;
+        std::vector<std::shared_ptr<device>> _invoked_devices;
 
         std::vector<std::thread> _device_threads;
 
@@ -43,14 +61,20 @@ namespace karamay_RHI
                 _invoked_devices.push_back(_device);
             }
 
-            /*if (_device_0_0->is_valid())
+            // invoke device
+            auto _device = _invoked_devices.at(0);
+
+            if (_device->is_valid())
             {
-                auto _vertex_buffer = _device_0_0->invoke<buffer>();
+                auto _vertex_buffer = _device->invoke<buffer>();
                 _vertex_buffer->allocate(
                     1073741824u,
-                    VkBufferUsageFlagBits::VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+                    VkBufferUsageFlagBits::VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT,
                     VkSharingMode::VK_SHARING_MODE_EXCLUSIVE
                 );
+
+                auto _vert_buffer_view = _device->invoke<buffer_view>();
+                _vert_buffer_view->allocate(_vertex_buffer, 0, 100, VkFormat::VK_FORMAT_A1R5G5B5_UNORM_PACK16);
 
                 _vertex_buffer->memory()->execute_handler(0, 4,
                     [](uint64 size, void* data)
@@ -70,10 +94,7 @@ namespace karamay_RHI
                         std::memcpy(&_v, data, 4);
                         std::cout << "_v : " << _v << std::endl;
                     });
-
-                _device_0_0->deallocate();
-            }*/
-
+            }
 		}
 
         void dispatch(float delta_time) noexcept

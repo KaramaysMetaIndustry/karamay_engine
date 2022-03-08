@@ -51,6 +51,7 @@ bool instance::allocate() noexcept
 	// enumerate physical devices
 	uint32 _count = 0;
 	vkEnumeratePhysicalDevices(_handle, &_count, nullptr);
+	if (_count == 0) return false;
 	std::vector<VkPhysicalDevice> _physical_device_handles;
 	_physical_device_handles.resize(_count);
 	vkEnumeratePhysicalDevices(_handle, &_count, _physical_device_handles.data());

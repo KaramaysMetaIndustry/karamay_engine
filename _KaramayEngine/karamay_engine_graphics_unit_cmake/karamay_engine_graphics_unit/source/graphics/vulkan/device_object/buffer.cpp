@@ -42,6 +42,8 @@ bool buffer::allocate(uint64 size, VkBufferUsageFlags usage_flags, VkSharingMode
 		return false;
 	}
 
+	vkBindBufferMemory(_device.handle(), _handle, _memory->handle(), 0);
+
 	// lazy cache
 	this->_memory = _memory;
 	this->_sharing_mode = sharing_mode;
