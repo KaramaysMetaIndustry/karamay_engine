@@ -28,7 +28,11 @@ public:
 
 public:
 
-	bool allocate();
+	bool allocate(
+		VkFormat format, VkImageType type, uint32 layers, VkExtent3D extent, uint32 mipmaps,
+		VkImageTiling tiling, VkImageUsageFlags usage, VkSharingMode sharing, VkSampleCountFlagBits samples, VkImageLayout layout, 
+		const std::vector<uint32>& queue_family_indices
+	);
 
 	void deallocate();
 

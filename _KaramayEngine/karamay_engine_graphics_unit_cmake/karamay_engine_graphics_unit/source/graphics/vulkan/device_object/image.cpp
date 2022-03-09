@@ -11,25 +11,25 @@ image::~image()
 	deallocate();
 }
 
-bool image::allocate()
+bool image::allocate(VkFormat format, VkImageType type, uint32 layers, VkExtent3D extent, uint32 mipmaps, VkImageTiling tiling, VkImageUsageFlags usage, VkSharingMode sharing, VkSampleCountFlagBits samples, VkImageLayout layout, const std::vector<uint32>& queue_family_indices)
 {
-	VkImageCreateInfo _create_info;
-	_create_info.extent;
-	_create_info.imageType;
-	_create_info.arrayLayers;
-	_create_info.format;
-	_create_info.initialLayout;
-	_create_info.mipLevels;
-	_create_info.pQueueFamilyIndices;
-	_create_info.queueFamilyIndexCount;
-	_create_info.samples;
-	_create_info.sharingMode;
-	_create_info.tiling;
-	_create_info.usage;
+	VkImageCreateInfo _create_info{};
+	_create_info.extent = extent;
+	_create_info.imageType = type;
+	_create_info.arrayLayers = layers;
+	_create_info.format = format;
+	_create_info.initialLayout = layout;
+	_create_info.mipLevels = mipmaps;
+	_create_info.pQueueFamilyIndices = queue_family_indices.data();
+	_create_info.queueFamilyIndexCount = queue_family_indices.size();
+	_create_info.samples = samples;
+	_create_info.sharingMode = sharing;
+	_create_info.tiling = tiling;
+	_create_info.usage = usage;
 
-	auto _ret = vkCreateImage(_device.handle(), &_create_info, nullptr, &_handle);
+	auto _result = vkCreateImage(_device.handle(), &_create_info, nullptr, &_handle);
 
-	if (_ret != VkResult::VK_SUCCESS)
+	if (_result != VkResult::VK_SUCCESS)
 	{
 		return false;
 	}

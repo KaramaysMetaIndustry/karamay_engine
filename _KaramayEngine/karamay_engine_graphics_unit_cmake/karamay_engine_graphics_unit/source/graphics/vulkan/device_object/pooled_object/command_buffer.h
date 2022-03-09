@@ -1,6 +1,6 @@
 #ifndef COMMAND_BUFFER_H
 #define COMMAND_BUFFER_H
-#include "../device_object.h"
+#include "graphics/vulkan/device_object/device_object.h"
 
 class command_pool;
 
@@ -21,9 +21,9 @@ public:
 
 public:
 
-	bool allocate(VkCommandBufferLevel level);
+	bool allocate(VkCommandBufferLevel level) noexcept;
 
-	void deallocate();
+	void deallocate() noexcept;
 
 public:
 

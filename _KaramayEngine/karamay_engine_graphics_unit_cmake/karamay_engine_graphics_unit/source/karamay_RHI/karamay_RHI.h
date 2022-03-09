@@ -64,37 +64,41 @@ namespace karamay_RHI
             // invoke device
             auto _device = _invoked_devices.at(0);
 
-            if (_device->is_valid())
+            if (!_device->is_valid())
             {
-                auto _vertex_buffer = _device->invoke<buffer>();
-                _vertex_buffer->allocate(
-                    1073741824u,
-                    VkBufferUsageFlagBits::VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT,
-                    VkSharingMode::VK_SHARING_MODE_EXCLUSIVE
-                );
-
-                auto _vert_buffer_view = _device->invoke<buffer_view>();
-                _vert_buffer_view->allocate(_vertex_buffer, 0, 100, VkFormat::VK_FORMAT_A1R5G5B5_UNORM_PACK16);
-
-                _vertex_buffer->memory()->execute_handler(0, 4,
-                    [](uint64 size, void* data)
-                    {
-                        float _v = 2.0f;
-                        std::cout << "_v : " << _v << std::endl;
-                        std::memcpy(&_v, data, 4);
-                        std::cout << "_v : " << _v << std::endl;
-                        _v = 11.01f;
-                        std::memcpy(data, &_v, 4);
-                    });
-
-                _vertex_buffer->memory()->execute_handler(0, 4,
-                    [](uint64 size, void* data)
-                    {
-                        float _v = 0.0f;
-                        std::memcpy(&_v, data, 4);
-                        std::cout << "_v : " << _v << std::endl;
-                    });
+                return false;
             }
+
+            auto _vertex_buffer = _device->invoke<buffer>();
+            _vertex_buffer->allocate(4096u, VkBufferUsageFlagBits::VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT, VkSharingMode::VK_SHARING_MODE_EXCLUSIVE);
+            
+            auto _position_image = _device->invoke<image>();
+            _position_image->allocate(
+                VkFormat::VK_FORMAT_R32G32B32_SFLOAT, 
+                VkImageType::VK_IMAGE_TYPE_1D, 2, {}, 10, 
+                VkImageTiling::VK_IMAGE_TILING_LINEAR, VkImageUsageFlagBits::VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VkSharingMode::VK_SHARING_MODE_EXCLUSIVE,
+                VkSampleCountFlagBits::VK_SAMPLE_COUNT_2_BIT, VkImageLayout::VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, 
+                {}
+            );
+
+            _vertex_buffer->memory()->execute_handler(0, 4,
+                [](uint64 size, void* data)
+                {
+                    float _v = 2.0f;
+                    std::cout << "_v : " << _v << std::endl;
+                    std::memcpy(&_v, data, 4);
+                    std::cout << "_v : " << _v << std::endl;
+                    _v = 11.01f;
+                    std::memcpy(data, &_v, 4);
+                });
+
+            _vertex_buffer->memory()->execute_handler(0, 4,
+                [](uint64 size, void* data)
+                {
+                    float _v = 0.0f;
+                    std::memcpy(&_v, data, 4);
+                    std::cout << "_v : " << _v << std::endl;
+                });
 		}
 
         void dispatch(float delta_time) noexcept

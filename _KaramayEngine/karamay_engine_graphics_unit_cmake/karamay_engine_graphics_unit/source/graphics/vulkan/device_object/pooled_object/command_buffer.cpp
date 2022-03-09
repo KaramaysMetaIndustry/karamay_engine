@@ -1,5 +1,5 @@
 #include "command_buffer.h"
-#include "../command_pool.h"
+#include "graphics/vulkan/device_object/command_pool.h"
 
 command_buffer::command_buffer(device& dev, command_pool& pool) : device_object(dev), _pool(pool)
 {
@@ -10,7 +10,7 @@ command_buffer::~command_buffer()
 	deallocate();
 }
 
-bool command_buffer::allocate(VkCommandBufferLevel level)
+bool command_buffer::allocate(VkCommandBufferLevel level) noexcept
 {
 	deallocate();
 
@@ -28,7 +28,7 @@ bool command_buffer::allocate(VkCommandBufferLevel level)
     return true;
 }
 
-void command_buffer::deallocate()
+void command_buffer::deallocate() noexcept
 {
 	if (_handle)
 	{
