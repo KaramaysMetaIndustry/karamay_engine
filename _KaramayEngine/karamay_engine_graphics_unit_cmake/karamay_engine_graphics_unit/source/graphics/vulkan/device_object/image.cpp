@@ -14,6 +14,7 @@ image::~image()
 bool image::allocate(VkFormat format, VkImageType type, uint32 layers, VkExtent3D extent, uint32 mipmaps, VkImageTiling tiling, VkImageUsageFlags usage, VkSharingMode sharing, VkSampleCountFlagBits samples, VkImageLayout layout, const std::vector<uint32>& queue_family_indices)
 {
 	VkImageCreateInfo _create_info{};
+	_create_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 	_create_info.extent = extent;
 	_create_info.imageType = type;
 	_create_info.arrayLayers = layers;

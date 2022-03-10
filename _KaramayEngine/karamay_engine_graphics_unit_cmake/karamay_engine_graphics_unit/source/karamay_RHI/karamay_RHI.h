@@ -61,7 +61,11 @@ namespace karamay_RHI
                 _invoked_devices.push_back(_device);
             }
 
-            // invoke device
+            if (_invoked_devices.size() < 1)
+            {
+                return false;
+            }
+            
             auto _device = _invoked_devices.at(0);
 
             if (!_device->is_valid())
@@ -69,19 +73,27 @@ namespace karamay_RHI
                 return false;
             }
 
-            auto _vertex_buffer = _device->invoke<buffer>();
-            _vertex_buffer->allocate(4096u, VkBufferUsageFlagBits::VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT, VkSharingMode::VK_SHARING_MODE_EXCLUSIVE);
-            
-            auto _position_image = _device->invoke<image>();
-            _position_image->allocate(
-                VkFormat::VK_FORMAT_R32G32B32_SFLOAT, 
-                VkImageType::VK_IMAGE_TYPE_1D, 2, {}, 10, 
-                VkImageTiling::VK_IMAGE_TILING_LINEAR, VkImageUsageFlagBits::VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VkSharingMode::VK_SHARING_MODE_EXCLUSIVE,
-                VkSampleCountFlagBits::VK_SAMPLE_COUNT_2_BIT, VkImageLayout::VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, 
+            auto _vert_buf = _device->invoke<buffer>();
+
+            _vert_buf->allocate(
+                4096ull,  // bytes
+                VkBufferUsageFlagBits::VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, // vertex buf 
+                VkSharingMode::VK_SHARING_MODE_EXCLUSIVE // 
+            );
+
+            auto _pos_img = _device->invoke<image>();
+            _pos_img->allocate(
+                VkFormat::VK_FORMAT_B8G8R8_UINT,
+                VkImageType::VK_IMAGE_TYPE_1D, 2, { 1024, 1, 1 }, 10,
+                VkImageTiling::VK_IMAGE_TILING_LINEAR,
+                VkImageUsageFlagBits::VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+                VkSharingMode::VK_SHARING_MODE_EXCLUSIVE,
+                VkSampleCountFlagBits::VK_SAMPLE_COUNT_1_BIT,
+                VkImageLayout::VK_IMAGE_LAYOUT_UNDEFINED,
                 {}
             );
 
-            _vertex_buffer->memory()->execute_handler(0, 4,
+            _vert_buf->memory()->execute_handler(0, 4,
                 [](uint64 size, void* data)
                 {
                     float _v = 2.0f;
@@ -92,7 +104,7 @@ namespace karamay_RHI
                     std::memcpy(data, &_v, 4);
                 });
 
-            _vertex_buffer->memory()->execute_handler(0, 4,
+            _vert_buf->memory()->execute_handler(0, 4,
                 [](uint64 size, void* data)
                 {
                     float _v = 0.0f;
