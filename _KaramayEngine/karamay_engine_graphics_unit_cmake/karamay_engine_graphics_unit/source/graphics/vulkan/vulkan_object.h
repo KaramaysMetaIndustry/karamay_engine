@@ -45,13 +45,13 @@ class vulkan_object
 {
 protected:
 
-	vk_handle_t _handle = nullptr;
+	vk_handle_t _Handle = nullptr;
 
 public:
 
-	vk_handle_t handle() const noexcept { return _handle; }
+	vk_handle_t handle() const noexcept { return _Handle; }
 
-	virtual bool is_valid() const noexcept { return _handle != nullptr; }
+	virtual bool is_valid() const noexcept { return _Handle != nullptr; }
 
 public:
 

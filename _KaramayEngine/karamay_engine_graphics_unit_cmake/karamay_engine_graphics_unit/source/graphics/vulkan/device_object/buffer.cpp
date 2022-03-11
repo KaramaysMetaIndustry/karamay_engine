@@ -3,81 +3,100 @@
 #include "image.h"
 #include "pooled_object/command_buffer.h"
 
-buffer::buffer(device& dev) : device_object(dev)
+buffer::buffer(device& dev, uint64 size, VkBufferUsageFlags usage, VkSharingMode sharing)
+	: device_object(dev)
 {
+	VkBufferCreateInfo _CreateInfo
+	{
+		.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+		.pNext = nullptr,
+		.flags = 0,
+		.size = size,
+		.usage = usage,
+		.sharingMode = sharing,
+		.queueFamilyIndexCount = 0,
+		.pQueueFamilyIndices = nullptr
+	};
+
+	auto _Result = vkCreateBuffer(_Device.handle(), &_CreateInfo, nullptr, &_Handle);
+	VkMemoryRequirements _Requirements{};
+	vkGetBufferMemoryRequirements(_Device.handle(), _Handle, &_Requirements);
+	_Memory = std::make_unique<device_memory>(_Device, _Requirements);
 }
 
 buffer::~buffer()
 {
-	deallocate();
+	_Deallocate();
 }
 
-bool buffer::allocate(uint64 size, VkBufferUsageFlags usage_flags, VkSharingMode sharing_mode) noexcept
+void buffer::_Deallocate() noexcept
 {
-	if (size == 0)
+	if (_Handle)
 	{
-		return false;
-	}
-
-	deallocate();
-
-	VkBufferCreateInfo _create_info{};
-	_create_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-	_create_info.usage = usage_flags;
-	_create_info.size = size;
-	_create_info.sharingMode = sharing_mode;
-
-	auto _ret = vkCreateBuffer(_device.handle(), &_create_info, nullptr, &_handle);
-	if (_ret != VkResult::VK_SUCCESS)
-	{
-		return false;
-	}
-
-	VkMemoryRequirements _requirements;
-	vkGetBufferMemoryRequirements(_device.handle(), _handle, &_requirements);
-	
-	auto _memory = _device.invoke<device_memory>();
-	if (!_memory || !_memory->allocate(_requirements))
-	{
-		return false;
-	}
-
-	vkBindBufferMemory(_device.handle(), _handle, _memory->handle(), 0);
-
-	// lazy cache
-	this->_memory = _memory;
-	this->_sharing_mode = sharing_mode;
-	this->_usage_flags = usage_flags;
-	return true;
-}
-
-void buffer::deallocate() noexcept
-{
-	if (_handle)
-	{
-		vkDestroyBuffer(_device.handle(), _handle, nullptr);
-		_handle = nullptr;
+		vkDestroyBuffer(_Device.handle(), _Handle, nullptr);
+		_Handle = nullptr;
 	}
 }
 
-void buffer::copy_to(command_buffer* recorder, buffer* dst, const std::vector<VkBufferCopy>& regions)
+void buffer::copy_to(command_buffer* recorder, buffer& dst, const std::vector<VkBufferCopy>& regions)
 {
-	vkCmdCopyBuffer(recorder->handle(), _handle, dst->handle(), regions.size(), regions.data());
+	vkCmdCopyBuffer(recorder->handle(), _Handle, dst.handle(), regions.size(), regions.data());
 }
 
-void buffer::copy_to(command_buffer* recorder, image* dst, const std::vector<VkBufferImageCopy>& regions)
+void buffer::copy_to(command_buffer* recorder, image& dst, const std::vector<VkBufferImageCopy>& regions)
 {
-	vkCmdCopyBufferToImage(recorder->handle(), _handle, dst->handle(), dst->layout(), regions.size(), regions.data());
+	vkCmdCopyBufferToImage(recorder->handle(), _Handle, dst.handle(), dst.layout(), regions.size(), regions.data());
 }
 
 void buffer::fill(command_buffer* recorder, uint64 offset, uint64 size, uint32 data)
 {
-	vkCmdFillBuffer(recorder->handle(), _handle, offset, size, data);
+	vkCmdFillBuffer(recorder->handle(), _Handle, offset, size, data);
 }
 
 void buffer::update(command_buffer* recorder, uint64 offset, uint64 size, void* data)
 {
-	vkCmdUpdateBuffer(recorder->handle(), _handle, offset, size, data);
+	vkCmdUpdateBuffer(recorder->handle(), _Handle, offset, size, data);
 }
 
+buffer_view::buffer_view(device& dev, buffer& buf, VkFormat format) noexcept
+	: device_object(dev), _Target(buf)
+{
+	_Construct_nothrow(buf, format, 0, 0);
+}
 
+buffer_view::buffer_view(device& dev, buffer& buf, VkFormat format, uint32 offset, uint32 size) noexcept
+	: device_object(dev), _Target(buf)
+{
+	_Construct_nothrow(buf, format, offset, size);
+}
+
+buffer_view::~buffer_view() noexcept
+{
+	_Destroy();
+}
+
+void buffer_view::_Construct_nothrow(buffer& buf, VkFormat format, uint32 offset, uint32 size) noexcept
+{
+	VkBufferViewCreateInfo _create_info{
+		.sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO,
+		.pNext = nullptr,
+		.flags = 0,
+		.buffer = buf.handle(),
+		.format = format,
+		.offset = offset,
+		.range = size,
+	};
+
+	if (vkCreateBufferView(_Device.handle(), &_create_info, nullptr, &_Handle) != VkResult::VK_SUCCESS)
+	{
+	}
+}
+
+void buffer_view::_Destroy() noexcept
+{
+	if (_Handle)
+	{
+		vkDestroyBufferView(_Device.handle(), _Handle, nullptr);
+		_Handle = nullptr;
+	}
+}

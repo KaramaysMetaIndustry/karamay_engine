@@ -9,6 +9,23 @@
 #include "graphics/vulkan/device_object/image_view.h"
 #include "graphics/vulkan/renderers/renderer.h"
 
+/*
+* 
+* RAII can be summarized as follows:
+*    encapsulate each resource into a class, where
+*       the constructor acquires the resource and establishes all class invariants or throws an exception if that cannot be done,
+*       the destructor releases the resource and never throws exceptions;
+*    always use the resource via an instance of a RAII-class that either
+*       has automatic storage duration or temporary lifetime itself, or
+*       has lifetime that is bounded by the lifetime of an automatic or temporary object
+* 
+* Move semantics make it possible to safely transfer resource ownership between objects, across scopes, and in and out of threads, while maintaining resource safety.
+* Classes with open()/close(), lock()/unlock(), or init()/copyFrom()/destroy() member functions are typical examples of non-RAII classes
+* 
+* RAII does not apply to the management of the resources that are not acquired before use: 
+* CPU time, cores, and cache capacity, entropy pool capacity, network bandwidth, electric power consumption, stack memory.
+*/
+
 namespace karamay_RHI
 {
 
@@ -66,23 +83,19 @@ namespace karamay_RHI
                 return false;
             }
             
-            auto _device = _invoked_devices.at(0);
+            auto _Device = _invoked_devices.at(0);
 
-            if (!_device->is_valid())
+            if (!_Device->is_valid())
             {
                 return false;
             }
 
-            auto _vert_buf = _device->invoke<buffer>();
+            std::list<int> a;
 
-            _vert_buf->allocate(
-                4096ull,  // bytes
-                VkBufferUsageFlagBits::VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, // vertex buf 
-                VkSharingMode::VK_SHARING_MODE_EXCLUSIVE // 
-            );
+            auto _Vert_buf = _Device->invoke<buffer>();
 
-            auto _pos_img = _device->invoke<image>();
-            _pos_img->allocate(
+            auto _Position_img = _Device->invoke<image>();
+            _Position_img->allocate(
                 VkFormat::VK_FORMAT_B8G8R8_UINT,
                 VkImageType::VK_IMAGE_TYPE_1D, 2, { 1024, 1, 1 }, 10,
                 VkImageTiling::VK_IMAGE_TILING_LINEAR,
@@ -93,25 +106,8 @@ namespace karamay_RHI
                 {}
             );
 
-            _vert_buf->memory()->execute_handler(0, 4,
-                [](uint64 size, void* data)
-                {
-                    float _v = 2.0f;
-                    std::cout << "_v : " << _v << std::endl;
-                    std::memcpy(&_v, data, 4);
-                    std::cout << "_v : " << _v << std::endl;
-                    _v = 11.01f;
-                    std::memcpy(data, &_v, 4);
-                });
-
-            _vert_buf->memory()->execute_handler(0, 4,
-                [](uint64 size, void* data)
-                {
-                    float _v = 0.0f;
-                    std::memcpy(&_v, data, 4);
-                    std::cout << "_v : " << _v << std::endl;
-                });
-		}
+            buffer_view _Vert_view(*_Device, *_Vert_buf, VkFormat::VK_FORMAT_A1R5G5B5_UNORM_PACK16);
+        }
 
         void dispatch(float delta_time) noexcept
         {

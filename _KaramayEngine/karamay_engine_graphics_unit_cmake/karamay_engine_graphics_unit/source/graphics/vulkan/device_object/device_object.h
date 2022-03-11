@@ -8,11 +8,11 @@ class device_object : public vulkan_object<vk_handle_t>
 protected:
 
 	// device object lifecycle < device
-	device& _device;
+	device& _Device;
 
 public:
 
-	device_object(device& dev) : _device(dev) {}
+	device_object(device& dev) : _Device(dev) {}
 
 	device_object(const device_object&) = delete;
 	device_object& operator=(const device_object&) = delete;

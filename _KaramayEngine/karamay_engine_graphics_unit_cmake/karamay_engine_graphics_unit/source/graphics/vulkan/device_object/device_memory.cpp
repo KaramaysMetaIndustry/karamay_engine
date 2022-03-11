@@ -1,57 +1,38 @@
 #include "device_memory.h"
 #include "graphics/vulkan/physical_device.h"
 
-device_memory::device_memory(device& dev) : device_object(dev)
-{
-}
-
 device_memory::~device_memory()
 {
-	deallocate();
+	_Deallocate();
 }
 
-bool device_memory::allocate(const VkMemoryRequirements& requirements) noexcept
+void device_memory::_Deallocate() noexcept
 {
-	deallocate();
-
-	VkMemoryAllocateInfo _allocate_info{};
-	_allocate_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-	_allocate_info.allocationSize = requirements.size;
-	_allocate_info.memoryTypeIndex = _find_memory_type(
-		requirements.memoryTypeBits, 
-		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
-	);
-
-	VkResult _result = vkAllocateMemory(_device.handle(), &_allocate_info, nullptr, &_handle);
-	if (_result != VkResult::VK_SUCCESS)
+	if (_Handle)
 	{
-		return false;
-	}
-	return true;
-}
-
-void device_memory::deallocate() noexcept
-{
-	if (_handle)
-	{
-		vkFreeMemory(_device.handle(), _handle, nullptr);
-		_handle = nullptr;
+		vkFreeMemory(_Device.handle(), _Handle, nullptr);
+		_Handle = nullptr;
 	}
 }
 
-void device_memory::execute_handler(uint64 offset, uint64 size, const std::function<void(uint64 size, void* data)>& handler, VkMemoryMapFlags flags) const noexcept
+void device_memory::exec_handler(uint64 offset, uint64 size, const device_memory_handler& handler, VkMemoryMapFlags flags) const noexcept
 {
-	void* _data = nullptr;
-	VkResult _result = vkMapMemory(_device.handle(), _handle, offset, size, flags, &_data);
-	if (_result != VkResult::VK_SUCCESS || !_data) return;
-	handler(size, _data);
-	vkUnmapMemory(_device.handle(), _handle);
+	void* _Data = nullptr;
+	VkResult _Result = vkMapMemory(_Device.handle(), _Handle, offset, size, flags, &_Data);
+	if (_Result != VkResult::VK_SUCCESS || !_Data) return;
+	handler(size, _Data);
+	vkUnmapMemory(_Device.handle(), _Handle);
 }
 
-uint32 device_memory::_find_memory_type(uint32 typeFilter, VkMemoryPropertyFlags properties) noexcept
+void device_memory::exec_handler(const device_memory_handler& handler, VkMemoryMapFlags flags) noexcept
+{
+	exec_handler(0, _Size, handler, flags);
+}
+
+uint32 device_memory::_Find_memory_type(uint32 typeFilter, VkMemoryPropertyFlags properties) noexcept
 {
 	VkPhysicalDeviceMemoryProperties memProperties;
-	_device.entity().get_memory_properties(memProperties);
+	_Device.entity().get_memory_properties(memProperties);
 
 	for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++)
 	{
