@@ -27,7 +27,7 @@ class descriptor_pool;
 class renderer;
 
 #define device_khr_func(func_name)\
-PFN_##func_name##(vkGetDeviceProcAddr(_device.handle(), #func_name))\
+PFN_##func_name##(vkGetDeviceProcAddr(_dev.handle(), #func_name))\
 
 /*
 * logical device, avatar of physical device

@@ -1,55 +1,28 @@
 #include "command_pool.h"
 #include "pooled_object/command_buffer.h"
 
-command_pool::command_pool(device& dev) : device_object(dev)
+command_pool::command_pool(device& dev, uint32 queue_family_index) : device_object(dev)
 {
-}
-
-command_pool::~command_pool()
-{
-    deallocate();
-}
-
-bool command_pool::allocate(uint32 queue_family_index) noexcept
-{
-    if (queue_family_index > 10)
-    {
-        return false;
-    }
-
-    deallocate();
-
     VkCommandPoolCreateInfo _create_info{};
     _create_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
     _create_info.queueFamilyIndex = queue_family_index;
 
-    auto _result = vkCreateCommandPool(_device.handle(), &_create_info, nullptr, &_handle);
-
-    if (_result != VkResult::VK_SUCCESS)
-    {
-        return false;
-    }
-
-    return true;
+    auto _result = vkCreateCommandPool(_dev.handle(), &_create_info, nullptr, &_handle);
 }
 
-void command_pool::deallocate()  noexcept
+command_pool::~command_pool()
 {
-    if (_handle)
-    {
-        vkDestroyCommandPool(_device.handle(), _handle, nullptr);
-        _handle = nullptr;
-    }
+    vkDestroyCommandPool(_dev.handle(), _handle, nullptr);
 }
 
 void command_pool::reset(VkCommandPoolResetFlags flags) noexcept
 {
     if (!_handle) return;
 
-    vkResetCommandPool(_device.handle(), _handle, flags);
+    vkResetCommandPool(_dev.handle(), _handle, flags);
 }
 
 std::shared_ptr<command_buffer> command_pool::create_command_buffer()
 {
-    return std::make_shared<command_buffer>(_device, *this);
+    return std::make_shared<command_buffer>(_dev, *this);
 }

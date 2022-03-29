@@ -15,17 +15,11 @@ public:
 
 public:
 
-	bool allocate() noexcept;
-
-	void deallocate() noexcept;
-
-public:
-
 	bool join() noexcept;
 
 	bool get_result() const noexcept;
 
-	std::optional<uint32> get_max_concurrency() const noexcept;
+	std::optional<uint32> max_concurrency() const noexcept;
 	
 };
 

@@ -4,9 +4,7 @@
 #include "graphics/vulkan/device.h"
 #include "graphics/vulkan/device_object/device_memory.h"
 #include "graphics/vulkan/device_object/buffer.h"
-#include "graphics/vulkan/device_object/buffer_view.h"
 #include "graphics/vulkan/device_object/image.h"
-#include "graphics/vulkan/device_object/image_view.h"
 #include "graphics/vulkan/renderers/renderer.h"
 
 /*
@@ -38,6 +36,31 @@ namespace karamay_RHI
     class camera {};
 
     class scene {};
+
+
+    class graph
+    {
+    public:
+
+        template<typename device_object_t>
+        device_object_t* create_persistent() noexcept
+        {
+            return nullptr;
+        }
+
+        template<typename device_object_t>
+        std::shared_ptr<device_object_t> create_shared() noexcept
+        {
+            return nullptr;
+        }
+
+        template<typename device_object_t>
+        std::unique_ptr<device_object_t> create_unique() noexcept
+        {
+            return nullptr;
+        }
+
+    };
 
 
 	class dispatcher final
@@ -83,30 +106,23 @@ namespace karamay_RHI
                 return false;
             }
             
-            auto _Device = _invoked_devices.at(0);
+            auto _device = _invoked_devices.at(0);
 
-            if (!_Device->is_valid())
+            if (!_device->is_valid())
             {
                 return false;
             }
 
-            std::list<int> a;
+            graph _graph;
 
-            auto _Vert_buf = _Device->invoke<buffer>();
+            _graph.create_persistent<buffer>();
 
-            auto _Position_img = _Device->invoke<image>();
-            _Position_img->allocate(
-                VkFormat::VK_FORMAT_B8G8R8_UINT,
-                VkImageType::VK_IMAGE_TYPE_1D, 2, { 1024, 1, 1 }, 10,
-                VkImageTiling::VK_IMAGE_TILING_LINEAR,
-                VkImageUsageFlagBits::VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
-                VkSharingMode::VK_SHARING_MODE_EXCLUSIVE,
-                VkSampleCountFlagBits::VK_SAMPLE_COUNT_1_BIT,
-                VkImageLayout::VK_IMAGE_LAYOUT_UNDEFINED,
-                {}
-            );
 
-            buffer_view _Vert_view(*_Device, *_Vert_buf, VkFormat::VK_FORMAT_A1R5G5B5_UNORM_PACK16);
+            buffer _vert_buf(*_device, 1024, VkBufferUsageFlagBits::VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VkSharingMode::VK_SHARING_MODE_EXCLUSIVE);
+
+            buffer_view _vert_buf(*_device, _vert_buf, VkFormat::VK_FORMAT_A1R5G5B5_UNORM_PACK16);
+
+
         }
 
         void dispatch(float delta_time) noexcept

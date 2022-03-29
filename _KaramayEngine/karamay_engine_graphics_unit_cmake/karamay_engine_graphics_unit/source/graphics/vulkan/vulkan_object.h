@@ -43,21 +43,24 @@ enum class buffer_usage : VkBufferUsageFlags
 template<typename vk_handle_t>
 class vulkan_object
 {
+public:
+
+    vulkan_object() = default;
+
+    vulkan_object(const vulkan_object&) = delete;
+    vulkan_object& operator=(const vulkan_object&) = delete;
+
+    virtual ~vulkan_object() = default;
+
+public:
+
+	vk_handle_t handle() const noexcept { return _handle; }
+
+	virtual bool is_valid() const noexcept { return _handle != nullptr; }
+
 protected:
 
-	vk_handle_t _Handle = nullptr;
-
-public:
-
-	vk_handle_t handle() const noexcept { return _Handle; }
-
-	virtual bool is_valid() const noexcept { return _Handle != nullptr; }
-
-public:
-
-	vulkan_object() = default;
-
-	virtual ~vulkan_object() = default;
+    vk_handle_t _handle = nullptr;
 
 };
 

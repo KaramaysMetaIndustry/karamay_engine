@@ -7,22 +7,15 @@ class descriptor_pool;
 
 class descriptor_set final : public device_object<VkDescriptorSet>
 {
+public:
+
+	descriptor_set(device& dev, descriptor_pool& pool, const descriptor_set_layout& set_layout);
+
+	~descriptor_set() override;
 
 private:
 
 	descriptor_pool& _pool;
-
-public:
-
-	descriptor_set(device& dev, descriptor_pool& pool);
-
-	~descriptor_set() override;
-
-public:
-
-	bool allocate(descriptor_set_layout* set_layout);
-
-	void deallocate();
 
 };
 

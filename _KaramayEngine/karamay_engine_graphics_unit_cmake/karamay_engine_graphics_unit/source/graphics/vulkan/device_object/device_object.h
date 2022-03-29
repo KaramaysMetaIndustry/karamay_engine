@@ -5,14 +5,9 @@
 template<typename vk_handle_t>
 class device_object : public vulkan_object<vk_handle_t>
 {
-protected:
-
-	// device object lifecycle < device
-	device& _Device;
-
 public:
 
-	device_object(device& dev) : _Device(dev) {}
+	device_object(device& dev) : _dev(dev) {}
 
 	device_object(const device_object&) = delete;
 	device_object& operator=(const device_object&) = delete;
@@ -21,7 +16,15 @@ public:
 
 public:
 
-	bool is_valid() const noexcept override { return vulkan_object<vk_handle_t>::is_valid() && true; }
+	bool is_valid() const noexcept override 
+	{ 
+		return vulkan_object<vk_handle_t>::is_valid() && true; 
+	}
+
+protected:
+
+	// device object lifecycle < device
+	device& _dev;
 
 };
 
