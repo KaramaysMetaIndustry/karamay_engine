@@ -24,7 +24,7 @@ buffer::buffer(device& dev, uint64 size, VkBufferUsageFlags usage, VkSharingMode
 	_memory = std::make_unique<device_memory>(_dev, _requirements);
 }
 
-buffer::~buffer() noexcept
+buffer::~buffer()
 {
 	vkDestroyBuffer(_dev.handle(), _handle, nullptr);
 }
@@ -64,6 +64,10 @@ buffer_view::buffer_view(device& dev, buffer& buf, VkFormat format, uint32 offse
 buffer_view::~buffer_view() noexcept
 {
 	vkDestroyBufferView(_dev.handle(), _handle, nullptr);
+}
+
+buffer_view::~buffer_view()
+{
 }
 
 void buffer_view::_Construct_nothrow(buffer& buf, VkFormat format, uint32 offset, uint32 size) noexcept

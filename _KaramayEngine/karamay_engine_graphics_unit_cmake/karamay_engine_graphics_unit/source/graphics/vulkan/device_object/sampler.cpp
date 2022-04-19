@@ -2,15 +2,6 @@
 
 sampler::sampler(device& dev) : device_object(dev)
 {
-}
-
-sampler::~sampler()
-{
-	deallocate();
-}
-
-bool sampler::allocate() noexcept
-{
 	VkSamplerCreateInfo _create_info;
 	_create_info.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
 	_create_info.addressModeU;
@@ -27,13 +18,11 @@ bool sampler::allocate() noexcept
 	_create_info.minLod;
 	_create_info.mipLodBias;
 	_create_info.mipmapMode;
-
+	
 	vkCreateSampler(_device.handle(), &_create_info, nullptr, &_handle);
-
-	return true;
 }
 
-void sampler::deallocate() noexcept
+sampler::~sampler()
 {
 	if (_handle)
 	{

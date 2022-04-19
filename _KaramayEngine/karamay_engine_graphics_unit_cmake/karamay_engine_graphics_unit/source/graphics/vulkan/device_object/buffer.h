@@ -20,7 +20,7 @@ public:
 
 	buffer& operator=(const buffer&) = delete;
 
-	~buffer() noexcept override;
+	~buffer() override;
 
 public:
 
@@ -72,10 +72,9 @@ public:
 	buffer_view(buffer_view&& rhs) noexcept
 		: device_object(rhs._dev), _target(rhs._target)
 	{
-
 	}
 
-	~buffer_view() noexcept override;
+	~buffer_view() override;
 
 private:
 

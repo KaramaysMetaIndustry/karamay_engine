@@ -13,12 +13,6 @@ public:
 
 	~sampler() override;
 
-public:
-
-	bool allocate() noexcept;
-
-	void deallocate() noexcept;
-
 };
 
 #endif
