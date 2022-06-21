@@ -1,5 +1,5 @@
 #include "event.h"
 
-event::event(device& dev) : device_object(dev)
+vk_event::vk_event(device& dev) : device_object(dev)
 {
 }

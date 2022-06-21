@@ -19,7 +19,7 @@ bool pipeline_layout::allocate(const std::vector<VkDescriptorSetLayout>& layouts
     _create_info.pPushConstantRanges = ranges.data();
     _create_info.pushConstantRangeCount = ranges.size();
 
-    VkResult _ret = vkCreatePipelineLayout(_device.handle(), &_create_info, nullptr, &_handle);
+    VkResult _ret = vkCreatePipelineLayout(_dev.handle(), &_create_info, nullptr, &_handle);
     if (_ret == VkResult::VK_SUCCESS)
     {
         return false;
@@ -31,7 +31,7 @@ void pipeline_layout::deallocate()
 {
     if (_handle)
     {
-        vkDestroyPipelineLayout(_device.handle(), _handle, nullptr);
+        vkDestroyPipelineLayout(_dev.handle(), _handle, nullptr);
         _handle = nullptr;
     }
 }

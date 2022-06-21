@@ -4,16 +4,16 @@
 
 class device;
 
-class physical_device final : public vulkan_object<VkPhysicalDevice>
+class vk_physical_device final : public vulkan_object<VkPhysicalDevice>
 {
 public:
 
-	physical_device(VkPhysicalDevice new_handle);
+	vk_physical_device(VkPhysicalDevice new_handle);
 	
-	physical_device(const physical_device&) = delete;
-	physical_device& operator=(const physical_device&) = delete;
+	vk_physical_device(const vk_physical_device&) = delete;
+	vk_physical_device& operator=(const vk_physical_device&) = delete;
 
-	~physical_device();
+	~vk_physical_device();
 
 public:
 

@@ -20,7 +20,7 @@ bool query_pool::allocate(VkQueryType type, uint32 count, VkQueryPipelineStatist
     _create_info.queryCount = count;
     _create_info.pipelineStatistics = flags;
 
-    vkCreateQueryPool(_device.handle(), &_create_info, nullptr, &_handle);
+    vkCreateQueryPool(_dev.handle(), &_create_info, nullptr, &_handle);
 
     return true;
 }
@@ -29,7 +29,7 @@ void query_pool::deallocate()
 {
     if (_handle)
     {
-        vkDestroyQueryPool(_device.handle(), _handle, nullptr);
+        vkDestroyQueryPool(_dev.handle(), _handle, nullptr);
         _handle = nullptr;
     }
 }

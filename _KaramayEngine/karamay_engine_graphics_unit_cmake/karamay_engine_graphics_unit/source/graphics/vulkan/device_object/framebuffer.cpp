@@ -1,5 +1,5 @@
 #include "framebuffer.h"
-#include "image_view.h"
+//#include "image_view.h"
 #include "render_pass.h"
 
 framebuffer::framebuffer(device& dev) : device_object(dev)
@@ -23,7 +23,7 @@ bool framebuffer::allocate(uint32 width, uint32 height, uint32 layers, const std
 	_create_info.pAttachments;
 	_create_info.renderPass = pass->handle();
 
-	vkCreateFramebuffer(_device.handle(), &_create_info, nullptr, &_handle);
+	vkCreateFramebuffer(_dev.handle(), &_create_info, nullptr, &_handle);
 
 	return true;
 }
@@ -32,7 +32,7 @@ void framebuffer::deallocate()
 {
 	if (_handle)
 	{
-		vkDestroyFramebuffer(_device.handle(), _handle, nullptr);
+		vkDestroyFramebuffer(_dev.handle(), _handle, nullptr);
 		_handle = nullptr;
 	}
 }

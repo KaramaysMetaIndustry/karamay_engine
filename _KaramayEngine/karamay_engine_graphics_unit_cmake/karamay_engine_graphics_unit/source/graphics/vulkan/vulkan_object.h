@@ -40,6 +40,8 @@ enum class buffer_usage : VkBufferUsageFlags
     // clang-format on
 };
 
+
+
 template<typename vk_handle_t>
 class vulkan_object
 {
@@ -54,13 +56,13 @@ public:
 
 public:
 
-	vk_handle_t handle() const noexcept { return _handle; }
+	inline vk_handle_t handle() const noexcept { return _handle; }
 
 	virtual bool is_valid() const noexcept { return _handle != nullptr; }
 
 protected:
 
-    vk_handle_t _handle = nullptr;
+    vk_handle_t _handle{nullptr};
 
 };
 

@@ -1,9 +1,7 @@
 #include "device.h"
 #include "physical_device.h"
 #include "device_object/buffer.h"
-#include "device_object/buffer_view.h"
 #include "device_object/image.h"
-#include "device_object/image_view.h"
 #include "device_object/command_pool.h"
 #include "device_object/pooled_object/command_buffer.h"
 #include "device_object/pooled_object/descriptor_set.h"
@@ -19,16 +17,16 @@
 #include "device_object/shader_module.h"
 #include "renderers/renderer.h"
 
-device::device(physical_device& entity) : _entity(entity)
+vk_device::vk_device(vk_physical_device& entity) : _entity(entity)
 {
 }
 
-device::~device()
+vk_device::~vk_device()
 {
     deallocate();
 }
 
-bool device::allocate() noexcept
+bool vk_device::allocate() noexcept
 {
     deallocate();
 
@@ -100,7 +98,7 @@ bool device::allocate() noexcept
     return true;
 }
 
-void device::deallocate() noexcept
+void vk_device::deallocate() noexcept
 {
     if (_handle)
     {
@@ -109,7 +107,7 @@ void device::deallocate() noexcept
     }
 }
 
-bool device::wait() const noexcept
+bool vk_device::wait() const noexcept
 {
     if (!_handle) return false;
 
@@ -121,7 +119,7 @@ bool device::wait() const noexcept
 	return true;
 }
 
-void device::run() noexcept
+void vk_device::run() noexcept
 {
     while (!_should_exit)
     {
@@ -132,13 +130,13 @@ void device::run() noexcept
     }
 }
 
-queue* device::invoke_queue(uint32 family_index, uint32 index) const noexcept
+queue* vk_device::invoke_queue(uint32 family_index, uint32 index) const noexcept
 {
     if (family_index >= _queues.size() || index >= _queues[family_index].size()) return nullptr;
     return _queues[family_index][index];
 }
 
-void device::get_descriptor_set_layout_support(VkDescriptorSetLayoutSupport& support) noexcept
+void vk_device::get_descriptor_set_layout_support(VkDescriptorSetLayoutSupport& support) noexcept
 {
     if (!_handle) return;
 

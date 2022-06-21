@@ -12,7 +12,7 @@ bool renderer::allocate(device* dev) noexcept
 {
 	if (!_device.is_valid()) return false;
 	
-	auto _buffer = _device.invoke<buffer>();
+	//auto _buffer = _device.invoke<buffer>();
 
 	return true;
 }

@@ -12,7 +12,7 @@ queue::~queue()
 
 bool queue::allocate(uint32 queue_family_index, uint32 queue_index) noexcept
 {
-	vkGetDeviceQueue(_device.handle(), queue_family_index, queue_index, &_handle);
+	vkGetDeviceQueue(_dev.handle(), queue_family_index, queue_index, &_handle);
 	return true;
 }
 

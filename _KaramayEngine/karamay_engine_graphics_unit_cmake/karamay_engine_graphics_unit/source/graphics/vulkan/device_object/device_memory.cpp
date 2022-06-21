@@ -1,12 +1,12 @@
 #include "device_memory.h"
 #include "graphics/vulkan/physical_device.h"
 
-device_memory::~device_memory()
+vk_device_memory::~vk_device_memory()
 {
 	_deallocate();
 }
 
-void device_memory::_deallocate() noexcept
+void vk_device_memory::_deallocate() noexcept
 {
 	if (_handle)
 	{
@@ -15,7 +15,7 @@ void device_memory::_deallocate() noexcept
 	}
 }
 
-void device_memory::exec_handler(uint64 offset, uint64 size, const device_memory_handler& handler, VkMemoryMapFlags flags) const noexcept
+void vk_device_memory::exec_handler(uint64 offset, uint64 size, const device_memory_handler& handler, VkMemoryMapFlags flags) const noexcept
 {
 	void* _Data = nullptr;
 	VkResult _Result = vkMapMemory(_dev.handle(), _handle, offset, size, flags, &_Data);
@@ -24,12 +24,12 @@ void device_memory::exec_handler(uint64 offset, uint64 size, const device_memory
 	vkUnmapMemory(_dev.handle(), _handle);
 }
 
-void device_memory::exec_handler(const device_memory_handler& handler, VkMemoryMapFlags flags) noexcept
+void vk_device_memory::exec_handler(const device_memory_handler& handler, VkMemoryMapFlags flags) noexcept
 {
 	exec_handler(0, _size, handler, flags);
 }
 
-uint32 device_memory::_find_memory_type(uint32 typeFilter, VkMemoryPropertyFlags properties) noexcept
+uint32 vk_device_memory::_find_memory_type(uint32 typeFilter, VkMemoryPropertyFlags properties) noexcept
 {
 	VkPhysicalDeviceMemoryProperties memProperties;
 	_dev.entity().get_memory_properties(memProperties);

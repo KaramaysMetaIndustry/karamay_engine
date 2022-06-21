@@ -1051,7 +1051,7 @@ public:
 	{
 		if (_buffer)
 		{
-			return _buffer->get_bytes_num();
+			return static_cast<int32>(_buffer->get_bytes_num());
 		}
 		return 0;
 	}

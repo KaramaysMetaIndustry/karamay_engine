@@ -19,14 +19,14 @@ sampler::sampler(device& dev) : device_object(dev)
 	_create_info.mipLodBias;
 	_create_info.mipmapMode;
 	
-	vkCreateSampler(_device.handle(), &_create_info, nullptr, &_handle);
+	vkCreateSampler(_dev.handle(), &_create_info, nullptr, &_handle);
 }
 
 sampler::~sampler()
 {
 	if (_handle)
 	{
-		vkDestroySampler(_device.handle(), _handle, nullptr);
+		vkDestroySampler(_dev.handle(), _handle, nullptr);
 		_handle = nullptr;
 	}
 }

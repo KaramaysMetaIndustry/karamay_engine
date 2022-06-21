@@ -19,7 +19,7 @@ bool graphics_pipeline::allocate(pipeline_cache* cache, pipeline_layout* layout)
     VkGraphicsPipelineCreateInfo _create_info;
     _create_info.sType;
 
-    auto _ret = vkCreateGraphicsPipelines(_device.handle(), cache->handle(), 1, &_create_info, nullptr, &_handle);
+    auto _ret = vkCreateGraphicsPipelines(_dev.handle(), cache->handle(), 1, &_create_info, nullptr, &_handle);
 
     if (_ret != VkResult::VK_SUCCESS)
     {
@@ -83,7 +83,7 @@ bool ray_tracing_pipeline::allocate(pipeline_cache* cache, pipeline_layout* layo
     _create_info.pLibraryInfo;
     _create_info.pLibraryInterface;
 
-    device_khr_func(vkCreateRayTracingPipelinesKHR)(_device.handle(), deferred_op->handle(), cache->handle(), 1, &_create_info, nullptr, &_handle);
+    device_khr_func(vkCreateRayTracingPipelinesKHR)(_dev.handle(), deferred_op->handle(), cache->handle(), 1, &_create_info, nullptr, &_handle);
 
     return false;
 }
@@ -178,7 +178,7 @@ bool compute_pipeline::allocate(pipeline_cache* cache, pipeline_layout* layout, 
     _create_info.flags;
     _create_info.layout = layout->handle();
     _create_info.stage = _shader_stage_create_info;
-    VkResult _result = vkCreateComputePipelines(_device.handle(), cache->handle(), 1, &_create_info, nullptr, &_handle);
+    VkResult _result = vkCreateComputePipelines(_dev.handle(), cache->handle(), 1, &_create_info, nullptr, &_handle);
     
     if (_result != VkResult::VK_SUCCESS)
     {
@@ -215,7 +215,7 @@ void pipeline::deallocate()
 {
     if (_handle)
     {
-        vkDestroyPipeline(_device.handle(), _handle, nullptr);
+        vkDestroyPipeline(_dev.handle(), _handle, nullptr);
         _handle = nullptr;
     }
 }

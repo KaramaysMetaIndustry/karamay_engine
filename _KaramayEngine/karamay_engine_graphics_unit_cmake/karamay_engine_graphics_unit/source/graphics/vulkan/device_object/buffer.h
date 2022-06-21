@@ -3,32 +3,32 @@
 #include "device_object.h"
 #include "device_memory.h"
 
-class device_memory;
+class vk_device_memory;
 class image;
 class command_buffer;
 
-class buffer final : public device_object<VkBuffer> 
+class vk_buffer final : public device_object<VkBuffer> 
 {
+
+	std::unique_ptr<vk_device_memory> _memory;
+
 public:
-	explicit buffer(device& dev, uint64 size, VkBufferUsageFlags usage, VkSharingMode sharing);
 
-	buffer(const buffer&) = delete;
+	explicit vk_buffer(device& dev);
 
-	buffer(buffer&& rhs) noexcept
+	vk_buffer(const vk_buffer&) = delete;
+
+	vk_buffer(vk_buffer&& rhs) noexcept
 		: device_object(rhs._dev), _memory(std::move(rhs._memory))
 	{}
 
-	buffer& operator=(const buffer&) = delete;
+	vk_buffer& operator=(const vk_buffer&) = delete;
 
-	~buffer() override;
+	~vk_buffer() override;
 
 public:
 
-	uint64 size() const noexcept { _memory->size(); }
-
-	device_memory& memory() noexcept { return *_memory; }
-
-	const device_memory& memory() const noexcept { return *_memory; }
+	bool allocate(uint64 size, VkBufferUsageFlags usage, VkSharingMode sharing);
 
 public:
 
@@ -52,37 +52,32 @@ public:
 	*/
 	void update(command_buffer& recorder, uint64 offset, uint64 size, void* data);
 
-private:
-
-	std::unique_ptr<device_memory> _memory;
 
 };
 
-class buffer_view final : public device_object<VkBufferView>
+class vk_buffer_view final : public device_object<VkBufferView>
 {
 public:
 
-	explicit buffer_view(device& dev, buffer& buf, VkFormat format) noexcept;
+	explicit vk_buffer_view(device& dev) noexcept;
 	
-	explicit buffer_view(device& dev, buffer& buf, VkFormat format, uint32 offset, uint32 size) noexcept;
-	
-	buffer_view(const buffer_view&) = delete;
-	buffer_view& operator=(const buffer_view&) = delete;
+	vk_buffer_view(const vk_buffer_view&) = delete;
+	vk_buffer_view& operator=(const vk_buffer_view&) = delete;
 
-	buffer_view(buffer_view&& rhs) noexcept
+	vk_buffer_view(vk_buffer_view&& rhs) noexcept
 		: device_object(rhs._dev), _target(rhs._target)
 	{
 	}
 
-	~buffer_view() override;
+	~vk_buffer_view() override;
+
+public:
+
+	bool allocate(std::shared_ptr<vk_buffer> buf, VkFormat format, uint32 offset, uint32 size);
 
 private:
 
-	void _Construct_nothrow(buffer& buf, VkFormat format, uint32 offset, uint32 size) noexcept;
-
-private:
-
-	buffer& _target;
+	std::shared_ptr<vk_buffer> _target;
 
 	VkFormat _format;
 

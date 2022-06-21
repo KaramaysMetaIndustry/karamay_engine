@@ -15,7 +15,7 @@ bool semaphore::allocate() noexcept
 
 	VkSemaphoreCreateInfo _create_info{};
 	_create_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-	auto _result = vkCreateSemaphore(_device.handle(), &_create_info, nullptr, &_handle);
+	auto _result = vkCreateSemaphore(_dev.handle(), &_create_info, nullptr, &_handle);
 	if (_result != VkResult::VK_SUCCESS)
 	{
 		return false;
@@ -27,7 +27,7 @@ void semaphore::deallocate() noexcept
 {
 	if (_handle)
 	{
-		vkDestroySemaphore(_device.handle(), _handle, nullptr);
+		vkDestroySemaphore(_dev.handle(), _handle, nullptr);
 		_handle = nullptr;
 	}
 }

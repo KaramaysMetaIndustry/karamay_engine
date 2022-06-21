@@ -114,15 +114,11 @@ namespace karamay_RHI
             }
 
             graph _graph;
+            //_graph.create_persistent<buffer>();
+            //buffer _vert_buf(*_device, 1024, VkBufferUsageFlagBits::VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VkSharingMode::VK_SHARING_MODE_EXCLUSIVE);
+            //buffer_view _vert_buf(*_device, _vert_buf, VkFormat::VK_FORMAT_A1R5G5B5_UNORM_PACK16);
 
-            _graph.create_persistent<buffer>();
-
-
-            buffer _vert_buf(*_device, 1024, VkBufferUsageFlagBits::VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VkSharingMode::VK_SHARING_MODE_EXCLUSIVE);
-
-            buffer_view _vert_buf(*_device, _vert_buf, VkFormat::VK_FORMAT_A1R5G5B5_UNORM_PACK16);
-
-
+            return true;
         }
 
         void dispatch(float delta_time) noexcept

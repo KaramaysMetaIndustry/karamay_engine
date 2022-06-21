@@ -22,7 +22,7 @@ bool acceleration_structure::allocate() noexcept
 	_create_info.size;
 	_create_info.type;
 
-	auto _result = device_khr_func(vkCreateAccelerationStructureKHR)(_device.handle(), &_create_info, nullptr, &_handle);
+	auto _result = device_khr_func(vkCreateAccelerationStructureKHR)(_dev.handle(), &_create_info, nullptr, &_handle);
 
 	if (_result != VkResult::VK_SUCCESS)
 	{
@@ -36,7 +36,7 @@ void acceleration_structure::deallocate() noexcept
 {
 	if (_handle)
 	{
-		device_khr_func(vkDestroyAccelerationStructureKHR)(_device.handle(), _handle, nullptr);
+		device_khr_func(vkDestroyAccelerationStructureKHR)(_dev.handle(), _handle, nullptr);
 		_handle = nullptr;
 	}
 }

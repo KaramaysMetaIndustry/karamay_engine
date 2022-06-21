@@ -2,20 +2,31 @@
 #define EVENT_H
 #include "device_object.h"
 
-class event final : public device_object<VkEvent>
+class vk_event final : public device_object<VkEvent>
 {
 public:
-	event(device& dev);
+	vk_event(device& dev);
 
-	event(const event&) = delete;
-	event& operator=(const event&) = delete;
+	vk_event(const vk_event&) = delete;
+	vk_event& operator=(const vk_event&) = delete;
 	
-	~event() override {}
+	~vk_event() override {}
 
 public:
 
+	bool allocate()
+	{
+		VkEventCreateInfo _CreateInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_EVENT_CREATE_INFO
+		};
 
-
+		if (vkCreateEvent(_dev.handle(), &_CreateInfo, nullptr, &_handle) == VkResult::VK_SUCCESS)
+		{
+			return true;
+		}
+		return false;
+	}
 
 };
 

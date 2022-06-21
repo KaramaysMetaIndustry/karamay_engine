@@ -10,7 +10,14 @@ class command_buffer;
 
 class pipeline : public device_object<VkPipeline>
 {
+protected:
+
+	std::shared_ptr<pipeline_cache> _cache;
+
+	std::shared_ptr<pipeline_layout> _layout;
+
 public:
+
 	pipeline(device& dev);
 
 	pipeline(const pipeline&) = delete;
@@ -21,14 +28,6 @@ public:
 public:
 
 	void deallocate();
-
-protected:
-
-	std::shared_ptr<pipeline_cache> _cache;
-
-	std::shared_ptr<pipeline_layout> _layout;
-
-public:
 
 	void bind(command_buffer* recorder, VkPipelineBindPoint bind_point);
 
@@ -48,8 +47,6 @@ public:
 public:
 
 	bool allocate(pipeline_cache* cache, pipeline_layout* layout);
-
-	bool allocate(pipeline_cache*);
 
 public:
 

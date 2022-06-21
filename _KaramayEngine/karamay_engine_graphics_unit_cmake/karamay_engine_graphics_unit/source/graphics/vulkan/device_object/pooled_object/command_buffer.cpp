@@ -20,7 +20,7 @@ bool command_buffer::allocate(VkCommandBufferLevel level) noexcept
 	_allocate_info.commandPool = _pool.handle();
 	_allocate_info.level = level;
 
-	auto _ret = vkAllocateCommandBuffers(_device.handle(), &_allocate_info, &_handle);
+	auto _ret = vkAllocateCommandBuffers(_dev.handle(), &_allocate_info, &_handle);
 	if (_ret != VkResult::VK_SUCCESS)
 	{
 		return false;
@@ -32,7 +32,7 @@ void command_buffer::deallocate() noexcept
 {
 	if (_handle)
 	{
-		vkFreeCommandBuffers(_device.handle(), _pool.handle(), 1, &_handle);
+		vkFreeCommandBuffers(_dev.handle(), _pool.handle(), 1, &_handle);
 		_handle = nullptr;
 	}
 }

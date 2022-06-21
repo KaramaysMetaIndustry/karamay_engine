@@ -17,7 +17,7 @@ bool shader_module::allocate(uint64 size, uint32* code) noexcept
 	_create_info.codeSize = size;
 	_create_info.pCode = code;
 
-	vkCreateShaderModule(_device.handle(), &_create_info, nullptr, &_handle);
+	vkCreateShaderModule(_dev.handle(), &_create_info, nullptr, &_handle);
 
 	return false;
 }
@@ -26,7 +26,7 @@ void shader_module::deallocate() noexcept
 {
 	if (_handle)
 	{
-		vkDestroyShaderModule(_device.handle(), _handle, nullptr);
+		vkDestroyShaderModule(_dev.handle(), _handle, nullptr);
 		_handle = nullptr;
 	}
 }

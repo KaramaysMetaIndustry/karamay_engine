@@ -31,7 +31,7 @@ namespace ke_filesystem
         std::ifstream _file(ke_path);
         std::string _content;
 
-        _file.exceptions(std::fstream::failbit | std::fstream::badbit);
+        /*_file.exceptions(std::fstream::failbit | std::fstream::badbit);
         directory_iterator _dit(ke_path);
         for (auto& _it : _dit)
         {
@@ -47,7 +47,7 @@ namespace ke_filesystem
         }
         catch (const std::exception& e) {
             std::cout << "Exception: [ " << e.what() << " ]" << std::endl;
-        }
+        }*/
 
         return true;
     }

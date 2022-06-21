@@ -1,56 +1,53 @@
 #include "fence.h"
 
-fence::fence(device& dev) : device_object(dev)
+vk_fence::vk_fence(device& dev) : device_object(dev)
 {
 }
 
-fence::~fence()
+vk_fence::~vk_fence()
 {
 	deallocate();
 }
 
-bool fence::allocate() noexcept
+bool vk_fence::allocate() noexcept
 {
 	VkFenceCreateInfo _create_info;
 	_create_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 
-	auto _result = vkCreateFence(_device.handle(), &_create_info, nullptr, &_handle);
-	if (_result != VkResult::VK_SUCCESS)
-	{
-		return false;
-	}
-	return true;
+	return vkCreateFence(_dev.handle(), &_create_info, nullptr, &_handle);
 }
 
-void fence::deallocate() noexcept
+void vk_fence::deallocate() noexcept
 {
 	if (_handle)
 	{
-		vkDestroyFence(_device.handle(), _handle, nullptr);
+		vkDestroyFence(_dev.handle(), _handle, nullptr);
 		_handle = nullptr;
 	}
 }
 
-void fence::wait(bool wait_all, uint64 timeout) noexcept
+void vk_fence::wait(bool wait_all, uint64 timeout) noexcept
 {
-	if (!_handle) return;
-	vkWaitForFences(_device.handle(), 1, &_handle, wait_all, timeout);
-}
-
-void fence::reset() noexcept
-{
-	if (!_handle) return;
-	vkResetFences(_device.handle(), 1, &_handle);
-}
-
-bool fence::status() noexcept
-{
-	if (!_handle) return false;
-	auto _result = vkGetFenceStatus(_device.handle(), _handle);
-	
-	if (_result == VkResult::VK_SUCCESS)
+	if (_handle)
 	{
-		return true;
+		vkWaitForFences(_dev.handle(), 1, &_handle, wait_all, timeout);
 	}
-	return false;
+}
+
+void vk_fence::reset() noexcept
+{
+	if (_handle)
+	{
+		vkResetFences(_dev.handle(), 1, &_handle);
+	}
+}
+
+bool vk_fence::is_signaled() noexcept
+{
+	if (!_handle)
+	{
+		return false;
+	}
+
+	return vkGetFenceStatus(_dev.handle(), _handle) == VkResult::VK_SUCCESS;
 }

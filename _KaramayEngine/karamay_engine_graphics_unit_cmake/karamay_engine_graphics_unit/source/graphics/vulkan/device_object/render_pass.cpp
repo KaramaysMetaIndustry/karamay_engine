@@ -22,7 +22,7 @@ bool render_pass::allocate(const std::vector<VkAttachmentDescription>& attachmen
     _create_info.pAttachments = attachments.data();
     _create_info.pDependencies = dependencies.data();
     _create_info.pSubpasses = subpasses.data();
-    auto _ret = vkCreateRenderPass(_device.handle(), &_create_info, nullptr, &_handle);
+    auto _ret = vkCreateRenderPass(_dev.handle(), &_create_info, nullptr, &_handle);
     if (_ret != VkResult::VK_SUCCESS)
     {
         return false;
@@ -34,7 +34,7 @@ void render_pass::deallocate()
 {
     if (_handle)
     {
-        vkDestroyRenderPass(_device.handle(), _handle, nullptr);
+        vkDestroyRenderPass(_dev.handle(), _handle, nullptr);
         _handle = nullptr;
     }
 }

@@ -37,3 +37,16 @@ void image::clear(command_buffer& recorder, VkClearDepthStencilValue value, cons
 	vkCmdClearDepthStencilImage(recorder.handle(), _handle, _layout, &value, ranges.size(), ranges.data());
 }
 
+image_view::~image_view() noexcept
+{
+	_deallocate();
+}
+
+void image_view::_deallocate() noexcept
+{
+	if (_handle)
+	{
+		vkDestroyImageView(_dev.handle(), _handle, nullptr);
+		_handle = nullptr;
+	}
+}

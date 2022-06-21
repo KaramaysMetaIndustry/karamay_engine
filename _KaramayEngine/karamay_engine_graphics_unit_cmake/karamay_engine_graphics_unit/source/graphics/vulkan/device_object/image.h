@@ -7,6 +7,11 @@ class buffer;
 
 class image final :public device_object<VkImage>
 {
+
+	VkImageLayout _layout;
+
+	std::unique_ptr<device_memory> _memory;
+
 public:
 
 	image(device& dev, VkFormat format, VkImageType type, uint32 layers, VkExtent3D extent, uint32 mipmaps,
@@ -26,7 +31,7 @@ public:
 			.tiling = tiling,
 			.usage = usage,
 			.sharingMode = sharing,
-			.queueFamilyIndexCount = queue_family_indices.size(),
+			.queueFamilyIndexCount = static_cast<uint32_t>(queue_family_indices.size()),
 			.pQueueFamilyIndices = queue_family_indices.data(),
 			.initialLayout = layout
 		};
@@ -44,17 +49,9 @@ public:
 
 	~image() override;
 
-private:
-
-	VkImageLayout _layout;
-
-	std::unique_ptr<device_memory> _memory;
-
 public:
 
 	VkImageLayout layout() const noexcept { return _layout; }
-
-public:
 
 	void clear(command_buffer& recorder, VkClearColorValue value, const std::vector<VkImageSubresourceRange>& ranges);
 
@@ -73,7 +70,11 @@ public:
 
 class image_view final : public device_object<VkImageView>
 {
+
+	image& _target;
+
 public:
+
 	image_view(device& dev, image& img, VkImageViewType view_t, VkFormat format, VkComponentMapping components, VkImageSubresourceRange subresource_range) : device_object(dev), _target(img)
 	{
 		VkImageViewCreateInfo _create_info
@@ -93,25 +94,11 @@ public:
 	image_view(const image_view&) = delete;
 	image_view& operator=(const image_view&) = delete;
 
-	~image_view() noexcept override
-	{
-		_deallocate();
-	}
+	~image_view() noexcept override;
 
 public:
 
-	void _deallocate()
-	{
-		if (_handle)
-		{
-			vkDestroyImageView(_dev.handle(), _handle, nullptr);
-			_handle = nullptr;
-		}
-	}
-
-private:
-
-	image& _target;
+	void _deallocate() noexcept;
 
 };
 

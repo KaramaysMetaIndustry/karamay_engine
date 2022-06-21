@@ -2,11 +2,11 @@
 #define DEVICE_MEMORY_H
 #include "device_object.h"
 
-class device_memory final : public device_object<VkDeviceMemory>
+class vk_device_memory final : public device_object<VkDeviceMemory>
 {
 public:
 
-	explicit device_memory(device& dev, const VkMemoryRequirements& requirements) noexcept
+	explicit vk_device_memory(device& dev, const VkMemoryRequirements& requirements) noexcept
 		: device_object(dev), _size(requirements.size)
 	{
 		VkMemoryAllocateInfo _Alloc_info
@@ -22,7 +22,7 @@ public:
 		VkResult _result = vkAllocateMemory(_dev.handle(), &_Alloc_info, nullptr, &_handle);
 	}
 
-	explicit device_memory(device& dev, uint64 size, uint32 memory_type_index) noexcept
+	explicit vk_device_memory(device& dev, uint64 size, uint32 memory_type_index) noexcept
 		:device_object(dev), _size(size)
 	{
 		VkMemoryAllocateInfo _Alloc_info
@@ -36,14 +36,10 @@ public:
 		VkResult _Result = vkAllocateMemory(_dev.handle(), &_Alloc_info, nullptr, &_handle);
 	}
 
-	device_memory(const device_memory&) = delete;
-	device_memory& operator=(const device_memory&) = delete;
+	vk_device_memory(const vk_device_memory&) = delete;
+	vk_device_memory& operator=(const vk_device_memory&) = delete;
 
-	~device_memory() noexcept override;
-
-public:
-
-	uint64 size() const { return _size; }
+	~vk_device_memory() noexcept override;
 
 public:
 	
@@ -61,6 +57,10 @@ public:
 	* [](uint64 size, void* data) {}
 	*/
 	void exec_handler(const device_memory_handler& handler, VkMemoryMapFlags flags = {}) noexcept; 
+
+public:
+
+	uint64 size() const { return _size; }
 
 private:
 

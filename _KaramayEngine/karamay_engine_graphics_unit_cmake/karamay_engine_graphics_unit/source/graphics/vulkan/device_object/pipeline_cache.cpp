@@ -19,7 +19,7 @@ bool pipeline_cache::allocate(uint64 size, void* data) noexcept
     _create_info.pInitialData = data;
     _create_info.flags;
 
-    auto _ret = vkCreatePipelineCache(_device.handle(), &_create_info, nullptr, &_handle);
+    auto _ret = vkCreatePipelineCache(_dev.handle(), &_create_info, nullptr, &_handle);
     if (_ret != VkResult::VK_SUCCESS)
     {
         return false;
@@ -32,14 +32,14 @@ void pipeline_cache::deallocate() noexcept
 {
     if (_handle)
     {
-        vkDestroyPipelineCache(_device.handle(), _handle, nullptr);
+        vkDestroyPipelineCache(_dev.handle(), _handle, nullptr);
         _handle = nullptr;
     }
 }
 
 bool pipeline_cache::fetch(uint64 size, void* data) const noexcept
 {
-    vkGetPipelineCacheData(_device.handle(), _handle, &size, data);
+    vkGetPipelineCacheData(_dev.handle(), _handle, &size, data);
     return true;
 }
 
@@ -51,6 +51,6 @@ bool pipeline_cache::merge(const std::vector<pipeline_cache*>& caches) noexcept
         _caches.push_back(cache->handle());
     }
 
-    vkMergePipelineCaches(_device.handle(), _handle, _caches.size(), _caches.data());
+    vkMergePipelineCaches(_dev.handle(), _handle, _caches.size(), _caches.data());
     return true;
 }

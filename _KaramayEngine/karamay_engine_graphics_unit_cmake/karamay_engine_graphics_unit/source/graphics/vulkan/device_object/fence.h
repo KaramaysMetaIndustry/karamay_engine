@@ -2,21 +2,15 @@
 #define FENCE_H
 #include "device_object.h"
 
-class fence final : public device_object<VkFence>
+class vk_fence final : public device_object<VkFence>
 {
 public:
-	fence(device& dev);
+	vk_fence(device& dev);
 
-	fence(const fence&) = delete;
-	fence& operator=(const fence&) = delete;
+	vk_fence(const vk_fence&) = delete;
+	vk_fence& operator=(const vk_fence&) = delete;
 
-	~fence() override;
-
-public:
-
-	bool allocate() noexcept;
-
-	void deallocate() noexcept;
+	~vk_fence() override;
 
 public:
 
@@ -28,15 +22,19 @@ public:
 
 	/*
 	* non-block, for epoll
-	* true : signaled
-	* false : unsignaled
 	*/
-	bool status() noexcept;
+	bool is_signaled() noexcept;
 
 	/*
 	* reset to unsignaled
 	*/
 	void reset() noexcept;
+
+public:
+
+	bool allocate() noexcept;
+
+	void deallocate() noexcept;
 
 };
 
