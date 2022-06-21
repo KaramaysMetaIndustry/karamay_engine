@@ -21,7 +21,7 @@ private:
 
 	uint32 _version;
 
-	std::vector<std::unique_ptr<physical_device>> _physical_devices;
+	std::vector<std::unique_ptr<vk_physical_device>> _physical_devices;
 
 	std::vector<VkPhysicalDeviceGroupProperties> _physical_device_groups;
 

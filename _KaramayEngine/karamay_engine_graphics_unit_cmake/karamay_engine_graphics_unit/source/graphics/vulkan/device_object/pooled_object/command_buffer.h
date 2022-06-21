@@ -2,22 +2,22 @@
 #define COMMAND_BUFFER_H
 #include "graphics/vulkan/device_object/device_object.h"
 
-class command_pool;
+class vk_command_pool;
 
-class command_buffer final : public device_object<VkCommandBuffer>
+class vk_command_buffer final : public device_object<VkCommandBuffer>
 {
 private:
 
-	command_pool& _pool;
+	vk_command_pool& _pool;
 
 public:
 
-	command_buffer(device& dev, command_pool& pool);
+	vk_command_buffer(vk_device& dev, vk_command_pool& pool);
 
-	command_buffer(const command_buffer&) = delete;
-	command_buffer& operator=(const command_buffer&) = delete;
+	vk_command_buffer(const vk_command_buffer&) = delete;
+	vk_command_buffer& operator=(const vk_command_buffer&) = delete;
 
-	~command_buffer();
+	~vk_command_buffer();
 
 public:
 

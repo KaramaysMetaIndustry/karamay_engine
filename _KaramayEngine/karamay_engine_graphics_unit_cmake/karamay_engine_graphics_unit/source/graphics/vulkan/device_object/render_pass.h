@@ -4,16 +4,16 @@
 
 class command_buffer;
 
-class render_pass final : public device_object<VkRenderPass>
+class vk_render_pass final : public device_object<VkRenderPass>
 {
 public:
 
-	render_pass(device& dev);
+	vk_render_pass(vk_device& dev);
 
-	render_pass(const render_pass&) = delete;
-	render_pass& operator=(const render_pass&) = delete;
+	vk_render_pass(const vk_render_pass&) = delete;
+	vk_render_pass& operator=(const vk_render_pass&) = delete;
 
-	~render_pass() override;
+	~vk_render_pass() override;
 
 public:
 
@@ -27,13 +27,13 @@ public:
 
 public:
 
-	void set(const std::function<void(framebuffer*, command_buffer*)>& sequence);
+	void set(const std::function<void(framebuffer*, vk_command_buffer*)>& sequence);
 
 private:
 
-	void _begin(command_buffer* recorder, framebuffer* render_target, const std::vector<VkClearValue>& clear_values, VkRect2D render_area, VkSubpassContents contents);
+	void _begin(vk_command_buffer* recorder, framebuffer* render_target, const std::vector<VkClearValue>& clear_values, VkRect2D render_area, VkSubpassContents contents);
 		   
-	void _end(command_buffer* recorder);
+	void _end(vk_command_buffer* recorder);
 
 };
 

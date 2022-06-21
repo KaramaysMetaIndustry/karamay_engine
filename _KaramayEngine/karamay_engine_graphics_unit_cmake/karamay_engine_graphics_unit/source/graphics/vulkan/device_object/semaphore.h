@@ -2,16 +2,16 @@
 #define SEMAPHORE_H
 #include "device_object.h"
 
-class semaphore final : public device_object<VkSemaphore>
+class vk_semaphore final : public device_object<VkSemaphore>
 {
 public:
 
-	semaphore(device& dev);
+	vk_semaphore(vk_device& dev);
 
-	semaphore(const semaphore&) = delete;
-	semaphore& operator=(const semaphore&) = delete;
+	vk_semaphore(const vk_semaphore&) = delete;
+	vk_semaphore& operator=(const vk_semaphore&) = delete;
 
-	~semaphore() override;
+	~vk_semaphore() override;
 
 public:
 

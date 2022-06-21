@@ -2,18 +2,18 @@
 #define QUEUE_H
 #include "device_object.h"
 
-class fence;
+class vk_fence;
 
-class queue final : public device_object<VkQueue>
+class vk_queue final : public device_object<VkQueue>
 {
 public:
 
-	queue(device& dev);
+	vk_queue(vk_device& dev);
 
-	queue(const queue&) = delete;
-	queue& operator=(const queue&) = delete;
+	vk_queue(const vk_queue&) = delete;
+	vk_queue& operator=(const vk_queue&) = delete;
 
-	~queue() override;
+	~vk_queue() override;
 
 public:
 
@@ -21,15 +21,15 @@ public:
 
 public:
 
-	bool bind_sparse(const VkBindSparseInfo& bind_sparse_info, fence* f) noexcept;
+	bool bind_sparse(const VkBindSparseInfo& bind_sparse_info, vk_fence* f) noexcept;
 
-	bool bind_sparse(const std::vector<VkBindSparseInfo>& bind_spare_infos, fence* f) noexcept;
+	bool bind_sparse(const std::vector<VkBindSparseInfo>& bind_spare_infos, vk_fence* f) noexcept;
 
 	bool present(const VkPresentInfoKHR& info) noexcept;
 
-	void submit(const VkSubmitInfo& submit, fence* f) noexcept;
+	void submit(const VkSubmitInfo& submit, vk_fence* f) noexcept;
 
-	void submit(const std::vector<VkSubmitInfo>& submits, fence* f) noexcept;
+	void submit(const std::vector<VkSubmitInfo>& submits, vk_fence* f) noexcept;
 
 	/*
 	* block, wait the queue finished all submitions

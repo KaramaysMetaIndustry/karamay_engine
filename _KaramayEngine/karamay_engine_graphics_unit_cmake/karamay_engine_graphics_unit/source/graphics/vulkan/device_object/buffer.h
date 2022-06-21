@@ -4,8 +4,8 @@
 #include "device_memory.h"
 
 class vk_device_memory;
-class image;
-class command_buffer;
+class vk_image;
+class vk_command_buffer;
 
 class vk_buffer final : public device_object<VkBuffer> 
 {
@@ -14,7 +14,7 @@ class vk_buffer final : public device_object<VkBuffer>
 
 public:
 
-	explicit vk_buffer(device& dev);
+	explicit vk_buffer(vk_device& dev);
 
 	vk_buffer(const vk_buffer&) = delete;
 
@@ -35,22 +35,22 @@ public:
 	/*
 	* gpu all controlled
 	*/
-	void copy_to(command_buffer& recorder, buffer& dst, const std::vector<VkBufferCopy>& regions);
+	void copy_to(vk_command_buffer& recorder, buffer& dst, const std::vector<VkBufferCopy>& regions);
 
 	/*
 	* gpu all controlled
 	*/
-	void copy_to(command_buffer& recorder, image& dst, const std::vector<VkBufferImageCopy>& regions);
+	void copy_to(vk_command_buffer& recorder, image& dst, const std::vector<VkBufferImageCopy>& regions);
 
 	/*
 	* gpu mostly all controlled
 	*/
-	void fill(command_buffer& recorder, uint64 offset, uint64 size, uint32 data);
+	void fill(vk_command_buffer& recorder, uint64 offset, uint64 size, uint32 data);
 
 	/*
 	* gpu all controlled
 	*/
-	void update(command_buffer& recorder, uint64 offset, uint64 size, void* data);
+	void update(vk_command_buffer& recorder, uint64 offset, uint64 size, void* data);
 
 
 };

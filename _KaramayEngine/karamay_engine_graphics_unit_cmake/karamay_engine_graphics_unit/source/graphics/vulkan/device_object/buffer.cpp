@@ -3,7 +3,7 @@
 #include "image.h"
 #include "pooled_object/command_buffer.h"
 
-vk_buffer::vk_buffer(device& dev)
+vk_buffer::vk_buffer(vk_device& dev)
 	: device_object(dev)
 {
 }
@@ -44,27 +44,27 @@ bool vk_buffer::allocate(uint64 size, VkBufferUsageFlags usage, VkSharingMode sh
 	return false;
 }
 
-void vk_buffer::copy_to(command_buffer& recorder, buffer& dst, const std::vector<VkBufferCopy>& regions)
+void vk_buffer::copy_to(vk_command_buffer& recorder, buffer& dst, const std::vector<VkBufferCopy>& regions)
 {
 	vkCmdCopyBuffer(recorder.handle(), _handle, dst.handle(), regions.size(), regions.data());
 }
 
-void vk_buffer::copy_to(command_buffer& recorder, image& dst, const std::vector<VkBufferImageCopy>& regions)
+void vk_buffer::copy_to(vk_command_buffer& recorder, image& dst, const std::vector<VkBufferImageCopy>& regions)
 {
 	vkCmdCopyBufferToImage(recorder.handle(), _handle, dst.handle(), dst.layout(), regions.size(), regions.data());
 }
 
-void vk_buffer::fill(command_buffer& recorder, uint64 offset, uint64 size, uint32 data)
+void vk_buffer::fill(vk_command_buffer& recorder, uint64 offset, uint64 size, uint32 data)
 {
 	vkCmdFillBuffer(recorder.handle(), _handle, offset, size, data);
 }
 
-void vk_buffer::update(command_buffer& recorder, uint64 offset, uint64 size, void* data)
+void vk_buffer::update(vk_command_buffer& recorder, uint64 offset, uint64 size, void* data)
 {
 	vkCmdUpdateBuffer(recorder.handle(), _handle, offset, size, data);
 }
 
-vk_buffer_view::vk_buffer_view(device& dev) noexcept
+vk_buffer_view::vk_buffer_view(vk_device& dev) noexcept
 	: device_object(dev)
 {
 }

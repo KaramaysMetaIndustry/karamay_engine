@@ -2,10 +2,11 @@
 #include "physical_device.h"
 #include "device_object/buffer.h"
 #include "device_object/image.h"
-#include "device_object/command_pool.h"
+#include "device_object/pooled_object/command_pool.h"
 #include "device_object/pooled_object/command_buffer.h"
 #include "device_object/pooled_object/descriptor_set.h"
-#include "device_object/descriptor_set_layout.h"
+#include "device_object/pooled_object/descriptor_set_layout.h"
+#include "device_object/pooled_object/descriptor_pool.h"
 #include "device_object/acceleration_structure.h"
 #include "device_object/device_memory.h"
 #include "device_object/framebuffer.h"
@@ -15,6 +16,7 @@
 #include "device_object/render_pass.h"
 #include "device_object/sampler.h"
 #include "device_object/shader_module.h"
+#include "device_object/event.h"
 #include "renderers/renderer.h"
 
 vk_device::vk_device(vk_physical_device& entity) : _entity(entity)
@@ -128,6 +130,91 @@ void vk_device::run() noexcept
             _renderer->render(0.0f);
         }
     }
+}
+
+std::shared_ptr<vk_command_pool> vk_device::create_command_pool(uint32 queue_family_index)
+{
+    return std::shared_ptr<vk_command_pool>();
+}
+
+std::shared_ptr<vk_descriptor_pool> vk_device::create_descriptor_pool(uint32 count, uint32 max, const VkDescriptorPoolSize& pool_size)
+{
+    auto _obj = invoke<vk_descriptor_pool>();
+    if (_obj && _obj->allocate(count, max, pool_size))
+    {
+        return _obj;
+    }
+    return nullptr;
+}
+
+std::shared_ptr<vk_descriptor_set_layout> vk_device::create_descriptor_set_layout(const std::vector<VkDescriptorSetLayoutBinding>& bindings)
+{
+    return std::shared_ptr<vk_descriptor_set_layout>();
+}
+
+std::shared_ptr<vk_buffer> vk_device::create_buffer(uint64 size, VkBufferUsageFlags usage, VkSharingMode sharing)
+{
+    auto _buf = invoke<vk_buffer>();
+    if (_buf && _buf->allocate(size, usage, sharing))
+    {
+        return _buf;
+    }
+    return nullptr;
+}
+
+std::shared_ptr<vk_buffer_view> vk_device::create_buffer_view(std::shared_ptr<vk_buffer> buf, VkFormat format, uint32 offset, uint32 size)
+{
+    auto _buf_view = invoke<vk_buffer_view>();
+    if (_buf_view && _buf_view->allocate(buf, format, offset, size))
+    {
+        return _buf_view;
+    }
+    return nullptr;
+}
+
+std::shared_ptr<vk_image> vk_device::create_image() noexcept
+{
+    return std::shared_ptr<vk_image>();
+}
+
+std::shared_ptr<vk_image_view> vk_device::create_image_view() noexcept
+{
+    return std::shared_ptr<vk_image_view>();
+}
+
+std::shared_ptr<vk_shader_module> vk_device::create_shader_module(uint64 size, uint32* code)
+{
+    return std::shared_ptr<vk_shader_module>();
+}
+
+std::shared_ptr<vk_sampler> vk_device::create_sampler()
+{
+    return std::shared_ptr<vk_sampler>();
+}
+
+std::shared_ptr<vk_event> vk_device::create_event()
+{
+    auto _event = invoke<vk_event>();
+    if (_event && _event->allocate())
+    {
+        return _event;
+    }
+    return nullptr;
+}
+
+std::shared_ptr<vk_fence> vk_device::create_fence()
+{
+    return std::shared_ptr<vk_fence>();
+}
+
+std::shared_ptr<vk_semaphore> vk_device::create_semaphore()
+{
+    return std::shared_ptr<vk_semaphore>();
+}
+
+std::shared_ptr<vk_render_pass> vk_device::create_render_pass()
+{
+    return std::shared_ptr<vk_render_pass>();
 }
 
 queue* vk_device::invoke_queue(uint32 family_index, uint32 index) const noexcept

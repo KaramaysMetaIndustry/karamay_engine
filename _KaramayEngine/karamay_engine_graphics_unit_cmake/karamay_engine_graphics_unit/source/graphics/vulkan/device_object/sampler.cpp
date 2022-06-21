@@ -1,6 +1,20 @@
 #include "sampler.h"
 
-sampler::sampler(device& dev) : device_object(dev)
+vk_sampler::vk_sampler(vk_device& dev) : device_object(dev)
+{
+	
+}
+
+vk_sampler::~vk_sampler()
+{
+	if (_handle)
+	{
+		vkDestroySampler(_dev.handle(), _handle, nullptr);
+		_handle = nullptr;
+	}
+}
+
+bool vk_sampler::allocate()
 {
 	VkSamplerCreateInfo _create_info;
 	_create_info.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
@@ -18,15 +32,11 @@ sampler::sampler(device& dev) : device_object(dev)
 	_create_info.minLod;
 	_create_info.mipLodBias;
 	_create_info.mipmapMode;
-	
-	vkCreateSampler(_dev.handle(), &_create_info, nullptr, &_handle);
-}
 
-sampler::~sampler()
-{
-	if (_handle)
+	if (vkCreateSampler(_dev.handle(), &_create_info, nullptr, &_handle) == VkResult::VK_SUCCESS)
 	{
-		vkDestroySampler(_dev.handle(), _handle, nullptr);
-		_handle = nullptr;
+		return true;
 	}
+
+	return false;
 }

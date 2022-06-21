@@ -2,10 +2,13 @@
 #define PHYSICAL_DEVICE_H
 #include "vulkan_object.h"
 
-class device;
+class vk_device;
 
 class vk_physical_device final : public vulkan_object<VkPhysicalDevice>
 {
+
+	std::shared_ptr<vk_device> _dev;
+
 public:
 
 	vk_physical_device(VkPhysicalDevice new_handle);
@@ -17,9 +20,7 @@ public:
 
 public:
 
-	std::shared_ptr<device> create_device() noexcept;
-
-public:
+	std::shared_ptr<vk_device> create_device() noexcept;
 
 	void enumerate_extension_properties(const std::string& player_name, std::vector<VkExtensionProperties>& properties) noexcept;
 

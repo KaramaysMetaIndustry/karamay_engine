@@ -1,16 +1,16 @@
 #include "command_buffer.h"
-#include "graphics/vulkan/device_object/command_pool.h"
+#include "command_pool.h"
 
-command_buffer::command_buffer(device& dev, command_pool& pool) : device_object(dev), _pool(pool)
+vk_command_buffer::vk_command_buffer(vk_device& dev, vk_command_pool& pool) : device_object(dev), _pool(pool)
 {
 }
 
-command_buffer::~command_buffer()
+vk_command_buffer::~vk_command_buffer()
 {
 	deallocate();
 }
 
-bool command_buffer::allocate(VkCommandBufferLevel level) noexcept
+bool vk_command_buffer::allocate(VkCommandBufferLevel level) noexcept
 {
 	deallocate();
 
@@ -20,15 +20,15 @@ bool command_buffer::allocate(VkCommandBufferLevel level) noexcept
 	_allocate_info.commandPool = _pool.handle();
 	_allocate_info.level = level;
 
-	auto _ret = vkAllocateCommandBuffers(_dev.handle(), &_allocate_info, &_handle);
-	if (_ret != VkResult::VK_SUCCESS)
+	if(vkAllocateCommandBuffers(_dev.handle(), &_allocate_info, &_handle) == VkResult::VK_SUCCESS)
 	{
-		return false;
+		return true;
 	}
-    return true;
+
+	return false;
 }
 
-void command_buffer::deallocate() noexcept
+void vk_command_buffer::deallocate() noexcept
 {
 	if (_handle)
 	{
@@ -37,7 +37,7 @@ void command_buffer::deallocate() noexcept
 	}
 }
 
-void command_buffer::reset(VkCommandBufferResetFlags flags) noexcept
+void vk_command_buffer::reset(VkCommandBufferResetFlags flags) noexcept
 {
 	vkResetCommandBuffer(_handle, flags);
 }

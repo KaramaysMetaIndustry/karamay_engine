@@ -1,29 +1,30 @@
 #include "semaphore.h"
 
-semaphore::semaphore(device& dev) : device_object(dev)
+vk_semaphore::vk_semaphore(vk_device& dev) : device_object(dev)
 {
 }
 
-semaphore::~semaphore()
+vk_semaphore::~vk_semaphore()
 {
 	deallocate();
 }
 
-bool semaphore::allocate() noexcept
+bool vk_semaphore::allocate() noexcept
 {
 	deallocate();
 
 	VkSemaphoreCreateInfo _create_info{};
 	_create_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-	auto _result = vkCreateSemaphore(_dev.handle(), &_create_info, nullptr, &_handle);
-	if (_result != VkResult::VK_SUCCESS)
+
+	if (vkCreateSemaphore(_dev.handle(), &_create_info, nullptr, &_handle)  == VkResult::VK_SUCCESS)
 	{
-		return false;
+		return true;
 	}
+	
 	return true;
 }
 
-void semaphore::deallocate() noexcept
+void vk_semaphore::deallocate() noexcept
 {
 	if (_handle)
 	{

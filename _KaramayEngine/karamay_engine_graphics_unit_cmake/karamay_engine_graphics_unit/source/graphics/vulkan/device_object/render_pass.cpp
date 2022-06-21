@@ -2,16 +2,16 @@
 #include "pooled_object/command_buffer.h"
 #include "framebuffer.h"
 
-render_pass::render_pass(device& dev) : device_object(dev)
+vk_render_pass::vk_render_pass(vk_device& dev) : device_object(dev)
 {
 }
 
-render_pass::~render_pass()
+vk_render_pass::~vk_render_pass()
 {
     deallocate();
 }
 
-bool render_pass::allocate(const std::vector<VkAttachmentDescription>& attachments, const std::vector<VkSubpassDependency>& dependencies, const std::vector<VkSubpassDescription>& subpasses)
+bool vk_render_pass::allocate(const std::vector<VkAttachmentDescription>& attachments, const std::vector<VkSubpassDependency>& dependencies, const std::vector<VkSubpassDescription>& subpasses)
 {
     VkRenderPassCreateInfo _create_info;
     _create_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
@@ -30,7 +30,7 @@ bool render_pass::allocate(const std::vector<VkAttachmentDescription>& attachmen
     return true;
 }
 
-void render_pass::deallocate()
+void vk_render_pass::deallocate()
 {
     if (_handle)
     {
@@ -39,7 +39,7 @@ void render_pass::deallocate()
     }
 }
 
-void render_pass::set(const std::function<void(framebuffer*, command_buffer*)>& sequence)
+void vk_render_pass::set(const std::function<void(framebuffer*, vk_command_buffer*)>& sequence)
 {
     command_buffer* _recorder = nullptr;
     framebuffer* _rt = nullptr;
@@ -48,7 +48,7 @@ void render_pass::set(const std::function<void(framebuffer*, command_buffer*)>& 
     _end(_recorder);
 }
 
-void render_pass::_begin(command_buffer* recorder, framebuffer* render_target, const std::vector<VkClearValue>& clear_values, VkRect2D render_area, VkSubpassContents contents)
+void vk_render_pass::_begin(vk_command_buffer* recorder, framebuffer* render_target, const std::vector<VkClearValue>& clear_values, VkRect2D render_area, VkSubpassContents contents)
 {
     VkRenderPassBeginInfo _begin_info;
     _begin_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -62,7 +62,7 @@ void render_pass::_begin(command_buffer* recorder, framebuffer* render_target, c
 
 }
 
-void render_pass::_end(command_buffer* recorder)
+void vk_render_pass::_end(vk_command_buffer* recorder)
 {
     vkCmdEndRenderPass(recorder->handle());
 }

@@ -2,20 +2,22 @@
 #define DESCRIPTOR_SET_H
 #include "../device_object.h"
 
-class descriptor_set_layout;
-class descriptor_pool;
+class vk_descriptor_set_layout;
+class vk_descriptor_pool;
 
-class descriptor_set final : public device_object<VkDescriptorSet>
+class vk_descriptor_set final : public device_object<VkDescriptorSet>
 {
 public:
 
-	descriptor_set(device& dev, descriptor_pool& pool, const descriptor_set_layout& set_layout);
+	vk_descriptor_set(vk_device& dev, vk_descriptor_set& pool);
 
-	~descriptor_set() override;
+	~vk_descriptor_set() override;
+
+	bool allocate(const vk_descriptor_set_layout& set_layout);
 
 private:
 
-	descriptor_pool& _pool;
+	vk_descriptor_pool& _pool;
 
 };
 

@@ -40,8 +40,6 @@ enum class buffer_usage : VkBufferUsageFlags
     // clang-format on
 };
 
-
-
 template<typename vk_handle_t>
 class vulkan_object
 {

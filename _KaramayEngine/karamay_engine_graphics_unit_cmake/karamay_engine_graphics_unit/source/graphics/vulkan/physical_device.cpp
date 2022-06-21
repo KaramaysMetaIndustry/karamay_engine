@@ -10,9 +10,14 @@ vk_physical_device::~vk_physical_device()
 {
 }
 
-std::shared_ptr<device> vk_physical_device::create_device() noexcept
+std::shared_ptr<vk_device> vk_physical_device::create_device() noexcept
 {
-    return std::make_shared<device>(*this);
+    auto _obj = std::make_shared<vk_device>(*this);
+    if (_obj)
+    {
+        return _obj;
+    }
+    return nullptr;
 }
 
 void vk_physical_device::enumerate_extension_properties(const std::string& player_name, std::vector<VkExtensionProperties>& properties) noexcept

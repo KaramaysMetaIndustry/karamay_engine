@@ -2,16 +2,18 @@
 #define SAMPLER_H
 #include "device_object.h"
 
-class sampler final : public device_object<VkSampler>
+class vk_sampler final : public device_object<VkSampler>
 {
 public:
 
-	sampler(device& dev);
+	vk_sampler(vk_device& dev);
 
-	sampler(const sampler&) = delete;
-	sampler& operator=(const sampler&) = delete;
+	vk_sampler(const vk_sampler&) = delete;
+	vk_sampler& operator=(const vk_sampler&) = delete;
 
-	~sampler() override;
+	~vk_sampler() override;
+
+	bool allocate();
 
 };
 

@@ -6,11 +6,14 @@
 
 class surface final : public device_object<VkSurfaceKHR>
 {
-private:
 
 	instance& _instance;
 
 public:
+
+	surface();
+
+
 
 	bool allocate()
 	{
