@@ -1,24 +1,21 @@
 #include "command_pool.h"
 #include "command_pool.h"
+#include "command_pool.h"
+#include "command_pool.h"
 #include "pooled_object/command_buffer.h"
 
-vk_command_pool::vk_command_pool(vk_device& dev) : device_object(dev)
+void vk_command_pool::_deallocate() noexcept
 {
-   
+    if (_handle)
+    {
+        vkDestroyCommandPool(_dev.handle(), _handle, nullptr);
+        _handle = nullptr;
+    }
 }
 
-vk_command_pool::~vk_command_pool()
+bool vk_command_pool::allocate(const vk_command_pool_parameters& parameters) noexcept
 {
-    vkDestroyCommandPool(_dev.handle(), _handle, nullptr);
-}
-
-bool vk_command_pool::allocate(uint32 queue_family_index)
-{
-    VkCommandPoolCreateInfo _create_info{};
-    _create_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    _create_info.queueFamilyIndex = queue_family_index;
-
-    if (vkCreateCommandPool(_dev.handle(), &_create_info, nullptr, &_handle) == VkResult::VK_SUCCESS)
+    if (vkCreateCommandPool(_dev.handle(), &(parameters.core()), nullptr, &_handle) == VkResult::VK_SUCCESS)
     {
         return true;
     }

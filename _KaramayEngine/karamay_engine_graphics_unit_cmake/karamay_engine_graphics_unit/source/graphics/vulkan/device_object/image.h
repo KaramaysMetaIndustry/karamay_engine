@@ -15,8 +15,7 @@ public:
 
 	vk_image(vk_device& dev) noexcept
 		: device_object(dev)
-	{
-	}
+	{}
 
 	vk_image(const vk_image&) = delete;
 	vk_image& operator=(const vk_image&) = delete;
@@ -27,7 +26,7 @@ public:
 
 	bool allocate(const vk_image_parameters& parameters);
 
-	std::shared_ptr<vk_image_view> create_view() noexcept;
+	std::shared_ptr<vk_image_view> create_view(const vk_image_view_parameters& parameters) noexcept;
 
 	VkImageLayout layout() const noexcept { return _layout; }
 

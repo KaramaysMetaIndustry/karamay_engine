@@ -2,34 +2,35 @@
 #define QUERY_POOL_H
 #include "device_object.h"
 
-class command_buffer;
+class vk_command_buffer;
 
-class query_pool final : public device_object<VkQueryPool>
+class vk_query_pool final : public device_object<VkQueryPool>
 {
-public:
-
-	query_pool(device& dev);
-
-	query_pool(const query_pool&) = delete;
-	query_pool& operator=(const query_pool&) = delete;
-
-	~query_pool() override;
+	void _deallocate();
 
 public:
 
-	bool allocate(VkQueryType type, uint32 count, VkQueryPipelineStatisticFlags flags);
+	vk_query_pool(vk_device& dev) :
+		device_object(dev)
+	{}
 
-	void deallocate();
+	vk_query_pool(const vk_query_pool&) = delete;
+	vk_query_pool& operator=(const vk_query_pool&) = delete;
 
-public:
+	~vk_query_pool() override
+	{
+		_deallocate();
+	}
 
-	void reset(command_buffer* recorder, uint32 first_query, uint32 query_count);
+	bool allocate(const vk_query_pool_parameters& parameters);
 
-	void copy_results(command_buffer* recorder, uint32 first_query, uint32 query_count, buffer* dst, uint64 offset, uint64 stride, VkQueryResultFlags flags);
+	void reset(vk_command_buffer* recorder, uint32 first_query, uint32 query_count);
 
-	void begin(command_buffer* recorder, uint32 index, VkQueryControlFlags flags);
+	void copy_results(vk_command_buffer* recorder, uint32 first_query, uint32 query_count, vk_buffer* dst, uint64 offset, uint64 stride, VkQueryResultFlags flags);
 
-	void end(command_buffer* recorder, uint32 index);
+	void begin(vk_command_buffer* recorder, uint32 index, VkQueryControlFlags flags);
+
+	void end(vk_command_buffer* recorder, uint32 index);
 
 };
 

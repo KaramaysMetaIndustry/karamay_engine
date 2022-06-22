@@ -2,13 +2,13 @@
 #include "pooled_object/command_buffer.h"
 #include "framebuffer.h"
 
-vk_render_pass::vk_render_pass(vk_device& dev) : device_object(dev)
+void vk_render_pass::_deallocate()
 {
-}
-
-vk_render_pass::~vk_render_pass()
-{
-    deallocate();
+    if (_handle)
+    {
+        vkDestroyRenderPass(_dev.handle(), _handle, nullptr);
+        _handle = nullptr;
+    }
 }
 
 bool vk_render_pass::allocate(const std::vector<VkAttachmentDescription>& attachments, const std::vector<VkSubpassDependency>& dependencies, const std::vector<VkSubpassDescription>& subpasses)
@@ -30,25 +30,18 @@ bool vk_render_pass::allocate(const std::vector<VkAttachmentDescription>& attach
     return true;
 }
 
-void vk_render_pass::deallocate()
-{
-    if (_handle)
-    {
-        vkDestroyRenderPass(_dev.handle(), _handle, nullptr);
-        _handle = nullptr;
-    }
-}
 
-void vk_render_pass::set(const std::function<void(framebuffer*, vk_command_buffer*)>& sequence)
+
+void vk_render_pass::set(const std::function<void(vk_framebuffer*, vk_command_buffer*)>& sequence)
 {
-    command_buffer* _recorder = nullptr;
-    framebuffer* _rt = nullptr;
+    vk_command_buffer* _recorder = nullptr;
+    vk_framebuffer* _rt = nullptr;
     _begin(_recorder, _rt, {}, {}, VkSubpassContents::VK_SUBPASS_CONTENTS_INLINE);
     sequence(_rt, _recorder);
     _end(_recorder);
 }
 
-void vk_render_pass::_begin(vk_command_buffer* recorder, framebuffer* render_target, const std::vector<VkClearValue>& clear_values, VkRect2D render_area, VkSubpassContents contents)
+void vk_render_pass::_begin(vk_command_buffer* recorder, vk_framebuffer* render_target, const std::vector<VkClearValue>& clear_values, VkRect2D render_area, VkSubpassContents contents)
 {
     VkRenderPassBeginInfo _begin_info;
     _begin_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;

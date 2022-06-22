@@ -28,6 +28,7 @@ class vk_descriptor_pool;
 class vk_event;
 class vk_fence;
 class vk_semaphore;
+class vk_query_pool;
 class renderer;
 
 #define device_khr_func(func_name)\
@@ -79,8 +80,17 @@ public:
 	vk_queue* invoke_queue(uint32 family_index, uint32 index) const noexcept;
 
 	// about command buffers
-	std::shared_ptr<vk_command_pool> create_command_pool(uint32 queue_family_index);
+	std::shared_ptr<vk_command_pool> create_command_pool(const vk_command_pool_parameters& parameters);
 	
+	// about pipelines
+	std::shared_ptr<vk_graphics_pipeline> create_graphics_pipeline(const vk_graphics_pipeline_parameters& parameters);
+
+	std::shared_ptr<vk_compute_pipeline> create_compute_pipeline(const vk_compute_pipeline_parameters& parameters);
+
+	std::shared_ptr<vk_mesh_pipeline> create_mesh_pipeline(const vk_mesh_pipeline_parameters& parameters);
+
+	std::shared_ptr<vk_ray_tracing_pipeline> create_ray_tracing_pipeline(const vk_ray_tracing_pipeline_parameters& parameters);
+
 	// device memory
 	std::shared_ptr<vk_device_memory> create_device_memory(const vk_device_memory_parameters& parameters);
 
@@ -99,27 +109,34 @@ public:
 	std::shared_ptr<vk_shader_module> create_shader_module(const vk_shader_module_parameters& parameters);
 
 	// about samplers
-	std::shared_ptr<vk_sampler> create_sampler();
+	std::shared_ptr<vk_sampler> create_sampler(const vk_sampler_parameters& parameters);
 
 	// about events
-	std::shared_ptr<vk_event> create_event();
+	std::shared_ptr<vk_event> create_event(const vk_event_parameters& parameters);
 
 	// about fences
-	std::shared_ptr<vk_fence> create_fence();
+	std::shared_ptr<vk_fence> create_fence(const vk_fence_parameters& parameters);
 
 	// about semaphores
-	std::shared_ptr<vk_semaphore> create_semaphore();
+	std::shared_ptr<vk_semaphore> create_semaphore(const vk_semaphore_parameters& parameters);
+
+	// about query pool
+	std::shared_ptr<vk_query_pool> create_query_pool(const vk_query_pool_parameters& parameters);
 
 	// about render passes
-	std::shared_ptr<vk_render_pass> create_render_pass();
+	std::shared_ptr<vk_render_pass> create_render_pass(const vk_render_pass_parameters& parameters);
+
+	// about framebuffer
+	std::shared_ptr<vk_framebuffer> create_framebuffer(const vk_framebuffer_parameters& parameters);
 
 private:
 
 	/* invoke a device object from device, and the object is not valid, you should allocate it by yourself. */
-	template<typename device_object_t>
-	std::shared_ptr<device_object_t> invoke() noexcept
+	template<typename device_object_t, typename device_object_parameters_t>
+	std::shared_ptr<device_object_t> invoke(const device_object_parameters_t& parameters) noexcept
 	{
-		return std::make_shared<device_object_t>(*this);
+		auto _obj = std::make_shared<device_object_t>(*this);
+		return _obj && _obj->allocate(parameters) ? _obj : nullptr;
 	}
 
 };

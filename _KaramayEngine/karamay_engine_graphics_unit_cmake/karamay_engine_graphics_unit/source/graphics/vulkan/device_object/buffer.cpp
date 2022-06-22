@@ -20,7 +20,7 @@ bool vk_buffer::allocate(const vk_buffer_parameters& parameters)
 		// create device memory by buffer
 		VkMemoryRequirements _requirements{};
 		vkGetBufferMemoryRequirements(_dev.handle(), _handle, &_requirements);
-		_memory = std::make_unique<vk_device_memory>(_dev, _requirements);
+		//_memory = std::make_unique<vk_device_memory>(_dev, _requirements);
 
 		// bind the memory and buffer
 		if (vkBindBufferMemory(_dev.handle(), _handle, _memory->handle(), 0) == VkResult::VK_SUCCESS)
@@ -32,12 +32,12 @@ bool vk_buffer::allocate(const vk_buffer_parameters& parameters)
 	return false;
 }
 
-void vk_buffer::copy_to(vk_command_buffer& recorder, buffer& dst, const std::vector<VkBufferCopy>& regions)
+void vk_buffer::copy_to(vk_command_buffer& recorder, vk_buffer& dst, const std::vector<VkBufferCopy>& regions)
 {
 	vkCmdCopyBuffer(recorder.handle(), _handle, dst.handle(), regions.size(), regions.data());
 }
 
-void vk_buffer::copy_to(vk_command_buffer& recorder, image& dst, const std::vector<VkBufferImageCopy>& regions)
+void vk_buffer::copy_to(vk_command_buffer& recorder, vk_image& dst, const std::vector<VkBufferImageCopy>& regions)
 {
 	vkCmdCopyBufferToImage(recorder.handle(), _handle, dst.handle(), dst.layout(), regions.size(), regions.data());
 }

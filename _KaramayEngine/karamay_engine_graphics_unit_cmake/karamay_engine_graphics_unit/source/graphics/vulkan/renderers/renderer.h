@@ -4,33 +4,35 @@
 #include "graphics/vulkan/device.h"
 #include "graphics/vulkan/device_object/buffer.h"
 #include "graphics/vulkan/device_object/render_pass.h"
-#include "graphics/vulkan/device_object/command_pool.h"
+#include "graphics/vulkan/device_object/pooled_object/command_pool.h"
 #include "graphics/vulkan/device_object/pooled_object/command_buffer.h"
 #include "graphics/vulkan/device_object/framebuffer.h"
 #include "graphics/vulkan/device_object/queue.h"
 
-class renderer
+class vk_renderer
 {
-public:
-
-	renderer(device& dev);
-
-	renderer(const renderer&) = delete;
-	renderer& operator=(const renderer&) = delete;
-
-	~renderer();
+	std::unordered_map<std::string, std::shared_ptr<vk_render_pass>> passes;
 
 protected:
 
-    device& _device;
+	vk_device& _device;
 
 public:
 
-	virtual bool allocate(device* dev) noexcept;
+	vk_renderer(vk_device& dev) :
+		_device(dev)
+	{}
 
-	virtual void render(float delta_time) noexcept;
+	vk_renderer(const vk_renderer&) = delete;
+	vk_renderer& operator=(const vk_renderer&) = delete;
 
-	virtual void deallocate() noexcept;
+	~vk_renderer()
+	{
+	}
+
+public:
+
+	virtual void render(float delta_time) noexcept = 0;
 
 };
 

@@ -19,6 +19,7 @@
 #include "device_object/event.h"
 #include "device_object/fence.h"
 #include "device_object/semaphore.h"
+#include "device_object/query_pool.h"
 #include "renderers/renderer.h"
 
 vk_device::vk_device(vk_physical_device& entity) : _entity(entity)
@@ -134,75 +135,94 @@ void vk_device::run() noexcept
     }
 }
 
-std::shared_ptr<vk_command_pool> vk_device::create_command_pool(uint32 queue_family_index)
+std::shared_ptr<vk_command_pool> vk_device::create_command_pool(const vk_command_pool_parameters& parameters)
 {
-    return std::shared_ptr<vk_command_pool>();
+    return invoke<vk_command_pool>(parameters);
+}
+
+std::shared_ptr<vk_graphics_pipeline> vk_device::create_graphics_pipeline(const vk_graphics_pipeline_parameters& parameters)
+{
+    return std::shared_ptr<vk_graphics_pipeline>();
+}
+
+std::shared_ptr<vk_compute_pipeline> vk_device::create_compute_pipeline(const vk_compute_pipeline_parameters& parameters)
+{
+    return std::shared_ptr<vk_compute_pipeline>();
+}
+
+std::shared_ptr<vk_mesh_pipeline> vk_device::create_mesh_pipeline(const vk_mesh_pipeline_parameters& parameters)
+{
+    return std::shared_ptr<vk_mesh_pipeline>();
+}
+
+std::shared_ptr<vk_ray_tracing_pipeline> vk_device::create_ray_tracing_pipeline(const vk_ray_tracing_pipeline_parameters& parameters)
+{
+    return std::shared_ptr<vk_ray_tracing_pipeline>();
 }
 
 std::shared_ptr<vk_device_memory> vk_device::create_device_memory(const vk_device_memory_parameters& parameters)
 {
-    auto _obj = invoke<vk_device_memory>();
-    return _obj && _obj->allocate(parameters) ? _obj : nullptr;
+    return invoke<vk_device_memory>(parameters);
 }
 
 std::shared_ptr<vk_buffer> vk_device::create_buffer(const vk_buffer_parameters& parameters) noexcept
 {
-    auto _obj = invoke<vk_buffer>();
-    return _obj && _obj->allocate(parameters) ? _obj : nullptr;
+    return invoke<vk_buffer>(parameters);
 }
 
 std::shared_ptr<vk_image> vk_device::create_image(const vk_image_parameters& parameters) noexcept
 {
-    auto _obj = invoke<vk_image>();
-    return _obj && _obj->allocate(parameters) ? _obj : nullptr;
+    return invoke<vk_image>(parameters);
 }
 
 std::shared_ptr<vk_descriptor_pool> vk_device::create_descriptor_pool(const vk_descriptor_pool_parameters& parameters)
 {
-    auto _obj = invoke<vk_descriptor_pool>();
-    return _obj && _obj->allocate(parameters) ? _obj : nullptr;
+    return invoke<vk_descriptor_pool>(parameters);
 }
 
 std::shared_ptr<vk_descriptor_set_layout> vk_device::create_descriptor_set_layout(const vk_descriptor_set_layout_parameters& parameters)
 {
-    auto _obj = invoke<vk_descriptor_set_layout>();
-    return _obj && _obj->allocate(parameters) ? _obj : nullptr;
+    return invoke<vk_descriptor_set_layout>(parameters);
 }
 
 std::shared_ptr<vk_shader_module> vk_device::create_shader_module(const vk_shader_module_parameters& parameters)
 {
-    auto _obj = invoke<vk_shader_module>();
-    return _obj && _obj->allocate(parameters) ? _obj : nullptr;
+    return invoke<vk_shader_module>(parameters);
 }
 
-std::shared_ptr<vk_sampler> vk_device::create_sampler()
+std::shared_ptr<vk_sampler> vk_device::create_sampler(const vk_sampler_parameters& parameters)
 {
-    auto _obj = invoke<vk_sampler>();
-    return _obj && _obj->allocate() ? _obj : nullptr;
+    return invoke<vk_sampler>(parameters);
 }
 
-std::shared_ptr<vk_event> vk_device::create_event()
+std::shared_ptr<vk_event> vk_device::create_event(const vk_event_parameters& parameters)
 {
-    auto _obj = invoke<vk_event>();
-    return _obj && _obj->allocate() ? _obj : nullptr;
+    return invoke<vk_event>(parameters);
 }
 
-std::shared_ptr<vk_fence> vk_device::create_fence()
+std::shared_ptr<vk_fence> vk_device::create_fence(const vk_fence_parameters& parameters)
 {
-    auto _obj = invoke<vk_fence>();
-    return _obj && _obj->allocate() ? _obj : nullptr;
+    return invoke<vk_fence>(parameters);
 }
 
-std::shared_ptr<vk_semaphore> vk_device::create_semaphore()
+std::shared_ptr<vk_semaphore> vk_device::create_semaphore(const vk_semaphore_parameters& parameters)
 {
-    auto _obj = invoke<vk_semaphore>();
-    return _obj && _obj->allocate() ? _obj : nullptr;
+    return invoke<vk_semaphore>(parameters);
 }
 
-std::shared_ptr<vk_render_pass> vk_device::create_render_pass()
+std::shared_ptr<vk_query_pool> vk_device::create_query_pool(const vk_query_pool_parameters& parameters)
 {
-    auto _obj = invoke<vk_render_pass>();
-    return _obj && _obj->allocate({}, {}, {}) ? _obj : nullptr;
+    return invoke<vk_query_pool>(parameters);
+}
+
+std::shared_ptr<vk_render_pass> vk_device::create_render_pass(const vk_render_pass_parameters& parameters)
+{
+    return invoke<vk_render_pass>(parameters);
+}
+
+std::shared_ptr<vk_framebuffer> vk_device::create_framebuffer(const vk_framebuffer_parameters& parameters)
+{
+    return std::shared_ptr<vk_framebuffer>();
 }
 
 vk_queue* vk_device::invoke_queue(uint32 family_index, uint32 index) const noexcept

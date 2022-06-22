@@ -1,12 +1,7 @@
 #include "queue.h"
 #include "fence.h"
 
-vk_queue::vk_queue(vk_device& dev) : 
-	device_object(dev)
-{
-}
-
-vk_queue::~vk_queue()
+void vk_queue::_deallocate() noexcept
 {
 }
 

@@ -19,9 +19,10 @@ bool vk_image::allocate(const vk_image_parameters& parameters)
 	return false;
 }
 
-std::shared_ptr<vk_image_view> vk_image::create_view() noexcept
+std::shared_ptr<vk_image_view> vk_image::create_view(const vk_image_view_parameters& parameters) noexcept
 {
-	return std::shared_ptr<vk_image_view>();
+	auto _obj = std::make_shared<vk_image_view>(_dev, *this);
+	return _obj && _obj->allocate(parameters) ? _obj : nullptr;
 }
 
 void vk_image::copy_to(vk_command_buffer& recorder, vk_image& dst, const std::vector<VkImageCopy>& regions)
@@ -68,10 +69,8 @@ bool vk_image_view::allocate(const vk_image_view_parameters& parameters)
 {
 	if (vkCreateImageView(_dev.handle(), &(parameters.core()), nullptr, &_handle) == VkResult::VK_SUCCESS)
 	{
-
 		return true;
 	}
-
 	return false;
 }
 

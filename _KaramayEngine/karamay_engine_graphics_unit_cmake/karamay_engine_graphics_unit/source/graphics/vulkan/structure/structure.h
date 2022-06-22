@@ -3,8 +3,13 @@
 #include "public/vulkan_core.h"
 #include "public/stl.h"
 
-class semaphore;
-class command_buffer;
+class vk_semaphore;
+class vk_command_buffer;
+
+#define _DEF_PAR_STRUCT_CORE(CoreStructName)\
+	const CoreStructName& core() const noexcept { return _create_info; }\
+private:\
+	CoreStructName _create_info;\
 
 struct vk_submit_info
 {
@@ -114,62 +119,202 @@ struct vk_image_view_parameters
 {
 	friend class vk_image_view;
 
-	VkImageViewCreateInfo _create_info
+	vk_image_view_parameters() :
+		_create_info
 	{
 		.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
 		.pNext = nullptr,
 		.flags = 0,
-		.image = img.handle(),
-		.viewType = view_t,
-		.format = format,
-		.components = components,
-		.subresourceRange = subresource_range
-	};
+		.image = nullptr,
+		.viewType = VkImageViewType::VK_IMAGE_VIEW_TYPE_1D,
+		.format = VkFormat::VK_FORMAT_A1R5G5B5_UNORM_PACK16,
+		.components{},
+		.subresourceRange{}
+	}
+	{}
 
-	const VkImageViewCreateInfo& core() const noexcept { return _create_info; }
-
-private:
-
-	VkImageViewCreateInfo _create_info;
+	_DEF_PAR_STRUCT_CORE(VkImageViewCreateInfo)
 };
 
 struct vk_descriptor_pool_parameters
 {
 	friend class vk_descriptor_pool;
 
-	const VkDescriptorPoolCreateInfo& core() const noexcept { return _create_info; }
-
-	VkDescriptorPoolCreateInfo _create_info
+	vk_descriptor_pool_parameters() :
+		_create_info
 	{
 		.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
-		.flags = 0,
-		.maxSets = max,
-		.poolSizeCount = count,
-		.pPoolSizes = &pool_size,
-	};
+		.flags{},
+		.maxSets = 0,
+		.poolSizeCount = 0,
+		.pPoolSizes = nullptr
+	}
+	{}
 
-private:
-	VkDescriptorPoolCreateInfo _create_info;
+	_DEF_PAR_STRUCT_CORE(VkDescriptorPoolCreateInfo)
 };
 
 struct vk_descriptor_set_layout_parameters
 {
 	friend class vk_descriptor_set_layout;
 
-	const VkDescriptorSetLayoutCreateInfo& core() const noexcept { return _create_info; }
-private:
-	VkDescriptorSetLayoutCreateInfo _create_info;
+	vk_descriptor_set_layout_parameters()
+	{}
+
+	_DEF_PAR_STRUCT_CORE(VkDescriptorSetLayoutCreateInfo)
 };
 
 struct vk_shader_module_parameters
 {
 	friend class vk_shader_module;
 
-	const VkShaderModuleCreateInfo& core() const noexcept { return _create_info; }
+	vk_shader_module_parameters()
+	{}
 
-private:
+	_DEF_PAR_STRUCT_CORE(VkShaderModuleCreateInfo)
+};
 
-	VkShaderModuleCreateInfo _create_info;
+struct vk_command_pool_parameters
+{
+	friend class vk_vk_command_pool;
+
+	vk_command_pool_parameters()
+	{}
+
+	_DEF_PAR_STRUCT_CORE(VkCommandPoolCreateInfo)
+};
+
+struct vk_sampler_parameters
+{
+	friend class vk_sampler;
+
+	vk_sampler_parameters()
+	{}
+
+	_DEF_PAR_STRUCT_CORE(VkSamplerCreateInfo)
+};
+
+struct vk_event_parameters
+{
+	friend class vk_event;
+
+	vk_event_parameters()
+	{}
+
+	_DEF_PAR_STRUCT_CORE(VkEventCreateInfo)
+};
+
+
+struct vk_fence_parameters
+{
+	friend class vk_fence;
+
+	vk_fence_parameters()
+	{}
+
+	_DEF_PAR_STRUCT_CORE(VkFenceCreateInfo)
+};
+
+struct vk_semaphore_parameters
+{
+	friend class vk_semaphore;
+
+	vk_semaphore_parameters()
+	{}
+
+	_DEF_PAR_STRUCT_CORE(VkSemaphore)
+};
+
+
+struct vk_render_pass_parameters
+{
+	friend class vk_render_pass;
+
+	vk_render_pass_parameters& set_attachments()
+	{
+	}
+
+	vk_render_pass_parameters& set_subpasses()
+	{
+
+	}
+
+	vk_render_pass_parameters& set_dependencies()
+	{
+
+	}
+
+	vk_render_pass_parameters() :
+		_create_info
+	{
+		.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO, 
+		.pNext = nullptr,
+		.flags = VkRenderPassCreateFlagBits::VK_RENDER_PASS_CREATE_FLAG_BITS_MAX_ENUM,
+		.attachmentCount = 0,
+		.pAttachments = nullptr,
+		.subpassCount = 0,
+		.pSubpasses = nullptr,
+		.dependencyCount = 0,
+		.pDependencies = nullptr
+	}
+	{}
+
+	_DEF_PAR_STRUCT_CORE(VkRenderPassCreateInfo)
+};
+
+
+struct vk_graphics_pipeline_parameters
+{
+	friend class vk_graphics_pipeline;
+
+	vk_graphics_pipeline_parameters()
+	{}
+
+	_DEF_PAR_STRUCT_CORE(VkGraphicsPipelineCreateInfo)
+};
+
+struct vk_compute_pipeline_parameters
+{
+	friend class vk_compute_pipeline;
+
+	vk_compute_pipeline_parameters()
+	{}
+
+	_DEF_PAR_STRUCT_CORE(VkComputePipelineCreateInfo)
+};
+
+struct vk_mesh_pipeline_parameters
+{
+};
+
+struct vk_ray_tracing_pipeline_parameters
+{
+	friend class vk_ray_tracing_pipeline;
+
+	vk_ray_tracing_pipeline_parameters()
+	{}
+
+	_DEF_PAR_STRUCT_CORE(VkRayTracingPipelineCreateInfoKHR)
+};
+
+struct vk_query_pool_parameters
+{
+	friend class vk_query_pool;
+
+	vk_query_pool_parameters()
+	{}
+
+	_DEF_PAR_STRUCT_CORE(VkQueryPoolCreateInfo)
+};
+
+struct vk_framebuffer_parameters
+{
+	friend class vk_framebuffer;
+
+	vk_framebuffer_parameters()
+	{}
+
+	_DEF_PAR_STRUCT_CORE(VkFramebufferCreateInfo)
 };
 
 #endif

@@ -2,19 +2,23 @@
 #define FRAMEBUFFER_H
 #include "device_object.h"
 
-class framebuffer final : public device_object<VkFramebuffer>
+class vk_framebuffer final : public device_object<VkFramebuffer>
 {
-public:
 
-	framebuffer(device& dev);
-
-	~framebuffer() override;
+	void _deallocate() noexcept;
 
 public:
 
-	bool allocate(uint32 width, uint32 height, uint32 layers, const std::vector<image_view*>& attachments, render_pass* pass);
+	vk_framebuffer(vk_device& dev) :
+		device_object(dev)
+	{}
 
-	void deallocate();
+	~vk_framebuffer() override
+	{
+		_deallocate();
+	}
+
+	bool allocate(const vk_framebuffer_parameters& parameters);
 
 };
 

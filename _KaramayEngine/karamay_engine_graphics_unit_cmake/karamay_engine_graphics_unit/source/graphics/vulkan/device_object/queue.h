@@ -6,14 +6,22 @@ class vk_fence;
 
 class vk_queue final : public device_object<VkQueue>
 {
+
+	void _deallocate() noexcept;
+
 public:
 
-	vk_queue(vk_device& dev);
+	vk_queue(vk_device& dev) :
+		device_object(dev)
+	{}
 
 	vk_queue(const vk_queue&) = delete;
 	vk_queue& operator=(const vk_queue&) = delete;
 
-	~vk_queue() override;
+	~vk_queue() override
+	{
+		_deallocate();
+	}
 
 public:
 
