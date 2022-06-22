@@ -2,17 +2,30 @@
 #define FENCE_H
 #include "device_object.h"
 
+/*
+* 
+* 
+*/
 class vk_fence final : public device_object<VkFence>
 {
+	void _deallocate() noexcept;
+
 public:
-	vk_fence(device& dev);
+
+	bool allocate() noexcept;
+
+	vk_fence(vk_device& dev)
+		: device_object(dev)
+	{
+	}
 
 	vk_fence(const vk_fence&) = delete;
 	vk_fence& operator=(const vk_fence&) = delete;
 
-	~vk_fence() override;
-
-public:
+	~vk_fence() override
+	{
+		_deallocate();
+	}
 
 	/*
 	* block the thread
@@ -30,13 +43,6 @@ public:
 	*/
 	void reset() noexcept;
 
-public:
-
-	bool allocate() noexcept;
-
-	void deallocate() noexcept;
-
 };
-
 
 #endif

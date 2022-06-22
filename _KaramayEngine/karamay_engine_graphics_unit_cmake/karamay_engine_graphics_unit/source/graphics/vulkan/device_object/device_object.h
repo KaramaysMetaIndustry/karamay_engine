@@ -1,24 +1,28 @@
 #ifndef DEIVCE_OBJECT_H
 #define DEIVCE_OBJECT_H
 #include "graphics/vulkan/device.h"
+#include "graphics/vulkan/structure/structure.h"
 
 template<typename vk_handle_t>
 class device_object : public vulkan_object<vk_handle_t>
 {
-
 protected:
 
-	// device object lifecycle < device
 	vk_device& _dev;
 
 public:
 
-	device_object(vk_device& dev) : _dev(dev) {}
+	device_object(vk_device& dev) 
+		: _dev(dev) 
+	{
+	}
 
 	device_object(const device_object&) = delete;
 	device_object& operator=(const device_object&) = delete;
 
-	~device_object() override {}
+	~device_object() override
+	{
+	}
 
 public:
 
@@ -28,6 +32,5 @@ public:
 	}
 
 };
-
 
 #endif

@@ -2,101 +2,76 @@
 #define IMAGE_H
 #include "device_object.h"
 
-class command_buffer;
-class buffer;
+class vk_command_buffer;
+class vk_buffer;
 
-class image final :public device_object<VkImage>
+class vk_image final :public device_object<VkImage>
 {
-
 	VkImageLayout _layout;
 
-	std::unique_ptr<device_memory> _memory;
+	std::shared_ptr<vk_device_memory> _memory;
 
 public:
 
-	image(device& dev, VkFormat format, VkImageType type, uint32 layers, VkExtent3D extent, uint32 mipmaps,
-		VkImageTiling tiling, VkImageUsageFlags usage, VkSharingMode sharing, VkSampleCountFlagBits samples, VkImageLayout layout,
-		const std::vector<uint32>& queue_family_indices) noexcept
+	vk_image(vk_device& dev) noexcept
 		: device_object(dev)
 	{
-		VkImageCreateInfo _create_info
-		{
-			.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
-			.imageType = type,
-			.format = format,
-			.extent = extent,
-			.mipLevels = mipmaps,
-			.arrayLayers = layers,
-			.samples = samples,
-			.tiling = tiling,
-			.usage = usage,
-			.sharingMode = sharing,
-			.queueFamilyIndexCount = static_cast<uint32_t>(queue_family_indices.size()),
-			.pQueueFamilyIndices = queue_family_indices.data(),
-			.initialLayout = layout
-		};
-
-		auto _result = vkCreateImage(_dev.handle(), &_create_info, nullptr, &_handle);
-		
-		VkMemoryRequirements _requirements{};
-		vkGetImageMemoryRequirements(_dev.handle(), _handle, &_requirements);
-		_memory = std::make_unique<device_memory>(_dev, _requirements);
-
 	}
 
-	image(const image&) = delete;
-	image& operator=(const image&) = delete;
+	vk_image(const vk_image&) = delete;
+	vk_image& operator=(const vk_image&) = delete;
 
-	~image() override;
+	~vk_image() override;
 
 public:
+
+	bool allocate(const vk_image_parameters& parameters);
+
+	std::shared_ptr<vk_image_view> create_view() noexcept;
 
 	VkImageLayout layout() const noexcept { return _layout; }
 
-	void clear(command_buffer& recorder, VkClearColorValue value, const std::vector<VkImageSubresourceRange>& ranges);
+public:
 
-	void clear(command_buffer& recorder, VkClearDepthStencilValue value, const std::vector<VkImageSubresourceRange>& ranges);
+	void clear(vk_command_buffer& recorder, VkClearColorValue value, const std::vector<VkImageSubresourceRange>& ranges);
 
-	void copy_to(command_buffer& recorder, image& dst, const std::vector<VkImageCopy>& regions);
+	void clear(vk_command_buffer& recorder, VkClearDepthStencilValue value, const std::vector<VkImageSubresourceRange>& ranges);
 
-	void copy_to(command_buffer& recorder, buffer& dst, const std::vector<VkBufferImageCopy>& regions);
+	void copy_to(vk_command_buffer& recorder, vk_image& dst, const std::vector<VkImageCopy>& regions);
 
-	void blit_to(command_buffer& recorder, image& dst, const std::vector<VkImageBlit>& regions, VkFilter filter);
+	void copy_to(vk_command_buffer& recorder, vk_buffer& dst, const std::vector<VkBufferImageCopy>& regions);
 
-	void resolve_to(command_buffer& recorder, image& dst, const std::vector<VkImageResolve>& regions);
+	void blit_to(vk_command_buffer& recorder, vk_image& dst, const std::vector<VkImageBlit>& regions, VkFilter filter);
+
+	void resolve_to(vk_command_buffer& recorder, vk_image& dst, const std::vector<VkImageResolve>& regions);
+
+private:
+
+	void _deallocate() noexcept;
 
 };
 
-
-class image_view final : public device_object<VkImageView>
+class vk_image_view final : public device_object<VkImageView>
 {
-
-	image& _target;
+	vk_image& _target;
 
 public:
 
-	image_view(device& dev, image& img, VkImageViewType view_t, VkFormat format, VkComponentMapping components, VkImageSubresourceRange subresource_range) : device_object(dev), _target(img)
+	vk_image_view(vk_device& dev, vk_image& image) 
+		: device_object(dev), _target(image)
 	{
-		VkImageViewCreateInfo _create_info
-		{
-			.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
-			.pNext = nullptr,
-			.flags = 0,
-			.image = img.handle(),
-			.viewType = view_t,
-			.format = format,
-			.components = components,
-			.subresourceRange = subresource_range
-		};
-		vkCreateImageView(_dev.handle(), &_create_info, nullptr, &_handle);
 	}
 
-	image_view(const image_view&) = delete;
-	image_view& operator=(const image_view&) = delete;
+	vk_image_view(const vk_image_view&) = delete;
+	vk_image_view& operator=(const vk_image_view&) = delete;
 
-	~image_view() noexcept override;
+	~vk_image_view() noexcept override;
 
 public:
+
+	bool allocate(const vk_image_view_parameters& parameters);
+
+private:
 
 	void _deallocate() noexcept;
 

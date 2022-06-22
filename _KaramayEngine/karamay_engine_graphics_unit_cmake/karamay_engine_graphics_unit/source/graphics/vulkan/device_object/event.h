@@ -5,28 +5,31 @@
 class vk_event final : public device_object<VkEvent>
 {
 public:
-	vk_event(device& dev);
+	vk_event(vk_device& dev);
 
 	vk_event(const vk_event&) = delete;
 	vk_event& operator=(const vk_event&) = delete;
 	
-	~vk_event() override {}
+	~vk_event() override;
 
 public:
 
-	bool allocate()
-	{
-		VkEventCreateInfo _CreateInfo
-		{
-			.sType = VK_STRUCTURE_TYPE_EVENT_CREATE_INFO
-		};
+	bool allocate() noexcept;
 
-		if (vkCreateEvent(_dev.handle(), &_CreateInfo, nullptr, &_handle) == VkResult::VK_SUCCESS)
-		{
-			return true;
-		}
-		return false;
+	void set() noexcept;
+
+	void reset() noexcept;
+
+	bool get_status() noexcept;
+
+	void bind()
+	{
+		//vkCmdSetEvent();
 	}
+
+private:
+
+	void _deallocate() noexcept;
 
 };
 

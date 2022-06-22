@@ -1,6 +1,7 @@
 #ifndef DEVICE_H
 #define DEVICE_H
 #include "vulkan_object.h"
+#include "graphics/vulkan/structure/structure.h"
 
 class vk_physical_device;
 class vk_queue;
@@ -38,6 +39,15 @@ PFN_##func_name##(vkGetDeviceProcAddr(_dev.handle(), #func_name))\
 */
 class vk_device final : public vulkan_object<VkDevice>
 {
+
+	vk_physical_device& _entity;
+
+	std::vector<std::vector<vk_queue*>> _queues;
+
+	bool _should_exit = false;
+
+	std::vector<renderer*> _renderers;
+
 public:
 
 	vk_device(vk_physical_device& entity);
@@ -46,12 +56,6 @@ public:
 	vk_device& operator=(const vk_device&) = delete;
 
 	~vk_device();
-
-private:
-
-	vk_physical_device& _entity;
-
-	std::vector<std::vector<vk_queue*>> _queues;
 
 public:
 
@@ -62,29 +66,11 @@ public:
 	*/
 	bool allocate() noexcept;
 
-	/*
-	* 
-	*/
 	void deallocate() noexcept;
-	
 
-	/*
-	* 
-	*/
 	void get_descriptor_set_layout_support(VkDescriptorSetLayoutSupport& support) noexcept;
 
-	/*
-	* block, wait all queues finished, device to idle
-	*/
 	bool wait() const noexcept;
-
-private:
-
-	bool _should_exit = false;
-
-	std::vector<renderer*> _renderers;
-
-public:
 
 	void run() noexcept;
 
@@ -94,24 +80,23 @@ public:
 
 	// about command buffers
 	std::shared_ptr<vk_command_pool> create_command_pool(uint32 queue_family_index);
-
-	// about descriptor sets
-	std::shared_ptr<vk_descriptor_pool> create_descriptor_pool(uint32 count, uint32 max, const VkDescriptorPoolSize& pool_size);
-
-	std::shared_ptr<vk_descriptor_set_layout> create_descriptor_set_layout(const std::vector<VkDescriptorSetLayoutBinding>& bindings);
+	
+	// device memory
+	std::shared_ptr<vk_device_memory> create_device_memory(const vk_device_memory_parameters& parameters);
 
 	// about buffers
-	std::shared_ptr<vk_buffer> create_buffer(uint64 size, VkBufferUsageFlags usage, VkSharingMode sharing);
-
-	std::shared_ptr<vk_buffer_view> create_buffer_view(std::shared_ptr<vk_buffer> buf, VkFormat format, uint32 offset, uint32 size);
-
+	std::shared_ptr<vk_buffer> create_buffer(const vk_buffer_parameters& parameters) noexcept;
+	
 	// about images
-	std::shared_ptr<vk_image> create_image() noexcept;
+	std::shared_ptr<vk_image> create_image(const vk_image_parameters& parameters) noexcept;
 
-	std::shared_ptr<vk_image_view> create_image_view() noexcept;
+	// about descriptor sets
+	std::shared_ptr<vk_descriptor_pool> create_descriptor_pool(const vk_descriptor_pool_parameters& parameters);
+
+	std::shared_ptr<vk_descriptor_set_layout> create_descriptor_set_layout(const vk_descriptor_set_layout_parameters& parameters);
 
 	// about shader modules
-	std::shared_ptr<vk_shader_module> create_shader_module(uint64 size, uint32* code);
+	std::shared_ptr<vk_shader_module> create_shader_module(const vk_shader_module_parameters& parameters);
 
 	// about samplers
 	std::shared_ptr<vk_sampler> create_sampler();

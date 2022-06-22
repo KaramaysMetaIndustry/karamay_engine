@@ -13,21 +13,9 @@ vk_buffer::~vk_buffer()
 	vkDestroyBuffer(_dev.handle(), _handle, nullptr);
 }
 
-bool vk_buffer::allocate(uint64 size, VkBufferUsageFlags usage, VkSharingMode sharing)
+bool vk_buffer::allocate(const vk_buffer_parameters& parameters)
 {
-	VkBufferCreateInfo _CreateInfo
-	{
-		.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
-		.pNext = nullptr,
-		.flags = 0,
-		.size = size,
-		.usage = usage,
-		.sharingMode = sharing,
-		.queueFamilyIndexCount = 0,
-		.pQueueFamilyIndices = nullptr
-	};
-
-	if (vkCreateBuffer(_dev.handle(), &_CreateInfo, nullptr, &_handle) == VkResult::VK_SUCCESS)
+	if (vkCreateBuffer(_dev.handle(), &(parameters.core()), nullptr, &_handle) == VkResult::VK_SUCCESS)
 	{
 		// create device memory by buffer
 		VkMemoryRequirements _requirements{};
@@ -64,33 +52,21 @@ void vk_buffer::update(vk_command_buffer& recorder, uint64 offset, uint64 size, 
 	vkCmdUpdateBuffer(recorder.handle(), _handle, offset, size, data);
 }
 
-vk_buffer_view::vk_buffer_view(vk_device& dev) noexcept
-	: device_object(dev)
+vk_buffer_view::vk_buffer_view(vk_device& dev, vk_buffer& buffer) noexcept
+	: device_object(dev), _target(buffer)
 {
 }
 
-bool vk_buffer_view::allocate(std::shared_ptr<vk_buffer> buf, VkFormat format, uint32 offset, uint32 size)
+vk_buffer_view::~vk_buffer_view()
 {
-	if (buf)
+}
+
+bool vk_buffer_view::allocate(const vk_buffer_view_parameters& parameters)
+{
+	if (vkCreateBufferView(_dev.handle(), &(parameters.core()), nullptr, &_handle) == VkResult::VK_SUCCESS)
 	{
-		VkBufferViewCreateInfo _create_info
-		{
-			.sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO,
-			.pNext = nullptr,
-			.flags = 0,
-			.buffer = buf->handle(),
-			.format = format,
-			.offset = offset,
-			.range = size,
-		};
-
-		if (vkCreateBufferView(_dev.handle(), &_create_info, nullptr, &_handle) == VkResult::VK_SUCCESS)
-		{
-			_target = buf;
-			return true;
-		}
+		return true;
 	}
-
 	return false;
 }
 

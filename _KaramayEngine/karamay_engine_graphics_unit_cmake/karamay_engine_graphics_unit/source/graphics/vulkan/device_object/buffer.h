@@ -10,7 +10,7 @@ class vk_command_buffer;
 class vk_buffer final : public device_object<VkBuffer> 
 {
 
-	std::unique_ptr<vk_device_memory> _memory;
+	std::shared_ptr<vk_device_memory> _memory;
 
 public:
 
@@ -28,19 +28,19 @@ public:
 
 public:
 
-	bool allocate(uint64 size, VkBufferUsageFlags usage, VkSharingMode sharing);
+	bool allocate(const vk_buffer_parameters& parameters);
 
 public:
 
 	/*
 	* gpu all controlled
 	*/
-	void copy_to(vk_command_buffer& recorder, buffer& dst, const std::vector<VkBufferCopy>& regions);
+	void copy_to(vk_command_buffer& recorder, vk_buffer& dst, const std::vector<VkBufferCopy>& regions);
 
 	/*
 	* gpu all controlled
 	*/
-	void copy_to(vk_command_buffer& recorder, image& dst, const std::vector<VkBufferImageCopy>& regions);
+	void copy_to(vk_command_buffer& recorder, vk_image& dst, const std::vector<VkBufferImageCopy>& regions);
 
 	/*
 	* gpu mostly all controlled
@@ -57,9 +57,18 @@ public:
 
 class vk_buffer_view final : public device_object<VkBufferView>
 {
+
+	vk_buffer& _target;
+
+	VkFormat _format;
+
+	uint64 _offset = 0;
+
+	uint64 _size = 0;
+
 public:
 
-	explicit vk_buffer_view(device& dev) noexcept;
+	explicit vk_buffer_view(vk_device& dev, vk_buffer& buffer) noexcept;
 	
 	vk_buffer_view(const vk_buffer_view&) = delete;
 	vk_buffer_view& operator=(const vk_buffer_view&) = delete;
@@ -73,17 +82,7 @@ public:
 
 public:
 
-	bool allocate(std::shared_ptr<vk_buffer> buf, VkFormat format, uint32 offset, uint32 size);
-
-private:
-
-	std::shared_ptr<vk_buffer> _target;
-
-	VkFormat _format;
-
-	uint64 _offset = 0;
-
-	uint64 _size = 0;
+	bool allocate(const vk_buffer_view_parameters& parameters);
 
 };
 

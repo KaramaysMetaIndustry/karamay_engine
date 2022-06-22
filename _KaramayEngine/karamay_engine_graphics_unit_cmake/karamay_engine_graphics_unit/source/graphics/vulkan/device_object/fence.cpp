@@ -1,23 +1,16 @@
 #include "fence.h"
 
-vk_fence::vk_fence(device& dev) : device_object(dev)
-{
-}
-
-vk_fence::~vk_fence()
-{
-	deallocate();
-}
-
 bool vk_fence::allocate() noexcept
 {
+	_deallocate();
+	
 	VkFenceCreateInfo _create_info;
 	_create_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 
-	return vkCreateFence(_dev.handle(), &_create_info, nullptr, &_handle);
+	return vkCreateFence(_dev.handle(), &_create_info, nullptr, &_handle) == VkResult::VK_SUCCESS;
 }
 
-void vk_fence::deallocate() noexcept
+void vk_fence::_deallocate() noexcept
 {
 	if (_handle)
 	{

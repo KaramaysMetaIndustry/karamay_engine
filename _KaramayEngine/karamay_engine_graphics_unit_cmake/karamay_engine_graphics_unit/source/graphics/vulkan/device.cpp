@@ -17,6 +17,8 @@
 #include "device_object/sampler.h"
 #include "device_object/shader_module.h"
 #include "device_object/event.h"
+#include "device_object/fence.h"
+#include "device_object/semaphore.h"
 #include "renderers/renderer.h"
 
 vk_device::vk_device(vk_physical_device& entity) : _entity(entity)
@@ -137,87 +139,73 @@ std::shared_ptr<vk_command_pool> vk_device::create_command_pool(uint32 queue_fam
     return std::shared_ptr<vk_command_pool>();
 }
 
-std::shared_ptr<vk_descriptor_pool> vk_device::create_descriptor_pool(uint32 count, uint32 max, const VkDescriptorPoolSize& pool_size)
+std::shared_ptr<vk_device_memory> vk_device::create_device_memory(const vk_device_memory_parameters& parameters)
+{
+    auto _obj = invoke<vk_device_memory>();
+    return _obj && _obj->allocate(parameters) ? _obj : nullptr;
+}
+
+std::shared_ptr<vk_buffer> vk_device::create_buffer(const vk_buffer_parameters& parameters) noexcept
+{
+    auto _obj = invoke<vk_buffer>();
+    return _obj && _obj->allocate(parameters) ? _obj : nullptr;
+}
+
+std::shared_ptr<vk_image> vk_device::create_image(const vk_image_parameters& parameters) noexcept
+{
+    auto _obj = invoke<vk_image>();
+    return _obj && _obj->allocate(parameters) ? _obj : nullptr;
+}
+
+std::shared_ptr<vk_descriptor_pool> vk_device::create_descriptor_pool(const vk_descriptor_pool_parameters& parameters)
 {
     auto _obj = invoke<vk_descriptor_pool>();
-    if (_obj && _obj->allocate(count, max, pool_size))
-    {
-        return _obj;
-    }
-    return nullptr;
+    return _obj && _obj->allocate(parameters) ? _obj : nullptr;
 }
 
-std::shared_ptr<vk_descriptor_set_layout> vk_device::create_descriptor_set_layout(const std::vector<VkDescriptorSetLayoutBinding>& bindings)
+std::shared_ptr<vk_descriptor_set_layout> vk_device::create_descriptor_set_layout(const vk_descriptor_set_layout_parameters& parameters)
 {
-    return std::shared_ptr<vk_descriptor_set_layout>();
+    auto _obj = invoke<vk_descriptor_set_layout>();
+    return _obj && _obj->allocate(parameters) ? _obj : nullptr;
 }
 
-std::shared_ptr<vk_buffer> vk_device::create_buffer(uint64 size, VkBufferUsageFlags usage, VkSharingMode sharing)
+std::shared_ptr<vk_shader_module> vk_device::create_shader_module(const vk_shader_module_parameters& parameters)
 {
-    auto _buf = invoke<vk_buffer>();
-    if (_buf && _buf->allocate(size, usage, sharing))
-    {
-        return _buf;
-    }
-    return nullptr;
-}
-
-std::shared_ptr<vk_buffer_view> vk_device::create_buffer_view(std::shared_ptr<vk_buffer> buf, VkFormat format, uint32 offset, uint32 size)
-{
-    auto _buf_view = invoke<vk_buffer_view>();
-    if (_buf_view && _buf_view->allocate(buf, format, offset, size))
-    {
-        return _buf_view;
-    }
-    return nullptr;
-}
-
-std::shared_ptr<vk_image> vk_device::create_image() noexcept
-{
-    return std::shared_ptr<vk_image>();
-}
-
-std::shared_ptr<vk_image_view> vk_device::create_image_view() noexcept
-{
-    return std::shared_ptr<vk_image_view>();
-}
-
-std::shared_ptr<vk_shader_module> vk_device::create_shader_module(uint64 size, uint32* code)
-{
-    return std::shared_ptr<vk_shader_module>();
+    auto _obj = invoke<vk_shader_module>();
+    return _obj && _obj->allocate(parameters) ? _obj : nullptr;
 }
 
 std::shared_ptr<vk_sampler> vk_device::create_sampler()
 {
-    return std::shared_ptr<vk_sampler>();
+    auto _obj = invoke<vk_sampler>();
+    return _obj && _obj->allocate() ? _obj : nullptr;
 }
 
 std::shared_ptr<vk_event> vk_device::create_event()
 {
-    auto _event = invoke<vk_event>();
-    if (_event && _event->allocate())
-    {
-        return _event;
-    }
-    return nullptr;
+    auto _obj = invoke<vk_event>();
+    return _obj && _obj->allocate() ? _obj : nullptr;
 }
 
 std::shared_ptr<vk_fence> vk_device::create_fence()
 {
-    return std::shared_ptr<vk_fence>();
+    auto _obj = invoke<vk_fence>();
+    return _obj && _obj->allocate() ? _obj : nullptr;
 }
 
 std::shared_ptr<vk_semaphore> vk_device::create_semaphore()
 {
-    return std::shared_ptr<vk_semaphore>();
+    auto _obj = invoke<vk_semaphore>();
+    return _obj && _obj->allocate() ? _obj : nullptr;
 }
 
 std::shared_ptr<vk_render_pass> vk_device::create_render_pass()
 {
-    return std::shared_ptr<vk_render_pass>();
+    auto _obj = invoke<vk_render_pass>();
+    return _obj && _obj->allocate({}, {}, {}) ? _obj : nullptr;
 }
 
-queue* vk_device::invoke_queue(uint32 family_index, uint32 index) const noexcept
+vk_queue* vk_device::invoke_queue(uint32 family_index, uint32 index) const noexcept
 {
     if (family_index >= _queues.size() || index >= _queues[family_index].size()) return nullptr;
     return _queues[family_index][index];

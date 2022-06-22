@@ -2,14 +2,13 @@
 #include "descriptor_set_layout.h"
 #include "descriptor_pool.h"
 
-vk_descriptor_set::vk_descriptor_set(vk_device& dev, vk_descriptor_set& pool)
-    : device_object(dev), _pool(pool)
+void vk_descriptor_set::_deallocate() noexcept
 {
-}
-
-vk_descriptor_set::~vk_descriptor_set()
-{
-    vkFreeDescriptorSets(_dev.handle(), _pool.handle(), 1, &_handle);
+    if (_handle)
+    {
+        vkFreeDescriptorSets(_dev.handle(), _pool.handle(), 1, &_handle);
+        _handle = nullptr;
+    }
 }
 
 bool vk_descriptor_set::allocate(const vk_descriptor_set_layout& set_layout)
@@ -24,6 +23,5 @@ bool vk_descriptor_set::allocate(const vk_descriptor_set_layout& set_layout)
     {
         return true;
     }
-
     return false;
 }

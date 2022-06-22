@@ -1,9 +1,18 @@
 #include "device_memory.h"
 #include "graphics/vulkan/physical_device.h"
 
-vk_device_memory::~vk_device_memory()
+uint32 vk_device_memory::_find_memory_type(uint32 typeFilter, VkMemoryPropertyFlags properties) noexcept
 {
-	_deallocate();
+	VkPhysicalDeviceMemoryProperties memProperties;
+	_dev.entity().get_memory_properties(memProperties);
+
+	for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++)
+	{
+		if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties)
+		{
+			return i;
+		}
+	}
 }
 
 void vk_device_memory::_deallocate() noexcept
@@ -13,6 +22,25 @@ void vk_device_memory::_deallocate() noexcept
 		vkFreeMemory(_dev.handle(), _handle, nullptr);
 		_handle = nullptr;
 	}
+}
+
+bool vk_device_memory::allocate(const vk_device_memory_parameters& parameters)
+{
+	VkMemoryAllocateInfo _alloc_info
+	{
+		.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+		.allocationSize = parameters.core().size,
+		.memoryTypeIndex = _find_memory_type(
+			parameters.core().memoryTypeBits,
+			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+		)
+	};
+
+	if (vkAllocateMemory(_dev.handle(), &_alloc_info, nullptr, &_handle) == VkResult::VK_SUCCESS)
+	{
+		return true;
+	}
+	return false;
 }
 
 void vk_device_memory::exec_handler(uint64 offset, uint64 size, const device_memory_handler& handler, VkMemoryMapFlags flags) const noexcept
@@ -27,18 +55,4 @@ void vk_device_memory::exec_handler(uint64 offset, uint64 size, const device_mem
 void vk_device_memory::exec_handler(const device_memory_handler& handler, VkMemoryMapFlags flags) noexcept
 {
 	exec_handler(0, _size, handler, flags);
-}
-
-uint32 vk_device_memory::_find_memory_type(uint32 typeFilter, VkMemoryPropertyFlags properties) noexcept
-{
-	VkPhysicalDeviceMemoryProperties memProperties;
-	_dev.entity().get_memory_properties(memProperties);
-
-	for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++)
-	{
-		if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties)
-		{
-			return i;
-		}
-	}
 }

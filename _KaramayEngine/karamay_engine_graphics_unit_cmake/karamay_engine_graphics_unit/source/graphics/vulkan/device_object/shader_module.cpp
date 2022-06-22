@@ -1,28 +1,6 @@
 #include "shader_module.h"
 
-vk_shader_module::vk_shader_module(vk_device& dev) : device_object(dev)
-{
-}
-
-vk_shader_module::~vk_shader_module()
-{
-	deallocate();
-}
-
-bool vk_shader_module::allocate(uint64 size, uint32* code) noexcept
-{
-	VkShaderModuleCreateInfo _create_info;
-	_create_info.sType;
-	_create_info.flags;
-	_create_info.codeSize = size;
-	_create_info.pCode = code;
-
-	vkCreateShaderModule(_dev.handle(), &_create_info, nullptr, &_handle);
-
-	return false;
-}
-
-void vk_shader_module::deallocate() noexcept
+void vk_shader_module::_deallocate() noexcept
 {
 	if (_handle)
 	{
@@ -30,3 +8,11 @@ void vk_shader_module::deallocate() noexcept
 		_handle = nullptr;
 	}
 }
+
+bool vk_shader_module::allocate(const vk_shader_module_parameters& parameters) noexcept
+{
+	vkCreateShaderModule(_dev.handle(), &(parameters.core()), nullptr, &_handle);
+	return false;
+}
+
+

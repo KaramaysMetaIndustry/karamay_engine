@@ -18,7 +18,7 @@ protected:
 
 public:
 
-	pipeline(device& dev);
+	pipeline(vk_device& dev);
 
 	pipeline(const pipeline&) = delete;
 	pipeline& operator=(const pipeline&) = delete;
