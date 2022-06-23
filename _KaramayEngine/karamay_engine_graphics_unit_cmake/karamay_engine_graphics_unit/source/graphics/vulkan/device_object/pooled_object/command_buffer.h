@@ -21,6 +21,7 @@ public:
 
 public:
 
+	// Initial
 	bool allocate(VkCommandBufferLevel level) noexcept;
 
 	void deallocate() noexcept;
@@ -29,6 +30,7 @@ public:
 
 	void reset(VkCommandBufferResetFlags flags) noexcept;
 
+	// Initial -> recording -> Executable
 	void begin() noexcept
 	{
 		VkCommandBufferInheritanceInfo _inheritance_info{};
@@ -38,11 +40,14 @@ public:
 		_begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 		_begin_info.pInheritanceInfo = &_inheritance_info;
 		vkBeginCommandBuffer(_handle, &_begin_info);
+
+		// ...
+
+		vkEndCommandBuffer(_handle);
 	}
 
-	void end() noexcept
+	void submit()
 	{
-		vkEndCommandBuffer(_handle);
 	}
 
 };
