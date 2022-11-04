@@ -5,6 +5,8 @@
 class scene_renderer final : public vk_renderer
 {
 
+
+
 public:
 
 	void render(float delta_time) noexcept override

@@ -30,7 +30,7 @@ include_directories(karamay_engine_graphics_unit/source)
 file(GLOB_RECURSE USER_LIBS_PATH karamay_engine_graphics_unit/source/*.cpp)
 # AUX_SOURCE_DIRECTORY(karamay_engine_graphics_unit/source/graphics DIR_SRCS)
 #message("AAAAAA ${DIR_SRCS}")
-add_executable(karamay_engine_graphics_unit ${USER_LIBS_PATH})
+add_executable(karamay_engine_graphics_unit ${USER_LIBS_PATH} "karamay_engine_graphics_unit/source/Kanas/Kanas.h" "karamay_engine_graphics_unit/source/Kanas/Core/KanasCore.h" "karamay_engine_graphics_unit/source/Kanas/Core/VulkanObject.h" "karamay_engine_graphics_unit/source/Kanas/Core/Device.h" "karamay_engine_graphics_unit/source/Kanas/Core/VulkanInstance.h" "karamay_engine_graphics_unit/source/Kanas/Core/PhysicalDevice.h" "karamay_engine_graphics_unit/source/Kanas/Core/ShaderModule.h" "karamay_engine_graphics_unit/source/Kanas/Core/DeviceObject.h" "karamay_engine_graphics_unit/source/Kanas/Core/Buffer.h" "karamay_engine_graphics_unit/source/Kanas/Core/Image.h" "karamay_engine_graphics_unit/source/Kanas/Core/BufferView.h" "karamay_engine_graphics_unit/source/Kanas/Core/ImageView.h" "karamay_engine_graphics_unit/source/Kanas/Core/Semaphore.h" "karamay_engine_graphics_unit/source/Kanas/Core/Fence.h" "karamay_engine_graphics_unit/source/Kanas/Core/Event.h")
 
 target_link_libraries(karamay_engine_graphics_unit glew32s.lib glfw3.lib)
 

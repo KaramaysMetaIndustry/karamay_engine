@@ -147,7 +147,7 @@ std::shared_ptr<vk_graphics_pipeline> vk_device::create_graphics_pipeline(const 
 
 std::shared_ptr<vk_compute_pipeline> vk_device::create_compute_pipeline(const vk_compute_pipeline_parameters& parameters)
 {
-    return std::shared_ptr<vk_compute_pipeline>();
+    return {};
 }
 
 std::shared_ptr<vk_mesh_pipeline> vk_device::create_mesh_pipeline(const vk_mesh_pipeline_parameters& parameters)
