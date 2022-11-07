@@ -4,25 +4,6 @@
 #include "RenderPass.h"
 #include "Framebuffer.h"
 
-Kanas::Core::CommandBuffer::CommandBuffer(Device& InDevice, CommandPool& InCommandPool) :
-    DeviceObject(InDevice), Pool(InCommandPool)
-{
-}
-
-Kanas::Core::CommandBuffer::~CommandBuffer()
-{
-    if (_Handle != VK_NULL_HANDLE)
-    {
-        vkFreeCommandBuffers(GetDevice().GetHandle(), Pool.GetHandle(), 1, &_Handle);
-        _Handle = VK_NULL_HANDLE;
-    }
-}
-
-Kanas::Core::CommandPool& Kanas::Core::CommandBuffer::GetPool()
-{
-    return Pool;
-}
-
 bool Kanas::Core::CommandBuffer::Allocate(VkCommandBufferLevel InCommandBufferLevel)
 {
     VkCommandBufferAllocateInfo CommandBufferAllocateInfo;
@@ -32,21 +13,57 @@ bool Kanas::Core::CommandBuffer::Allocate(VkCommandBufferLevel InCommandBufferLe
     CommandBufferAllocateInfo.level = InCommandBufferLevel;
 
     VkResult Result = vkAllocateCommandBuffers(GetDevice().GetHandle(), &CommandBufferAllocateInfo, &_Handle);
+
     if (Result == VkResult::VK_SUCCESS)
     {
+        CurrentState = State::ReadyForBegin;
         return true;
     }
 
     return false;
 }
 
-void Kanas::Core::CommandBuffer::Reset(VkCommandBufferResetFlags InResetFlags)
+Kanas::Core::CommandBuffer::CommandBuffer(Device& InDevice, CommandPool& InCommandPool) :
+    DeviceObject(InDevice), Pool(InCommandPool)
 {
-    const VkResult Result = vkResetCommandBuffer(_Handle, InResetFlags);
 }
 
-void Kanas::Core::CommandBuffer::Push(RenderPass* InRenderPass, uint32 InSubpassIndex, bool InOcclusionQueryEnable, VkQueryControlFlags InQueryControlFlags, VkQueryPipelineStatisticFlags InQueryPipelineStatisticFlags)
+Kanas::Core::CommandBuffer::~CommandBuffer()
 {
+    if (IsValid())
+    {
+        vkFreeCommandBuffers(GetDevice().GetHandle(), Pool.GetHandle(), 1, &_Handle);
+
+        ResetHandle();
+    }
+}
+
+void Kanas::Core::CommandBuffer::CmdBarrier()
+{
+    VkMemoryBarrier MemoryBarriers[1] = {};
+    VkBufferMemoryBarrier BufferMemoryBarriers[1] = {};
+    VkImageMemoryBarrier ImageMemoryBarriers[1] = {};
+
+    VkPipelineStageFlags InSrcStageMask = VkPipelineStageFlagBits::VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT;
+    VkPipelineStageFlags InDstStageMask = VkPipelineStageFlagBits::VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
+    VkDependencyFlags DependencyFlags = VkDependencyFlagBits::VK_DEPENDENCY_BY_REGION_BIT;
+
+    vkCmdPipelineBarrier(GetHandle(), InSrcStageMask, InDstStageMask, DependencyFlags, 1, MemoryBarriers, 1, BufferMemoryBarriers, 1, ImageMemoryBarriers);
+}
+
+void Kanas::Core::CommandBuffer::CmdExecute()
+{
+    VkCommandBuffer CommandBufferHandles[] = { GetHandle() };
+    vkCmdExecuteCommands(GetHandle(), 1, CommandBufferHandles);
+}
+
+void Kanas::Core::CommandBuffer::CmdPush(RenderPass* InRenderPass, uint32 InSubpassIndex, bool InOcclusionQueryEnable, VkQueryControlFlags InQueryControlFlags, VkQueryPipelineStatisticFlags InQueryPipelineStatisticFlags)
+{
+    if (!InRenderPass)
+    {
+        return;
+    }
+
     VkCommandBufferInheritanceInfo CommandBufferInheritanceInfo;
     CommandBufferInheritanceInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
     CommandBufferInheritanceInfo.pNext = nullptr;
@@ -60,23 +77,25 @@ void Kanas::Core::CommandBuffer::Push(RenderPass* InRenderPass, uint32 InSubpass
     VkCommandBufferBeginInfo CommandBufferBeginInfo;
     CommandBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     CommandBufferBeginInfo.pNext = nullptr;
-    CommandBufferBeginInfo.flags;
+    CommandBufferBeginInfo.flags = {};
     CommandBufferBeginInfo.pInheritanceInfo = &CommandBufferInheritanceInfo;
     
-    vkBeginCommandBuffer(_Handle, &CommandBufferBeginInfo);
+    VkResult Result = VkResult::VK_SUCCESS;
+
+    Result = vkBeginCommandBuffer(GetHandle(), &CommandBufferBeginInfo);
 
     InRenderPass->CmdCollect(*this);
     
-    vkEndCommandBuffer(_Handle);
+    Result = vkEndCommandBuffer(GetHandle());
 }
 
-void Kanas::Core::CommandBuffer::Submit()
+VkResult Kanas::Core::CommandBuffer::Reset(VkCommandBufferResetFlags InResetFlags)
 {
+    return vkResetCommandBuffer(GetHandle(), InResetFlags);
 }
 
-void Kanas::Core::CommandBuffer::Barrier()
+Kanas::Core::CommandPool& Kanas::Core::CommandBuffer::GetPool()
 {
-    VkMemoryBarrier MemoryBarrier;
-
-    //vkCmdPipelineBarrier(_Handle,0,0,0,1,&MemoryBarrier,)
+    return Pool;
 }
+

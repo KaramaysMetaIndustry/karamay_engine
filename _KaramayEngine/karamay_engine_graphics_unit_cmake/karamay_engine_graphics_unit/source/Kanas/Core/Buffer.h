@@ -11,16 +11,17 @@ class DeviceMemory;
 
 class Buffer final : public DeviceObject<VkBuffer>
 {
+	friend class DeviceMemory;
+
+	bool Allocate(VkDeviceSize InSize, VkBufferUsageFlags InUsageFlags, VkSharingMode InSharingMode);
+
+	DeviceMemory* Mem{ nullptr };
 
 public:
 
 	Buffer(Device& InDevice);
 
 	virtual ~Buffer();
-
-private:
-
-	std::unique_ptr<DeviceMemory> _Memory;
 
 public:
 

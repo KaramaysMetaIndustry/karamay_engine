@@ -20,15 +20,37 @@ Kanas::Core::RenderPass::~RenderPass()
 
 bool Kanas::Core::RenderPass::Allocate(const std::vector<VkAttachmentDescription>& InAttachments, const std::vector<VkSubpassDescription>& InSubpasses, const std::vector<VkSubpassDependency>& InSubpassDependencies)
 {
+    VkSubpassDescription Subpass;
+    Subpass.flags;
+    Subpass.pipelineBindPoint;
+    Subpass.inputAttachmentCount;
+    Subpass.pInputAttachments;
+    Subpass.colorAttachmentCount;
+    Subpass.pColorAttachments;
+    Subpass.pResolveAttachments;
+    Subpass.pDepthStencilAttachment;
+    Subpass.preserveAttachmentCount;
+    Subpass.pPreserveAttachments;
+
+    VkSubpassDependency SubpassDependency;
+    SubpassDependency.srcSubpass = 0;
+    SubpassDependency.dstSubpass = 0;
+    SubpassDependency.srcStageMask = VkPipelineStageFlagBits::VK_PIPELINE_STAGE_TRANSFER_BIT;
+    SubpassDependency.dstStageMask;
+    SubpassDependency.srcAccessMask;
+    SubpassDependency.dstAccessMask;
+    SubpassDependency.dependencyFlags;
+
     VkRenderPassCreateInfo RenderPassCreateInfo;
     RenderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-    RenderPassCreateInfo.flags;
+    RenderPassCreateInfo.flags = {};
     RenderPassCreateInfo.attachmentCount = InAttachments.size();
-    RenderPassCreateInfo.dependencyCount = InSubpassDependencies.size();
-    RenderPassCreateInfo.subpassCount = InSubpasses.size();
     RenderPassCreateInfo.pAttachments = InAttachments.data();
-    RenderPassCreateInfo.pDependencies = InSubpassDependencies.data();
+    RenderPassCreateInfo.subpassCount = InSubpasses.size();
     RenderPassCreateInfo.pSubpasses = InSubpasses.data();
+    RenderPassCreateInfo.dependencyCount = InSubpassDependencies.size();
+    RenderPassCreateInfo.pDependencies = InSubpassDependencies.data();
+   
 
     VkResult Result = vkCreateRenderPass(GetDevice().GetHandle(), &RenderPassCreateInfo, nullptr, &_Handle);
     

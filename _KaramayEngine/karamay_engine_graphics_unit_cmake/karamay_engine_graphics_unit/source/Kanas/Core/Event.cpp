@@ -61,5 +61,17 @@ void Kanas::Core::Event::CmdReset(CommandBuffer& InRecorder, VkPipelineStageFlag
 
 void Kanas::Core::Event::CmdWait(CommandBuffer& InRecorder)
 {
-	vkCmdWaitEvents(InRecorder.GetHandle(), );
+	VkEvent EventHandles[] = { GetHandle() };
+	VkPipelineStageFlags SrcMask = VkPipelineStageFlagBits::VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
+	VkPipelineStageFlags DstMask;
+
+	std::vector<VkMemoryBarrier> MemBarriers;
+	std::vector<VkBufferMemoryBarrier> BufferMemBarriers;
+	std::vector<VkImageMemoryBarrier> ImageMemBarriers;
+
+	vkCmdWaitEvents(InRecorder.GetHandle(), 1, EventHandles, SrcMask, DstMask, 
+		static_cast<uint32>(MemBarriers.size()), MemBarriers.data(), 
+		static_cast<uint32>(BufferMemBarriers.size()), BufferMemBarriers.data(), 
+		static_cast<uint32>(ImageMemBarriers.size()), ImageMemBarriers.data()
+	);
 }

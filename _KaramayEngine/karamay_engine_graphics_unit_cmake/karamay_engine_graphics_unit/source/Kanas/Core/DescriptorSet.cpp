@@ -12,7 +12,8 @@ Kanas::Core::DescriptorSet::~DescriptorSet()
 {
 	if (IsValid())
 	{
-		vkDestroyDescriptorPool(GetDevice().GetHandle(), Pool.GetHandle(), nullptr);
+        vkFreeDescriptorSets(GetDevice().GetHandle(), Pool.GetHandle(), 1, &_Handle);
+
 		ResetHandle();
 	}
 }

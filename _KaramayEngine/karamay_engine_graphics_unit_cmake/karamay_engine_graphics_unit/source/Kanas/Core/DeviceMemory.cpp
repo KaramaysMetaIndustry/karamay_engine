@@ -16,14 +16,17 @@ Kanas::Core::DeviceMemory::~DeviceMemory()
 	}
 }
 
-bool Kanas::Core::DeviceMemory::Allocate()
+bool Kanas::Core::DeviceMemory::Allocate(VkDeviceSize InAllocSize, uint32 InMemTypeIndex)
 {
+	VkMemoryAllocateInfo MemoryAllocateInfo;
+	MemoryAllocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+	MemoryAllocateInfo.pNext = nullptr;
+	MemoryAllocateInfo.allocationSize = InAllocSize;
+	MemoryAllocateInfo.memoryTypeIndex = InMemTypeIndex;
 
-	VkMemoryAllocateInfo _AllocateInfo;
-
-	const VkResult _Result = vkAllocateMemory(GetDevice().GetHandle(), &_AllocateInfo, nullptr, &_Handle);
+	const VkResult _Result = vkAllocateMemory(GetDevice().GetHandle(), &MemoryAllocateInfo, nullptr, &_Handle);
 	
-	if (_Result == VkResult::VK_SUCCESS && _Handle)
+	if (_Result == VkResult::VK_SUCCESS)
 	{
 		return true;
 	}
@@ -33,16 +36,16 @@ bool Kanas::Core::DeviceMemory::Allocate()
 
 void Kanas::Core::DeviceMemory::HandleMemory(uint64 InOffset, uint64 InSize, const DeviceMemoryHandler& InHandler, VkMemoryMapFlags InFlags)
 {
-	void* _Data = nullptr;
+	void* Data = nullptr;
 
-	const VkResult _Result = vkMapMemory(GetDevice().GetHandle(), _Handle, InOffset, InSize, InFlags, &_Data);
+	const VkResult _Result = vkMapMemory(GetDevice().GetHandle(), GetHandle(), InOffset, InSize, InFlags, &Data);
 	
-	if (_Result != VkResult::VK_SUCCESS || !_Data)
+	if (_Result != VkResult::VK_SUCCESS || !Data)
 	{
 		return;
 	}
 
-	InHandler(InSize, _Data);
+	InHandler(InSize, Data);
 
-	vkUnmapMemory(GetDevice().GetHandle(), _Handle);
+	vkUnmapMemory(GetDevice().GetHandle(), GetHandle());
 }

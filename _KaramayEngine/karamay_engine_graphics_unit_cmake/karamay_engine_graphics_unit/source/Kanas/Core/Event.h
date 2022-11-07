@@ -9,6 +9,8 @@ class CommandBuffer;
 
 class Event final : public DeviceObject<VkEvent>
 {
+	friend class Event;
+
 	bool Allocate();
 
 	VkResult GetStatus();

@@ -7,15 +7,18 @@ _KANAS_CORE_BEGIN
 
 class DeviceMemory final : public DeviceObject<VkDeviceMemory>
 {
+
+	friend class Device;
+
+	bool Allocate(VkDeviceSize InAllocSize, uint32 InMemTypeIndex);
+
 public:
 
 	DeviceMemory(Device& InDevice);
 
-	virtual ~DeviceMemory();
+	virtual ~DeviceMemory() override;
 
 private:
-
-	bool Allocate();
 
 	using DeviceMemoryHandler = std::function<void(uint64 InSize, void* InData)>;
 

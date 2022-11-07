@@ -32,7 +32,7 @@ public:
 	virtual ~Device() {}
 
 	Queue* GetQueue(uint32 InQueueFamilyIndex, uint32 InQueueIndex);
-	DeviceMemory* CreateDeviceMemory();
+	DeviceMemory* CreateDeviceMemory(VkDeviceSize InAllocSize, uint32 InMemTypeIndex);
 	Buffer* CreateBuffer();
 	Image* CreateImage();
 	CommandPool* CreateCommandPool();
@@ -55,8 +55,6 @@ private:
 	std::vector<Queue*> TransferQueues;
 	std::vector<Queue*> GraphicsQueues;
 	std::vector<Queue*> ComputeQueues;
-
-	class CommandBuffer;
 	
 	void Test();
 

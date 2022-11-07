@@ -8,15 +8,21 @@ _KANAS_CORE_BEGIN
 class CommandPool;
 class RenderPass;
 
+
+namespace CommandList
+{
+	void CmdCopyBuffer();
+
+	void CmdCopyImage();
+	
+};
+
 class CommandBuffer final : public DeviceObject<VkCommandBuffer>
 {
+
+	bool Allocate(VkCommandBufferLevel InCommandBufferLevel);
+
 public:
-
-	CommandBuffer(Device& InDevice, CommandPool& InCommandPool);
-
-	virtual ~CommandBuffer() override;
-
-	CommandPool& GetPool();
 
 	enum class State : uint8
 	{
@@ -29,19 +35,52 @@ public:
 		NeedReset,
 	};
 
-	bool Allocate(VkCommandBufferLevel InCommandBufferLevel);
+	CommandBuffer(Device& InDevice, CommandPool& InCommandPool);
 
-	void Reset(VkCommandBufferResetFlags InResetFlags);
+	virtual ~CommandBuffer() override;
 
-	void Push(RenderPass* InRenderPass, uint32 InSubpassIndex, bool InOcclusionQueryEnable, VkQueryControlFlags InQueryControlFlags, VkQueryPipelineStatisticFlags InQueryPipelineStatisticFlags);
+	void CmdBarrier();
 
-	void Submit();
+	void CmdExecute();
 
-	void Barrier();
+	void CmdPush(RenderPass* InRenderPass, uint32 InSubpassIndex, bool InOcclusionQueryEnable, VkQueryControlFlags InQueryControlFlags, VkQueryPipelineStatisticFlags InQueryPipelineStatisticFlags);
+
+	VkResult Reset(VkCommandBufferResetFlags InResetFlags);
+
+	CommandPool& GetPool();
 
 private:
 
 	CommandPool& Pool;
+
+	State CurrentState{ State::NotAllocated };
+
+
+public:
+
+	struct TransferCmds
+	{
+		CommandBuffer& CmdBufer;
+		// Transfer
+		void CmdCopyBuffer();
+		void CmdCopyImage();
+		void CmdCopyImageToBuffer();
+		void CmdCopyBufferToImage();
+
+		void CmdCopyQueryPoolResults();
+
+		void CmdBlitImage();
+		void CmdResolveImage();
+
+		void CmdClearColorImage();
+		void CmdClearDepthStencilImage();
+	} Transfer;
+	
+	//
+	void CmdClearAttachments()
+	{
+	}
+	
 
 };
 

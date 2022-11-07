@@ -11,6 +11,11 @@ class ImageView;
 
 class Image final : public DeviceObject<VkImage>
 {
+
+	bool Allocate();
+
+	DeviceMemory* Mem;
+
 public:
 
 	Image(Device& InDevice);
