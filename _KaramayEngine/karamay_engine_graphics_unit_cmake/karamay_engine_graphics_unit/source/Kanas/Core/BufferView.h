@@ -5,15 +5,21 @@
 
 _KANAS_CORE_BEGIN
 
+class Buffer;
+
 class BufferView final : public DeviceObject<VkBufferView>
 {
 public:
 
-	BufferView();
+	BufferView(Device& InDevice);
 
 	virtual ~BufferView();
 
-public:
+	bool Allocate(Buffer* InBuffer, VkFormat InFormat, VkDeviceSize InOffset, VkDeviceSize InRange);
+
+private:
+
+	Buffer* Target{ nullptr };\
 
 
 };

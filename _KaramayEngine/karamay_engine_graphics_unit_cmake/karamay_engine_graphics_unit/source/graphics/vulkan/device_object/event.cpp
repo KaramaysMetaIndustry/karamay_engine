@@ -1,4 +1,6 @@
 #include "event.h"
+#include "Event.h"
+#include "Event.h"
 
 vk_event::vk_event(vk_device& dev) : device_object(dev)
 {

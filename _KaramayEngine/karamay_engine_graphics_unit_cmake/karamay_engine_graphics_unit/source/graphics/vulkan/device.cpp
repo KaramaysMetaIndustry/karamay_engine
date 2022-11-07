@@ -21,6 +21,9 @@
 #include "device_object/semaphore.h"
 #include "device_object/query_pool.h"
 #include "renderers/renderer.h"
+#include "Device.h"
+#include "Device.h"
+#include "Device.h"
 
 vk_device::vk_device(vk_physical_device& entity) : _entity(entity)
 {

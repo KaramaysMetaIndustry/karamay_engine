@@ -12,13 +12,15 @@ class ImageView final : public DeviceObject<VkImageView>
 {
 public:
 	
-	ImageView();
+	ImageView(Device& InDevice);
 
-	~ImageView();
+	virtual ~ImageView() override;
 
-public:
+	bool Allocate(Image* InImage, VkImageViewType InViewType, VkFormat InFormat, const VkComponentMapping& InComponents, const VkImageSubresourceRange& InSubresourceRange);
 
+private:
 
+	Image* Target{ nullptr };
 
 };
 

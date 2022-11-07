@@ -1,6 +1,7 @@
 #include "framebuffer.h"
 //#include "image_view.h"
 #include "render_pass.h"
+#include "Framebuffer.h"
 
 void vk_framebuffer::_deallocate()
 {

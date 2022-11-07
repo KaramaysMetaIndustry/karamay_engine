@@ -5,7 +5,6 @@
 
 _KANAS_CORE_BEGIN
 
-
 class CommandBuffer;
 class Buffer;
 class ImageView;
@@ -14,9 +13,9 @@ class Image final : public DeviceObject<VkImage>
 {
 public:
 
-	Image();
+	Image(Device& InDevice);
 
-	virtual ~Image();
+	virtual ~Image() override;
 
 public:
 

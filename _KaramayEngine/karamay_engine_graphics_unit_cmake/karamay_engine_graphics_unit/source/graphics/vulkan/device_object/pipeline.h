@@ -56,7 +56,7 @@ public:
 
 	void draw_indirect_count(command_buffer* recorder, buffer* buf, uint64 offset, buffer* count_buf, uint64 count_offset, uint32 max_draw_count, uint32 stride);
 
-	void draw_indexed(command_buffer* recorder, uint32 index_count, uint32 instance_count, uint32 first_index, int32 vertex_offset, uint32 first_instance);
+	void draw_indexed(command_buffer* recorder, uint32 index_count, uint32 instance_count, uint32 first_index, uint32 vertex_offset, uint32 first_instance);
 
 	void draw_indexed_indirect(command_buffer* recorder, buffer* buf, uint64 size, uint32 draw_count, uint32 stride);
 

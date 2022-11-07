@@ -9,10 +9,17 @@ class DeviceMemory final : public DeviceObject<VkDeviceMemory>
 {
 public:
 
-	DeviceMemory();
+	DeviceMemory(Device& InDevice);
 
 	virtual ~DeviceMemory();
 
+private:
+
+	bool Allocate();
+
+	using DeviceMemoryHandler = std::function<void(uint64 InSize, void* InData)>;
+
+	void HandleMemory(uint64 InOffset, uint64 InSize, const DeviceMemoryHandler& InHandler, VkMemoryMapFlags InFlags);
 
 };
 

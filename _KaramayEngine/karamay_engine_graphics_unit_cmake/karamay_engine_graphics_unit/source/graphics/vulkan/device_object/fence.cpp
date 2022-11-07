@@ -44,3 +44,4 @@ bool vk_fence::is_signaled() noexcept
 
 	return vkGetFenceStatus(_dev.handle(), _handle) == VkResult::VK_SUCCESS;
 }
+

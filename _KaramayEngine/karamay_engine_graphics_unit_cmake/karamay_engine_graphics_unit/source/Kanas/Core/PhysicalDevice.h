@@ -5,14 +5,15 @@
 
 _KANAS_CORE_BEGIN
 
+class Device;
+
 class PhysicalDevice final : public VulkanObject<VkPhysicalDevice>
 {
 public:
-	PhysicalDevice() = default;
 
-	virtual ~PhysicalDevice() = default;
+	PhysicalDevice();
 
-	std::shared_ptr<VkDevice> CreateDevice();
+	virtual ~PhysicalDevice() override;
 
 	void GetFeatures(VkPhysicalDeviceFeatures& OutFeatures);
 
@@ -25,6 +26,10 @@ public:
 	void EnumerateExtensionProperties(const std::string& PlayerName, std::vector<VkExtensionProperties>& OutExtensionProperties);
 
 	void EnumerateLayerProperties(std::vector<VkLayerProperties>& OutLayerProperties);
+
+private:
+
+	std::vector<Device*> LogicalGPUs;
 
 };
 

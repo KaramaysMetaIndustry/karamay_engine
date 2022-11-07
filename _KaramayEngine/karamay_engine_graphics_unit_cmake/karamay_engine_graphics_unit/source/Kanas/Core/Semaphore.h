@@ -7,12 +7,21 @@ _KANAS_CORE_BEGIN
 
 class Semaphore final : public DeviceObject<VkSemaphore>
 {
+	friend class Device;
+
+	bool Allocate(VkSemaphoreType InType, uint64 InInitalValue);
+
 public:
 
-	Semaphore();
+	Semaphore(Device& InDevice);
 
-	virtual ~Semaphore();
+	virtual ~Semaphore() override;
 
+	VkResult Wait(uint64 InValue, uint64 InTimeout);
+
+	VkResult Signal(uint64 InValue);
+
+	uint64 GetCounterValue();
 
 };
 

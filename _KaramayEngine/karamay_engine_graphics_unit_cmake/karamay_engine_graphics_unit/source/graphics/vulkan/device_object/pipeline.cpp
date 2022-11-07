@@ -67,6 +67,8 @@ ray_tracing_pipeline::~ray_tracing_pipeline()
 }
 
 #include "deferred_operation.h"
+#include "Pipeline.h"
+#include "Pipeline.h"
 
 bool ray_tracing_pipeline::allocate(pipeline_cache* cache, pipeline_layout* layout, deferred_operation* deferred_op, uint32 max_ray_recursion_depth)
 {
@@ -224,3 +226,5 @@ void pipeline::bind(command_buffer* recorder, VkPipelineBindPoint bind_point)
 {
     vkCmdBindPipeline(recorder->handle(), bind_point, _handle);
 }
+
+

@@ -5,16 +5,45 @@
 
 _KANAS_CORE_BEGIN
 
+class PhysicalDevice;
+
 class VulkanInstance final : public VulkanObject<VkInstance>
 {
 public:
 
-	VulkanInstance() = default;
+	VulkanInstance()
+	{}
 
-	virtual ~VulkanInstance()
+	virtual ~VulkanInstance() override
 	{
-		vkDestroyInstance(Handle(), nullptr);
+		if (IsValid())
+		{
+			vkDestroyInstance(GetHandle(), nullptr);
+
+			ResetHandle();
+		}
 	}
+
+	bool Initialize()
+	{
+		return true;
+	}
+
+	void GetGPUs(std::vector<PhysicalDevice*>& OutGPUs) const
+	{
+		OutGPUs.reserve(GPUs);
+		for (const auto& GPU : GPUs)
+		{
+			if (GPU)
+			{
+				OutGPUs.emplace_back(GPU.get());
+			}
+		}
+	}
+
+private:
+
+	std::vector<std::unique_ptr<PhysicalDevice>> GPUs;
 
 };
 

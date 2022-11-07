@@ -7,15 +7,22 @@ _KANAS_CORE_BEGIN
 
 class Image;
 class CommandBuffer;
+class DeviceMemory;
 
 class Buffer final : public DeviceObject<VkBuffer>
 {
 
 public:
 
-	Buffer();
+	Buffer(Device& InDevice);
 
 	virtual ~Buffer();
+
+private:
+
+	std::unique_ptr<DeviceMemory> _Memory;
+
+public:
 
 	void CmdCopy(CommandBuffer& InRecorder, Buffer& InDstBuffer, const std::vector<VkBufferCopy>& InRegions);
 
@@ -24,7 +31,6 @@ public:
 	void CmdFill(CommandBuffer& InRecorder, uint64 InOffset, uint64 InSize, uint32 InData);
 
 	void CmdUpdate(CommandBuffer& InRecorder, uint64 InOffset, uint64 InSize, void* InData);
-
 
 };
 

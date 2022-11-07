@@ -15,15 +15,15 @@ public:
 
 protected:
 
-	VKHandleT _Handle{ VK_NULL_HANDLE };
+	VkHandleT _Handle{ VK_NULL_HANDLE };
+
+	inline void ResetHandle() { _Handle = VK_NULL_HANDLE; }
+
+	bool IsValid() const { return _Handle != VK_NULL_HANDLE; }
 
 public:
 
-	VkHandleT Handle() const { return _Handle; }
-
-protected:
-
-	void ResetHandle() { _Handle = VK_NULL_HANDLE; }
+	VkHandleT GetHandle() const { return _Handle; }
 
 };
 

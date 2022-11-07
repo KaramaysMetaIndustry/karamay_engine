@@ -5,52 +5,29 @@
 
 _KANAS_CORE_BEGIN
 
+class CommandBuffer;
+
 class Event final : public DeviceObject<VkEvent>
 {
+	bool Allocate();
+
+	VkResult GetStatus();
+
 public:
 
-	Event();
+	Event(Device& InDevice);
 
 	virtual ~Event();
 
+	void Set();
 
-	bool Allocate()
-	{
-		VkEventCreateInfo _CreateInfo;
+	void Reset();
 
-		if (vkCreateEvent(nullptr, &_CreateInfo, nullptr, &_Handle))
-		{
-			return true;
-		}
+	void CmdSet(CommandBuffer& InRecorder, VkPipelineStageFlags InPipelineStageFlags);
 
-		return false;
-	}
+	void CmdReset(CommandBuffer& InRecorder, VkPipelineStageFlags InPipelineStageFlags);
 
-	void Deallocate()
-	{
-		if (_Handle)
-		{
-			vkDestroyEvent(nullptr, _Handle, nullptr);
-			_Handle = nullptr;
-		}
-	}
-
-
-	void Set()
-	{
-		vkSetEvent(nullptr, Handle());
-	}
-
-	void Reset()
-	{
-		vkResetEvent(nullptr, Handle());
-	}
-
-	void GetStatus()
-	{
-		const VkResult Status = vkGetEventStatus(nullptr, Handle());
-	}
-	
+	void CmdWait(CommandBuffer& InRecorder);
 
 };
 

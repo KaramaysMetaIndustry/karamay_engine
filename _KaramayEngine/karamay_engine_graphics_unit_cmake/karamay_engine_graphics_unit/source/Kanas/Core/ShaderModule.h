@@ -10,9 +10,11 @@ class ShaderModule final : public DeviceObject<VkShaderModule>
 {
 public:
 
-	ShaderModule();
+	ShaderModule(Device& InDevice);
 
-	virtual ~ShaderModule();
+	virtual ~ShaderModule() override;
+
+	bool Allocate();
 
 };
 

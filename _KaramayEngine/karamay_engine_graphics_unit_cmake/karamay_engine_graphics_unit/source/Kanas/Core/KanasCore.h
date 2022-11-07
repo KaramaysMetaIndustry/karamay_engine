@@ -9,4 +9,6 @@
 
 #define _KANAS_CORE_END }}
 
+#define _KANAS_CORE_DECL Kanas::Core
+
 #endif

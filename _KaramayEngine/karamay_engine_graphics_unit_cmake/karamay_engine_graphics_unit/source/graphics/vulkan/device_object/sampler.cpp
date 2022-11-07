@@ -1,4 +1,6 @@
 #include "sampler.h"
+#include "Sampler.h"
+#include "Sampler.h"
 
 void vk_sampler::_deallocate()
 {
@@ -18,3 +20,4 @@ bool vk_sampler::allocate(const vk_sampler_parameters& parameters)
 
 	return false;
 }
+
