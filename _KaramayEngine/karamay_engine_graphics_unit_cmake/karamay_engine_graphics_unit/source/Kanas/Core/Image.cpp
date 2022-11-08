@@ -1,5 +1,7 @@
 #include "Image.h"
 #include "Device.h"
+#include "PhysicalDevice.h"
+#include "DeviceMemory.h"
 
 bool Kanas::Core::Image::Allocate()
 {
@@ -34,7 +36,13 @@ bool Kanas::Core::Image::Allocate()
 
 		if(Mem)
 		{
-			return true;
+			const VkDeviceSize MemOffset = 0;
+			const VkResult BindImageResult = vkBindImageMemory(GetDevice().GetHandle(), GetHandle(), Mem->GetHandle(), MemOffset);
+			
+			if (BindImageResult == VkResult::VK_SUCCESS)
+			{
+				return true;
+			}
 		}
 	}
 
@@ -44,6 +52,9 @@ bool Kanas::Core::Image::Allocate()
 Kanas::Core::Image::Image(Device& InDevice) :
 	DeviceObject(InDevice)
 {
+	std::vector<VkQueueFamilyProperties> QueueFamilyPropertiesArr;
+	GetDevice().GetPhysicalDevice().GetQueueFamilyProperties(QueueFamilyPropertiesArr);
+
 }
 
 Kanas::Core::Image::~Image()

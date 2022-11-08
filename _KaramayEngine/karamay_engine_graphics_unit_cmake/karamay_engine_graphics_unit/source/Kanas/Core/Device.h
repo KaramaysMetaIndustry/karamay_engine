@@ -48,9 +48,11 @@ public:
 	
 	ShaderModule* CreateShaderModule();
 
+	PhysicalDevice& GetPhysicalDevice() const { return GPU; }
+
 private:
 
-	PhysicalDevice* GPU{ nullptr };
+	PhysicalDevice& GPU;
 
 	std::vector<Queue*> TransferQueues;
 	std::vector<Queue*> GraphicsQueues;

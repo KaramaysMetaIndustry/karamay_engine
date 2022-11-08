@@ -9,7 +9,7 @@ class Image;
 class CommandBuffer;
 class DeviceMemory;
 
-class Buffer final : public DeviceObject<VkBuffer>
+class Buffer : public DeviceObject<VkBuffer>
 {
 	friend class DeviceMemory;
 
@@ -21,7 +21,7 @@ public:
 
 	Buffer(Device& InDevice);
 
-	virtual ~Buffer();
+	virtual ~Buffer() override;
 
 public:
 
