@@ -1,7 +1,8 @@
 #ifndef _VULKAN_OBJECT_H_
 #define _VULKAN_OBJECT_H_
 
-#include "KanasCore.h"
+#include "KanasCoreTypes.h"
+#include "KanasCoreMacros.h"
 
 _KANAS_CORE_BEGIN
 

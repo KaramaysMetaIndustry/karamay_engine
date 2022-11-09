@@ -17,23 +17,31 @@ namespace CommandList
 	
 };
 
-class CommandBuffer final : public DeviceObject<VkCommandBuffer>
+enum class CommandBufferState : uint8
+{
+	Initial,
+	Recording,
+	Executable,
+	Pending,
+	Invalid
+};
+
+enum class CommandBuffeLevel
+{
+	Primary = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+	Secondary = VK_COMMAND_BUFFER_LEVEL_SECONDARY
+};
+
+class CommandBuffer : public DeviceObject<VkCommandBuffer>
 {
 
-	bool Allocate(VkCommandBufferLevel InCommandBufferLevel);
+	friend class CommandPool;
+
+	bool Allocate(CommandBuffeLevel InCommandBufferLevel);
+
+	CommandBufferState State;
 
 public:
-
-	enum class State : uint8
-	{
-		ReadyForBegin,
-		IsInsideBegin,
-		IsInsideRenderPass,
-		HasEnded,
-		Submitted,
-		NotAllocated,
-		NeedReset,
-	};
 
 	CommandBuffer(Device& InDevice, CommandPool& InCommandPool);
 
@@ -49,40 +57,21 @@ public:
 
 	CommandPool& GetPool();
 
+	CommandBufferState GetState() const { return State; }
+
 private:
 
 	CommandPool& Pool;
 
-	State CurrentState{ State::NotAllocated };
-
-
 public:
-
-	struct TransferCmds
-	{
-		CommandBuffer& CmdBufer;
-		// Transfer
-		void CmdCopyBuffer();
-		void CmdCopyImage();
-		void CmdCopyImageToBuffer();
-		void CmdCopyBufferToImage();
-
-		void CmdCopyQueryPoolResults();
-
-		void CmdBlitImage();
-		void CmdResolveImage();
-
-		void CmdClearColorImage();
-		void CmdClearDepthStencilImage();
-	} Transfer;
 	
-	//
 	void CmdClearAttachments()
 	{
 	}
 	
 
 };
+
 
 _KANAS_CORE_END
 

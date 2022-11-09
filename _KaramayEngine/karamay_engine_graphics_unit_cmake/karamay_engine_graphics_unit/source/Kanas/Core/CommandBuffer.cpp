@@ -4,19 +4,18 @@
 #include "RenderPass.h"
 #include "Framebuffer.h"
 
-bool Kanas::Core::CommandBuffer::Allocate(VkCommandBufferLevel InCommandBufferLevel)
+bool Kanas::Core::CommandBuffer::Allocate(CommandBuffeLevel InCommandBufferLevel)
 {
     VkCommandBufferAllocateInfo CommandBufferAllocateInfo;
     CommandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     CommandBufferAllocateInfo.commandBufferCount = 1;
     CommandBufferAllocateInfo.commandPool = Pool.GetHandle();
-    CommandBufferAllocateInfo.level = InCommandBufferLevel;
+    CommandBufferAllocateInfo.level = static_cast<VkCommandBufferLevel>(InCommandBufferLevel);
 
     VkResult Result = vkAllocateCommandBuffers(GetDevice().GetHandle(), &CommandBufferAllocateInfo, &_Handle);
 
     if (Result == VkResult::VK_SUCCESS)
     {
-        CurrentState = State::ReadyForBegin;
         return true;
     }
 

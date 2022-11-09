@@ -9,19 +9,28 @@ class CommandBuffer;
 
 class CommandPool final : public DeviceObject<VkCommandPool>
 {
+
+	bool bCanBufferResetSelf{ false };
+
+	bool bTransientBuffer{ false };
+
 public:
 
 	CommandPool(Device& InDevice);
 
 	virtual ~CommandPool() override;
 
-	bool Allocate(uint32 InQueueFamilyIndex);
+	bool Allocate(uint32 InQueueFamilyIndex, bool bInTransientBuffer = false , bool bInCanBufferResetSelf = true);
 
-	VkResult Reset(VkCommandPoolResetFlags InCommandPoolResetFlags);
+	VkResult Reset(bool bInRecycle = false);
 
 	CommandBuffer* CreateCmdBuffer(VkCommandBufferLevel InCmdBufferLevel);
 
 	void ReleaseCmdBuffer(CommandBuffer* InCmdBufferToRelease);
+
+	bool CanBufferReset() const;
+
+	bool IsTransientBuffer() const;
 
 private:
 
