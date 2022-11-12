@@ -1,7 +1,11 @@
 #include "PhysicalDevice.h"
+#include "Device.h"
+#include "VulkanInstance.h"
 
-Kanas::Core::PhysicalDevice::PhysicalDevice()
+Kanas::Core::PhysicalDevice::PhysicalDevice(VulkanInstance& InInstance, VkPhysicalDevice InHandle) :
+	Instance(InInstance)
 {
+	_Handle = InHandle;
 }
 
 Kanas::Core::PhysicalDevice::~PhysicalDevice()
@@ -53,5 +57,46 @@ void Kanas::Core::PhysicalDevice::EnumerateLayerProperties(std::vector<VkLayerPr
 	{
 		OutLayerProperties.resize(Count);
 		vkEnumerateDeviceLayerProperties(GetHandle(), nullptr, OutLayerProperties.data());
+	}
+}
+
+Kanas::Core::Device* Kanas::Core::PhysicalDevice::CreateDevice()
+{
+	auto NewDevice = std::make_unique<Device>(*this);
+
+	if (NewDevice && NewDevice->Allocate())
+	{
+		Devices.emplace_back(NewDevice);
+		return NewDevice.get();
+	}
+
+	return nullptr;
+}
+
+void Kanas::Core::PhysicalDevice::DeleteDevice(Device* InDeviceToDelete)
+{
+	if (InDeviceToDelete)
+	{
+		for (auto It = Devices.begin(); It != Devices.end(); ++It)
+		{
+			if (*It && It->get() == InDeviceToDelete)
+			{
+				Devices.erase(It);
+				break;
+			}
+		}
+	}
+}
+
+void Kanas::Core::PhysicalDevice::GetDevices(TVector<Device*>& OutDevices)
+{
+	OutDevices.reserve(Devices.size());
+
+	for (auto& Dev : Devices)
+	{
+		if (Dev)
+		{
+			OutDevices.emplace_back(Dev.get());
+		}
 	}
 }

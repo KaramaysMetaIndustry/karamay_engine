@@ -5,13 +5,14 @@
 
 _KANAS_CORE_BEGIN
 
+class VulkanInstance;
 class Device;
 
 class PhysicalDevice final : public VulkanObject<VkPhysicalDevice>
 {
 public:
 
-	PhysicalDevice();
+	PhysicalDevice(VulkanInstance& InInstance, VkPhysicalDevice InHandle);
 
 	virtual ~PhysicalDevice() override;
 
@@ -27,9 +28,18 @@ public:
 
 	void EnumerateLayerProperties(std::vector<VkLayerProperties>& OutLayerProperties);
 
+
+	Device* CreateDevice();
+
+	void DeleteDevice(Device* InDeviceToDelete);
+
+	void GetDevices(TVector<Device*>& OutDevices);
+
 private:
 
-	std::vector<Device*> LogicalGPUs;
+	VulkanInstance& Instance;
+
+	TVector<TUniquePtr<Device>> Devices;
 
 };
 

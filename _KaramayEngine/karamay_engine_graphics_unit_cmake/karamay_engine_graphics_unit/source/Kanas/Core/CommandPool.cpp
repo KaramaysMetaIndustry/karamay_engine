@@ -83,7 +83,7 @@ Kanas::Core::CommandBuffer* Kanas::Core::CommandPool::CreateCmdBuffer(VkCommandB
 
     if (NewCmdBuffer && NewCmdBuffer->Allocate(InCmdBufferLevel))
     {
-        CommandBuffers.push_back(NewCmdBuffer);
+        CmdBuffers.emplace_back(NewCmdBuffer);
         return NewCmdBuffer.get();
     }
 
@@ -94,11 +94,12 @@ void Kanas::Core::CommandPool::ReleaseCmdBuffer(CommandBuffer* InCmdBufferToRele
 {
     if (InCmdBufferToRelease)
     {
-        for (const auto& CmdBuffer : CommandBuffers)
+        for (auto It = CmdBuffers.cbegin(); It != CmdBuffers.cend(); ++It)
         {
-            if (CmdBuffer.get() == InCmdBufferToRelease)
+            if ((*It).get() == InCmdBufferToRelease)
             {
-                
+                CmdBuffers.erase(It);
+                break;
             }
         }
     }

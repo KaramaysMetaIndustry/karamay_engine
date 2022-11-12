@@ -26,10 +26,14 @@ class ShaderModule;
 
 class Device final : public VulkanObject<VkDevice>
 {
-public:
-	Device() = default;
+	friend class PhysicalDevice;
 
-	virtual ~Device() {}
+	bool Allocate();
+
+public:
+	Device(PhysicalDevice& InPhysicalDevice);
+
+	virtual ~Device() override;
 
 	Queue* GetQueue(uint32 InQueueFamilyIndex, uint32 InQueueIndex);
 	DeviceMemory* CreateDeviceMemory(VkDeviceSize InAllocSize, uint32 InMemTypeIndex);

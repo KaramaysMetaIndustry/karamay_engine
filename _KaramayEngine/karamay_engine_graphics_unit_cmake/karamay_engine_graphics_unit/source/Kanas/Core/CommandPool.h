@@ -34,7 +34,7 @@ public:
 
 private:
 
-	std::vector<std::unique_ptr<CommandBuffer>> CommandBuffers;
+	TVector<TUnique_ptr<CommandBuffer>> CommandBuffers;
 
 };
 

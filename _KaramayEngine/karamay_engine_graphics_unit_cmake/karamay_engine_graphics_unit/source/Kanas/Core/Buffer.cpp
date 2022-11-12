@@ -8,6 +8,15 @@
 
 bool Kanas::Core::Buffer::Allocate(VkDeviceSize InSize, VkBufferUsageFlags InUsageFlags, VkSharingMode InSharingMode)
 {
+
+	VkBufferUsageFlags BufferUsageFlags = 0;
+	VkBufferUsageFlagBits::VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+	VkBufferUsageFlagBits::VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
+	VkBufferUsageFlagBits::VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+
+	VkSharingMode::VK_SHARING_MODE_CONCURRENT; // concurrent
+	VkSharingMode::VK_SHARING_MODE_EXCLUSIVE; // exclusive
+
 	VkBufferCreateInfo BufferCreateInfo;
 	BufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 	BufferCreateInfo.pNext = nullptr;
@@ -63,6 +72,7 @@ struct MemoryHeap
 	bool IsDeviceLocal;
 	bool IsMultiInstance;
 
+	std::vector<MemoryHeapDescription> Descriptions;
 };
 
 Kanas::Core::Buffer::Buffer(Device& InDevice) :
@@ -71,15 +81,19 @@ Kanas::Core::Buffer::Buffer(Device& InDevice) :
 	VkPhysicalDeviceMemoryProperties MemProperties;
 	GetDevice().GetPhysicalDevice().GetMemoryProperties(MemProperties);
 
+	VkPhysicalDeviceFeatures Features;
+	GetDevice().GetPhysicalDevice().GetFeatures(Features);
+
+
 	MemProperties.memoryTypes[0].heapIndex;
 	MemProperties.memoryTypes[0].propertyFlags;
 
-	VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-	VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
-	VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-	VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
-	VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT;
-	VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_PROTECTED_BIT;
+	VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT; // DeviceLocal
+	VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT; // HostVisible
+	VK_MEMORY_PROPERTY_HOST_COHERENT_BIT; // HostCoherent
+	VK_MEMORY_PROPERTY_HOST_CACHED_BIT; // HostCached
+	VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT; // LazilyAllocated
+	VK_MEMORY_PROPERTY_PROTECTED_BIT; // Protected
 	//VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_DEVICE_COHERENT_BIT_AMD;
 	//VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_DEVICE_UNCACHED_BIT_AMD;
 
