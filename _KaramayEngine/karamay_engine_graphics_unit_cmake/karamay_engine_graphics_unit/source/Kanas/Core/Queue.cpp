@@ -3,22 +3,22 @@
 #include "Fence.h"
 #include "CommandBuffer.h"
 
-bool Kanas::Core::Queue::Allocate(uint32 InQueueFamilyIndex, uint32 InQueueIndex)
+bool Kanas::Core::FQueue::Allocate(uint32 InQueueFamilyIndex, uint32 InQueueIndex)
 {
 	vkGetDeviceQueue(GetDevice().GetHandle(), InQueueFamilyIndex, InQueueIndex, &_Handle);
 	return true;
 }
 
-Kanas::Core::Queue::Queue(Device& InDevice) :
-	DeviceObject(InDevice)
+Kanas::Core::FQueue::FQueue(FDevice& InDevice) :
+	FDeviceObject(InDevice)
 {
 }
 
-Kanas::Core::Queue::~Queue()
+Kanas::Core::FQueue::~FQueue()
 {
 }
 
-void Kanas::Core::Queue::BindSpare(const std::vector<BindSpareInfo>& InBindSparseInfos, Fence* InFence)
+void Kanas::Core::FQueue::BindSpare(const std::vector<BindSpareInfo>& InBindSparseInfos, FFence* InFence)
 {
 	std::vector<VkBindSparseInfo> BindSpareInfos;
 
@@ -49,12 +49,12 @@ void Kanas::Core::Queue::BindSpare(const std::vector<BindSpareInfo>& InBindSpars
 	VkResult Result = vkQueueBindSparse(GetHandle(), static_cast<uint32>(BindSpareInfos.size()), BindSpareInfos.data(), FenceHandle);
 }
 
-void Kanas::Core::Queue::WaitIdle()
+void Kanas::Core::FQueue::WaitIdle()
 {
 	VkResult Result = vkQueueWaitIdle(GetHandle());
 }
 
-void Kanas::Core::Queue::Submit(const std::vector<SubmissionBatch>& InBatches, Fence* InFence)
+void Kanas::Core::FQueue::Submit(const std::vector<SubmissionBatch>& InBatches, Fence* InFence)
 {
 	std::vector<VkSubmitInfo> SubmitInfos;
 	SubmitInfos.reserve(InBatches.size());
@@ -92,12 +92,12 @@ void Kanas::Core::Queue::Submit(const std::vector<SubmissionBatch>& InBatches, F
 	VkResult Result = vkQueueSubmit(GetHandle(), static_cast<uint32>(SubmitInfos.size()), SubmitInfos.data(), FenceHandle);
 }
 
-void Kanas::Core::Queue::PresetKHR(const VkPresentInfoKHR& InPresentInfo)
+void Kanas::Core::FQueue::PresetKHR(const VkPresentInfoKHR& InPresentInfo)
 {
 	VkResult Result = vkQueuePresentKHR(GetHandle(), &InPresentInfo);
 }
 
-Kanas::Core::QueuePool* Kanas::Core::Queue::GetOwner() const
+Kanas::Core::FQueuePool* Kanas::Core::FQueue::GetOwner() const
 {
 	return Owner;
 }

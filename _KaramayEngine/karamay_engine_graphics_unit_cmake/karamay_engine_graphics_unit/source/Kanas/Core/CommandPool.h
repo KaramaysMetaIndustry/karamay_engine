@@ -5,9 +5,9 @@
 
 _KANAS_CORE_BEGIN
 
-class CommandBuffer;
+class FCommandBuffer;
 
-class CommandPool final : public DeviceObject<VkCommandPool>
+class FCommandPool final : public FDeviceObject<VkCommandPool>
 {
 
 	bool bCanBufferResetSelf{ false };
@@ -16,17 +16,17 @@ class CommandPool final : public DeviceObject<VkCommandPool>
 
 public:
 
-	CommandPool(Device& InDevice);
+	FCommandPool(FDevice& InDevice);
 
-	virtual ~CommandPool() override;
+	virtual ~FCommandPool() override;
 
 	bool Allocate(uint32 InQueueFamilyIndex, bool bInTransientBuffer = false , bool bInCanBufferResetSelf = true);
 
 	VkResult Reset(bool bInRecycle = false);
 
-	CommandBuffer* CreateCmdBuffer(VkCommandBufferLevel InCmdBufferLevel);
+	FCommandBuffer* CreateCmdBuffer(VkCommandBufferLevel InCmdBufferLevel);
 
-	void ReleaseCmdBuffer(CommandBuffer* InCmdBufferToRelease);
+	void ReleaseCmdBuffer(FCommandBuffer* InCmdBufferToRelease);
 
 	bool CanBufferReset() const;
 
@@ -34,7 +34,7 @@ public:
 
 private:
 
-	TVector<TUnique_ptr<CommandBuffer>> CommandBuffers;
+	TVector<TUniquePtr<FCommandBuffer>> CmdBuffers;
 
 };
 

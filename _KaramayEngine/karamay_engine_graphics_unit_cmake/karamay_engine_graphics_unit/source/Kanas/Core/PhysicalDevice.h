@@ -6,15 +6,15 @@
 _KANAS_CORE_BEGIN
 
 class VulkanInstance;
-class Device;
+class FDevice;
 
-class PhysicalDevice final : public VulkanObject<VkPhysicalDevice>
+class FPhysicalDevice final : public VulkanObject<VkPhysicalDevice>
 {
 public:
 
-	PhysicalDevice(VulkanInstance& InInstance, VkPhysicalDevice InHandle);
+	FPhysicalDevice(VulkanInstance& InInstance, VkPhysicalDevice InHandle);
 
-	virtual ~PhysicalDevice() override;
+	virtual ~FPhysicalDevice() override;
 
 	void GetFeatures(VkPhysicalDeviceFeatures& OutFeatures);
 

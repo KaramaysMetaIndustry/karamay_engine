@@ -5,58 +5,56 @@
 
 _KANAS_CORE_BEGIN
 
-class Image;
-class CommandBuffer;
-class DeviceMemory;
+class FImage;
+class FCommandBuffer;
+class FDeviceMemory;
 
-struct FConcurrentGuide
+class FBuffer : public FDeviceObject<VkBuffer>
 {
-	TVector<TSharedPtr<Queue>> Queues;
-};
+	friend class FDevice;
 
-
-class Buffer : public DeviceObject<VkBuffer>
-{
-	friend class Device;
-
-	bool Allocate(uint64 Size, VkBufferUsageFlags UsageFlags, TSharedPtr<FConcurrentGuide> ConcurrentGuide = nullptr);
+	bool Allocate(
+		uint64 Size, 
+		FBufferUsage Usage, 
+		TSharedPtr<FConcurrentGuide> ConcurrentGuide = nullptr
+	);
 
 public:
 
-	Buffer(Device& InDevice);
+	FBuffer(FDevice& InDevice);
 
-	Buffer(const Buffer& Other) = delete;
-	Buffer(Buffer&& Other) noexcept;
+	FBuffer(const FBuffer& Other) = delete;
+	FBuffer(FBuffer&& Other) noexcept;
 
-	Buffer& operator=(const Buffer& Other) = delete;
+	FBuffer& operator=(const FBuffer& Other) = delete;
 
-	virtual ~Buffer() override;
+	virtual ~FBuffer() override;
 
 public:
 
-	void CmdCopy(CommandBuffer& InRecorder, Buffer& InDstBuffer, const TVector<VkBufferCopy>& InRegions);
+	void CmdCopy(FCommandBuffer& InRecorder, FBuffer& InDstBuffer, const TVector<VkBufferCopy>& InRegions);
 
-	void CmdCopyToImage(CommandBuffer& InRecorder, Image& InDstImage, const TVector<VkBufferImageCopy>& InRegions);
+	void CmdCopyToImage(FCommandBuffer& InRecorder, FImage& InDstImage, const TVector<VkBufferImageCopy>& InRegions);
 
-	void CmdFill(CommandBuffer& InRecorder, uint64 InOffset, uint64 InSize, uint32 InData);
+	void CmdFill(FCommandBuffer& InRecorder, uint64 InOffset, uint64 InSize, uint32 InData);
 
-	void CmdUpdate(CommandBuffer& InRecorder, uint64 InOffset, uint64 InSize, void* InData);
+	void CmdUpdate(FCommandBuffer& InRecorder, uint64 InOffset, uint64 InSize, void* InData);
 
 private:
 
-	TUniquePtr<DeviceMemory> Mem;
+	TUniquePtr<FDeviceMemory> Mem;
 
 };
 
 
-class VertexBuffer : public Buffer {};
-class IndexBuffer : public Buffer {};
-class UniformBuffer : public Buffer {};
-class StorageBuffer : public Buffer {};
-class UniformTexelBuffer : public Buffer {};
-class StorageTexelBuffer : public Buffer {};
-class IndirectBuffer : public Buffer {};
-class ShaderDeviceAddress : public Buffer {};
+class VertexBuffer : public FBuffer {};
+class IndexBuffer : public FBuffer {};
+class UniformBuffer : public FBuffer {};
+class StorageBuffer : public FBuffer {};
+class UniformTexelBuffer : public FBuffer {};
+class StorageTexelBuffer : public FBuffer {};
+class IndirectBuffer : public FBuffer {};
+class ShaderDeviceAddress : public FBuffer {};
 
 _KANAS_CORE_END
 

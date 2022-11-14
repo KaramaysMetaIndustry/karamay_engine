@@ -5,7 +5,7 @@
 
 _KANAS_CORE_BEGIN
 
-class Device;
+class FDevice;
 
 template<typename DeviceObjectT>
 class DeviceRef
@@ -22,28 +22,28 @@ class DevicePoolRef
 
 
 template<typename VkHandleT>
-class DeviceObject : public VulkanObject<VkHandleT>
+class FDeviceObject : public VulkanObject<VkHandleT>
 {
 
 public:
 	
-	DeviceObject(Device& InDevice) :
-		_Device(InDevice)
+	FDeviceObject(FDevice& InDevice) :
+		Device(InDevice)
 	{}
 
-	virtual ~DeviceObject()
+	virtual ~FDeviceObject()
 	{
 	}
 
 private:
 
-	Device& _Device;
+	FDevice& Device;
 
 public:
 
-	Device& GetDevice() { return _Device; }
+	FDevice& GetDevice() { return Device; }
 
-	const Device& GetDevice() const { return _Device; }
+	const FDevice& GetDevice() const { return Device; }
 
 };
 

@@ -5,22 +5,28 @@
 
 _KANAS_CORE_BEGIN
 
-class Buffer;
+class FBuffer;
 
-class BufferView final : public DeviceObject<VkBufferView>
+class FBufferView final : public FDeviceObject<VkBufferView>
 {
+	friend class FBuffer;
+
+	bool Allocate(TSharedPtr<FBuffer> InBuffer, VkFormat InFormat, VkDeviceSize InOffset, VkDeviceSize InRange);
+
 public:
 
-	BufferView(Device& InDevice);
+	FBufferView(FDevice& InDevice);
 
-	virtual ~BufferView();
+	FBufferView(const FBufferView&) = delete;
+	FBufferView(FBufferView&& Other);
 
-	bool Allocate(Buffer* InBuffer, VkFormat InFormat, VkDeviceSize InOffset, VkDeviceSize InRange);
+	FBufferView& operator=(const FBufferView&) = delete;
+
+	virtual ~FBufferView();
 
 private:
 
-	Buffer* Target{ nullptr };\
-
+	TSharedPtr<FBuffer> Buffer{};
 
 };
 

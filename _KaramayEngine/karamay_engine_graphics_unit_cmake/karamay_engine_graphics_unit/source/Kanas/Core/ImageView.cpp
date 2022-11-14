@@ -2,26 +2,7 @@
 #include "Image.h"
 #include "Device.h"
 
-Kanas::Core::ImageView::ImageView(Device& InDevice) :
-	DeviceObject(InDevice)
-{
-}
-
-Kanas::Core::ImageView::ImageView(ImageView&& Other)
-{
-}
-
-Kanas::Core::ImageView::~ImageView()
-{
-	if (IsValid())
-	{
-		vkDestroyImageView(GetDevice().GetHandle(), GetHandle(), nullptr);
-
-		ResetHandle();
-	}
-}
-
-bool Kanas::Core::ImageView::Allocate(TSharedPtr<Image> InImage, VkImageViewType InViewType, VkFormat InFormat, const VkComponentMapping& InComponents, const VkImageSubresourceRange& InSubresourceRange)
+bool Kanas::Core::FImageView::Allocate(TSharedPtr<FImage> InImage, VkImageViewType InViewType, VkFormat InFormat, const VkComponentMapping& InComponents, const VkImageSubresourceRange& InSubresourceRange)
 {
 	if (!InImage)
 	{
@@ -38,13 +19,36 @@ bool Kanas::Core::ImageView::Allocate(TSharedPtr<Image> InImage, VkImageViewType
 	ImageViewCreateInfo.components = InComponents;
 	ImageViewCreateInfo.subresourceRange = InSubresourceRange;
 
-	VkResult Result = vkCreateImageView(GetDevice().GetHandle(), &ImageViewCreateInfo, nullptr, &_Handle);
-	
+	const VkResult Result = vkCreateImageView(GetDevice().GetHandle(), &ImageViewCreateInfo, nullptr, &_Handle);
+
 	if (Result == VkResult::VK_SUCCESS)
 	{
-		Target = InImage;
+		Image = InImage;
 		return true;
 	}
 
 	return false;
 }
+
+Kanas::Core::FImageView::FImageView(FDevice& InDevice) :
+	FDeviceObject(InDevice)
+{
+}
+
+Kanas::Core::FImageView::FImageView(FImageView&& Other) :
+	FDeviceObject(Other.GetDevice())
+{
+	_Handle = Other.GetHandle();
+	Other.ResetHandle();
+}
+
+Kanas::Core::FImageView::~FImageView()
+{
+	if (IsValid())
+	{
+		vkDestroyImageView(GetDevice().GetHandle(), GetHandle(), nullptr);
+
+		ResetHandle();
+	}
+}
+

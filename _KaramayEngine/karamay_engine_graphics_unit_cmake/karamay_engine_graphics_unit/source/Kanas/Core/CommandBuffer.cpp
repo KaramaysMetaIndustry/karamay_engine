@@ -4,7 +4,7 @@
 #include "RenderPass.h"
 #include "Framebuffer.h"
 
-bool Kanas::Core::CommandBuffer::Allocate(CommandBuffeLevel InCommandBufferLevel)
+bool Kanas::Core::FCommandBuffer::Allocate(ECommandBuffeLevel InCommandBufferLevel)
 {
     VkCommandBufferAllocateInfo CommandBufferAllocateInfo;
     CommandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -22,12 +22,12 @@ bool Kanas::Core::CommandBuffer::Allocate(CommandBuffeLevel InCommandBufferLevel
     return false;
 }
 
-Kanas::Core::CommandBuffer::CommandBuffer(Device& InDevice, CommandPool& InCommandPool) :
-    DeviceObject(InDevice), Pool(InCommandPool)
+Kanas::Core::FCommandBuffer::FCommandBuffer(FDevice& InDevice,FCommandPool& InCommandPool) :
+    FDeviceObject(InDevice), Pool(InCommandPool)
 {
 }
 
-Kanas::Core::CommandBuffer::~CommandBuffer()
+Kanas::Core::FCommandBuffer::~FCommandBuffer()
 {
     if (IsValid())
     {
@@ -37,7 +37,7 @@ Kanas::Core::CommandBuffer::~CommandBuffer()
     }
 }
 
-void Kanas::Core::CommandBuffer::CmdBarrier()
+void Kanas::Core::FCommandBuffer::CmdBarrier()
 {
     VkMemoryBarrier MemoryBarriers[1] = {};
     VkBufferMemoryBarrier BufferMemoryBarriers[1] = {};
@@ -50,13 +50,13 @@ void Kanas::Core::CommandBuffer::CmdBarrier()
     vkCmdPipelineBarrier(GetHandle(), InSrcStageMask, InDstStageMask, DependencyFlags, 1, MemoryBarriers, 1, BufferMemoryBarriers, 1, ImageMemoryBarriers);
 }
 
-void Kanas::Core::CommandBuffer::CmdExecute()
+void Kanas::Core::FCommandBuffer::CmdExecute()
 {
     VkCommandBuffer CommandBufferHandles[] = { GetHandle() };
     vkCmdExecuteCommands(GetHandle(), 1, CommandBufferHandles);
 }
 
-void Kanas::Core::CommandBuffer::CmdPush(RenderPass* InRenderPass, uint32 InSubpassIndex, bool InOcclusionQueryEnable, VkQueryControlFlags InQueryControlFlags, VkQueryPipelineStatisticFlags InQueryPipelineStatisticFlags)
+void Kanas::Core::FCommandBuffer::CmdPush(FRenderPass* InRenderPass, uint32 InSubpassIndex, bool InOcclusionQueryEnable, VkQueryControlFlags InQueryControlFlags, VkQueryPipelineStatisticFlags InQueryPipelineStatisticFlags)
 {
     if (!InRenderPass)
     {
@@ -88,12 +88,12 @@ void Kanas::Core::CommandBuffer::CmdPush(RenderPass* InRenderPass, uint32 InSubp
     Result = vkEndCommandBuffer(GetHandle());
 }
 
-VkResult Kanas::Core::CommandBuffer::Reset(VkCommandBufferResetFlags InResetFlags)
+VkResult Kanas::Core::FCommandBuffer::Reset(VkCommandBufferResetFlags InResetFlags)
 {
     return vkResetCommandBuffer(GetHandle(), InResetFlags);
 }
 
-Kanas::Core::CommandPool& Kanas::Core::CommandBuffer::GetPool()
+Kanas::Core::FCommandPool& Kanas::Core::FCommandBuffer::GetPool()
 {
     return Pool;
 }

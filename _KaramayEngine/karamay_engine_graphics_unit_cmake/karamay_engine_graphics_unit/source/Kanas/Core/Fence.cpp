@@ -1,12 +1,12 @@
 #include "Fence.h"
 #include "Device.h"
 
-Kanas::Core::Fence::Fence(Device& InDevice) :
-	DeviceObject(InDevice)
+Kanas::Core::FFence::FFence(FDevice& InDevice) :
+	FDeviceObject(InDevice)
 {
 }
 
-Kanas::Core::Fence::~Fence()
+Kanas::Core::FFence::~FFence()
 {
 	if (IsValid())
 	{
@@ -16,7 +16,7 @@ Kanas::Core::Fence::~Fence()
 	}
 }
 
-bool Kanas::Core::Fence::Allocate(bool IsSignaled)
+bool Kanas::Core::FFence::Allocate(bool IsSignaled)
 {
 	VkFenceCreateInfo FenceCreateInfo;
 	FenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
@@ -33,38 +33,38 @@ bool Kanas::Core::Fence::Allocate(bool IsSignaled)
 	return false;
 }
 
-bool Kanas::Core::Fence::Wait(uint64 InTimeoutInNs)
+bool Kanas::Core::FFence::Wait(uint64 InTimeoutInNs)
 {
 	// VK_SUCCESS VK_TIMEOUT VK_ERROR_DEVICE_LOST
 	const VkResult Result = vkWaitForFences(GetDevice().GetHandle(), 1, &_Handle, true, InTimeoutInNs);
 	return Result == VkResult::VK_SUCCESS;
 }
 
-VkResult Kanas::Core::Fence::GetStatus()
+VkResult Kanas::Core::FFence::GetStatus()
 {
 	return vkGetFenceStatus(GetDevice().GetHandle(), GetHandle());
 }
 
-void Kanas::Core::Fence::Reset()
+void Kanas::Core::FFence::Reset()
 {
 	vkResetFences(GetDevice().GetHandle(), 1, &_Handle);
 }
 
-bool Kanas::Core::Fence::IsSignaled()
+bool Kanas::Core::FFence::IsSignaled()
 {
 	// VK_SUCCESS VK_NOT_READY VK_ERROR_DEVICE_LOST
 	return GetStatus() == VkResult::VK_SUCCESS;
 }
 
-void Kanas::Core::TransientFenceGroup::Reset()
+void Kanas::Core::FTransientFenceGroup::Reset()
 {
 }
 
-bool Kanas::Core::TransientFenceGroup::Wait(bool InWaitAll, uint64 InTimeoutInMs)
+bool Kanas::Core::FTransientFenceGroup::Wait(bool InWaitAll, uint64 InTimeoutInMs)
 {
 	if (Fences.size() > 0)
 	{
-		Device& TheDevice = Fences[0]->GetDevice();
+		FDevice& TheDevice = Fences[0]->GetDevice();
 
 		std::vector<VkFence> FenceHandles;
 

@@ -5,9 +5,9 @@
 
 _KANAS_CORE_BEGIN
 
-class QueuePool;
-class Fence;
-class CommandBuffer;
+class FQueuePool;
+class FFence;
+class FCommandBuffer;
 
 struct SubmissionBatch
 {
@@ -24,33 +24,33 @@ struct BindSpareInfo
 
 };
 
-class Queue final : public DeviceObject<VkQueue>
+class FQueue final : public FDeviceObject<VkQueue>
 {
-	friend class Device;
+	friend class FDevice;
 
 	bool Allocate(uint32 InQueueFamilyIndex, uint32 InQueueIndex);
 
 public:
 
-	Queue(Device& InDevice);
+	FQueue(FDevice& InDevice);
 
-	virtual ~Queue() override;
+	virtual ~FQueue() override;
 
-	void BindSpare(const std::vector<BindSpareInfo>& InBindSparseInfos, Fence* InFence = nullptr);
+	void BindSpare(const std::vector<BindSpareInfo>& InBindSparseInfos, FFence* InFence = nullptr);
 
 	void WaitIdle();
 
-	void Submit(const std::vector<SubmissionBatch>& InBatches, Fence* InFence = nullptr);
+	void Submit(const std::vector<SubmissionBatch>& InBatches, FFence* InFence = nullptr);
 
 	void PresetKHR(const VkPresentInfoKHR& InPresentInfo);
 
-	QueuePool* GetOwner() const;
+	FQueuePool* GetOwner() const;
 
 	uint32 GetFamilyIndex() const { return QueueFamilyIndex; }
 
 private:
 
-	QueuePool* Owner{ nullptr };
+	FQueuePool* Owner{ nullptr };
 
 	friend TransientQueueGroup;
 

@@ -5,18 +5,38 @@
 
 _KANAS_CORE_BEGIN
 
-class DeviceMemory final : public DeviceObject<VkDeviceMemory>
+struct MemoryHeapDescription
 {
-	friend class Image;
-	friend class Buffer;
+	bool IsDeviceLocal;
+	bool IsHostVisible;
+	bool IsHostCoherent;
+	bool IsHostCached;
+	bool IsLazilyAllocated;
+	bool IsProtected;
+};
+
+struct MemoryHeap
+{
+	VkDeviceSize Size;
+
+	bool IsDeviceLocal;
+	bool IsMultiInstance;
+
+	TVector<MemoryHeapDescription> Descriptions;
+};
+
+class FDeviceMemory final : public FDeviceObject<VkDeviceMemory>
+{
+	friend class FImage;
+	friend class FBuffer;
 
 	bool Allocate(VkDeviceSize InAllocSize, uint32 InMemTypeIndex);
 
 public:
 
-	DeviceMemory(Device& InDevice);
+	FDeviceMemory(FDevice& InDevice);
 
-	virtual ~DeviceMemory() override;
+	virtual ~FDeviceMemory() override;
 
 private:
 
@@ -25,6 +45,25 @@ private:
 	void HandleMemory(uint64 InOffset, uint64 InSize, const DeviceMemoryHandler& InHandler, VkMemoryMapFlags InFlags);
 
 };
+
+
+class FDeviceMemoryHeap
+{
+
+};
+
+class FDeviceMemoryStack
+{
+
+};
+
+class FDeviceMemoryBlock
+{
+	uint64 Offset;
+	uint32 Size;
+	TSharedPtr<FDeviceMemoryHeap> Heap;
+};
+
 
 _KANAS_CORE_END
 

@@ -3,8 +3,8 @@
 #include "Device.h"
 #include "PhysicalDevice.h"
 
-Kanas::Core::CommandPool::CommandPool(Device& InDevice) :
-    DeviceObject(InDevice)
+Kanas::Core::FCommandPool::FCommandPool(FDevice& InDevice) :
+    FDeviceObject(InDevice)
 {
     std::vector<VkQueueFamilyProperties> QueueFamilyProperties;
     GetDevice().GetPhysicalDevice().GetQueueFamilyProperties(QueueFamilyProperties);
@@ -14,7 +14,7 @@ Kanas::Core::CommandPool::CommandPool(Device& InDevice) :
 
 }
 
-Kanas::Core::CommandPool::~CommandPool()
+Kanas::Core::FCommandPool::~FCommandPool()
 {
     if (IsValid())
     {
@@ -24,7 +24,7 @@ Kanas::Core::CommandPool::~CommandPool()
     }
 }
 
-bool Kanas::Core::CommandPool::Allocate(uint32 InQueueFamilyIndex, bool bInTransientBuffer, bool bInCanBufferResetSelf)
+bool Kanas::Core::FCommandPool::Allocate(uint32 InQueueFamilyIndex, bool bInTransientBuffer, bool bInCanBufferResetSelf)
 {
     VkCommandPoolCreateFlags CommandPoolCreateFlags = 0;
 
@@ -55,17 +55,17 @@ bool Kanas::Core::CommandPool::Allocate(uint32 InQueueFamilyIndex, bool bInTrans
     return false;
 }
 
-bool Kanas::Core::CommandPool::CanBufferReset() const
+bool Kanas::Core::FCommandPool::CanBufferReset() const
 {
     return bCanBufferResetSelf;
 }
 
-bool Kanas::Core::CommandPool::IsTransientBuffer() const
+bool Kanas::Core::FCommandPool::IsTransientBuffer() const
 {
     return bTransientBuffer;
 }
 
-VkResult Kanas::Core::CommandPool::Reset(bool bInRecycle)
+VkResult Kanas::Core::FCommandPool::Reset(bool bInRecycle)
 {
     VkCommandPoolResetFlags CommandPoolResetFlags = 0;
     
@@ -77,9 +77,9 @@ VkResult Kanas::Core::CommandPool::Reset(bool bInRecycle)
     return vkResetCommandPool(GetDevice().GetHandle(), GetHandle(), CommandPoolResetFlags);
 }
 
-Kanas::Core::CommandBuffer* Kanas::Core::CommandPool::CreateCmdBuffer(VkCommandBufferLevel InCmdBufferLevel)
+Kanas::Core::FCommandBuffer* Kanas::Core::FCommandPool::CreateCmdBuffer(VkCommandBufferLevel InCmdBufferLevel)
 {
-    const auto NewCmdBuffer = std::make_unique<CommandBuffer>(GetDevice(), *this);
+    const auto NewCmdBuffer = std::make_unique<FCommandBuffer>(GetDevice(), *this);
 
     if (NewCmdBuffer && NewCmdBuffer->Allocate(InCmdBufferLevel))
     {
@@ -90,7 +90,7 @@ Kanas::Core::CommandBuffer* Kanas::Core::CommandPool::CreateCmdBuffer(VkCommandB
     return nullptr;
 }
 
-void Kanas::Core::CommandPool::ReleaseCmdBuffer(CommandBuffer* InCmdBufferToRelease)
+void Kanas::Core::FCommandPool::ReleaseCmdBuffer(FCommandBuffer* InCmdBufferToRelease)
 {
     if (InCmdBufferToRelease)
     {

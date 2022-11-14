@@ -6,26 +6,28 @@
 
 _KANAS_CORE_BEGIN
 
-class Image;
+class FImage;
 
-class ImageView final : public DeviceObject<VkImageView>
+class FImageView final : public FDeviceObject<VkImageView>
 {
+	friend class FImage;
+
+	bool Allocate(TSharedPtr<FImage> InImage, VkImageViewType InViewType, VkFormat InFormat, const VkComponentMapping& InComponents, const VkImageSubresourceRange& InSubresourceRange);
+
 public:
 	
-	ImageView(Device& InDevice);
+	FImageView(FDevice& InDevice);
 
-	ImageView(const ImageView& Other) = delete;
-	ImageView(ImageView&& Other);
+	FImageView(const FImageView& Other) = delete;
+	FImageView(FImageView&& Other);
 
-	ImageView& operator=(const ImageView& Other) = delete;
+	FImageView& operator=(const FImageView& Other) = delete;
 
-	virtual ~ImageView() override;
-
-	bool Allocate(TSharedPtr<Image> InImage, VkImageViewType InViewType, VkFormat InFormat, const VkComponentMapping& InComponents, const VkImageSubresourceRange& InSubresourceRange);
+	virtual ~FImageView() override;
 
 private:
 
-	TSharedPtr<Image> Target;
+	TSharedPtr<FImage> Image{};
 
 };
 

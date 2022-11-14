@@ -5,19 +5,10 @@
 
 _KANAS_CORE_BEGIN
 
-class CommandPool;
-class RenderPass;
+class FCommandPool;
+class FRenderPass;
 
-
-namespace CommandList
-{
-	void CmdCopyBuffer();
-
-	void CmdCopyImage();
-	
-};
-
-enum class CommandBufferState : uint8
+enum class ECommandBufferState : uint8
 {
 	Initial,
 	Recording,
@@ -26,42 +17,42 @@ enum class CommandBufferState : uint8
 	Invalid
 };
 
-enum class CommandBuffeLevel
+enum class ECommandBuffeLevel
 {
 	Primary = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
 	Secondary = VK_COMMAND_BUFFER_LEVEL_SECONDARY
 };
 
-class CommandBuffer : public DeviceObject<VkCommandBuffer>
+class FCommandBuffer : public FDeviceObject<VkCommandBuffer>
 {
 
-	friend class CommandPool;
+	friend class FCommandPool;
 
-	bool Allocate(CommandBuffeLevel InCommandBufferLevel);
+	bool Allocate(ECommandBuffeLevel InCommandBufferLevel);
 
-	CommandBufferState State;
+	ECommandBufferState State;
 
 public:
 
-	CommandBuffer(Device& InDevice, CommandPool& InCommandPool);
+	FCommandBuffer(FDevice& InDevice, FCommandBuffer& InCommandPool);
 
-	virtual ~CommandBuffer() override;
+	virtual ~FCommandBuffer() override;
 
 	void CmdBarrier();
 
 	void CmdExecute();
 
-	void CmdPush(RenderPass* InRenderPass, uint32 InSubpassIndex, bool InOcclusionQueryEnable, VkQueryControlFlags InQueryControlFlags, VkQueryPipelineStatisticFlags InQueryPipelineStatisticFlags);
+	void CmdPush(FRenderPass* InRenderPass, uint32 InSubpassIndex, bool InOcclusionQueryEnable, VkQueryControlFlags InQueryControlFlags, VkQueryPipelineStatisticFlags InQueryPipelineStatisticFlags);
 
 	VkResult Reset(VkCommandBufferResetFlags InResetFlags);
 
-	CommandPool& GetPool();
+	FCommandPool& GetPool();
 
-	CommandBufferState GetState() const { return State; }
+	ECommandBufferState GetState() const { return State; }
 
 private:
 
-	CommandPool& Pool;
+	FCommandPool& Pool;
 
 public:
 	

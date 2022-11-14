@@ -8,7 +8,7 @@
 #include "Buffer.h"
 #include "Image.h"
 
-bool Kanas::Core::Device::Allocate()
+bool Kanas::Core::FDevice::Allocate()
 {
     VkDeviceCreateFlags DeviceCreateFlags;
 
@@ -31,7 +31,7 @@ bool Kanas::Core::Device::Allocate()
             QueueCreateFlags |= VK_DEVICE_QUEUE_CREATE_PROTECTED_BIT;
         }
 
-        VkDeviceQueueCreateInfo QueueCreateInfo;
+        VkDeviceQueueCreateInfo QueueCreateInfo{};
         QueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
         QueueCreateInfo.pNext = nullptr;
         QueueCreateInfo.flags = QueueCreateFlags;
@@ -70,31 +70,33 @@ bool Kanas::Core::Device::Allocate()
     return false;
 }
 
-Kanas::Core::Device::Device(PhysicalDevice& InPhysicalDevice) :
+Kanas::Core::FDevice::FDevice(FPhysicalDevice& InPhysicalDevice) :
     GPU(InPhysicalDevice)
 {
 }
 
-Kanas::Core::Device::~Device()
+Kanas::Core::FDevice::~FDevice()
 {
 
 }
 
-Kanas::Core::TSharedPtr<Kanas::Core::Queue> Kanas::Core::Device::GetQueue(uint32 InQueueFamilyIndex, uint32 InQueueIndex)
+Kanas::Core::TSharedPtr<Kanas::Core::FQueue> Kanas::Core::FDevice::GetQueue(uint32 InQueueFamilyIndex, uint32 InQueueIndex)
 {
-    TSharedPtr<Queue> NewQueue = MakeShared<Queue>(*this);
+    TSharedPtr<FQueue> NewQueue = MakeShared<FQueue>(*this);
+
     if (NewQueue && NewQueue->Allocate(InQueueFamilyIndex, InQueueIndex))
     {
         return NewQueue;
     }
+
     return nullptr;
 }
 
-Kanas::Core::TSharedPtr<Kanas::Core::Buffer> Kanas::Core::Device::CreateBuffer(VkDeviceSize InSize, VkBufferUsageFlags InUsageFlags, VkSharingMode InSharingMode)
+Kanas::Core::TSharedPtr<Kanas::Core::FBuffer> Kanas::Core::FDevice::CreateBuffer(uint64 InSize, FBufferUsage Usage, TSharedPtr<FConcurrentGuide> ConcurrentGuide)
 {
-    TSharedPtr<Buffer> NewBuffer = MakeShared<Buffer>(*this);
+    TSharedPtr<FBuffer> NewBuffer = MakeShared<FBuffer>(*this);
     
-    if (NewBuffer && NewBuffer->Allocate(InSize, InUsageFlags, InSharingMode))
+    if (NewBuffer && NewBuffer->Allocate(InSize, Usage, ConcurrentGuide))
     {
         return NewBuffer;
     }
@@ -102,9 +104,9 @@ Kanas::Core::TSharedPtr<Kanas::Core::Buffer> Kanas::Core::Device::CreateBuffer(V
     return nullptr;
 }
 
-Kanas::Core::Fence* Kanas::Core::Device::CreateFence(bool IsDefaultSignaled)
+Kanas::Core::TSharedPtr<Kanas::Core::FFence> Kanas::Core::FDevice::CreateFence(bool IsDefaultSignaled)
 {
-    Fence* NewFence = new Fence(*this);
+    const TSharedPtr<FFence> NewFence = MakeShared<FFence>(*this);
 
     if (NewFence && NewFence->Allocate(IsDefaultSignaled))
     {
@@ -114,7 +116,7 @@ Kanas::Core::Fence* Kanas::Core::Device::CreateFence(bool IsDefaultSignaled)
     return nullptr;
 }
 
-Kanas::Core::Semaphore* Kanas::Core::Device::CreateSemaphore()
+Kanas::Core::TSharedPtr<Kanas::Core::FSemaphore> Kanas::Core::FDevice::CreateSemaphore()
 {
     Semaphore* NewSemaphore = new Semaphore(*this);
     
@@ -126,23 +128,20 @@ Kanas::Core::Semaphore* Kanas::Core::Device::CreateSemaphore()
     return nullptr;
 }
 
-void Kanas::Core::Device::Test()
+void Kanas::Core::FDevice::Test()
 {
-    auto TransferQueue = GetQueue(0, 0);
-    auto GraphicsQueue = GetQueue(1, 0);
+    TSharedPtr<FQueue> TransferQueue = GetQueue(0, 0);
+    TSharedPtr<FQueue> GraphicsQueue = GetQueue(1, 0);
 
-    CommandBuffer* CmdBuffer = nullptr;
+    TVector<TSharedPtr<FSemaphore>> WaitSemaphores;
+    TVector<VkPipelineStageFlags> WaitDstStageMasks;
 
-    std::vector<Semaphore*> WaitSemaphores;
-    std::vector<VkPipelineStageFlags> WaitDstStageMasks;
+    TVector<TSharedPtr<FCommandBuffer>> CmdBuffers;
 
-    std::vector<Semaphore*> SignalSemaphores;
-    std::vector<CommandBuffer*> CmdBuffers;
+    TVector<TSharedPtr<FQueue>> Queues{ TransferQueue, GraphicsQueue };
 
-    Fence* NewFence = CreateFence();
-    Semaphore* NewSemaphore = CreateSemaphore();
-
-    VkSemaphoreSignalInfo SemaphoreSignalInfo;
-    VkBindSparseInfo BindSpareInfo;
+    auto ConcurrentGuide = MakeShared<FConcurrentGuide>(Queues);
+    
+    auto NewBuffer = CreateBuffer(1024, FBufferUsage().UniformBuffer().TransferSrc().TransferDst(), ConcurrentGuide);
 
 }

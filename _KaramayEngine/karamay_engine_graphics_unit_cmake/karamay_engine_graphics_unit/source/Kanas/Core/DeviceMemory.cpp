@@ -1,12 +1,13 @@
 #include "DeviceMemory.h"
 #include "Device.h"
+#include "PhysicalDevice.h"
 
-Kanas::Core::DeviceMemory::DeviceMemory(Device& InDevice) :
-	DeviceObject(InDevice)
+Kanas::Core::FDeviceMemory::FDeviceMemory(FDevice& InDevice) :
+	FDeviceObject(InDevice)
 {
 }
 
-Kanas::Core::DeviceMemory::~DeviceMemory()
+Kanas::Core::FDeviceMemory::~FDeviceMemory()
 {
 	if (IsValid())
 	{
@@ -16,9 +17,9 @@ Kanas::Core::DeviceMemory::~DeviceMemory()
 	}
 }
 
-bool Kanas::Core::DeviceMemory::Allocate(VkDeviceSize InAllocSize, uint32 InMemTypeIndex)
+bool Kanas::Core::FDeviceMemory::Allocate(VkDeviceSize InAllocSize, uint32 InMemTypeIndex)
 {
-	VkMemoryAllocateInfo MemoryAllocateInfo;
+	VkMemoryAllocateInfo MemoryAllocateInfo{};
 	MemoryAllocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 	MemoryAllocateInfo.pNext = nullptr;
 	MemoryAllocateInfo.allocationSize = InAllocSize;
@@ -34,7 +35,7 @@ bool Kanas::Core::DeviceMemory::Allocate(VkDeviceSize InAllocSize, uint32 InMemT
 	return false;
 }
 
-void Kanas::Core::DeviceMemory::HandleMemory(uint64 InOffset, uint64 InSize, const DeviceMemoryHandler& InHandler, VkMemoryMapFlags InFlags)
+void Kanas::Core::FDeviceMemory::HandleMemory(uint64 InOffset, uint64 InSize, const DeviceMemoryHandler& InHandler, VkMemoryMapFlags InFlags)
 {
 	void* Data = nullptr;
 

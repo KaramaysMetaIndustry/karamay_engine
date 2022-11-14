@@ -9,12 +9,12 @@ _KANAS_CORE_BEGIN
 * Queue Submit
 * Queue BindSpare
 */
-class Fence final : public DeviceObject<VkFence>
+class FFence final : public FDeviceObject<VkFence>
 {
 private:
 
-	friend class Device;
-	friend class TransientFenceGroup;
+	friend class FDevice;
+	friend class FTransientFenceGroup;
 
 	bool Allocate(bool IsSignaled);
 
@@ -22,9 +22,9 @@ private:
 
 public:
 
-	Fence(Device& InDevice);
+	FFence(FDevice& InDevice);
 
-	virtual ~Fence() override;
+	virtual ~FFence() override;
 
 	/** Block current thread until GPU has signaled this fence or timeout.
 	* @param InTimeoutInNs 
@@ -44,13 +44,13 @@ public:
 
 };
 
-struct TransientFenceGroup
+struct FTransientFenceGroup
 {
 	void Reset();
 
 	bool Wait(bool InWaitAll, uint64 InTimeoutInMs);
 
-	std::vector<Fence*> Fences;
+	TVector<FFence*> Fences;
 };
 
 _KANAS_CORE_END

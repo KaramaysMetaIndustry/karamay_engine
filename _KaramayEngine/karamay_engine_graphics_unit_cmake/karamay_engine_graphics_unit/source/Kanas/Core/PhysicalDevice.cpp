@@ -2,32 +2,50 @@
 #include "Device.h"
 #include "VulkanInstance.h"
 
-Kanas::Core::PhysicalDevice::PhysicalDevice(VulkanInstance& InInstance, VkPhysicalDevice InHandle) :
+Kanas::Core::FPhysicalDevice::FPhysicalDevice(VulkanInstance& InInstance, VkPhysicalDevice InHandle) :
 	Instance(InInstance)
 {
 	_Handle = InHandle;
 }
 
-Kanas::Core::PhysicalDevice::~PhysicalDevice()
+Kanas::Core::FPhysicalDevice::~FPhysicalDevice()
 {
 }
 
-void Kanas::Core::PhysicalDevice::GetFeatures(VkPhysicalDeviceFeatures& OutFeatures)
+void Kanas::Core::FPhysicalDevice::GetFeatures(VkPhysicalDeviceFeatures& OutFeatures)
 {
 	vkGetPhysicalDeviceFeatures(GetHandle(), &OutFeatures);
 }
 
-void Kanas::Core::PhysicalDevice::GetProperties(VkPhysicalDeviceProperties& OutProperties)
+void Kanas::Core::FPhysicalDevice::GetProperties(VkPhysicalDeviceProperties& OutProperties)
 {
 	vkGetPhysicalDeviceProperties(GetHandle(), &OutProperties);
 }
 
-void Kanas::Core::PhysicalDevice::GetMemoryProperties(VkPhysicalDeviceMemoryProperties& OutMemoryProperties)
+void Kanas::Core::FPhysicalDevice::GetMemoryProperties(VkPhysicalDeviceMemoryProperties& OutMemoryProperties)
 {
 	vkGetPhysicalDeviceMemoryProperties(GetHandle(), &OutMemoryProperties);
+
+	VK_MAX_MEMORY_HEAPS;
+	OutMemoryProperties.memoryHeaps[0].size;
+	OutMemoryProperties.memoryHeaps[0].flags;
+	VK_MAX_MEMORY_TYPES;
+	OutMemoryProperties.memoryTypes[0].heapIndex;
+	OutMemoryProperties.memoryTypes[0].propertyFlags;
+
+	VK_MEMORY_HEAP_DEVICE_LOCAL_BIT; // DeviceLocal
+	VK_MEMORY_HEAP_MULTI_INSTANCE_BIT; // MultiInstance
+
+	struct FMemoryHeap
+	{
+		uint32 HeapIndex;
+		uint64 HeapSize;
+		TVector<FMemoryProperty> Properties;
+	};
+
 }
 
-void Kanas::Core::PhysicalDevice::GetQueueFamilyProperties(std::vector<VkQueueFamilyProperties>& OutQueueFamilyProperties)
+void Kanas::Core::FPhysicalDevice::GetQueueFamilyProperties(std::vector<VkQueueFamilyProperties>& OutQueueFamilyProperties)
 {
 	uint32 Count = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(GetHandle(), &Count, nullptr);
@@ -36,7 +54,7 @@ void Kanas::Core::PhysicalDevice::GetQueueFamilyProperties(std::vector<VkQueueFa
 	vkGetPhysicalDeviceQueueFamilyProperties(GetHandle(), nullptr, OutQueueFamilyProperties.data());
 }
 
-void Kanas::Core::PhysicalDevice::EnumerateExtensionProperties(const std::string& PlayerName, std::vector<VkExtensionProperties>& OutExtensionProperties)
+void Kanas::Core::FPhysicalDevice::EnumerateExtensionProperties(const std::string& PlayerName, std::vector<VkExtensionProperties>& OutExtensionProperties)
 {
 	uint32 Count = 0;
 	vkEnumerateDeviceExtensionProperties(GetHandle(), PlayerName .c_str(), & Count, nullptr);
@@ -48,7 +66,7 @@ void Kanas::Core::PhysicalDevice::EnumerateExtensionProperties(const std::string
 	}
 }
 
-void Kanas::Core::PhysicalDevice::EnumerateLayerProperties(std::vector<VkLayerProperties>& OutLayerProperties)
+void Kanas::Core::FPhysicalDevice::EnumerateLayerProperties(std::vector<VkLayerProperties>& OutLayerProperties)
 {
 	uint32 Count = 0;
 	vkEnumerateDeviceLayerProperties(GetHandle(), &Count, nullptr);
@@ -60,7 +78,7 @@ void Kanas::Core::PhysicalDevice::EnumerateLayerProperties(std::vector<VkLayerPr
 	}
 }
 
-Kanas::Core::Device* Kanas::Core::PhysicalDevice::CreateDevice()
+Kanas::Core::FDevice* Kanas::Core::FPhysicalDevice::CreateDevice()
 {
 	auto NewDevice = std::make_unique<Device>(*this);
 
@@ -73,7 +91,7 @@ Kanas::Core::Device* Kanas::Core::PhysicalDevice::CreateDevice()
 	return nullptr;
 }
 
-void Kanas::Core::PhysicalDevice::DeleteDevice(Device* InDeviceToDelete)
+void Kanas::Core::FPhysicalDevice::DeleteDevice(Device* InDeviceToDelete)
 {
 	if (InDeviceToDelete)
 	{
@@ -88,7 +106,7 @@ void Kanas::Core::PhysicalDevice::DeleteDevice(Device* InDeviceToDelete)
 	}
 }
 
-void Kanas::Core::PhysicalDevice::GetDevices(TVector<Device*>& OutDevices)
+void Kanas::Core::FPhysicalDevice::GetDevices(TVector<FDevice*>& OutDevices)
 {
 	OutDevices.reserve(Devices.size());
 

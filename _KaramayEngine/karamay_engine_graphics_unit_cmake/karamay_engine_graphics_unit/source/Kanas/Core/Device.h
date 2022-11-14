@@ -5,61 +5,57 @@
 
 _KANAS_CORE_BEGIN
 
-class PhysicalDevice;
+class FPhysicalDevice;
 
-class DeviceMemory;
-class Buffer;
-class Image;
-class CommandPool;
-class DescriptorPool;
-class DescriptorSetLayout;
-class Event;
-class Fence;
-class Framebuffer;
-class PipelineCache;
-class PipelineLayout;
-class Queue;
-class RenderPass;
-class Sampler;
-class Semaphore;
-class ShaderModule;
+class FDeviceMemory;
+class FBuffer;
+class FImage;
+class FCommandPool;
+class FDescriptorPool;
+class FDescriptorSetLayout;
+class FEvent;
+class FFence;
+class FFramebuffer;
+class FPipelineCache;
+class FPipelineLayout;
+class FQueue;
+class FRenderPass;
+class FSampler;
+class FSemaphore;
+class FShaderModule;
 
-class Device final : public VulkanObject<VkDevice>
+class FDevice final : public VulkanObject<VkDevice>
 {
-	friend class PhysicalDevice;
+	friend class FPhysicalDevice;
 
 	bool Allocate();
 
 public:
-	Device(PhysicalDevice& InPhysicalDevice);
+	FDevice(FPhysicalDevice& InPhysicalDevice);
 
-	virtual ~Device() override;
+	virtual ~FDevice() override;
 
-	TSharedPtr<Queue> GetQueue(uint32 InQueueFamilyIndex, uint32 InQueueIndex);
-	TSharedPtr<Buffer> CreateBuffer(VkDeviceSize InSize, VkBufferUsageFlags InUsageFlags, VkSharingMode InSharingMode);
-	TSharedPtr<Image> CreateImage();
-	CommandPool* CreateCommandPool();
-	DescriptorPool* CreateDescriptorPool();
-	Fence* CreateFence(bool IsDefaultSignaled = false);
-	Semaphore* CreateSemaphore();
-	Event* CreateEvent();
-	Framebuffer* CreateFramebuffer();
-	PipelineCache* CreatePipelineCache();
-	PipelineLayout* CreatePipelineLayout();
-	RenderPass* CreateRenderPass();
-	Sampler* CreateSampler();
+	TSharedPtr<FQueue> GetQueue(uint32 InQueueFamilyIndex, uint32 InQueueIndex);
+	TSharedPtr<FBuffer> CreateBuffer(uint64 InSize, FBufferUsage Usage, TSharedPtr<FConcurrentGuide> ConcurrentGuide = nullptr);
+	TSharedPtr<FImage> CreateImage();
+	FCommandPool* CreateCommandPool();
+	FDescriptorPool* CreateDescriptorPool();
+	TSharedPtr<FFence> CreateFence(bool IsDefaultSignaled = false);
+	TSharedPtr<FSemaphore> CreateSemaphore();
+	TSharedPtr<FEvent> CreateEvent();
+	TSharedPtr<FFramebuffer> CreateFramebuffer();
+	FPipelineCache* CreatePipelineCache();
+	FPipelineLayout* CreatePipelineLayout();
+	TSharedPtr<FRenderPass> CreateRenderPass();
+	TSharedPtr<FSampler> CreateSampler();
 	
-	ShaderModule* CreateShaderModule();
+	TSharedPtr<FShaderModule> CreateShaderModule();
 
-	PhysicalDevice& GetPhysicalDevice() const { return GPU; }
+	FPhysicalDevice& GetPhysicalDevice() const { return GPU; }
 
 private:
 
-	PhysicalDevice& GPU;
-
-	std::vector<Queue*> TransferQueues;
-	std::vector<Queue*> GraphicsQueues;
-	std::vector<Queue*> ComputeQueues;
+	FPhysicalDevice& GPU;
 	
 	void Test();
 
