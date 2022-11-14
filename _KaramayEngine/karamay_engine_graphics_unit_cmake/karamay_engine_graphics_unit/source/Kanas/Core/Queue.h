@@ -46,11 +46,15 @@ public:
 
 	QueuePool* GetOwner() const;
 
+	uint32 GetFamilyIndex() const { return QueueFamilyIndex; }
+
 private:
 
 	QueuePool* Owner{ nullptr };
 
 	friend TransientQueueGroup;
+
+	uint32 QueueFamilyIndex;
 
 };
 

@@ -5,6 +5,8 @@
 #include "Semaphore.h"
 #include "CommandBuffer.h"
 #include "DeviceMemory.h"
+#include "Buffer.h"
+#include "Image.h"
 
 bool Kanas::Core::Device::Allocate()
 {
@@ -78,9 +80,9 @@ Kanas::Core::Device::~Device()
 
 }
 
-Kanas::Core::Queue* Kanas::Core::Device::GetQueue(uint32 InQueueFamilyIndex, uint32 InQueueIndex)
+Kanas::Core::TSharedPtr<Kanas::Core::Queue> Kanas::Core::Device::GetQueue(uint32 InQueueFamilyIndex, uint32 InQueueIndex)
 {
-    Queue* NewQueue = new Queue(*this);
+    TSharedPtr<Queue> NewQueue = MakeShared<Queue>(*this);
     if (NewQueue && NewQueue->Allocate(InQueueFamilyIndex, InQueueIndex))
     {
         return NewQueue;
@@ -88,13 +90,15 @@ Kanas::Core::Queue* Kanas::Core::Device::GetQueue(uint32 InQueueFamilyIndex, uin
     return nullptr;
 }
 
-Kanas::Core::DeviceMemory* Kanas::Core::Device::CreateDeviceMemory(VkDeviceSize InAllocSize, uint32 InMemTypeIndex)
+Kanas::Core::TSharedPtr<Kanas::Core::Buffer> Kanas::Core::Device::CreateBuffer(VkDeviceSize InSize, VkBufferUsageFlags InUsageFlags, VkSharingMode InSharingMode)
 {
-    DeviceMemory* NewMem = new DeviceMemory(*this);
-    if (NewMem && NewMem->Allocate(InAllocSize, InMemTypeIndex))
+    TSharedPtr<Buffer> NewBuffer = MakeShared<Buffer>(*this);
+    
+    if (NewBuffer && NewBuffer->Allocate(InSize, InUsageFlags, InSharingMode))
     {
-        return NewMem;
+        return NewBuffer;
     }
+
     return nullptr;
 }
 
@@ -124,8 +128,8 @@ Kanas::Core::Semaphore* Kanas::Core::Device::CreateSemaphore()
 
 void Kanas::Core::Device::Test()
 {
-    Queue* TransferQueue = GetQueue(0, 0);
-    Queue* GraphicsQueue = GetQueue(1, 0);
+    auto TransferQueue = GetQueue(0, 0);
+    auto GraphicsQueue = GetQueue(1, 0);
 
     CommandBuffer* CmdBuffer = nullptr;
 

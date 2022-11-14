@@ -6,26 +6,40 @@
 #include "Image.h"
 #include "DeviceMemory.h"
 
-bool Kanas::Core::Buffer::Allocate(VkDeviceSize InSize, VkBufferUsageFlags InUsageFlags, VkSharingMode InSharingMode)
+bool Kanas::Core::Buffer::Allocate(uint64 Size, VkBufferUsageFlags UsageFlags, TSharedPtr<FConcurrentGuide> ConcurrentGuide)
 {
-
 	VkBufferUsageFlags BufferUsageFlags = 0;
-	VkBufferUsageFlagBits::VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-	VkBufferUsageFlagBits::VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
-	VkBufferUsageFlagBits::VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-
-	VkSharingMode::VK_SHARING_MODE_CONCURRENT; // concurrent
-	VkSharingMode::VK_SHARING_MODE_EXCLUSIVE; // exclusive
+	VK_BUFFER_USAGE_TRANSFER_SRC_BIT; // TransferSrc
+	VK_BUFFER_USAGE_TRANSFER_DST_BIT, // TransferDst
+		VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT, // UniformTexelBufer
+		VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT, // StorageTexelBuffer
+		VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, // UniformBuffer
+		VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, // StorageBuffer
+		VK_BUFFER_USAGE_INDEX_BUFFER_BIT, // IndexBuffer
+		VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, // VertexBuffer
+		VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT, // IndirectBuffer
+		VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT; // ShaderDeviceAddress
 
 	VkBufferCreateInfo BufferCreateInfo;
 	BufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 	BufferCreateInfo.pNext = nullptr;
 	BufferCreateInfo.flags = {} ;
-	BufferCreateInfo.size = InSize;
-	BufferCreateInfo.usage = InUsageFlags;
-	BufferCreateInfo.sharingMode = InSharingMode;
-	BufferCreateInfo.queueFamilyIndexCount = 0;
-	BufferCreateInfo.pQueueFamilyIndices = nullptr;
+	BufferCreateInfo.size = Size;
+	BufferCreateInfo.usage = UsageFlags;
+	
+	if (ConcurrentGuide && ConcurrentGuide->Queues.size())
+	{
+		TVector<uint32> QueueFamilyIndices;
+
+		BufferCreateInfo.sharingMode = VK_SHARING_MODE_CONCURRENT;
+		BufferCreateInfo.queueFamilyIndexCount = static_cast<uint32>(QueueFamilyIndices.size());
+		BufferCreateInfo.pQueueFamilyIndices = QueueFamilyIndices.data();
+	}
+	else {
+		BufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		BufferCreateInfo.queueFamilyIndexCount = 0;
+		BufferCreateInfo.pQueueFamilyIndices = nullptr;
+	}
 
 	const VkResult CreateBufferResult = vkCreateBuffer(GetDevice().GetHandle(), &BufferCreateInfo, nullptr, &_Handle);
 	
@@ -37,20 +51,18 @@ bool Kanas::Core::Buffer::Allocate(VkDeviceSize InSize, VkBufferUsageFlags InUsa
 		const uint64 MemAllocSize = MemRequirements.size;
 		const uint32 MemTypeIndex = 0;
 
-		Mem = GetDevice().CreateDeviceMemory(MemAllocSize, MemTypeIndex);
-
-		if (Mem)
+		TUniquePtr<DeviceMemory> NewMem = std::make_unique<DeviceMemory>(GetDevice());
+		if (NewMem && NewMem->Allocate(MemAllocSize, MemTypeIndex))
 		{
 			const VkResult BindBufferResult = vkBindBufferMemory(GetDevice().GetHandle(), GetHandle(), Mem->GetHandle(), 0);
 
 			if (BindBufferResult == VkResult::VK_SUCCESS)
 			{
+				Mem = std::move(NewMem);
 				return true;
 			}
 		}
 	}
-
-	Mem = nullptr;
 
 	return false;
 }
@@ -84,7 +96,6 @@ Kanas::Core::Buffer::Buffer(Device& InDevice) :
 	VkPhysicalDeviceFeatures Features;
 	GetDevice().GetPhysicalDevice().GetFeatures(Features);
 
-
 	MemProperties.memoryTypes[0].heapIndex;
 	MemProperties.memoryTypes[0].propertyFlags;
 
@@ -103,8 +114,13 @@ Kanas::Core::Buffer::Buffer(Device& InDevice) :
 
 	VkMemoryHeapFlagBits::VK_MEMORY_HEAP_DEVICE_LOCAL_BIT; // DeviceLocal
 	VkMemoryHeapFlagBits::VK_MEMORY_HEAP_MULTI_INSTANCE_BIT; // MultiInstance
+}
 
-
+Kanas::Core::Buffer::Buffer(Buffer&& Other) noexcept :
+	DeviceObject(Other.GetDevice())
+{
+	_Handle = Other.GetHandle();
+	Other.ResetHandle();
 }
 
 Kanas::Core::Buffer::~Buffer()
@@ -117,20 +133,22 @@ Kanas::Core::Buffer::~Buffer()
 	}
 }
 
-void Kanas::Core::Buffer::CmdCopy(CommandBuffer& InRecorder, Buffer& InDstBuffer, const std::vector<VkBufferCopy>& InRegions)
+void Kanas::Core::Buffer::CmdCopy(CommandBuffer& InRecorder, Buffer& InDstBuffer, const TVector<VkBufferCopy>& InRegions)
 {
 	vkCmdCopyBuffer(InRecorder.GetHandle(), GetHandle(), InDstBuffer.GetHandle(), static_cast<uint32>(InRegions.size()), InRegions.data());
 }
 
-void Kanas::Core::Buffer::CmdCopy(CommandBuffer& InRecorder, Image& InDstImage, const std::vector<VkBufferImageCopy>& InRegions)
+void Kanas::Core::Buffer::CmdCopyToImage(CommandBuffer& InRecorder, Image& InDstImage, const TVector<VkBufferImageCopy>& InRegions)
 {
-	vkCmdCopyBufferToImage(InRecorder.GetHandle(), GetHandle(), InDstImage.GetHandle(), VkImageLayout(), static_cast<uint32>(InRegions.size()), InRegions.data());
+	vkCmdCopyBufferToImage(InRecorder.GetHandle(), GetHandle(), InDstImage.GetHandle(), InDstImage.GetLayout(), static_cast<uint32>(InRegions.size()), InRegions.data());
 }
 
 void Kanas::Core::Buffer::CmdFill(CommandBuffer& InRecorder, uint64 InOffset, uint64 InSize, uint32 InData)
 {
+	vkCmdFillBuffer(InRecorder.GetHandle(), GetHandle(), InOffset, InSize, InData);
 }
 
 void Kanas::Core::Buffer::CmdUpdate(CommandBuffer& InRecorder, uint64 InOffset, uint64 InSize, void* InData)
 {
+	vkCmdUpdateBuffer(InRecorder.GetHandle(), GetHandle(), InOffset, InSize, InData);
 }

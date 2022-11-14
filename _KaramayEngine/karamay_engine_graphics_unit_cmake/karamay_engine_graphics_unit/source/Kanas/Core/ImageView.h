@@ -14,13 +14,18 @@ public:
 	
 	ImageView(Device& InDevice);
 
+	ImageView(const ImageView& Other) = delete;
+	ImageView(ImageView&& Other);
+
+	ImageView& operator=(const ImageView& Other) = delete;
+
 	virtual ~ImageView() override;
 
-	bool Allocate(Image* InImage, VkImageViewType InViewType, VkFormat InFormat, const VkComponentMapping& InComponents, const VkImageSubresourceRange& InSubresourceRange);
+	bool Allocate(TSharedPtr<Image> InImage, VkImageViewType InViewType, VkFormat InFormat, const VkComponentMapping& InComponents, const VkImageSubresourceRange& InSubresourceRange);
 
 private:
 
-	Image* Target{ nullptr };
+	TSharedPtr<Image> Target;
 
 };
 

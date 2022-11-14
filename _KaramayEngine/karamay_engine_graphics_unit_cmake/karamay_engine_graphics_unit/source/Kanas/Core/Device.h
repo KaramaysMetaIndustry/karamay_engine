@@ -35,10 +35,9 @@ public:
 
 	virtual ~Device() override;
 
-	Queue* GetQueue(uint32 InQueueFamilyIndex, uint32 InQueueIndex);
-	DeviceMemory* CreateDeviceMemory(VkDeviceSize InAllocSize, uint32 InMemTypeIndex);
-	Buffer* CreateBuffer();
-	Image* CreateImage();
+	TSharedPtr<Queue> GetQueue(uint32 InQueueFamilyIndex, uint32 InQueueIndex);
+	TSharedPtr<Buffer> CreateBuffer(VkDeviceSize InSize, VkBufferUsageFlags InUsageFlags, VkSharingMode InSharingMode);
+	TSharedPtr<Image> CreateImage();
 	CommandPool* CreateCommandPool();
 	DescriptorPool* CreateDescriptorPool();
 	Fence* CreateFence(bool IsDefaultSignaled = false);

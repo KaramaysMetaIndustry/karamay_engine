@@ -7,6 +7,10 @@ Kanas::Core::ImageView::ImageView(Device& InDevice) :
 {
 }
 
+Kanas::Core::ImageView::ImageView(ImageView&& Other)
+{
+}
+
 Kanas::Core::ImageView::~ImageView()
 {
 	if (IsValid())
@@ -17,8 +21,13 @@ Kanas::Core::ImageView::~ImageView()
 	}
 }
 
-bool Kanas::Core::ImageView::Allocate(Image* InImage, VkImageViewType InViewType, VkFormat InFormat, const VkComponentMapping& InComponents, const VkImageSubresourceRange& InSubresourceRange)
+bool Kanas::Core::ImageView::Allocate(TSharedPtr<Image> InImage, VkImageViewType InViewType, VkFormat InFormat, const VkComponentMapping& InComponents, const VkImageSubresourceRange& InSubresourceRange)
 {
+	if (!InImage)
+	{
+		return false;
+	}
+
 	VkImageViewCreateInfo ImageViewCreateInfo;
 	ImageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 	ImageViewCreateInfo.pNext = nullptr;

@@ -39,6 +39,12 @@ using TMultimap = std::multimap<K, V>;
 template<typename K, typename V>
 using TUnorderedMultimap = std::unordered_multimap<K, V>;
 
+
+template <class _Ty, class... _Types>
+TSharedPtr<_Ty> MakeShared(_Types&&... _Args) {
+	return std::make_shared<_Ty, _Types>;
+}
+
 template<typename VkHandleT>
 class VulkanObject
 {

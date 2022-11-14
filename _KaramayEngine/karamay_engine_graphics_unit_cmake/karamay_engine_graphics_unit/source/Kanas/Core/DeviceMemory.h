@@ -7,7 +7,8 @@ _KANAS_CORE_BEGIN
 
 class DeviceMemory final : public DeviceObject<VkDeviceMemory>
 {
-	friend class Device;
+	friend class Image;
+	friend class Buffer;
 
 	bool Allocate(VkDeviceSize InAllocSize, uint32 InMemTypeIndex);
 
