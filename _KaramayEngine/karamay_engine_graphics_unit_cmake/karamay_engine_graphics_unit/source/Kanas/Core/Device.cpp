@@ -3,10 +3,16 @@
 #include "Queue.h"
 #include "Fence.h"
 #include "Semaphore.h"
+#include "Event.h"
 #include "CommandBuffer.h"
 #include "DeviceMemory.h"
 #include "Buffer.h"
+#include "BufferView.h"
 #include "Image.h"
+#include "ImageView.h"
+#include "Framebuffer.h"
+#include "ShaderModule.h"
+
 
 bool Kanas::Core::FDevice::Allocate()
 {
@@ -80,7 +86,7 @@ Kanas::Core::FDevice::~FDevice()
 
 }
 
-Kanas::Core::TSharedPtr<Kanas::Core::FQueue> Kanas::Core::FDevice::GetQueue(uint32 InQueueFamilyIndex, uint32 InQueueIndex)
+TSharedPtr<Kanas::Core::FQueue> Kanas::Core::FDevice::GetQueue(uint32 InQueueFamilyIndex, uint32 InQueueIndex)
 {
     TSharedPtr<FQueue> NewQueue = MakeShared<FQueue>(*this);
 
@@ -92,19 +98,81 @@ Kanas::Core::TSharedPtr<Kanas::Core::FQueue> Kanas::Core::FDevice::GetQueue(uint
     return nullptr;
 }
 
-Kanas::Core::TSharedPtr<Kanas::Core::FBuffer> Kanas::Core::FDevice::CreateBuffer(uint64 InSize, FBufferUsage Usage, TSharedPtr<FConcurrentGuide> ConcurrentGuide)
+TSharedPtr<Kanas::Core::FBuffer> Kanas::Core::FDevice::CreateBuffer(uint64 InSize, FBufferUsage Usage, TSharedPtr<FConcurrentGuide> ConcurrentGuide)
 {
-    TSharedPtr<FBuffer> NewBuffer = MakeShared<FBuffer>(*this);
-    
-    if (NewBuffer && NewBuffer->Allocate(InSize, Usage, ConcurrentGuide))
+    if (const auto NewBuffer = MakeShared<FBuffer>(*this))
     {
-        return NewBuffer;
+        if (NewBuffer->Allocate(InSize, Usage, ConcurrentGuide))
+        {
+            return NewBuffer;
+        }
     }
 
     return nullptr;
 }
 
-Kanas::Core::TSharedPtr<Kanas::Core::FFence> Kanas::Core::FDevice::CreateFence(bool IsDefaultSignaled)
+TSharedPtr<Kanas::Core::FBufferView> Kanas::Core::FDevice::CreateBufferView(TSharedPtr<FBuffer> Buffer, VkFormat Format, VkDeviceSize Offset, VkDeviceSize Range)
+{
+    if (const auto NewBufferView = MakeShared<FBufferView>(*this))
+    {
+        if (NewBufferView->Allocate(Buffer, Format, Offset, Range))
+        {
+            return NewBufferView;
+        }
+    }
+
+    return nullptr;
+}
+
+TSharedPtr<Kanas::Core::FImage > Kanas::Core::FDevice::CreateImage()
+{
+    if (const auto NewImage = MakeShared<FImage>(*this))
+    {
+        if (NewImage->Allocate())
+        {
+            return NewImage;
+        }
+    }
+    
+    return nullptr;
+}
+
+TSharedPtr<Kanas::Core::FImageView> Kanas::Core::FDevice::CreateImageView(TSharedPtr<FImage> Image, VkImageViewType InViewType, VkFormat InFormat, const VkComponentMapping& InComponents, const VkImageSubresourceRange& InSubresourceRange)
+{
+    if (const auto NewImageView = MakeShared<FImageView>(*this))
+    {
+        if (NewImageView->Allocate(Image, InViewType, InFormat, InComponents, InSubresourceRange))
+        {
+            return NewImageView;
+        }
+    }
+
+    return nullptr;
+}
+
+TSharedPtr<Kanas::Core::FFramebuffer> Kanas::Core::FDevice::CreateFramebuffer()
+{
+    if (const auto NewFramebuffer = MakeShared<FFramebuffer>(*this))
+    {
+        if (NewFramebuffer->Allocate())
+        {
+            return NewFramebuffer;
+        }
+
+    }
+    return nullptr;
+}
+
+TSharedPtr<Kanas::Core::FShaderModule> Kanas::Core::FDevice::CreateShaderModule()
+{
+    if (const auto NewShaderModule = MakeShared<FShaderModule>(*this))
+    {
+        if(NewShaderModule->)
+    }
+    return TSharedPtr<FShaderModule>();
+}
+
+TSharedPtr<Kanas::Core::FFence> Kanas::Core::FDevice::CreateFence(bool IsDefaultSignaled)
 {
     const TSharedPtr<FFence> NewFence = MakeShared<FFence>(*this);
 
@@ -116,7 +184,7 @@ Kanas::Core::TSharedPtr<Kanas::Core::FFence> Kanas::Core::FDevice::CreateFence(b
     return nullptr;
 }
 
-Kanas::Core::TSharedPtr<Kanas::Core::FSemaphore> Kanas::Core::FDevice::CreateSemaphore()
+TSharedPtr<Kanas::Core::FSemaphore> Kanas::Core::FDevice::CreateSemaphore()
 {
     TSharedPtr<FSemaphore> NewSemaphore = MakeShared<FSemaphore>(*this);
     
@@ -125,6 +193,18 @@ Kanas::Core::TSharedPtr<Kanas::Core::FSemaphore> Kanas::Core::FDevice::CreateSem
         return NewSemaphore;
     }
     
+    return nullptr;
+}
+
+TSharedPtr<Kanas::Core::FEvent> Kanas::Core::FDevice::CreateEvent()
+{
+    if (const auto NewEvent = MakeShared<FEvent>(*this))
+    {
+        if (NewEvent->Allocate())
+        {
+            return NewEvent;
+        }
+    }
     return nullptr;
 }
 

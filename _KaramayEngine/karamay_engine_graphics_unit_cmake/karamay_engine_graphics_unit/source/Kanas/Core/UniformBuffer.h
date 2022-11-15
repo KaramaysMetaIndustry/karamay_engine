@@ -5,13 +5,13 @@
 
 _KANAS_CORE_BEGIN
 
-class UniformBuffer : public Buffer
+class FUniformBuffer : public FBuffer
 {
 public:
 
-	UniformBuffer();
+	FUniformBuffer();
 
-	virtual ~UniformBuffer() override;
+	virtual ~FUniformBuffer() override;
 
 };
 

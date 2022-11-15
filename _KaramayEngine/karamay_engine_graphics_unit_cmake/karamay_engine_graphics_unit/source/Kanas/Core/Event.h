@@ -5,11 +5,11 @@
 
 _KANAS_CORE_BEGIN
 
-class CommandBuffer;
+class FCommandBuffer;
 
-class Event final : public DeviceObject<VkEvent>
+class FEvent final : public FDeviceObject<VkEvent>
 {
-	friend class Event;
+	friend class FDevice;
 
 	bool Allocate();
 
@@ -17,19 +17,19 @@ class Event final : public DeviceObject<VkEvent>
 
 public:
 
-	Event(Device& InDevice);
+	FEvent(FDevice& InDevice);
 
-	virtual ~Event();
+	virtual ~FEvent();
 
 	void Set();
 
 	void Reset();
 
-	void CmdSet(CommandBuffer& InRecorder, VkPipelineStageFlags InPipelineStageFlags);
+	void CmdSet(FCommandBuffer& InRecorder, VkPipelineStageFlags InPipelineStageFlags);
 
-	void CmdReset(CommandBuffer& InRecorder, VkPipelineStageFlags InPipelineStageFlags);
+	void CmdReset(FCommandBuffer& InRecorder, VkPipelineStageFlags InPipelineStageFlags);
 
-	void CmdWait(CommandBuffer& InRecorder);
+	void CmdWait(FCommandBuffer& InRecorder);
 
 };
 

@@ -1,9 +1,9 @@
 #include "UniformBuffer.h"
 
-Kanas::Core::UniformBuffer::UniformBuffer()
+Kanas::Core::FUniformBuffer::FUniformBuffer()
 {
 }
 
-Kanas::Core::UniformBuffer::~UniformBuffer()
+Kanas::Core::FUniformBuffer::~FUniformBuffer()
 {
 }

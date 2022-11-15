@@ -1,12 +1,12 @@
 #include "ShaderModule.h"
 #include "Device.h"
 
-Kanas::Core::ShaderModule::ShaderModule(Device& InDevice) :
-	DeviceObject(InDevice)
+Kanas::Core::FShaderModule::FShaderModule(FDevice& InDevice) :
+	FDeviceObject(InDevice)
 {
 }
 
-Kanas::Core::ShaderModule::~ShaderModule()
+Kanas::Core::FShaderModule::~FShaderModule()
 {
 	if (IsValid())
 	{
@@ -16,19 +16,20 @@ Kanas::Core::ShaderModule::~ShaderModule()
 	}
 }
 
-bool Kanas::Core::ShaderModule::Allocate()
+bool Kanas::Core::FShaderModule::Allocate(const TVector<uint32>& CodeBytes)
 {
-	VkShaderModuleCreateInfo ShaderModuleCreateInfo;
+	VkShaderModuleCreateInfo ShaderModuleCreateInfo{};
 	ShaderModuleCreateInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 	ShaderModuleCreateInfo.pNext = nullptr;
 	ShaderModuleCreateInfo.flags = {};
-	ShaderModuleCreateInfo.codeSize;
-	ShaderModuleCreateInfo.pCode;
+	ShaderModuleCreateInfo.codeSize = static_cast<uint32>(CodeBytes.size());
+	ShaderModuleCreateInfo.pCode = CodeBytes.data();
 
 	VkResult Result = vkCreateShaderModule(GetDevice().GetHandle(), &ShaderModuleCreateInfo, nullptr, &_Handle);
 	
 	if (Result == VkResult::VK_SUCCESS)
 	{
+		Code = CodeBytes;
 		return true;
 	}
 

@@ -6,15 +6,22 @@
 
 _KANAS_CORE_BEGIN
 
-class ShaderModule final : public DeviceObject<VkShaderModule>
+class FShaderModule final : public FDeviceObject<VkShaderModule>
 {
+
+	friend class FDevice;
+
+	bool Allocate(const TVector<uint32>& CodeBytes);
+
 public:
 
-	ShaderModule(Device& InDevice);
+	FShaderModule(FDevice& InDevice);
 
-	virtual ~ShaderModule() override;
+	virtual ~FShaderModule() override;
 
-	bool Allocate();
+private:
+
+	TVector<uint32> Code;
 
 };
 

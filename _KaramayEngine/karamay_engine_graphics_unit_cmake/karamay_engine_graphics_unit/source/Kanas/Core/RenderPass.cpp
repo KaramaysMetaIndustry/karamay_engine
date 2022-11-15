@@ -3,22 +3,7 @@
 #include "CommandBuffer.h"
 #include "Framebuffer.h"
 
-Kanas::Core::RenderPass::RenderPass(Device& InDevice) :
-    DeviceObject(InDevice)
-{
-}
-
-Kanas::Core::RenderPass::~RenderPass()
-{
-    if (IsValid())
-    {
-        vkDestroyRenderPass(GetDevice().GetHandle(), GetHandle(), nullptr);
-
-        ResetHandle();
-    }
-}
-
-bool Kanas::Core::RenderPass::Allocate(const std::vector<VkAttachmentDescription>& InAttachments, const std::vector<VkSubpassDescription>& InSubpasses, const std::vector<VkSubpassDependency>& InSubpassDependencies)
+bool Kanas::Core::FRenderPass::Allocate(const TVector<VkAttachmentDescription>& InAttachments, const TVector<VkSubpassDescription>& InSubpasses, const TVector<VkSubpassDependency>& InSubpassDependencies)
 {
     VkSubpassDescription Subpass;
     Subpass.flags;
@@ -50,10 +35,9 @@ bool Kanas::Core::RenderPass::Allocate(const std::vector<VkAttachmentDescription
     RenderPassCreateInfo.pSubpasses = InSubpasses.data();
     RenderPassCreateInfo.dependencyCount = InSubpassDependencies.size();
     RenderPassCreateInfo.pDependencies = InSubpassDependencies.data();
-   
 
     VkResult Result = vkCreateRenderPass(GetDevice().GetHandle(), &RenderPassCreateInfo, nullptr, &_Handle);
-    
+
     if (Result == VkResult::VK_SUCCESS)
     {
         return true;
@@ -61,11 +45,26 @@ bool Kanas::Core::RenderPass::Allocate(const std::vector<VkAttachmentDescription
     return false;
 }
 
-void Kanas::Core::RenderPass::CmdCollect(CommandBuffer& InRecorder)
+Kanas::Core::FRenderPass::FRenderPass(FDevice& InDevice) :
+    FDeviceObject(InDevice)
+{
+}
+
+Kanas::Core::FRenderPass::~FRenderPass()
+{
+    if (IsValid())
+    {
+        vkDestroyRenderPass(GetDevice().GetHandle(), GetHandle(), nullptr);
+
+        ResetHandle();
+    }
+}
+
+void Kanas::Core::FRenderPass::CmdCollect(FCommandBuffer& InRecorder)
 {
     VkRenderPassBeginInfo RenderPassBeginInfo;
     RenderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-    RenderPassBeginInfo.framebuffer = RenderTarget->GetHandle();
+    RenderPassBeginInfo.framebuffer = Framebuffer->GetHandle();
     RenderPassBeginInfo.renderPass = _Handle;
     RenderPassBeginInfo.clearValueCount = ClearValues.size();
     RenderPassBeginInfo.pClearValues = ClearValues.data();
@@ -73,7 +72,7 @@ void Kanas::Core::RenderPass::CmdCollect(CommandBuffer& InRecorder)
 
     vkCmdBeginRenderPass(InRecorder.GetHandle(), &RenderPassBeginInfo, SubpassContents);
     
-    Sequence(InRecorder, *RenderTarget);
+    Sequence(InRecorder, *Framebuffer);
     
     vkCmdEndRenderPass(InRecorder.GetHandle());
 }

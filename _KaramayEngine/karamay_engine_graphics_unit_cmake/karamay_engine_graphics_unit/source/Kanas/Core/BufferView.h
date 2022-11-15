@@ -9,7 +9,7 @@ class FBuffer;
 
 class FBufferView final : public FDeviceObject<VkBufferView>
 {
-	friend class FBuffer;
+	friend class FDevice;
 
 	bool Allocate(TSharedPtr<FBuffer> InBuffer, VkFormat InFormat, VkDeviceSize InOffset, VkDeviceSize InRange);
 

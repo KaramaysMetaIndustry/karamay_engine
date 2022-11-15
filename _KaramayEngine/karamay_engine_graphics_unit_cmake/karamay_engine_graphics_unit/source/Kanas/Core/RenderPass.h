@@ -5,28 +5,26 @@
 
 _KANAS_CORE_BEGIN
 
-class CommandBuffer;
-class Framebuffer;
+class FCommandBuffer;
+class FFramebuffer;
 
-class RenderPass final : public DeviceObject<VkRenderPass>
+class FRenderPass final : public FDeviceObject<VkRenderPass>
 {
+
+	bool Allocate(const TVector<VkAttachmentDescription>& InAttachments, const TVector<VkSubpassDescription>& InSubpasses, const TVector<VkSubpassDependency>& InSubpassDependencies);
+
 public:
 
-	RenderPass(Device& InDevice);
+	FRenderPass(FDevice& InDevice);
 
-	virtual ~RenderPass() override;
+	virtual ~FRenderPass() override;
 
-	bool Allocate(const std::vector<VkAttachmentDescription>& InAttachments, const std::vector<VkSubpassDescription>& InSubpasses, const std::vector<VkSubpassDependency>& InSubpassDependencies);
 
-	using CmdSequence = std::function<void(CommandBuffer&, Framebuffer&)>;
+	using CmdSequence = std::function<void(FCommandBuffer&, FFramebuffer&)>;
 
-	void CmdCollect(CommandBuffer& InRecorder);
+	void CmdCollect(FCommandBuffer& InRecorder);
 
-	Framebuffer* GetFramebuffer() const;
-
-	uint32 NumOfSubpasses() const;
-
-	std::vector<VkClearValue> ClearValues;
+	TVector<VkClearValue> ClearValues;
 
 	VkRect2D RenderArea;
 	
@@ -36,7 +34,7 @@ public:
 
 private:
 
-	Framebuffer* RenderTarget;
+	TUniquePtr<FFramebuffer> Framebuffer;
 
 };
 

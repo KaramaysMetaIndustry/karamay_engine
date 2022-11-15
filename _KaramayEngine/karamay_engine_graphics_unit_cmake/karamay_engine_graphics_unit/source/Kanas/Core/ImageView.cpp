@@ -9,7 +9,10 @@ bool Kanas::Core::FImageView::Allocate(TSharedPtr<FImage> InImage, VkImageViewTy
 		return false;
 	}
 
-	VkImageViewCreateInfo ImageViewCreateInfo;
+	VK_IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DEFERRED_BIT_EXT; // FragmentDensityMapDeferred
+	VK_IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DYNAMIC_BIT_EXT; // FragmentDensityMapDynamic
+
+	VkImageViewCreateInfo ImageViewCreateInfo{};
 	ImageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 	ImageViewCreateInfo.pNext = nullptr;
 	ImageViewCreateInfo.flags = {};
@@ -24,6 +27,7 @@ bool Kanas::Core::FImageView::Allocate(TSharedPtr<FImage> InImage, VkImageViewTy
 	if (Result == VkResult::VK_SUCCESS)
 	{
 		Image = InImage;
+
 		return true;
 	}
 
@@ -39,6 +43,7 @@ Kanas::Core::FImageView::FImageView(FImageView&& Other) :
 	FDeviceObject(Other.GetDevice())
 {
 	_Handle = Other.GetHandle();
+
 	Other.ResetHandle();
 }
 

@@ -5,13 +5,32 @@
 
 _KANAS_CORE_BEGIN
 
-class Framebuffer final : public DeviceObject<VkFramebuffer>
+class FImageView;
+class FRenderPass;
+
+class FFramebuffer final : public FDeviceObject<VkFramebuffer>
 {
+	friend class FDevice;
+
+	bool Allocate(TSharedPtr<FRenderPass> RenderPass, uint32 Width, uint32 Height, uint32 Layers, const TVector<TSharedPtr<FImageView>>& InAttachments);
+
 public:
 
-	Framebuffer(Device& InDevice);
+	FFramebuffer(FDevice& InDevice);
 
-	virtual ~Framebuffer();
+	FFramebuffer(const FFramebuffer&) = delete;
+	FFramebuffer(FFramebuffer&& Other);
+
+	FFramebuffer& operator=(const FFramebuffer&) = delete;
+
+	virtual ~FFramebuffer();
+
+private:
+
+	TSharedPtr<FRenderPass> Owner;
+
+	TVector<TSharedPtr<FImageView>> Attachments;
+
 
 };
 

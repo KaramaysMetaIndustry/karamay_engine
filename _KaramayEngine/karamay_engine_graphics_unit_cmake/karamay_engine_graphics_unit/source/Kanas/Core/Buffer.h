@@ -5,19 +5,15 @@
 
 _KANAS_CORE_BEGIN
 
-class FImage;
-class FCommandBuffer;
 class FDeviceMemory;
+class FCommandBuffer;
+class FImage;
 
 class FBuffer : public FDeviceObject<VkBuffer>
 {
 	friend class FDevice;
 
-	bool Allocate(
-		uint64 Size, 
-		FBufferUsage Usage, 
-		TSharedPtr<FConcurrentGuide> ConcurrentGuide = nullptr
-	);
+	bool Allocate(uint64 Size, FBufferUsage Usage, TSharedPtr<FConcurrentGuide> ConcurrentGuide = nullptr);
 
 public:
 

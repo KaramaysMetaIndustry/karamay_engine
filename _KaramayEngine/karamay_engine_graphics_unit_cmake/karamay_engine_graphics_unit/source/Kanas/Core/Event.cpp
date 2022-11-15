@@ -2,7 +2,7 @@
 #include "Device.h"
 #include "CommandBuffer.h"
 
-bool Kanas::Core::Event::Allocate()
+bool Kanas::Core::FEvent::Allocate()
 {
 	VkEventCreateInfo EventCreateInfo;
 	EventCreateInfo.sType = VK_STRUCTURE_TYPE_EVENT_CREATE_INFO;
@@ -19,17 +19,17 @@ bool Kanas::Core::Event::Allocate()
 	return false;
 }
 
-VkResult Kanas::Core::Event::GetStatus()
+VkResult Kanas::Core::FEvent::GetStatus()
 {
 	return vkGetEventStatus(GetDevice().GetHandle(), GetHandle());
 }
 
-Kanas::Core::Event::Event(Device& InDevice) :
-	DeviceObject(InDevice)
+Kanas::Core::FEvent::FEvent(FDevice& InDevice) :
+	FDeviceObject(InDevice)
 {
 }
 
-Kanas::Core::Event::~Event()
+Kanas::Core::FEvent::~FEvent()
 {
 	if (IsValid())
 	{
@@ -39,27 +39,27 @@ Kanas::Core::Event::~Event()
 	}
 }
 
-void Kanas::Core::Event::Set()
+void Kanas::Core::FEvent::Set()
 {
 	VkResult Result = vkSetEvent(GetDevice().GetHandle(), GetHandle());
 }
 
-void Kanas::Core::Event::Reset()
+void Kanas::Core::FEvent::Reset()
 {
 	VkResult Result = vkResetEvent(GetDevice().GetHandle(), GetHandle());
 }
 
-void Kanas::Core::Event::CmdSet(CommandBuffer& InRecorder, VkPipelineStageFlags InPipelineStageFlags)
+void Kanas::Core::FEvent::CmdSet(FCommandBuffer& InRecorder, VkPipelineStageFlags InPipelineStageFlags)
 {
 	vkCmdSetEvent(InRecorder.GetHandle(), GetHandle(), InPipelineStageFlags);
 }
 
-void Kanas::Core::Event::CmdReset(CommandBuffer& InRecorder, VkPipelineStageFlags InPipelineStageFlags)
+void Kanas::Core::FEvent::CmdReset(FCommandBuffer& InRecorder, VkPipelineStageFlags InPipelineStageFlags)
 {
 	vkCmdResetEvent(InRecorder.GetHandle(), GetHandle(), InPipelineStageFlags);
 }
 
-void Kanas::Core::Event::CmdWait(CommandBuffer& InRecorder)
+void Kanas::Core::FEvent::CmdWait(FCommandBuffer& InRecorder)
 {
 	VkEvent EventHandles[] = { GetHandle() };
 	VkPipelineStageFlags SrcMask = VkPipelineStageFlagBits::VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
