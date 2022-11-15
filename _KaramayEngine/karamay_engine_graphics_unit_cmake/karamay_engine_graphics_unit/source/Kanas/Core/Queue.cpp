@@ -54,7 +54,7 @@ void Kanas::Core::FQueue::WaitIdle()
 	VkResult Result = vkQueueWaitIdle(GetHandle());
 }
 
-void Kanas::Core::FQueue::Submit(const std::vector<SubmissionBatch>& InBatches, Fence* InFence)
+void Kanas::Core::FQueue::Submit(const TVector<SubmissionBatch>& InBatches, FFence* InFence)
 {
 	std::vector<VkSubmitInfo> SubmitInfos;
 	SubmitInfos.reserve(InBatches.size());

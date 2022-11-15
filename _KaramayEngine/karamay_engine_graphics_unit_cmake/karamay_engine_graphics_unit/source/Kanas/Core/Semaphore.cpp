@@ -1,12 +1,12 @@
 #include "Semaphore.h"
 #include "Device.h"
 
-Kanas::Core::Semaphore::Semaphore(Device& InDevice) :
-	DeviceObject(InDevice)
+Kanas::Core::FSemaphore::FSemaphore(FDevice& InDevice) :
+	FDeviceObject(InDevice)
 {
 }
 
-Kanas::Core::Semaphore::~Semaphore()
+Kanas::Core::FSemaphore::~FSemaphore()
 {
 	if (IsValid())
 	{
@@ -16,7 +16,7 @@ Kanas::Core::Semaphore::~Semaphore()
 	}
 }
 
-bool Kanas::Core::Semaphore::Allocate(VkSemaphoreType InType, uint64 InInitalValue)
+bool Kanas::Core::FSemaphore::Allocate(VkSemaphoreType InType, uint64 InInitalValue)
 {
 	VkSemaphoreTypeCreateInfo SemaphoreTypeCreateInfo;
 	SemaphoreTypeCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO;
@@ -39,7 +39,7 @@ bool Kanas::Core::Semaphore::Allocate(VkSemaphoreType InType, uint64 InInitalVal
 	return false;
 }
 
-VkResult Kanas::Core::Semaphore::Wait(uint64 InValue, uint64 InTimeout)
+VkResult Kanas::Core::FSemaphore::Wait(uint64 InValue, uint64 InTimeout)
 {
 	VkSemaphore SemaphoreHandles[] = { GetHandle() };
 
@@ -54,7 +54,7 @@ VkResult Kanas::Core::Semaphore::Wait(uint64 InValue, uint64 InTimeout)
 	return vkWaitSemaphores(GetDevice().GetHandle(), &SemaphoreWaitInfo, InTimeout);
 }
 
-VkResult Kanas::Core::Semaphore::Signal(uint64 InValue)
+VkResult Kanas::Core::FSemaphore::Signal(uint64 InValue)
 {
 	VkSemaphoreSignalInfo SemaphoreSignalInfo;
 	SemaphoreSignalInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_SIGNAL_INFO;
@@ -65,7 +65,7 @@ VkResult Kanas::Core::Semaphore::Signal(uint64 InValue)
 	return vkSignalSemaphore(GetDevice().GetHandle(), &SemaphoreSignalInfo);
 }
 
-uint64 Kanas::Core::Semaphore::GetCounterValue()
+uint64 Kanas::Core::FSemaphore::GetCounterValue()
 {
 	uint64 Value = 0;
 	vkGetSemaphoreCounterValue(GetDevice().GetHandle(), GetHandle(), &Value);

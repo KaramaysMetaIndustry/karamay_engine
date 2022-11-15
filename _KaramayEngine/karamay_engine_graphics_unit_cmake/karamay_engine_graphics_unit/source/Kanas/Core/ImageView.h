@@ -29,6 +29,27 @@ private:
 
 	TSharedPtr<FImage> Image{};
 
+	VkImageViewType ImageViewType{};
+
+	VkFormat Format{};
+
+public:
+
+	TSharedPtr<FImage> GetImage() const 
+	{ 
+		return Image; 
+	}
+
+	VkImageViewType GetViewType() const 
+	{ 
+		return ImageViewType; 
+	}
+
+	VkFormat GetViewFormat() const 
+	{ 
+		return Format; 
+	}
+
 };
 
 

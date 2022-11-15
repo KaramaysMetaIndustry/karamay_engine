@@ -118,7 +118,7 @@ Kanas::Core::TSharedPtr<Kanas::Core::FFence> Kanas::Core::FDevice::CreateFence(b
 
 Kanas::Core::TSharedPtr<Kanas::Core::FSemaphore> Kanas::Core::FDevice::CreateSemaphore()
 {
-    Semaphore* NewSemaphore = new Semaphore(*this);
+    TSharedPtr<FSemaphore> NewSemaphore = MakeShared<FSemaphore>(*this);
     
     if (NewSemaphore && NewSemaphore->Allocate(VK_SEMAPHORE_TYPE_BINARY, 0))
     {

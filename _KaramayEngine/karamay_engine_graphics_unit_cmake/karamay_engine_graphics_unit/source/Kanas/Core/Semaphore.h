@@ -5,17 +5,17 @@
 
 _KANAS_CORE_BEGIN
 
-class Semaphore final : public DeviceObject<VkSemaphore>
+class FSemaphore final : public FDeviceObject<VkSemaphore>
 {
-	friend class Device;
+	friend class FDevice;
 
 	bool Allocate(VkSemaphoreType InType, uint64 InInitalValue);
 
 public:
 
-	Semaphore(Device& InDevice);
+	FSemaphore(FDevice& InDevice);
 
-	virtual ~Semaphore() override;
+	virtual ~FSemaphore() override;
 
 	VkResult Wait(uint64 InValue, uint64 InTimeout);
 

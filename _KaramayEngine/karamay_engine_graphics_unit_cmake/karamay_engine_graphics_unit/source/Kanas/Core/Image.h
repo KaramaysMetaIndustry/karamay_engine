@@ -40,15 +40,19 @@ public:
 
 	void CmdResolve(FCommandBuffer& InRecorder, FImage& InDstImage, const TVector<VkImageResolve>& InRegions);
 
-	VkImageLayout GetLayout();
-
-	TSharedPtr<FImageView> CreateView(VkImageViewType InViewType, VkFormat InFormat, const VkComponentMapping& InComponents, const VkImageSubresourceRange& InSubresourceRange);
-
 private:
 
 	TUniquePtr<FDeviceMemory> Mem;
 
 	VkImageLayout Layout;
+
+public:
+
+	VkImageLayout GetLayout();
+
+	TSharedPtr<FImageView> CreateView(VkImageViewType InViewType, VkFormat InFormat, const VkComponentMapping& InComponents, const VkImageSubresourceRange& InSubresourceRange);
+
+
 
 	/*VK_IMAGE_USAGE_TRANSFER_SRC_BIT = 0x00000001,
     VK_IMAGE_USAGE_TRANSFER_DST_BIT = 0x00000002,

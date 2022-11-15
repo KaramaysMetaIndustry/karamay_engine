@@ -11,11 +11,11 @@ class FCommandBuffer;
 
 struct SubmissionBatch
 {
-	std::vector<std::pair<Semaphore*, VkPipelineStageFlags>> SemaphoreToWaitBeforeExecution;
-
-	std::vector<CommandBuffer*> CmdBuffers;
-
-	std::vector<Semaphore*> SemaphoreToSignalAfterExecution;
+	TVector<std::pair<FSemaphore*, VkPipelineStageFlags>> SemaphoreToWaitBeforeExecution;
+	
+	TVector<FCommandBuffer*> CmdBuffers;
+	
+	TVector<FSemaphore*> SemaphoreToSignalAfterExecution;
 
 };
 
@@ -40,7 +40,7 @@ public:
 
 	void WaitIdle();
 
-	void Submit(const std::vector<SubmissionBatch>& InBatches, FFence* InFence = nullptr);
+	void Submit(const TVector<SubmissionBatch>& InBatches, FFence* InFence = nullptr);
 
 	void PresetKHR(const VkPresentInfoKHR& InPresentInfo);
 
