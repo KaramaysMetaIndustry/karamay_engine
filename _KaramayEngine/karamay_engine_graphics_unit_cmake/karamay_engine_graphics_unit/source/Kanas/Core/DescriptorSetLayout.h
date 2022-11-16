@@ -5,15 +5,21 @@
 
 _KANAS_CORE_BEGIN
 
-class DescriptorSetLayout final : public DeviceObject<VkDescriptorSetLayout>
+class FDescriptorSetLayout final : public FDeviceObject<VkDescriptorSetLayout>
 {
+	bool Allocate();
+
 public:
 
-	DescriptorSetLayout(Device& InDevice);
+	FDescriptorSetLayout(FDevice& InDevice);
 
-	virtual ~DescriptorSetLayout();
+	virtual ~FDescriptorSetLayout();
 
-	bool Allocate();
+	void GetBindingInfo(uint32 Binding) const;
+
+private:
+
+	TVector<VkDescriptorSetLayoutBinding> Bindings;
 
 };
 

@@ -1,12 +1,13 @@
 #include "PipelineLayout.h"
 #include "Device.h"
+#include "DescriptorSetLayout.h"
 
-Kanas::Core::PipelineLayout::PipelineLayout(Device& InDevice) :
-    DeviceObject(InDevice)
+Kanas::Core::FPipelineLayout::FPipelineLayout(FDevice& InDevice) :
+    FDeviceObject(InDevice)
 {
 }
 
-Kanas::Core::PipelineLayout::~PipelineLayout()
+Kanas::Core::FPipelineLayout::~FPipelineLayout()
 {
     if (IsValid())
     {
@@ -16,20 +17,38 @@ Kanas::Core::PipelineLayout::~PipelineLayout()
     }
 }
 
-bool Kanas::Core::PipelineLayout::Allocate(const std::vector<DescriptorSetLayout>& InDescriptorSetLayouts, const std::vector<VkPushConstantRange> InPushConstantRanges)
+TSharedPtr<Kanas::Core::FDescriptorSetLayout> Kanas::Core::FPipelineLayout::GetDecriptorSetLayout(uint32 SetIndex) const
 {
+    if (DescriptorSetLayouts.size() > SetIndex)
+    {
+        return DescriptorSetLayouts[SetIndex];
+    }
+    return nullptr;
+}
+
+bool Kanas::Core::FPipelineLayout::Allocate(const TVector<TSharedPtr<FDescriptorSetLayout>>& InDescriptorSetLayouts, const TVector<VkPushConstantRange> InPushConstantRanges)
+{
+
+      // layout(push_constant) uniform BlockName {
+      //  int member1;
+      //  float member2;
+      // } InstanceName;
+
     const std::vector<VkDescriptorSetLayout> DescriptorSetLayoutHandles;
 
-    VkPipelineLayoutCreateInfo PipelineLayoutCreateInfo;
+    VkPipelineLayoutCreateInfo PipelineLayoutCreateInfo{};
     PipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    PipelineLayoutCreateInfo.flags;
+    PipelineLayoutCreateInfo.flags = {};
     PipelineLayoutCreateInfo.pSetLayouts = DescriptorSetLayoutHandles.data();
     PipelineLayoutCreateInfo.setLayoutCount = DescriptorSetLayoutHandles.size();
     PipelineLayoutCreateInfo.pPushConstantRanges = InPushConstantRanges.data();
     PipelineLayoutCreateInfo.pushConstantRangeCount = InPushConstantRanges.size();
 
-    VkResult Result = vkCreatePipelineLayout(GetDevice().GetHandle(), &PipelineLayoutCreateInfo, nullptr, &_Handle);
-    if (Result == VkResult::VK_SUCCESS)
+    
+
+    const VkResult PipelineCreationResult = vkCreatePipelineLayout(GetDevice().GetHandle(), &PipelineLayoutCreateInfo, nullptr, &_Handle);
+    
+    if (PipelineCreationResult == VK_SUCCESS)
     {
         return true;
     }

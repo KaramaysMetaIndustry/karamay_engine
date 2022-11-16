@@ -5,22 +5,45 @@
 
 _KANAS_CORE_BEGIN
 
-class DescriptorPool;
-class DescriptorSetLayout;
+class FDescriptorPool;
+class FDescriptorSetLayout;
+class FDescriptorUpdateTemplate;
+class FPipeline;
 
-class DescriptorSet final : public DeviceObject<VkDescriptorSet>
+class FDescriptorSet final : public FDeviceObject<VkDescriptorSet>
 {
+	bool Allocate(TSharedPtr<FDescriptorSetLayout> InLayout);
+
 public:
 
-	DescriptorSet(Device& InDevice, DescriptorPool& InPool);
+	FDescriptorSet(FDevice& InDevice, FDescriptorPool& InPool);
 
-	virtual ~DescriptorSet();
+	virtual ~FDescriptorSet();
 
-	bool Allocate(DescriptorSetLayout& InLayout);
+	TSharedPtr<FDescriptorSetLayout> GetLayout() const;
+
+	void Update();
+
+	void UpdateImage();
+
+	void UpdateImageView();
+
+	void UpdateBuffer();
+
+	void UpdateBufferView();
+
+	void Update(TSharedPtr<FDescriptorUpdateTemplate> InTemplate);
+
+	
+	void CmdBind(FCommandBuffer& InRecorder, TSharedPtr<FPipeline> InPipeline);
+	void CmdPushDescriptorSet(FCommandBuffer& InRecorder);
+	void CmdPushDescriptorSetWithTemplate(FCommandBuffer& InRecorder);
 
 private:
 
-	DescriptorPool& Pool;
+	FDescriptorPool& Pool;
+
+	TSharedPtr<FDescriptorSetLayout> Layout;
 
 };
 

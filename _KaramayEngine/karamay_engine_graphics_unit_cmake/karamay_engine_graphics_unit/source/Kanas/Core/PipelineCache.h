@@ -5,13 +5,13 @@
 
 _KANAS_CORE_BEGIN
 
-class PipelineCache final : public DeviceObject<VkPipelineCache>
+class FPipelineCache final : public FDeviceObject<VkPipelineCache>
 {
 public:
 
-	PipelineCache(Device& InDevice);
+	FPipelineCache(FDevice& InDevice);
 
-	virtual ~PipelineCache() override;
+	virtual ~FPipelineCache() override;
 
 	bool Allocate();
 

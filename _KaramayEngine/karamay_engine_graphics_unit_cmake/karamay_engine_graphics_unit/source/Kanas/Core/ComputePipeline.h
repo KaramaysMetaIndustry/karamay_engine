@@ -5,27 +5,32 @@
 
 _KANAS_CORE_BEGIN
 
-class ComputePipeline final : public Pipeline
+class FComputeShader;
+
+class FComputePipeline final : public FPipeline
 {
+
+	friend class FDevice;
+
+	bool Allocate(TSharedPtr<FComputeShader> ComputeShader, TSharedPtr<FPipelineLayout> Layout, TSharedPtr<FPipelineCache> Cache);
+
 public:
 
-	using BaseGroup = std::array<uint32, 3>;
+	using BaseGroup = TArray<uint32, 3>;
 
-	using GroupCount = std::array<uint32, 3>;
+	using GroupCount = TArray<uint32, 3>;
 
-	ComputePipeline(Device& InDevice);
+	FComputePipeline(FDevice& InDevice);
 
-	virtual ~ComputePipeline();
+	virtual ~FComputePipeline();
 
-	bool Allocate(PipelineCache& InCache, PipelineLayout& InLayout, ShaderModule& InComputeShaderModule);
+	virtual void CmdBind(FCommandBuffer& InRecorder) override;
 
-	virtual void CmdBind(CommandBuffer& InRecorder) override;
+	void CmdDispatch(FCommandBuffer& InRecorder, const GroupCount& InGroupCount);
 
-	void CmdDispatch(CommandBuffer& InRecorder, const GroupCount& InGroupCount);
+	void CmdDispatchBase(FCommandBuffer& InRecorder, const BaseGroup& InBaseGroup, const GroupCount& InGroupCount);
 
-	void CmdDispatchBase(CommandBuffer& InRecorder, const BaseGroup& InBaseGroup, const GroupCount& InGroupCount);
-
-	void CmdDispatchIndirect(CommandBuffer& InRecorder, Buffer& InBuffer, uint64 InOffset);
+	void CmdDispatchIndirect(FCommandBuffer& InRecorder, FBuffer& InBuffer, uint64 InOffset);
 };
 
 _KANAS_CORE_END

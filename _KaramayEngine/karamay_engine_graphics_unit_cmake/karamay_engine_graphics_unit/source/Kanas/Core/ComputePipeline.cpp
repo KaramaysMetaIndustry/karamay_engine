@@ -5,60 +5,70 @@
 #include "PipelineLayout.h"
 #include "PipelineCache.h"
 #include "ShaderModule.h"
+#include "Shader.h"
 
-Kanas::Core::ComputePipeline::ComputePipeline(Device& InDevice) :
-    Pipeline(InDevice)
+bool Kanas::Core::FComputePipeline::Allocate(TSharedPtr<FComputeShader> InComputeShader, TSharedPtr<FPipelineLayout> Layout, TSharedPtr<FPipelineCache> Cache)
 {
-}
-
-Kanas::Core::ComputePipeline::~ComputePipeline()
-{
-}
-
-bool Kanas::Core::ComputePipeline::Allocate(PipelineCache& InCache, PipelineLayout& InLayout, ShaderModule& InComputeShaderModule)
-{
-    VkPipelineShaderStageCreateInfo ShaderStageCreateInfo;
-    ShaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-    ShaderStageCreateInfo.flags;
-    ShaderStageCreateInfo.module = InComputeShaderModule.GetHandle();
-    ShaderStageCreateInfo.pName = "main";
-    ShaderStageCreateInfo.pSpecializationInfo = nullptr;
-    ShaderStageCreateInfo.stage = VkShaderStageFlagBits::VK_SHADER_STAGE_COMPUTE_BIT;
-
-    VkComputePipelineCreateInfo ComputePipelineCreateInfo;
-    ComputePipelineCreateInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
-    ComputePipelineCreateInfo.pNext = nullptr;
-    ComputePipelineCreateInfo.flags;
-    ComputePipelineCreateInfo.stage = ShaderStageCreateInfo;
-    ComputePipelineCreateInfo.layout = InLayout.GetHandle();
-    ComputePipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE;
-    ComputePipelineCreateInfo.basePipelineIndex = -1;
-
-    VkResult Result = vkCreateComputePipelines(GetDevice().GetHandle(), InCache.GetHandle(), 1, &ComputePipelineCreateInfo, nullptr, &_Handle);
-
-    if (Result == VkResult::VK_SUCCESS)
+    if (!InComputeShader)
     {
-        return true;
+        return false;
     }
+    
+    if (const auto ShaderModule = InComputeShader->GetShaderModule())
+    {
+        VkPipelineShaderStageCreateInfo ShaderStageCreateInfo{};
+        ShaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+        ShaderStageCreateInfo.flags = {};
+        ShaderStageCreateInfo.module = ShaderModule->GetHandle();
+        ShaderStageCreateInfo.pName = InComputeShader->GetName().c_str();
+        ShaderStageCreateInfo.pSpecializationInfo = nullptr;
+        ShaderStageCreateInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+
+        VkComputePipelineCreateInfo ComputePipelineCreateInfo{};
+        ComputePipelineCreateInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+        ComputePipelineCreateInfo.pNext = nullptr;
+        ComputePipelineCreateInfo.flags = {};
+        ComputePipelineCreateInfo.stage = ShaderStageCreateInfo;
+        ComputePipelineCreateInfo.layout = Layout->GetHandle();
+        ComputePipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE;
+        ComputePipelineCreateInfo.basePipelineIndex = -1;
+
+        const VkResult ComputePipelineCreationResult = vkCreateComputePipelines(GetDevice().GetHandle(), Cache->GetHandle(), 1, &ComputePipelineCreateInfo, nullptr, &_Handle);
+
+        if (ComputePipelineCreationResult == VK_SUCCESS)
+        {
+            return true;
+        }
+    }
+
     return false;
 }
 
-void Kanas::Core::ComputePipeline::CmdBind(CommandBuffer& InRecorder)
+Kanas::Core::FComputePipeline::FComputePipeline(FDevice& InDevice) :
+    FPipeline(InDevice)
 {
-    vkCmdBindPipeline(InRecorder.GetHandle(), VkPipelineBindPoint::VK_PIPELINE_BIND_POINT_COMPUTE, _Handle);
 }
 
-void Kanas::Core::ComputePipeline::CmdDispatch(CommandBuffer& InRecorder, const GroupCount& InGroupCount)
+Kanas::Core::FComputePipeline::~FComputePipeline()
+{
+}
+
+void Kanas::Core::FComputePipeline::CmdBind(FCommandBuffer& InRecorder)
+{
+    vkCmdBindPipeline(InRecorder.GetHandle(), VK_PIPELINE_BIND_POINT_COMPUTE, GetHandle());
+}
+
+void Kanas::Core::FComputePipeline::CmdDispatch(FCommandBuffer& InRecorder, const GroupCount& InGroupCount)
 {
     vkCmdDispatch(InRecorder.GetHandle(), InGroupCount[0], InGroupCount[1], InGroupCount[2]);
 }
 
-void Kanas::Core::ComputePipeline::CmdDispatchBase(CommandBuffer& InRecorder, const BaseGroup& InBaseGroup, const GroupCount& InGroupCount)
+void Kanas::Core::FComputePipeline::CmdDispatchBase(FCommandBuffer& InRecorder, const BaseGroup& InBaseGroup, const GroupCount& InGroupCount)
 {
     vkCmdDispatchBase(InRecorder.GetHandle(), InBaseGroup[0], InBaseGroup[1], InBaseGroup[2], InGroupCount[0], InGroupCount[1], InGroupCount[2]);
 }
 
-void Kanas::Core::ComputePipeline::CmdDispatchIndirect(CommandBuffer& InRecorder, Buffer& InBuffer, uint64 InOffset)
+void Kanas::Core::FComputePipeline::CmdDispatchIndirect(FCommandBuffer& InRecorder, FBuffer& InBuffer, uint64 InOffset)
 {
     vkCmdDispatchIndirect(InRecorder.GetHandle(), InBuffer.GetHandle(), InOffset);
 }

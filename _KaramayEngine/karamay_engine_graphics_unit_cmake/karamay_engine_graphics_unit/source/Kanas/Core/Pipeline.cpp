@@ -1,13 +1,15 @@
 #include "Pipeline.h"
 #include "Device.h"
 #include "PipelineCache.h"
+#include "CommandBuffer.h"
+#include "PipelineLayout.h"
 
-Kanas::Core::Pipeline::Pipeline(Device& InDevice) :
-    DeviceObject(InDevice)
+Kanas::Core::FPipeline::FPipeline(FDevice& InDevice) :
+    FDeviceObject(InDevice)
 {
 }
 
-Kanas::Core::Pipeline::~Pipeline()
+Kanas::Core::FPipeline::~FPipeline()
 {
     if (IsValid())
     {
@@ -17,6 +19,11 @@ Kanas::Core::Pipeline::~Pipeline()
     }
 }
 
-void Kanas::Core::Pipeline::CmdBind(CommandBuffer& InRecorder)
+void Kanas::Core::FPipeline::CmdBind(FCommandBuffer& InRecorder)
 {
+}
+
+void Kanas::Core::FPipeline::CmdPushConstants(FCommandBuffer& InRecorder, TVector<uint8>& InValues)
+{
+    vkCmdPushConstants(InRecorder.GetHandle(), GetLayout()->GetHandle(), 0, 0, 1024, InValues.data());
 }

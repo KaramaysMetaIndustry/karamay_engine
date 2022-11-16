@@ -1,30 +1,80 @@
 #include "DescriptorSetLayout.h"
 #include "Device.h"
+#include "Sampler.h"
 
-Kanas::Core::DescriptorSetLayout::DescriptorSetLayout(Device& InDevice) :
-    DeviceObject(InDevice)
+bool Kanas::Core::FDescriptorSetLayout::Allocate()
 {
-}
+    TSharedPtr<FSampler> ImmutableSampler;
 
-Kanas::Core::DescriptorSetLayout::~DescriptorSetLayout()
-{
-}
+  
 
-bool Kanas::Core::DescriptorSetLayout::Allocate()
-{
-    std::vector<VkDescriptorSetLayoutBinding> VkDescriptorSetLayoutBindings;
 
-    VkDescriptorSetLayoutCreateInfo DescriptorSetLayoutCreateInfo;
+    // Sampler
+    // uniform sampler
+    
+    // CombinedImageSampler
+    // unform sampler2D, sampler3D ...
+    
+    // SampledImage
+    // uniform texture2D, texture3D ...
+    
+    // StorageImage 
+    // uniform image2D, image3D ...
+    
+
+    // UniformTexelBuffer
+    // uniform textureBuffer 
+    
+    // StorageTexelBuffer
+    // uniform imageBuffer
+    
+    
+    // UniformBuffer
+    // uniform
+    
+    // StorageBuffer
+    // buffer
+    
+    // UniformBufferDynamic
+    // StorageBufferDynamic
+    
+    
+    // InputAttachment
+    // uniform subpassInput
+
+    VkDescriptorSetLayoutBinding Binding;
+    Binding.binding = 0;
+    Binding.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+    Binding.descriptorCount = 1;
+    Binding.stageFlags;
+    Binding.pImmutableSamplers;
+
+    TVector<VkDescriptorSetLayoutBinding> VkDescriptorSetLayoutBindings;
+
+    VkDescriptorSetLayoutCreateInfo DescriptorSetLayoutCreateInfo{};
     DescriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
     DescriptorSetLayoutCreateInfo.pNext = nullptr;
-    DescriptorSetLayoutCreateInfo.flags;
+    DescriptorSetLayoutCreateInfo.flags = {};
     DescriptorSetLayoutCreateInfo.bindingCount = static_cast<uint32>(VkDescriptorSetLayoutBindings.size());
     DescriptorSetLayoutCreateInfo.pBindings = VkDescriptorSetLayoutBindings.data();
 
-    VkResult Result = vkCreateDescriptorSetLayout(GetDevice().Handle(), &DescriptorSetLayoutCreateInfo, nullptr, &_Handle);
-    if (Result == VkResult::VK_SUCCESS)
+    const VkResult DescriptorSetLayoutCreationResult = vkCreateDescriptorSetLayout(GetDevice().GetHandle(), &DescriptorSetLayoutCreateInfo, nullptr, &_Handle);
+    
+    if (DescriptorSetLayoutCreationResult == VK_SUCCESS)
     {
         return true;
     }
+
     return false;
 }
+
+Kanas::Core::FDescriptorSetLayout::FDescriptorSetLayout(FDevice& InDevice) :
+    FDeviceObject(InDevice)
+{
+}
+
+Kanas::Core::FDescriptorSetLayout::~FDescriptorSetLayout()
+{
+}
+
+

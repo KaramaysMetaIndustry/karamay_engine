@@ -1,12 +1,12 @@
 #include "PipelineCache.h"
 #include "Device.h"
 
-Kanas::Core::PipelineCache::PipelineCache(Device& InDevice) :
-    DeviceObject(InDevice)
+Kanas::Core::FPipelineCache::FPipelineCache(FDevice& InDevice) :
+    FDeviceObject(InDevice)
 {
 }
 
-Kanas::Core::PipelineCache::~PipelineCache()
+Kanas::Core::FPipelineCache::~FPipelineCache()
 {
     if (IsValid())
     {
@@ -16,7 +16,7 @@ Kanas::Core::PipelineCache::~PipelineCache()
     }
 }
 
-bool Kanas::Core::PipelineCache::Allocate()
+bool Kanas::Core::FPipelineCache::Allocate()
 {
     VkPipelineCacheCreateInfo _PipelineCacheCreateInfo;
     _PipelineCacheCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
@@ -35,7 +35,7 @@ bool Kanas::Core::PipelineCache::Allocate()
     return false;
 }
 
-bool Kanas::Core::PipelineCache::Allocate(const std::vector<uint8>& InCacheData)
+bool Kanas::Core::FPipelineCache::Allocate(const std::vector<uint8>& InCacheData)
 {
     VkPipelineCacheCreateInfo _PipelineCacheCreateInfo;
     _PipelineCacheCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
@@ -54,14 +54,14 @@ bool Kanas::Core::PipelineCache::Allocate(const std::vector<uint8>& InCacheData)
     return false;
 }
 
-void Kanas::Core::PipelineCache::GetCacheData(std::vector<uint8>& OutData)
+void Kanas::Core::FPipelineCache::GetCacheData(std::vector<uint8>& OutData)
 {
     const uint64 CacheDataSize = GetCacheDataSize();
     OutData.resize(CacheDataSize);
 	vkGetPipelineCacheData(GetDevice().GetHandle(), _Handle, nullptr, OutData.data());
 }
 
-uint64 Kanas::Core::PipelineCache::GetCacheDataSize() const
+uint64 Kanas::Core::FPipelineCache::GetCacheDataSize() const
 {
     uint64 CacheDataSize = 0;
     vkGetPipelineCacheData(GetDevice().GetHandle(), _Handle, &CacheDataSize, nullptr);

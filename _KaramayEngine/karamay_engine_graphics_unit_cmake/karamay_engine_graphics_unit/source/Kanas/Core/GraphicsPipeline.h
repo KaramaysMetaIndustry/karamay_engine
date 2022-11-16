@@ -5,40 +5,52 @@
 
 _KANAS_CORE_BEGIN
 
-class RenderPass;
+class FRenderPass;
+class FVertexShader;
+class FTessellationControlShader;
+class FTessellationEvaluationShader;
+class FGeometryShader;
+class FFragmentShader;
 
+class FMeshShader;
 
-struct GraphicsPipelineStateInitializer
+struct FGraphicsPipelineStateInitializer
 {
-	RenderPass RenderPass;
+	TSharedPtr<FRenderPass> RenderPass;
 	uint32 SubpassIndex;
+
+	TSharedPtr<FVertexShader> VertexShader{};
+	TSharedPtr<FTessellationControlShader> TescShader{};
+	TSharedPtr<FTessellationEvaluationShader> TeseShader{};
+	TSharedPtr<FGeometryShader> GeometryShader{};
+	TSharedPtr<FFragmentShader> FragmentShader{};
 };
 
-class GraphicsPipeline final : public Pipeline
+class FGraphicsPipeline final : public FPipeline
 {
+	friend class FDevice;
+
+	bool Allocate(const FGraphicsPipelineStateInitializer& InInitializer, TSharedPtr<FPipelineCache> InCache, TSharedPtr<FPipelineLayout> InLayout);
+
 public:
 
-	GraphicsPipeline(Device& InDevice);
+	FGraphicsPipeline(FDevice& InDevice);
 
-	virtual ~GraphicsPipeline();
+	virtual ~FGraphicsPipeline();
 
-	bool Allocate(PipelineCache& InCache, PipelineLayout& InLayout, const GraphicsPipelineStateInitializer& InInitializer);
+	virtual void CmdBind(FCommandBuffer& InRecorder) override;
 
-	static void AllocateCollection(const std::vector<GraphicsPipeline>& OutPipelines, Device& InDevice);
+	static void CmdDraw(FCommandBuffer& InRecorder, uint32 InVertexCount, uint32 InInstanceCount, uint32 InFirstVertex, uint32 InFirstInstance);
 
-	virtual void CmdBind(CommandBuffer& InRecorder) override;
+	static void CmdDrawIndirect(FCommandBuffer& InRecorder, FBuffer& InBuffer, uint64 InSize, uint32 InDrawCount, uint32 InStride);
 
-	static void CmdDraw(CommandBuffer& InRecorder, uint32 InVertexCount, uint32 InInstanceCount, uint32 InFirstVertex, uint32 InFirstInstance);
+	static void CmdDrawIndirectCount(FCommandBuffer& InRecorder, FBuffer& InBuffer, uint32 InOffset, FBuffer& InCountBuffer, uint64 InCountOffset, uint32 InMaxDrawCount, uint32 InStride);
 
-	static void CmdDrawIndirect(CommandBuffer& InRecorder, Buffer& InBuffer, uint64 InSize, uint32 InDrawCount, uint32 InStride);
+	static void CmdDrawIndexed(FCommandBuffer& InRecorder, uint32 InIndexCount, uint32 InInstanceCount, uint32 InFirstIndex, uint32 InVertexOffset, uint32 InFirstInstance);
 
-	static void CmdDrawIndirectCount(CommandBuffer& InRecorder, Buffer& InBuffer, uint32 InOffset, Buffer& InCountBuffer, uint64 InCountOffset, uint32 InMaxDrawCount, uint32 InStride);
+	static void CmdDrawIndexedIndirect(FCommandBuffer& InRecorder, FBuffer& InBuffer, uint64 InSize, uint32 InDrawCount, uint32 InStride);
 
-	static void CmdDrawIndexed(CommandBuffer& InRecorder, uint32 InIndexCount, uint32 InInstanceCount, uint32 InFirstIndex, uint32 InVertexOffset, uint32 InFirstInstance);
-
-	static void CmdDrawIndexedIndirect(CommandBuffer& InRecorder, Buffer& InBuffer, uint64 InSize, uint32 InDrawCount, uint32 InStride);
-
-	static void CmdDrawIndexedIndirectCount(CommandBuffer& InRecorder, Buffer& InBuffer, uint64 InOffset, Buffer& InCountBuffer, uint64 InCountOffset, uint32 InMaxDrawCount, uint32 InStride);
+	static void CmdDrawIndexedIndirectCount(FCommandBuffer& InRecorder, FBuffer& InBuffer, uint64 InOffset, FBuffer& InCountBuffer, uint64 InCountOffset, uint32 InMaxDrawCount, uint32 InStride);
 
 };
 

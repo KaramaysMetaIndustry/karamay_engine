@@ -5,21 +5,33 @@
 
 _KANAS_CORE_BEGIN
 
-class CommandBuffer;
-class Buffer;
-class ShaderModule;
-class PipelineLayout;
-class PipelineCache;
+class FCommandBuffer;
+class FBuffer;
+class FShaderModule;
+class FPipelineLayout;
+class FPipelineCache;
 
-class Pipeline : public DeviceObject<VkPipeline>
+class FPipeline : public FDeviceObject<VkPipeline>
 {
+	friend class FDevice;
+
+protected:
+
+	bool Allocate();
+
 public:
 
-	Pipeline(Device& InDevice);
+	FPipeline(FDevice& InDevice);
 
-	virtual ~Pipeline();
+	virtual ~FPipeline();
 
-	virtual void CmdBind(CommandBuffer& InRecorder);
+	virtual void CmdBind(FCommandBuffer& InRecorder);
+
+	void CmdPushConstants(FCommandBuffer& InRecorder, TVector<uint8>& InValues);
+
+	TSharedPtr<FPipelineLayout> GetLayout();
+
+	VkPipelineBindPoint GetBindPoint() const;
 
 };
 

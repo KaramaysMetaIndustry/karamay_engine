@@ -3,6 +3,8 @@
 
 #include "public/stl.h"
 
+using FString = std::string;
+
 template<typename K, typename V>
 using TPair = std::pair<K, V>;
 

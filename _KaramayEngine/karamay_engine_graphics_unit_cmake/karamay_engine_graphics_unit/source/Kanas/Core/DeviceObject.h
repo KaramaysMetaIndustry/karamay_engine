@@ -6,6 +6,7 @@
 _KANAS_CORE_BEGIN
 
 class FDevice;
+class FCommandBuffer;
 
 template<typename VkHandleT>
 class FDeviceObject : public VulkanObject<VkHandleT>

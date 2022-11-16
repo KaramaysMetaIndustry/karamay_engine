@@ -5,19 +5,28 @@
 
 _KANAS_CORE_BEGIN
 
-class DescriptorSetLayout;
+class FDescriptorSetLayout;
 
-class PipelineLayout final : public DeviceObject<VkPipelineLayout>
+class FPipelineLayout final : public FDeviceObject<VkPipelineLayout>
 {
+	friend class FDevice;
+
+	bool Allocate(
+		const TVector<TSharedPtr<FDescriptorSetLayout>>& InDescriptorSetLayouts, 
+		const TVector<VkPushConstantRange> InPushConstantRanges
+	);
+
 public:
 
-	PipelineLayout(Device& InDevice);
+	FPipelineLayout(FDevice& InDevice);
 
-	virtual ~PipelineLayout() override;
+	virtual ~FPipelineLayout() override;
 
-public:
+	TSharedPtr<FDescriptorSetLayout> GetDecriptorSetLayout(uint32 SetIndex) const;
 
-	bool Allocate(const std::vector<DescriptorSetLayout>& InDescriptorSetLayouts, const std::vector<VkPushConstantRange> InPushConstantRanges);
+private:
+
+	TVector<TSharedPtr<FDescriptorSetLayout>> DescriptorSetLayouts;
 
 };
 

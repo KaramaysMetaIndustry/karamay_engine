@@ -5,15 +5,20 @@
 
 _KANAS_CORE_BEGIN
 
-class RayTracingPipeline final : public Pipeline
+class FRayTracingPipeline final : public FPipeline
 {
+
+	friend class FDevice;
+
+	bool Allocate();
+
 public:
 
-	RayTracingPipeline(Device& InDevice);
+	FRayTracingPipeline(FDevice& InDevice);
 
-	virtual ~RayTracingPipeline();
+	virtual ~FRayTracingPipeline();
 
-	virtual void CmdBind(CommandBuffer& InRecorder) override;
+	virtual void CmdBind(FCommandBuffer& InRecorder) override;
 
 	void CmdTraceRays();
 
