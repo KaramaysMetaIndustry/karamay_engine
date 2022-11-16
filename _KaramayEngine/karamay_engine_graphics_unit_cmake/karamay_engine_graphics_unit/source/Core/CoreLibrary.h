@@ -3,6 +3,9 @@
 
 #include "public/stl.h"
 
+template<typename K, typename V>
+using TPair = std::pair<K, V>;
+
 template<typename T>
 using TUniquePtr = std::unique_ptr<T>;
 

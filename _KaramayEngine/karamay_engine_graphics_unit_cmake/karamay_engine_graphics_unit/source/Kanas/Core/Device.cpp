@@ -12,6 +12,9 @@
 #include "ImageView.h"
 #include "Framebuffer.h"
 #include "ShaderModule.h"
+#include "Sampler.h"
+#include "DescriptorPool.h"
+#include "CommandPool.h"
 
 
 bool Kanas::Core::FDevice::Allocate()
@@ -163,13 +166,26 @@ TSharedPtr<Kanas::Core::FFramebuffer> Kanas::Core::FDevice::CreateFramebuffer()
     return nullptr;
 }
 
-TSharedPtr<Kanas::Core::FShaderModule> Kanas::Core::FDevice::CreateShaderModule()
+Kanas::Core::FDescriptorPool* Kanas::Core::FDevice::CreateDescriptorPool()
+{
+    if (const auto NewDescriptorPool = MakeShared<FDescriptorPool>(*this))
+    {
+    }
+
+
+    return nullptr;
+}
+
+TSharedPtr<Kanas::Core::FShaderModule> Kanas::Core::FDevice::CreateShaderModule(const TVector<uint32>& ShaderCode)
 {
     if (const auto NewShaderModule = MakeShared<FShaderModule>(*this))
     {
-        if(NewShaderModule->)
+        if (NewShaderModule->Allocate(ShaderCode))
+        {
+            return NewShaderModule;
+        }
     }
-    return TSharedPtr<FShaderModule>();
+    return nullptr;
 }
 
 TSharedPtr<Kanas::Core::FFence> Kanas::Core::FDevice::CreateFence(bool IsDefaultSignaled)
@@ -186,13 +202,13 @@ TSharedPtr<Kanas::Core::FFence> Kanas::Core::FDevice::CreateFence(bool IsDefault
 
 TSharedPtr<Kanas::Core::FSemaphore> Kanas::Core::FDevice::CreateSemaphore()
 {
-    TSharedPtr<FSemaphore> NewSemaphore = MakeShared<FSemaphore>(*this);
-    
-    if (NewSemaphore && NewSemaphore->Allocate(VK_SEMAPHORE_TYPE_BINARY, 0))
+    if (const auto NewSemaphore = MakeShared<FSemaphore>(*this))
     {
-        return NewSemaphore;
+        if (NewSemaphore->Allocate(VK_SEMAPHORE_TYPE_BINARY, 0))
+        {
+            return NewSemaphore;
+        }
     }
-    
     return nullptr;
 }
 
@@ -208,10 +224,22 @@ TSharedPtr<Kanas::Core::FEvent> Kanas::Core::FDevice::CreateEvent()
     return nullptr;
 }
 
+TSharedPtr<Kanas::Core::FSampler> Kanas::Core::FDevice::CreateSampler()
+{
+    if (const auto NewSampler = MakeShared<FSampler>(*this))
+    {
+        if (NewSampler->Allocate())
+        {
+            return NewSampler;
+        }
+    }
+    return nullptr;
+}
+
 void Kanas::Core::FDevice::Test()
 {
-    TSharedPtr<FQueue> TransferQueue = GetQueue(0, 0);
-    TSharedPtr<FQueue> GraphicsQueue = GetQueue(1, 0);
+    const auto TransferQueue = GetQueue(0, 0);
+    const auto GraphicsQueue = GetQueue(1, 0);
 
     TVector<TSharedPtr<FSemaphore>> WaitSemaphores;
     TVector<VkPipelineStageFlags> WaitDstStageMasks;

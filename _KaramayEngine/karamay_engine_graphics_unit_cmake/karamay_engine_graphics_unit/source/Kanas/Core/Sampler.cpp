@@ -1,24 +1,9 @@
 #include "Sampler.h"
 #include "Device.h"
 
-Kanas::Core::Sampler::Sampler(Device& InDevice) :
-	DeviceObject(InDevice)
+bool Kanas::Core::FSampler::Allocate()
 {
-}
-
-Kanas::Core::Sampler::~Sampler()
-{
-	if (IsValid())
-	{
-		vkDestroySampler(GetDevice().GetHandle(), GetHandle(), nullptr);
-
-		ResetHandle();
-	}
-}
-
-bool Kanas::Core::Sampler::Allocate()
-{
-	VkSamplerCreateInfo SamplerCreateInfo;
+	VkSamplerCreateInfo SamplerCreateInfo{};
 	SamplerCreateInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
 	SamplerCreateInfo.pNext = nullptr;
 	SamplerCreateInfo.flags = {};
@@ -39,7 +24,7 @@ bool Kanas::Core::Sampler::Allocate()
 	SamplerCreateInfo.unnormalizedCoordinates = false;
 
 	VkResult Result = vkCreateSampler(GetDevice().GetHandle(), &SamplerCreateInfo, nullptr, &_Handle);
-	
+
 	if (Result == VkResult::VK_SUCCESS)
 	{
 		return true;
@@ -47,3 +32,20 @@ bool Kanas::Core::Sampler::Allocate()
 
 	return false;
 }
+
+Kanas::Core::FSampler::FSampler(FDevice& InDevice) :
+	FDeviceObject(InDevice)
+{
+}
+
+Kanas::Core::FSampler::~FSampler()
+{
+	if (IsValid())
+	{
+		vkDestroySampler(GetDevice().GetHandle(), GetHandle(), nullptr);
+
+		ResetHandle();
+	}
+}
+
+

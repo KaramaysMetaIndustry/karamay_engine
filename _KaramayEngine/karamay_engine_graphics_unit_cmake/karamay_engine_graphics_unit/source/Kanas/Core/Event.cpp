@@ -4,12 +4,12 @@
 
 bool Kanas::Core::FEvent::Allocate()
 {
-	VkEventCreateInfo EventCreateInfo;
+	VkEventCreateInfo EventCreateInfo{};
 	EventCreateInfo.sType = VK_STRUCTURE_TYPE_EVENT_CREATE_INFO;
 	EventCreateInfo.pNext = nullptr;
 	EventCreateInfo.flags = {};
 
-	VkResult Result = vkCreateEvent(GetDevice().GetHandle(), &EventCreateInfo, nullptr, &_Handle);
+	const VkResult Result = vkCreateEvent(GetDevice().GetHandle(), &EventCreateInfo, nullptr, &_Handle);
 
 	if (Result == VkResult::VK_SUCCESS)
 	{

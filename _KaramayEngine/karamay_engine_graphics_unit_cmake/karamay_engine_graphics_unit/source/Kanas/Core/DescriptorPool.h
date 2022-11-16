@@ -6,26 +6,26 @@
 _KANAS_CORE_BEGIN
 
 
-class DescriptorSet;
-class DescriptorSetLayout;
+class FDescriptorSet;
+class FDescriptorSetLayout;
 
-class DescriptorPool final : public DeviceObject<VkDescriptorPool>
+class FDescriptorPool final : public FDeviceObject<VkDescriptorPool>
 {
+	friend class FDevice;
+
+	bool Allocate(const TVector<VkDescriptorPoolSize>& InPoolSizes, uint32 MaxSets);
+
 public:
 
-	DescriptorPool(Device& InDevice);
+	FDescriptorPool(FDevice& InDevice);
 
-	virtual ~DescriptorPool();
+	virtual ~FDescriptorPool();
 
-	bool Allocate();
-
-
-	DescriptorSet* CreateDescriptorSet(DescriptorSetLayout& InSetLayout);
-
+	FDescriptorSet* CreateDescriptorSet(FDescriptorSetLayout& InSetLayout);
 
 private:
 
-	std::vector<std::unique_ptr<DescriptorSet>> DescriptorSets;
+	TVector<TUniquePtr<FDescriptorSet>> DescriptorSets;
 
 };
 

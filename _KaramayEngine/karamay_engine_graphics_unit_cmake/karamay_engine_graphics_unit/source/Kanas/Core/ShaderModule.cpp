@@ -25,7 +25,7 @@ bool Kanas::Core::FShaderModule::Allocate(const TVector<uint32>& CodeBytes)
 	ShaderModuleCreateInfo.codeSize = static_cast<uint32>(CodeBytes.size());
 	ShaderModuleCreateInfo.pCode = CodeBytes.data();
 
-	VkResult Result = vkCreateShaderModule(GetDevice().GetHandle(), &ShaderModuleCreateInfo, nullptr, &_Handle);
+	const VkResult Result = vkCreateShaderModule(GetDevice().GetHandle(), &ShaderModuleCreateInfo, nullptr, &_Handle);
 	
 	if (Result == VkResult::VK_SUCCESS)
 	{

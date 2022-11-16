@@ -50,7 +50,6 @@ public:
 
 	TSharedPtr<FQueue> GetQueue(uint32 InQueueFamilyIndex, uint32 InQueueIndex);
 	
-	
 	TSharedPtr<FBuffer> CreateBuffer(uint64 Size, FBufferUsage Usage, TSharedPtr<FConcurrentGuide> ConcurrentGuide = nullptr);
 	
 	TSharedPtr<FBufferView> CreateBufferView(TSharedPtr<FBuffer> Buffer, VkFormat Format, VkDeviceSize Offset, VkDeviceSize Range);
@@ -59,13 +58,11 @@ public:
 	
 	TSharedPtr<FImageView> CreateImageView(TSharedPtr<FImage> Image, VkImageViewType InViewType, VkFormat InFormat, const VkComponentMapping& InComponents, const VkImageSubresourceRange& InSubresourceRange);
 
-
 	TSharedPtr<FFramebuffer> CreateFramebuffer();
-
 
 	FDescriptorPool* CreateDescriptorPool();
 
-	TSharedPtr<FShaderModule> CreateShaderModule();
+	TSharedPtr<FShaderModule> CreateShaderModule(const TVector<uint32>& ShaderCode);
 	
 	TSharedPtr<FPipelineCache> CreatePipelineCache();
 	
@@ -73,9 +70,7 @@ public:
 	
 	TSharedPtr<FRenderPass> CreateRenderPass();
 
-
 	FCommandPool* CreateCommandPool();
-
 
 	TSharedPtr<FFence> CreateFence(bool IsDefaultSignaled = false);
 	
@@ -84,7 +79,6 @@ public:
 	TSharedPtr<FEvent> CreateEvent();
 	
 	TSharedPtr<FSampler> CreateSampler();
-
 
 	FPhysicalDevice& GetPhysicalDevice() const { return GPU; }
 

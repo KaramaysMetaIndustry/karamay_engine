@@ -18,13 +18,13 @@ Kanas::Core::FSemaphore::~FSemaphore()
 
 bool Kanas::Core::FSemaphore::Allocate(VkSemaphoreType InType, uint64 InInitalValue)
 {
-	VkSemaphoreTypeCreateInfo SemaphoreTypeCreateInfo;
+	VkSemaphoreTypeCreateInfo SemaphoreTypeCreateInfo{};
 	SemaphoreTypeCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO;
 	SemaphoreTypeCreateInfo.pNext = nullptr;
 	SemaphoreTypeCreateInfo.semaphoreType = InType;
 	SemaphoreTypeCreateInfo.initialValue = InInitalValue;
 
-	VkSemaphoreCreateInfo SemaphoreCreateInfo;
+	VkSemaphoreCreateInfo SemaphoreCreateInfo{};
 	SemaphoreCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 	SemaphoreCreateInfo.pNext = &SemaphoreTypeCreateInfo;
 	SemaphoreCreateInfo.flags = {};

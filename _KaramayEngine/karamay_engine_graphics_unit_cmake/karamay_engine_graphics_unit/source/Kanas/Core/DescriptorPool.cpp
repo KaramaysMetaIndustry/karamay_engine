@@ -2,12 +2,32 @@
 #include "DescriptorSet.h"
 #include "Device.h"
 
-Kanas::Core::DescriptorPool::DescriptorPool(Device& InDevice) :
-	DeviceObject(InDevice)
+bool Kanas::Core::FDescriptorPool::Allocate(const TVector<VkDescriptorPoolSize>& InPoolSizes, uint32 MaxSets)
+{
+	VkDescriptorPoolCreateInfo DescriptorPoolCreateInfo{};
+	DescriptorPoolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+	DescriptorPoolCreateInfo.pNext = nullptr;
+	DescriptorPoolCreateInfo.flags = {};
+	DescriptorPoolCreateInfo.pPoolSizes = InPoolSizes.data();
+	DescriptorPoolCreateInfo.poolSizeCount = static_cast<uint32>(InPoolSizes.size());
+	DescriptorPoolCreateInfo.maxSets = MaxSets;
+
+	const VkResult Result = vkCreateDescriptorPool(GetDevice().GetHandle(), &DescriptorPoolCreateInfo, nullptr, &_Handle);
+
+	if (Result == VK_SUCCESS)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+Kanas::Core::FDescriptorPool::FDescriptorPool(FDevice& InDevice) :
+	FDeviceObject(InDevice)
 {
 }
 
-Kanas::Core::DescriptorPool::~DescriptorPool()
+Kanas::Core::FDescriptorPool::~FDescriptorPool()
 {
 	if (IsValid())
 	{
@@ -17,33 +37,11 @@ Kanas::Core::DescriptorPool::~DescriptorPool()
 	}
 }
 
-bool Kanas::Core::DescriptorPool::Allocate()
+
+
+Kanas::Core::FDescriptorSet* Kanas::Core::FDescriptorPool::CreateDescriptorSet(FDescriptorSetLayout& InSetLayout)
 {
-	VkDescriptorPoolSize DescriptorPoolSize;
-	DescriptorPoolSize.type;
-	DescriptorPoolSize.descriptorCount;
-
-	VkDescriptorPoolCreateInfo DescriptorPoolCreateInfo;
-	DescriptorPoolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-	DescriptorPoolCreateInfo.pNext = nullptr;
-	DescriptorPoolCreateInfo.flags = {};
-	DescriptorPoolCreateInfo.pPoolSizes = &DescriptorPoolSize;
-	DescriptorPoolCreateInfo.poolSizeCount = 1;
-	DescriptorPoolCreateInfo.maxSets;
-
-	VkResult Result = vkCreateDescriptorPool(GetDevice().GetHandle(), &DescriptorPoolCreateInfo, nullptr, &_Handle);
-	
-	if (Result == VkResult::VK_SUCCESS)
-	{
-		return true;
-	}
-	
-	return false;
-}
-
-Kanas::Core::DescriptorSet* Kanas::Core::DescriptorPool::CreateDescriptorSet(DescriptorSetLayout& InSetLayout)
-{
-	const auto NewDescriptorSet = std::make_unique<DescriptorSet>(GetDevice(), *this);
+	const auto NewDescriptorSet = std::make_unique<FDescriptorSet>(GetDevice(), *this);
 	
 	if (NewDescriptorSet && NewDescriptorSet->Allocate(InSetLayout))
 	{
