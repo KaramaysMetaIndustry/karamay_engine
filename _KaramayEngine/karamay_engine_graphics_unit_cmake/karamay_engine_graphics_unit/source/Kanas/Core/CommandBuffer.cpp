@@ -4,7 +4,7 @@
 #include "RenderPass.h"
 #include "Framebuffer.h"
 
-bool Kanas::Core::FCommandBuffer::Allocate(ECommandBuffeLevel InCommandBufferLevel)
+bool Kanas::Core::FCommandBuffer::Allocate(ECommandBufferLevel InCommandBufferLevel)
 {
     VkCommandBufferAllocateInfo CommandBufferAllocateInfo;
     CommandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;

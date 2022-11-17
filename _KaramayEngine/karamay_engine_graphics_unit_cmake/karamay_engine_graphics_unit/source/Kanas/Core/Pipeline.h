@@ -10,6 +10,7 @@ class FBuffer;
 class FShaderModule;
 class FPipelineLayout;
 class FPipelineCache;
+class FDescriptorSet;
 
 class FPipeline : public FDeviceObject<VkPipeline>
 {
@@ -23,7 +24,7 @@ public:
 
 	FPipeline(FDevice& InDevice);
 
-	virtual ~FPipeline();
+	virtual ~FPipeline() override;
 
 	virtual void CmdBind(FCommandBuffer& InRecorder);
 
@@ -32,6 +33,11 @@ public:
 	TSharedPtr<FPipelineLayout> GetLayout();
 
 	VkPipelineBindPoint GetBindPoint() const;
+
+
+private:
+
+	TVector<TSharedPtr<FDescriptorSet>> DescriptorSets;
 
 };
 

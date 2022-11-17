@@ -5,6 +5,8 @@
 
 _KANAS_CORE_BEGIN
 
+class FSampler;
+
 class FDescriptorSetLayout final : public FDeviceObject<VkDescriptorSetLayout>
 {
 	bool Allocate();

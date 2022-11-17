@@ -27,3 +27,10 @@ void Kanas::Core::FPipeline::CmdPushConstants(FCommandBuffer& InRecorder, TVecto
 {
     vkCmdPushConstants(InRecorder.GetHandle(), GetLayout()->GetHandle(), 0, 0, 1024, InValues.data());
 }
+
+void Kanas::Core::FPipeline::CmdBindDescriptorSets(FCommandBuffer& InRecorder)
+{
+    TVector<VkDescriptorSet> SetHandles;
+
+    vkCmdBindDescriptorSets(InRecorder.GetHandle(), GetBindPoint(), GetLayout()->GetHandle(), 0, SetHandles.size(), SetHandles.data(), 0, nullptr);
+}

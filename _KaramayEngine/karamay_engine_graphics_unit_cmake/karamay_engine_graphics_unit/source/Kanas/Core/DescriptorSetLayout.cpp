@@ -6,14 +6,11 @@ bool Kanas::Core::FDescriptorSetLayout::Allocate()
 {
     TSharedPtr<FSampler> ImmutableSampler;
 
-  
-
-
     // Sampler
     // uniform sampler
     
     // CombinedImageSampler
-    // unform sampler2D, sampler3D ...
+    // uniform sampler2D, sampler3D ...
     
     // SampledImage
     // uniform texture2D, texture3D ...
@@ -42,11 +39,13 @@ bool Kanas::Core::FDescriptorSetLayout::Allocate()
     // InputAttachment
     // uniform subpassInput
 
+    VkPipelineStageFlags StageFlags = 0;
+
     VkDescriptorSetLayoutBinding Binding;
     Binding.binding = 0;
     Binding.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
     Binding.descriptorCount = 1;
-    Binding.stageFlags;
+    Binding.stageFlags = StageFlags;
     Binding.pImmutableSamplers;
 
     TVector<VkDescriptorSetLayoutBinding> VkDescriptorSetLayoutBindings;

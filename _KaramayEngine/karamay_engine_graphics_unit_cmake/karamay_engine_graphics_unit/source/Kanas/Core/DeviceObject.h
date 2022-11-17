@@ -18,9 +18,7 @@ public:
 		Device(InDevice)
 	{}
 
-	virtual ~FDeviceObject()
-	{
-	}
+	virtual ~FDeviceObject() {}
 
 private:
 

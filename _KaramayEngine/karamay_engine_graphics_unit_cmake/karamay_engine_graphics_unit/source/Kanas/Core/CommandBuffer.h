@@ -17,7 +17,7 @@ enum class ECommandBufferState : uint8
 	Invalid
 };
 
-enum class ECommandBuffeLevel
+enum class ECommandBufferLevel
 {
 	Primary = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
 	Secondary = VK_COMMAND_BUFFER_LEVEL_SECONDARY
@@ -28,13 +28,13 @@ class FCommandBuffer : public FDeviceObject<VkCommandBuffer>
 
 	friend class FCommandPool;
 
-	bool Allocate(ECommandBuffeLevel InCommandBufferLevel);
+	bool Allocate(ECommandBufferLevel InCommandBufferLevel);
 
 	ECommandBufferState State;
 
 public:
 
-	FCommandBuffer(FDevice& InDevice, FCommandBuffer& InCommandPool);
+	FCommandBuffer(FDevice& InDevice, FCommandPool& InCommandPool);
 
 	virtual ~FCommandBuffer() override;
 

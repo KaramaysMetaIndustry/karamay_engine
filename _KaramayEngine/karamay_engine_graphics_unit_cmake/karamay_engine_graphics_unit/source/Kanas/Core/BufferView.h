@@ -22,7 +22,7 @@ public:
 
 	FBufferView& operator=(const FBufferView&) = delete;
 
-	virtual ~FBufferView();
+	virtual ~FBufferView() override;
 
 private:
 

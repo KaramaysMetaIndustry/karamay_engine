@@ -22,7 +22,7 @@ public:
 
 	virtual ~FPipelineLayout() override;
 
-	TSharedPtr<FDescriptorSetLayout> GetDecriptorSetLayout(uint32 SetIndex) const;
+	TSharedPtr<FDescriptorSetLayout> GetDescriptorSetLayout(uint32 SetIndex) const;
 
 private:
 
