@@ -8,6 +8,7 @@ _KANAS_CORE_BEGIN
 class FCommandBuffer;
 class FBuffer;
 class FImageView;
+class FDeviceMemory;
 
 class FImage final : public FDeviceObject<VkImage>, public std::enable_shared_from_this<FImage>
 {

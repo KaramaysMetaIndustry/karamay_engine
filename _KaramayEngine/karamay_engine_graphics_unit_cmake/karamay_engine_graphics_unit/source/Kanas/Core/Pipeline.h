@@ -30,10 +30,11 @@ public:
 
 	void CmdPushConstants(FCommandBuffer& InRecorder, TVector<uint8>& InValues);
 
+	void CmdBindDescriptorSets(FCommandBuffer& InRecorder);
+
 	TSharedPtr<FPipelineLayout> GetLayout();
 
 	VkPipelineBindPoint GetBindPoint() const;
-
 
 private:
 

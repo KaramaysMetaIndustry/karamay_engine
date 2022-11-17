@@ -18,7 +18,7 @@ public:
 
 	FDescriptorSet(FDevice& InDevice, FDescriptorPool& InPool);
 
-	virtual ~FDescriptorSet();
+	virtual ~FDescriptorSet() override;
 
 	TSharedPtr<FDescriptorSetLayout> GetLayout() const;
 

@@ -2,6 +2,7 @@
 #include "Device.h"
 #include "PipelineCache.h"
 #include "CommandBuffer.h"
+#include "DescriptorSet.h"
 #include "PipelineLayout.h"
 
 Kanas::Core::FPipeline::FPipeline(FDevice& InDevice) :
@@ -30,7 +31,13 @@ void Kanas::Core::FPipeline::CmdPushConstants(FCommandBuffer& InRecorder, TVecto
 
 void Kanas::Core::FPipeline::CmdBindDescriptorSets(FCommandBuffer& InRecorder)
 {
-    TVector<VkDescriptorSet> SetHandles;
+    TVector<VkDescriptorSet> DescriptorSetHandles;
+    DescriptorSetHandles.reserve(DescriptorSets.size());
 
-    vkCmdBindDescriptorSets(InRecorder.GetHandle(), GetBindPoint(), GetLayout()->GetHandle(), 0, SetHandles.size(), SetHandles.data(), 0, nullptr);
+	for(const auto& DescriptorSet : DescriptorSets)
+    {
+        DescriptorSetHandles.emplace_back(DescriptorSet->GetHandle());
+    }
+
+    vkCmdBindDescriptorSets(InRecorder.GetHandle(), GetBindPoint(), GetLayout()->GetHandle(), 0, DescriptorSetHandles.size(), DescriptorSetHandles.data(), 0, nullptr);
 }

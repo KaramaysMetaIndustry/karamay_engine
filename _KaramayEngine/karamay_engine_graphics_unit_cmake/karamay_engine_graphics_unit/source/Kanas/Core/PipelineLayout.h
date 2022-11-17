@@ -13,7 +13,7 @@ class FPipelineLayout final : public FDeviceObject<VkPipelineLayout>
 
 	bool Allocate(
 		const TVector<TSharedPtr<FDescriptorSetLayout>>& InDescriptorSetLayouts, 
-		const TVector<VkPushConstantRange> InPushConstantRanges
+		const TVector<VkPushConstantRange>& InPushConstantRanges = {}
 	);
 
 public:
