@@ -13,6 +13,8 @@ class FDeviceObject : public VulkanObject<VkHandleT>
 {
 
 public:
+
+	using Handle_T = VkHandleT;
 	
 	FDeviceObject(FDevice& InDevice) :
 		Device(InDevice)

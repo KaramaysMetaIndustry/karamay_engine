@@ -10,6 +10,18 @@ class FDescriptorSetLayout;
 class FDescriptorUpdateTemplate;
 class FPipeline;
 
+
+struct FDescriptorImageInfo
+{
+	TSharedPtr<FImageView> ImageView;
+	TSharedPtr<FSampler> Sampler;
+};
+
+struct FDescriptorBufferInfo
+{
+
+};
+
 class FDescriptorSet final : public FDeviceObject<VkDescriptorSet>
 {
 	bool Allocate(TSharedPtr<FDescriptorSetLayout> InLayout);
@@ -20,24 +32,17 @@ public:
 
 	virtual ~FDescriptorSet() override;
 
-	TSharedPtr<FDescriptorSetLayout> GetLayout() const;
+	void Write(uint32 BindingIndex, uint32 ArrayIndex, const TVector<FDescriptorImageInfo>& DescriptorImageInfos);
 
-	void Update();
-
-	void UpdateImage();
-
-	void UpdateImageView();
-
-	void UpdateBuffer();
-
-	void UpdateBufferView();
+	void Copy(uint32 SrcBindingIndex, uint32 SrcArrayIndex, TSharedPtr<FDescriptorSet> DstDescriptorSet, uint32 DstBindingIndex, uint32 DstArrayIndex, uint32 CopyNum);
 
 	void Update(TSharedPtr<FDescriptorUpdateTemplate> InTemplate);
-
 	
-	void CmdBind(FCommandBuffer& InRecorder, TSharedPtr<FPipeline> InPipeline);
 	void CmdPushDescriptorSet(FCommandBuffer& InRecorder);
+
 	void CmdPushDescriptorSetWithTemplate(FCommandBuffer& InRecorder);
+	
+	TSharedPtr<FDescriptorSetLayout> GetLayout() const;
 
 private:
 

@@ -26,6 +26,11 @@ TSharedPtr<Kanas::Core::FDescriptorSetLayout> Kanas::Core::FPipelineLayout::GetD
     return nullptr;
 }
 
+const TVector<TSharedPtr<Kanas::Core::FDescriptorSetLayout>>& Kanas::Core::FPipelineLayout::GetDescriptorSetLayouts() const
+{
+    return DescriptorSetLayouts;
+}
+
 bool Kanas::Core::FPipelineLayout::Allocate(const TVector<TSharedPtr<FDescriptorSetLayout>>& InDescriptorSetLayouts, const TVector<VkPushConstantRange>& InPushConstantRanges)
 {
     // layout(push_constant) uniform BlockName {

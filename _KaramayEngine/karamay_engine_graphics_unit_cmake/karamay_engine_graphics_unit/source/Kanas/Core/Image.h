@@ -10,11 +10,11 @@ class FBuffer;
 class FImageView;
 class FDeviceMemory;
 
-class FImage final : public FDeviceObject<VkImage>, public std::enable_shared_from_this<FImage>
+class FImage final : public FDeviceObject<VkImage>
 {
 	friend class FDevice;
 
-	bool Allocate(VkImageType InType, VkFormat InFormat, VkExtent3D InExtent, uint32 InMips, uint32 InLayers, VkSampleCountFlagBits InSamples, VkImageTiling InTileing, FImageUsage Usage, VkImageLayout InInitalLayout, TSharedPtr<FConcurrentGuide> ConcurrentGuide = nullptr);
+	bool Allocate(VkImageType InType, VkFormat InFormat, VkExtent3D InExtent, uint32 InMips, uint32 InLayers, VkSampleCountFlagBits InSamples, VkImageTiling InTileing, FImageUsageFlags UsageFlags, VkImageLayout InInitalLayout, TSharedPtr<FConcurrentGuide> ConcurrentGuide = nullptr);
 
 public:
 
@@ -50,10 +50,6 @@ private:
 public:
 
 	VkImageLayout GetLayout();
-
-	TSharedPtr<FImageView> CreateView(VkImageViewType InViewType, VkFormat InFormat, const VkComponentMapping& InComponents, const VkImageSubresourceRange& InSubresourceRange);
-
-
 
 	/*VK_IMAGE_USAGE_TRANSFER_SRC_BIT = 0x00000001,
     VK_IMAGE_USAGE_TRANSFER_DST_BIT = 0x00000002,

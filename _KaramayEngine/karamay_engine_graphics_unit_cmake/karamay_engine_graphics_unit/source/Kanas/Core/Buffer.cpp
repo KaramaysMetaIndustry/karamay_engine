@@ -6,7 +6,7 @@
 #include "Image.h"
 #include "DeviceMemory.h"
 
-bool Kanas::Core::FBuffer::Allocate(uint64 Size, FBufferUsage Usage, TSharedPtr<FConcurrentGuide> ConcurrentGuide)
+bool Kanas::Core::FBuffer::Allocate(uint64 Size, FBufferUsageFlags UsageFlags, TSharedPtr<FConcurrentGuide> InConcurrentGuide)
 {
 	if (Size == 0)
 	{
@@ -18,12 +18,12 @@ bool Kanas::Core::FBuffer::Allocate(uint64 Size, FBufferUsage Usage, TSharedPtr<
 	BufferCreateInfo.pNext = nullptr;
 	BufferCreateInfo.flags = {} ;
 	BufferCreateInfo.size = Size;
-	BufferCreateInfo.usage = Usage.GetFlags();
+	BufferCreateInfo.usage = UsageFlags.Get();
 	
-	if (ConcurrentGuide && ConcurrentGuide->DoesSupportConcurrency())
+	if (InConcurrentGuide && InConcurrentGuide->DoesSupportConcurrency())
 	{
 		TVector<uint32> QueueFamilyIndices;
-		ConcurrentGuide->GetConcurrentFamilyIndices(QueueFamilyIndices);
+		InConcurrentGuide->GetConcurrentFamilyIndices(QueueFamilyIndices);
 		// family index count must > 1
 		BufferCreateInfo.sharingMode = VK_SHARING_MODE_CONCURRENT;
 		BufferCreateInfo.queueFamilyIndexCount = static_cast<uint32>(QueueFamilyIndices.size());

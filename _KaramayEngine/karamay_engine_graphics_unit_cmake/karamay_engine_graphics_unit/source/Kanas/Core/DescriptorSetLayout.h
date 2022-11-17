@@ -17,7 +17,7 @@ public:
 
 	virtual ~FDescriptorSetLayout();
 
-	void GetBindingInfo(uint32 Binding) const;
+	VkDescriptorSetLayoutBinding* GetBindingInfo(uint32 Binding) const;
 
 private:
 

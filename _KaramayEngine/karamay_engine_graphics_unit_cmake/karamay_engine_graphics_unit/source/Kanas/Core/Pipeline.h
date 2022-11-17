@@ -5,40 +5,52 @@
 
 _KANAS_CORE_BEGIN
 
-class FCommandBuffer;
 class FBuffer;
 class FShaderModule;
 class FPipelineLayout;
 class FPipelineCache;
 class FDescriptorSet;
+class FCommandBuffer;
 
-class FPipeline : public FDeviceObject<VkPipeline>
+class FPipelineConstants
 {
-	friend class FDevice;
-
-protected:
-
-	bool Allocate();
 
 public:
 
-	FPipeline(FDevice& InDevice);
+	uint8* GetData();
+
+	uint64 GetSize();
+};
+
+
+class FPipeline : public FDeviceObject<VkPipeline>
+{
+public:
+
+	FPipeline(FDevice& InDevice, VkPipelineBindPoint InBindPoint);
+
+	FPipeline(const FDevice&) = delete;
+	FPipeline(FDevice&& Other);
+
+	FPipeline& operator=(const FDevice&) = delete;
 
 	virtual ~FPipeline() override;
 
-	virtual void CmdBind(FCommandBuffer& InRecorder);
-
-	void CmdPushConstants(FCommandBuffer& InRecorder, TVector<uint8>& InValues);
+	void CmdBind(FCommandBuffer& InRecorder);
 
 	void CmdBindDescriptorSets(FCommandBuffer& InRecorder);
 
-	TSharedPtr<FPipelineLayout> GetLayout();
+	void CmdPushConstants(FCommandBuffer& InRecorder);
 
-	VkPipelineBindPoint GetBindPoint() const;
+	TSharedPtr<FPipelineLayout> GetLayout() const;
 
 private:
 
-	TVector<TSharedPtr<FDescriptorSet>> DescriptorSets;
+	TSharedPtr<FPipelineLayout> Layout;
+
+	VkPipelineBindPoint BindPoint;
+
+	TSharedPtr<FPipelineConstants> Constants;
 
 };
 

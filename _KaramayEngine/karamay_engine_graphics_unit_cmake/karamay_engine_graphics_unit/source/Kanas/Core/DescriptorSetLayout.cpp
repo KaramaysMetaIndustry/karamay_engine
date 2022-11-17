@@ -18,7 +18,6 @@ bool Kanas::Core::FDescriptorSetLayout::Allocate()
     // StorageImage 
     // uniform image2D, image3D ...
     
-
     // UniformTexelBuffer
     // uniform textureBuffer 
     
@@ -35,20 +34,43 @@ bool Kanas::Core::FDescriptorSetLayout::Allocate()
     // UniformBufferDynamic
     // StorageBufferDynamic
     
-    
     // InputAttachment
     // uniform subpassInput
 
-    VkPipelineStageFlags StageFlags = 0;
+    FShaderStageFlags StageFlags;
+    StageFlags.SetAllGraphics();
 
-    VkDescriptorSetLayoutBinding Binding;
-    Binding.binding = 0;
-    Binding.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
-    Binding.descriptorCount = 1;
-    Binding.stageFlags = StageFlags;
-    Binding.pImmutableSamplers;
+    struct FDescriptorSetLayoutBinding
+    {
+        uint32 Count{ 0 };
 
+        EDescriptorType Type{ EDescriptorType::SampledImage };
+
+        FShaderStageFlags Stages{};
+
+        TVector<TSharedPtr<FSampler>> ImmutableSamplers;
+    };
+
+    TVector<FDescriptorSetLayoutBinding> Bindings;
     TVector<VkDescriptorSetLayoutBinding> VkDescriptorSetLayoutBindings;
+
+    for (const auto& Binding : Bindings)
+    {
+        FDescriptorSetLayoutBinding SetLayoutBinding
+        {
+            .Count = 4,
+            .Type = EDescriptorType::SampledImage,
+            .Stages = FShaderStageFlags().SetAllGraphics()
+        };
+
+        VkDescriptorSetLayoutBinding VkBinding;
+        VkBinding.binding = 0;
+        VkBinding.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+        VkBinding.descriptorCount = 1;
+        VkBinding.stageFlags = StageFlags.Get();
+        VkBinding.pImmutableSamplers;
+    }
+    
 
     VkDescriptorSetLayoutCreateInfo DescriptorSetLayoutCreateInfo{};
     DescriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
@@ -74,6 +96,12 @@ Kanas::Core::FDescriptorSetLayout::FDescriptorSetLayout(FDevice& InDevice) :
 
 Kanas::Core::FDescriptorSetLayout::~FDescriptorSetLayout()
 {
+    if (IsValid())
+    {
+        vkDestroyDescriptorSetLayout(GetDevice().GetHandle(), GetHandle(), nullptr);
+
+        ResetHandle();
+    }
 }
 
 

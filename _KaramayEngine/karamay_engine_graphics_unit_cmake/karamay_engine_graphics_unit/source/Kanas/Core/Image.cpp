@@ -6,7 +6,7 @@
 #include "Buffer.h"
 #include "CommandBuffer.h"
 
-bool Kanas::Core::FImage::Allocate(VkImageType InType, VkFormat InFormat, VkExtent3D InExtent, uint32 InMips, uint32 InLayers, VkSampleCountFlagBits InSamples, VkImageTiling InTileing, FImageUsage Usage, VkImageLayout InInitalLayout, TSharedPtr<FConcurrentGuide> ConcurrentGuide)
+bool Kanas::Core::FImage::Allocate(VkImageType InType, VkFormat InFormat, VkExtent3D InExtent, uint32 InMips, uint32 InLayers, VkSampleCountFlagBits InSamples, VkImageTiling InTileing, FImageUsageFlags Usage, VkImageLayout InInitalLayout, TSharedPtr<FConcurrentGuide> ConcurrentGuide)
 {
 	VkImageCreateInfo ImageCreateInfo{};
 	ImageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -19,7 +19,7 @@ bool Kanas::Core::FImage::Allocate(VkImageType InType, VkFormat InFormat, VkExte
 	ImageCreateInfo.arrayLayers = InLayers;
 	ImageCreateInfo.samples = InSamples;
 	ImageCreateInfo.tiling = InTileing;
-	ImageCreateInfo.usage = Usage.GetFlags();
+	ImageCreateInfo.usage = Usage.Get();
 	
 	if (ConcurrentGuide && ConcurrentGuide->DoesSupportConcurrency())
 	{
@@ -37,9 +37,9 @@ bool Kanas::Core::FImage::Allocate(VkImageType InType, VkFormat InFormat, VkExte
 	
 	ImageCreateInfo.initialLayout = InInitalLayout;
 
-	const VkResult Result = vkCreateImage(GetDevice().GetHandle(), &ImageCreateInfo, nullptr, &_Handle);
+	const VkResult ImageCreationResult = vkCreateImage(GetDevice().GetHandle(), &ImageCreateInfo, nullptr, &_Handle);
 
-	if (Result == VkResult::VK_SUCCESS)
+	if (ImageCreationResult == VK_SUCCESS)
 	{
 		VkMemoryRequirements MemoryRequirements;
 		vkGetImageMemoryRequirements(GetDevice().GetHandle(), GetHandle(), &MemoryRequirements);
@@ -51,12 +51,11 @@ bool Kanas::Core::FImage::Allocate(VkImageType InType, VkFormat InFormat, VkExte
 		if (NewMem && NewMem->Allocate(MemAllocSize, MemTypeIndex))
 		{
 			const VkDeviceSize MemOffset = 0;
-			const VkResult BindImageResult = vkBindImageMemory(GetDevice().GetHandle(), GetHandle(), Mem->GetHandle(), MemOffset);
+			const VkResult ImageBindingResult = vkBindImageMemory(GetDevice().GetHandle(), GetHandle(), Mem->GetHandle(), MemOffset);
 
-			if (BindImageResult == VkResult::VK_SUCCESS)
+			if (ImageBindingResult == VK_SUCCESS)
 			{
-
-				Mem = std::move(NewMem);
+				Mem = MoveTemp(NewMem);
 				return true;
 			}
 		}
@@ -85,7 +84,7 @@ Kanas::Core::FImage::~FImage()
 	}
 }
 
-void Kanas::Core::FImage::CmdClear(FCommandBuffer& InRecorder, const VkClearColorValue& InValue, const std::vector<VkImageSubresourceRange>& InRanges)
+void Kanas::Core::FImage::CmdClear(FCommandBuffer& InRecorder, const VkClearColorValue& InValue, const TVector<VkImageSubresourceRange>& InRanges)
 {
 	vkCmdClearColorImage(InRecorder.GetHandle(), GetHandle(), Layout, &InValue, static_cast<uint32>(InRanges.size()), InRanges.data());
 }
@@ -112,22 +111,10 @@ void Kanas::Core::FImage::CmdBlit(FCommandBuffer& InRecorder, FImage& InDstImage
 
 void Kanas::Core::FImage::CmdResolve(FCommandBuffer& InRecorder, FImage& InDstImage, const TVector<VkImageResolve>& InRegions)
 {
-	vkCmdResolveImage(InRecorder.GetHandle(), GetHandle(), Layout, InDstImage.GetHandle(), InDstImage.GetLayout(), static_cast<uint32>(InRegions.size()), InRegions.data());;
+	vkCmdResolveImage(InRecorder.GetHandle(), GetHandle(), Layout, InDstImage.GetHandle(), InDstImage.GetLayout(), static_cast<uint32>(InRegions.size()), InRegions.data());
 }
 
 VkImageLayout Kanas::Core::FImage::GetLayout()
 {
 	return Layout;
-}
-
-Kanas::Core::TSharedPtr<Kanas::Core::FImageView> Kanas::Core::FImage::CreateView(VkImageViewType InViewType, VkFormat InFormat, const VkComponentMapping& InComponents, const VkImageSubresourceRange& InSubresourceRange)
-{
-	TSharedPtr<FImageView> NewImageView = MakeShared<FImageView>(GetDevice());
-	
-	if (NewImageView && NewImageView->Allocate(shared_from_this(), InViewType, InFormat, InComponents, InSubresourceRange))
-	{
-		return NewImageView;
-	}
-
-	return nullptr;
 }

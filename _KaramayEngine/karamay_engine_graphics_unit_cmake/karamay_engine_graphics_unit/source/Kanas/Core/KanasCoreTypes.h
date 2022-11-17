@@ -33,6 +33,18 @@ private:
 
 const FConcurrentGuide& FConcurrentGuide::StaticConstRef = FConcurrentGuide({});
 
+template<typename DeviceObject_T, typename Handle_T = DeviceObject_T::Handle_T>
+static void CollectDeviceObjectHandles(const TVector<TSharedPtr<DeviceObject_T>>& Objects, TVector<Handle_T>& OutHandles)
+{
+	OutHandles.reserve(Objects.size());
+
+	for (const auto& Object : Objects)
+	{
+		OutHandles.emplace_back(Object->GetHandle());
+	}
+}
+
+
 _KANAS_CORE_END
 
 #endif

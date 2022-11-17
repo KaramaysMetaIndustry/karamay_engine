@@ -6,6 +6,7 @@
 #include "PipelineLayout.h"
 #include "RenderPass.h"
 #include "ShaderModule.h"
+#include "Shader.h"
 
 Kanas::Core::FGraphicsPipeline::FGraphicsPipeline(FDevice& InDevice) :
     FPipeline(InDevice)
@@ -16,26 +17,32 @@ Kanas::Core::FGraphicsPipeline::~FGraphicsPipeline()
 {
 }
 
-bool Kanas::Core::FGraphicsPipeline::Allocate(const FGraphicsPipelineStateInitializer& InInitializer, TSharedPtr<FPipelineCache> InCache, TSharedPtr<FPipelineLayout> InLayout)
+bool Kanas::Core::FGraphicsPipeline::Allocate(const FGraphicsPipelineStateInitializer& InInitializer, TSharedPtr<FPipelineLayout> InLayout, TSharedPtr<FPipelineCache> InCache)
 {
-    TSharedPtr<FShaderModule> ShaderModule;
-
-    VkSpecializationInfo SpecializationInfo{};
-    SpecializationInfo.mapEntryCount;
-    SpecializationInfo.pMapEntries;
-    SpecializationInfo.dataSize;
-    SpecializationInfo.pData;
-
-    VkPipelineShaderStageCreateInfo PipelineShaderStageCreateInfo{};
-    PipelineShaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-    PipelineShaderStageCreateInfo.pNext = nullptr;
-    PipelineShaderStageCreateInfo.flags = {};
-    PipelineShaderStageCreateInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
-    PipelineShaderStageCreateInfo.module = ShaderModule->GetHandle();
-    PipelineShaderStageCreateInfo.pName = "Main";
-    PipelineShaderStageCreateInfo.pSpecializationInfo = &SpecializationInfo;
+    TVector<TSharedPtr<FShader>> Shaders;
+    InInitializer.GetShaders(Shaders);
 
     TVector<VkPipelineShaderStageCreateInfo> ShaderStageCreateInfos{};
+
+    for (const auto& Shader : Shaders)
+    {
+        VkSpecializationInfo SpecializationInfo{};
+        SpecializationInfo.mapEntryCount;
+        SpecializationInfo.pMapEntries;
+        SpecializationInfo.dataSize;
+        SpecializationInfo.pData;
+
+        VkPipelineShaderStageCreateInfo ShaderStageCreateInfo{};
+        ShaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+        ShaderStageCreateInfo.pNext = nullptr;
+        ShaderStageCreateInfo.flags = {};
+        ShaderStageCreateInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+        ShaderStageCreateInfo.module = Shader->GetShaderModule()->GetHandle();
+        ShaderStageCreateInfo.pName = Shader->GetName().c_str();
+        ShaderStageCreateInfo.pSpecializationInfo = &SpecializationInfo;
+
+        ShaderStageCreateInfos.emplace_back(ShaderStageCreateInfo);
+    }
     
     TVector<VkVertexInputAttributeDescription> AttributeDescriptions;
     TVector<VkVertexInputBindingDescription> BindingDescriptions;
@@ -62,8 +69,8 @@ bool Kanas::Core::FGraphicsPipeline::Allocate(const FGraphicsPipelineStateInitia
     TessellationStateCreateInfo.flags = {};
     TessellationStateCreateInfo.patchControlPoints = 0;
 
-   TVector<VkViewport> Viewports;
-   TVector<VkRect2D> Scissors;
+    TVector<VkViewport> Viewports;
+    TVector<VkRect2D> Scissors;
 
     VkPipelineViewportStateCreateInfo ViewportStateCreateInfo;
     ViewportStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -106,13 +113,13 @@ bool Kanas::Core::FGraphicsPipeline::Allocate(const FGraphicsPipelineStateInitia
     VkStencilOpState Front;
     VkStencilOpState Back;
 
-    VkPipelineDepthStencilStateCreateInfo DepthStencilStateCreateInfo;
+    VkPipelineDepthStencilStateCreateInfo DepthStencilStateCreateInfo{};
     DepthStencilStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
     DepthStencilStateCreateInfo.pNext = nullptr;
-    DepthStencilStateCreateInfo.flags;
+    DepthStencilStateCreateInfo.flags = {};
     DepthStencilStateCreateInfo.depthTestEnable = false;
     DepthStencilStateCreateInfo.depthWriteEnable = false;
-    DepthStencilStateCreateInfo.depthCompareOp = VkCompareOp::VK_COMPARE_OP_ALWAYS;
+    DepthStencilStateCreateInfo.depthCompareOp = VK_COMPARE_OP_ALWAYS;
     DepthStencilStateCreateInfo.depthBoundsTestEnable = false;
     DepthStencilStateCreateInfo.stencilTestEnable = false;
     DepthStencilStateCreateInfo.front = Front;
@@ -145,7 +152,7 @@ bool Kanas::Core::FGraphicsPipeline::Allocate(const FGraphicsPipelineStateInitia
     VkGraphicsPipelineCreateInfo PipelineCreateInfo{};
     PipelineCreateInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
     PipelineCreateInfo.pNext = nullptr;
-    PipelineCreateInfo.flags;
+    PipelineCreateInfo.flags = {};
     PipelineCreateInfo.stageCount = static_cast<uint32>(ShaderStageCreateInfos.size());
     PipelineCreateInfo.pStages = ShaderStageCreateInfos.data();
     PipelineCreateInfo.pVertexInputState = &VertexInputStateCreateInfo;
@@ -157,13 +164,13 @@ bool Kanas::Core::FGraphicsPipeline::Allocate(const FGraphicsPipelineStateInitia
     PipelineCreateInfo.pDepthStencilState = &DepthStencilStateCreateInfo;
     PipelineCreateInfo.pColorBlendState = &ColorBlendStateCreateInfo;
     PipelineCreateInfo.pDynamicState = &DynamicStateCreateInfo;
-    PipelineCreateInfo.layout = InLayout.GetHandle();
+    PipelineCreateInfo.layout = InLayout->GetHandle();
     PipelineCreateInfo.renderPass = InInitializer.RenderPass->GetHandle();
     PipelineCreateInfo.subpass = InInitializer.SubpassIndex;
     PipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE;
     PipelineCreateInfo.basePipelineIndex = -1;
 
-    const VkResult GraphicsPipelineCreationResult = vkCreateGraphicsPipelines(GetDevice().GetHandle(), InCache.GetHandle(), 1, &_PipelineCreateInfo, nullptr, &_Handle);
+    const VkResult GraphicsPipelineCreationResult = vkCreateGraphicsPipelines(GetDevice().GetHandle(), InCache->GetHandle(), 1, &PipelineCreateInfo, nullptr, &_Handle);
 
     if (GraphicsPipelineCreationResult == VK_SUCCESS)
     {
@@ -173,9 +180,17 @@ bool Kanas::Core::FGraphicsPipeline::Allocate(const FGraphicsPipelineStateInitia
     return false;
 }
 
-void Kanas::Core::FGraphicsPipeline::CmdBind(FCommandBuffer& InRecorder)
+void Kanas::Core::FGraphicsPipeline::CmdBindIndexBuffer(FCommandBuffer& InRecorder, TSharedPtr<FIndexBuffer> IndexBuffer)
 {
-    vkCmdBindPipeline(InRecorder.GetHandle(), VK_PIPELINE_BIND_POINT_GRAPHICS, GetHandle());
+    vkCmdBindIndexBuffer(InRecorder.GetHandle(), IndexBuffer->GetHandle(), 0, IndexBuffer->GetIndexType());
+}
+
+void Kanas::Core::FGraphicsPipeline::CmdBindVertexBuffers(FCommandBuffer& InRecorder, uint32 Binding, TSharedPtr<FVertexBuffer> VertexBuffer, uint64 Offset)
+{
+    uint32 BindingIndex = 0; // GetMappedIndex
+    const auto BufferHandle = VertexBuffer->GetHandle();
+    vkCmdBindVertexBuffers(InRecorder.GetHandle(), BindingIndex, 1, &BufferHandle, &Offset);
+
 }
 
 void Kanas::Core::FGraphicsPipeline::CmdDraw(FCommandBuffer& InRecorder, uint32 InVertexCount, uint32 InInstanceCount, uint32 InFirstVertex, uint32 InFirstInstance)

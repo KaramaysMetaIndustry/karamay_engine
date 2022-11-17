@@ -13,7 +13,7 @@ class FBuffer : public FDeviceObject<VkBuffer>
 {
 	friend class FDevice;
 
-	bool Allocate(uint64 Size, FBufferUsage Usage, TSharedPtr<FConcurrentGuide> ConcurrentGuide = nullptr);
+	bool Allocate(uint64 Size, FBufferUsageFlags UsageFlags, TSharedPtr<FConcurrentGuide> InConcurrentGuide = nullptr);
 
 public:
 
@@ -43,14 +43,25 @@ private:
 };
 
 
-class VertexBuffer : public FBuffer {};
-class IndexBuffer : public FBuffer {};
-class UniformBuffer : public FBuffer {};
-class StorageBuffer : public FBuffer {};
-class UniformTexelBuffer : public FBuffer {};
-class StorageTexelBuffer : public FBuffer {};
-class IndirectBuffer : public FBuffer {};
-class ShaderDeviceAddress : public FBuffer {};
+
+class FIndexBuffer : public FBuffer
+{
+public:
+
+	FIndexBuffer();
+
+	VkIndexType GetIndexType() const;
+};
+
+
+class FVertexBuffer : public FBuffer
+{
+public:
+
+	FVertexBuffer();
+
+
+};
 
 _KANAS_CORE_END
 
