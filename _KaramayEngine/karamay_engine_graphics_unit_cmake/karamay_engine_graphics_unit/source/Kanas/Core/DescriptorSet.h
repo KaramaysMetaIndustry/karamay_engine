@@ -19,7 +19,7 @@ struct FDescriptorImageInfo
 
 struct FDescriptorBufferInfo
 {
-
+	TSharedPtr<FBuffer> Buffer;
 };
 
 class FDescriptorSet final : public FDeviceObject<VkDescriptorSet>
@@ -29,6 +29,9 @@ class FDescriptorSet final : public FDeviceObject<VkDescriptorSet>
 public:
 
 	FDescriptorSet(FDevice& InDevice, FDescriptorPool& InPool);
+
+	FDescriptorSet(const FDescriptorSet&) = delete;
+	FDescriptorSet(FDescriptorSet&& Other);
 
 	virtual ~FDescriptorSet() override;
 
