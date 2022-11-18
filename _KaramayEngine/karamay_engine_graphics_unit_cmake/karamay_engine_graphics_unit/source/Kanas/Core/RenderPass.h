@@ -7,11 +7,22 @@ _KANAS_CORE_BEGIN
 
 class FCommandBuffer;
 class FFramebuffer;
+class FSubpass;
+class FAttachment;
 
 class FRenderPass final : public FDeviceObject<VkRenderPass>
 {
+	friend class FDeivce;
 
-	bool Allocate(const TVector<VkAttachmentDescription>& InAttachments, const TVector<VkSubpassDescription>& InSubpasses, const TVector<VkSubpassDependency>& InSubpassDependencies);
+	using SubpassCreation = std::function<bool(const FFramebuffer& InFramebuffer, TVector<TUniquePtr<FSubpass>>& SubpassesToRegister)>;
+
+	bool Allocate(const TVector<TSharedPtr<FSubpass>>& InSubpasses, const TVector<VkSubpassDependency>& InSubpassDependencies);
+
+	bool Allocate(
+		const TVector<TSharedPtr<FAttachmentView>>& Attachments, 
+		const SubpassCreation& SubpassCreationLambda, 
+		const FFramebufferDimension& FramebufferDimension
+	);
 
 public:
 
@@ -19,22 +30,34 @@ public:
 
 	virtual ~FRenderPass() override;
 
-
-	using CmdSequence = std::function<void(FCommandBuffer&, FFramebuffer&)>;
-
 	void CmdCollect(FCommandBuffer& InRecorder);
 
 	TVector<VkClearValue> ClearValues;
 
 	VkRect2D RenderArea;
-	
+
 	VkSubpassContents SubpassContents;
 	
+	using CmdSequence = std::function<void(FCommandBuffer&, FFramebuffer&)>;
+
 	CmdSequence Sequence;
 
 private:
 
+	TSharedPtr<FSubpass> DefaultSubpass;
+
 	TUniquePtr<FFramebuffer> Framebuffer;
+
+public:
+
+	void CreateDefaultSubpass();
+
+	TSharedPtr<FSubpass> GetDefaultSubpass() const
+	{
+		return DefaultSubpass;
+	}
+
+	TSharedPtr<FSubpass> GetFinalSubpass() const;
 
 };
 

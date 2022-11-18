@@ -15,6 +15,7 @@
 #include "Sampler.h"
 #include "DescriptorPool.h"
 #include "CommandPool.h"
+#include "RenderPass.h"
 
 
 bool Kanas::Core::FDevice::Allocate()
@@ -153,19 +154,6 @@ TSharedPtr<Kanas::Core::FImageView> Kanas::Core::FDevice::CreateImageView(TShare
     return nullptr;
 }
 
-TSharedPtr<Kanas::Core::FFramebuffer> Kanas::Core::FDevice::CreateFramebuffer()
-{
-    if (const auto NewFramebuffer = MakeShared<FFramebuffer>(*this))
-    {
-        if (NewFramebuffer->Allocate())
-        {
-            return NewFramebuffer;
-        }
-
-    }
-    return nullptr;
-}
-
 Kanas::Core::FDescriptorPool* Kanas::Core::FDevice::CreateDescriptorPool()
 {
     if (const auto NewDescriptorPool = MakeShared<FDescriptorPool>(*this))
@@ -250,6 +238,13 @@ void Kanas::Core::FDevice::Test()
 
     auto ConcurrentGuide = MakeShared<FConcurrentGuide>(Queues);
     
-    auto NewBuffer = CreateBuffer(1024, FBufferUsage().UniformBuffer().TransferSrc().TransferDst(), ConcurrentGuide);
+    auto NewBuffer = CreateBuffer(1024, FBufferUsageFlags().SetUniformBuffer(), ConcurrentGuide);
+
+
+    TSharedPtr<FRenderPass> RenderPass;
+    RenderPass->Sequence = [](FCommandBuffer& InRecorder, FFramebuffer& RenderTarget) 
+    {
+        
+    };
 
 }

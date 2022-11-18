@@ -9,7 +9,7 @@
 #include "Shader.h"
 
 Kanas::Core::FGraphicsPipeline::FGraphicsPipeline(FDevice& InDevice) :
-    FPipeline(InDevice)
+    FPipeline(InDevice, VK_PIPELINE_BIND_POINT_GRAPHICS)
 {
 }
 

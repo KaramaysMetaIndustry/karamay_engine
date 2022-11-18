@@ -3,43 +3,41 @@
 #include "ImageView.h"
 #include "RenderPass.h"
 
-bool Kanas::Core::FFramebuffer::Allocate(TSharedPtr<FRenderPass> RenderPass, uint32 Width, uint32 Height,uint32 Layers, const TVector<TSharedPtr<FImageView>>& InAttachments)
+struct FFramebufferStaticHelper
 {
-	if (!RenderPass)
-	{
-		return false;
-	}
+	static void Create();
 
-	VkFramebufferCreateFlagBits::VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT; // imageless
+};
+
+bool Kanas::Core::FFramebuffer::Allocate(const FRenderPass& RenderPass, const FFramebufferDimension& Dimension, const TVector<TSharedPtr<FImageView>>& AttachmentImageViews)
+{
+	TVector<VkImageView> RawImageViews;
+	RawImageViews.reserve(AttachmentImageViews.size());
+
+	for (const auto& AttachmentImageView : AttachmentImageViews)
+	{
+		if (AttachmentImageView)
+		{
+			RawImageViews.emplace_back(AttachmentImageView->GetHandle());
+		}
+	}
 
 	VkFramebufferCreateInfo FramebufferCreateInfo{};
 	FramebufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 	FramebufferCreateInfo.pNext = nullptr;
 	FramebufferCreateInfo.flags = {};
-	FramebufferCreateInfo.renderPass = RenderPass->GetHandle();
-
-	TVector<VkImageView> ImageViewHandles;
-	ImageViewHandles.reserve(InAttachments.size());
-
-	for (const auto& Attachment : InAttachments)
-	{
-		if (Attachment)
-		{
-			ImageViewHandles.emplace_back(Attachment->GetHandle());
-		}
-	}
-
-	FramebufferCreateInfo.attachmentCount = static_cast<uint32>(ImageViewHandles.size());
-	FramebufferCreateInfo.pAttachments = ImageViewHandles.data();
+	FramebufferCreateInfo.renderPass = RenderPass.GetHandle();
+	FramebufferCreateInfo.attachmentCount = static_cast<uint32>(RawImageViews.size());
+	FramebufferCreateInfo.pAttachments = RawImageViews.data();
 	FramebufferCreateInfo.width = Width;
 	FramebufferCreateInfo.height = Height;
 	FramebufferCreateInfo.layers = Layers;
 
-	const VkResult FramebufferCreationResult = vkCreateFramebuffer(GetDevice().GetHandle(), &FramebufferCreateInfo, nullptr, &_Handle);
+	const VkResult Result = vkCreateFramebuffer(GetDevice().GetHandle(), &FramebufferCreateInfo, nullptr, &_Handle);
 
-	if (FramebufferCreationResult == VkResult::VK_SUCCESS)
+	if (Result == VkResult::VK_SUCCESS)
 	{
-		Attachments = InAttachments;
+		Attachments = AttachmentImageViews;
 
 		return true;
 	}

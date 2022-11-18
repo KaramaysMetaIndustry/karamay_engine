@@ -18,8 +18,6 @@ public:
 
 	virtual ~FRayTracingPipeline();
 
-	virtual void CmdBind(FCommandBuffer& InRecorder) override;
-
 	void CmdTraceRays();
 
 	void CmdTraceRaysIndirect();

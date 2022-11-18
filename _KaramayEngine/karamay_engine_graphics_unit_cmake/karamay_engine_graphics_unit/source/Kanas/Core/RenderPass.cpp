@@ -2,46 +2,136 @@
 #include "Device.h"
 #include "CommandBuffer.h"
 #include "Framebuffer.h"
+#include "Pipeline.h"
+#include "Attachment.h"
+#include "ImageView.h"
+#include "Image.h"
+#include "Subpass.h"
 
-bool Kanas::Core::FRenderPass::Allocate(const TVector<VkAttachmentDescription>& InAttachments, const TVector<VkSubpassDescription>& InSubpasses, const TVector<VkSubpassDependency>& InSubpassDependencies)
+bool Kanas::Core::FRenderPass::Allocate(const TVector<TSharedPtr<FSubpass>>& InSubpasses, const TVector<VkSubpassDependency>& InSubpassDependencies)
 {
-    VkSubpassDescription Subpass;
-    Subpass.flags;
-    Subpass.pipelineBindPoint;
-    Subpass.inputAttachmentCount;
-    Subpass.pInputAttachments;
-    Subpass.colorAttachmentCount;
-    Subpass.pColorAttachments;
-    Subpass.pResolveAttachments;
-    Subpass.pDepthStencilAttachment;
-    Subpass.preserveAttachmentCount;
-    Subpass.pPreserveAttachments;
+    //[]() // Create Framebuffer
+        //{
+        //    
 
-    VkSubpassDependency SubpassDependency;
-    SubpassDependency.srcSubpass = 0;
-    SubpassDependency.dstSubpass = 0;
-    SubpassDependency.srcStageMask = VkPipelineStageFlagBits::VK_PIPELINE_STAGE_TRANSFER_BIT;
-    SubpassDependency.dstStageMask;
-    SubpassDependency.srcAccessMask;
-    SubpassDependency.dstAccessMask;
-    SubpassDependency.dependencyFlags;
 
-    VkRenderPassCreateInfo RenderPassCreateInfo;
+        //    RawCreateFramebuffer(Attachments);
+
+
+        //    for (const auto& Attachment : Attachments)
+        //    {
+
+        //    }
+
+
+        //    TVector<VkAttachmentDescription> InAttachments;
+
+        //    VkAttachmentDescription AttachmentDescription{};
+        //    AttachmentDescription.flags = {};
+        //    AttachmentDescription.format = Attachment->ImageView->GetViewFormat();
+        //    AttachmentDescription.samples = Attachment->SampleCount;
+        //    AttachmentDescription.loadOp = Attachment->LoadOp;
+        //    AttachmentDescription.storeOp = Attachment->StoreOp;
+        //    AttachmentDescription.stencilLoadOp = Attachment->StencilLoadOp;
+        //    AttachmentDescription.stencilStoreOp = Attachment->StencilStoreOp;
+        //    AttachmentDescription.initialLayout = Attachment->ImageView->GetImage()->GetLayout();
+        //    AttachmentDescription.finalLayout;
+
+        //    VkAttachmentReference Reference;
+        //    Reference.attachment;
+        //    Reference.layout;
+
+        //    return false; 
+        //},
+
+    TVector<TSharedPtr<FAttachment>> Attachments;
+
+    return Allocate(
+        Attachments,
+        
+        [](const FFramebuffer& RenderTarget, TVector<TUniquePtr<FSubpass>>& OutSubpasses) // Create Subpasses
+        { 
+            TSharedPtr<FPipeline> Pipeline;
+
+            VkSubpassDescription Subpass{};
+            Subpass.flags = {};
+            Subpass.pipelineBindPoint = Pipeline->GetBindPoint();
+            Subpass.inputAttachmentCount;
+            Subpass.pInputAttachments;
+            Subpass.colorAttachmentCount;
+            Subpass.pColorAttachments;
+            Subpass.pResolveAttachments;
+            Subpass.pDepthStencilAttachment;
+            Subpass.preserveAttachmentCount;
+            Subpass.pPreserveAttachments;
+
+            VkSubpassDependency SubpassDependency{};
+            SubpassDependency.srcSubpass = 0;
+            SubpassDependency.dstSubpass = 0;
+            SubpassDependency.srcStageMask = FPipelineStageFlags().SetTransfer().Get();
+            SubpassDependency.dstStageMask = FPipelineStageFlags().SetFragmentShader().Get();
+            SubpassDependency.srcAccessMask = FAccessFlags().SetTransferWrite().Get();
+            SubpassDependency.dstAccessMask = FAccessFlags().SetColorAttachmentRead().Get();
+            SubpassDependency.dependencyFlags = FDependencyFlags().SetViewLocal().Get();
+            return false; 
+        },
+        {1024, 1024, 1}
+    );
+
+    
+    return false;
+}
+
+struct FFramebufferDimension
+{
+    uint32 Width, Height, Layers;
+};
+
+bool Kanas::Core::FRenderPass::Allocate(
+    const TVector<TSharedPtr<FAttachmentView>>& AttachmentViews, 
+    const SubpassCreation& SubpassCreationLambda,
+    const FFramebufferDimension& FramebufferDimension
+)
+{
+    bool CreationResult = false;
+
+    if (!CreationResult)
+    {
+        return false;
+    }
+
+    TVector<TUniquePtr<FSubpass>> Subpasses;
+
+    TVector<VkAttachmentDescription> RawAttachments;
+    TVector<VkSubpassDescription> RawSubpasses;
+
+    VkRenderPassCreateInfo RenderPassCreateInfo{};
     RenderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
     RenderPassCreateInfo.flags = {};
-    RenderPassCreateInfo.attachmentCount = InAttachments.size();
-    RenderPassCreateInfo.pAttachments = InAttachments.data();
-    RenderPassCreateInfo.subpassCount = InSubpasses.size();
-    RenderPassCreateInfo.pSubpasses = InSubpasses.data();
+    RenderPassCreateInfo.attachmentCount = RawAttachments.size();
+    RenderPassCreateInfo.pAttachments = RawAttachments.data();
+    RenderPassCreateInfo.subpassCount = RawSubpasses.size();
+    RenderPassCreateInfo.pSubpasses = RawSubpasses.data();
     RenderPassCreateInfo.dependencyCount = InSubpassDependencies.size();
     RenderPassCreateInfo.pDependencies = InSubpassDependencies.data();
 
     VkResult Result = vkCreateRenderPass(GetDevice().GetHandle(), &RenderPassCreateInfo, nullptr, &_Handle);
 
-    if (Result == VkResult::VK_SUCCESS)
+    TVector<TSharedPtr<FImageView>> Attachments;
+    Attachments.reserve(AttachmentViews.size());
+    for (const auto& AttachmentView : AttachmentViews)
     {
+        Attachments.emplace_back(AttachmentView->ImageView);
+    }
+
+    FFramebuffer* NewFramebuffer = new FFramebuffer(GetDevice());
+    if (NewFramebuffer && NewFramebuffer->Allocate(*this, FramebufferDimension, Attachments))
+    {
+        Framebuffer.reset(NewFramebuffer);
+        
         return true;
     }
+
     return false;
 }
 
@@ -62,10 +152,10 @@ Kanas::Core::FRenderPass::~FRenderPass()
 
 void Kanas::Core::FRenderPass::CmdCollect(FCommandBuffer& InRecorder)
 {
-    VkRenderPassBeginInfo RenderPassBeginInfo;
+    VkRenderPassBeginInfo RenderPassBeginInfo{};
     RenderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
     RenderPassBeginInfo.framebuffer = Framebuffer->GetHandle();
-    RenderPassBeginInfo.renderPass = _Handle;
+    RenderPassBeginInfo.renderPass = GetHandle();
     RenderPassBeginInfo.clearValueCount = ClearValues.size();
     RenderPassBeginInfo.pClearValues = ClearValues.data();
     RenderPassBeginInfo.renderArea = RenderArea;
@@ -75,4 +165,30 @@ void Kanas::Core::FRenderPass::CmdCollect(FCommandBuffer& InRecorder)
     Sequence(InRecorder, *Framebuffer);
     
     vkCmdEndRenderPass(InRecorder.GetHandle());
+}
+
+void Kanas::Core::FRenderPass::CreateDefaultSubpass()
+{
+    auto NewSubpass = MakeShared<FSubpass>();
+    if (NewSubpass)
+    {
+        DefaultSubpass = NewSubpass;
+    }
+}
+
+TSharedPtr<Kanas::Core::FSubpass> Kanas::Core::FRenderPass::GetFinalSubpass() const
+{
+    TSharedPtr<FSubpass> Root = DefaultSubpass;
+
+    while (Root)
+    {
+        if (!Root->GetNext())
+        {
+            return Root;
+        }
+
+        Root = Root->GetNext();
+    }
+
+    return nullptr;
 }

@@ -43,15 +43,11 @@ bool Kanas::Core::FRayTracingPipeline::Allocate(TSharedPtr<FDeferredOperation> D
 }
 
 Kanas::Core::FRayTracingPipeline::FRayTracingPipeline(FDevice& InDevice) :
-	FPipeline(InDevice)
+	FPipeline(InDevice, VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR)
 {
 }
 
 Kanas::Core::FRayTracingPipeline::~FRayTracingPipeline()
-{
-}
-
-void Kanas::Core::FRayTracingPipeline::CmdBind(FCommandBuffer& InRecorder)
 {
 }
 

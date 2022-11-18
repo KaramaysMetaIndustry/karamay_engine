@@ -24,8 +24,6 @@ public:
 
 	virtual ~FComputePipeline();
 
-	virtual void CmdBind(FCommandBuffer& InRecorder) override;
-
 	void CmdDispatch(FCommandBuffer& InRecorder, const GroupCount& InGroupCount);
 
 	void CmdDispatchBase(FCommandBuffer& InRecorder, const BaseGroup& InBaseGroup, const GroupCount& InGroupCount);

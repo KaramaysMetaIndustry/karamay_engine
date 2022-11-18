@@ -30,8 +30,6 @@ public:
 	FPipeline(FDevice& InDevice, VkPipelineBindPoint InBindPoint);
 
 	FPipeline(const FDevice&) = delete;
-	FPipeline(FDevice&& Other);
-
 	FPipeline& operator=(const FDevice&) = delete;
 
 	virtual ~FPipeline() override;
@@ -43,6 +41,8 @@ public:
 	void CmdPushConstants(FCommandBuffer& InRecorder);
 
 	TSharedPtr<FPipelineLayout> GetLayout() const;
+
+	VkPipelineBindPoint GetBindPoint() const;
 
 private:
 

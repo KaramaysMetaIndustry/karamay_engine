@@ -45,17 +45,12 @@ bool Kanas::Core::FComputePipeline::Allocate(TSharedPtr<FComputeShader> InComput
 }
 
 Kanas::Core::FComputePipeline::FComputePipeline(FDevice& InDevice) :
-    FPipeline(InDevice)
+    FPipeline(InDevice, VK_PIPELINE_BIND_POINT_COMPUTE)
 {
 }
 
 Kanas::Core::FComputePipeline::~FComputePipeline()
 {
-}
-
-void Kanas::Core::FComputePipeline::CmdBind(FCommandBuffer& InRecorder)
-{
-    vkCmdBindPipeline(InRecorder.GetHandle(), VK_PIPELINE_BIND_POINT_COMPUTE, GetHandle());
 }
 
 void Kanas::Core::FComputePipeline::CmdDispatch(FCommandBuffer& InRecorder, const GroupCount& InGroupCount)

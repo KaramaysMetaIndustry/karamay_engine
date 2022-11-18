@@ -58,8 +58,6 @@ public:
 	
 	TSharedPtr<FImageView> CreateImageView(TSharedPtr<FImage> Image, VkImageViewType InViewType, VkFormat InFormat, const VkComponentMapping& InComponents, const VkImageSubresourceRange& InSubresourceRange);
 
-	TSharedPtr<FFramebuffer> CreateFramebuffer();
-
 	FDescriptorPool* CreateDescriptorPool();
 
 	TSharedPtr<FShaderModule> CreateShaderModule(const TVector<uint32>& ShaderCode);

@@ -7,12 +7,13 @@ _KANAS_CORE_BEGIN
 
 class FImageView;
 class FRenderPass;
+class FAttachment;
 
 class FFramebuffer final : public FDeviceObject<VkFramebuffer>
 {
-	friend class FDevice;
+	friend class FRenderPass;
 
-	bool Allocate(TSharedPtr<FRenderPass> RenderPass, uint32 Width, uint32 Height, uint32 Layers, const TVector<TSharedPtr<FImageView>>& InAttachments);
+	bool Allocate(const FRenderPass& RenderPass, const FFramebufferDimension& Dimension, const TVector<TSharedPtr<FImageView>>& AttachmentImageViews);
 
 public:
 
@@ -25,12 +26,11 @@ public:
 
 	virtual ~FFramebuffer();
 
+	void GetAttachments(TVector<TSharedPtr<FAttachment>>& OutAttachments);
+
 private:
 
-	TSharedPtr<FRenderPass> Owner;
-
 	TVector<TSharedPtr<FImageView>> Attachments;
-
 
 };
 
