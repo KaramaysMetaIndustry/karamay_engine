@@ -1,7 +1,7 @@
-#include "Sampler.h"
-#include "Device.h"
+#include "sampler.h"
+#include "device.h"
 
-bool Kanas::Core::FSampler::Allocate()
+bool kanas::core::sampler::alllocate()
 {
 	VkSamplerCreateInfo SamplerCreateInfo{};
 	SamplerCreateInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
@@ -23,7 +23,7 @@ bool Kanas::Core::FSampler::Allocate()
 	SamplerCreateInfo.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_BLACK;
 	SamplerCreateInfo.unnormalizedCoordinates = false;
 
-	const VkResult SamplerCreationResult = vkCreateSampler(GetDevice().GetHandle(), &SamplerCreateInfo, nullptr, &_Handle);
+	const VkResult SamplerCreationResult = vkCreateSampler(get_device().get_handle(), &SamplerCreateInfo, nullptr, &handle);
 
 	if (SamplerCreationResult == VK_SUCCESS)
 	{
@@ -33,18 +33,18 @@ bool Kanas::Core::FSampler::Allocate()
 	return false;
 }
 
-Kanas::Core::FSampler::FSampler(FDevice& InDevice) :
-	FDeviceObject(InDevice)
+kanas::core::sampler::sampler(device& owner) :
+	deviceObject(owner)
 {
 }
 
-Kanas::Core::FSampler::~FSampler()
+kanas::core::sampler::~sampler()
 {
 	if (IsValid())
 	{
-		vkDestroySampler(GetDevice().GetHandle(), GetHandle(), nullptr);
+		vkDestroySampler(get_device().get_handle(), get_handle(), nullptr);
 
-		ResetHandle();
+		reset_handle();
 	}
 }
 

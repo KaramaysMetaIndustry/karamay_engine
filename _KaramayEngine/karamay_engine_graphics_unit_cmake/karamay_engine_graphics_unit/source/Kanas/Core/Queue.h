@@ -1,21 +1,21 @@
 #ifndef _QUEUE_H_
 #define _QUEUE_H_
 
-#include "DeviceObject.h"
+#include "device_object.h"
 
 _KANAS_CORE_BEGIN
 
-class FQueuePool;
-class FFence;
-class FCommandBuffer;
+class queuePool;
+class fence;
+class command_buffer;
 
 struct SubmissionBatch
 {
-	TVector<std::pair<FSemaphore*, VkPipelineStageFlags>> SemaphoreToWaitBeforeExecution;
+	std::vector<std::pair<semaphore*, VkPipelineStageFlags>> SemaphoreToWaitBeforeExecution;
 	
-	TVector<FCommandBuffer*> CmdBuffers;
+	std::vector<command_buffer*> CmdBuffers;
 	
-	TVector<FSemaphore*> SemaphoreToSignalAfterExecution;
+	std::vector<semaphore*> SemaphoreToSignalAfterExecution;
 
 };
 
@@ -24,37 +24,37 @@ struct BindSpareInfo
 
 };
 
-class FQueue final : public FDeviceObject<VkQueue>
+class queue final : public device_object<VkQueue>
 {
-	friend class FDevice;
+	friend class device;
 
-	bool Allocate(uint32 InQueueFamilyIndex, uint32 InQueueIndex);
+	bool alllocate(std::uint32_t InQueueFamilyIndex, std::uint32_t InQueueIndex);
 
 public:
 
-	FQueue(FDevice& InDevice);
+	queue(device& owner);
 
-	virtual ~FQueue() override;
+	virtual ~queue() override;
 
-	void BindSpare(const std::vector<BindSpareInfo>& InBindSparseInfos, FFence* InFence = nullptr);
+	void BindSpare(const std::vector<BindSpareInfo>& InBindSparseInfos, fence* InFence = nullptr);
 
 	void WaitIdle();
 
-	void Submit(const TVector<SubmissionBatch>& InBatches, FFence* InFence = nullptr);
+	void Submit(const std::vector<SubmissionBatch>& InBatches, fence* InFence = nullptr);
 
 	void PresetKHR(const VkPresentInfoKHR& InPresentInfo);
 
-	FQueuePool* GetOwner() const;
+	queuePool* GetOwner() const;
 
-	uint32 GetFamilyIndex() const { return QueueFamilyIndex; }
+	std::uint32_t GetFamilyIndex() const { return QueueFamilyIndex; }
 
 private:
 
-	FQueuePool* Owner{ nullptr };
+	queuePool* Owner{ nullptr };
 
 	friend TransientQueueGroup;
 
-	uint32 QueueFamilyIndex;
+	std::uint32_t QueueFamilyIndex;
 
 };
 

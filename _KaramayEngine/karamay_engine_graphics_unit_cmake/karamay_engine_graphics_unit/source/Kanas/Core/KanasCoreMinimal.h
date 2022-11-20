@@ -12,10 +12,10 @@ class Queue;
 class CommandPool;
 class CommandBuffer;
 
-class DeviceMemory;
+class device_memory;
 
 class Buffer;
-class BufferView;
+class buffer_view;
 class Image;
 class ImageView;
 
@@ -27,7 +27,7 @@ class DescriptorPool;
 class DescriptorSet;
 class DescriptorSetLayout;
 
-class QueryPool;
+class query_pool;
 
 class Fence;
 class Semaphore;
@@ -35,8 +35,8 @@ class Event;
 
 class ShaderModule;
 
-class PipelineCache;
-class PipelineLayout;
+class pipeline_cache;
+class pipeline_layout;
 class Pipeline;
 class GraphicsPipeline;
 class ComputePipeline;

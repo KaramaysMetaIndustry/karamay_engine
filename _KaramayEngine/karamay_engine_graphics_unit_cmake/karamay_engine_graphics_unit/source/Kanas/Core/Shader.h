@@ -5,14 +5,14 @@
 
 _KANAS_CORE_BEGIN
 
-class FShaderModule;
+class shader_module;
 
 class FShader
 {
 
 	FString Name;
 
-	TSharedPtr<FShaderModule> ShaderModule;
+	std::shared_ptr<shader_module> ShaderModule;
 
 public:
 
@@ -20,20 +20,20 @@ public:
 
 	virtual ~FShader();
 
-	TSharedPtr<FShaderModule> GetShaderModule() const;
+	std::shared_ptr<shader_module> GetShaderModule() const;
 
 	const FString& GetName() const;
 
 };
 
 
-class FComputeShader : public FShader
+class compute_shader : public FShader
 {
 public:
 
-	FComputeShader(const FString& InName, const FString& InPath);
+	compute_shader(const FString& InName, const FString& InPath);
 
-	virtual ~FComputeShader() override;
+	virtual ~compute_shader() override;
 
 };
 

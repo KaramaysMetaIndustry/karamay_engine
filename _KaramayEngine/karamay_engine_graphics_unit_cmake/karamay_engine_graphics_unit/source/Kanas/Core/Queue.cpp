@@ -1,24 +1,24 @@
-#include "Queue.h"
-#include "Device.h"
-#include "Fence.h"
-#include "CommandBuffer.h"
+#include "queue.h"
+#include "device.h"
+#include "fence.h"
+#include "command_buffer.h"
 
-bool Kanas::Core::FQueue::Allocate(uint32 InQueueFamilyIndex, uint32 InQueueIndex)
+bool kanas::core::queue::alllocate(std::uint32_t InQueueFamilyIndex, std::uint32_t InQueueIndex)
 {
-	vkGetDeviceQueue(GetDevice().GetHandle(), InQueueFamilyIndex, InQueueIndex, &_Handle);
+	vkGetDeviceQueue(get_device().get_handle(), InQueueFamilyIndex, InQueueIndex, &handle);
 	return true;
 }
 
-Kanas::Core::FQueue::FQueue(FDevice& InDevice) :
-	FDeviceObject(InDevice)
+kanas::core::queue::queue(device& owner) :
+	device_object(owner)
 {
 }
 
-Kanas::Core::FQueue::~FQueue()
+kanas::core::queue::~queue()
 {
 }
 
-void Kanas::Core::FQueue::BindSpare(const std::vector<BindSpareInfo>& InBindSparseInfos, FFence* InFence)
+void kanas::core::queue::BindSpare(const std::vector<BindSpareInfo>& InBindSparseInfos, fence* InFence)
 {
 	std::vector<VkBindSparseInfo> BindSpareInfos;
 
@@ -44,17 +44,17 @@ void Kanas::Core::FQueue::BindSpare(const std::vector<BindSpareInfo>& InBindSpar
 		BindSpareInfo.pSignalSemaphores;
 	}
 	
-	VkFence FenceHandle = InFence ? InFence->GetHandle() : VK_NULL_HANDLE;
+	VkFence FenceHandle = InFence ? InFence->get_handle() : VK_NULLhandle;
 
-	VkResult Result = vkQueueBindSparse(GetHandle(), static_cast<uint32>(BindSpareInfos.size()), BindSpareInfos.data(), FenceHandle);
+	VkResult Result = vkQueueBindSparse(get_handle(), static_cast<std::uint32_t>(BindSpareInfos.size()), BindSpareInfos.data(), FenceHandle);
 }
 
-void Kanas::Core::FQueue::WaitIdle()
+void kanas::core::queue::WaitIdle()
 {
-	VkResult Result = vkQueueWaitIdle(GetHandle());
+	VkResult Result = vkQueueWaitIdle(get_handle());
 }
 
-void Kanas::Core::FQueue::Submit(const TVector<SubmissionBatch>& InBatches, FFence* InFence)
+void kanas::core::queue::Submit(const std::vector<SubmissionBatch>& InBatches, fence* InFence)
 {
 	std::vector<VkSubmitInfo> SubmitInfos;
 	SubmitInfos.reserve(InBatches.size());
@@ -73,31 +73,31 @@ void Kanas::Core::FQueue::Submit(const TVector<SubmissionBatch>& InBatches, FFen
 		SubmitInfo.pNext = nullptr;
 		// Block the device until these semaphores signaled at the WaitDstStage
 		// 在哪些阶段需要确认哪些信号量被激活，Command才能继续
-		SubmitInfo.waitSemaphoreCount = static_cast<uint32>(WaitSemaphoreHandles.size());
+		SubmitInfo.waitSemaphoreCount = static_cast<std::uint32_t>(WaitSemaphoreHandles.size());
 		SubmitInfo.pWaitSemaphores = WaitSemaphoreHandles.data();
 		SubmitInfo.pWaitDstStageMask = PipelineStageFlagsArr.data();
 		// 需要提交执行的Buffers
 		// 按順序開始執行，并行執行，不保證按順序結束
-		SubmitInfo.commandBufferCount = static_cast<uint32>(CmdBufferHandles.size());
+		SubmitInfo.commandBufferCount = static_cast<std::uint32_t>(CmdBufferHandles.size());
 		SubmitInfo.pCommandBuffers = CmdBufferHandles.data();
 		// 当Batch Execution 结束的时候激活的信号量
-		SubmitInfo.signalSemaphoreCount = static_cast<uint32>(SignalSemaphoreHandles.size());
+		SubmitInfo.signalSemaphoreCount = static_cast<std::uint32_t>(SignalSemaphoreHandles.size());
 		SubmitInfo.pSignalSemaphores = SignalSemaphoreHandles.data();
 
 		SubmitInfos.emplace_back(SubmitInfo);
 	}
 
-	VkFence FenceHandle = InFence ? FenceHandle = InFence->GetHandle() : VK_NULL_HANDLE;
+	VkFence FenceHandle = InFence ? FenceHandle = InFence->get_handle() : VK_NULLhandle;
 
-	VkResult Result = vkQueueSubmit(GetHandle(), static_cast<uint32>(SubmitInfos.size()), SubmitInfos.data(), FenceHandle);
+	VkResult Result = vkQueueSubmit(get_handle(), static_cast<std::uint32_t>(SubmitInfos.size()), SubmitInfos.data(), FenceHandle);
 }
 
-void Kanas::Core::FQueue::PresetKHR(const VkPresentInfoKHR& InPresentInfo)
+void kanas::core::queue::PresetKHR(const VkPresentInfoKHR& InPresentInfo)
 {
-	VkResult Result = vkQueuePresentKHR(GetHandle(), &InPresentInfo);
+	VkResult Result = vkQueuePresentKHR(get_handle(), &InPresentInfo);
 }
 
-Kanas::Core::FQueuePool* Kanas::Core::FQueue::GetOwner() const
+kanas::core::queuePool* kanas::core::queue::GetOwner() const
 {
 	return Owner;
 }

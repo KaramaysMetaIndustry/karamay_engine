@@ -1,90 +1,88 @@
 #ifndef _DEVICE_H_
 #define _DEVICE_H_
 
-#include "VulkanObject.h"
+#include "vulkan_object.h"
 
 _KANAS_CORE_BEGIN
 
-class FPhysicalDevice;
+class physical_device;
 
-class FQueue;
+class queue;
 
-class FDeviceMemory;
+class device_memory;
 
-class FBuffer;
-class FBufferView;
-class FImage;
-class FImageView;
+class buffer;
+class buffer_view;
+class image;
+class image_view;
 
-class FFramebuffer;
+class framebuffer;
 
-class FDescriptorPool;
-class FDescriptorSetLayout;
+class descriptor_pool;
+class descriptor_set_layout;
 
-class FSampler;
-class FShaderModule;
-class FPipelineCache;
-class FPipelineLayout;
-class FRenderPass;
+class sampler;
+class shader_module;
+class pipeline_cache;
+class pipeline_layout;
+class render_pass;
 
-class FFence;
-class FSemaphore;
+class fence;
+class semaphore;
 class FEvent;
 
-class FCommandPool;
+class command_pool;
 
-class FDevice final : public VulkanObject<VkDevice>
+class device final : public vulkan_object<VkDevice>
 {
-	friend class FPhysicalDevice;
+	friend class physical_device;
 
-	bool Allocate();
+	bool alllocate();
 
 public:
 
-	FDevice(FPhysicalDevice& InPhysicalDevice);
+	device(physical_device& InPhysicalDevice);
 
-	FDevice(const FDevice&) = delete;
-	FDevice& operator=(const FDevice&) = delete;
+	device(const device&) = delete;
+	device& operator=(const device&) = delete;
 
-	virtual ~FDevice() override;
+	virtual ~device() override;
 
-	TSharedPtr<FQueue> GetQueue(uint32 InQueueFamilyIndex, uint32 InQueueIndex);
+	std::shared_ptr<queue> GetQueue(std::uint32_t InQueueFamilyIndex, std::uint32_t InQueueIndex);
 	
-	TSharedPtr<FBuffer> CreateBuffer(uint64 Size, FBufferUsage Usage, TSharedPtr<FConcurrentGuide> ConcurrentGuide = nullptr);
+	std::shared_ptr<buffer> CreateBuffer(std::uint64_t Size, buffer_usage_flags Usage, std::shared_ptr<FConcurrentGuide> ConcurrentGuide = nullptr);
 	
-	TSharedPtr<FBufferView> CreateBufferView(TSharedPtr<FBuffer> Buffer, VkFormat Format, VkDeviceSize Offset, VkDeviceSize Range);
+	std::shared_ptr<buffer_view> Createbuffer_view(std::shared_ptr<buffer> Buffer, VkFormat Format, VkDeviceSize Offset, VkDeviceSize Range);
 	
-	TSharedPtr<FImage> CreateImage();
+	std::shared_ptr<image> CreateImage();
 	
-	TSharedPtr<FImageView> CreateImageView(TSharedPtr<FImage> Image, VkImageViewType InViewType, VkFormat InFormat, const VkComponentMapping& InComponents, const VkImageSubresourceRange& InSubresourceRange);
+	std::shared_ptr<image_view> CreateImageView(std::shared_ptr<image> Image, VkImageViewType InViewType, VkFormat InFormat, const VkComponentMapping& InComponents, const VkImageSubresourceRange& InSubresourceRange);
 
-	FDescriptorPool* CreateDescriptorPool();
+	descriptor_pool* CreateDescriptorPool();
 
-	TSharedPtr<FShaderModule> CreateShaderModule(const TVector<uint32>& ShaderCode);
+	std::shared_ptr<shader_module> CreateShaderModule(const std::vector<std::uint32_t>& ShaderCode);
 	
-	TSharedPtr<FPipelineCache> CreatePipelineCache();
+	std::shared_ptr<pipeline_cache> Createpipeline_cache();
 	
-	TSharedPtr<FPipelineLayout> CreatePipelineLayout();
+	std::shared_ptr<pipeline_layout> Createpipeline_layout();
 	
-	TSharedPtr<FRenderPass> CreateRenderPass();
+	std::shared_ptr<render_pass> create_render_pass();
 
-	FCommandPool* CreateCommandPool();
+	command_pool* CreateCommandPool();
 
-	TSharedPtr<FFence> CreateFence(bool IsDefaultSignaled = false);
+	std::shared_ptr<fence> CreateFence(bool IsDefaultSignaled = false);
 	
-	TSharedPtr<FSemaphore> CreateSemaphore();
+	std::shared_ptr<semaphore> CreateSemaphore();
 	
-	TSharedPtr<FEvent> CreateEvent();
+	std::shared_ptr<FEvent> CreateEvent();
 	
-	TSharedPtr<FSampler> CreateSampler();
+	std::shared_ptr<sampler> CreateSampler();
 
-	FPhysicalDevice& GetPhysicalDevice() const { return GPU; }
+	physical_device& GetPhysicalDevice() const { return GPU; }
 
 private:
 
-	FPhysicalDevice& GPU;
-	
-	void Test();
+	physical_device& GPU;
 
 };
 

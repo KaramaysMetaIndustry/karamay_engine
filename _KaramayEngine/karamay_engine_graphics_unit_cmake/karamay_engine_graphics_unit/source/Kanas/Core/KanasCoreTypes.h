@@ -9,7 +9,7 @@ _KANAS_CORE_BEGIN
 
 struct FConcurrentGuide
 {
-	void GetConcurrentFamilyIndices(TVector<uint32>& OutFamilyIndices) const
+	void GetConcurrentFamilyIndices(std::vector<std::uint32_t>& OutFamilyIndices) const
 	{
 	}
 
@@ -18,14 +18,14 @@ struct FConcurrentGuide
 		return false;
 	}
 
-	FConcurrentGuide(const TVector<TSharedPtr<class FQueue>>& InQueues) :
+	FConcurrentGuide(const std::vector<std::shared_ptr<class queue>>& InQueues) :
 		ConcurrentQueues(InQueues)
 	{
 	}
 
 private:
 
-	TVector<TSharedPtr<class FQueue>> ConcurrentQueues;
+	std::vector<std::shared_ptr<class queue>> ConcurrentQueues;
 
 	static const FConcurrentGuide& StaticConstRef;
 
@@ -33,14 +33,14 @@ private:
 
 const FConcurrentGuide& FConcurrentGuide::StaticConstRef = FConcurrentGuide({});
 
-template<typename DeviceObject_T, typename Handle_T = DeviceObject_T::Handle_T>
-static void CollectDeviceObjectHandles(const TVector<TSharedPtr<DeviceObject_T>>& Objects, TVector<Handle_T>& OutHandles)
+template<typename device_object_T, typename Handle_T = device_object_T::Handle_T>
+static void Collectdevice_objectHandles(const std::vector<std::shared_ptr<device_object_T>>& Objects, std::vector<Handle_T>& OutHandles)
 {
 	OutHandles.reserve(Objects.size());
 
 	for (const auto& Object : Objects)
 	{
-		OutHandles.emplace_back(Object->GetHandle());
+		OutHandles.emplace_back(Object->get_handle());
 	}
 }
 

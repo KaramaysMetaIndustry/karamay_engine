@@ -1,12 +1,12 @@
-#include "Buffer.h"
-#include "Device.h"
-#include "PhysicalDevice.h"
-#include "CommandBuffer.h"
-#include "Semaphore.h"
-#include "Image.h"
-#include "DeviceMemory.h"
+#include "buffer.h"
+#include "device.h"
+#include "physical_device.h"
+#include "command_buffer.h"
+#include "semaphore.h"
+#include "image.h"
+#include "device_memory.h"
 
-bool Kanas::Core::FBuffer::Allocate(uint64 Size, FBufferUsageFlags UsageFlags, TSharedPtr<FConcurrentGuide> InConcurrentGuide)
+bool kanas::core::buffer::alllocate(std::uint64_t Size, buffer_usage_flags UsageFlags, std::shared_ptr<FConcurrentGuide> InConcurrentGuide)
 {
 	if (Size == 0)
 	{
@@ -18,15 +18,15 @@ bool Kanas::Core::FBuffer::Allocate(uint64 Size, FBufferUsageFlags UsageFlags, T
 	BufferCreateInfo.pNext = nullptr;
 	BufferCreateInfo.flags = {} ;
 	BufferCreateInfo.size = Size;
-	BufferCreateInfo.usage = UsageFlags.Get();
+	BufferCreateInfo.usage = UsageFlags.get();
 	
 	if (InConcurrentGuide && InConcurrentGuide->DoesSupportConcurrency())
 	{
-		TVector<uint32> QueueFamilyIndices;
+		std::vector<std::uint32_t> QueueFamilyIndices;
 		InConcurrentGuide->GetConcurrentFamilyIndices(QueueFamilyIndices);
 		// family index count must > 1
 		BufferCreateInfo.sharingMode = VK_SHARING_MODE_CONCURRENT;
-		BufferCreateInfo.queueFamilyIndexCount = static_cast<uint32>(QueueFamilyIndices.size());
+		BufferCreateInfo.queueFamilyIndexCount = static_cast<std::uint32_t>(QueueFamilyIndices.size());
 		BufferCreateInfo.pQueueFamilyIndices = QueueFamilyIndices.data();
 	}
 	else {
@@ -35,25 +35,25 @@ bool Kanas::Core::FBuffer::Allocate(uint64 Size, FBufferUsageFlags UsageFlags, T
 		BufferCreateInfo.pQueueFamilyIndices = nullptr;
 	}
 
-	const VkResult BufferCreationResult = vkCreateBuffer(GetDevice().GetHandle(), &BufferCreateInfo, nullptr, &_Handle);
+	const VkResult BufferCreationResult = vkCreateBuffer(get_device().get_handle(), &BufferCreateInfo, nullptr, &handle);
 	
-	if (BufferCreationResult == VkResult::VK_SUCCESS)
+	if (BufferCreationResult == VK_SUCCESS)
 	{
 		VkMemoryRequirements MemRequirements;
-		vkGetBufferMemoryRequirements(GetDevice().GetHandle(), GetHandle(), &MemRequirements);
+		vkGetBufferMemoryRequirements(get_device().get_handle(), get_handle(), &MemRequirements);
 
-		const uint64 MemAllocSize = MemRequirements.size;
-		const uint32 MemTypeIndex = 0;
+		const std::uint64_t MemAllocSize = MemRequirements.size;
+		const std::uint32_t MemTypeIndex = 0;
 
-		TUniquePtr<FDeviceMemory> NewMem = MakeUnique<FDeviceMemory>(GetDevice());
+		std::unique_ptr<device_memory> NewMem = std::make_unique<device_memory>(get_device());
 
-		if (NewMem && NewMem->Allocate(MemAllocSize, MemTypeIndex))
+		if (NewMem && NewMem->alllocate(MemAllocSize, MemTypeIndex))
 		{
-			const VkResult BufferBindingResult = vkBindBufferMemory(GetDevice().GetHandle(), GetHandle(), Mem->GetHandle(), 0);
+			const VkResult BufferBindingResult = vkBindBufferMemory(get_device().get_handle(), get_handle(), Mem->get_handle(), 0);
 
 			if (BufferBindingResult == VkResult::VK_SUCCESS)
 			{
-				Mem = MoveTemp(NewMem);
+				Mem = std::move(NewMem);
 				return true;
 			}
 		}
@@ -62,45 +62,45 @@ bool Kanas::Core::FBuffer::Allocate(uint64 Size, FBufferUsageFlags UsageFlags, T
 	return false;
 }
 
-Kanas::Core::FBuffer::FBuffer(FDevice& InDevice) :
-	FDeviceObject(InDevice)
+kanas::core::buffer::buffer(device& owner) :
+	device_object(owner)
 {
 	
 }
 
-Kanas::Core::FBuffer::FBuffer(FBuffer&& Other) noexcept :
-	FDeviceObject(Other.GetDevice())
+kanas::core::buffer::buffer(buffer&& Other) noexcept :
+	device_object(Other.get_device())
 {
-	_Handle = Other.GetHandle();
-	Other.ResetHandle();
+	handle = Other.get_handle();
+	Other.reset_handle();
 }
 
-Kanas::Core::FBuffer::~FBuffer()
+kanas::core::buffer::~buffer()
 {
 	if (IsValid())
 	{
-		vkDestroyBuffer(GetDevice().GetHandle(), GetHandle(), nullptr);
+		vkDestroyBuffer(get_device().get_handle(), get_handle(), nullptr);
 
-		ResetHandle();
+		reset_handle();
 	}
 }
 
-void Kanas::Core::FBuffer::CmdCopy(FCommandBuffer& InRecorder, FBuffer& InDstBuffer, const TVector<VkBufferCopy>& InRegions)
+void kanas::core::buffer::CmdCopy(command_buffer& InRecorder, buffer& InDstBuffer, const std::vector<VkBufferCopy>& InRegions)
 {
-	vkCmdCopyBuffer(InRecorder.GetHandle(), GetHandle(), InDstBuffer.GetHandle(), static_cast<uint32>(InRegions.size()), InRegions.data());
+	vkCmdCopyBuffer(InRecorder.get_handle(), get_handle(), InDstBuffer.get_handle(), static_cast<std::uint32_t>(InRegions.size()), InRegions.data());
 }
 
-void Kanas::Core::FBuffer::CmdCopyToImage(FCommandBuffer& InRecorder, FImage& InDstImage, const TVector<VkBufferImageCopy>& InRegions)
+void kanas::core::buffer::CmdCopyToImage(command_buffer& InRecorder, image& InDstImage, const std::vector<VkBufferImageCopy>& InRegions)
 {
-	vkCmdCopyBufferToImage(InRecorder.GetHandle(), GetHandle(), InDstImage.GetHandle(), InDstImage.GetLayout(), static_cast<uint32>(InRegions.size()), InRegions.data());
+	vkCmdCopyBufferToImage(InRecorder.get_handle(), get_handle(), InDstImage.get_handle(), InDstImage.GetLayout(), static_cast<std::uint32_t>(InRegions.size()), InRegions.data());
 }
 
-void Kanas::Core::FBuffer::CmdFill(FCommandBuffer& InRecorder, uint64 InOffset, uint64 InSize, uint32 InData)
+void kanas::core::buffer::CmdFill(command_buffer& InRecorder, std::uint64_t InOffset, std::uint64_t InSize, std::uint32_t InData)
 {
-	vkCmdFillBuffer(InRecorder.GetHandle(), GetHandle(), InOffset, InSize, InData);
+	vkCmdFillBuffer(InRecorder.get_handle(), get_handle(), InOffset, InSize, InData);
 }
 
-void Kanas::Core::FBuffer::CmdUpdate(FCommandBuffer& InRecorder, uint64 InOffset, uint64 InSize, void* InData)
+void kanas::core::buffer::CmdUpdate(command_buffer& InRecorder, std::uint64_t InOffset, std::uint64_t InSize, void* InData)
 {
-	vkCmdUpdateBuffer(InRecorder.GetHandle(), GetHandle(), InOffset, InSize, InData);
+	vkCmdUpdateBuffer(InRecorder.get_handle(), get_handle(), InOffset, InSize, InData);
 }

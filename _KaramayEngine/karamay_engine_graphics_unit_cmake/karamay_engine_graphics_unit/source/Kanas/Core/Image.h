@@ -1,49 +1,53 @@
 #ifndef _IMAGE_H_
 #define _IMAGE_H_
 
-#include "DeviceObject.h"
+#include "device_object.h"
 
 _KANAS_CORE_BEGIN
 
-class FCommandBuffer;
-class FBuffer;
-class FImageView;
-class FDeviceMemory;
+class command_buffer;
+class buffer;
+class image_view;
+class device_memory;
 
-class FImage final : public FDeviceObject<VkImage>
+class image final : public device_object<VkImage>
 {
-	friend class FDevice;
+	friend class device;
 
-	bool Allocate(VkImageType InType, VkFormat InFormat, VkExtent3D InExtent, uint32 InMips, uint32 InLayers, VkSampleCountFlagBits InSamples, VkImageTiling InTileing, FImageUsageFlags UsageFlags, VkImageLayout InInitalLayout, TSharedPtr<FConcurrentGuide> ConcurrentGuide = nullptr);
-
-public:
-
-	FImage(FDevice& InDevice);
-
-	FImage(const FImage&) = delete;
-	FImage(FImage&& Other);
-
-	FImage& operator=(const FImage&) = delete;
-
-	virtual ~FImage() override;
+	bool alllocate(VkImageType InType, VkFormat InFormat, VkExtent3D InExtent, std::uint32_t InMips, std::uint32_t InLayers, VkSampleCountFlagBits InSamples, VkImageTiling InTileing, imageUsageFlags UsageFlags, VkImageLayout InInitalLayout, std::shared_ptr<FConcurrentGuide> ConcurrentGuide = nullptr);
 
 public:
 
-	void CmdClear(FCommandBuffer& InRecorder, const VkClearColorValue& InValue, const TVector<VkImageSubresourceRange>& InRanges);
+	image(device& owner);
 
-	void CmdClear(FCommandBuffer& InRecorder, const VkClearDepthStencilValue& InValue, const TVector<VkImageSubresourceRange>& InRanges);
+	image(const image&) = delete;
+	image(image&& Other);
 
-	void CmdCopy(FCommandBuffer& InRecorder, FBuffer& InDstBuffer, const TVector<VkBufferImageCopy>& InRegions);
+	image& operator=(const image&) = delete;
 
-	void CmdCopy(FCommandBuffer& InRecorder, FImage& InDstImage, const TVector<VkImageCopy>& InRegions);
+	virtual ~image() override;
 
-	void CmdBlit(FCommandBuffer& InRecorder, FImage& InDstImage, const TVector<VkImageBlit>& InRegions, VkFilter InFilter);
+public:
 
-	void CmdResolve(FCommandBuffer& InRecorder, FImage& InDstImage, const TVector<VkImageResolve>& InRegions);
+	void CmdClear(command_buffer& InRecorder, const VkClearColorValue& InValue, const 
+		
+		
+		
+		<VkImageSubresourceRange>& InRanges);
+
+	void CmdClear(command_buffer& InRecorder, const VkClearDepthStencilValue& InValue, const std::vector<VkImageSubresourceRange>& InRanges);
+
+	void CmdCopy(command_buffer& InRecorder, buffer& InDstBuffer, const std::vector<VkBufferImageCopy>& InRegions);
+
+	void CmdCopy(command_buffer& InRecorder, image& InDstImage, const std::vector<VkImageCopy>& InRegions);
+
+	void CmdBlit(command_buffer& InRecorder, image& InDstImage, const std::vector<VkImageBlit>& InRegions, VkFilter InFilter);
+
+	void CmdResolve(command_buffer& InRecorder, image& InDstImage, const std::vector<VkImageResolve>& InRegions);
 
 private:
 
-	TUniquePtr<FDeviceMemory> Mem;
+	std::unique_ptr<device_memory> Mem;
 
 	VkImageLayout Layout;
 

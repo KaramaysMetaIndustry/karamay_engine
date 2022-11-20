@@ -1,50 +1,50 @@
 #ifndef _BUFFER_H_
 #define _BUFFER_H_
 
-#include "DeviceObject.h"
+#include "device_object.h"
 
 _KANAS_CORE_BEGIN
 
-class FDeviceMemory;
-class FCommandBuffer;
-class FImage;
+class device_memory;
+class command_buffer;
+class image;
 
-class FBuffer : public FDeviceObject<VkBuffer>
+class buffer : public device_object<VkBuffer>
 {
-	friend class FDevice;
+	friend class device;
 
-	bool Allocate(uint64 Size, FBufferUsageFlags UsageFlags, TSharedPtr<FConcurrentGuide> InConcurrentGuide = nullptr);
-
-public:
-
-	FBuffer(FDevice& InDevice);
-
-	FBuffer(const FBuffer& Other) = delete;
-	FBuffer(FBuffer&& Other) noexcept;
-
-	FBuffer& operator=(const FBuffer& Other) = delete;
-
-	virtual ~FBuffer() override;
+	bool alllocate(std::uint64_t Size, buffer_usage_flags UsageFlags, std::shared_ptr<FConcurrentGuide> InConcurrentGuide = nullptr);
 
 public:
 
-	void CmdCopy(FCommandBuffer& InRecorder, FBuffer& InDstBuffer, const TVector<VkBufferCopy>& InRegions);
+	buffer(device& owner);
 
-	void CmdCopyToImage(FCommandBuffer& InRecorder, FImage& InDstImage, const TVector<VkBufferImageCopy>& InRegions);
+	buffer(const buffer& Other) = delete;
+	buffer(buffer&& Other) noexcept;
 
-	void CmdFill(FCommandBuffer& InRecorder, uint64 InOffset, uint64 InSize, uint32 InData);
+	buffer& operator=(const buffer& Other) = delete;
 
-	void CmdUpdate(FCommandBuffer& InRecorder, uint64 InOffset, uint64 InSize, void* InData);
+	virtual ~buffer() override;
+
+public:
+
+	void CmdCopy(command_buffer& InRecorder, buffer& InDstBuffer, const std::vector<VkBufferCopy>& InRegions);
+
+	void CmdCopyToImage(command_buffer& InRecorder, image& InDstImage, const std::vector<VkBufferImageCopy>& InRegions);
+
+	void CmdFill(command_buffer& InRecorder, std::uint64_t InOffset, std::uint64_t InSize, std::uint32_t InData);
+
+	void CmdUpdate(command_buffer& InRecorder, std::uint64_t InOffset, std::uint64_t InSize, void* InData);
 
 private:
 
-	TUniquePtr<FDeviceMemory> Mem;
+	std::unique_ptr<device_memory> Mem;
 
 };
 
 
 
-class FIndexBuffer : public FBuffer
+class FIndexBuffer : public buffer
 {
 public:
 
@@ -54,7 +54,7 @@ public:
 };
 
 
-class FVertexBuffer : public FBuffer
+class FVertexBuffer : public buffer
 {
 public:
 

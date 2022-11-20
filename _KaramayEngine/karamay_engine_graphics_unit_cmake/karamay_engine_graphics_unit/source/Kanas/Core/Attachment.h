@@ -6,11 +6,11 @@
 
 _KANAS_CORE_BEGIN
 
-class FImageView;
+class image_view;
 
 struct FAttachmentView
 {
-	TSharedPtr<FImageView> ImageView;
+	std::shared_ptr<image_view> ImageView;
 
 	VkSampleCountFlagBits SampleCount;
 

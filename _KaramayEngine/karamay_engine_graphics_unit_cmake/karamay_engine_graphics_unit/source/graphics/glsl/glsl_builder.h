@@ -130,7 +130,7 @@ glsl_vec3& name() const {return *_##name;};\
 
 #define refUniformBlock()
 
-#define refShaderStorageBlock()
+#define reshaderStorageBlock()
 
 #define refAtomicCounter()
 

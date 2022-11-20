@@ -1,18 +1,34 @@
-#include "Subpass.h"
+#include "subpass.h"
+#include "command_buffer.h"
+#include "pipeline.h"
 
-Kanas::Core::FSubpass::FSubpass(TSharedPtr<FPipeline> InPipeline, const TVector<uint32>& InAttachmentIndices)
+kanas::core::subpass::subpass()
+{
+	std::vector<VkAttachmentReference> inputAttachments;
+	std::vector<VkAttachmentReference> colorAttachments;
+	std::vector<VkAttachmentReference> resolveAttachments;
+	std::vector<VkAttachmentReference> preserveAttachments;
+
+	VkSubpassDescription desc;
+	desc.flags = {};
+	desc.pipelineBindPoint = pipe->GetBindPoint();
+	desc.inputAttachmentCount;
+	desc.pInputAttachments;
+	desc.colorAttachmentCount;
+	desc.pColorAttachments;
+	desc.pResolveAttachments;
+	desc.pDepthStencilAttachment;
+	desc.preserveAttachmentCount;
+	desc.pPreserveAttachments;
+
+}
+
+kanas::core::subpass::~subpass()
 {
 }
 
-Kanas::Core::FSubpass::~FSubpass()
+void kanas::core::subpass::cmd_execute(secondary_command_buffer& recorder)
 {
+	record_functor(recorder);
 }
 
-void Kanas::Core::FSubpass::SetNext(TSharedPtr<FSubpass> InSubpass, const VkSubpassDependency& InDependency)
-{
-}
-
-TSharedPtr<Kanas::Core::FSubpass> Kanas::Core::FSubpass::GetNext() const
-{
-	return Next;
-}

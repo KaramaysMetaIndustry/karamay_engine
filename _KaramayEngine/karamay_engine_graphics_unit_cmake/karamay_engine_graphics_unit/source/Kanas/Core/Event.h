@@ -1,23 +1,23 @@
 #ifndef _EVENT_H_
 #define _EVENT_H_
 
-#include "DeviceObject.h"
+#include "device_object.h"
 
 _KANAS_CORE_BEGIN
 
-class FCommandBuffer;
+class command_buffer;
 
-class FEvent final : public FDeviceObject<VkEvent>
+class FEvent final : public device_object<VkEvent>
 {
-	friend class FDevice;
+	friend class device;
 
-	bool Allocate();
+	bool alllocate();
 
 	VkResult GetStatus();
 
 public:
 
-	FEvent(FDevice& InDevice);
+	FEvent(device& owner);
 
 	virtual ~FEvent();
 
@@ -25,11 +25,11 @@ public:
 
 	void Reset();
 
-	void CmdSet(FCommandBuffer& InRecorder, VkPipelineStageFlags InPipelineStageFlags);
+	void CmdSet(command_buffer& InRecorder, VkPipelineStageFlags InPipelineStageFlags);
 
-	void CmdReset(FCommandBuffer& InRecorder, VkPipelineStageFlags InPipelineStageFlags);
+	void CmdReset(command_buffer& InRecorder, VkPipelineStageFlags InPipelineStageFlags);
 
-	void CmdWait(FCommandBuffer& InRecorder);
+	void CmdWait(command_buffer& InRecorder);
 
 };
 

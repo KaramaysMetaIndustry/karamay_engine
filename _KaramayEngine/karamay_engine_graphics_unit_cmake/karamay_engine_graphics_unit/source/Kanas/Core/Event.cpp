@@ -2,14 +2,14 @@
 #include "Device.h"
 #include "CommandBuffer.h"
 
-bool Kanas::Core::FEvent::Allocate()
+bool kanas::core::FEvent::alllocate()
 {
 	VkEventCreateInfo EventCreateInfo{};
 	EventCreateInfo.sType = VK_STRUCTURE_TYPE_EVENT_CREATE_INFO;
 	EventCreateInfo.pNext = nullptr;
 	EventCreateInfo.flags = {};
 
-	const VkResult Result = vkCreateEvent(GetDevice().GetHandle(), &EventCreateInfo, nullptr, &_Handle);
+	const VkResult Result = vkCreateEvent(get_device().get_handle(), &EventCreateInfo, nullptr, &handle);
 
 	if (Result == VkResult::VK_SUCCESS)
 	{
@@ -19,49 +19,49 @@ bool Kanas::Core::FEvent::Allocate()
 	return false;
 }
 
-VkResult Kanas::Core::FEvent::GetStatus()
+VkResult kanas::core::FEvent::GetStatus()
 {
-	return vkGetEventStatus(GetDevice().GetHandle(), GetHandle());
+	return vkGetEventStatus(get_device().get_handle(), get_handle());
 }
 
-Kanas::Core::FEvent::FEvent(FDevice& InDevice) :
-	FDeviceObject(InDevice)
+kanas::core::FEvent::FEvent(device& owner) :
+	device_object(owner)
 {
 }
 
-Kanas::Core::FEvent::~FEvent()
+kanas::core::FEvent::~FEvent()
 {
 	if (IsValid())
 	{
-		vkDestroyEvent(GetDevice().GetHandle(), GetHandle(), nullptr);
+		vkDestroyEvent(get_device().get_handle(), get_handle(), nullptr);
 
-		ResetHandle();
+		reset_handle();
 	}
 }
 
-void Kanas::Core::FEvent::Set()
+void kanas::core::FEvent::Set()
 {
-	VkResult Result = vkSetEvent(GetDevice().GetHandle(), GetHandle());
+	VkResult Result = vkSetEvent(get_device().get_handle(), get_handle());
 }
 
-void Kanas::Core::FEvent::Reset()
+void kanas::core::FEvent::Reset()
 {
-	VkResult Result = vkResetEvent(GetDevice().GetHandle(), GetHandle());
+	VkResult Result = vkResetEvent(get_device().get_handle(), get_handle());
 }
 
-void Kanas::Core::FEvent::CmdSet(FCommandBuffer& InRecorder, VkPipelineStageFlags InPipelineStageFlags)
+void kanas::core::FEvent::CmdSet(command_buffer& InRecorder, VkPipelineStageFlags InPipelineStageFlags)
 {
-	vkCmdSetEvent(InRecorder.GetHandle(), GetHandle(), InPipelineStageFlags);
+	vkCmdSetEvent(InRecorder.get_handle(), get_handle(), InPipelineStageFlags);
 }
 
-void Kanas::Core::FEvent::CmdReset(FCommandBuffer& InRecorder, VkPipelineStageFlags InPipelineStageFlags)
+void kanas::core::FEvent::CmdReset(command_buffer& InRecorder, VkPipelineStageFlags InPipelineStageFlags)
 {
-	vkCmdResetEvent(InRecorder.GetHandle(), GetHandle(), InPipelineStageFlags);
+	vkCmdResetEvent(InRecorder.get_handle(), get_handle(), InPipelineStageFlags);
 }
 
-void Kanas::Core::FEvent::CmdWait(FCommandBuffer& InRecorder)
+void kanas::core::FEvent::CmdWait(command_buffer& InRecorder)
 {
-	VkEvent EventHandles[] = { GetHandle() };
+	VkEvent EventHandles[] = { get_handle() };
 	VkPipelineStageFlags SrcMask = VkPipelineStageFlagBits::VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
 	VkPipelineStageFlags DstMask;
 
@@ -69,9 +69,9 @@ void Kanas::Core::FEvent::CmdWait(FCommandBuffer& InRecorder)
 	std::vector<VkBufferMemoryBarrier> BufferMemBarriers;
 	std::vector<VkImageMemoryBarrier> ImageMemBarriers;
 
-	vkCmdWaitEvents(InRecorder.GetHandle(), 1, EventHandles, SrcMask, DstMask, 
-		static_cast<uint32>(MemBarriers.size()), MemBarriers.data(), 
-		static_cast<uint32>(BufferMemBarriers.size()), BufferMemBarriers.data(), 
-		static_cast<uint32>(ImageMemBarriers.size()), ImageMemBarriers.data()
+	vkCmdWaitEvents(InRecorder.get_handle(), 1, EventHandles, SrcMask, DstMask, 
+		static_cast<std::uint32_t>(MemBarriers.size()), MemBarriers.data(), 
+		static_cast<std::uint32_t>(BufferMemBarriers.size()), BufferMemBarriers.data(), 
+		static_cast<std::uint32_t>(ImageMemBarriers.size()), ImageMemBarriers.data()
 	);
 }

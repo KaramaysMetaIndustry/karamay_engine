@@ -1,56 +1,56 @@
 #ifndef _PIPELINE_H_
 #define _PIPELINE_H_
 
-#include "DeviceObject.h"
+#include "device_object.h"
 
 _KANAS_CORE_BEGIN
 
-class FBuffer;
-class FShaderModule;
-class FPipelineLayout;
-class FPipelineCache;
-class FDescriptorSet;
-class FCommandBuffer;
+class buffer;
+class shader_module;
+class pipeline_layout;
+class pipeline_cache;
+class descriptor_set;
+class command_buffer;
 
-class FPipelineConstants
+class pipelineConstants
 {
 
 public:
 
 	uint8* GetData();
 
-	uint64 GetSize();
+	std::uint64_t GetSize();
 };
 
 
-class FPipeline : public FDeviceObject<VkPipeline>
+class pipeline : public device_object<VkPipeline>
 {
 public:
 
-	FPipeline(FDevice& InDevice, VkPipelineBindPoint InBindPoint);
+	pipeline(device& owner, VkPipelineBindPoint InBindPoint);
 
-	FPipeline(const FDevice&) = delete;
-	FPipeline& operator=(const FDevice&) = delete;
+	pipeline(const device&) = delete;
+	pipeline& operator=(const device&) = delete;
 
-	virtual ~FPipeline() override;
+	virtual ~pipeline() override;
 
-	void CmdBind(FCommandBuffer& InRecorder);
+	void CmdBind(command_buffer& InRecorder);
 
-	void CmdBindDescriptorSets(FCommandBuffer& InRecorder);
+	void CmdBindDescriptorSets(command_buffer& InRecorder);
 
-	void CmdPushConstants(FCommandBuffer& InRecorder);
+	void CmdPushConstants(command_buffer& InRecorder);
 
-	TSharedPtr<FPipelineLayout> GetLayout() const;
+	std::shared_ptr<pipeline_layout> GetLayout() const;
 
 	VkPipelineBindPoint GetBindPoint() const;
 
 private:
 
-	TSharedPtr<FPipelineLayout> Layout;
+	std::shared_ptr<pipeline_layout> Layout;
 
 	VkPipelineBindPoint BindPoint;
 
-	TSharedPtr<FPipelineConstants> Constants;
+	std::shared_ptr<pipelineConstants> Constants;
 
 };
 

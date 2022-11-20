@@ -5,17 +5,17 @@
 
 _KANAS_CORE_BEGIN
 
-class FSampler final : public FDeviceObject<VkSampler>
+class sampler final : public deviceObject<VkSampler>
 {
-	friend class FDevice;
+	friend class device;
 
-	bool Allocate();
+	bool alllocate();
 
 public:
 
-	FSampler(FDevice& InDevice);
+	sampler(device& owner);
 
-	virtual ~FSampler() override;
+	virtual ~sampler() override;
 
 };
 

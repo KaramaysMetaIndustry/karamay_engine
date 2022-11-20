@@ -1,19 +1,19 @@
-#include "Shader.h"
+#include "shader.h"
 
-Kanas::Core::FShader::FShader(const FString& InName, const FString& InPath) :
+kanas::core::FShader::FShader(const FString& InName, const FString& InPath) :
 	Name(InName)
 {
 }
 
-Kanas::Core::FShader::~FShader()
+kanas::core::FShader::~FShader()
 {
 }
 
-Kanas::Core::FComputeShader::FComputeShader(const FString& InName, const FString& InPath) :
+kanas::core::compute_shader::compute_shader(const FString& InName, const FString& InPath) :
 	FShader(InName, InPath)
 {
 }
 
-Kanas::Core::FComputeShader::~FComputeShader()
+kanas::core::compute_shader::~compute_shader()
 {
 }

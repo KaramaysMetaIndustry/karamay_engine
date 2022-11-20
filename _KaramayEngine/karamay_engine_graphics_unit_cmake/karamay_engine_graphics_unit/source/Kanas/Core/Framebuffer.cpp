@@ -1,67 +1,50 @@
-#include "Framebuffer.h"
-#include "Device.h"
-#include "ImageView.h"
-#include "RenderPass.h"
+#include "framebuffer.h"
+#include "device.h"
+#include "image_view.h"
+#include "render_pass.h"
 
-struct FFramebufferStaticHelper
+bool kanas::core::framebuffer::alllocate(const render_pass& pass, std::uint32_t width, std::uint32_t height, std::uint32_t layers, const std::vector<std::shared_ptr<image_view>>& image_views)
 {
-	static void Create();
-
-};
-
-bool Kanas::Core::FFramebuffer::Allocate(const FRenderPass& RenderPass, const FFramebufferDimension& Dimension, const TVector<TSharedPtr<FImageView>>& AttachmentImageViews)
-{
-	TVector<VkImageView> RawImageViews;
-	RawImageViews.reserve(AttachmentImageViews.size());
-
-	for (const auto& AttachmentImageView : AttachmentImageViews)
-	{
-		if (AttachmentImageView)
-		{
-			RawImageViews.emplace_back(AttachmentImageView->GetHandle());
-		}
-	}
+	std::vector<VkImageView> raw_image_views;
+	get_raw(image_views, raw_image_views);
 
 	VkFramebufferCreateInfo FramebufferCreateInfo{};
 	FramebufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 	FramebufferCreateInfo.pNext = nullptr;
 	FramebufferCreateInfo.flags = {};
-	FramebufferCreateInfo.renderPass = RenderPass.GetHandle();
-	FramebufferCreateInfo.attachmentCount = static_cast<uint32>(RawImageViews.size());
-	FramebufferCreateInfo.pAttachments = RawImageViews.data();
-	FramebufferCreateInfo.width = Width;
-	FramebufferCreateInfo.height = Height;
-	FramebufferCreateInfo.layers = Layers;
+	FramebufferCreateInfo.renderPass = pass.get_handle();
+	FramebufferCreateInfo.attachmentCount = static_cast<std::uint32_t>(raw_image_views.size());
+	FramebufferCreateInfo.pAttachments = raw_image_views.data();
+	FramebufferCreateInfo.width = width;
+	FramebufferCreateInfo.height = height;
+	FramebufferCreateInfo.layers = layers;
 
-	const VkResult Result = vkCreateFramebuffer(GetDevice().GetHandle(), &FramebufferCreateInfo, nullptr, &_Handle);
-
-	if (Result == VkResult::VK_SUCCESS)
+	if (vkCreateFramebuffer(get_device().get_handle(), &FramebufferCreateInfo, nullptr, &handle) == VK_SUCCESS)
 	{
-		Attachments = AttachmentImageViews;
-
+		attachments = image_views;
 		return true;
 	}
 
 	return false;
 }
 
-Kanas::Core::FFramebuffer::FFramebuffer(FDevice& InDevice) :
-	FDeviceObject(InDevice)
+kanas::core::framebuffer::framebuffer(device& owner) :
+	device_object(owner)
 {
 }
 
-Kanas::Core::FFramebuffer::FFramebuffer(FFramebuffer&& Other) :
-	FDeviceObject(Other.GetDevice())
+kanas::core::framebuffer::framebuffer(framebuffer&& Other) :
+	device_object(Other.get_device())
 {
 }
 
-Kanas::Core::FFramebuffer::~FFramebuffer()
+kanas::core::framebuffer::~framebuffer()
 {
 	if (IsValid())
 	{
-		vkDestroyFramebuffer(GetDevice().GetHandle(), GetHandle(), nullptr);
+		vkDestroyFramebuffer(get_device().get_handle(), get_handle(), nullptr);
 
-		ResetHandle();
+		reset_handle();
 	}
 }
 

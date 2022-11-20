@@ -1,22 +1,22 @@
-#include "Semaphore.h"
-#include "Device.h"
+#include "semaphore.h"
+#include "device.h"
 
-Kanas::Core::FSemaphore::FSemaphore(FDevice& InDevice) :
-	FDeviceObject(InDevice)
+kanas::core::semaphore::semaphore(device& owner) :
+	deviceObject(owner)
 {
 }
 
-Kanas::Core::FSemaphore::~FSemaphore()
+kanas::core::semaphore::~semaphore()
 {
 	if (IsValid())
 	{
-		vkDestroySemaphore(GetDevice().GetHandle(), GetHandle(), nullptr);
+		vkDestroySemaphore(get_device().get_handle(), get_handle(), nullptr);
 
-		ResetHandle();
+		reset_handle();
 	}
 }
 
-bool Kanas::Core::FSemaphore::Allocate(VkSemaphoreType InType, uint64 InInitalValue)
+bool kanas::core::semaphore::alllocate(VkSemaphoreType InType, std::uint64_t InInitalValue)
 {
 	VkSemaphoreTypeCreateInfo SemaphoreTypeCreateInfo{};
 	SemaphoreTypeCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO;
@@ -29,7 +29,7 @@ bool Kanas::Core::FSemaphore::Allocate(VkSemaphoreType InType, uint64 InInitalVa
 	SemaphoreCreateInfo.pNext = &SemaphoreTypeCreateInfo;
 	SemaphoreCreateInfo.flags = {};
 
-	VkResult Result = vkCreateSemaphore(GetDevice().GetHandle(), &SemaphoreCreateInfo, nullptr, &_Handle);
+	VkResult Result = vkCreateSemaphore(get_device().get_handle(), &SemaphoreCreateInfo, nullptr, &handle);
 
 	if (Result == VkResult::VK_SUCCESS)
 	{
@@ -39,9 +39,9 @@ bool Kanas::Core::FSemaphore::Allocate(VkSemaphoreType InType, uint64 InInitalVa
 	return false;
 }
 
-VkResult Kanas::Core::FSemaphore::Wait(uint64 InValue, uint64 InTimeout)
+VkResult kanas::core::semaphore::Wait(std::uint64_t InValue, std::uint64_t InTimeout)
 {
-	VkSemaphore SemaphoreHandles[] = { GetHandle() };
+	VkSemaphore SemaphoreHandles[] = { get_handle() };
 
 	VkSemaphoreWaitInfo SemaphoreWaitInfo;
 	SemaphoreWaitInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO;
@@ -51,23 +51,23 @@ VkResult Kanas::Core::FSemaphore::Wait(uint64 InValue, uint64 InTimeout)
 	SemaphoreWaitInfo.pSemaphores = SemaphoreHandles;
 	SemaphoreWaitInfo.pValues = &InValue;
 
-	return vkWaitSemaphores(GetDevice().GetHandle(), &SemaphoreWaitInfo, InTimeout);
+	return vkWaitSemaphores(get_device().get_handle(), &SemaphoreWaitInfo, InTimeout);
 }
 
-VkResult Kanas::Core::FSemaphore::Signal(uint64 InValue)
+VkResult kanas::core::semaphore::Signal(std::uint64_t InValue)
 {
 	VkSemaphoreSignalInfo SemaphoreSignalInfo;
 	SemaphoreSignalInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_SIGNAL_INFO;
 	SemaphoreSignalInfo.pNext = nullptr;
-	SemaphoreSignalInfo.semaphore = GetHandle();
+	SemaphoreSignalInfo.semaphore = get_handle();
 	SemaphoreSignalInfo.value = InValue;
 
-	return vkSignalSemaphore(GetDevice().GetHandle(), &SemaphoreSignalInfo);
+	return vkSignalSemaphore(get_device().get_handle(), &SemaphoreSignalInfo);
 }
 
-uint64 Kanas::Core::FSemaphore::GetCounterValue()
+std::uint64_t kanas::core::semaphore::GetCounterValue()
 {
-	uint64 Value = 0;
-	vkGetSemaphoreCounterValue(GetDevice().GetHandle(), GetHandle(), &Value);
+	std::uint64_t Value = 0;
+	vkGetSemaphoreCounterValue(get_device().get_handle(), get_handle(), &Value);
 	return Value;
 }

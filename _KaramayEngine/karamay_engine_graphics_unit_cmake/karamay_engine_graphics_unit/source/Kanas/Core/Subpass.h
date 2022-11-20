@@ -6,60 +6,82 @@
 
 _KANAS_CORE_BEGIN
 
-class FRenderPass;
-class FPipeline;
+class render_pass;
+class pipeline;
+class secondary_command_buffer;
 
-class FSubpass
+class subpass
 {
 public:
 
-	FSubpass(TSharedPtr<FPipeline> InPipeline, const TVector<uint32>& InAttachmentIndices);
+	using record_subpass_cmds = std::function<void(secondary_command_buffer&)>;
 
-	virtual ~FSubpass();
+	bool allocate(,
+		std::uint32_t new_index,
+		const std::vector<std::uint32_t>& new_attachment_indices,
+		std::shared_ptr<pipeline> new_pipe,
+		const record_subpass_cmds& cmds,
+		VkSubpassContents new_contents);
 
-	void SetNext(TSharedPtr<FSubpass> InSubpass, const VkSubpassDependency& InDependency);
+	subpass(render_pass& owner);
+	subpass(const subpass&) = delete;
 
-	TSharedPtr<FSubpass> GetNext() const;
+	virtual ~subpass();
 
-private:
+	void cmd_execute(secondary_command_buffer& recorder);
 
-	TSharedPtr<FSubpass> Next;
-
-	TSharedPtr<FPipeline> Pipeline;
-
-};
-
-struct FSubpassDependency
-{
-	FPipelineStageFlags PreStageMask{};
-
-	FPipelineStageFlags StageMask{};
-
-	FAccessFlags PreAccessMask{};
-
-	FAccessFlags AccessMask{};
-
-	FDependencyFlags Dependency{};
-
-};
-
-struct FSubpassQueue
-{
-	FSubpassQueue(TSharedPtr<FSubpass> DefaultSubpass) :
-		Root(DefaultSubpass)
+	std::shared_ptr<render_pass> get_render_pass() const
 	{
+		return owner.lock();
 	}
 
-	void Hook(TSharedPtr<FSubpass> NextSubpass, TSharedPtr<FSubpass> DependencyToPreSubpass) {}
+	std::uint32_t get_index() const
+	{
+		return index;
+	}
 
-	void ClearHooks() {}
+	std::shared_ptr<subpass> get_next() const
+	{
+		return next;
+	}
+
+	const record_subpass_cmds& get_cmd_delegate() const 
+	{ 
+		return record_functor; 
+	}
+
+	VkSubpassContents get_contents() const 
+	{ 
+		return contents; 
+	}
 
 private:
 
-	TSharedPtr<FSubpass> Root;
+	render_pass& owner;
 
-	TVector<TSharedPtr<FSubpass>> FollowedSubpasses;
-	TVector<TSharedPtr<FSubpassDependency>> Followed;
+	std::uint32_t index;
+
+	std::shared_ptr<pipeline> pipe;
+
+	std::shared_ptr<subpass> next;
+
+	record_subpass_cmds record_functor;
+
+	VkSubpassContents contents;
+
+};
+
+struct subpassDependency
+{
+	pipeline_stage_flags PreStageMask{};
+
+	pipeline_stage_flags StageMask{};
+
+	access_flags PreAccessMask{};
+
+	access_flags AccessMask{};
+
+	dependency_flags Dependency{};
 
 };
 

@@ -1,36 +1,35 @@
 #ifndef _FRAMEBUFFER_H_
 #define _FRAMEBUFFER_H_
 
-#include "DeviceObject.h"
+#include "device_object.h"
 
 _KANAS_CORE_BEGIN
 
-class FImageView;
-class FRenderPass;
-class FAttachment;
+class render_pass;
+class image_view;
 
-class FFramebuffer final : public FDeviceObject<VkFramebuffer>
+class framebuffer final : public device_object<VkFramebuffer>
 {
-	friend class FRenderPass;
+	friend class render_pass;
 
-	bool Allocate(const FRenderPass& RenderPass, const FFramebufferDimension& Dimension, const TVector<TSharedPtr<FImageView>>& AttachmentImageViews);
+	std::vector<std::shared_ptr<image_view>> attachments;
+
+	bool alllocate(
+		const render_pass& pass, 
+		std::uint32_t width, std::uint32_t height, std::uint32_t layers, 
+		const std::vector<std::shared_ptr<image_view>>& image_views
+	);
 
 public:
 
-	FFramebuffer(FDevice& InDevice);
+	framebuffer(device& owner);
 
-	FFramebuffer(const FFramebuffer&) = delete;
-	FFramebuffer(FFramebuffer&& Other);
+	framebuffer(const framebuffer&) = delete;
+	framebuffer(framebuffer&& Other);
 
-	FFramebuffer& operator=(const FFramebuffer&) = delete;
+	framebuffer& operator=(const framebuffer&) = delete;
 
-	virtual ~FFramebuffer();
-
-	void GetAttachments(TVector<TSharedPtr<FAttachment>>& OutAttachments);
-
-private:
-
-	TVector<TSharedPtr<FImageView>> Attachments;
+	virtual ~framebuffer() override;
 
 };
 

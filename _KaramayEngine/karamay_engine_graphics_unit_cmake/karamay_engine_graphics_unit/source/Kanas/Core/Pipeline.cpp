@@ -1,57 +1,57 @@
-#include "Pipeline.h"
-#include "Device.h"
-#include "PipelineCache.h"
-#include "CommandBuffer.h"
-#include "DescriptorSet.h"
-#include "DescriptorSetLayout.h"
-#include "PipelineLayout.h"
+#include "pipeline.h"
+#include "device.h"
+#include "pipeline_cache.h"
+#include "command_buffer.h"
+#include "descriptor_set.h"
+#include "descriptor_set_layout.h"
+#include "pipeline_layout.h"
 
-Kanas::Core::FPipeline::FPipeline(FDevice& InDevice, VkPipelineBindPoint InBindPoint) :
-    FDeviceObject(InDevice),
+kanas::core::pipeline::pipeline(device& owner, VkPipelineBindPoint InBindPoint) :
+    device_object(owner),
     BindPoint(InBindPoint)
 {
 }
 
-Kanas::Core::FPipeline::~FPipeline()
+kanas::core::pipeline::~pipeline()
 {
     if (IsValid())
     {
-        vkDestroyPipeline(GetDevice().GetHandle(), GetHandle(), nullptr);
+        vkDestroyPipeline(get_device().get_handle(), get_handle(), nullptr);
         
-        ResetHandle();
+        reset_handle();
     }
 }
 
-void Kanas::Core::FPipeline::CmdBind(FCommandBuffer& InRecorder)
+void kanas::core::pipeline::CmdBind(command_buffer& InRecorder)
 {
-    vkCmdBindPipeline(InRecorder.GetHandle(), BindPoint, GetHandle());
+    vkCmdBindPipeline(InRecorder.get_handle(), BindPoint, get_handle());
 }
 
-void Kanas::Core::FPipeline::CmdPushConstants(FCommandBuffer& InRecorder)
+void kanas::core::pipeline::CmdPushConstants(command_buffer& InRecorder)
 {
     if (Constants)
     {
-        vkCmdPushConstants(InRecorder.GetHandle(), GetLayout()->GetHandle(), 0, 0, Constants->GetSize(), Constants->GetData());
+        vkCmdPushConstants(InRecorder.get_handle(), GetLayout()->get_handle(), 0, 0, Constants->GetSize(), Constants->GetData());
     }
 }
 
-void Kanas::Core::FPipeline::CmdBindDescriptorSets(FCommandBuffer& InRecorder)
+void kanas::core::pipeline::CmdBindDescriptorSets(command_buffer& InRecorder)
 {
     if (!Layout)
     {
         return;
     }
     
-    TVector<VkDescriptorSet> DescriptorSetHandles;
-    CollectDeviceObjectHandles(Layout->GetDescriptorSetLayouts(), DescriptorSetHandles);
+    std::vector<VkDescriptorSet> DescriptorSetHandles;
+    Collectdevice_objectHandles(Layout->GetDescriptorSetLayouts(), DescriptorSetHandles);
 
-    vkCmdBindDescriptorSets(InRecorder.GetHandle(), BindPoint, Layout->GetHandle(), 
+    vkCmdBindDescriptorSets(InRecorder.get_handle(), BindPoint, Layout->get_handle(), 
         0, DescriptorSetHandles.size(), DescriptorSetHandles.data(), 
         0, nullptr
     );
 }
 
-TSharedPtr<Kanas::Core::FPipelineLayout> Kanas::Core::FPipeline::GetLayout() const
+std::shared_ptr<kanas::core::pipeline_layout> kanas::core::pipeline::GetLayout() const
 {
     return Layout;
 }

@@ -1,30 +1,30 @@
-#include "Device.h"
-#include "PhysicalDevice.h"
-#include "Queue.h"
-#include "Fence.h"
-#include "Semaphore.h"
-#include "Event.h"
-#include "CommandBuffer.h"
-#include "DeviceMemory.h"
-#include "Buffer.h"
-#include "BufferView.h"
-#include "Image.h"
-#include "ImageView.h"
-#include "Framebuffer.h"
-#include "ShaderModule.h"
-#include "Sampler.h"
-#include "DescriptorPool.h"
-#include "CommandPool.h"
-#include "RenderPass.h"
+#include "device.h"
+#include "physical_device.h"
+#include "queue.h"
+#include "fence.h"
+#include "semaphore.h"
+#include "event.h"
+#include "commandBuffer.h"
+#include "device_memory.h"
+#include "buffer.h"
+#include "buffer_view.h"
+#include "image.h"
+#include "image_view.h"
+#include "framebuffer.h"
+#include "shader_module.h"
+#include "sampler.h"
+#include "descriptor_pool.h"
+#include "command_pool.h"
+#include "render_pass.h"
 
 
-bool Kanas::Core::FDevice::Allocate()
+bool kanas::core::device::alllocate()
 {
     VkDeviceCreateFlags DeviceCreateFlags;
 
-    TVector<VkDeviceQueueCreateInfo> QueueCreateInfos;
+    std::vector<VkDeviceQueueCreateInfo> QueueCreateInfos;
 
-    TVector<VkQueueFamilyProperties> PropertiesArr;
+    std::vector<VkQueueFamilyProperties> PropertiesArr;
     GetPhysicalDevice().GetQueueFamilyProperties(PropertiesArr);
 
     for (const auto& Properties : PropertiesArr)
@@ -52,8 +52,8 @@ bool Kanas::Core::FDevice::Allocate()
         QueueCreateInfos.emplace_back(QueueCreateInfo);
     }
 
-    TVector<const char*> EnabledLayerNames;
-    TVector<const char*> EnabledExtensionNames;
+    std::vector<const char*> EnabledLayerNames;
+    std::vector<const char*> EnabledExtensionNames;
 
     VkPhysicalDeviceFeatures Features;
     GetPhysicalDevice().GetFeatures(Features);
@@ -62,15 +62,15 @@ bool Kanas::Core::FDevice::Allocate()
     DeviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
     DeviceCreateInfo.pNext = nullptr;
     DeviceCreateInfo.flags = DeviceCreateFlags;
-    DeviceCreateInfo.queueCreateInfoCount = static_cast<uint32>(QueueCreateInfos.size());
+    DeviceCreateInfo.queueCreateInfoCount = static_cast<std::uint32_t>(QueueCreateInfos.size());
     DeviceCreateInfo.pQueueCreateInfos = QueueCreateInfos.data();
-    DeviceCreateInfo.enabledLayerCount = static_cast<uint32>(EnabledLayerNames.size());
+    DeviceCreateInfo.enabledLayerCount = static_cast<std::uint32_t>(EnabledLayerNames.size());
     DeviceCreateInfo.ppEnabledLayerNames = EnabledLayerNames.data();
-    DeviceCreateInfo.enabledExtensionCount = static_cast<uint32>(EnabledExtensionNames.size());
+    DeviceCreateInfo.enabledExtensionCount = static_cast<std::uint32_t>(EnabledExtensionNames.size());
     DeviceCreateInfo.ppEnabledExtensionNames = EnabledExtensionNames.data();
     DeviceCreateInfo.pEnabledFeatures = &Features;
 
-    const VkResult Result = vkCreateDevice(GPU.GetHandle(), &DeviceCreateInfo, nullptr, &_Handle);
+    const VkResult Result = vkCreateDevice(GPU.get_handle(), &DeviceCreateInfo, nullptr, &handle);
 
     if (Result == VK_SUCCESS)
     {
@@ -80,21 +80,21 @@ bool Kanas::Core::FDevice::Allocate()
     return false;
 }
 
-Kanas::Core::FDevice::FDevice(FPhysicalDevice& InPhysicalDevice) :
+kanas::core::device::device(physical_device& InPhysicalDevice) :
     GPU(InPhysicalDevice)
 {
 }
 
-Kanas::Core::FDevice::~FDevice()
+kanas::core::device::~device()
 {
 
 }
 
-TSharedPtr<Kanas::Core::FQueue> Kanas::Core::FDevice::GetQueue(uint32 InQueueFamilyIndex, uint32 InQueueIndex)
+std::shared_ptr<kanas::core::queue> kanas::core::device::GetQueue(std::uint32_t InQueueFamilyIndex, std::uint32_t InQueueIndex)
 {
-    TSharedPtr<FQueue> NewQueue = MakeShared<FQueue>(*this);
+    std::shared_ptr<queue> NewQueue = std::make_shared<queue>(*this);
 
-    if (NewQueue && NewQueue->Allocate(InQueueFamilyIndex, InQueueIndex))
+    if (NewQueue && NewQueue->alllocate(InQueueFamilyIndex, InQueueIndex))
     {
         return NewQueue;
     }
@@ -102,11 +102,11 @@ TSharedPtr<Kanas::Core::FQueue> Kanas::Core::FDevice::GetQueue(uint32 InQueueFam
     return nullptr;
 }
 
-TSharedPtr<Kanas::Core::FBuffer> Kanas::Core::FDevice::CreateBuffer(uint64 InSize, FBufferUsage Usage, TSharedPtr<FConcurrentGuide> ConcurrentGuide)
+std::shared_ptr<kanas::core::buffer> kanas::core::device::CreateBuffer(std::uint64_t InSize, buffer_usage_flags Usage, std::shared_ptr<FConcurrentGuide> ConcurrentGuide)
 {
-    if (const auto NewBuffer = MakeShared<FBuffer>(*this))
+    if (const auto NewBuffer = std::make_shared<buffer>(*this))
     {
-        if (NewBuffer->Allocate(InSize, Usage, ConcurrentGuide))
+        if (NewBuffer->alllocate(InSize, Usage, ConcurrentGuide))
         {
             return NewBuffer;
         }
@@ -115,37 +115,34 @@ TSharedPtr<Kanas::Core::FBuffer> Kanas::Core::FDevice::CreateBuffer(uint64 InSiz
     return nullptr;
 }
 
-TSharedPtr<Kanas::Core::FBufferView> Kanas::Core::FDevice::CreateBufferView(TSharedPtr<FBuffer> Buffer, VkFormat Format, VkDeviceSize Offset, VkDeviceSize Range)
+std::shared_ptr<kanas::core::buffer_view> kanas::core::device::Createbuffer_view(std::shared_ptr<buffer> Buffer, VkFormat Format, VkDeviceSize Offset, VkDeviceSize Range)
 {
-    if (const auto NewBufferView = MakeShared<FBufferView>(*this))
+    if (const auto Newbuffer_view = std::make_shared<buffer_view>(*this))
     {
-        if (NewBufferView->Allocate(Buffer, Format, Offset, Range))
+        if (Newbuffer_view->alllocate(Buffer, Format, Offset, Range))
         {
-            return NewBufferView;
+            return Newbuffer_view;
         }
     }
 
     return nullptr;
 }
 
-TSharedPtr<Kanas::Core::FImage > Kanas::Core::FDevice::CreateImage()
+std::shared_ptr<kanas::core::image > kanas::core::device::CreateImage()
 {
-    if (const auto NewImage = MakeShared<FImage>(*this))
+    if (const auto NewImage = std::make_shared<image>(*this))
     {
-        if (NewImage->Allocate())
-        {
-            return NewImage;
-        }
+        
     }
     
     return nullptr;
 }
 
-TSharedPtr<Kanas::Core::FImageView> Kanas::Core::FDevice::CreateImageView(TSharedPtr<FImage> Image, VkImageViewType InViewType, VkFormat InFormat, const VkComponentMapping& InComponents, const VkImageSubresourceRange& InSubresourceRange)
+std::shared_ptr<kanas::core::image_view> kanas::core::device::CreateImageView(std::shared_ptr<image> Image, VkImageViewType InViewType, VkFormat InFormat, const VkComponentMapping& InComponents, const VkImageSubresourceRange& InSubresourceRange)
 {
-    if (const auto NewImageView = MakeShared<FImageView>(*this))
+    if (const auto NewImageView = std::make_shared<image_view>(*this))
     {
-        if (NewImageView->Allocate(Image, InViewType, InFormat, InComponents, InSubresourceRange))
+        if (NewImageView->alllocate(Image, InViewType, InFormat, InComponents, InSubresourceRange))
         {
             return NewImageView;
         }
@@ -154,21 +151,20 @@ TSharedPtr<Kanas::Core::FImageView> Kanas::Core::FDevice::CreateImageView(TShare
     return nullptr;
 }
 
-Kanas::Core::FDescriptorPool* Kanas::Core::FDevice::CreateDescriptorPool()
+kanas::core::descriptor_pool* kanas::core::device::CreateDescriptorPool()
 {
-    if (const auto NewDescriptorPool = MakeShared<FDescriptorPool>(*this))
+    if (const auto NewDescriptorPool = std::make_shared<descriptor_pool>(*this))
     {
     }
-
 
     return nullptr;
 }
 
-TSharedPtr<Kanas::Core::FShaderModule> Kanas::Core::FDevice::CreateShaderModule(const TVector<uint32>& ShaderCode)
+std::shared_ptr<kanas::core::shader_module> kanas::core::device::CreateShaderModule(const std::vector<std::uint32_t>& ShaderCode)
 {
-    if (const auto NewShaderModule = MakeShared<FShaderModule>(*this))
+    if (const auto NewShaderModule = std::make_shared<shader_module>(*this))
     {
-        if (NewShaderModule->Allocate(ShaderCode))
+        if (NewShaderModule->alllocate(ShaderCode))
         {
             return NewShaderModule;
         }
@@ -176,11 +172,19 @@ TSharedPtr<Kanas::Core::FShaderModule> Kanas::Core::FDevice::CreateShaderModule(
     return nullptr;
 }
 
-TSharedPtr<Kanas::Core::FFence> Kanas::Core::FDevice::CreateFence(bool IsDefaultSignaled)
+std::shared_ptr<kanas::core::render_pass> kanas::core::device::create_render_pass()
 {
-    const TSharedPtr<FFence> NewFence = MakeShared<FFence>(*this);
+    const auto new_render_pass = std::make_shared<render_pass>(*this);
+    if(new_render_pass && new_render_pass->allocate())
 
-    if (NewFence && NewFence->Allocate(IsDefaultSignaled))
+    return std::shared_ptr<render_pass>();
+}
+
+std::shared_ptr<kanas::core::fence> kanas::core::device::CreateFence(bool IsDefaultSignaled)
+{
+    const auto NewFence = std::make_shared<fence>(*this);
+
+    if (NewFence && NewFence->alllocate(IsDefaultSignaled))
     {
         return NewFence;
     }
@@ -188,11 +192,11 @@ TSharedPtr<Kanas::Core::FFence> Kanas::Core::FDevice::CreateFence(bool IsDefault
     return nullptr;
 }
 
-TSharedPtr<Kanas::Core::FSemaphore> Kanas::Core::FDevice::CreateSemaphore()
+std::shared_ptr<kanas::core::semaphore> kanas::core::device::CreateSemaphore()
 {
-    if (const auto NewSemaphore = MakeShared<FSemaphore>(*this))
+    if (const auto NewSemaphore = std::make_shared<semaphore>(*this))
     {
-        if (NewSemaphore->Allocate(VK_SEMAPHORE_TYPE_BINARY, 0))
+        if (NewSemaphore->alllocate(VK_SEMAPHORE_TYPE_BINARY, 0))
         {
             return NewSemaphore;
         }
@@ -200,11 +204,11 @@ TSharedPtr<Kanas::Core::FSemaphore> Kanas::Core::FDevice::CreateSemaphore()
     return nullptr;
 }
 
-TSharedPtr<Kanas::Core::FEvent> Kanas::Core::FDevice::CreateEvent()
+std::shared_ptr<kanas::core::FEvent> kanas::core::device::CreateEvent()
 {
-    if (const auto NewEvent = MakeShared<FEvent>(*this))
+    if (const auto NewEvent = std::make_shared<FEvent>(*this))
     {
-        if (NewEvent->Allocate())
+        if (NewEvent->alllocate())
         {
             return NewEvent;
         }
@@ -212,39 +216,14 @@ TSharedPtr<Kanas::Core::FEvent> Kanas::Core::FDevice::CreateEvent()
     return nullptr;
 }
 
-TSharedPtr<Kanas::Core::FSampler> Kanas::Core::FDevice::CreateSampler()
+std::shared_ptr<kanas::core::sampler> kanas::core::device::CreateSampler()
 {
-    if (const auto NewSampler = MakeShared<FSampler>(*this))
+    if (const auto NewSampler = std::make_shared<sampler>(*this))
     {
-        if (NewSampler->Allocate())
+        if (NewSampler->alllocate())
         {
             return NewSampler;
         }
     }
     return nullptr;
-}
-
-void Kanas::Core::FDevice::Test()
-{
-    const auto TransferQueue = GetQueue(0, 0);
-    const auto GraphicsQueue = GetQueue(1, 0);
-
-    TVector<TSharedPtr<FSemaphore>> WaitSemaphores;
-    TVector<VkPipelineStageFlags> WaitDstStageMasks;
-
-    TVector<TSharedPtr<FCommandBuffer>> CmdBuffers;
-
-    TVector<TSharedPtr<FQueue>> Queues{ TransferQueue, GraphicsQueue };
-
-    auto ConcurrentGuide = MakeShared<FConcurrentGuide>(Queues);
-    
-    auto NewBuffer = CreateBuffer(1024, FBufferUsageFlags().SetUniformBuffer(), ConcurrentGuide);
-
-
-    TSharedPtr<FRenderPass> RenderPass;
-    RenderPass->Sequence = [](FCommandBuffer& InRecorder, FFramebuffer& RenderTarget) 
-    {
-        
-    };
-
 }
