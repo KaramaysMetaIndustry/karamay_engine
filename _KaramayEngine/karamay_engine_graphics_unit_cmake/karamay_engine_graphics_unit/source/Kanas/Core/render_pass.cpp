@@ -8,6 +8,65 @@
 #include "image.h"
 #include "subpass.h"
 
+class A
+{
+public:
+
+    int a;
+    int b;
+};
+
+enum class image_view_t
+{
+    one_d = VK_IMAGE_VIEW_TYPE_1D,
+    two_d = VK_IMAGE_VIEW_TYPE_2D,
+    three_d = VK_IMAGE_VIEW_TYPE_3D,
+    cube = VK_IMAGE_VIEW_TYPE_CUBE,
+    one_d_array = VK_IMAGE_VIEW_TYPE_1D_ARRAY,
+    two_d_array = VK_IMAGE_VIEW_TYPE_2D_ARRAY,
+    cube_array = VK_IMAGE_VIEW_TYPE_CUBE_ARRAY
+};
+
+void test()
+{
+    kanas::core::device& dev;
+
+    const std::shared_ptr<kanas::core::primary_command_buffer> prim_cmd_buffer;
+
+    const std::shared_ptr<kanas::core::image> img;
+
+    VkComponentMapping mapping;
+    mapping.a = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_A;
+
+    VkImageSubresourceRange range;
+    range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    range.baseMipLevel = 0;
+    range.levelCount = 2;
+    range.baseArrayLayer = 0;
+    range.layerCount = 1;
+
+    const auto img_view_color = dev.create_image_view(
+        img, VK_IMAGE_VIEW_TYPE_1D, VK_FORMAT_A1R5G5B5_UNORM_PACK16,
+        mapping, range
+    );
+
+    kanas::core::framebuffer_info fb_info;
+    fb_info.width = 1024;
+    fb_info.height = 1024;
+    fb_info.layers = 1;
+    fb_info.attachment_views;
+
+    kanas::core::default_subpass_info default_subpass_info;
+
+    const std::shared_ptr<kanas::core::render_pass> _main_pass;
+    if (_main_pass && _main_pass->allocate(fb_info, default_subpass_info))
+    {
+        
+    }
+
+    prim_cmd_buffer->record(_main_pass);
+}
+
 bool kanas::core::render_pass::allocate(
     const framebuffer_info& render_target_info, 
     const default_subpass_info& default_subpass, 

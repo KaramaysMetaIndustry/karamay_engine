@@ -138,7 +138,7 @@ std::shared_ptr<kanas::core::image > kanas::core::device::CreateImage()
     return nullptr;
 }
 
-std::shared_ptr<kanas::core::image_view> kanas::core::device::CreateImageView(std::shared_ptr<image> Image, VkImageViewType InViewType, VkFormat InFormat, const VkComponentMapping& InComponents, const VkImageSubresourceRange& InSubresourceRange)
+std::shared_ptr<kanas::core::image_view> kanas::core::device::create_image_view(std::shared_ptr<image> Image, VkImageViewType InViewType, VkFormat InFormat, const VkComponentMapping& InComponents, const VkImageSubresourceRange& InSubresourceRange)
 {
     if (const auto NewImageView = std::make_shared<image_view>(*this))
     {
@@ -172,12 +172,19 @@ std::shared_ptr<kanas::core::shader_module> kanas::core::device::CreateShaderMod
     return nullptr;
 }
 
-std::shared_ptr<kanas::core::render_pass> kanas::core::device::create_render_pass()
+std::shared_ptr<kanas::core::render_pass> kanas::core::device::create_render_pass(
+    const framebuffer_info& render_target_info,
+    const default_subpass_info& default_subpass,
+    const subpass_extension& extension)
 {
-    const auto new_render_pass = std::make_shared<render_pass>(*this);
-    if(new_render_pass && new_render_pass->allocate())
+    const auto _render_pass = std::make_shared<render_pass>(*this);
+    
+    if (_render_pass && _render_pass->allocate(render_target_info, default_subpass))
+    {
+        return _render_pass;
+    }
 
-    return std::shared_ptr<render_pass>();
+    return nullptr;
 }
 
 std::shared_ptr<kanas::core::fence> kanas::core::device::CreateFence(bool IsDefaultSignaled)

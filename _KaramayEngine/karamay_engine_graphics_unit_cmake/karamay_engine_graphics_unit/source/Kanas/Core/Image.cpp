@@ -6,7 +6,7 @@
 #include "buffer.h"
 #include "command_buffer.h"
 
-bool kanas::core::image::alllocate(VkImageType InType, VkFormat InFormat, VkExtent3D InExtent, std::uint32_t InMips, std::uint32_t InLayers, VkSampleCountFlagBits InSamples, VkImageTiling InTileing, imageUsageFlags Usage, VkImageLayout InInitalLayout, std::shared_ptr<FConcurrentGuide> ConcurrentGuide)
+bool kanas::core::image::alllocate(VkImageType InType, VkFormat InFormat, VkExtent3D InExtent, std::uint32_t InMips, std::uint32_t InLayers, VkSampleCountFlagBits InSamples, VkImageTiling InTileing, image_usage_flags Usage, VkImageLayout InInitalLayout, std::shared_ptr<FConcurrentGuide> ConcurrentGuide)
 {
 	VkImageCreateInfo ImageCreateInfo{};
 	ImageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;

@@ -48,7 +48,7 @@ public:
 class render_pass final : public device_object<VkRenderPass>
 {
 	friend class deivce;
-
+public:
 	using subpass_extension = std::function<bool(subpass_linker&)>;
 
 	bool allocate(
@@ -57,7 +57,7 @@ class render_pass final : public device_object<VkRenderPass>
 		const subpass_extension& extension = {}
 	);
 
-public:
+
 
 	render_pass(device& owner);
 	render_pass(const render_pass&) = delete;

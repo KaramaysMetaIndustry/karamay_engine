@@ -56,7 +56,7 @@ public:
 	
 	std::shared_ptr<image> CreateImage();
 	
-	std::shared_ptr<image_view> CreateImageView(std::shared_ptr<image> Image, VkImageViewType InViewType, VkFormat InFormat, const VkComponentMapping& InComponents, const VkImageSubresourceRange& InSubresourceRange);
+	std::shared_ptr<image_view> create_image_view(std::shared_ptr<image> Image, VkImageViewType InViewType, VkFormat InFormat, const VkComponentMapping& InComponents, const VkImageSubresourceRange& InSubresourceRange);
 
 	descriptor_pool* CreateDescriptorPool();
 
@@ -66,7 +66,9 @@ public:
 	
 	std::shared_ptr<pipeline_layout> Createpipeline_layout();
 	
-	std::shared_ptr<render_pass> create_render_pass();
+	std::shared_ptr<render_pass> create_render_pass(const framebuffer_info& render_target_info,
+		const default_subpass_info& default_subpass,
+		const subpass_extension& extension);
 
 	command_pool* CreateCommandPool();
 
