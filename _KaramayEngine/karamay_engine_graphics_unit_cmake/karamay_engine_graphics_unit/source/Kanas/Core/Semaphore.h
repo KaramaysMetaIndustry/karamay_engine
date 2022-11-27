@@ -1,11 +1,11 @@
 #ifndef _SEMAPHORE_H_
 #define _SEMAPHORE_H_
 
-#include "DeviceObject.h"
+#include "device_object.h"
 
 _KANAS_CORE_BEGIN
 
-class semaphore final : public deviceObject<VkSemaphore>
+class semaphore final : public device_object<VkSemaphore>
 {
 	friend class device;
 

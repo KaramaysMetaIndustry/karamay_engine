@@ -10,7 +10,6 @@
 
 _KANAS_BEGIN
 
-
 class custom_render_pass_dispatcher
 {
 	kanas::core::device& device;
@@ -25,17 +24,11 @@ public:
 
 	void tick(float delta_time)
 	{
-		std::shared_ptr<kanas::core::primary_command_buffer> primary_cmd_buffer;
+		std::shared_ptr<kanas::core::queue> _main_queue;
+		
+		_main_queue->PresetKHR();
 
-		for (const auto& pass : passes)
-		{
-			if (pass->is_dirty())
-			{
-				primary_cmd_buffer->reset();
-				primary_cmd_buffer->record(pass);
-			}
-		}
-
+.
 	}
 
 	void insert()
@@ -46,7 +39,9 @@ public:
 		{
 			return;
 		}
-	}
+	} 
+
+	void create_render_pass(const nlohmann::json& rpd);
 
 };
 

@@ -101,19 +101,14 @@ kanas::core::secondary_command_buffer::~secondary_command_buffer()
 {
 }
 
-bool kanas::core::secondary_command_buffer::record(std::shared_ptr<subpass> pass)
+bool kanas::core::secondary_command_buffer::record(subpass& pass)
 {
-    if (!pass)
-    {
-        return false;
-    }
-
     VkCommandBufferInheritanceInfo CommandBufferInheritanceInfo;
     CommandBufferInheritanceInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
     CommandBufferInheritanceInfo.pNext = nullptr;
-    CommandBufferInheritanceInfo.renderPass = pass->get_render_pass()->get_handle();
-    CommandBufferInheritanceInfo.subpass = pass->get_index();
-    CommandBufferInheritanceInfo.framebuffer = pass->get_render_pass()->get_framebuffer()->get_handle();
+    CommandBufferInheritanceInfo.renderPass = pass.get_render_pass()->get_handle();
+    CommandBufferInheritanceInfo.subpass = pass.get_index();
+    CommandBufferInheritanceInfo.framebuffer = pass.get_render_pass()->render_target()->get_handle();
     CommandBufferInheritanceInfo.occlusionQueryEnable = false;
     CommandBufferInheritanceInfo.queryFlags = query_control_flags().set_precise(); 
     CommandBufferInheritanceInfo.pipelineStatistics = FQueryPipelineStatisticFlags().SetGeometryShaderInvocations().Get();
@@ -129,7 +124,7 @@ bool kanas::core::secondary_command_buffer::record(std::shared_ptr<subpass> pass
         return false;
     }
 
-    pass->cmd_execute(*this);
+    pass.cmd_execute(*this);
 
     if (vkEndCommandBuffer(get_handle()) != VK_SUCCESS)
     {

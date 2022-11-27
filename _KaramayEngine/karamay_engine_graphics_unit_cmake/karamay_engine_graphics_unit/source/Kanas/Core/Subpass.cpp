@@ -30,5 +30,12 @@ kanas::core::subpass::~subpass()
 void kanas::core::subpass::cmd_execute(secondary_command_buffer& recorder)
 {
 	record_functor(recorder);
+	std::string_view sv;
+	std::vector<int> a;
+	a.emplace_back();
+
+	std::forward<kanas::core::subpass&&>(*this);
+
+
 }
 

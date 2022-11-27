@@ -1,81 +1,18 @@
 #include "render_pass.h"
-#include "device.h"
-#include "command_buffer.h"
 #include "framebuffer.h"
 #include "pipeline.h"
+#include "command_buffer.h"
 #include "attachment.h"
 #include "image_view.h"
 #include "image.h"
 #include "subpass.h"
-
-class A
-{
-public:
-
-    int a;
-    int b;
-};
-
-enum class image_view_t
-{
-    one_d = VK_IMAGE_VIEW_TYPE_1D,
-    two_d = VK_IMAGE_VIEW_TYPE_2D,
-    three_d = VK_IMAGE_VIEW_TYPE_3D,
-    cube = VK_IMAGE_VIEW_TYPE_CUBE,
-    one_d_array = VK_IMAGE_VIEW_TYPE_1D_ARRAY,
-    two_d_array = VK_IMAGE_VIEW_TYPE_2D_ARRAY,
-    cube_array = VK_IMAGE_VIEW_TYPE_CUBE_ARRAY
-};
-
-void test()
-{
-    kanas::core::device& dev;
-
-    const std::shared_ptr<kanas::core::primary_command_buffer> prim_cmd_buffer;
-
-    const std::shared_ptr<kanas::core::image> img;
-
-    VkComponentMapping mapping;
-    mapping.a = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_A;
-
-    VkImageSubresourceRange range;
-    range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    range.baseMipLevel = 0;
-    range.levelCount = 2;
-    range.baseArrayLayer = 0;
-    range.layerCount = 1;
-
-    const auto img_view_color = dev.create_image_view(
-        img, VK_IMAGE_VIEW_TYPE_1D, VK_FORMAT_A1R5G5B5_UNORM_PACK16,
-        mapping, range
-    );
-
-    kanas::core::framebuffer_info fb_info;
-    fb_info.width = 1024;
-    fb_info.height = 1024;
-    fb_info.layers = 1;
-    fb_info.attachment_views;
-
-    kanas::core::default_subpass_info default_subpass_info;
-
-    const std::shared_ptr<kanas::core::render_pass> _main_pass;
-    if (_main_pass && _main_pass->allocate(fb_info, default_subpass_info))
-    {
-        
-    }
-
-    prim_cmd_buffer->record(_main_pass);
-}
+#include "device.h"
 
 bool kanas::core::render_pass::allocate(
     const framebuffer_info& render_target_info, 
     const default_subpass_info& default_subpass, 
     const subpass_extension& extension)
 {
-    bool result = false;
-
-    extension(_linker);
-
     std::vector<VkAttachmentDescription> raw_attchment_descriptions;
     for (const auto& attachment_view : render_target_info.attachment_views)
     {
@@ -93,11 +30,11 @@ bool kanas::core::render_pass::allocate(
         raw_attchment_descriptions.emplace_back(desc);
     }
 
-    std::vector<std::shared_ptr<subpass>> subpasses;
-    _linker.get_subpasses(subpasses);
+    const auto& _subpasses = _linker.get_subpasses();
+    
     std::vector<VkSubpassDescription> raw_subpasses;
 
-    for (const auto& sub : subpasses)
+    for (const auto& sub : _subpasses)
     {
         VkSubpassDescription desc;
         desc.flags = {};
@@ -118,17 +55,20 @@ bool kanas::core::render_pass::allocate(
     _linker.get_denpendencies(subpass_dependencies);
     std::vector<VkSubpassDependency> raw_subpass_dependencies;
 
-    VkRenderPassCreateInfo RenderPassCreateInfo{};
-    RenderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-    RenderPassCreateInfo.flags = {};
-    RenderPassCreateInfo.attachmentCount = raw_attchment_descriptions.size();
-    RenderPassCreateInfo.pAttachments = raw_attchment_descriptions.data();
-    RenderPassCreateInfo.subpassCount = raw_subpasses.size();
-    RenderPassCreateInfo.pSubpasses = raw_subpasses.data();
-    RenderPassCreateInfo.dependencyCount = raw_subpass_dependencies.size();
-    RenderPassCreateInfo.pDependencies = raw_subpass_dependencies.data();
+    VkRenderPassCreateInfo renderPassCreateInfo{};
+    renderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+    renderPassCreateInfo.flags = {};
+    renderPassCreateInfo.attachmentCount = raw_attchment_descriptions.size();
+    renderPassCreateInfo.pAttachments = raw_attchment_descriptions.data();
+    renderPassCreateInfo.subpassCount = raw_subpasses.size();
+    renderPassCreateInfo.pSubpasses = raw_subpasses.data();
+    renderPassCreateInfo.dependencyCount = raw_subpass_dependencies.size();
+    renderPassCreateInfo.pDependencies = raw_subpass_dependencies.data();
 
-    VkResult RenderPassCreationResult = vkCreateRenderPass(get_device().get_handle(), &RenderPassCreateInfo, nullptr, &handle);
+    if (vkCreateRenderPass(get_device().get_handle(), &renderPassCreateInfo, nullptr, &handle) != VK_SUCCESS)
+    {
+        return false;
+    }
 
     std::vector<std::shared_ptr<image_view>> attchments;
     for (const auto& attachment_view : render_target_info.attachment_views)
@@ -152,8 +92,7 @@ bool kanas::core::render_pass::allocate(
 }
 
 kanas::core::render_pass::render_pass(device& owner) :
-    device_object(owner), 
-    _linker(nullptr)
+    device_object(owner)
 {
     framebuffer_info _render_target_info;
     _render_target_info.width = 1024;
@@ -167,10 +106,16 @@ kanas::core::render_pass::render_pass(device& owner) :
         [](subpass_linker& linker) 
         {
             linker.plus(nullptr);
+            linker.plus({});
 
             return true; 
         }
     );
+}
+
+kanas::core::render_pass::render_pass(render_pass& other) :
+    device_object(other.get_device())
+{
 }
 
 kanas::core::render_pass::~render_pass()
@@ -182,69 +127,42 @@ kanas::core::render_pass::~render_pass()
     }
 }
 
-void kanas::core::render_pass::cmd_execute(primary_command_buffer& recorder)
+void kanas::core::render_pass::cmd_execute(primary_command_buffer& pcb)
 {
-    VkRenderPassBeginInfo RenderPassBeginInfo{};
-    RenderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-    RenderPassBeginInfo.framebuffer = _render_target->get_handle();
-    RenderPassBeginInfo.renderPass = get_handle();
-    RenderPassBeginInfo.clearValueCount = _clear_values.size();
-    RenderPassBeginInfo.pClearValues = _clear_values.data();
-    RenderPassBeginInfo.renderArea = _render_area;
 
-    recorder.reset(command_buffer_reset_flags().set_release_resources());
-
-    std::vector<std::shared_ptr<subpass>> _subpasses;
-    _linker.get_subpasses(_subpasses);
-
-    std::vector<std::shared_ptr<secondary_command_buffer>> SubCmdBuffers;
-    recorder.get_secondary_command_buffers(_subpasses.size(), SubCmdBuffers);
-
-    for (size_t index = 1; index < _subpasses.size(); ++index)
-    {
-        SubCmdBuffers[index - 1]->record(_subpasses[index]);
-    }
-
-    std::vector<VkCommandBuffer> SubCmdBufferHandles;
-    get_raw(SubCmdBuffers, SubCmdBufferHandles);
-
-    vkCmdBeginRenderPass(recorder.get_handle(), &RenderPassBeginInfo, _subpasses[0]->get_contents());
-    
-    for (std::uint64_t index = 0; index < SubCmdBufferHandles.size(); ++index)
-    {
-        if (index != 0)
-        {
-            vkCmdNextSubpass(recorder.get_handle(), _subpasses[index]->get_contents());
-        }
-        vkCmdExecuteCommands(recorder.get_handle(), 1, SubCmdBufferHandles.data());
-    }
-    
-    vkCmdEndRenderPass(recorder.get_handle());
 }
 
-void kanas::core::render_pass::clean()
+void kanas::core::render_pass::clean_state()
 {
     _is_dirty = false;
 }
 
 void kanas::core::render_pass::set_render_area(const VkRect2D& val)
 {
-    render_area = val;
+    _render_area = val;
     _is_dirty = true;
 }
 
 void kanas::core::render_pass::set_clear_values(const std::vector<VkClearValue>& vals)
 {
-    clear_values = vals;
+    _clear_values = vals;
     _is_dirty = true;
 }
 
-kanas::core::subpass_linker::subpass_linker(std::shared_ptr<subpass> root)
+kanas::core::subpass_linker::subpass_linker(std::shared_ptr<subpass> default_subpass)
 {
+    _subpasses.push_back(default_subpass);
 }
 
 void kanas::core::subpass_linker::plus(std::shared_ptr<subpass> next)
 {
+    if (!next)
+    {
+        return;
+    }
+
+    _subpasses.push_back(next);
+
     //        VkSubpassDescription Subpass{};
    //        Subpass.flags = {};
    //        Subpass.pipelineBindPoint = Pipeline->GetBindPoint();
@@ -271,10 +189,67 @@ void kanas::core::subpass_linker::clear()
 {
 }
 
-void kanas::core::subpass_linker::get_subpasses(std::vector<std::shared_ptr<subpass>>& out_subpasses)
+void kanas::core::subpass_linker::get_dependencies(std::vector<std::shared_ptr<subpass_dependency>>& out_dependencies)
 {
 }
 
-void kanas::core::subpass_linker::get_denpendencies(std::vector<std::shared_ptr<subpass_dependency>>& out_dependencies)
+void kanas::core::mobile_render_pass::cmd_execute(kanas::core::primary_command_buffer &pcb) 
 {
+    std::vector<subpass*> _subpasses;
+    _subpasses.reserve(1 + _extended_subpasses.size());
+
+    checkf(_fixed_subpass, "default subpass is invalid");
+    _subpasses.push_back(_fixed_subpass.get());
+
+    for (const auto& _extension : _extended_subpasses)
+    {
+        check(_extension);
+        _subpasses.push_back(_extension.get());
+    }
+
+    const std::size_t _num_of_subpasses = _subpasses.size();
+
+    std::vector<std::shared_ptr<secondary_command_buffer>> _scbs;
+
+    if (_scbs.size() != _num_of_subpasses)
+    {
+        std::cerr << "can not find enough scbs" << std::endl;
+        return;
+    }
+
+    for (std::size_t _idx = 0; _idx < _num_of_subpasses; ++_idx)
+    {
+        check(_scbs[_idx]);
+        _scbs[_idx]->record(*_subpasses[_idx]);
+    }
+
+    VkRenderPassBeginInfo renderPassBeginInfo{};
+    renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    renderPassBeginInfo.framebuffer = _render_target->get_handle();
+    renderPassBeginInfo.renderPass = get_handle();
+    renderPassBeginInfo.clearValueCount = _clear_values.size();
+    renderPassBeginInfo.pClearValues = _clear_values.data();
+    renderPassBeginInfo.renderArea = _render_area;
+
+    std::vector<VkCommandBuffer> _raw_scbs;
+    //get_raw(_scbs, _raw_scbs);
+
+    pcb.reset();
+
+    vkCmdBeginRenderPass(pcb.get_handle(), &renderPassBeginInfo, _subpasses[0]->get_contents());
+
+    for (std::size_t _idx = 0; _idx < _raw_scbs.size(); ++_idx)
+    {
+        if (_idx != 0)
+        {
+            vkCmdNextSubpass(pcb.get_handle(), _subpasses[_idx]->get_contents());
+        }
+        vkCmdExecuteCommands(pcb.get_handle(), 1, _raw_scbs.data());
+    }
+
+    vkCmdEndRenderPass(pcb.get_handle());
+}
+
+kanas::core::mobile_render_pass::mobile_render_pass(device& dev) : render_pass(dev) {
+
 }

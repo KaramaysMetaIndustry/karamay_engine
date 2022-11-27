@@ -9,6 +9,9 @@ class descriptor_pool;
 class descriptor_set_layout;
 class descriptor_update_template;
 class pipeline;
+class buffer;
+class sampler;
+class image_view;
 
 
 struct FDescriptorImageInfo
@@ -24,7 +27,7 @@ struct FDescriptorBufferInfo
 
 class descriptor_set final : public device_object<VkDescriptorSet>
 {
-	bool alllocate(std::shared_ptr<descriptor_set_layout> InLayout);
+	bool allocate(std::shared_ptr<descriptor_set_layout> InLayout);
 
 public:
 

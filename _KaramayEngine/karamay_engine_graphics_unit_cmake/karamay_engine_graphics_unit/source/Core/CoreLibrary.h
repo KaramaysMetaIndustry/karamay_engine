@@ -5,7 +5,7 @@
 #include "Kanas/Core/KanasCoreMacros.h"
 
 
-template<typename T, typename Handle_T = T::Handle_T>
+template<typename T, typename Handle_T = typename T::Handle_T>
 static void get_raw(const std::vector<std::shared_ptr<T>>& device_objects, std::vector<Handle_T>& OutHandles)
 {
 	OutHandles.reserve(device_objects);
@@ -14,6 +14,22 @@ static void get_raw(const std::vector<std::shared_ptr<T>>& device_objects, std::
 		OutHandles.emplace_back(device_object->GetHandle());
 	}
 }
+
+
+#define check(expr)\
+{\
+	if (!expr) { std::abort(); }\
+}
+
+#define checkf(expr, message)\
+{\
+	if (!expr)\
+	{\
+		std::cerr << message << std::endl;\
+		std::abort();\
+	}\
+}
+
 
 
 #endif

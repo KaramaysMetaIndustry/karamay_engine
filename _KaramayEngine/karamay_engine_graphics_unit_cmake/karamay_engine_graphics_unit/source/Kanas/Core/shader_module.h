@@ -3,7 +3,6 @@
 
 #include "device_object.h"
 
-
 _KANAS_CORE_BEGIN
 
 class shader_module final : public device_object<VkShaderModule>

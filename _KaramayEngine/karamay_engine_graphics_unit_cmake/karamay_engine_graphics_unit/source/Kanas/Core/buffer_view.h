@@ -11,7 +11,7 @@ class buffer_view final : public device_object<VkBufferView>
 {
 	friend class device;
 
-	bool alllocate(std::shared_ptr<buffer> InBuffer, VkFormat InFormat, VkDeviceSize InOffset, VkDeviceSize InRange);
+	bool allocate(std::shared_ptr<buffer> InBuffer, VkFormat InFormat, VkDeviceSize InOffset, VkDeviceSize InRange);
 
 public:
 

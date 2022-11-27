@@ -5,9 +5,11 @@
 
 _KANAS_CORE_BEGIN
 
-class queuePool;
+class queue_pool;
 class fence;
 class command_buffer;
+class semaphore;
+class swapchain;
 
 struct SubmissionBatch
 {
@@ -28,7 +30,7 @@ class queue final : public device_object<VkQueue>
 {
 	friend class device;
 
-	bool alllocate(std::uint32_t InQueueFamilyIndex, std::uint32_t InQueueIndex);
+	bool allocate(std::uint32_t InQueueFamilyIndex, std::uint32_t InQueueIndex);
 
 public:
 
@@ -36,25 +38,24 @@ public:
 
 	virtual ~queue() override;
 
-	void BindSpare(const std::vector<BindSpareInfo>& InBindSparseInfos, fence* InFence = nullptr);
+	void bind_spare(const std::vector<BindSpareInfo>& InBindSparseInfos, fence* InFence = nullptr);
 
-	void WaitIdle();
+	void wait_idle();
 
-	void Submit(const std::vector<SubmissionBatch>& InBatches, fence* InFence = nullptr);
+	void submit(const std::vector<SubmissionBatch>& batches, fence* f = nullptr);
 
-	void PresetKHR(const VkPresentInfoKHR& InPresentInfo);
+	void present(const std::vector<std::shared_ptr<semaphore>>& _Semaphores,
+		const std::vector<std::shared_ptr<swapchain>>& _Swapchains);
 
-	queuePool* GetOwner() const;
+	queue_pool* owner() const;
 
-	std::uint32_t GetFamilyIndex() const { return QueueFamilyIndex; }
+	std::uint32_t get_family_index() const { return _queue_family_index; }
 
 private:
 
-	queuePool* Owner{ nullptr };
+	queue_pool* _owner{ nullptr };
 
-	friend TransientQueueGroup;
-
-	std::uint32_t QueueFamilyIndex;
+	std::uint32_t _queue_family_index;
 
 };
 
@@ -62,7 +63,7 @@ private:
 struct TransientQueueGroup
 {
 
-	std::vector<Queue*> Queues;
+	std::vector<queue*> Queues;
 
 	void BindSpare();
 

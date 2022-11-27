@@ -3,7 +3,7 @@
 #include "fence.h"
 #include "command_buffer.h"
 
-bool kanas::core::queue::alllocate(std::uint32_t InQueueFamilyIndex, std::uint32_t InQueueIndex)
+bool kanas::core::queue::allocate(std::uint32_t InQueueFamilyIndex, std::uint32_t InQueueIndex)
 {
 	vkGetDeviceQueue(get_device().get_handle(), InQueueFamilyIndex, InQueueIndex, &handle);
 	return true;
@@ -18,7 +18,7 @@ kanas::core::queue::~queue()
 {
 }
 
-void kanas::core::queue::BindSpare(const std::vector<BindSpareInfo>& InBindSparseInfos, fence* InFence)
+void kanas::core::queue::bind_spare(const std::vector<BindSpareInfo>& InBindSparseInfos, fence* InFence)
 {
 	std::vector<VkBindSparseInfo> BindSpareInfos;
 
@@ -44,17 +44,17 @@ void kanas::core::queue::BindSpare(const std::vector<BindSpareInfo>& InBindSpars
 		BindSpareInfo.pSignalSemaphores;
 	}
 	
-	VkFence FenceHandle = InFence ? InFence->get_handle() : VK_NULLhandle;
+	VkFence FenceHandle = InFence ? InFence->get_handle() : VK_NULL_HANDLE;
 
 	VkResult Result = vkQueueBindSparse(get_handle(), static_cast<std::uint32_t>(BindSpareInfos.size()), BindSpareInfos.data(), FenceHandle);
 }
 
-void kanas::core::queue::WaitIdle()
+void kanas::core::queue::wait_idle()
 {
 	VkResult Result = vkQueueWaitIdle(get_handle());
 }
 
-void kanas::core::queue::Submit(const std::vector<SubmissionBatch>& InBatches, fence* InFence)
+void kanas::core::queue::submit(const std::vector<SubmissionBatch>& InBatches, fence* InFence)
 {
 	std::vector<VkSubmitInfo> SubmitInfos;
 	SubmitInfos.reserve(InBatches.size());
@@ -87,17 +87,31 @@ void kanas::core::queue::Submit(const std::vector<SubmissionBatch>& InBatches, f
 		SubmitInfos.emplace_back(SubmitInfo);
 	}
 
-	VkFence FenceHandle = InFence ? FenceHandle = InFence->get_handle() : VK_NULLhandle;
+	VkFence FenceHandle = InFence ? FenceHandle = InFence->get_handle() : VK_NULL_HANDLE;
 
 	VkResult Result = vkQueueSubmit(get_handle(), static_cast<std::uint32_t>(SubmitInfos.size()), SubmitInfos.data(), FenceHandle);
 }
 
-void kanas::core::queue::PresetKHR(const VkPresentInfoKHR& InPresentInfo)
+void kanas::core::queue::present(
+	const std::vector<std::shared_ptr<semaphore>>& _Semaphores, 
+	const std::vector<std::shared_ptr<swapchain>>& _Swapchains)
 {
-	VkResult Result = vkQueuePresentKHR(get_handle(), &InPresentInfo);
+
+
+	VkPresentInfoKHR presentInfo{};
+	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+	presentInfo.pNext = nullptr;
+	presentInfo.waitSemaphoreCount;
+	presentInfo.pWaitSemaphores;
+	presentInfo.swapchainCount;
+	presentInfo.pSwapchains;
+	presentInfo.pImageIndices;
+	presentInfo.pResults;
+
+	VkResult Result = vkQueuePresentKHR(get_handle(), &presentInfo);
 }
 
-kanas::core::queuePool* kanas::core::queue::GetOwner() const
+kanas::core::queue_pool* kanas::core::queue::owner() const
 {
-	return Owner;
+	return _owner;
 }

@@ -20,7 +20,7 @@ public:
 
 	virtual ~command_pool() override;
 
-	bool alllocate(std::uint32_t InQueueFamilyIndex, bool bInTransientBuffer = false , bool bInCanBufferResetSelf = true);
+	bool allocate(std::uint32_t InQueueFamilyIndex, bool bInTransientBuffer = false , bool bInCanBufferResetSelf = true);
 
 	VkResult Reset(bool bInRecycle = false);
 

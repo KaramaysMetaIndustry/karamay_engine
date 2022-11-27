@@ -34,7 +34,7 @@ public:
 
 	command_buffer(device& owner, command_pool& pool);
 
-	virtual ~command_buffer() override;
+	~command_buffer() override;
 
 	command_pool& get_pool()
 	{
@@ -57,15 +57,9 @@ public:
 
 	primary_command_buffer();
 
-	virtual ~primary_command_buffer();
+	~primary_command_buffer() override;
 
-	bool record(std::shared_ptr<render_pass> pass);
-
-	void get_secondary_command_buffers(std::uint32_t num, std::vector<std::shared_ptr<secondary_command_buffer>>& OutSecondaryCmdBuffers);
-
-private:
-
-	std::vector<std::shared_ptr<secondary_command_buffer>> SubCmdBuffers;
+	bool record(render_pass& pass);
 
 };
 
@@ -75,9 +69,9 @@ public:
 
 	secondary_command_buffer();
 
-	virtual ~secondary_command_buffer();
+	~secondary_command_buffer() override;
 
-	bool record(std::shared_ptr<subpass> pass);
+	bool record(subpass& pass);
 
 };
 

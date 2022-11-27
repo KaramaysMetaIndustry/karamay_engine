@@ -42,7 +42,7 @@ auto& set_##FUNCTION_NAME##(bool active = true)\
 	flags |= active ? VK_BIT : 0;\
 	return *this;\
 }\
-bool is##FUNCTION_NAME##_active() const\
+bool is_##FUNCTION_NAME##_active() const\
 {\
 	return flags & VK_BIT;\
 }
@@ -181,6 +181,12 @@ struct query_pipeline_statistic_flags : public vulkan_flags<query_pipeline_stati
 	DECAL_FLAG(tessellation_evaluation_shader_invocations,VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_EVALUATION_SHADER_INVOCATIONS_BIT)
 	DECAL_FLAG(compute_shader_invocations,VK_QUERY_PIPELINE_STATISTIC_COMPUTE_SHADER_INVOCATIONS_BIT)
 };
+
+struct framebuffer_create_flags : public vulkan_flags<framebuffer_create_flags>
+{
+	DECAL_FLAG(imageless, VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT)
+};
+
 
 enum class PipelineStageFlagBits
 {

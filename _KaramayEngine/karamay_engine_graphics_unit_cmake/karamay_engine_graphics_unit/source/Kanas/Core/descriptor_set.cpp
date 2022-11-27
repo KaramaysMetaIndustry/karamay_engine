@@ -12,7 +12,7 @@
 #include "buffer.h"
 #include "sampler.h"
 
-bool kanas::core::descriptor_set::alllocate(std::shared_ptr<descriptor_set_layout> InLayout)
+bool kanas::core::descriptor_set::allocate(std::shared_ptr<descriptor_set_layout> InLayout)
 {
     VkDescriptorSetLayout LayoutHandles[] = { InLayout->get_handle() };
 
@@ -56,7 +56,7 @@ void kanas::core::descriptor_set::Write(std::uint32_t BindingIndex, std::uint32_
     WriteDescriptorSet.descriptorType = Layout->GetBindingInfo(BindingIndex)->descriptorType;
     WriteDescriptorSet.pImageInfo = _ImageInfos.data();
     WriteDescriptorSet.pBufferInfo = nullptr;
-    WriteDescriptorSet.pTexelbuffer_view = nullptr;
+    WriteDescriptorSet.pTexelBufferView = nullptr;
 
     vkUpdateDescriptorSets(get_device().get_handle(), 1, &WriteDescriptorSet, 0, nullptr);
 }

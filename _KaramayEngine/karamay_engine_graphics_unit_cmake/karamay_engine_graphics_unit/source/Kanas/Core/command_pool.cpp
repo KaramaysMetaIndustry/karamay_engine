@@ -24,7 +24,7 @@ kanas::core::command_pool::~command_pool()
     }
 }
 
-bool kanas::core::command_pool::alllocate(std::uint32_t InQueueFamilyIndex, bool bInTransientBuffer, bool bInCanBufferResetSelf)
+bool kanas::core::command_pool::allocate(std::uint32_t InQueueFamilyIndex, bool bInTransientBuffer, bool bInCanBufferResetSelf)
 {
     VkCommandPoolCreateFlags CommandPoolCreateFlags = 0;
 

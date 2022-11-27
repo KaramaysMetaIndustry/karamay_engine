@@ -7,13 +7,13 @@ _KANAS_CORE_BEGIN
 
 class device_memory;
 
-class acceleration_structue : device_object<VkAccelerationStructureKHR>
+class acceleration_structure : device_object<VkAccelerationStructureKHR>
 {
 public:
 
-	acceleration_structue(device& owner);
+    acceleration_structure(device& owner);
 
-	virtual ~acceleration_structue() override;
+	virtual ~acceleration_structure() override;
 	
 
 	std::shared_ptr<device_memory> Mem;

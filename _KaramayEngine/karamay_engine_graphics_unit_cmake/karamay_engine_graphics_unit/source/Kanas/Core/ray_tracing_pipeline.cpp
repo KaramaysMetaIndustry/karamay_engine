@@ -2,9 +2,8 @@
 #include "device.h"
 #include "deferred_operation.h"
 
-bool kanas::core::ray_tracing_piepline::alllocate(std::shared_ptr<deferred_operation> DeferredOperation)
+bool kanas::core::ray_tracing_pipeline::allocate(std::shared_ptr<deferred_operation> DeferredOperation)
 {
-
 	VkRayTracingShaderGroupCreateInfoKHR RayTracingShaderGroupCreateInfo{};
 
 	RayTracingShaderGroupCreateInfo.sType = VK_STRUCTURE_TYPE_RAY_TRACING_SHADER_GROUP_CREATE_INFO_KHR;
@@ -42,19 +41,19 @@ bool kanas::core::ray_tracing_piepline::alllocate(std::shared_ptr<deferred_opera
 	return false;
 }
 
-kanas::core::ray_tracing_piepline::ray_tracing_piepline(device& owner) :
+kanas::core::ray_tracing_pipeline::ray_tracing_pipeline(device& owner) :
 	pipeline(owner, VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR)
 {
 }
 
-kanas::core::ray_tracing_piepline::~ray_tracing_piepline()
+kanas::core::ray_tracing_pipeline::~ray_tracing_pipeline()
 {
 }
 
-void kanas::core::ray_tracing_piepline::CmdTraceRays()
+void kanas::core::ray_tracing_pipeline::CmdTraceRays()
 {
 }
 
-void kanas::core::ray_tracing_piepline::CmdTraceRaysIndirect()
+void kanas::core::ray_tracing_pipeline::CmdTraceRaysIndirect()
 {
 }

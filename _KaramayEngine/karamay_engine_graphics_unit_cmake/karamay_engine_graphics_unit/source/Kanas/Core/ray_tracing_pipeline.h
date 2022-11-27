@@ -5,18 +5,18 @@
 
 _KANAS_CORE_BEGIN
 
-class ray_tracing_piepline final : public pipeline
+class ray_tracing_pipeline final : public pipeline
 {
 
 	friend class device;
 
-	bool alllocate();
+	bool allocate();
 
 public:
 
-	ray_tracing_piepline(device& owner);
+	ray_tracing_pipeline(device& owner);
 
-	virtual ~ray_tracing_piepline();
+	virtual ~ray_tracing_pipeline();
 
 	void CmdTraceRays();
 
