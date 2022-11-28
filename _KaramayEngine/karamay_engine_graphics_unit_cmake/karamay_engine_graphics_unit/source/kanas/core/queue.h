@@ -11,13 +11,13 @@ class command_buffer;
 class semaphore;
 class swapchain;
 
-struct SubmissionBatch
+struct submission_batch
 {
-	std::vector<std::pair<semaphore*, VkPipelineStageFlags>> SemaphoreToWaitBeforeExecution;
+	std::vector<std::pair<semaphore*, VkPipelineStageFlags>> semaphore_to_wait_before_execution;
 	
-	std::vector<command_buffer*> CmdBuffers;
+	std::vector<command_buffer*> cmd_buffers;
 	
-	std::vector<semaphore*> SemaphoreToSignalAfterExecution;
+	std::vector<semaphore*> semaphore_to_signal_after_execution;
 
 };
 
@@ -42,7 +42,7 @@ public:
 
 	void wait_idle();
 
-	void submit(const std::vector<SubmissionBatch>& batches, fence* f = nullptr);
+	void submit(const std::vector<submission_batch>& batches, std::shared_ptr<fence> fen = nullptr);
 
 	void present(const std::vector<std::shared_ptr<semaphore>>& _Semaphores,
 		const std::vector<std::shared_ptr<swapchain>>& _Swapchains);

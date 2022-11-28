@@ -29,7 +29,7 @@ public:
 	void EnumerateLayerProperties(std::vector<VkLayerProperties>& OutLayerProperties);
 
 
-	Device* CreateDevice();
+	std::shared_ptr<device> derive();
 
 	void DeleteDevice(Device* ownerToDelete);
 

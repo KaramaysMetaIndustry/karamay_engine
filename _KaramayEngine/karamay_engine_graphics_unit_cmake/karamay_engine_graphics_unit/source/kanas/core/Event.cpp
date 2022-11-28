@@ -1,5 +1,5 @@
 #include "Event.h"
-#include "Device.h"
+#include "device.h"
 #include "CommandBuffer.h"
 
 bool kanas::core::FEvent::alllocate()

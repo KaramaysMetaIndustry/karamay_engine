@@ -4,7 +4,7 @@
 #include "fence.h"
 #include "semaphore.h"
 #include "event.h"
-#include "commandBuffer.h"
+#include "command_buffer.h"
 #include "device_memory.h"
 #include "buffer.h"
 #include "buffer_view.h"
@@ -18,7 +18,7 @@
 #include "render_pass.h"
 
 
-bool kanas::core::device::alllocate()
+bool kanas::core::device::allocate()
 {
     VkDeviceCreateFlags DeviceCreateFlags;
 
@@ -90,45 +90,45 @@ kanas::core::device::~device()
 
 }
 
-std::shared_ptr<kanas::core::queue> kanas::core::device::GetQueue(std::uint32_t InQueueFamilyIndex, std::uint32_t InQueueIndex)
+std::shared_ptr<kanas::core::queue> kanas::core::device::get_queue(std::uint32_t queue_family_index, std::uint32_t queue_index)
 {
-    std::shared_ptr<queue> NewQueue = std::make_shared<queue>(*this);
+    std::shared_ptr<queue> _new_queue = std::make_shared<queue>(*this);
 
-    if (NewQueue && NewQueue->alllocate(InQueueFamilyIndex, InQueueIndex))
+    if (_new_queue && _new_queue->allocate(queue_family_index, queue_index))
     {
-        return NewQueue;
+        return _new_queue;
     }
 
     return nullptr;
 }
 
-std::shared_ptr<kanas::core::buffer> kanas::core::device::CreateBuffer(std::uint64_t InSize, buffer_usage_flags Usage, std::shared_ptr<FConcurrentGuide> ConcurrentGuide)
+std::shared_ptr<kanas::core::buffer> kanas::core::device::create_buffer(std::uint64_t size, buffer_usage_flags usage, std::shared_ptr<FConcurrentGuide> concurrent_guide)
 {
-    if (const auto NewBuffer = std::make_shared<buffer>(*this))
+    if (const auto _new_buffer = std::make_shared<buffer>(*this))
     {
-        if (NewBuffer->alllocate(InSize, Usage, ConcurrentGuide))
+        if (_new_buffer->alllocate(size, usage, concurrent_guide))
         {
-            return NewBuffer;
+            return _new_buffer;
         }
     }
 
     return nullptr;
 }
 
-std::shared_ptr<kanas::core::buffer_view> kanas::core::device::Createbuffer_view(std::shared_ptr<buffer> Buffer, VkFormat Format, VkDeviceSize Offset, VkDeviceSize Range)
+std::shared_ptr<kanas::core::buffer_view> kanas::core::device::create_buffer_view(std::shared_ptr<buffer> target, VkFormat format, VkDeviceSize offset, VkDeviceSize range)
 {
-    if (const auto Newbuffer_view = std::make_shared<buffer_view>(*this))
+    if (const auto _new_buffer_view = std::make_shared<buffer_view>(*this))
     {
-        if (Newbuffer_view->alllocate(Buffer, Format, Offset, Range))
+        if (_new_buffer_view->allocate(target, format, offset, range))
         {
-            return Newbuffer_view;
+            return _new_buffer_view;
         }
     }
 
     return nullptr;
 }
 
-std::shared_ptr<kanas::core::image > kanas::core::device::CreateImage()
+std::shared_ptr<kanas::core::image > kanas::core::device::create_image()
 {
     if (const auto NewImage = std::make_shared<image>(*this))
     {
@@ -151,7 +151,7 @@ std::shared_ptr<kanas::core::image_view> kanas::core::device::create_image_view(
     return nullptr;
 }
 
-kanas::core::descriptor_pool* kanas::core::device::CreateDescriptorPool()
+kanas::core::descriptor_pool* kanas::core::device::create_descriptor_pool()
 {
     if (const auto NewDescriptorPool = std::make_shared<descriptor_pool>(*this))
     {
@@ -160,7 +160,7 @@ kanas::core::descriptor_pool* kanas::core::device::CreateDescriptorPool()
     return nullptr;
 }
 
-std::shared_ptr<kanas::core::shader_module> kanas::core::device::CreateShaderModule(const std::vector<std::uint32_t>& ShaderCode)
+std::shared_ptr<kanas::core::shader_module> kanas::core::device::create_shader_module(const std::vector<std::uint32_t>& ShaderCode)
 {
     if (const auto NewShaderModule = std::make_shared<shader_module>(*this))
     {
@@ -172,46 +172,31 @@ std::shared_ptr<kanas::core::shader_module> kanas::core::device::CreateShaderMod
     return nullptr;
 }
 
-std::shared_ptr<kanas::core::render_pass> kanas::core::device::create_render_pass(
-    const framebuffer_info& render_target_info,
-    const default_subpass_info& default_subpass,
-    const subpass_extension& extension)
+std::shared_ptr<kanas::core::fence> kanas::core::device::create_fence(bool IsDefaultSignaled)
 {
-    const auto _render_pass = std::make_shared<render_pass>(*this);
-    
-    if (_render_pass && _render_pass->allocate(render_target_info, default_subpass))
+    const auto _new_fence = std::make_shared<fence>(*this);
+
+    if (_new_fence && _new_fence->allocate(IsDefaultSignaled))
     {
-        return _render_pass;
+        return _new_fence;
     }
 
     return nullptr;
 }
 
-std::shared_ptr<kanas::core::fence> kanas::core::device::CreateFence(bool IsDefaultSignaled)
+std::shared_ptr<kanas::core::semaphore> kanas::core::device::create_semaphore()
 {
-    const auto NewFence = std::make_shared<fence>(*this);
-
-    if (NewFence && NewFence->alllocate(IsDefaultSignaled))
+    if (const auto _new_semaphore = std::make_shared<semaphore>(*this))
     {
-        return NewFence;
-    }
-
-    return nullptr;
-}
-
-std::shared_ptr<kanas::core::semaphore> kanas::core::device::CreateSemaphore()
-{
-    if (const auto NewSemaphore = std::make_shared<semaphore>(*this))
-    {
-        if (NewSemaphore->alllocate(VK_SEMAPHORE_TYPE_BINARY, 0))
+        if (_new_semaphore->allocate(VK_SEMAPHORE_TYPE_BINARY, 0))
         {
-            return NewSemaphore;
+            return _new_semaphore;
         }
     }
     return nullptr;
 }
 
-std::shared_ptr<kanas::core::FEvent> kanas::core::device::CreateEvent()
+std::shared_ptr<kanas::core::FEvent> kanas::core::device::create_event()
 {
     if (const auto NewEvent = std::make_shared<FEvent>(*this))
     {

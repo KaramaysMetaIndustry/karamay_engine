@@ -912,7 +912,7 @@ static stbds_hash_index *stbds_make_hash_index(size_t slot_count, stbds_hash_ind
   t->tombstone_count_threshold   = slot_count* 2/16; // if tombstones are 2/16th of table, rebuild
   t->used_count_shrink_threshold = slot_count* 6/16; // if table is only 6/16th full, shrink
   #endif
-  // Following statistics were measured on a Core i7-6700 @ 4.00Ghz, compiled with clang 7.0.1 -O2
+  // Following statistics were measured on a core i7-6700 @ 4.00Ghz, compiled with clang 7.0.1 -O2
     // Note that the larger tables have high variance as they were run fewer times
   //     A1            A2          B1           C1
   //    0.10ms :     0.10ms :     0.10ms :     0.11ms :      2,000 inserts creating 2K table
@@ -1157,7 +1157,7 @@ size_t stbds_hash_bytes(void *p, size_t len, size_t seed)
     hash *= 0xc2b2ae35;
     hash ^= hash >> 16;
     #endif
-    // Following statistics were measured on a Core i7-6700 @ 4.00Ghz, compiled with clang 7.0.1 -O2
+    // Following statistics were measured on a core i7-6700 @ 4.00Ghz, compiled with clang 7.0.1 -O2
     // Note that the larger tables have high variance as they were run fewer times
     //  HASH32-A   //  HASH32-BB  //  HASH32-C
     //    0.10ms   //    0.10ms   //    0.10ms :      2,000 inserts creating 2K table

@@ -28,7 +28,7 @@ class command_buffer : public device_object<VkCommandBuffer>
 {
 	friend class command_pool;
 
-	bool alllocate(command_buffer_level level);
+	bool allocate(command_buffer_level level);
 
 public:
 
@@ -59,7 +59,7 @@ public:
 
 	~primary_command_buffer() override;
 
-	bool record(render_pass& pass);
+	bool record(const render_pass& pass);
 
 };
 

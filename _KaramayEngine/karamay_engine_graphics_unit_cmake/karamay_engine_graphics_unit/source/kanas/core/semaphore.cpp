@@ -16,13 +16,13 @@ kanas::core::semaphore::~semaphore()
 	}
 }
 
-bool kanas::core::semaphore::alllocate(VkSemaphoreType InType, std::uint64_t InInitalValue)
+bool kanas::core::semaphore::allocate(VkSemaphoreType type, std::uint64_t initial_val)
 {
 	VkSemaphoreTypeCreateInfo SemaphoreTypeCreateInfo{};
 	SemaphoreTypeCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO;
 	SemaphoreTypeCreateInfo.pNext = nullptr;
-	SemaphoreTypeCreateInfo.semaphoreType = InType;
-	SemaphoreTypeCreateInfo.initialValue = InInitalValue;
+	SemaphoreTypeCreateInfo.semaphoreType = type;
+	SemaphoreTypeCreateInfo.initialValue = initial_val;
 
 	VkSemaphoreCreateInfo SemaphoreCreateInfo{};
 	SemaphoreCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -71,3 +71,5 @@ std::uint64_t kanas::core::semaphore::GetCounterValue()
 	vkGetSemaphoreCounterValue(get_device().get_handle(), get_handle(), &Value);
 	return Value;
 }
+
+

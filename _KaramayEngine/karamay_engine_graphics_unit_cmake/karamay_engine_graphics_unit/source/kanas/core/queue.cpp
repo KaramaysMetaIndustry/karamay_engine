@@ -54,12 +54,13 @@ void kanas::core::queue::wait_idle()
 	VkResult Result = vkQueueWaitIdle(get_handle());
 }
 
-void kanas::core::queue::submit(const std::vector<SubmissionBatch>& InBatches, fence* InFence)
+void kanas::core::queue::submit(const std::vector<kanas::core::submission_batch>& batches, std::shared_ptr<fence> fen)
 {
-	std::vector<VkSubmitInfo> SubmitInfos;
-	SubmitInfos.reserve(InBatches.size());
 
-	for (const auto& Batch : InBatches)
+	std::vector<VkSubmitInfo> SubmitInfos;
+	SubmitInfos.reserve(batches.size());
+
+	for (const auto& Batch : batches)
 	{
 		std::vector<VkSemaphore> WaitSemaphoreHandles;
 		std::vector<VkPipelineStageFlags> PipelineStageFlagsArr;
@@ -87,7 +88,7 @@ void kanas::core::queue::submit(const std::vector<SubmissionBatch>& InBatches, f
 		SubmitInfos.emplace_back(SubmitInfo);
 	}
 
-	VkFence FenceHandle = InFence ? FenceHandle = InFence->get_handle() : VK_NULL_HANDLE;
+	VkFence FenceHandle = fen ? FenceHandle = fen->get_handle() : VK_NULL_HANDLE;
 
 	VkResult Result = vkQueueSubmit(get_handle(), static_cast<std::uint32_t>(SubmitInfos.size()), SubmitInfos.data(), FenceHandle);
 }
@@ -115,3 +116,5 @@ kanas::core::queue_pool* kanas::core::queue::owner() const
 {
 	return _owner;
 }
+
+

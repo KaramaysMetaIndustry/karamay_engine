@@ -118,3 +118,7 @@ void kanas::core::physical_device::GetDevices(std::vector<device*>& OutDevices)
 		}
 	}
 }
+
+std::shared_ptr<device> kanas::core::physical_device::derive() {
+    return std::shared_ptr<device>();
+}

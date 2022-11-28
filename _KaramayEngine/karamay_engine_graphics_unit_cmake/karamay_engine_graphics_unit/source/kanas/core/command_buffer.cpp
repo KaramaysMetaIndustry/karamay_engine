@@ -5,15 +5,15 @@
 #include "framebuffer.h"
 #include "device.h"
 
-bool kanas::core::command_buffer::alllocate(command_buffer_level level)
+bool kanas::core::command_buffer::allocate(command_buffer_level level)
 {
-    VkCommandBufferAllocateInfo CommandBufferalllocateInfo;
-    CommandBufferalllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    CommandBufferalllocateInfo.commandBufferCount = 1;
-    CommandBufferalllocateInfo.commandPool = _pool.get_handle();
-    CommandBufferalllocateInfo.level = static_cast<VkCommandBufferLevel>(level);
+    VkCommandBufferAllocateInfo CommandBufferAllocateInfo;
+    CommandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    CommandBufferAllocateInfo.commandBufferCount = 1;
+    CommandBufferAllocateInfo.commandPool = _pool.get_handle();
+    CommandBufferAllocateInfo.level = static_cast<VkCommandBufferLevel>(level);
 
-    VkResult Result = vkAllocateCommandBuffers(get_device().get_handle(), &CommandBufferalllocateInfo, &handle);
+    VkResult Result = vkAllocateCommandBuffers(get_device().get_handle(), &CommandBufferAllocateInfo, &handle);
 
     if (Result == VkResult::VK_SUCCESS)
     {
@@ -65,13 +65,8 @@ kanas::core::primary_command_buffer::~primary_command_buffer()
 {
 }
 
-bool kanas::core::primary_command_buffer::record(std::shared_ptr<render_pass> pass)
+bool kanas::core::primary_command_buffer::record(const kanas::core::render_pass &pass)
 {
-    if (!pass)
-    {
-        return false;
-    }
-
     VkCommandBufferBeginInfo CommandBufferBeginInfo{};
     CommandBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     CommandBufferBeginInfo.pNext = nullptr;
@@ -83,7 +78,7 @@ bool kanas::core::primary_command_buffer::record(std::shared_ptr<render_pass> pa
         return false;
     }
 
-    pass->cmd_execute(*this);
+    pass.cmd_execute(*this);
 
     if (vkEndCommandBuffer(get_handle()) != VK_SUCCESS)
     {

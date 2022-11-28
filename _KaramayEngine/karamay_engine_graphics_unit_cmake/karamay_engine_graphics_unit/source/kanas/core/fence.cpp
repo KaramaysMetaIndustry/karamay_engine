@@ -16,7 +16,7 @@ kanas::core::fence::~fence()
 	}
 }
 
-bool kanas::core::fence::alllocate(bool IsSignaled)
+bool kanas::core::fence::allocate(bool IsSignaled)
 {
 	VkFenceCreateInfo FenceCreateInfo;
 	FenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;

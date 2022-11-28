@@ -1,14 +1,14 @@
 /// @ref core
 /// @file glm/glm.hpp
 ///
-/// @defgroup core Core features
+/// @defgroup core core features
 ///
 /// @brief Features that implement in C++ the GLSL specification as closely as possible.
 ///
 /// The GLM core consists of C++ types that mirror GLSL types and
 /// C++ functions that mirror the GLSL functions.
 ///
-/// The best documentation for GLM Core is the current GLSL specification,
+/// The best documentation for GLM core is the current GLSL specification,
 /// <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.clean.pdf">version 4.2
 /// (pdf file)</a>.
 ///

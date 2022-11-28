@@ -30,7 +30,7 @@ include_directories(karamay_engine_graphics_unit/source)
 file(GLOB_RECURSE USER_LIBS_PATH karamay_engine_graphics_unit/source/*.cpp)
 # AUX_SOURCE_DIRECTORY(karamay_engine_graphics_unit/source/graphics DIR_SRCS)
 #message("AAAAAA ${DIR_SRCS}")
-add_executable(karamay_engine_graphics_unit ${USER_LIBS_PATH} "karamay_engine_graphics_unit/source/Kanas/" "karamay_engine_graphics_unit/source/Kanas/Core/swapchain.h" "karamay_engine_graphics_unit/source/Kanas/Core/swapchain.cpp" "karamay_engine_graphics_unit/source/Kanas/Core/surface.h" "karamay_engine_graphics_unit/source/Kanas/Core/surface.cpp")
+add_executable(karamay_engine_graphics_unit ${USER_LIBS_PATH} "karamay_engine_graphics_unit/source/kanas/" "karamay_engine_graphics_unit/source/kanas/core/swapchain.h" "karamay_engine_graphics_unit/source/kanas/core/swapchain.cpp" "karamay_engine_graphics_unit/source/kanas/core/surface.h" "karamay_engine_graphics_unit/source/kanas/core/surface.cpp")
 
 target_link_libraries(karamay_engine_graphics_unit glew32s.lib glfw3.lib)
 

@@ -1,7 +1,7 @@
 #ifndef _COMPUTE_PIPELINE_H_
 #define _COMPUTE_PIPELINE_H_
 
-#include "Pipeline.h"
+#include "pipeline.h"
 
 _KANAS_CORE_BEGIN
 

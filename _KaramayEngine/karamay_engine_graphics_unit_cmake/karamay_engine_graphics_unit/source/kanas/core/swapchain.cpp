@@ -1,14 +1,13 @@
 #include "swapchain.h"
 #include "device.h"
+#include "surface.h"
 
 bool kanas::core::swapchain::allocate()
 {
-	VkSwapchainKHR swapchain;
-
 	VkSwapchainCreateInfoKHR swapchainCreateInfo;
 	swapchainCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_SWAPCHAIN_CREATE_INFO_KHR;
 	swapchainCreateInfo.pNext = nullptr;
-	swapchainCreateInfo.flags;
+	swapchainCreateInfo.flags = {};
 	swapchainCreateInfo.surface;
 	swapchainCreateInfo.minImageCount;
 	swapchainCreateInfo.imageFormat;
@@ -25,7 +24,10 @@ bool kanas::core::swapchain::allocate()
 	swapchainCreateInfo.clipped;
 	swapchainCreateInfo.oldSwapchain;
 
-	vkCreateSwapchainKHR(get_device().get_handle(), &swapchainCreateInfo, nullptr, &handle);
+	if(vkCreateSwapchainKHR(get_device().get_handle(), &swapchainCreateInfo, nullptr, &handle) == VK_SUCCESS)
+    {
+        return true;
+    }
 
 	return false;
 }

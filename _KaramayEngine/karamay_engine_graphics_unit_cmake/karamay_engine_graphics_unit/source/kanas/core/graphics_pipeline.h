@@ -1,30 +1,31 @@
 #ifndef _GRAPHICS_PIPELINE_H_
 #define _GRAPHICS_PIPELINE_H_
 
-#include "Pipeline.h"
+#include "pipeline.h"
 
 _KANAS_CORE_BEGIN
 
 class render_pass;
 class shader;
-class FVertexShader;
-class FTessellationControlShader;
-class FTessellationEvaluationShader;
-class FGeometryShader;
-class FFragmentShader;
 
-class FMeshShader;
+class vertex_shader;
+class tessellation_control_shader;
+class tessellation_evaluation_shader;
+class geometry_shader;
+class fragment_shader;
 
-struct graphics_pipelineStateinitializer
+class mesh_shader;
+
+struct graphics_pipeline_state_initializer
 {
-	std::shared_ptr<render_pass> RenderPass;
-	std::uint32_t SubpassIndex;
+	std::shared_ptr<render_pass> render_pass;
+	std::uint32_t subpass_index;
 
-	std::shared_ptr<FVertexShader> VertexShader{};
-	std::shared_ptr<FTessellationControlShader> TescShader{};
-	std::shared_ptr<FTessellationEvaluationShader> TeseShader{};
-	std::shared_ptr<FGeometryShader> GeometryShader{};
-	std::shared_ptr<FFragmentShader> FragmentShader{};
+	std::shared_ptr<vertex_shader> vert_shader{};
+	std::shared_ptr<tessellation_control_shader> tesc_shader{};
+	std::shared_ptr<tessellation_evaluation_shader> tese_shader{};
+	std::shared_ptr<geometry_shader> geom_shader{};
+	std::shared_ptr<fragment_shader> frag_shader{};
 
 	void GetShaders(std::vector<std::shared_ptr<shader>>& OutShaders) const;
 };
@@ -33,7 +34,7 @@ class graphics_pipeline final : public pipeline
 {
 	friend class device;
 
-	bool alllocate(const graphics_pipelineStateinitializer& Ininitializer, 
+	bool allocate(const graphics_pipeline_state_initializer& initializer,
 		std::shared_ptr<pipeline_layout> InLayout, 
 		std::shared_ptr<pipeline_cache> InCache = nullptr
 	);

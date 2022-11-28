@@ -69,15 +69,3 @@ bool kanas::core::vulkan_instance::initialize()
 
 	return false;
 }
-
-void kanas::core::vulkan_instance::get_GPUs(std::vector<physical_device*>& OutGPUs) const
-{
-	OutGPUs.reserve(GPUs.size());
-	for (const auto& GPU : GPUs)
-	{
-		if (GPU)
-		{
-			OutGPUs.emplace_back(GPU.get());
-		}
-	}
-}

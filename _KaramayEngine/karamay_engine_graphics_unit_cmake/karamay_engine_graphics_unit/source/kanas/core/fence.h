@@ -16,7 +16,7 @@ private:
 	friend class device;
 	friend class FTransientFenceGroup;
 
-	bool alllocate(bool IsSignaled);
+	bool allocate(bool IsSignaled);
 
 	VkResult GetStatus();
 

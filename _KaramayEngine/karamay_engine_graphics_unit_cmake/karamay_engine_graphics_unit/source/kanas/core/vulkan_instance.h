@@ -18,11 +18,14 @@ public:
 
 	bool initialize();
 
-	void get_GPUs(std::vector<physical_device*>& OutGPUs) const;
+	[[nodiscard]] const std::vector<std::unique_ptr<physical_device>>& GPUs() const
+    {
+        return _GPUs;
+    }
 
 private:
 
-	std::vector<std::unique_ptr<physical_device>> GPUs;
+	std::vector<std::unique_ptr<physical_device>> _GPUs;
 
 };
 

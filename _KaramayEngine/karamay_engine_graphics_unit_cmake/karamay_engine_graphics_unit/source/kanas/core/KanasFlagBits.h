@@ -8,25 +8,142 @@
 
 _KANAS_CORE_BEGIN
 
-template<typename FLAF_T>
+template<typename VK_ENUM_T>
+struct vulkan_enum
+{
+
+};
+
+struct image_layout
+{
+    enum class t
+    {
+        undefined = VK_IMAGE_LAYOUT_UNDEFINED,
+        general = VK_IMAGE_LAYOUT_GENERAL,
+        color_attachment_optimal = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+        depth_stencil_attachment_optimal = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+        depth_stencil_read_only_optimal = VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL,
+        shader_read_only_optimal = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+        transfer_src_optimal = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+        transfer_dst_optimal = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+        preinitialized = VK_IMAGE_LAYOUT_PREINITIALIZED,
+        depth_read_only_stencil_attachment_optimal = VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL,
+        depth_attachment_stencil_read_only_optimal = VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL,
+        depth_attachment_optimal = VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL,
+        depth_read_only_optimal = VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL,
+        stencil_attachment_attachment_optimal = VK_IMAGE_LAYOUT_STENCIL_ATTACHMENT_OPTIMAL,
+        stencil_read_only_optimal = VK_IMAGE_LAYOUT_STENCIL_READ_ONLY_OPTIMAL,
+        present_src = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+    };
+
+    t v{ t::undefined };
+
+    [[nodiscard]] VkImageLayout raw() const
+    {
+        return static_cast<VkImageLayout>(v);
+    }
+
+    image_layout() = default;
+
+    image_layout(image_layout::t val) : v(val) {}
+
+};
+
+struct attachment_store_op
+{
+    enum class t
+    {
+        store = VK_ATTACHMENT_STORE_OP_STORE,
+        dont_care = VK_ATTACHMENT_STORE_OP_DONT_CARE,
+        none_qcom = VK_ATTACHMENT_STORE_OP_NONE_QCOM
+    };
+
+    t v{ t::dont_care };
+
+    [[nodiscard]] VkAttachmentStoreOp raw() const
+    {
+        return static_cast<VkAttachmentStoreOp>(v);
+    }
+
+    attachment_store_op() = default;
+
+    explicit attachment_store_op(attachment_store_op::t val) : v(val) {}
+};
+
+
+
+struct attachment_load_op
+{
+    enum class t
+    {
+        load = VK_ATTACHMENT_LOAD_OP_LOAD,
+        clear = VK_ATTACHMENT_LOAD_OP_CLEAR,
+        dont_care = VK_ATTACHMENT_LOAD_OP_DONT_CARE
+    };
+
+    t v{ t::dont_care };
+
+    [[nodiscard]] VkAttachmentLoadOp raw() const
+    {
+        return static_cast<VkAttachmentLoadOp>(v);
+    }
+
+    attachment_load_op() = default;
+
+    explicit attachment_load_op(attachment_load_op::t val) : v(val) {}
+
+};
+
+struct sample_count
+{
+    enum class t
+    {
+        count_1 = VK_SAMPLE_COUNT_1_BIT,
+        count_2 = VK_SAMPLE_COUNT_2_BIT,
+        count_4 = VK_SAMPLE_COUNT_4_BIT,
+        count_8 = VK_SAMPLE_COUNT_8_BIT,
+        count_16 = VK_SAMPLE_COUNT_16_BIT,
+        count_32 = VK_SAMPLE_COUNT_32_BIT,
+        count_64 = VK_SAMPLE_COUNT_64_BIT
+    };
+
+    t v{ t::count_1 };
+
+    [[nodiscard]] constexpr VkSampleCountFlagBits raw() const
+    {
+        return static_cast<VkSampleCountFlagBits>(v);
+    }
+
+    sample_count() = default;
+
+    explicit sample_count(sample_count::t val) : v(val) {}
+};
+
+
+template<typename FLAG_T>
 struct vulkan_flags
 {
-	VkFlags get() const
+	[[nodiscard]] VkFlags get() const
 	{
 		return flags;
 	}
+
+    void set(image_layout lay) const
+    {
+
+    }
 
 	void reset()
 	{
 		flags = 0;
 	}
 
-	void clone(FLAF_T InFlags)
+	void clone(FLAG_T InFlags)
 	{
 		flags = InFlags;
 	}
 
-	bool is_subset_of(FLAF_T InFlags)
+	bool is_subset_of(FLAG_T InFlags)
 	{
 		return false;
 	}
@@ -39,7 +156,7 @@ protected:
 #define DECAL_FLAG(FUNCTION_NAME, VK_BIT)\
 auto& set_##FUNCTION_NAME##(bool active = true)\
 {\
-	flags |= active ? VK_BIT : 0;\
+	flags |= active ? (VK_BIT) : 0;\
 	return *this;\
 }\
 bool is_##FUNCTION_NAME##_active() const\

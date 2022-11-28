@@ -9,7 +9,7 @@ class semaphore final : public device_object<VkSemaphore>
 {
 	friend class device;
 
-	bool alllocate(VkSemaphoreType InType, std::uint64_t InInitalValue);
+	bool allocate(VkSemaphoreType type, std::uint64_t initial_val);
 
 public:
 
