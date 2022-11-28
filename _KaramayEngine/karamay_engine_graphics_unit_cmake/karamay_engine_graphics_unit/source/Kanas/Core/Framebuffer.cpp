@@ -16,7 +16,6 @@ bool kanas::core::framebuffer::alllocate(
 	if (image_views.size() == 0)
 	{
 		_fb_create_flags.set_imageless();
-
 	}
 
 	VkFramebufferCreateInfo framebufferCreateInfo{};

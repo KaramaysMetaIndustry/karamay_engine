@@ -16,54 +16,60 @@ bool kanas::core::render_pass::allocate(
     std::vector<VkAttachmentDescription> raw_attchment_descriptions;
     for (const auto& attachment_view : render_target_info.attachment_views)
     {
-        VkAttachmentDescription desc;
-        desc.flags;
-        desc.format;
-        desc.samples;
-        desc.loadOp;
-        desc.storeOp;
-        desc.stencilLoadOp;
-        desc.stencilStoreOp;
-        desc.initialLayout;
-        desc.finalLayout;
+        VkAttachmentDescription desc{};
+        desc.flags = {};
+        desc.format = VK_FORMAT_A1R5G5B5_UNORM_PACK16;
+        desc.samples = VK_SAMPLE_COUNT_1_BIT;
+        desc.loadOp= VK_ATTACHMENT_LOAD_OP_CLEAR;
+        desc.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+        desc.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+        desc.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+        desc.initialLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+        desc.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
         raw_attchment_descriptions.emplace_back(desc);
     }
-
-    const auto& _subpasses = _linker.get_subpasses();
     
     std::vector<VkSubpassDescription> raw_subpasses;
 
-    for (const auto& sub : _subpasses)
+    VkAttachmentReference attachmentRef;
+    attachmentRef.attachment = 0;
+    attachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+    std::vector<VkAttachmentReference> inputAttachments = 
+    { 
+        attachmentRef 
+    };
+
+    std::vector<VkAttachmentReference> colorAttachments =
     {
-        VkSubpassDescription desc;
-        desc.flags = {};
-        desc.pipelineBindPoint;
-        desc.inputAttachmentCount;
-        desc.pInputAttachments;
-        desc.colorAttachmentCount;
-        desc.pColorAttachments;
-        desc.pResolveAttachments;
-        desc.pDepthStencilAttachment;
-        desc.preserveAttachmentCount;
-        desc.pPreserveAttachments;
 
-        raw_subpasses.emplace_back(desc);
-    }
+    };
 
-    std::vector<std::shared_ptr<subpass_dependency>> subpass_dependencies;
-    _linker.get_denpendencies(subpass_dependencies);
-    std::vector<VkSubpassDependency> raw_subpass_dependencies;
+    VkSubpassDescription _subpassDescription;
+    _subpassDescription.flags = {};
+    _subpassDescription.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+    _subpassDescription.inputAttachmentCount = static_cast<std::uint32_t>(inputAttachments.size());
+    _subpassDescription.pInputAttachments = inputAttachments.data();
+    _subpassDescription.colorAttachmentCount = static_cast<std::uint32_t>(colorAttachments.size());
+    _subpassDescription.pColorAttachments = colorAttachments.data();
+    _subpassDescription.pResolveAttachments;
+    _subpassDescription.pDepthStencilAttachment;
+    _subpassDescription.preserveAttachmentCount;
+    _subpassDescription.pPreserveAttachments;
+
+    std::vector<VkSubpassDescription> _subpassDescriptions;
+    std::vector<VkSubpassDependency> _SubpassDependencies;
 
     VkRenderPassCreateInfo renderPassCreateInfo{};
     renderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
     renderPassCreateInfo.flags = {};
     renderPassCreateInfo.attachmentCount = raw_attchment_descriptions.size();
     renderPassCreateInfo.pAttachments = raw_attchment_descriptions.data();
-    renderPassCreateInfo.subpassCount = raw_subpasses.size();
-    renderPassCreateInfo.pSubpasses = raw_subpasses.data();
-    renderPassCreateInfo.dependencyCount = raw_subpass_dependencies.size();
-    renderPassCreateInfo.pDependencies = raw_subpass_dependencies.data();
+    renderPassCreateInfo.subpassCount = _subpassDescriptions.size();
+    renderPassCreateInfo.pSubpasses = _subpassDescriptions.data();
+    renderPassCreateInfo.dependencyCount = _SubpassDependencies.size();
+    renderPassCreateInfo.pDependencies = _SubpassDependencies.data();
 
     if (vkCreateRenderPass(get_device().get_handle(), &renderPassCreateInfo, nullptr, &handle) != VK_SUCCESS)
     {
