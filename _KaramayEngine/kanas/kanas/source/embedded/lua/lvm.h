@@ -425,6 +425,9 @@ namespace lua_api
 				*_object = v;
 				luaL_setmetatable(l.get(), "shared_ptr_clazz");
 			}
+
+			std::cout<<"pushed v"<<std::endl;
+			
 		}
 		
 		/**
@@ -457,21 +460,12 @@ namespace lua_api
 		{
 			lua_pushvalue(l.get(), idx);
 		}
-		static void push_c_closure(const std::function<int(lua_State*)>& f, std::int32_t n)
-		{
 
-			auto inf = [](lua_State* s)
-			{
-				return 1;
-			};
-			
-			
-			lua_pushcclosure(l.get(), inf, n);
-		}
-		
-		static void push_c_function(const std::function<int(lua_State*)>& f)
+		template<typename ...Args>
+		static void push_c_closure(lua_CFunction&& f, Args&& ...args)
 		{
-			lua_pushcfunction(l.get(), f.target<int(lua_State*)>());
+			(push(args), ...);
+			lua_pushcclosure(l.get(), f, sizeof...(args));
 		}
 
 		struct lua_nil {};
@@ -529,37 +523,35 @@ namespace lua_api
 		template<lua_t_acceptable T>
 		static std::optional<T> to(std::int32_t idx)
 		{
-			if(!is<T>(idx))
-			{
+			if(!is<T>(idx)) {
 				return std::nullopt;
 			}
 
-			if constexpr (lua_boolean_acceptable<T>)
-			{
+			if constexpr (lua_boolean_acceptable<T>) {
 				return static_cast<T>(lua_toboolean(l.get(), idx));
 			}
-			else if constexpr (lua_integer_number_acceptable<T>)
-			{
+			else if constexpr (lua_integer_number_acceptable<T>) {
 				return static_cast<T>(lua_tointeger(l.get(), idx));
 			}
-			else if constexpr (lua_real_number_acceptable<T>)
-			{
+			else if constexpr (lua_real_number_acceptable<T>) {
 				return static_cast<T>(lua_tonumber(l.get(), idx));
 			}
-			else if constexpr (lua_string_acceptable<T>)
-			{
+			else if constexpr (lua_string_acceptable<T>) {
 				return lua_tostring(l.get(), idx);
 			}
-			else if constexpr (lua_userdata_acceptable<T>)
-			{
-				//luaL_testudata
-				T* userdata = static_cast<T*>(lua_touserdata(l.get(), idx));
+			else if constexpr (lua_userdata_acceptable<T>) {
+				T* userdata = static_cast<T*>(lua_touserdata(l.get(), idx)); //luaL_testudata
 				return *userdata;
 			}
-			else
-			{
+			else {
 				return std::nullopt;
 			}
+		}
+
+		template<lua_t_acceptable T, std::size_t idx>
+		static std::optional<T> static_to()
+		{
+			return to<T>(idx);
 		}
 		
 		// template<>
