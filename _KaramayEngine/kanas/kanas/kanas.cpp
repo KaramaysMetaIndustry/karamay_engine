@@ -2,113 +2,11 @@
 //
 
 #include <iostream>
-#include "embedded/lua/lvm.h"
-
-class lua_object_test
-{
-	int a = 1;
-
-public:
-
-    void set_a(std::int32_t v)
-    {
-        a = v;
-    }
-    
-};
-
-static int lua_new_ATest(lua_State* l);
-
-#define LUA_CLASS_MODULE_BEGIN(CLASS_NAME)\
-lua_api::basic::function_registry lua_api::basic::lua_exporter<CLASS_NAME>::registry ={};\
-std::function<void(lua_api::basic::function_registry&)> lua_api::basic::lua_exporter<CLASS_NAME>::registry_delegate =  [](function_registry& fr)\
-{\
-
-#define LUA_CLASS_MODULE_END(CLASS_NAME)\
-};\
-lua_api::basic::lua_exporter<CLASS_NAME> lua_api::basic::lua_exporter<CLASS_NAME>::exporter = {};\
-template<>\
-constexpr bool lua_api::basic::is_lua_exporter_registered<CLASS_NAME> = true;
-
-#define ADD_FUNC(NAME, FUNC)\
-fr.set(NAME, FUNC)
-
-LUA_CLASS_MODULE_BEGIN(lua_object_test)
-ADD_FUNC("new", lua_new_ATest);
-LUA_CLASS_MODULE_END(lua_object_test)
-
-static int lua_new_ATest(lua_State* l)
-{
-    const auto _this = std::make_shared<lua_object_test>();
-    lua_api::basic::push(_this);
-    
-    return 1;
-}
-
-template<typename ...Args, std::size_t... N>
-static std::tuple<Args...> to_tuple_base(std::index_sequence<N...>)
-{
-    std::tuple<Args...> parameters;
-
-    ((std::get<N>(parameters) = lua_api::basic::static_to<Args, N + 1>().value()), ...);
-    
-    return parameters;
-}
-
-template<typename ...Args>
-static std::tuple<Args...> to_tuple_from_bottom()
-{
-    return to_tuple_base<Args...>(std::index_sequence_for<Args...>());
-}
-
-template<typename ...Args>
-static std::tuple<Args...> to_object_call_list()
-{
-    return to_tuple_base<Args...>(std::index_sequence_for<Args...>());
-}
-
-template<typename Func>
-void call_func()
-{
-}
-
-
-struct lua_object_test_set_a_delegate
-{
-    std::function<void(lua_object_test*, std::int32_t)> f = &lua_object_test::set_a;
-    std::shared_ptr<lua_object_test> _this;
-} _dele;
-
-static int lua_setA(lua_State* l)
-{
-    const auto value_list = to_tuple_from_bottom<std::shared_ptr<lua_object_test>, std::int32_t>();
-    _dele.f(std::get<0>(value_list).get(), std::get<1>(value_list));
-
-    return 1;
-}
+#include "embedded/lua/lua_helper.h"
 
 int main()
 {
-    const auto test = std::make_shared<lua_object_test>();
-    
-    lua_api::basic::push(test);
-    lua_api::basic::push(1.1);
-    lua_api::basic::push("json-jcc");
-    lua_api::basic::push(std::string_view("wait for me"));
-
-    const auto value_list = to_tuple_from_bottom<std::shared_ptr<lua_object_test>, double, const char*, const char*>();
-
-    
-    // if(v.has_value())
-    // {
-    //     std::cout<< "lua v : " << v.value() << std::endl;
-    // }
-    // else
-    // {
-    //     std::cout<<"has no value"<<std::endl;
-    // }
-
-    //lua_api::basic::push_c_closure(lua_setA, 1, "aaaa", 2.f);
+    const auto test = std::make_shared<oda>();
     
     std::cout << "Hello World!\n";
 }

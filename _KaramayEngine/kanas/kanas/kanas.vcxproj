@@ -171,11 +171,13 @@
     <ClCompile Include="source\kanas\core\synchronization\semaphore.cpp" />
     <ClCompile Include="source\kanas\core\vulkan_instance.cpp" />
     <ClCompile Include="source\kanas\dispatcher.cpp" />
+    <ClCompile Include="source\kanas\dispatcher_lua.cpp" />
     <ClCompile Include="source\network\network_dispatcher.cpp" />
     <ClCompile Include="source\window\window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\core\core_lib.h" />
+    <ClInclude Include="source\embedded\lua\lua_helper.h" />
     <ClInclude Include="source\embedded\lua\lvm.h" />
     <ClInclude Include="source\embedded\python\pvm.h" />
     <ClInclude Include="source\engine\karamay_engine.h" />

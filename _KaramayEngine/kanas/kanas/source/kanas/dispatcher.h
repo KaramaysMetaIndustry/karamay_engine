@@ -40,6 +40,11 @@ public:
 
 	void create_render_pass(const nlohmann::json& rpd);
 
+	static void pak(std::int32_t c)
+	{
+		
+	}
+
 };
 
 

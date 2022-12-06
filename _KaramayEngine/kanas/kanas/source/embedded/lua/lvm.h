@@ -4,8 +4,6 @@
 #include "public/stl.h"
 #include "public/lua.h"
 
-
-
 /*
 * cpp data <=> lua data
 * 
@@ -323,57 +321,7 @@ namespace lua_api
 		template<typename T>
 		constexpr bool is_shared_ptr_v<std::shared_ptr<T>> = true;
 
-		struct function_registry
-		{
-			function_registry()
-			{
-				functions.push_back({nullptr, nullptr});
-			}
-
-			void set(const char* name, lua_CFunction f)
-			{
-				const auto it = std::ranges::find_if(functions,
-					[name](const luaL_Reg& v)
-				{
-					return v.name == name;
-				});
-
-				if(it == functions.end())
-				{
-					functions.push_back({name, f});
-				}else
-				{
-					it->func = f;
-				}
-			}
-
-			[[nodiscard]] const std::vector<luaL_Reg>& list() const
-			{
-				return functions;
-			}
-
-		private:
-			std::vector<luaL_Reg> functions;
-		};
 		
-		template<typename T>
-		struct lua_exporter
-		{
-			using meta_t = T;
-
-			static function_registry registry;
-
-			static std::function<void(function_registry&)> registry_delegate;
-
-			static lua_exporter exporter;
-			
-			lua_exporter()
-			{
-				registry_delegate(registry);
-				// register
-				//lua_api::lua_vm::register_functions(functions.data());
-			}
-		};
 
 		template<typename T>
 		constexpr bool is_lua_exporter_registered = false;
@@ -981,24 +929,6 @@ namespace lua_api
 			return static_cast<lua_status>(luaL_loadbuffer(l.get(), buff, sz, name));
 		}
 
-	}
-
-	namespace debug
-	{
-
-	}
-
-	namespace helper
-	{
-		static bool is_table_vectorizable(std::int32_t idx)
-		{
-			return  true;
-		}
-		static bool is_table_sequenceable(std::int32_t idx)
-		{
-
-			return true;
-		}
 	}
 
 	static void* to_cpp_instance(std::int32_t idx, const char* metatable_name)
@@ -1648,35 +1578,86 @@ namespace lua_api
 		const luaL_Reg* funcs;
 	};
 
+
+	struct function_registry
+	{
+		function_registry()
+		{
+			functions.push_back({nullptr, nullptr});
+		}
+
+		void set(const char* name, lua_CFunction f)
+		{
+			const auto it = std::ranges::find_if(functions,
+				[name](const luaL_Reg& v)
+			{
+				return v.name == name;
+			});
+
+			if(it == functions.end())
+			{
+				functions.push_back({name, f});
+			}else
+			{
+				it->func = f;
+			}
+		}
+
+		[[nodiscard]] const std::vector<luaL_Reg>& list() const
+		{
+			return functions;
+		}
+
+	private:
+		std::vector<luaL_Reg> functions;
+	};
+		
+	template<typename T>
+	struct lua_exporter
+	{
+		using meta_t = T;
+
+		static function_registry registry;
+
+		static std::function<void(function_registry&)> registry_delegate;
+
+		static lua_exporter exporter;
+			
+		lua_exporter()
+		{
+			registry_delegate(registry);
+			// register
+			//lua_api::lua_vm::register_functions(functions.data());
+		}
+	};
+	
 	class lua_vm final
 	{
+
+		lua_State* state_ = nullptr;
+		
 	public:
+
+		static function_registry registry;
 	
 		lua_vm() = default;
+		
 		lua_vm(const lua_vm&) = delete;
 		lua_vm& operator=(const lua_vm&) = delete;
 	
-		~lua_vm() = default;
-	
-	public:
+		~lua_vm()
+		{
+			if(!state_)
+			{
+				lua_close(state_);
+			}
+		}
 	
 		bool initialize() noexcept;
 	
 		void run() noexcept;
 	
-		void notify_to_exit() noexcept;
-	
 		bool do_file(const std::string& path);
-	
-	private:
-	
-		lua_State* _state = nullptr;
-	
-		std::unique_ptr<std::thread> _vm_thread = {};
-	
-		std::atomic_bool _should_exit = false;
-	
-		std::mutex _mtx;
 	
 	private:
 	
@@ -1687,8 +1668,6 @@ namespace lua_api
 	public:
 	
 		static void register_class(const char* name, const luaL_Reg* funcs);
-	
-		static void register_functions(const luaL_Reg* funcs);
 	
 	private:
 	
