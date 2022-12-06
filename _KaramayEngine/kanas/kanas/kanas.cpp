@@ -56,7 +56,7 @@ static std::tuple<Args...> to_tuple_base(std::index_sequence<N...>)
 }
 
 template<typename ...Args>
-static std::tuple<Args...> to_tuple()
+static std::tuple<Args...> to_tuple_from_bottom()
 {
     return to_tuple_base<Args...>(std::index_sequence_for<Args...>());
 }
@@ -81,20 +81,8 @@ struct lua_object_test_set_a_delegate
 
 static int lua_setA(lua_State* l)
 {
-    // auto _this = lua_api::basic::to<std::shared_ptr<ATest>>(1);
-    // auto param1 = lua_api::basic::to<std::int32_t>(2);
-
-    auto params = to_tuple<std::shared_ptr<lua_object_test>, std::int32_t>();
-    _dele.f(std::get<0>(params).get(), std::get<1>(params));
-    
-    // if(!params.has_value())
-    // {
-    //     return 0;
-    // }
-    //
-    // std::get<0>(params.value())->setA(
-    //     std::get<1>(params.value())
-    //     );
+    const auto value_list = to_tuple_from_bottom<std::shared_ptr<lua_object_test>, std::int32_t>();
+    _dele.f(std::get<0>(value_list).get(), std::get<1>(value_list));
 
     return 1;
 }
@@ -102,16 +90,15 @@ static int lua_setA(lua_State* l)
 int main()
 {
     const auto test = std::make_shared<lua_object_test>();
+    
     lua_api::basic::push(test);
     lua_api::basic::push(1.1);
     lua_api::basic::push("json-jcc");
+    lua_api::basic::push(std::string_view("wait for me"));
 
-    auto c =
-        to_tuple<std::shared_ptr<lua_object_test>, double, std::string>();
+    const auto value_list = to_tuple_from_bottom<std::shared_ptr<lua_object_test>, double, const char*, const char*>();
 
     
-    
-
     // if(v.has_value())
     // {
     //     std::cout<< "lua v : " << v.value() << std::endl;
