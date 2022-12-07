@@ -1,5 +1,5 @@
 #include "dispatcher.h"
-#include "embedded/lua/lua_helper.h"
+#include "embedded/lua/lvm_helper.h"
 
 DEFINE_LUA_FUNCTION(lua_stt, "__add", kanas::dispatcher::pak)
 

@@ -21,25 +21,6 @@
 */
 namespace lua_api
 {
-	struct lua_machine
-	{
-		lua_State* state_;
-
-		lua_State* get() {return state_;}
-
-		lua_machine()
-		{
-			state_ = luaL_newstate();
-		}
-
-		~lua_machine()
-		{
-			lua_close(state_);
-		}
-	};
-
-	static lua_machine l = {};
-
 	enum class lua_t : int
 	{
 		none = LUA_TNONE,
@@ -98,14 +79,9 @@ namespace lua_api
 		* This function never shrinks the stack; if the stack already has space for the extra elements,
 		* it is left unchanged.
 		*/
-		static bool check_stack(std::int32_t n)
+		static bool check_stack(lua_State* l, std::int32_t n)
 		{
 			return lua_checkstack(l.get(), n) == 1;
-		}
-
-		static lua_State* new_state()
-		{
-			return luaL_newstate();
 		}
 
 		/*
@@ -117,10 +93,6 @@ namespace lua_api
 		* On the other hand, long-running programs that create multiple states,
 		* such as daemons or web servers, will probably need to close states as soon as they are not needed.
 		*/
-		static void close()
-		{
-			lua_close(l.get());
-		}
 
 		/*
 		* Compares two Lua values.
@@ -340,42 +312,39 @@ namespace lua_api
 			lua_boolean_acceptable<T> or lua_number_acceptable<T> or lua_string_acceptable<T> or lua_userdata_acceptable<T>;
 		
 		template<lua_t_acceptable T>
-		void push(T v)
+		void push(lua_State* l, T v)
 		{
 			if constexpr (lua_boolean_acceptable<T>)
 			{
-				lua_pushboolean(l.get(), v);
+				lua_pushboolean(l, v);
 			}
 			else if constexpr (lua_integer_number_acceptable<T>)
 			{
-				lua_pushinteger(l.get(), v);
+				lua_pushinteger(l, v);
 			}
 			else if constexpr (lua_real_number_acceptable<T>)
 			{
-				lua_pushnumber(l.get(), v);
+				lua_pushnumber(l, v);
 			}
 			else if constexpr (lua_string_acceptable_c_style<T>)
 			{
-				lua_pushstring(l.get(), v);
+				lua_pushstring(l, v);
 			}
 			else if constexpr(lua_string_acceptable_std_str<T>)
 			{
-				lua_pushstring(l.get(), v.c_str());
+				lua_pushstring(l, v.c_str());
 			}
 			else if constexpr (lua_string_acceptable_std_str_view<T>)
 			{
-				lua_pushstring(l.get(), v.data());
+				lua_pushstring(l, v.data());
 			}
 			else if constexpr (lua_userdata_acceptable<T>)
 			{
-				void* userdata = lua_newuserdata(l.get(), sizeof(T));
+				void* userdata = lua_newuserdata(l, sizeof(T));
 				auto _object = static_cast<T*>(new(userdata) T);
 				*_object = v;
-				luaL_setmetatable(l.get(), "shared_ptr_clazz");
+				luaL_setmetatable(l, "shared_ptr_clazz");
 			}
-
-			std::cout<<"pushed v"<<std::endl;
-			
 		}
 		
 		/**
@@ -392,59 +361,55 @@ namespace lua_api
 		// 	}*/
 		// }
 
-		static void push_nil()
+		static void push_nil(lua_State* l)
 		{
 			lua_pushnil(l.get());
 		}
-		static void push_table()
+		static void push_table(lua_State* l)
 		{
 			lua_pushglobaltable(l.get());
 		}
-		static void push_thread()
+		static void push_thread(lua_State* l)
 		{
 			lua_pushthread(l.get());
 		}
-		static void push_value(std::int32_t idx)
+		static void push_value(lua_State* l, std::int32_t idx)
 		{
 			lua_pushvalue(l.get(), idx);
 		}
 
 		template<typename ...Args>
-		static void push_c_closure(lua_CFunction&& f, Args&& ...args)
+		static void push_c_closure(lua_State* l, lua_CFunction&& f, Args&& ...args)
 		{
-			(push(args), ...);
-			lua_pushcclosure(l.get(), f, sizeof...(args));
+			(push(l, args), ...);
+			lua_pushcclosure(l, f, sizeof...(args));
 		}
-
-		struct lua_nil {};
-
-		struct lua_thread {};
 		
 		/*
 		* 
 		*/
 		template<lua_t_acceptable T>
-		static bool is(std::int32_t idx) noexcept
+		static bool is(lua_State* l, std::int32_t idx) noexcept
 		{
 			if constexpr (lua_boolean_acceptable<T>)
 			{
-				return lua_isboolean(l.get(), idx);
+				return lua_isboolean(l, idx);
 			}
 			else if constexpr (lua_integer_number_acceptable<T>)
 			{
-				return lua_isinteger(l.get(), idx);
+				return lua_isinteger(l, idx);
 			}
 			else if constexpr (lua_real_number_acceptable<T>)
 			{
-				return lua_isnumber(l.get(), idx);
+				return lua_isnumber(l, idx);
 			}
 			else if constexpr (lua_string_acceptable<T>)
 			{
-				return lua_isstring(l.get(), idx) && !lua_isnumber(l.get(), idx);
+				return lua_isstring(l, idx) && !lua_isnumber(l, idx);
 			}
 			else if constexpr (lua_userdata_acceptable<T>)
 			{
-				return lua_isuserdata(l.get(), idx);
+				return lua_isuserdata(l, idx);
 			}
 			else
 			{
@@ -469,26 +434,26 @@ namespace lua_api
 		// }
 
 		template<lua_t_acceptable T>
-		static std::optional<T> to(std::int32_t idx)
+		static std::optional<T> to(lua_State* l, std::int32_t idx)
 		{
-			if(!is<T>(idx)) {
+			if(!is<T>(l, idx)) {
 				return std::nullopt;
 			}
 
 			if constexpr (lua_boolean_acceptable<T>) {
-				return static_cast<T>(lua_toboolean(l.get(), idx));
+				return static_cast<T>(lua_toboolean(l, idx));
 			}
 			else if constexpr (lua_integer_number_acceptable<T>) {
-				return static_cast<T>(lua_tointeger(l.get(), idx));
+				return static_cast<T>(lua_tointeger(l, idx));
 			}
 			else if constexpr (lua_real_number_acceptable<T>) {
-				return static_cast<T>(lua_tonumber(l.get(), idx));
+				return static_cast<T>(lua_tonumber(l, idx));
 			}
 			else if constexpr (lua_string_acceptable<T>) {
-				return lua_tostring(l.get(), idx);
+				return lua_tostring(l, idx);
 			}
 			else if constexpr (lua_userdata_acceptable<T>) {
-				T* userdata = static_cast<T*>(lua_touserdata(l.get(), idx)); //luaL_testudata
+				T* userdata = static_cast<T*>(lua_touserdata(l, idx)); //luaL_testudata
 				return *userdata;
 			}
 			else {
@@ -497,29 +462,23 @@ namespace lua_api
 		}
 
 		template<lua_t_acceptable T, std::size_t idx>
-		static std::optional<T> static_to()
+		static std::optional<T> static_to(lua_State* l)
 		{
-			return to<T>(idx);
+			return to<T>(l, idx);
 		}
-		
-		// template<>
-		// lua_CFunction to<lua_CFunction>(std::int32_t idx)
-		// {
-		// 	return lua_tocfunction(l.get(), idx);
-		// }
 
-		static lua_State* to_thread(std::int32_t idx)
+		static lua_State* to_thread(lua_State* l, std::int32_t idx)
 		{ 
-			return lua_tothread(l.get(), idx); 
+			return lua_tothread(l, idx); 
 		}
 		
 		/*
 		* Creates a new empty table and pushes it onto the stack.
 		* It is equivalent to createtable(L, 0, 0).
 		*/
-		static void create_table()
+		static void create_table(lua_State* l)
 		{
-			lua_newtable(l.get());
+			lua_newtable(l);
 		}
 
 		/*
@@ -530,9 +489,9 @@ namespace lua_api
 		* This preallocation may help performance when you know in advance how many elements the table will have. 
 		* Otherwise you can use the function lua_newtable.
 		*/
-		static void create_table(std::int32_t narr, std::int32_t nrec)
+		static void create_table(lua_State* l, std::int32_t narr, std::int32_t nrec)
 		{
-			lua_createtable(l.get(), narr, nrec);
+			lua_createtable(l, narr, nrec);
 		}
 
 		/*
@@ -543,17 +502,17 @@ namespace lua_api
 		* Lua ensures that this address is valid as long as the corresponding userdata is alive (see ��2.5).
 		* Moreover, if the userdata is marked for finalization (see ��2.5.3), its address is valid at least until the call to its finalizer.
 		*/
-		static void new_userdata(size_t size, std::int32_t nuvalue)
+		static void new_userdata(lua_State* l, size_t size, std::int32_t nuvalue)
 		{
-			void* _nuserdata = lua_newuserdatauv(l.get(), size, nuvalue);
+			void* _nuserdata = lua_newuserdatauv(l, size, nuvalue);
 		}
 
 		/*
 		*
 		*/
-		static void new_userdata(void* userdata)
+		static void new_userdata(lua_State* l, void* userdata)
 		{
-			void** p_userdata = (void**)lua_newuserdata(l.get(), sizeof(void*));
+			void** p_userdata = (void**)lua_newuserdata(l, sizeof(void*));
 			*p_userdata = userdata;
 		}
 		

@@ -2,7 +2,7 @@
 //
 
 #include <iostream>
-#include "embedded/lua/lua_helper.h"
+#include "embedded/lua/lvm_helper.h"
 
 int main()
 {

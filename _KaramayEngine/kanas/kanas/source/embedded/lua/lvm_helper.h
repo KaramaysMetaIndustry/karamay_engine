@@ -16,21 +16,21 @@ template<>\
 constexpr bool lua_api::basic::is_lua_exporter_registered<CLASS_NAME> = true;
 
 template<typename ...Args, std::size_t... N>
-static std::tuple<Args...> to_tuple_base(std::index_sequence<N...>)
+static std::tuple<Args...> to_tuple_base(lua_State* l, std::index_sequence<N...>)
 {
     std::tuple<Args...> parameters;
-    ((std::get<N>(parameters) = lua_api::basic::static_to<Args, N + 1>().value()), ...);
+    ((std::get<N>(parameters) = lua_api::basic::static_to<Args, N + 1>(l).value()), ...);
     return parameters;
 }
 
 template<typename ...Args>
-static std::tuple<Args...> to_tuple_from_bottom()
+static std::tuple<Args...> to_tuple_from_bottom(lua_State* l)
 {
-    return to_tuple_base<Args...>(std::index_sequence_for<Args...>());
+    return to_tuple_base<Args...>(l, std::index_sequence_for<Args...>());
 }
 
 template<typename Func, typename... Args, std::size_t... N>
-static void call_func_impl(Func func, const std::tuple<Args...> parameters, std::index_sequence<N...>)
+static void call_func_impl(lua_State* l, Func func, const std::tuple<Args...> parameters, std::index_sequence<N...>)
 {
     if constexpr (std::is_void_v<typename Func::result_type>)
     {
@@ -43,9 +43,9 @@ static void call_func_impl(Func func, const std::tuple<Args...> parameters, std:
 }
 
 template<typename Ret, typename... Args>
-static void call_func(std::function<Ret(Args...)> func)
+static void call_func(lua_State* l, std::function<Ret(Args...)> func)
 {
-    const auto parameters = to_tuple_from_bottom<Args...>();
+    const auto parameters = to_tuple_from_bottom<Args...>(l);
     call_func_impl(func, parameters, std::index_sequence_for<Args...>());
 }
 
@@ -106,9 +106,9 @@ namespace NAMESPACE\
 {\
     static lua_function_delegate ded = lua_function_delegate(FUNCTION_NAME, &FUNCTION_PTR);\
     \
-    static int call_delegate(lua_State*)\
+    static int call_delegate(lua_State* l)\
     {\
-        call_func(ded.callable);\
+        call_func(l, ded.callable);\
         return 1;\
     }\
     \
@@ -132,9 +132,9 @@ namespace lua_##CLASS_NAME##_##CLASS_FUNCTION_NAME\
 {\
     static lua_member_function_delegate ded = lua_member_function_delegate(LUA_FUNCTION_NAME, &CLASS_NAME##::##CLASS_FUNCTION_NAME);\
 \
-    static int call_delegate(lua_State*)\
+    static int call_delegate(lua_State* l)\
     {\
-        call_func(ded.callable);\
+        call_func(l, ded.callable);\
         return 1;\
     }\
 }

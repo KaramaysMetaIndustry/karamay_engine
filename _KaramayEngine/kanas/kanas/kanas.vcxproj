@@ -177,7 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\core\core_lib.h" />
-    <ClInclude Include="source\embedded\lua\lua_helper.h" />
+    <ClInclude Include="source\embedded\lua\lvm_helper.h" />
     <ClInclude Include="source\embedded\lua\lvm.h" />
     <ClInclude Include="source\embedded\python\pvm.h" />
     <ClInclude Include="source\engine\karamay_engine.h" />
