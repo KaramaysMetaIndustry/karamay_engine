@@ -1,7 +1,7 @@
 #ifndef KARAMAY_ENGINE_H
 #define KARAMAY_ENGINE_H
 
-#include "embedded/lua/lvm.h"
+#include "embedded/lua/lua_api.h"
 #include "embedded/python/pvm.h"
 #include "network/network_dispatcher.h"
 

@@ -1,10 +1,6 @@
 #include "lvm.h"
 
-lua_api::function_registry lua_api::lua_vm::registry = {};
-
-std::vector<lua_api::lua_class*> lua_api::lua_vm::_classes = {};
-
-bool lua_api::lua_vm::initialize() noexcept
+bool lua_vm::initialize() noexcept
 {
 	std::cout << "lvm starts to initialize." << std::endl;
 
@@ -12,7 +8,7 @@ bool lua_api::lua_vm::initialize() noexcept
 	return true;
 }
 
-void lua_api::lua_vm::run() noexcept
+void lua_vm::run() noexcept
 {
 	state_ = luaL_newstate();
 	
@@ -24,7 +20,7 @@ void lua_api::lua_vm::run() noexcept
 	_load_libs();
 }
 
-bool lua_api::lua_vm::do_file(const std::string& path)
+bool lua_vm::do_file(const std::string& path)
 {
 	int _result = luaL_dofile(state_, path.c_str());
 	switch (_result)
@@ -48,47 +44,44 @@ bool lua_api::lua_vm::do_file(const std::string& path)
 	return true;
 }
 
-void lua_api::lua_vm::_load_class(const std::string& class_name, const luaL_Reg* funcs)
+void lua_vm::_load_class(const std::string& class_name, const luaL_Reg* funcs)
 {
 	const auto _clazz_name = class_name + "_clazz";
 
 	// stack : null
-	auxiliary::new_metatable(_clazz_name.c_str());
+	luaL_newmetatable(state_, _clazz_name.c_str());
 	// stack : metatable
-	basic::push_value(-1);
+	lua_pushvalue(state_, -1);
 	// stack : metatable, metatable
-	basic::set_field(-2, "__index");
+	lua_setfield(state_, -2, "__index");
 	// stack : metatable
-	auxiliary::set_funcs(funcs, 0);
-	basic::pop(1);
+	luaL_setfuncs(state_, funcs, 0);
+	lua_pop(state_, 1);
 	// stack : null
 
-	basic::create_table();
+	lua_newtable(state_);
 	// stack : table
-	auxiliary::set_metatable(_clazz_name.c_str());
-	basic::set_global(class_name.c_str());
+	luaL_setmetatable(state_, _clazz_name.c_str());
+	lua_setglobal(state_, class_name.c_str());
 	// stack : null
 
 	std::cout << "load class : " << class_name << std::endl;
 }
 
-void lua_api::lua_vm::_load_libs()
+void lua_vm::_load_libs()
 {
-	auxiliary::open_libs();
+	luaL_openlibs(state_);
 
 	//luaL_requiref(_state, "karamay_RHI", testModelOpen, 0);
 
-	for (auto _class : _classes)
+	for (auto& type : types)
 	{
-		_load_class(_class->name, _class->funcs);
+		_load_class(type.first, type.second.data());
 	}
 }
 
-void lua_api::lua_vm::register_class(const char* name, const luaL_Reg* funcs)
+void lua_vm::register_type(const std::string& name,  const std::vector<luaL_Reg>& regs)
 {
 	std::cout << "register class : " << name << std::endl;
-	auto _class = new lua_class();
-	_class->name = name;
-	_class->funcs = funcs;
-	_classes.push_back(_class);
+	types.emplace(name, regs);
 }

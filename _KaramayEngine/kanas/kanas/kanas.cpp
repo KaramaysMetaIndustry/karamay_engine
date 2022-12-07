@@ -6,8 +6,6 @@
 
 int main()
 {
-    const auto test = std::make_shared<oda>();
-    
     std::cout << "Hello World!\n";
 }
 
