@@ -6,6 +6,11 @@
 
 int main()
 {
+    lua_vm lvm;
+    lvm.initialize();
+    lvm.run();
+
+    
     std::cout << "Hello World!\n";
 }
 

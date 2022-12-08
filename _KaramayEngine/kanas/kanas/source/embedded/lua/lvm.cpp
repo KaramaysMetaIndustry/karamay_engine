@@ -1,5 +1,7 @@
 #include "lvm.h"
 
+std::vector<lua_exporter*> lua_vm::type_exporters = {};
+
 bool lua_vm::initialize() noexcept
 {
 	std::cout << "lvm starts to initialize." << std::endl;
@@ -18,6 +20,8 @@ void lua_vm::run() noexcept
 	}
 	
 	_load_libs();
+
+	do_file("G:\\karamay_engine\\_KaramayEngine\\kanas\\kanas\\scripts\\lua\\Main.lua");
 }
 
 bool lua_vm::do_file(const std::string& path)
@@ -46,26 +50,58 @@ bool lua_vm::do_file(const std::string& path)
 
 void lua_vm::_load_class(const std::string& class_name, const luaL_Reg* funcs)
 {
-	const auto _clazz_name = class_name + "_clazz";
+	//const auto _clazz_name = class_name + "_clazz";
 
-	// stack : null
-	luaL_newmetatable(state_, _clazz_name.c_str());
-	// stack : metatable
-	lua_pushvalue(state_, -1);
-	// stack : metatable, metatable
-	lua_setfield(state_, -2, "__index");
-	// stack : metatable
-	luaL_setfuncs(state_, funcs, 0);
-	lua_pop(state_, 1);
-	// stack : null
+	//// stack : null
+	//luaL_newmetatable(state_, _clazz_name.c_str());
+	//// stack : metatable
+	//lua_pushvalue(state_, -1);
+	//// stack : metatable, metatable
+	//lua_setfield(state_, -2, "__index");
+	//// stack : metatable
+	//luaL_setfuncs(state_, funcs, 0);
+	//lua_pop(state_, 1);
+	//// stack : null
 
-	lua_newtable(state_);
-	// stack : table
-	luaL_setmetatable(state_, _clazz_name.c_str());
+	//lua_newtable(state_);
+	//// stack : table
+	//luaL_setmetatable(state_, _clazz_name.c_str());
+	//lua_setglobal(state_, class_name.c_str());
+	//// stack : null
+
+	luaL_getmetatable(state_, class_name.c_str());
+	if (lua_isnil(state_, -1))
+	{
+		luaL_newmetatable(state_, class_name.c_str());
+
+		/*for (int i = 0; st[i].func; i++)
+		{
+			lua_pushstring(L, st[i].name);
+			lua_pushcfunction(L, st[i].func);
+			lua_rawset(L, -3);
+		}*/
+		luaL_setfuncs(state_, funcs, 0);
+	}
 	lua_setglobal(state_, class_name.c_str());
-	// stack : null
+}
 
-	std::cout << "load class : " << class_name << std::endl;
+static int wrap_index_event(lua_State* L)
+{
+	if (!lua_isuserdata(L, 1))
+	{
+		lua_error(L);
+		return 0;
+	}
+
+	if (lua_getmetatable(L, 1))
+	{
+		lua_pushvalue(L, 2);
+		lua_rawget(L, -2);
+		if (lua_isfunction(L, -1))
+			return 1;
+		else
+			lua_error(L);
+	}
 }
 
 void lua_vm::_load_libs()
@@ -74,14 +110,25 @@ void lua_vm::_load_libs()
 
 	//luaL_requiref(_state, "karamay_RHI", testModelOpen, 0);
 
-	for (auto& type : types)
+	std::vector<luaL_Reg> raw_funcs;
+
+	for (auto exporter : type_exporters)
 	{
-		_load_class(type.first, type.second.data());
+		raw_funcs.clear();
+
+		for (const auto& pair : exporter->funcs)
+		{
+			raw_funcs.push_back({ pair.first.c_str(), pair.second });
+		}
+		raw_funcs.push_back({ "__index", wrap_index_event });
+		raw_funcs.push_back({ nullptr, nullptr });
+
+		_load_class(exporter->type_name, raw_funcs.data());
 	}
+	
 }
 
-void lua_vm::register_type(const std::string& name,  const std::vector<luaL_Reg>& regs)
+void lua_vm::register_type_exporter(lua_exporter* exporter)
 {
-	std::cout << "register class : " << name << std::endl;
-	types.emplace(name, regs);
+	type_exporters.push_back(exporter);
 }

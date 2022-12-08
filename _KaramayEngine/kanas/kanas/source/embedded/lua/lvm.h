@@ -8,11 +8,13 @@ struct lua_cpp_type
     const luaL_Reg* funcs;
 };
 
+struct lua_exporter;
+
 class lua_vm final
 {
     lua_State* state_ = nullptr;
 
-    static std::unordered_map<std::string, std::vector<luaL_Reg>> types;
+    static std::vector<lua_exporter*> type_exporters;
     
 public:
 
@@ -35,8 +37,8 @@ public:
 	
     bool do_file(const std::string& path);
 
-    static void register_type(const std::string& name, const std::vector<luaL_Reg>& regs);
-    
+    static void register_type_exporter(lua_exporter* exporter);
+
 private:
     
     void _load_class(const std::string& class_name, const luaL_Reg* funcs);
@@ -78,31 +80,17 @@ private:
     std::vector<luaL_Reg> functions;
 };
 
-template<typename T>
 struct lua_exporter
 {
-    using export_type = T;
-    //static lua_exporter exporter;
-
     lua_exporter(std::string name) : type_name(std::move(name))
     {
+        lua_vm::register_type_exporter(this);
     }
 
     std::unordered_map<std::string, lua_CFunction> funcs;
 
     std::string type_name;
-			
-    lua_exporter()
-    {
-        std::vector<luaL_Reg> regs;
-        for(const auto& func : funcs)
-        {
-            regs.emplace_back(func.first.c_str(), func.second);
-        }
-        regs.push_back({nullptr, nullptr});
-        
-        lua_vm::register_type(type_name, regs);
-    }
+
 };
 	
 
