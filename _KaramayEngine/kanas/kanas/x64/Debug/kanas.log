@@ -1,9 +1,5 @@
-﻿  kanas.cpp
-  widget_lua.cpp
-  widget_lua_lib.cpp
-G:\karamay_engine\_KaramayEngine\kanas\kanas\source\embedded\lua_example\widget_lua_lib.cpp(8,5): warning C4309: 'argument': truncation of constant value
-  dispatcher_lua.cpp
+﻿  widget_lib.cpp
+  widget_lib_lua.cpp
+G:\karamay_engine\_KaramayEngine\kanas\kanas\source\embedded\lua_example\widget_lib_lua.cpp(7,5): warning C4309: 'argument': truncation of constant value
   Generating Code...
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
   kanas.vcxproj -> G:\karamay_engine\_KaramayEngine\kanas\x64\Debug\kanas.exe

@@ -141,6 +141,18 @@
     <ClCompile Include="source\kanas\dispatcher_lua.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\embedded\lua_example\widget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\embedded\lua_example\widget_lua.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\embedded\lua_example\widget_lib_lua.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\embedded\lua_example\widget_lib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\core\core_lib.h">
@@ -387,6 +399,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\embedded\lua\lua_api.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\embedded\lua_example\widget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\embedded\lua_example\widget_lib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

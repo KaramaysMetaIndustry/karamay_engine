@@ -54,5 +54,6 @@ static lua_cpp_function_exporter_##FUNCTION_NAME function_exporter_##FUNCTION_NA
 
 
 
+#define LUA_LIB_EXPORTER()
 
-#define LUA_LIB_FUNCTION(LIB_NAME, FUNCTION_NAME, FUNCTION_PTR)
+#define LUA_LIB_FUNCTION(LIB_NAME, LUA_FUNCTION_NAME, FUNCTION_PTR)

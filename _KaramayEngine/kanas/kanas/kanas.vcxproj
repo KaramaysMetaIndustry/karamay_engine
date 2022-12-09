@@ -136,8 +136,9 @@
     <ClCompile Include="kanas.cpp" />
     <ClCompile Include="source\embedded\lua\lvm.cpp" />
     <ClCompile Include="source\embedded\lua_example\widget.cpp" />
+    <ClCompile Include="source\embedded\lua_example\widget_lib.cpp" />
     <ClCompile Include="source\embedded\lua_example\widget_lua.cpp" />
-    <ClCompile Include="source\embedded\lua_example\widget_lua_lib.cpp" />
+    <ClCompile Include="source\embedded\lua_example\widget_lib_lua.cpp" />
     <ClCompile Include="source\embedded\python\pvm.cpp" />
     <ClCompile Include="source\engine\karamay_engine.cpp" />
     <ClCompile Include="source\kanas\core\command_buffer.cpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="source\embedded\lua\lvm_helper.h" />
     <ClInclude Include="source\embedded\lua\lua_api.h" />
     <ClInclude Include="source\embedded\lua_example\widget.h" />
+    <ClInclude Include="source\embedded\lua_example\widget_lib.h" />
     <ClInclude Include="source\embedded\python\pvm.h" />
     <ClInclude Include="source\engine\karamay_engine.h" />
     <ClInclude Include="source\environment\platforms\windows\winsocket.h" />

@@ -1,7 +1,7 @@
 
 kanas = require('kanas')
 
---kanas.log("hello world")
+kanas.log("hello world")
 
 test_oda = function()
     
