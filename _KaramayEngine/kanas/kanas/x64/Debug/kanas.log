@@ -1,45 +1,9 @@
 ﻿  kanas.cpp
-  lvm.cpp
-  pvm.cpp
-  karamay_engine.cpp
-  command_buffer.cpp
-  command_pool.cpp
-  compute_pipeline.cpp
-  deferred_operation.cpp
-  descriptor_pool.cpp
-  descriptor_set.cpp
-  descriptor_set_layout.cpp
-  device.cpp
-  device_memory.cpp
-  framebuffer.cpp
-  graphics_pipeline.cpp
-  physical_device.cpp
-  pipeline.cpp
-  pipeline_cache.cpp
-  pipeline_layout.cpp
-  query_pool.cpp
-  queue.cpp
-  ray_tracing_pipeline.cpp
-  render_pass.cpp
-  acceleration_structure.cpp
-  buffer.cpp
-  buffer_view.cpp
-  image.cpp
-  image_view.cpp
-  sampler.cpp
-  shader.cpp
-  shader_module.cpp
-  subpass.cpp
-  surface.cpp
-  swapchain.cpp
-  Event.cpp
-  fence.cpp
-  semaphore.cpp
-  vulkan_instance.cpp
-  dispatcher.cpp
+  widget_lua.cpp
+  widget_lua_lib.cpp
+G:\karamay_engine\_KaramayEngine\kanas\kanas\source\embedded\lua_example\widget_lua_lib.cpp(8,5): warning C4309: 'argument': truncation of constant value
   dispatcher_lua.cpp
-  network_dispatcher.cpp
-  window.cpp
+  Generating Code...
 LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
 LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
   kanas.vcxproj -> G:\karamay_engine\_KaramayEngine\kanas\x64\Debug\kanas.exe

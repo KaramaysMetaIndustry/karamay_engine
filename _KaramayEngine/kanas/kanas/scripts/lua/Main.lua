@@ -1,21 +1,34 @@
-print("[Lua] : hello world from lua")
 
-a = function()
+kanas = require('kanas')
 
-    w = widget.new() -- 1
-    w2 = widget.new()
+--kanas.log("hello world")
 
+test_oda = function()
+    
+    w = widget.new()
 
-    print("[Lua] : " .. w.calc(1, 2))
-    print("[Lua] : " .. w.calc(11, 12))
-    print("[Lua] : " .. w.calc(23, 2))
-    print("[Lua] : " .. w.calc(27, 22))
+    -- local result = w.calc(2, 4)
 
-   print("[Lua] : getv " .. w:getv())
+    -- if result == nil then
+    --     return
+    -- end
 
-   print("[Lua] : replace " .. w:replace(w))
+    -- kanas.log("w.calc : " .. result)
+    -- kanas.log("w.calc : " .. w.calc(11, 12))
+    -- kanas.log("w.calc : " .. w.calc(23, 2))
+    -- kanas.log("w.calc : " .. w.calc(27, 22))
+
+    -- kanas.log("get_v : " .. w:get_v())
+
+    -- kanas.log("replace : " .. w.replace(w, w))
+
+    local result = w:replace(w)
+
+    if result ~= nil then
+        print("replace : " .. result)
+    end
+    
 
 end
 
-
-a()
+test_oda()

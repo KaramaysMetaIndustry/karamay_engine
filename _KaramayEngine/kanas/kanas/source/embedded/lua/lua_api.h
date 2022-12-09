@@ -1027,13 +1027,20 @@ namespace lua_api
 	template<typename ...Args, std::size_t... N, bool bottom = true, std::size_t offset = 0>
 	static std::optional<std::tuple<Args...>> to_tuple_impl(lua_State* l, std::index_sequence<N...>)
 	{
+		// check the parameters num
+		if (lua_gettop(l) != sizeof...(Args))
+		{
+			return std::nullopt;
+		}
+
 		std::tuple<std::optional<Args>...> opt_parameters;
-		
-		((std::get<N>(opt_parameters) = static_to<Args, (N + 1 + offset) * (bottom ? 1 : -1)>(l)), ...);
+
+		// (N + 1 + offset) * (bottom ? 1 : -1)
+		((std::get<N>(opt_parameters) = static_to<Args, (N + 1 + offset)* (bottom ? 1 : -1)>(l)), ...);
 
 		bool is_ok = true;
 
-		((is_ok ? std::get<N>(opt_parameters).has_value() : false), ...);
+		((is_ok = (is_ok ? std::get<N>(opt_parameters).has_value() : false)), ...);
 
 		if(!is_ok)
 		{
@@ -1054,8 +1061,8 @@ namespace lua_api
 	}
 
 	
-	template<typename Ret, typename... Args, std::size_t... N>
-	static Ret call_cpp_func_impl(const std::function<Ret(Args...)>& func, std::tuple<std::remove_cv_t<Args>...>&& parameters, std::index_sequence<N...>)
+	template<typename Ret, typename... Args, typename... TupleArgs, std::size_t... N>
+	static Ret call_cpp_func_impl(const std::function<Ret(Args...)>& func, std::tuple<TupleArgs...>&& parameters, std::index_sequence<N...>)
 	{
 		if constexpr (std::is_void_v<Ret>)
 		{
@@ -1069,12 +1076,15 @@ namespace lua_api
 	static std::int32_t call_cpp_func(lua_State* l, std::function<Ret(Args...)> func)
 	{
 		// get parameters from lua stack begin at bottom ( 1 ~ N )
-		std::optional<std::tuple<Args...>> parameters = to_tuple<Args...>(l);
+		auto parameters = to_tuple<std::remove_cvref_t<Args>...>(l);
 
 		if(!parameters.has_value())
 		{
-			luaL_error(l, "loading parameters failed");
-			return 0;
+			//luaL_execresult()
+			//luaL_error(l, "loading parameters failed");
+			std::clog << "parameters are not valid" << std::endl;
+			push_nil(l);
+			return 1;
 		}
 		
 		if constexpr (std::is_void_v<Ret>)
@@ -1102,8 +1112,8 @@ namespace lua_api
 	};
 
 
-	template<typename Ret, typename Ty, typename... Args, std::size_t... N>
-	static Ret call_cpp_member_func_impl(const std::function<Ret(Ty*, Args...)>& func, std::tuple<std::shared_ptr<Ty>, Args...> parameters, std::index_sequence<N...>)
+	template<typename Ret, typename Ty, typename... Args, typename... TupleArgs, std::size_t... N>
+	static Ret call_cpp_member_func_impl(const std::function<Ret(Ty*, Args...)>& func, std::tuple<std::shared_ptr<Ty>, TupleArgs...>&& parameters, std::index_sequence<N...>)
 	{
 		if constexpr (std::is_void_v<Ret>)
 		{
@@ -1117,21 +1127,23 @@ namespace lua_api
 	static std::int32_t call_cpp_member_func(lua_State* l, std::function<Ret(Ty*, Args...)> func)
 	{
 		// get parameters from lua stack begin at bottom ( 1 ~ N )
-		auto opt_parameters = to_tuple<std::shared_ptr<Ty>, Args...>(l);
+		auto opt_parameters = to_tuple<std::shared_ptr<Ty>, std::remove_cvref_t<Args>...>(l);
 
 		if(!opt_parameters.has_value())
 		{
-			luaL_error(l, "loading parameters failed.");
-			return 0;
+			//luaL_error(l, "loading parameters failed.");
+			std::clog << "parameters are not valid" << std::endl;
+			push_nil(l);
+			return 1;
 		}
 		
 		if constexpr (std::is_void_v<Ret>)
 		{
-			call_cpp_member_func_impl(func,opt_parameters.value(), std::index_sequence_for<Args...>());
+			call_cpp_member_func_impl(func, std::move(opt_parameters.value()), std::index_sequence_for<Args...>());
 			return 0;
 		} else {
 			// if the func has return result, push it into the stack
-			lua_api::push(l, call_cpp_member_func_impl(func, opt_parameters.value(), std::index_sequence_for<Args...>()));
+			lua_api::push(l, call_cpp_member_func_impl(func, std::move(opt_parameters.value()), std::index_sequence_for<Args...>()));
 			return 1;
 		}
 	}
@@ -1148,6 +1160,60 @@ namespace lua_api
 		std::string delegate_name;
 		std::function<Ret(Ty*, Args...)> callable;
 	};
+
+	template<typename Ret, typename Ty, typename... Args>
+	struct cpp_member_function_raw
+	{
+		std::function<Ret(Ty*, Args...)> callable;
+	};
+
+	template<typename... FuncTypes>
+	struct cpp_member_function_delegate_tuple
+	{
+		cpp_member_function_delegate_tuple(std::string&& delegate_name, FuncTypes&&... funcs) :
+			name(delegate_name),
+			functions(funcs...)
+		{}
+
+		std::string name;
+		std::tuple<FuncTypes...> functions;
+	};
+
+	template<typename Ret, typename Ty, typename... Args, typename... TupleArgs, std::size_t... N>
+	static Ret call_cpp_member_func_multi_impl(const std::function<Ret(Ty*, Args...)>& func, std::tuple<std::shared_ptr<Ty>, TupleArgs...>&& parameters, std::index_sequence<N...>)
+	{
+		if constexpr (std::is_void_v<Ret>)
+		{
+			func(std::get<0>(parameters).get(), std::get<N + 1>(parameters)...);
+		}
+		else {
+			return func(std::get<0>(parameters).get(), std::get<N + 1>(parameters)...);
+		}
+	}
+
+	template<typename Ret, typename Ty, typename... Args>
+	static std::int32_t call_cpp_member_func_multi(lua_State* l, std::function<Ret(Ty*, Args...)> func)
+	{
+		// get parameters from lua stack begin at bottom ( 1 ~ N )
+		auto opt_parameters = to_tuple<std::shared_ptr<Ty>, std::remove_cvref_t<Args>...>(l);
+
+		if (!opt_parameters.has_value())
+		{
+			luaL_error(l, "loading parameters failed.");
+			return 0;
+		}
+
+		if constexpr (std::is_void_v<Ret>)
+		{
+			call_cpp_member_func_impl(func, std::move(opt_parameters.value()), std::index_sequence_for<Args...>());
+			return 0;
+		}
+		else {
+			// if the func has return result, push it into the stack
+			lua_api::push(l, call_cpp_member_func_impl(func, std::move(opt_parameters.value()), std::index_sequence_for<Args...>()));
+			return 1;
+		}
+	}
 	
 }
 

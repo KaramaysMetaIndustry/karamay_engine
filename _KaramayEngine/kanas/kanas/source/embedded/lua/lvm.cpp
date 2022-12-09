@@ -1,6 +1,7 @@
 #include "lvm.h"
 
 std::vector<lua_exporter*> lua_vm::type_exporters = {};
+std::vector<lua_lib*> lua_vm::libs = {};
 
 bool lua_vm::initialize() noexcept
 {
@@ -39,9 +40,10 @@ bool lua_vm::do_file(const std::string& path)
 	default:
 		break;
 	}
+
 	if (_result != 0)
 	{
-		printf("%s", lua_tostring(state_, -1));
+		//printf("%s", lua_tostring(state_, -1));
 		return false;
 	}
 
@@ -108,10 +110,14 @@ void lua_vm::_load_libs()
 {
 	luaL_openlibs(state_);
 
-	//luaL_requiref(_state, "karamay_RHI", testModelOpen, 0);
 
+	for(auto lib : libs)
+	{
+		luaL_requiref(state_, lib->name.c_str(), lib->open_func, 0);
+		lua_pop(state_, 1);
+	}
+	
 	std::vector<luaL_Reg> raw_funcs;
-
 	for (auto exporter : type_exporters)
 	{
 		raw_funcs.clear();
@@ -131,4 +137,9 @@ void lua_vm::_load_libs()
 void lua_vm::register_type_exporter(lua_exporter* exporter)
 {
 	type_exporters.push_back(exporter);
+}
+
+void lua_vm::register_lib(lua_lib* lib)
+{
+	libs.push_back(lib);
 }

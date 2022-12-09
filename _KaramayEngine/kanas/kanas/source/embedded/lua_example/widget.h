@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+
 #define LUA_EX_ENABLED 1
 
 class widget
@@ -15,18 +16,17 @@ public:
 
     static std::shared_ptr<widget> new_lua()
     {
-        std::cout << "bang bang bang" << std::endl;
         return std::make_shared<widget>();
     }
 
-    static void wrap_collector(std::shared_ptr<widget> w)
+    static void wrap_collector(std::shared_ptr<widget>& w)
     {
         w.reset();
     }
 
-    static std::int32_t calc(std::int32_t a, std::int32_t b)
+    static std::int32_t calc(std::int32_t& a, const std::int32_t& b)
     {
-        return a * b * 100;
+        return a * b;
     }
 
     std::float_t get_v()
@@ -34,7 +34,7 @@ public:
         return w;
     }
 
-    std::float_t replace(std::shared_ptr<widget> other)
+    std::float_t replace(const std::shared_ptr<widget>& other)
     {
         w = other->get_v() + 8.77f;
         return w;

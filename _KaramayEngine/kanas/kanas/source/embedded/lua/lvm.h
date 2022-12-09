@@ -9,12 +9,15 @@ struct lua_cpp_type
 };
 
 struct lua_exporter;
+struct lua_lib;
 
 class lua_vm final
 {
     lua_State* state_ = nullptr;
 
     static std::vector<lua_exporter*> type_exporters;
+
+    static std::vector<lua_lib*> libs;
     
 public:
 
@@ -38,6 +41,8 @@ public:
     bool do_file(const std::string& path);
 
     static void register_type_exporter(lua_exporter* exporter);
+
+    static void register_lib(lua_lib* lib);
 
 private:
     
@@ -91,6 +96,19 @@ struct lua_exporter
 
     std::string type_name;
 
+};
+
+struct lua_lib
+{
+    std::string name;
+    lua_CFunction open_func;
+
+    lua_lib(const std::string& lib_name, lua_CFunction lib_open_func) :
+        name(lib_name),
+        open_func(lib_open_func)
+    {
+        lua_vm::register_lib(this);
+    }
 };
 	
 

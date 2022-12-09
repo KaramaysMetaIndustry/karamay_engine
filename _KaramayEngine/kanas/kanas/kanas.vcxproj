@@ -137,6 +137,7 @@
     <ClCompile Include="source\embedded\lua\lvm.cpp" />
     <ClCompile Include="source\embedded\lua_example\widget.cpp" />
     <ClCompile Include="source\embedded\lua_example\widget_lua.cpp" />
+    <ClCompile Include="source\embedded\lua_example\widget_lua_lib.cpp" />
     <ClCompile Include="source\embedded\python\pvm.cpp" />
     <ClCompile Include="source\engine\karamay_engine.cpp" />
     <ClCompile Include="source\kanas\core\command_buffer.cpp" />
