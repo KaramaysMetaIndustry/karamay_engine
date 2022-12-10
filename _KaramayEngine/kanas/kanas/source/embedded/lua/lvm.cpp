@@ -22,7 +22,8 @@ void lua_vm::run() noexcept
 	
 	_load_libs();
 
-	do_file("G:\\karamay_engine\\_KaramayEngine\\kanas\\kanas\\scripts\\lua\\Main.lua");
+	//do_file("G:\\karamay_engine\\_KaramayEngine\\kanas\\kanas\\scripts\\lua\\Main.lua");
+	do_file("E:\\PrivateRepos\\karamay_engine\\_KaramayEngine\\kanas\\kanas\\scripts\\lua\\Main.lua");
 }
 
 bool lua_vm::do_file(const std::string& path)
@@ -110,9 +111,9 @@ void lua_vm::_load_libs()
 {
 	luaL_openlibs(state_);
 
-
 	for(auto lib : libs)
 	{
+		lib->lib_funcs->push_back({ nullptr, nullptr });
 		luaL_requiref(state_, lib->name.c_str(), lib->open_func, 0);
 		lua_pop(state_, 1);
 	}
@@ -131,7 +132,6 @@ void lua_vm::_load_libs()
 
 		_load_class(exporter->type_name, raw_funcs.data());
 	}
-	
 }
 
 void lua_vm::register_type_exporter(lua_exporter* exporter)

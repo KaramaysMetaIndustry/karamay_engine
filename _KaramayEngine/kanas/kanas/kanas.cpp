@@ -9,9 +9,6 @@ int main()
     lua_vm lvm;
     lvm.initialize();
     lvm.run();
-
-    
-    std::cout << "Hello World!\n";
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

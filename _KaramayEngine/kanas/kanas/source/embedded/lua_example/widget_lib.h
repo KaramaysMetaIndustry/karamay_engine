@@ -4,21 +4,16 @@
 #include <string>
 #include <iostream>
 
-struct widget_lib
-{
-	static std::shared_ptr<class widget> create_widget();
-
-	static void kanas_log(const std::string& msg)
-	{
-		std::cout << "[kanas - lua] : " << msg << std::endl;
-	}
-
-};
-
 namespace kanas
 {
 	static void log(const std::string& msg)
 	{
 		std::cout << "[kanas - lua] : " << msg << std::endl;
+	}
+
+	static std::int32_t logf(const char* msg)
+	{
+		std::cout << "[kanas - lua - f] : " << msg << std::endl;
+		return 10086;
 	}
 }

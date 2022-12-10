@@ -65,7 +65,7 @@ void karamay_engine::run() noexcept
 	{
 		auto _start_point = std::chrono::steady_clock::now();
 		auto _end_point = std::chrono::steady_clock::now();
-		_delta_time = std::chrono::duration_cast<std::chrono::seconds>(_end_point - _start_point).count();
+		//_delta_time = std::chrono::duration_cast<std::chrono::seconds>(_end_point - _start_point).count();
 	}
 
 	// notify to exit

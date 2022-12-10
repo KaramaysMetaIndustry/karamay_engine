@@ -8,6 +8,8 @@ class widget
 {
 
     std::float_t w = 0.5f;
+
+    std::shared_ptr<widget> xx;
     
 public:
     widget();
@@ -29,14 +31,14 @@ public:
         return a * b;
     }
 
-    std::float_t get_v()
+    [[nodiscard]] const std::shared_ptr<widget>& get_v()
     {
-        return w;
+        return xx;
     }
 
     std::float_t replace(const std::shared_ptr<widget>& other)
     {
-        w = other->get_v() + 8.77f;
+        //w = other->get_v() + 8.77f;
         return w;
     }
 

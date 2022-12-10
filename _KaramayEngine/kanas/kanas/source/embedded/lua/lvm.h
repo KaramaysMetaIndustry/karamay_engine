@@ -101,10 +101,12 @@ struct lua_exporter
 struct lua_lib
 {
     std::string name;
+    std::vector<luaL_Reg>* lib_funcs;
     lua_CFunction open_func;
 
-    lua_lib(const std::string& lib_name, lua_CFunction lib_open_func) :
+    lua_lib(const std::string& lib_name, std::vector<luaL_Reg>* funcs, lua_CFunction lib_open_func) :
         name(lib_name),
+        lib_funcs(funcs),
         open_func(lib_open_func)
     {
         lua_vm::register_lib(this);
