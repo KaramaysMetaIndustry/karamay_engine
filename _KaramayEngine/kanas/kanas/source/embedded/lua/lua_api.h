@@ -222,16 +222,73 @@ namespace lua_api
 	
 
 	template<typename T>
+	constexpr bool is_array_v = false;
+
+	template<typename T, std::size_t size>
+	constexpr bool is_array_v<std::array<T, size>> = true;
+
+	template<typename T>
 	constexpr bool is_vector_v = false;
 
 	template<typename T, typename U>
 	constexpr bool is_vector_v<std::vector<T, U>> = true;
 
 	template<typename T>
-	concept lua_table_acceptable_std_vector = 
-		is_vector_v<T> && 
-		lua_t_acceptable_non_container<typename T::value_type>;
+	constexpr bool is_deque_v = false;
 
+	template<typename T, typename U>
+	constexpr bool is_deque_v<std::deque<T, U>> = true;
+
+	template<typename T>
+	constexpr bool is_list_v = false;
+
+	template<typename T, typename U>
+	constexpr bool is_list_v<std::list<T, U>> = true;
+
+	template<typename T>
+	constexpr bool is_forward_list_v = false;
+
+	template<typename T, typename U>
+	constexpr bool is_forward_list_v<std::forward_list<T, U>> = true;
+
+	template<typename T>
+	constexpr bool is_set_v = false;
+
+	template<typename T>
+	constexpr bool is_set_v<std::set<T>> = true;
+
+	template<typename T>
+	constexpr bool is_unordered_set_v = false;
+
+	template<typename T>
+	constexpr bool is_unordered_set_v<std::unordered_set<T>> = true;
+
+
+	template<typename T>
+	constexpr bool is_multiset_v = false;
+
+	template<typename T>
+	constexpr bool is_multiset_v<std::multiset<T>> = true;
+
+	
+	template<typename T>
+	constexpr bool is_unordered_multiset_v = false;
+
+	template<typename T>
+	constexpr bool is_unordered_multiset_v<std::unordered_multiset<T>> = true;
+
+
+	template<typename T>
+	constexpr bool is_map_v = false;
+
+	template<typename T, typename U>
+	constexpr bool is_map_v<std::map<T, U>> = true;
+
+	template<typename T>
+	constexpr bool is_multimap_v = false;
+
+	template<typename T, typename U>
+	constexpr bool is_multimap_v<std::multimap<T, U>> = true;
 
 	template<typename T>
 	constexpr bool is_unordered_map_v = false;
@@ -240,16 +297,97 @@ namespace lua_api
 	constexpr bool is_unordered_map_v<std::unordered_map<T, U>> = true;
 
 	template<typename T>
-	concept lua_table_acceptable_std_unorderd_map = /*true;*/
+	constexpr bool is_unordered_multimap_v = false;
+
+	template<typename T, typename U>
+	constexpr bool is_unordered_multimap_v<std::unordered_multimap<T, U>> = true;
+
+
+	template<typename T>
+	concept lua_table_acceptable_std_array =
+		is_array_v<T> && 
+		lua_t_acceptable_non_container<typename T::value_type>;
+
+	template<typename T>
+	concept lua_table_acceptable_std_vector =
+		is_vector_v<T> &&
+		lua_t_acceptable_non_container<typename T::value_type>;
+
+	template<typename T>
+	concept lua_table_acceptable_std_deque =
+		is_deque_v<T> &&
+		lua_t_acceptable_non_container<typename T::value_type>;
+
+	template<typename T>
+	concept lua_table_acceptable_std_list =
+		is_list_v<T> &&
+		lua_t_acceptable_non_container<typename T::value_type>;
+
+	template<typename T>
+	concept lua_table_acceptable_std_forward_list =
+		is_forward_list_v<T> &&
+		lua_t_acceptable_non_container<typename T::value_type>;
+
+	template<typename T>
+	concept lua_table_acceptable_std_set =
+		is_set_v<T> && 
+		lua_t_acceptable_non_container<typename T::value_type>;
+
+	template<typename T>
+	concept lua_table_acceptable_std_unordered_set =
+		is_unordered_set_v<T> &&
+		lua_t_acceptable_non_container<typename T::value_type>;
+
+	template<typename T>
+	concept lua_table_acceptable_std_multiset =
+		is_multiset_v<T> &&
+		lua_t_acceptable_non_container<typename T::value_type>;
+
+	template<typename T>
+	concept lua_table_acceptable_std_unordered_multiset =
+		is_unordered_multiset_v<T> &&
+		lua_t_acceptable_non_container<typename T::value_type>;
+
+	template<typename T>
+	concept lua_table_acceptable_std_map = 
+		is_map_v<T> &&
+		lua_t_acceptable_non_container<typename T::key_type> &&
+		lua_t_acceptable_non_container<typename T::mapped_type>;
+
+	template<typename T>
+	concept lua_table_acceptable_std_unordered_map =
 		is_unordered_map_v<T> &&
+		lua_t_acceptable_non_container<typename T::key_type> &&
+		lua_t_acceptable_non_container<typename T::mapped_type>;
+
+	template<typename T>
+	concept lua_table_acceptable_std_multimap = 
+		is_multimap_v<T> &&
+		lua_t_acceptable_non_container<typename T::key_type> &&
+		lua_t_acceptable_non_container<typename T::mapped_type>;
+
+	template<typename T>
+	concept lua_table_acceptable_std_unordered_multimap =
+		is_unordered_multimap_v<T> &&
 		lua_t_acceptable_non_container<typename T::key_type> &&
 		lua_t_acceptable_non_container<typename T::mapped_type>;
 
 	template<typename T>
 	concept lua_t_acceptable = 
 		lua_t_acceptable_non_container<T> or 
+		lua_table_acceptable_std_array<T> or
 		lua_table_acceptable_std_vector<T> or
-		lua_table_acceptable_std_unorderd_map<T>;
+		lua_table_acceptable_std_deque<T> or
+		lua_table_acceptable_std_list<T> or
+		lua_table_acceptable_std_forward_list<T> or
+		lua_table_acceptable_std_set<T> or
+		lua_table_acceptable_std_unordered_set<T> or
+		lua_table_acceptable_std_multiset<T> or
+		lua_table_acceptable_std_unordered_multiset<T> or
+		lua_table_acceptable_std_map<T> or
+		lua_table_acceptable_std_unordered_map<T> or
+		lua_table_acceptable_std_multimap<T> or
+		lua_table_acceptable_std_unordered_multimap<T>;
 	
 	template<typename Ty>
 	struct lua_userdata_meta_info
@@ -548,16 +686,51 @@ namespace lua_api
 		{
 			return lua_isuserdata(l, idx);
 		}
-		else if constexpr (lua_table_acceptable_std_vector<T>)
+		else if constexpr (lua_table_acceptable_std_array)
 		{
-			/*if (!lua_istable(l, idx))
-			{
-				return false;
-			}*/
-
 			return lua_istable(l, idx);
 		}
-		else if constexpr (lua_table_acceptable_std_unorderd_map<T>)
+		else if constexpr (lua_table_acceptable_std_vector<T>)
+		{
+			return lua_istable(l, idx);
+		}
+		else if constexpr (lua_table_acceptable_std_deque<T>)
+		{
+			return lua_istable(l, idx);
+		}
+		else if constexpr (lua_table_acceptable_std_list<T>)
+		{
+			return lua_istable(l, idx);
+		}
+		else if constexpr (lua_table_acceptable_std_forward_list<T>)
+		{
+			return lua_istable(l, idx);
+		}
+		else if constexpr (lua_table_acceptable_std_set<T>)
+		{
+			return lua_istable(l, idx);
+		}
+		else if constexpr (lua_table_acceptable_std_unordered_set<T>)
+		{
+			return lua_istable(l, idx);
+		}
+		else if constexpr (lua_table_acceptable_std_unordered_multiset<T>)
+		{
+			return lua_istable(l, idx);
+		}
+		else if constexpr (lua_table_acceptable_std_map<T>)
+		{
+			return lua_istable(l, idx);
+		}
+		else if constexpr (lua_table_acceptable_std_unordered_map<T>)
+		{
+			return lua_istable(l, idx);
+		}
+		else if constexpr (lua_table_acceptable_std_multimap<T>)
+		{
+			return lua_istable(l, idx);
+		}
+		else if constexpr (lua_table_acceptable_std_unordered_multimap<T>)
 		{
 			return lua_istable(l, idx);
 		}
@@ -623,17 +796,8 @@ namespace lua_api
 			// table, ...
 			return c;
 		}
-		else if constexpr (lua_table_acceptable_std_unorderd_map<T>)
+		else if constexpr (lua_table_acceptable_std_unordered_map<T>)
 		{
-			/*lua_len(l, idx);
-			auto _table_len = static_cast<std::size_t>(lua_tointeger(l, -1));
-			lua_pop(l);
-
-			if (_table_len < 1)
-			{
-				return std::nullopt;
-			}*/
-
 			T c;
 
 			// table, ...
