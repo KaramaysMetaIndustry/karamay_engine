@@ -105,6 +105,8 @@ static int wrap_index_event(lua_State* L)
 		else
 			lua_error(L);
 	}
+
+	return 0;
 }
 
 void lua_vm::_load_libs()

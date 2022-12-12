@@ -1,6 +1,9 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
+#include <map>
+#include <unordered_map>
 
 #define LUA_EX_ENABLED 1
 
@@ -40,6 +43,13 @@ public:
     {
         //w = other->get_v() + 8.77f;
         return w;
+    }
+
+    std::unordered_map<std::string, std::int32_t> values;
+
+    void set_values(const std::unordered_map<std::string, std::int32_t>& vls)
+    {
+        values = vls;
     }
 
 #if LUA_EX_ENABLED

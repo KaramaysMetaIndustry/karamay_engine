@@ -14,9 +14,6 @@
 * void*, const void* <=> userdata
 * lua_CFuntion <=> function
 * std::containers <=> tables
-* 
-* 
-* 
 *
 */
 namespace lua_api
@@ -176,13 +173,10 @@ namespace lua_api
 	}
 	
 	// concepts
-
-	// boolean
 	template<class T>
 	concept lua_boolean_acceptable =
-		std::is_same_v<bool, std::remove_cvref_t<T>>;
+		std::is_same_v<std::remove_cvref_t<T>, bool>;
 
-	// number
 	template<class T>
 	concept lua_integer_number_acceptable =
 		std::_Is_any_of_v<std::remove_cvref_t<T>, std::int8_t, std::uint8_t, std::int16_t, std::uint16_t, std::int32_t, std::uint32_t, std::int64_t, std::uint64_t>;
@@ -195,7 +189,6 @@ namespace lua_api
 	concept lua_number_acceptable =
 		lua_integer_number_acceptable<T> or lua_real_number_acceptable<T>;
 
-	// string
 	template<typename T>
 	concept lua_string_acceptable_c_style =
 		std::is_same_v<T, const char*>;
@@ -212,7 +205,6 @@ namespace lua_api
 	concept lua_string_acceptable =
 		lua_string_acceptable_c_style<T> or lua_string_acceptable_std_str<T> or lua_string_acceptable_std_str_view<T>;
 
-	// userdata
 	template<typename T>
 	constexpr bool is_shared_ptr_v = false;
 
@@ -224,10 +216,40 @@ namespace lua_api
 	concept lua_userdata_acceptable =
 		is_shared_ptr_v<std::remove_cvref_t<T>>;
 	
-	// types 
 	template<typename T>
-	concept lua_t_acceptable =
+	concept lua_t_acceptable_non_container =
 		lua_boolean_acceptable<T> or lua_number_acceptable<T> or lua_string_acceptable<T> or lua_userdata_acceptable<T>;
+	
+
+	template<typename T>
+	constexpr bool is_vector_v = false;
+
+	template<typename T, typename U>
+	constexpr bool is_vector_v<std::vector<T, U>> = true;
+
+	template<typename T>
+	concept lua_table_acceptable_std_vector = 
+		is_vector_v<T> && 
+		lua_t_acceptable_non_container<typename T::value_type>;
+
+
+	template<typename T>
+	constexpr bool is_unordered_map_v = false;
+
+	template<typename T, typename U>
+	constexpr bool is_unordered_map_v<std::unordered_map<T, U>> = true;
+
+	template<typename T>
+	concept lua_table_acceptable_std_unorderd_map = /*true;*/
+		is_unordered_map_v<T> &&
+		lua_t_acceptable_non_container<typename T::key_type> &&
+		lua_t_acceptable_non_container<typename T::mapped_type>;
+
+	template<typename T>
+	concept lua_t_acceptable = 
+		lua_t_acceptable_non_container<T> or 
+		lua_table_acceptable_std_vector<T> or
+		lua_table_acceptable_std_unorderd_map<T>;
 	
 	template<typename Ty>
 	struct lua_userdata_meta_info
@@ -240,6 +262,7 @@ namespace lua_api
 		static lua_userdata_meta_info ref;
 
 	};
+
 
 	template<lua_t_acceptable T>
 	void push(lua_State* l, T&& v)
@@ -272,6 +295,7 @@ namespace lua_api
 		{
 			void* userdata = lua_newuserdata(l, sizeof(std::remove_cvref_t<T>));
 			new(userdata) std::remove_cvref_t<T>(v);
+			
 			luaL_setmetatable(l, lua_userdata_meta_info<std::remove_cvref_t<T>>::ref.get_type_name());
 		}
 	}
@@ -282,12 +306,225 @@ namespace lua_api
 	}
 
 	template<typename ...Args>
-	static void push_c_closure(lua_State* l, lua_CFunction&& f, Args&& ...args)
+	static void push_c_closure(lua_State* l, lua_CFunction f, Args&& ...args)
 	{
 		(push(l, args), ...);
 		lua_pushcclosure(l, f, sizeof...(args));
 	}
 
+	template<lua_t_acceptable T, size_t size>
+	static void push(lua_State* l, const std::array<T, size>& c) noexcept
+	{
+		// ...
+		lua_createtable(l, size, 0);
+		// table, ...
+		for (size_t idx = 0; idx < size; ++idx)
+		{
+			push(l, idx + 1);
+			// key, table, ...
+			push(l, c[idx]);
+			// value, key, table, ...
+			lua_settable(l, -3);
+			// table, ...
+		}
+	}
+
+	template <lua_t_acceptable T, typename allocator = std::allocator<T>>
+	static void push(lua_State* l, const std::vector<T, allocator>& c) noexcept
+	{
+		// ...
+		lua_createtable(l, static_cast<int>(c.size()), 0);
+		// table, ...
+		for (std::size_t idx = 0; idx < c.size(); ++idx)
+		{
+			push(l, idx + 1);
+			// key, table, ...
+			push(l, c[idx]);
+			// value, key, table, ...
+			lua_settable(l, -3);
+			// table, ...
+		}
+	}
+
+	template<lua_t_acceptable T, typename allocator = std::allocator<T>>
+	static void push(lua_State* l, const std::deque<T, allocator>& c) noexcept
+	{
+		// ...
+		lua_createtable(l, c.size(), 0);
+		// table, ...
+		for (std::size_t idx = 0; idx < c.size(); ++idx)
+		{
+			push(l, idx + 1);
+			// key, table, ...
+			push(l, c[idx]);
+			// value, key, table, ...
+			lua_settable(l, -3);
+			// table, ...
+		}
+	}
+
+	template<lua_t_acceptable T, typename allocator = std::allocator<T>>
+	static void push(lua_State* l, const std::list<T, allocator>& c) noexcept
+	{
+		// ...
+		lua_createtable(l, c.size(), 0);
+		// table, ...
+		size_t idx = 1;
+		for (auto it = c.cbegin(); it != c.cend(); ++it, ++idx)
+		{
+			push(l, idx);
+			// key, table, ...
+			push(l, *it);
+			// value, key, table, ...
+			lua_settable(l, -3);
+			// table, ...
+		}
+	}
+
+	template<lua_t_acceptable T, typename allocator = std::allocator<T>>
+	static void push(lua_State* l, const std::forward_list<T, allocator>& c) noexcept
+	{
+		// ...
+		lua_createtable(l, 0, 0);
+		// table, ...
+		size_t idx = 1;
+		for (auto it = c.cbegin(); it != c.cend(); ++it, ++idx)
+		{
+			push(l, idx);
+			// key, table, ...
+			push(l, *it);
+			// value, key, table, ...
+			lua_settable(l, -3);
+			// table, ...
+		}
+	}
+
+	template<lua_t_acceptable T, typename predicate = std::less<T>, typename allocator = std::allocator<T>>
+	static void push(lua_State* l, const std::set<T, predicate, allocator>& c) noexcept
+	{
+		// ...
+		lua_createtable(l, c.size(), 0);
+		// table, ...
+		std::size_t idx = 1;
+		for (auto it = c.cbegin(); it != c.cend(); ++it, ++idx)
+		{
+			push(l, idx);
+			// key, table, ...
+			push(l, *it);
+			// value, key, table, ...
+			lua_settable(l, -3);
+			// table, ...
+		}
+	}
+
+	template<lua_t_acceptable T, typename predicate = std::less<T>, typename allocator = std::allocator<T>>
+	static void push(lua_State* l, const std::multiset<T, predicate, allocator>& c) noexcept
+	{
+		// ...
+		lua_createtable(l, c.size(), 0);
+		// table, ...
+		std::size_t idx = 1;
+		for (auto _it = c.cbegin(); _it != c.cend(); ++_it, ++idx)
+		{
+			push(l, idx);
+			// key, table, ...
+			push(l, *_it);
+			// value, key, table, ...
+			lua_settable(l, -3);
+			// table, ...
+		}
+	}
+
+	template<
+		lua_t_acceptable T,
+		typename hasher = std::hash<T>,
+		typename predicate = std::equal_to<T>,
+		typename allocator = std::allocator<T>
+	>
+	static void push(lua_State* l, const std::unordered_set<T, hasher, predicate, allocator>& c) noexcept
+	{
+		// ...
+		lua_createtable(l, c.size(), 0);
+		// table, ...
+		std::size_t idx = 1;
+		for (auto it = c.cbegin(); it != c.cend(); ++it, ++idx)
+		{
+			push(l, idx);
+			// key, table, ...
+			push(l, *it);
+			// value, key, table, ...
+			lua_settable(l, -3);
+			// table, ...
+		}
+	}
+
+	template<
+		lua_t_acceptable T,
+		typename hasher = std::hash<T>,
+		typename predicate = std::equal_to<T>,
+		typename allocator = std::allocator<T>
+	>
+	static void push(lua_State* l, const std::unordered_multiset<T, hasher, predicate, allocator>& c) noexcept
+	{
+		// ...
+		lua_createtable(l, c.size(), 0);
+		// table, ...
+		std::size_t idx = 1;
+		for (auto _it = c.cbegin(); _it != c.cend(); ++_it, ++idx)
+		{
+			push(l, idx);
+			// key, table, ...
+			push(l, *_it);
+			// value, key, table, ...
+			lua_settable(l, -3);
+			// table, ...
+		}
+	}
+
+	template<
+		lua_t_acceptable key_t, lua_t_acceptable value_t,
+		typename predicate = std::less<key_t>,
+		typename allocator = std::allocator<std::pair<const key_t, value_t>>
+	>
+	static void push(lua_State* l, const std::map<key_t, value_t, predicate, allocator>& c) noexcept
+	{
+		// ...
+		lua_createtable(l, 0, c.size());
+		// table, ...
+		for (const auto& pair : c)
+		{
+			push(l, pair.first);
+			// key, table, ...
+			push(l, pair.second);
+			// value, key, table, ...
+			lua_settable(l, -3);
+			// table, ...
+		}
+	}
+
+	template<
+		lua_t_acceptable key_t, lua_t_acceptable value_t,
+		typename hasher = std::hash<key_t>,
+		typename predicate = std::equal_to<key_t>,
+		typename allocator = std::allocator<std::pair<const key_t, value_t>>
+	>
+	static void push(lua_State* l, const std::unordered_map<key_t, value_t, hasher, predicate, allocator>& c) noexcept
+	{
+		// ...
+		lua_createtable(l, 0, c.size());
+		// table, ...
+		for (const auto& pair : c)
+		{
+			push(l, pair.first);
+			// key, table, ...
+			push(l, pair.second);
+			// value, key, table, ...
+			lua_settable(l, -3);
+			// table, ...
+		}
+	}
+
+	
 	template<lua_t_acceptable T>
 	static bool is(lua_State* l, std::int32_t idx) noexcept
 	{
@@ -311,11 +548,25 @@ namespace lua_api
 		{
 			return lua_isuserdata(l, idx);
 		}
+		else if constexpr (lua_table_acceptable_std_vector<T>)
+		{
+			/*if (!lua_istable(l, idx))
+			{
+				return false;
+			}*/
+
+			return lua_istable(l, idx);
+		}
+		else if constexpr (lua_table_acceptable_std_unorderd_map<T>)
+		{
+			return lua_istable(l, idx);
+		}
 		else
 		{
 			return false;
 		}
 	}
+
 
 	template<lua_t_acceptable T>
 	static std::optional<T> to(lua_State* l, std::int32_t idx)
@@ -337,8 +588,74 @@ namespace lua_api
 			return lua_tostring(l, idx);
 		}
 		else if constexpr (lua_userdata_acceptable<T>) {
-			T* userdata = static_cast<T*>(lua_touserdata(l, idx)); //luaL_testudata
+			T* userdata = static_cast<T*>(lua_touserdata(l, idx));
 			return *userdata;
+		}
+		else if constexpr (lua_table_acceptable_std_vector<T>) {
+			const auto len = static_cast<std::size_t>(lua_rawlen(l, idx));
+			if (len < 1)
+			{
+				return std::nullopt;
+			}
+
+			// table, ...
+			lua_pushnil(l);
+			// key, table, ...
+
+			T c;
+			c.reserve(len);
+
+			while (lua_next(l, idx))
+			{
+				// value, key, table, ...
+				auto v = to<typename T::value_type>(l, -1);
+				if (!v)
+				{
+					lua_pop(l, 2);
+					// table, ...
+					return std::nullopt;
+				}
+
+				c.push_back(v.value());
+				lua_pop(l, 1);
+				// key, table, ...
+			}
+			// table, ...
+			return c;
+		}
+		else if constexpr (lua_table_acceptable_std_unorderd_map<T>)
+		{
+			/*lua_len(l, idx);
+			auto _table_len = static_cast<std::size_t>(lua_tointeger(l, -1));
+			lua_pop(l);
+
+			if (_table_len < 1)
+			{
+				return std::nullopt;
+			}*/
+
+			T c;
+
+			// table, ...
+			lua_pushnil(l);
+			// nil, table, ...
+			while (lua_next(l, idx))
+			{
+				// value, key, table, ...
+				auto _optional_k = to<typename T::key_type>(l, -2);
+				auto _optional_v = to<typename T::mapped_type>(l, -1);
+				if (!_optional_k || !_optional_v)
+				{
+					lua_pop(l, 2);
+					// table, ...
+					return std::nullopt;
+				}
+				c.emplace(_optional_k.value(), _optional_v.value());
+				lua_pop(l, 1);
+				// key, table, ...
+			}
+			// table, ...
+			return c;
 		}
 		else {
 			return std::nullopt;
@@ -350,223 +667,6 @@ namespace lua_api
 	{
 		return to<T>(l, idx);
 	}
-
-	
-	/*
-	* std container => lua table
-	* 
-	*/
-	// template<typename t, size_t size> 
-	// static void push(const std::array<t, size>& c) noexcept
-	// {
-	// 	// ...
-	// 	basic::create_table(size, 0);
-	// 	// table, ...
-	// 	for (size_t idx = 0; idx < size; ++idx)
-	// 	{
-	// 		push(idx + 1);
-	// 		// key, table, ...
-	// 		push(c[idx]);
-	// 		// value, key, table, ...
-	// 		basic::set_table(-3);
-	// 		// table, ...
-	// 	}
-	// }
-	//
-	// template <typename t, typename allocator = std::allocator<t>> 
-	// static void push(const std::vector<t, allocator>& c) noexcept
-	// {
-	// 	// ...
-	// 	basic::create_table(c.size(), 0);
-	// 	// table, ...
-	// 	for (std::size_t idx = 0; idx < c.size(); ++idx)
-	// 	{
-	// 		push(idx + 1);
-	// 		// key, table, ...
-	// 		push(c[idx]);
-	// 		// value, key, table, ...
-	// 		basic::set_table(-3);
-	// 		// table, ...
-	// 	}
-	// }
-
-	// template<typename t, typename allocator = std::allocator<t>> 
-	// static void push(const std::deque<t, allocator>& c) noexcept
-	// {
-	// 	// ...
-	// 	basic::create_table(l, c.size(), 0);
-	// 	// table, ...
-	// 	for (std::size_t _index = 0; _index < c.size(); ++_index)
-	// 	{
-	// 		push(_index + 1);
-	// 		// key, table, ...
-	// 		push(c[_index]);
-	// 		// value, key, table, ...
-	// 		basic::set_table(-3);
-	// 		// table, ...
-	// 	}
-	// }
-	//
-	// template<typename t, typename allocator = std::allocator<t>>
-	// static void push(const std::list<t, allocator>& c) noexcept
-	// {
-	// 	// ...
-	// 	basic::create_table(c.size(), 0);
-	// 	// table, ...
-	// 	size_t _idx = 1;
-	// 	for (auto it = c.cbegin(); it != c.cend(); ++it, ++_idx)
-	// 	{
-	// 		push(_idx);
-	// 		// key, table, ...
-	// 		push(l, *it);
-	// 		// value, key, table, ...
-	// 		basic::set_table(-3);
-	// 		// table, ...
-	// 	}
-	// }
-	//
-	// template<typename t, typename allocator = std::allocator<t>>
-	// static void push(const std::forward_list<t, allocator>& c) noexcept
-	// {
-	// 	// ...
-	// 	basic::create_table();
-	// 	// table, ...
-	// 	size_t _index = 1;
-	// 	for (auto it = c.cbegin(); it != c.cend(); ++it, ++_index)
-	// 	{
-	// 		push(_index);
-	// 		// key, table, ...
-	// 		push(*it);
-	// 		// value, key, table, ...
-	// 		basic::set_table(-3);
-	// 		// table, ...
-	// 	}
-	// }
-	//
-	// template<typename t, typename predicate = std::less<t>, typename allocator = std::allocator<t>>
-	// static void push(const std::set<t, predicate, allocator>& c) noexcept
-	// {
-	// 	// ...
-	// 	basic::create_table(c.size(), 0);
-	// 	// table, ...
-	// 	std::size_t _index = 1;
-	// 	for (auto it = c.cbegin(); it != c.cend(); ++it, ++_index)
-	// 	{
-	// 		push(_index);
-	// 		// key, table, ...
-	// 		push(*it);
-	// 		// value, key, table, ...
-	// 		basic::set_table(-3);
-	// 		// table, ...
-	// 	}
-	// }
-	//
-	// template<typename t, typename predicate = std::less<t>, typename allocator = std::allocator<t>> 
-	// static void push(const std::multiset<t, predicate, allocator>& c) noexcept
-	// {
-	// 	// ...
-	// 	basic::create_table(c.size(), 0);
-	// 	// table, ...
-	// 	std::size_t _index = 1;
-	// 	for (auto _it = c.cbegin(); _it != c.cend(); ++_it, ++_index)
-	// 	{
-	// 		push(_index);
-	// 		// key, table, ...
-	// 		push(*_it);
-	// 		// value, key, table, ...
-	// 		basic::set_table(-3);
-	// 		// table, ...
-	// 	}
-	// }
-	//
-	// template<
-	// 	typename t,
-	// 	typename hasher = std::hash<t>,
-	// 	typename predicate = std::equal_to<t>,
-	// 	typename allocator = std::allocator<t>
-	// >
-	// static void push(const std::unordered_set<t, hasher, predicate, allocator>& c) noexcept
-	// {
-	// 	// ...
-	// 	basic::create_table(l, c.size(), 0);
-	// 	// table, ...
-	// 	std::size_t _index = 1;
-	// 	for (auto it = c.cbegin(); it != c.cend(); ++it, ++_index)
-	// 	{
-	// 		push(_index);
-	// 		// key, table, ...
-	// 		push(l, *it);
-	// 		// value, key, table, ...
-	// 		basic::set_table(-3);
-	// 		// table, ...
-	// 	}
-	// }
-	//
-	// template<
-	// 	typename t,
-	// 	typename hasher = std::hash<t>,
-	// 	typename predicate = std::equal_to<t>,
-	// 	typename allocator = std::allocator<t>
-	// >
-	// static void push(const std::unordered_multiset<t, hasher, predicate, allocator>& c) noexcept
-	// {
-	// 	// ...
-	// 	basic::create_table(l, c.size(), 0);
-	// 	// table, ...
-	// 	std::size_t _index = 1;
-	// 	for (auto _it = c.cbegin(); _it != c.cend(); ++_it, ++_index)
-	// 	{
-	// 		push(_index);
-	// 		// key, table, ...
-	// 		push(l, *_it);
-	// 		// value, key, table, ...
-	// 		basic::set_table(-3);
-	// 		// table, ...
-	// 	}
-	// }
-	//
-	// template<
-	// 	typename key_t, typename value_t,
-	// 	typename predicate = std::less<key_t>, 
-	// 	typename allocator = std::allocator<std::pair<const key_t, value_t>>
-	// > 
-	// static void push(const std::map<key_t, value_t, predicate, allocator>& c) noexcept
-	// {
-	// 	// ...
-	// 	basic::create_table(0, c.size());
-	// 	// table, ...
-	// 	for (const auto& pair : c)
-	// 	{
-	// 		push(pair.first);
-	// 		// key, table, ...
-	// 		push(pair.second);
-	// 		// value, key, table, ...
-	// 		basic::set_table(-3);
-	// 		// table, ...
-	// 	}
-	// }
-	//
-	// template<
-	// 	typename key_t, typename value_t, 
-	// 	typename hasher = std::hash<key_t>,
-	// 	typename predicate = std::equal_to<key_t>,
-	// 	typename allocator = std::allocator<std::pair<const key_t, value_t>>
-	// > 
-	// static void push(const std::unordered_map<key_t, value_t, hasher, predicate, allocator>& c) noexcept
-	// {
-	// 	// ...
-	// 	basic::create_table(0, c.size());
-	// 	// table, ...
-	// 	for (const auto& pair : c)
-	// 	{
-	// 		push(pair.first);
-	// 		// key, table, ...
-	// 		push(pair.second);
-	// 		// value, key, table, ...
-	// 		basic::set_table(-3);
-	// 		// table, ...
-	// 	}
-	// }
 	
 	// template<typename t, size_t size> 
 	// static bool to(std::int32_t index, std::array<t, size>& c) noexcept
@@ -604,46 +704,6 @@ namespace lua_api
 	// 	return true;
 	// }
 	//
-	// template <typename t> 
-	// static bool to(std::int32_t index, std::vector<t>& c) noexcept
-	// {
-	// 	// if (!basic::is_type(index, lua_t::table))
-	// 	// {
-	// 	// 	return false;
-	// 	// }
-	//
-	// 	if (!helper::is_table_vectorizable(index))
-	// 	{
-	// 		return false;
-	// 	}
-	// 	
-	// 	auto len = basic::raw_len(index);
-	// 	if (len < 1)
-	// 	{
-	// 		return true;
-	// 	}
-	//
-	// 	c.reserve(len);
-	// 	// table, ...
-	// 	basic::push_nil();
-	// 	// key, table, ...
-	// 	while (basic::table_next(index))
-	// 	{
-	// 		// value, key, table, ...
-	// 		auto _optional_v = to<t>(l, -1);
-	// 		if (!_optional_v.has_value())
-	// 		{
-	// 			basic::pop(2);
-	// 			// table, ...
-	// 			return false;
-	// 		}
-	// 		c.push_back(_optional_v.value());
-	// 		basic::pop(1);
-	// 		// key, table, ...
-	// 	}
-	// 	// table, ...
-	// 	return true;
-	// }
 
 	// template <typename t> 
 	// static bool to(std::int32_t index, std::deque<t>& c) noexcept
@@ -928,48 +988,23 @@ namespace lua_api
 	// 	return true;
 	// }
 	//
-	// template<
-	// 	typename key_t, typename value_t,
-	// 	typename hasher = std::hash<key_t>,
-	// 	typename predicate = std::equal_to<key_t>,
-	// 	typename allocator = std::allocator<std::pair<const key_t, value_t>>
-	// > 
-	// static bool to(std::int32_t index, std::unordered_map<key_t, value_t, hasher, predicate, allocator>& c) noexcept
-	// {
-	// 	// if (!basic::is_type(index, lua_t::table))
-	// 	// {
-	// 	// 	return false;
-	// 	// }
-	//
-	// 	auto _table_len = basic::raw_len(index);
-	// 	if (_table_len < 1)
-	// 	{
-	// 		return true;
-	// 	}
-	//
-	// 	// table, ...
-	// 	basic::push_nil();
-	// 	// nil, table, ...
-	// 	while (basic::table_next(index))
-	// 	{
-	// 		// value, key, table, ...
-	// 		auto _optional_k = to<key_t>(l, -2);
-	// 		auto _optional_v = to<value_t>(l, -1);
-	// 		if (!_optional_k.has_value() || !_optional_v.has_value())
-	// 		{
-	// 			basic::pop(2);
-	// 			// table, ...
-	// 			return false;
-	// 		}
-	// 		c.emplace(_optional_k.value(), _optional_v.value());
-	// 		basic::pop(1);
-	// 		// key, table, ...
-	// 	}
-	// 	// table, ...
-	// 	return true;
-	// }
+	 template<
+	 	typename key_t, typename value_t,
+	 	typename hasher = std::hash<key_t>,
+	 	typename predicate = std::equal_to<key_t>,
+	 	typename allocator = std::allocator<std::pair<const key_t, value_t>>
+	 > 
+	 static bool to(std::int32_t index, std::unordered_map<key_t, value_t, hasher, predicate, allocator>& c) noexcept
+	 {
+	 	// if (!basic::is_type(index, lua_t::table))
+	 	// {
+	 	// 	return false;
+	 	// }
+	
+	 	
+	 }
 
-	template<typename ...Args, std::size_t... N, bool bottom = true, std::size_t offset = 0>
+	template<typename... Args, std::size_t... N, bool bottom = true, std::size_t offset = 0>
 	static std::optional<std::tuple<Args...>> to_tuple_impl(lua_State* l, std::index_sequence<N...>)
 	{
 		if (lua_gettop(l) != sizeof...(Args))
