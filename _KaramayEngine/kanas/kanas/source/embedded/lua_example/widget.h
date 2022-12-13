@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <unordered_map>
+#include <string>
 
 #define LUA_EX_ENABLED 1
 
@@ -29,9 +30,13 @@ public:
         w.reset();
     }
 
-    static std::string to_string()
+    static std::string to_string(const std::shared_ptr<widget>& wid)
     {
-        return "widget";
+        if (!wid)
+        {
+            return "nil";
+        }
+        return std::to_string(wid->w);
     }
 
     static std::int32_t calc(std::int32_t& a, const std::int32_t& b)
@@ -43,8 +48,6 @@ public:
     {
         return xx;
     }
-
-    
 
     std::float_t replace(const std::shared_ptr<widget>& other)
     {

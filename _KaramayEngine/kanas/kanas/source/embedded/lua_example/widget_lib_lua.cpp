@@ -3,5 +3,5 @@
 
 LUA_LIB_EXPORTER(kanas)
 
-LUA_LIB_FUNCTION(kanas, log, &kanas::log)
-LUA_LIB_FUNCTION(kanas, logf, &kanas::logf)
+LUA_LIB_FUNCTION(kanas, clog, &kanas::log)
+LUA_LIB_FUNCTION(kanas, clogf, &kanas::logf)
