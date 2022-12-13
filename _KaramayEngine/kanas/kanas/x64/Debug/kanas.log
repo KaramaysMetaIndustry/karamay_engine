@@ -1,5 +1,0 @@
-﻿  widget_lib.cpp
-  widget_lib_lua.cpp
-G:\karamay_engine\_KaramayEngine\kanas\kanas\source\embedded\lua_example\widget_lib_lua.cpp(7,5): warning C4309: 'argument': truncation of constant value
-  Generating Code...
-  kanas.vcxproj -> G:\karamay_engine\_KaramayEngine\kanas\x64\Debug\kanas.exe
