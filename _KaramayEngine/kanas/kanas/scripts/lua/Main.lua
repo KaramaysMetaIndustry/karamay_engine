@@ -23,7 +23,7 @@ test_oda = function()
     -- kanas.log("w.calc : " .. w.calc(11, 12))
     -- kanas.log("w.calc : " .. w.calc(23, 2))
     -- kanas.log("w.calc : " .. w.calc(27, 22))
-    
+
     print(w)
     
     kanas.clog("replace : " .. w.replace(w, w))
