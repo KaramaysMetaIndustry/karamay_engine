@@ -64,109 +64,6 @@ namespace lua_api
 		gc_gen = LUA_GCGEN //Changes the collector to generational mode with the given parameters(see ��2.5.2).Returns the previous mode(LUA_GCGEN or LUA_GCINC).
 	};
 
-	/*
-	* Ensures that the stack has space for at least n extra elements,
-	* that is, that you can safely push up to n values into it.
-	* It returns false if it cannot fulfill the request,
-	* either because it would cause the stack to be greater than a fixed maximum size
-	* (typically at least several thousand elements) or
-	* because it cannot allocate memory for the extra space.
-	* This function never shrinks the stack; if the stack already has space for the extra elements,
-	* it is left unchanged.
-	*/
-
-	/*
-	* Close all active to-be-closed variables in the main thread,
-	* release all objects in the given Lua state (calling the corresponding garbage-collection metamethods, if any),
-	* and frees all dynamic memory used by this state.
-	* On several platforms, you may not need to call this function,
-	* because all resources are naturally released when the host program ends.
-	* On the other hand, long-running programs that create multiple states,
-	* such as daemons or web servers, will probably need to close states as soon as they are not needed.
-	*/
-
-	/*
-	* Compares two Lua values.
-	* Returns 1 if the value at index index1 satisfies op when compared with the value at index index2,
-	* following the semantics of the corresponding Lua operator (that is, it may call metamethods).
-	* Otherwise, returns 0. Also returns 0 if any of the indices is not valid.
-	*/
-
-	/*
-	* Concatenates the n values at the top of the stack, pops them, and leaves the result on the top.
-	* If n is 1, the result is the single value on the stack (that is, the function does nothing);
-	* if n is 0, the result is the empty string.
-	* Concatenation is performed following the usual semantics of Lua.
-	*/
-
-	/*
-	* Copies the element at index src_index into the valid index dst_index, replacing the value at that position.
-	* Values at other positions are not affected.
-	*/
-
-	/*
-	* Dumps a function as a binary chunk.
-	* Receives a Lua function on the top of the stack and produces a binary chunk that,
-	* if loaded again, results in a function equivalent to the one dumped.
-	* As it produces parts of the chunk,
-	* lua_dump calls function writer (see lua_Writer) with the given data to write them.
-	* If strip is true, the binary representation may not include all debug information about the function, to save space.
-	* The value returned is the error code returned by the last call to the writer;
-	* 0 means no errors.
-	* This function does not pop the Lua function from the stack.
-	*/
-
-	/*
-	* Raises a Lua error, using the value on the top of the stack as the error object.
-	* This function does a long jump, and therefore never returns (see luaL_error).
-	*/
-
-	/*
-	* Returns the index of the top element in the stack.
-	* Because indices start at 1, this result is equal to the number of elements in the stack; in particular, 0 means an empty stack.
-	* @return stack top index (1 ~ N)
-	*/
-
-	/*
-	* Accepts any index, or 0, and sets the stack top to this index.
-	* If the new top is greater than the old one, then the new elements are filled with nil.
-	* If index is 0, then all stack elements are removed.
-	* This function can run arbitrary code when removing an index marked as to-be-closed from the stack.
-	*/
-
-	/*
-	* Pops n elements from the stack. It is implemented as a macro over lua_settop.
-	*/
-
-	/*
-	* Removes the element at the given valid index, 
-	* shifting down the elements above this index to fill the gap. 
-	* This function cannot be called with a pseudo-index, 
-	* because a pseudo-index is not an actual stack position.
-	*/
-
-	/*
-	* Moves the top element into the given valid index without shifting any element 
-	* (therefore replacing the value at that given index),
-	* and then pops the top element.
-	*/
-
-	/*
-	* Rotates the stack elements between the valid index idx and the top of the stack. 
-	* The elements are rotated n positions in the direction of the top, for a positive n, or -n positions 
-	* in the direction of the bottom, for a negative n. 
-	* The absolute value of n must not be greater than the size of the slice being rotated. 
-	* This function cannot be called with a pseudo-index, because a pseudo-index is not an actual stack position.
-	*/
-
-	/*
-	* Returns the type of the value in the given valid index, 
-	* or LUA_TNONE for a non-valid but acceptable index. 
-	* The types returned by lua_type are coded by the following constants defined in lua.h: 
-	* NIL, THREAD, 
-	* NUMBER, BOOLEAN,  STRING,  TABLE, 
-	* FUNCTION,  USERDATA, LIGHTUSERDATA
-	*/
 	static lua_t type(lua_State* l, std::int32_t idx)
 	{
 		return static_cast<lua_t>(lua_type(l, idx));
@@ -227,29 +124,79 @@ namespace lua_api
 	template<typename T, std::size_t size>
 	constexpr bool is_array_v<std::array<T, size>> = true;
 
+
 	template<typename T>
 	constexpr bool is_vector_v = false;
+
+	template<typename T>
+	constexpr bool is_vector_v<std::vector<T>> = true;
 
 	template<typename T, typename U>
 	constexpr bool is_vector_v<std::vector<T, U>> = true;
 
+
 	template<typename T>
 	constexpr bool is_deque_v = false;
+
+	template<typename T>
+	constexpr bool is_deque_v<std::deque<T>> = true;
 
 	template<typename T, typename U>
 	constexpr bool is_deque_v<std::deque<T, U>> = true;
 
+
 	template<typename T>
 	constexpr bool is_list_v = false;
+
+	template<typename T>
+	constexpr bool is_list_v<std::list<T>> = true;
 
 	template<typename T, typename U>
 	constexpr bool is_list_v<std::list<T, U>> = true;
 
+
 	template<typename T>
 	constexpr bool is_forward_list_v = false;
 
+	template<typename T>
+	constexpr bool is_forward_list_v<std::forward_list<T>> = true;
+
 	template<typename T, typename U>
 	constexpr bool is_forward_list_v<std::forward_list<T, U>> = true;
+
+
+	template<typename T>
+	constexpr bool is_stack_v = false;
+
+	template<typename T>
+	constexpr bool is_stack_v<std::stack<T>> = true;
+
+	template<typename T, typename U>
+	constexpr bool is_stack_v<std::stack<T, U>> = true;
+
+
+	template<typename T>
+	constexpr bool is_queue_v = false;
+
+	template<typename T>
+	constexpr bool is_queue_v<std::queue<T>> = true;
+
+	template<typename T, typename U>
+	constexpr bool is_queue_v<std::queue<T, U>> = true;
+
+
+	template<typename T>
+	constexpr bool is_priority_queue_v = false;
+
+	template<typename T>
+	constexpr bool is_priority_queue_v<std::priority_queue<T>> = true;
+
+	template<typename T, typename U>
+	constexpr bool is_priority_queue_v<std::priority_queue<T, U>> = true;
+
+	template<typename T, typename U, typename W>
+	constexpr bool is_priority_queue_v<std::priority_queue<T, U, W>> = true;
+
 
 	template<typename T>
 	constexpr bool is_set_v = false;
@@ -257,11 +204,27 @@ namespace lua_api
 	template<typename T>
 	constexpr bool is_set_v<std::set<T>> = true;
 
+	template<typename T, typename U>
+	constexpr bool is_set_v<std::set<T, U>> = true;
+
+	template<typename T, typename U, typename W>
+	constexpr bool is_set_v<std::set<T, U, W>> = true;
+
+
 	template<typename T>
 	constexpr bool is_unordered_set_v = false;
 
 	template<typename T>
 	constexpr bool is_unordered_set_v<std::unordered_set<T>> = true;
+
+	template<typename T, typename U>
+	constexpr bool is_unordered_set_v<std::unordered_set<T, U>> = true;
+
+	template<typename T, typename U, typename W>
+	constexpr bool is_unordered_set_v<std::unordered_set<T, U, W>> = true;
+
+	template<typename T, typename U, typename W, typename X>
+	constexpr bool is_unordered_set_v<std::unordered_set<T, U, W, X>> = true;
 
 
 	template<typename T>
@@ -270,12 +233,27 @@ namespace lua_api
 	template<typename T>
 	constexpr bool is_multiset_v<std::multiset<T>> = true;
 
-	
+	template<typename T, typename U>
+	constexpr bool is_multiset_v<std::multiset<T, U>> = true;
+
+	template<typename T, typename U, typename W>
+	constexpr bool is_multiset_v<std::multiset<T, U, W>> = true;
+
+
 	template<typename T>
 	constexpr bool is_unordered_multiset_v = false;
 
 	template<typename T>
 	constexpr bool is_unordered_multiset_v<std::unordered_multiset<T>> = true;
+
+	template<typename T, typename U>
+	constexpr bool is_unordered_multiset_v<std::unordered_multiset<T, U>> = true;
+
+	template<typename T, typename U, typename W>
+	constexpr bool is_unordered_multiset_v<std::unordered_multiset<T, U, W>> = true;
+
+	template<typename T, typename U, typename W, typename X>
+	constexpr bool is_unordered_multiset_v<std::unordered_multiset<T, U, W, X>> = true;
 
 
 	template<typename T>
@@ -284,11 +262,25 @@ namespace lua_api
 	template<typename T, typename U>
 	constexpr bool is_map_v<std::map<T, U>> = true;
 
+	template<typename T, typename U, typename W>
+	constexpr bool is_map_v<std::map<T, U, W>> = true;
+
+	template<typename T, typename U, typename W, typename X>
+	constexpr bool is_map_v<std::map<T, U, W, X>> = true;
+
+
 	template<typename T>
 	constexpr bool is_multimap_v = false;
 
 	template<typename T, typename U>
 	constexpr bool is_multimap_v<std::multimap<T, U>> = true;
+
+	template<typename T, typename U, typename W>
+	constexpr bool is_multimap_v<std::multimap<T, U, W>> = true;
+
+	template<typename T, typename U, typename W, typename X>
+	constexpr bool is_multimap_v<std::multimap<T, U, W, X>> = true;
+
 
 	template<typename T>
 	constexpr bool is_unordered_map_v = false;
@@ -296,11 +288,24 @@ namespace lua_api
 	template<typename T, typename U>
 	constexpr bool is_unordered_map_v<std::unordered_map<T, U>> = true;
 
+	template<typename T, typename U, typename W>
+	constexpr bool is_unordered_map_v<std::unordered_map<T, U, W>> = true;
+
+	template<typename T, typename U, typename W, typename X>
+	constexpr bool is_unordered_map_v<std::unordered_map<T, U, W, X>> = true;
+
+
 	template<typename T>
 	constexpr bool is_unordered_multimap_v = false;
 
 	template<typename T, typename U>
 	constexpr bool is_unordered_multimap_v<std::unordered_multimap<T, U>> = true;
+
+	template<typename T, typename U, typename W>
+	constexpr bool is_unordered_multimap_v<std::unordered_multimap<T, U, W>> = true;
+
+	template<typename T, typename U, typename W, typename X>
+	constexpr bool is_unordered_multimap_v<std::unordered_multimap<T, U, W, X>> = true;
 
 
 	template<typename T>
@@ -311,6 +316,21 @@ namespace lua_api
 	template<typename T>
 	concept lua_table_acceptable_std_vector =
 		is_vector_v<T> &&
+		lua_t_acceptable_non_container<typename T::value_type>;
+
+	template<typename T>
+	concept lua_table_acceptable_std_stack =
+		is_stack_v<T> &&
+		lua_t_acceptable_non_container<typename T::value_type>;
+
+	template<typename T>
+	concept lua_table_acceptable_std_queue =
+		is_queue_v<T> &&
+		lua_t_acceptable_non_container<typename T::value_type>;
+
+	template<typename T>
+	concept lua_table_acceptable_std_priority_queue =
+		is_priority_queue_v<T> &&
 		lua_t_acceptable_non_container<typename T::value_type>;
 
 	template<typename T>
@@ -372,11 +392,15 @@ namespace lua_api
 		lua_t_acceptable_non_container<typename T::key_type> &&
 		lua_t_acceptable_non_container<typename T::mapped_type>;
 
+
 	template<typename T>
 	concept lua_t_acceptable = 
 		lua_t_acceptable_non_container<T> or 
 		lua_table_acceptable_std_array<T> or
 		lua_table_acceptable_std_vector<T> or
+		lua_table_acceptable_std_stack<T> or
+		lua_table_acceptable_std_queue<T> or
+		lua_table_acceptable_std_priority_queue<T> or
 		lua_table_acceptable_std_deque<T> or
 		lua_table_acceptable_std_list<T> or
 		lua_table_acceptable_std_forward_list<T> or
@@ -400,7 +424,6 @@ namespace lua_api
 		static lua_userdata_meta_info ref;
 
 	};
-
 
 	template<lua_t_acceptable T>
 	void push(lua_State* l, T&& v)
@@ -436,11 +459,6 @@ namespace lua_api
 			
 			luaL_setmetatable(l, lua_userdata_meta_info<std::remove_cvref_t<T>>::ref.get_type_name());
 		}
-	}
-
-	static void push_table(lua_State* l)
-	{
-		lua_pushglobaltable(l);
 	}
 
 	template<typename ...Args>
@@ -686,7 +704,7 @@ namespace lua_api
 		{
 			return lua_isuserdata(l, idx);
 		}
-		else if constexpr (lua_table_acceptable_std_array)
+		else if constexpr (lua_table_acceptable_std_array<T>)
 		{
 			return lua_istable(l, idx);
 		}

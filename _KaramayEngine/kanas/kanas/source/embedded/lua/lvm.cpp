@@ -22,8 +22,8 @@ void lua_vm::run() noexcept
 	
 	_load_libs();
 
-	do_file("G:\\karamay_engine\\_KaramayEngine\\kanas\\kanas\\scripts\\lua\\Main.lua");
-	//do_file("E:\\PrivateRepos\\karamay_engine\\_KaramayEngine\\kanas\\kanas\\scripts\\lua\\Main.lua");
+	//do_file("G:\\karamay_engine\\_KaramayEngine\\kanas\\kanas\\scripts\\lua\\Main.lua");
+	do_file("E:\\PrivateRepos\\karamay_engine\\_KaramayEngine\\kanas\\kanas\\scripts\\lua\\Main.lua");
 }
 
 bool lua_vm::do_file(const std::string& path)

@@ -29,6 +29,11 @@ public:
         w.reset();
     }
 
+    static std::string to_string()
+    {
+        return "widget";
+    }
+
     static std::int32_t calc(std::int32_t& a, const std::int32_t& b)
     {
         return a * b;
@@ -38,6 +43,8 @@ public:
     {
         return xx;
     }
+
+    
 
     std::float_t replace(const std::shared_ptr<widget>& other)
     {
