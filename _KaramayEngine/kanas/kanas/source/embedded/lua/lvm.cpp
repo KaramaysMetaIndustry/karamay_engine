@@ -44,7 +44,6 @@ bool lua_vm::do_file(const std::string& path)
 
 	if (_result != 0)
 	{
-		//printf("%s", lua_tostring(state_, -1));
 		return false;
 	}
 
@@ -53,36 +52,10 @@ bool lua_vm::do_file(const std::string& path)
 
 void lua_vm::_load_class(const std::string& class_name, const luaL_Reg* funcs)
 {
-	//const auto _clazz_name = class_name + "_clazz";
-
-	//// stack : null
-	//luaL_newmetatable(state_, _clazz_name.c_str());
-	//// stack : metatable
-	//lua_pushvalue(state_, -1);
-	//// stack : metatable, metatable
-	//lua_setfield(state_, -2, "__index");
-	//// stack : metatable
-	//luaL_setfuncs(state_, funcs, 0);
-	//lua_pop(state_, 1);
-	//// stack : null
-
-	//lua_newtable(state_);
-	//// stack : table
-	//luaL_setmetatable(state_, _clazz_name.c_str());
-	//lua_setglobal(state_, class_name.c_str());
-	//// stack : null
-
 	luaL_getmetatable(state_, class_name.c_str());
 	if (lua_isnil(state_, -1))
 	{
 		luaL_newmetatable(state_, class_name.c_str());
-
-		/*for (int i = 0; st[i].func; i++)
-		{
-			lua_pushstring(L, st[i].name);
-			lua_pushcfunction(L, st[i].func);
-			lua_rawset(L, -3);
-		}*/
 		luaL_setfuncs(state_, funcs, 0);
 	}
 	lua_setglobal(state_, class_name.c_str());
@@ -119,10 +92,21 @@ void lua_vm::_load_libs()
 		luaL_requiref(state_, lib->name.c_str(), lib->open_func, 0);
 		lua_pop(state_, 1);
 	}
+
+	std::vector<std::string> check_functions = {};
+	std::vector<std::string> enusure_functions = {};
 	
 	std::vector<luaL_Reg> raw_funcs;
 	for (auto exporter : type_exporters)
 	{
+		// check funcs
+
+		if (exporter->funcs.find("__gc") == exporter->funcs.cend())
+		{
+			std::cerr << "warning !!! type : " << exporter->type_name << " has no __gc func" << std::endl;
+			continue;
+		}
+
 		raw_funcs.clear();
 
 		for (const auto& pair : exporter->funcs)

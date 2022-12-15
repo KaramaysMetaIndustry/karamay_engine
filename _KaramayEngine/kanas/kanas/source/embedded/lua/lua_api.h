@@ -1315,6 +1315,30 @@ namespace lua_api
 		std::function<Ret(Ty*, Args...)> callable;
 	};
 	
+
+	//template<typename... ParamTypes, typename... RetTypes>
+	//static std::tuple<RetTypes...> call_lua_function(lua_State* l, const std::string& func_name, ParamTypes&& ...args)
+	//{
+	//	// lua加载字符，生成lua全局函数LuaCode_MyAdd
+	//	//luaL_dostring(l, "function LuaCode_MyAdd (x,y) return x+y end");
+	//	// lua栈和压入数据
+	//	lua_getglobal(l, func_name.c_str());
+
+	//	(push(l, args), ...);
+	//	//lua_pushinteger(l, 100);
+	//	//lua_pushinteger(l, 200);
+	//	
+	//	// C调用lua中的函数，2个传入参数，1个返回参数
+	//	lua_call(l, sizeof...(ParamTypes), sizeof...(RetTypes));
+
+	//	auto results = to_tuple<RetTypes...>(l);
+
+	//	//cout << "lua function ret:" << lua_tointeger(lua, -1) << endl;
+	//	lua_pop(l, sizeof...(RetTypes));
+
+	//	return results;
+	//}
+
 }
 
 #endif

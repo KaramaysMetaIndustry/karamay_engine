@@ -51,7 +51,6 @@ public:
 
     std::float_t replace(const std::shared_ptr<widget>& other)
     {
-        //w = other->get_v() + 8.77f;
         return w;
     }
 
