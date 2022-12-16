@@ -44,6 +44,9 @@ bool lua_vm::do_file(const std::string& path)
 
 	if (_result != 0)
 	{
+		const char* error = lua_tostring(state_, -1);//´òÓ¡´íÎó½á¹û
+		printf("%s", error);
+		lua_pop(state_, 1); 
 		return false;
 	}
 

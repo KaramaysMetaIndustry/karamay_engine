@@ -6,9 +6,14 @@
 #include <unordered_map>
 #include <string>
 
-#define LUA_EX_ENABLED 1
+class A
+{
+public:
 
-class widget
+    virtual void test() = 0;
+};
+
+class widget : public A
 {
 
     std::float_t w = 0.5f;
@@ -16,6 +21,18 @@ class widget
     std::shared_ptr<widget> xx;
     
 public:
+
+    float public_v = 1.0f;
+
+    virtual void test() override
+    {
+    }
+
+    void set_public_v(float v)
+    {
+        public_v = v;
+    }
+
     widget();
 
     ~widget();
@@ -54,15 +71,19 @@ public:
         return w;
     }
 
-    std::unordered_map<std::string, std::int32_t> values;
-
     void set_values(const std::unordered_map<std::string, std::int32_t>& vls)
     {
         values = vls;
     }
 
-#if LUA_EX_ENABLED
+    virtual void read()
+    {
 
-#endif
-    
+    }
+
+private:
+
+    std::unordered_map<std::string, std::int32_t> values;
+
 };
+

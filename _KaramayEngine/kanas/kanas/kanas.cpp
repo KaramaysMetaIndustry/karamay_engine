@@ -9,7 +9,6 @@ int main()
     lua_vm lvm;
     lvm.initialize();
     lvm.run();
-
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

@@ -3,11 +3,15 @@
 
 LUA_TYPE_EXPORTER(widget)
 
-LUA_TYPE_STATIC_FUNCTION(widget, new, &widget::new_lua)
-LUA_TYPE_STATIC_FUNCTION(widget, __gc, &widget::wrap_collector)
-LUA_TYPE_STATIC_FUNCTION(widget, __tostring, &widget::to_string)
-LUA_TYPE_STATIC_FUNCTION(widget, calc, &widget::calc)
+LUA_TYPE_PUBLIC_CPP_STATIC_FUNCTION(widget, new, &widget::new_lua)
+LUA_TYPE_PUBLIC_CPP_STATIC_FUNCTION(widget, __gc, &widget::wrap_collector)
+LUA_TYPE_PUBLIC_CPP_STATIC_FUNCTION(widget, __tostring, &widget::to_string)
+LUA_TYPE_PUBLIC_CPP_STATIC_FUNCTION(widget, calc, &widget::calc)
 
-LUA_TYPE_MEMBER_FUNCTION(widget, get_v, &widget::get_v)
-LUA_TYPE_MEMBER_FUNCTION(widget, replace, &widget::replace)
-LUA_TYPE_MEMBER_FUNCTION(widget, set_values, &widget::set_values)
+LUA_TYPE_PUBLIC_CPP_MEMBER_FUNCTION(widget, get_v, &widget::get_v)
+LUA_TYPE_PUBLIC_CPP_MEMBER_FUNCTION(widget, replace, &widget::replace)
+LUA_TYPE_PUBLIC_CPP_MEMBER_FUNCTION(widget, set_values, &widget::set_values)
+LUA_TYPE_PUBLIC_CPP_MEMBER_FUNCTION(widget, public_v, &widget::set_public_v)
+LUA_TYPE_PUBLIC_CPP_MEMBER_FUNCTION(widget, test, &widget::test)
+
+LUA_TYPE_CPP_PUBLIC_PROPERTY(&widget::public_v)

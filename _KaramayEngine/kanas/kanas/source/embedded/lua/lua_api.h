@@ -850,6 +850,7 @@ namespace lua_api
 		return to<T>(l, idx);
 	}
 	
+
 	// template<typename t, size_t size> 
 	// static bool to(std::int32_t index, std::array<t, size>& c) noexcept
 	// {
@@ -1338,7 +1339,6 @@ namespace lua_api
 
 	//	return results;
 	//}
-
 }
 
 #endif
