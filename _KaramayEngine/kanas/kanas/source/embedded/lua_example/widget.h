@@ -6,14 +6,8 @@
 #include <unordered_map>
 #include <string>
 
-class A
-{
-public:
 
-    virtual void test() = 0;
-};
-
-class widget : public A
+class widget
 {
 
     std::float_t w = 0.5f;
@@ -23,15 +17,6 @@ class widget : public A
 public:
 
     float public_v = 1.0f;
-
-    virtual void test() override
-    {
-    }
-
-    void set_public_v(float v)
-    {
-        public_v = v;
-    }
 
     widget();
 
@@ -49,10 +34,6 @@ public:
 
     static std::string to_string(const std::shared_ptr<widget>& wid)
     {
-        if (!wid)
-        {
-            return "nil";
-        }
         return std::to_string(wid->w);
     }
 
@@ -74,11 +55,6 @@ public:
     void set_values(const std::unordered_map<std::string, std::int32_t>& vls)
     {
         values = vls;
-    }
-
-    virtual void read()
-    {
-
     }
 
 private:

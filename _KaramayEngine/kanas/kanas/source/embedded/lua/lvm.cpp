@@ -22,8 +22,8 @@ void lua_vm::run() noexcept
 	
 	_load_libs();
 
-	do_file("G:\\karamay_engine\\_KaramayEngine\\kanas\\kanas\\scripts\\lua\\Main.lua");
-	//do_file("E:\\PrivateRepos\\karamay_engine\\_KaramayEngine\\kanas\\kanas\\scripts\\lua\\Main.lua");
+	//do_file("G:\\karamay_engine\\_KaramayEngine\\kanas\\kanas\\scripts\\lua\\Main.lua");
+	do_file("E:\\PrivateRepos\\karamay_engine\\_KaramayEngine\\kanas\\kanas\\scripts\\lua\\Main.lua");
 }
 
 bool lua_vm::do_file(const std::string& path)
@@ -64,24 +64,29 @@ void lua_vm::_load_class(const std::string& class_name, const luaL_Reg* funcs)
 	lua_setglobal(state_, class_name.c_str());
 }
 
-static int wrap_index_event(lua_State* L)
+static int index_event(lua_State* l)
 {
-	if (!lua_isuserdata(L, 1))
+	if (!lua_isuserdata(l, 1))
 	{
-		lua_error(L);
+		lua_error(l);
 		return 0;
 	}
 
-	if (lua_getmetatable(L, 1))
+	if (lua_getmetatable(l, 1))
 	{
-		lua_pushvalue(L, 2);
-		lua_rawget(L, -2);
-		if (lua_isfunction(L, -1))
+		lua_pushvalue(l, 2);
+		lua_rawget(l, -2);
+		if (lua_isfunction(l, -1))
+		{
 			return 1;
-		else
-			lua_error(L);
+		}
 	}
 
+	return 0;
+}
+
+static int new_index_event(lua_State* L)
+{
 	return 0;
 }
 
@@ -116,7 +121,8 @@ void lua_vm::_load_libs()
 		{
 			raw_funcs.push_back({ pair.first.c_str(), pair.second });
 		}
-		raw_funcs.push_back({ "__index", wrap_index_event });
+		raw_funcs.push_back({ "__index", index_event });
+		raw_funcs.push_back({"__newindex", new_index_event});
 		raw_funcs.push_back({ nullptr, nullptr });
 
 		_load_class(exporter->type_name, raw_funcs.data());

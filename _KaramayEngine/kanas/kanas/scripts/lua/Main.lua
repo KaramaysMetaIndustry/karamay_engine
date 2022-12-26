@@ -1,19 +1,75 @@
 
 kanas = require('kanas')
 
---widget.__index = function(t, v)
---    print("set v")
---end
-
-TestMetaParent = 
+Class1 = 
 {
-    
+    set_point = function(t, v)
+        print("this is set_point, " .. v)
+    end
+}
+
+Class2 =
+{
+    set_point = function(t, v)
+        print("this is set_point 2, " .. v)
+    end
 }
 
 
-TestMeta = {
+ClassExample = {
 
-    super = TestMetaParent,
+    -- table[key]  
+    -- param : table, key
+    -- return : one result 
+    __index = function(t, k)
+        
+        local mt = getmetatable(t)
+
+        if mt == nil then
+            return
+        end
+        
+        local method = mt.functions[k]
+        if method ~= nil then
+            return method
+        end
+
+        local getter = mt.getters[k]
+
+        if getter ~= nil and type(getter) == "function" then
+            return getter(t)
+        end
+
+        -- recur supers
+        for _, v in ipairs(mt.supers) do
+            local member = v[k]
+
+            if member ~= nil then
+                return member
+            end
+        end
+        
+        return nil
+    end,
+
+    -- table[key] = value
+    -- params : t, k, v
+    __newindex = function(t, k, v)
+
+        local mt = getmetatable(t)
+        local setter = mt.setters[k]
+
+        if setter ~= nil and type(setter) == "function" then
+            setter(t, v)
+        end
+        
+    end,
+    
+    supers =
+    {
+        [1] = Class1,
+        [2] = Class2
+    },
     
     getters = 
     {
@@ -30,58 +86,38 @@ TestMeta = {
         end
     },
     
-    __index = function(t, k)
-
-        local getter = TestMeta.getters[k]
-
-        if getter ~= nil and type(getter) == "function" then
-            return getter(t)
+    functions =
+    {
+        set_values = function(t, v)
+            print("set_values : " .. v)
         end
-
-        return TestMeta.getters[k](t)
-
-    end,
-
-    __newindex = function(t, k, v)
-        TestMeta.setters[k](t, v)
-    end
-
+    },
+    
 }
 
-
-frame = 
+ClassExampleMeta =
 {
-    super = nil,
-
-    test = function(self, v)
-        return a;
+    __call = function(self)
+        t = {}
+        setmetatable(t, ClassExample)
+        return t
     end
-
 }
 
-
-widget = 
-{
-    super = frame,
-
-    test = function(self, v)
-        return 1;
-    end
-
-}
-
-
+setmetatable(ClassExample, ClassExampleMeta)
 
 test_oda = function()
     
-    local t = {}
-    setmetatable(t, TestMeta)
+    --local t = {}
+    --setmetatable(t, ClassExample)
 
-    t.public_v = 1
+    local pipeline = ClassExample()
+
+    -- pipeline:set_point(0.8)
+    -- pipeline:set_values("sss")
     
-    print(t.public_v)
-    
-    
+    pipeline:set_values("aa")
+    print(pipeline.a)
     --local w = widget.new()
     
     -- local t = { ["aa"] = 112, ["wa"] = 11232, ["wwx"] = 45}
