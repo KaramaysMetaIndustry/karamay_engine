@@ -1,29 +1,41 @@
 #include "lvm.h"
 
-std::vector<lua_exporter*> lua_vm::type_exporters = {};
-std::vector<lua_lib*> lua_vm::libs = {};
+std::vector<lua_exporter*> lua_vm::type_exporters_ = {};
+std::vector<lua_lib*> lua_vm::libs_ = {};
 
-bool lua_vm::initialize() noexcept
+lua_vm::lua_vm()
 {
-	std::cout << "lvm starts to initialize." << std::endl;
+	state_ = luaL_newstate();
+}
 
-	std::cout << "lvm has initialized." << std::endl;
+lua_vm::~lua_vm()
+{
+	if(!state_)
+	{
+		lua_close(state_);
+	}
+}
+
+bool lua_vm::init() noexcept
+{
+	if (!state_)
+	{
+		return false;
+	}
+	
+	load_libs();
+	
+	for(const auto& preload_file : preload_files)
+	{
+		do_file(preload_file);
+	}
+	
 	return true;
 }
 
-void lua_vm::run() noexcept
+void lua_vm::tick() noexcept
 {
-	state_ = luaL_newstate();
 	
-	if (!state_)
-	{
-		return;
-	}
-	
-	_load_libs();
-
-	//do_file("G:\\karamay_engine\\_KaramayEngine\\kanas\\kanas\\scripts\\lua\\Main.lua");
-	do_file("E:\\PrivateRepos\\karamay_engine\\_KaramayEngine\\kanas\\kanas\\scripts\\lua\\Main.lua");
 }
 
 bool lua_vm::do_file(const std::string& path)
@@ -31,13 +43,13 @@ bool lua_vm::do_file(const std::string& path)
 	int _result = luaL_dofile(state_, path.c_str());
 	switch (_result)
 	{
-	case LUA_OK: std::cout << "no errors." << std::endl; break;
-	case LUA_ERRRUN: std::cout << "a runtime error." << std::endl; break;
-	case LUA_ERRMEM: std::cout << "memory allocation error.For such errors, Lua does not call the message handler." << std::endl; break;
-	case LUA_ERRERR: std::cout << "error while running the message handler." << std::endl; break;
-	case LUA_ERRSYNTAX: std::cout << "syntax error during precompilation." << std::endl; break;
-	case LUA_YIELD: std::cout << "the thread(coroutine) yields." << std::endl; break;
-	case LUA_ERRFILE: std::cout << "a file - related error; e.g., it cannot open or read the file." << std::endl; break;
+	case LUA_OK: std::clog << "no errors." << std::endl; break;
+	case LUA_ERRRUN: std::cerr << "a runtime error." << std::endl; break;
+	case LUA_ERRMEM: std::cerr << "memory allocation error.For such errors, Lua does not call the message handler." << std::endl; break;
+	case LUA_ERRERR: std::cerr << "error while running the message handler." << std::endl; break;
+	case LUA_ERRSYNTAX: std::cerr << "syntax error during precompilation." << std::endl; break;
+	case LUA_YIELD: std::cerr << "the thread(coroutine) yields." << std::endl; break;
+	case LUA_ERRFILE: std::cerr << "a file - related error; e.g., it cannot open or read the file." << std::endl; break;
 	default:
 		break;
 	}
@@ -53,7 +65,7 @@ bool lua_vm::do_file(const std::string& path)
 	return true;
 }
 
-void lua_vm::_load_class(const std::string& class_name, const luaL_Reg* funcs)
+void lua_vm::load_class(const std::string& class_name, const luaL_Reg* funcs)
 {
 	luaL_getmetatable(state_, class_name.c_str());
 	if (lua_isnil(state_, -1))
@@ -90,11 +102,11 @@ static int new_index_event(lua_State* L)
 	return 0;
 }
 
-void lua_vm::_load_libs()
+void lua_vm::load_libs()
 {
 	luaL_openlibs(state_);
 
-	for(auto lib : libs)
+	for(const auto lib : libs_)
 	{
 		lib->lib_funcs->push_back({ nullptr, nullptr });
 		luaL_requiref(state_, lib->name.c_str(), lib->open_func, 0);
@@ -102,14 +114,11 @@ void lua_vm::_load_libs()
 	}
 
 	std::vector<std::string> check_functions = {};
-	std::vector<std::string> enusure_functions = {};
 	
 	std::vector<luaL_Reg> raw_funcs;
-	for (auto exporter : type_exporters)
+	for (const auto exporter : type_exporters_)
 	{
-		// check funcs
-
-		if (exporter->funcs.find("__gc") == exporter->funcs.cend())
+		if (!exporter->funcs.contains("__gc"))
 		{
 			std::cerr << "warning !!! type : " << exporter->type_name << " has no __gc func" << std::endl;
 			continue;
@@ -122,19 +131,19 @@ void lua_vm::_load_libs()
 			raw_funcs.push_back({ pair.first.c_str(), pair.second });
 		}
 		raw_funcs.push_back({ "__index", index_event });
-		raw_funcs.push_back({"__newindex", new_index_event});
+		raw_funcs.push_back({ "__newindex", new_index_event });
 		raw_funcs.push_back({ nullptr, nullptr });
 
-		_load_class(exporter->type_name, raw_funcs.data());
+		load_class(exporter->type_name, raw_funcs.data());
 	}
 }
 
 void lua_vm::register_type_exporter(lua_exporter* exporter)
 {
-	type_exporters.push_back(exporter);
+	type_exporters_.push_back(exporter);
 }
 
 void lua_vm::register_lib(lua_lib* lib)
 {
-	libs.push_back(lib);
+	libs_.push_back(lib);
 }

@@ -85,11 +85,11 @@ bool kanas::core::render_pass::allocate(const std::string& name,
     VkRenderPassCreateInfo renderPassCreateInfo{};
     renderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
     renderPassCreateInfo.flags = {};
-    renderPassCreateInfo.attachmentCount = _rawAttachmentDescriptions.size();
+    renderPassCreateInfo.attachmentCount = static_cast<std::uint32_t>(_rawAttachmentDescriptions.size());
     renderPassCreateInfo.pAttachments = _rawAttachmentDescriptions.data();
-    renderPassCreateInfo.subpassCount = _rawSubpassDescriptions.size();
+    renderPassCreateInfo.subpassCount = static_cast<std::uint32_t>(_rawSubpassDescriptions.size());
     renderPassCreateInfo.pSubpasses = _rawSubpassDescriptions.data();
-    renderPassCreateInfo.dependencyCount = _rawSubpassDependencies.size();
+    renderPassCreateInfo.dependencyCount = static_cast<std::uint32_t>(_rawSubpassDependencies.size());
     renderPassCreateInfo.pDependencies = _rawSubpassDependencies.data();
 
     if (vkCreateRenderPass(dev().handle(), &renderPassCreateInfo, nullptr, &_handle) == VK_SUCCESS)

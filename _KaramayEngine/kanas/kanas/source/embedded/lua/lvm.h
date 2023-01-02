@@ -13,32 +13,12 @@ struct lua_lib;
 
 class lua_vm final
 {
-    lua_State* state_ = nullptr;
 
-    static std::vector<lua_exporter*> type_exporters;
+    static std::vector<lua_exporter*> type_exporters_;
 
-    static std::vector<lua_lib*> libs;
-    
+    static std::vector<lua_lib*> libs_;
+
 public:
-
-    lua_vm() = default;
-		
-    lua_vm(const lua_vm&) = delete;
-    lua_vm& operator=(const lua_vm&) = delete;
-	
-    ~lua_vm()
-    {
-        if(!state_)
-        {
-            lua_close(state_);
-        }
-    }
-	
-    bool initialize() noexcept;
-	
-    void run() noexcept;
-	
-    bool do_file(const std::string& path);
 
     static void register_type_exporter(lua_exporter* exporter);
 
@@ -46,10 +26,35 @@ public:
 
 private:
     
-    void _load_class(const std::string& class_name, const luaL_Reg* funcs);
+    lua_State* state_ = nullptr;
+    
+public:
+
+    lua_vm();
+		
+    lua_vm(const lua_vm&) = delete;
+    lua_vm& operator=(const lua_vm&) = delete;
+
+    lua_vm(lua_vm&&) = delete;
 	
-    void _load_libs();
+    ~lua_vm();
+
+private:
+
+    void load_class(const std::string& class_name, const luaL_Reg* funcs);
 	
+    void load_libs();
+
+public:
+
+    std::vector<std::string> preload_files;
+    
+    bool init() noexcept;
+	
+    void tick() noexcept;
+	
+    bool do_file(const std::string& path);
+    
 };
 
 struct function_registry
@@ -112,9 +117,6 @@ struct lua_lib
         lua_vm::register_lib(this);
     }
 };
-	
-
-
 
 #define LUA_LIBS_B()\
 static const luaL_Reg libs[] =\

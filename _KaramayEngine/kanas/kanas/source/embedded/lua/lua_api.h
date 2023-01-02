@@ -1197,6 +1197,7 @@ namespace lua_api
 
 		std::tuple<std::optional<Args>...> opt_parameters =
 		{
+			// initializer_list for tuple<...>
 			static_to<Args, (N + 1 + offset) * (bottom ? 1 : -1)>(l)...
 		};
 
@@ -1209,7 +1210,12 @@ namespace lua_api
 			return std::nullopt;
 		}
 		
-		return { { (std::get<N>(opt_parameters).value())... } };
+		return 
+		{ // std::optinal<...> 
+			{ // initializer_list for std::tuple<...> 
+				(std::get<N>(opt_parameters).value())... 
+			} 
+		};
 	}
 
 	template<typename ...Args>

@@ -47,7 +47,7 @@ void kanas::core::descriptor_set::Write(std::uint32_t BindingIndex, std::uint32_
     }
 
     VkWriteDescriptorSet WriteDescriptorSet{};
-    WriteDescriptorSet.sType == VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    WriteDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     WriteDescriptorSet.pNext = nullptr;
     WriteDescriptorSet.dstSet = handle();
     WriteDescriptorSet.dstBinding = BindingIndex;

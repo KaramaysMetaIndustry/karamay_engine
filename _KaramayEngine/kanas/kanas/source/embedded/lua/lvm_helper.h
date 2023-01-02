@@ -39,8 +39,8 @@ lua_api::lua_userdata_meta_info<std::shared_ptr<TYPE_NAME>> lua_api::lua_userdat
 
 
 
-#define LUA_TYPE_PUBLIC_CPP_STATIC_FUNCTION(TYPE_NAME, FUNCTION_NAME, FUNCTION_PTR)\
-static lua_api::cpp_function_delegate delegate_##FUNCTION_NAME = lua_api::cpp_function_delegate(#FUNCTION_NAME, FUNCTION_PTR);\
+#define LUA_TYPE_PUBLIC_CPP_STATIC_FUNCTION(TYPE_NAME, FUNCTION_NAME, CPP_FUNCTION_NAME)\
+static lua_api::cpp_function_delegate delegate_##FUNCTION_NAME = lua_api::cpp_function_delegate(#FUNCTION_NAME, &TYPE_NAME::##CPP_FUNCTION_NAME);\
 \
 static int call_delegate_##FUNCTION_NAME##(lua_State* l)\
 {\
@@ -59,8 +59,8 @@ struct lua_cpp_function_exporter_##FUNCTION_NAME\
 static lua_cpp_function_exporter_##FUNCTION_NAME function_exporter_##FUNCTION_NAME;
 
 
-#define LUA_TYPE_PUBLIC_CPP_MEMBER_FUNCTION(TYPE_NAME, FUNCTION_NAME, FUNCTION_PTR)\
-static lua_api::cpp_member_function_delegate delegate_##FUNCTION_NAME = lua_api::cpp_member_function_delegate(#FUNCTION_NAME, FUNCTION_PTR);\
+#define LUA_TYPE_PUBLIC_CPP_MEMBER_FUNCTION(TYPE_NAME, FUNCTION_NAME, CPP_FUNCTION_NAME)\
+static lua_api::cpp_member_function_delegate delegate_##FUNCTION_NAME = lua_api::cpp_member_function_delegate(#FUNCTION_NAME, &TYPE_NAME::##CPP_FUNCTION_NAME);\
 static int call_delegate_##FUNCTION_NAME(lua_State* l)\
 {\
     int result = lua_api::call_cpp_member_func(l, delegate_##FUNCTION_NAME.callable);\
@@ -75,7 +75,10 @@ struct lua_cpp_function_exporter_##FUNCTION_NAME\
 }; \
 static lua_cpp_function_exporter_##FUNCTION_NAME function_exporter_##FUNCTION_NAME;
 
-#define LUA_TYPE_CPP_PUBLIC_PROPERTY(PROPERTY)
+#define LUA_TYPE_PUBLIC_CPP_MEMBER_PROPERTY(TYPE_NAME, PROPERTY)
+
+
+#define LUA_TYPE_PUBLIC_CPP_STATIC_PROPERTY(TYPE_NAME, PROPERTY)
 
 
 /* Register a lua lib.

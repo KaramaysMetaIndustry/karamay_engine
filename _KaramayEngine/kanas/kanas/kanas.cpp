@@ -1,14 +1,19 @@
 // kanas.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
-#include <iostream>
 #include "embedded/lua/lvm_helper.h"
 
 int main()
 {
     lua_vm lvm;
-    lvm.initialize();
-    lvm.run();
+
+    lvm.preload_files = {
+        "G:\\karamay_engine\\_KaramayEngine\\kanas\\kanas\\scripts\\lua\\Main.lua",
+        //"E:\\PrivateRepos\\karamay_engine\\_KaramayEngine\\kanas\\kanas\\scripts\\lua\\Main.lua"
+    };
+    
+    lvm.init();
+    lvm.tick();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

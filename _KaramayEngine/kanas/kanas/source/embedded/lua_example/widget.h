@@ -18,6 +18,8 @@ public:
 
     float public_v = 1.0f;
 
+    static float static_public_v;
+
     widget();
 
     ~widget();
