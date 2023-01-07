@@ -43,7 +43,7 @@ private:
 
     void load_class(const std::string& class_name, const luaL_Reg* funcs);
 	
-    void load_libs();
+    void load_modules();
 
 public:
 

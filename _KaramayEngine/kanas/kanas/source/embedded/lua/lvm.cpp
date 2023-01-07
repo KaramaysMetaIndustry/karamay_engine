@@ -23,7 +23,7 @@ bool lua_vm::init() noexcept
 		return false;
 	}
 	
-	load_libs();
+	load_modules();
 	
 	for(const auto& preload_file : preload_files)
 	{
@@ -40,8 +40,8 @@ void lua_vm::tick() noexcept
 
 bool lua_vm::do_file(const std::string& path)
 {
-	int _result = luaL_dofile(state_, path.c_str());
-	switch (_result)
+	const int result = luaL_dofile(state_, path.c_str());
+	switch (result)
 	{
 	case LUA_OK: std::clog << "no errors." << std::endl; break;
 	case LUA_ERRRUN: std::cerr << "a runtime error." << std::endl; break;
@@ -54,7 +54,7 @@ bool lua_vm::do_file(const std::string& path)
 		break;
 	}
 
-	if (_result != 0)
+	if (result != 0)
 	{
 		const char* error = lua_tostring(state_, -1);//´òÓ¡´íÎó½á¹û
 		printf("%s", error);
@@ -97,44 +97,60 @@ static int index_event(lua_State* l)
 	return 0;
 }
 
-static int new_index_event(lua_State* L)
+static int new_index_event(lua_State* l)
 {
 	return 0;
 }
 
-void lua_vm::load_libs()
+void lua_vm::load_modules()
 {
 	luaL_openlibs(state_);
 
 	for(const auto lib : libs_)
 	{
-		lib->lib_funcs->push_back({ nullptr, nullptr });
+		if(!lib)
+		{
+			continue;
+		}
+		
+		lib->lib_funcs->emplace_back(nullptr, nullptr);
+
 		luaL_requiref(state_, lib->name.c_str(), lib->open_func, 0);
+
 		lua_pop(state_, 1);
 	}
 
-	std::vector<std::string> check_functions = {};
+	std::vector<luaL_Reg> raw_method_regs;
 	
-	std::vector<luaL_Reg> raw_funcs;
 	for (const auto exporter : type_exporters_)
 	{
-		if (!exporter->funcs.contains("__gc"))
+		if(exporter)
 		{
-			std::cerr << "warning !!! type : " << exporter->type_name << " has no __gc func" << std::endl;
+			continue;
+		}
+		
+		const auto& name_to_raw_method = exporter->funcs;
+
+		// check required custom methods
+		if (!name_to_raw_method.contains("__gc"))
+		{
+			std::cerr << "type : " << exporter->type_name << " has no __gc func" << std::endl;
 			continue;
 		}
 
-		raw_funcs.clear();
-
-		for (const auto& pair : exporter->funcs)
+		raw_method_regs.clear();
+		// collect custom methods
+		for (const auto& [name, raw_method] : name_to_raw_method)
 		{
-			raw_funcs.push_back({ pair.first.c_str(), pair.second });
+			raw_method_regs.emplace_back(name.c_str(), raw_method);
 		}
-		raw_funcs.push_back({ "__index", index_event });
-		raw_funcs.push_back({ "__newindex", new_index_event });
-		raw_funcs.push_back({ nullptr, nullptr });
-
-		load_class(exporter->type_name, raw_funcs.data());
+		// universal methods
+		raw_method_regs.emplace_back("__index", index_event);
+		raw_method_regs.emplace_back("__newindex", new_index_event);
+		// note: from lua, reg end tag
+		raw_method_regs.emplace_back(nullptr, nullptr);
+		
+		load_class(exporter->type_name, raw_method_regs.data());
 	}
 }
 
