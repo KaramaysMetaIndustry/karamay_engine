@@ -128,7 +128,7 @@ void kanas::core::render_pass::cmd_execute(primary_command_buffer& pcb) const
     renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
     renderPassBeginInfo.framebuffer = _current_render_target->handle();
     renderPassBeginInfo.renderPass = handle();
-    renderPassBeginInfo.clearValueCount = _clear_values.size();
+    renderPassBeginInfo.clearValueCount = static_cast<std::uint32_t>(_clear_values.size());
     renderPassBeginInfo.pClearValues = _clear_values.data();
     renderPassBeginInfo.renderArea = _render_area;
 
@@ -157,7 +157,7 @@ void kanas::core::render_pass::cmd_execute_fast(kanas::core::primary_command_buf
     _begin_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
     _begin_info.framebuffer = _current_render_target->handle();
     _begin_info.renderPass = handle();
-    _begin_info.clearValueCount = _clear_values.size();
+    _begin_info.clearValueCount = static_cast<std::uint32_t>(_clear_values.size());
     _begin_info.pClearValues = _clear_values.data();
     _begin_info.renderArea = _render_area;
 

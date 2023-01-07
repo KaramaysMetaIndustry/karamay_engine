@@ -9,8 +9,8 @@
 bool kanas::core::image::allocate(VkImageType type, VkFormat format, VkExtent3D extent, std::uint32_t mips, std::uint32_t layers, VkSampleCountFlagBits samples, VkImageTiling tiling, image_usage_flags usage, VkImageLayout initial_layout, std::shared_ptr<concurrent_guide> concurrent_guide)
 {
     image_create_flags _img_create_flags;
-    VkImageType _type;
-    VkExtent3D _extent;
+    //VkImageType _type;
+    //VkExtent3D _extent;
 
     // image_1d
     type = VK_IMAGE_TYPE_1D;
@@ -38,7 +38,7 @@ bool kanas::core::image::allocate(VkImageType type, VkFormat format, VkExtent3D 
 	ImageCreateInfo.tiling = tiling;
 	ImageCreateInfo.usage = usage.raw();
 
-    VkImageFormatProperties _imageFormatProperties;
+    //VkImageFormatProperties _imageFormatProperties;
 
 
 	if (concurrent_guide && concurrent_guide->DoesSupportConcurrency())

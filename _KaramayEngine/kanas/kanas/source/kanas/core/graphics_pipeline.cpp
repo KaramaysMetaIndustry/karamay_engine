@@ -130,7 +130,7 @@ bool kanas::core::graphics_pipeline::allocate(const kanas::core::graphics_pipeli
     DepthStencilStateCreateInfo.maxDepthBounds = 1.f;
 
     const std::vector<VkPipelineColorBlendAttachmentState> ColorBlendAttachments;
-    std::array<float, 4> BlendConstants;
+    //std::array<float, 4> BlendConstants = {};
 
     VkPipelineColorBlendStateCreateInfo ColorBlendStateCreateInfo{};
     ColorBlendStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
@@ -140,7 +140,7 @@ bool kanas::core::graphics_pipeline::allocate(const kanas::core::graphics_pipeli
     ColorBlendStateCreateInfo.logicOp = VK_LOGIC_OP_AND;
     ColorBlendStateCreateInfo.attachmentCount = static_cast<std::uint32_t>(ColorBlendAttachments.size());
     ColorBlendStateCreateInfo.pAttachments = ColorBlendAttachments.data();
-    ColorBlendStateCreateInfo.blendConstants[4];
+    //ColorBlendStateCreateInfo.blendConstants[4] = BlendConstants.data();
 
     std::vector<VkDynamicState> DynamicStates;
 

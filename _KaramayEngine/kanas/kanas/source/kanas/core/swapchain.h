@@ -20,7 +20,8 @@ public:
 
 	void test()
 	{
-		VkBindImageMemorySwapchainInfoKHR BindInfo;
+		//VkBindImageMemorySwapchainInfoKHR BindInfo;
+		
 		/*vkGetSwapchainStatusKHR();
 		vkGetSwapchainImagesKHR();
 		VkDeviceGroupSwapchainCreateInfoKHR;

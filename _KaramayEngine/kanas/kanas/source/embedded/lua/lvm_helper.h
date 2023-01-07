@@ -26,7 +26,7 @@
 #define LUA_TYPE_EXPORTER(TYPE_NAME)\
 static lua_exporter exporter_##TYPE_NAME = {#TYPE_NAME};\
 template<>\
-struct lua_api::lua_userdata_meta_info<std::shared_ptr<TYPE_NAME>>\
+struct lua_userdata_meta_info<std::shared_ptr<TYPE_NAME>>\
 {\
     const char* get_type_name()\
     {\
@@ -35,7 +35,7 @@ struct lua_api::lua_userdata_meta_info<std::shared_ptr<TYPE_NAME>>\
 \
     static lua_userdata_meta_info ref;\
 };\
-lua_api::lua_userdata_meta_info<std::shared_ptr<TYPE_NAME>> lua_api::lua_userdata_meta_info<std::shared_ptr<TYPE_NAME>>::ref = {};
+lua_userdata_meta_info<std::shared_ptr<TYPE_NAME>> lua_userdata_meta_info<std::shared_ptr<TYPE_NAME>>::ref = {};
 
 
 

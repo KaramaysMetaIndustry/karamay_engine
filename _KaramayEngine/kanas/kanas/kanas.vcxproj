@@ -184,6 +184,11 @@
   <ItemGroup>
     <ClInclude Include="source\core\core_lib.h" />
     <ClInclude Include="source\ecs\entity.h" />
+    <ClInclude Include="source\embedded\lua\lua_type_concepts.h" />
+    <ClInclude Include="source\embedded\lua\lua_type_def.h" />
+    <ClInclude Include="source\embedded\lua\lua_type_is.h" />
+    <ClInclude Include="source\embedded\lua\lua_type_push.h" />
+    <ClInclude Include="source\embedded\lua\lua_type_to.h" />
     <ClInclude Include="source\embedded\lua\lvm.h" />
     <ClInclude Include="source\embedded\lua\lvm_helper.h" />
     <ClInclude Include="source\embedded\lua\lua_api.h" />
@@ -267,6 +272,9 @@
     <ClInclude Include="source\utils\gltf\components\gltf_texture.h" />
     <ClInclude Include="source\utils\gltf\gltf_loader.h" />
     <ClInclude Include="source\window\window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="source\embedded\python_example" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
