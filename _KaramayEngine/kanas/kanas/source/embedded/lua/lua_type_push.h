@@ -6,44 +6,51 @@
 #include "lua_type_def.h"
 #include "lua_type_concepts.h"
 
-
-
 namespace lua_api
 {
-    template<lua_t_acceptable T>
-	void push(lua_State* l, T&& v)
+
+	template<lua_boolean_acceptable T>
+	static void push_impl(lua_State* l, T&& v) noexcept
 	{
-		if constexpr (lua_boolean_acceptable<T>)
-		{
-			lua_pushboolean(l, v);
-		}
-		else if constexpr (lua_integer_number_acceptable<T>)
-		{
-			lua_pushinteger(l, v);
-		}
-		else if constexpr (lua_real_number_acceptable<T>)
-		{
-			lua_pushnumber(l, v);
-		}
-		else if constexpr (lua_string_acceptable_c_style<T>)
-		{
-			lua_pushstring(l, v);
-		}
-		else if constexpr(lua_string_acceptable_std_str<T>)
-		{
-			lua_pushstring(l, v.c_str());
-		}
-		else if constexpr (lua_string_acceptable_std_str_view<T>)
-		{
-			lua_pushstring(l, v.data());
-		}
-		else if constexpr (lua_userdata_acceptable<T>)
-		{
-			void* userdata = lua_newuserdata(l, sizeof(std::remove_cvref_t<T>));
-			new(userdata) std::remove_cvref_t<T>(v);
-			
-			luaL_setmetatable(l, lua_userdata_meta_info<std::remove_cvref_t<T>>::ref.get_type_name());
-		}
+		lua_pushboolean(l, v);
+	}
+
+	template<lua_integer_number_acceptable T>
+	static void push_impl(lua_State* l, T&& v) noexcept
+	{
+		lua_pushinteger(l, v);
+	}
+
+	template<lua_real_number_acceptable T>
+	static void push_impl(lua_State* l, T&& v) noexcept
+	{
+		lua_pushnumber(l, v);
+	}
+
+	template<lua_string_acceptable_c_style T>
+	static void push_impl(lua_State* l, T&& v) noexcept
+	{
+		lua_pushstring(l, v);
+	}
+
+	template<lua_string_acceptable_std_str T>
+	static void push_impl(lua_State* l, T&& v) noexcept
+	{
+		lua_pushstring(l, v.c_str());
+	}
+
+	template<lua_string_acceptable_std_str_view T>
+	static void push_impl(lua_State* l, T&& v) noexcept
+	{
+		lua_pushstring(l, v.data());
+	}
+
+	template<lua_userdata_acceptable T>
+	static void push_impl(lua_State* l, T&& v) noexcept
+	{
+		void* userdata = lua_newuserdata(l, sizeof(std::remove_cvref_t<T>));
+		new(userdata) std::remove_cvref_t<T>(v);
+		luaL_setmetatable(l, lua_userdata_meta_info<std::remove_cvref_t<T>>::ref.get_type_name());
 	}
 
 	template<typename ...Args>
@@ -52,7 +59,23 @@ namespace lua_api
 		(push(l, args), ...);
 		lua_pushcclosure(l, f, sizeof...(args));
 	}
+	
+	template<lua_closure_acceptable T>
+	static void push_impl(lua_State* l, T&& v) noexcept
+	{
+		push_c_closure(l, v.f, v.args);
+	}
 
+    template<lua_t_acceptable T>
+	static void push(lua_State* l, T&& v) noexcept
+	{
+#if _DEBUG
+		std::cout << "push " << std::endl;
+#endif
+		push_impl(l, v);
+	}
+	
+	
 	template<lua_t_acceptable T, size_t size>
 	static void push(lua_State* l, const std::array<T, size>& c) noexcept
 	{
@@ -264,7 +287,6 @@ namespace lua_api
 			// table, ...
 		}
 	}
-
 	
 }
 

@@ -13,8 +13,11 @@
 #include <queue>
 #include <stack>
 
+#include "lua_type_def.h"
+
 namespace lua_api
 {
+	
 	template<class T>
 	concept lua_boolean_acceptable =
 		std::is_same_v<std::remove_cvref_t<T>, bool>;
@@ -57,6 +60,18 @@ namespace lua_api
 	template<typename T>
 	concept lua_userdata_acceptable =
 		is_shared_ptr_v<std::remove_cvref_t<T>>;
+
+	
+	template<typename T>
+	constexpr bool is_c_closure_v = false;
+
+	template<typename... Args>
+	constexpr bool is_c_closure_v<c_closure<Args...>> = true;
+	
+	template<typename T>
+	concept lua_closure_acceptable =
+		is_c_closure_v<T>;
+
 	
 	template<typename T>
 	concept lua_t_acceptable_non_container =
@@ -171,7 +186,7 @@ namespace lua_api
 	template<typename T, typename U, typename W, typename X>
 	constexpr bool is_unordered_set_v<std::unordered_set<T, U, W, X>> = true;
 
-
+	
 	template<typename T>
 	constexpr bool is_multiset_v = false;
 

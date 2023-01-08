@@ -1,6 +1,8 @@
 ﻿#ifndef LUA_TYPE_DEF_H
 #define LUA_TYPE_DEF_H
 
+#include <iostream>
+
 /*
 * cpp data <=> lua data
 * 
@@ -67,6 +69,14 @@ namespace lua_api
 	}
 }
 
+template<typename ...Args>
+struct c_closure
+{
+	lua_CFunction f;
+	std::tuple<Args...> args;
+};
+
+
 template<typename Ty>
 struct lua_userdata_meta_info
 {
@@ -76,7 +86,5 @@ struct lua_userdata_meta_info
     }
 
     static lua_userdata_meta_info ref;
-
-
 };
 #endif

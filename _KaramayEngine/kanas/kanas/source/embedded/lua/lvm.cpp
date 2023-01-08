@@ -124,7 +124,7 @@ void lua_vm::load_modules()
 	
 	for (const auto exporter : type_exporters_)
 	{
-		if(exporter)
+		if(!exporter)
 		{
 			continue;
 		}
