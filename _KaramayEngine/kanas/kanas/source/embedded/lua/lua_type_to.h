@@ -11,45 +11,38 @@
 namespace lua_api
 {
     template<lua_boolean_acceptable T>
-	static T to_impl(lua_State* l, std::int32_t idx)
+	static T to_impl(lua_State* l, const std::int32_t idx)
 	{
 		return static_cast<T>(lua_toboolean(l, idx));
 	}
 
 	template<lua_integer_number_acceptable T>
-	static T to_impl(lua_State* l, std::int32_t idx)
+	static T to_impl(lua_State* l, const std::int32_t idx)
 	{
 		return static_cast<T>(lua_tointeger(l, idx));
 	}
 
 	template<lua_real_number_acceptable T>
-	static T to_impl(lua_State* l, std::int32_t idx)
+	static T to_impl(lua_State* l, const std::int32_t idx)
 	{
 		return static_cast<T>(lua_tonumber(l, idx));
 	}
 
 	template<lua_string_acceptable T>
-	static T to_impl(lua_State* l, std::int32_t idx)
+	static T to_impl(lua_State* l, const std::int32_t idx)
 	{
 		return lua_tostring(l, idx);
 	}
 
 	template<lua_userdata_acceptable T>
-	static T to_impl(lua_State* l, std::int32_t idx)
+	static T to_impl(lua_State* l, const std::int32_t idx)
 	{
 		T* userdata = static_cast<T*>(lua_touserdata(l, idx));
 		return *userdata;
 	}
 
-	template<lua_table_acceptable_std_vector T>
-	static T to_impl(lua_State* l, std::int32_t idx)
-	{
-		
-	}
-
-
 	template<lua_t_acceptable T>
-	static std::optional<T> to(lua_State* l, std::int32_t idx)
+	static std::optional<T> to(lua_State* l, const std::int32_t idx)
 	{
 		if(!is<T>(l, idx)) {
 			return std::nullopt;
@@ -57,66 +50,66 @@ namespace lua_api
 
 		return to_impl<T>(l, idx);
 		
-		// else if constexpr (lua_table_acceptable_std_vector<T>) {
-		// 	const auto len = static_cast<std::size_t>(lua_rawlen(l, idx));
-		// 	if (len < 1)
-		// 	{
-		// 		return std::nullopt;
-		// 	}
-		//
-		// 	// table, ...
-		// 	lua_pushnil(l);
-		// 	// key, table, ...
-		//
-		// 	T c;
-		// 	c.reserve(len);
-		//
-		// 	while (lua_next(l, idx))
-		// 	{
-		// 		// value, key, table, ...
-		// 		auto v = to<typename T::value_type>(l, -1);
-		// 		if (!v)
-		// 		{
-		// 			lua_pop(l, 2);
-		// 			// table, ...
-		// 			return std::nullopt;
-		// 		}
-		//
-		// 		c.push_back(v.value());
-		// 		lua_pop(l, 1);
-		// 		// key, table, ...
-		// 	}
-		// 	// table, ...
-		// 	return c;
-		// }
-		// else if constexpr (lua_table_acceptable_std_unordered_map<T>)
-		// {
-		// 	T c;
-		//
-		// 	// table, ...
-		// 	lua_pushnil(l);
-		// 	// nil, table, ...
-		// 	while (lua_next(l, idx))
-		// 	{
-		// 		// value, key, table, ...
-		// 		auto _optional_k = to<typename T::key_type>(l, -2);
-		// 		auto _optional_v = to<typename T::mapped_type>(l, -1);
-		// 		if (!_optional_k || !_optional_v)
-		// 		{
-		// 			lua_pop(l, 2);
-		// 			// table, ...
-		// 			return std::nullopt;
-		// 		}
-		// 		c.emplace(_optional_k.value(), _optional_v.value());
-		// 		lua_pop(l, 1);
-		// 		// key, table, ...
-		// 	}
-		// 	// table, ...
-		// 	return c;
-		// }
-		// else {
-		// 	return std::nullopt;
-		// }
+		if constexpr (lua_table_acceptable_std_vector<T>) {
+			const std::size_t len = lua_rawlen(l, idx);
+			if (len < 1)
+			{
+				return std::nullopt;
+			}
+		
+			// table, ...
+			lua_pushnil(l);
+			// key, table, ...
+		
+			T c;
+			c.reserve(len);
+		
+			while (lua_next(l, idx))
+			{
+				// value, key, table, ...
+				auto v = to<typename T::value_type>(l, -1);
+				if (!v)
+				{
+					lua_pop(l, 2);
+					// table, ...
+					return std::nullopt;
+				}
+		
+				c.push_back(v.value());
+				lua_pop(l, 1);
+				// key, table, ...
+			}
+			// table, ...
+			return c;
+		}
+		else if constexpr (lua_table_acceptable_std_unordered_map<T>)
+		{
+			T c;
+		
+			// table, ...
+			lua_pushnil(l);
+			// nil, table, ...
+			while (lua_next(l, idx))
+			{
+				// value, key, table, ...
+				auto _optional_k = to<typename T::key_type>(l, -2);
+				auto _optional_v = to<typename T::mapped_type>(l, -1);
+				if (!_optional_k || !_optional_v)
+				{
+					lua_pop(l, 2);
+					// table, ...
+					return std::nullopt;
+				}
+				c.emplace(_optional_k.value(), _optional_v.value());
+				lua_pop(l, 1);
+				// key, table, ...
+			}
+			// table, ...
+			return c;
+		}
+		else {
+			return std::nullopt;
+		}
 
 		
 	}

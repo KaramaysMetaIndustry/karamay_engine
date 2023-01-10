@@ -27,7 +27,7 @@ namespace lua_api
 		std::_Is_any_of_v<std::remove_cvref_t<T>, std::int8_t, std::uint8_t, std::int16_t, std::uint16_t, std::int32_t, std::uint32_t, std::int64_t, std::uint64_t>;
 
 	template<typename T>
-	concept lua_real_number_acceptable = 
+	concept lua_real_number_acceptable =
 		std::_Is_any_of_v<std::remove_cvref_t<T>, std::float_t, std::double_t>;
 	
 	template<typename T>
@@ -49,6 +49,7 @@ namespace lua_api
 	template<typename T>
 	concept lua_string_acceptable =
 		lua_string_acceptable_c_style<T> or lua_string_acceptable_std_str<T> or lua_string_acceptable_std_str_view<T>;
+
 
 	template<typename T>
 	constexpr bool is_shared_ptr_v = false;
@@ -81,8 +82,8 @@ namespace lua_api
 	template<typename T>
 	constexpr bool is_array_v = false;
 
-	template<typename T, std::size_t size>
-	constexpr bool is_array_v<std::array<T, size>> = true;
+	template<typename T, std::size_t Size>
+	constexpr bool is_array_v<std::array<T, Size>> = true;
 
 
 	template<typename T>

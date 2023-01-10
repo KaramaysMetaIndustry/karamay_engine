@@ -48,9 +48,11 @@ namespace lua_api
 	template<lua_userdata_acceptable T>
 	static void push_impl(lua_State* l, T&& v) noexcept
 	{
-		void* userdata = lua_newuserdata(l, sizeof(std::remove_cvref_t<T>));
+		using raw_t = std::remove_cvref_t<T>;
+		
+		void* userdata = lua_newuserdata(l, sizeof(raw_t));
 		new(userdata) std::remove_cvref_t<T>(v);
-		luaL_setmetatable(l, lua_userdata_meta_info<std::remove_cvref_t<T>>::ref.get_type_name());
+		luaL_setmetatable(l, lua_userdata_meta_info<raw_t>::ref.get_type_name());
 	}
 	
 
@@ -75,13 +77,13 @@ namespace lua_api
 	}
 	
 	
-	template<lua_t_acceptable T, size_t size>
-	static void push(lua_State* l, const std::array<T, size>& c) noexcept
+	template<lua_t_acceptable T, size_t Size>
+	static void push(lua_State* l, const std::array<T, Size>& c) noexcept
 	{
 		// ...
-		lua_createtable(l, size, 0);
+		lua_createtable(l, Size, 0);
 		// table, ...
-		for (size_t idx = 0; idx < size; ++idx)
+		for (size_t idx = 0; idx < Size; ++idx)
 		{
 			push(l, idx + 1);
 			// key, table, ...

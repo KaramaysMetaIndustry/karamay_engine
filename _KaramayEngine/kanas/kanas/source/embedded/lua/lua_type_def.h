@@ -62,11 +62,7 @@ namespace lua_api
 		gc_inc = LUA_GCINC, //Changes the collector to incremental mode with the given parameters(see ��2.5.1).Returns the previous mode(LUA_GCGEN or LUA_GCINC).
 		gc_gen = LUA_GCGEN //Changes the collector to generational mode with the given parameters(see ��2.5.2).Returns the previous mode(LUA_GCGEN or LUA_GCINC).
 	};
-
-	static lua_t type(lua_State* l, std::int32_t idx)
-	{
-		return static_cast<lua_t>(lua_type(l, idx));
-	}
+	
 }
 
 template<typename ...Args>
