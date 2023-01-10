@@ -52,6 +52,14 @@ namespace lua_api
 		new(userdata) std::remove_cvref_t<T>(v);
 		luaL_setmetatable(l, lua_userdata_meta_info<std::remove_cvref_t<T>>::ref.get_type_name());
 	}
+	
+
+    template<lua_t_acceptable T>
+	static void push(lua_State* l, T&& v) noexcept
+	{
+		push_impl(l, v);
+	}
+
 
 	template<typename ...Args>
 	static void push_c_closure(lua_State* l, lua_CFunction f, Args&& ...args)
@@ -64,15 +72,6 @@ namespace lua_api
 	static void push_impl(lua_State* l, T&& v) noexcept
 	{
 		push_c_closure(l, v.f, v.args);
-	}
-
-    template<lua_t_acceptable T>
-	static void push(lua_State* l, T&& v) noexcept
-	{
-#if _DEBUG
-		std::cout << "push " << std::endl;
-#endif
-		push_impl(l, v);
 	}
 	
 	
@@ -188,23 +187,18 @@ namespace lua_api
 		lua_createtable(l, c.size(), 0);
 		// table, ...
 		std::size_t idx = 1;
-		for (auto _it = c.cbegin(); _it != c.cend(); ++_it, ++idx)
+		for (auto it = c.cbegin(); it != c.cend(); ++it, ++idx)
 		{
 			push(l, idx);
 			// key, table, ...
-			push(l, *_it);
+			push(l, *it);
 			// value, key, table, ...
 			lua_settable(l, -3);
 			// table, ...
 		}
 	}
 
-	template<
-		lua_t_acceptable T,
-		typename hasher = std::hash<T>,
-		typename predicate = std::equal_to<T>,
-		typename allocator = std::allocator<T>
-	>
+	template<lua_t_acceptable T, typename hasher = std::hash<T>, typename predicate = std::equal_to<T>, typename allocator = std::allocator<T>>
 	static void push(lua_State* l, const std::unordered_set<T, hasher, predicate, allocator>& c) noexcept
 	{
 		// ...
@@ -222,12 +216,7 @@ namespace lua_api
 		}
 	}
 
-	template<
-		lua_t_acceptable T,
-		typename hasher = std::hash<T>,
-		typename predicate = std::equal_to<T>,
-		typename allocator = std::allocator<T>
-	>
+	template<lua_t_acceptable T, typename hasher = std::hash<T>, typename predicate = std::equal_to<T>, typename allocator = std::allocator<T>>
 	static void push(lua_State* l, const std::unordered_multiset<T, hasher, predicate, allocator>& c) noexcept
 	{
 		// ...
@@ -245,11 +234,7 @@ namespace lua_api
 		}
 	}
 
-	template<
-		lua_t_acceptable key_t, lua_t_acceptable value_t,
-		typename predicate = std::less<key_t>,
-		typename allocator = std::allocator<std::pair<const key_t, value_t>>
-	>
+	template<lua_t_acceptable key_t, lua_t_acceptable value_t, typename predicate = std::less<key_t>, typename allocator = std::allocator<std::pair<const key_t, value_t>>>
 	static void push(lua_State* l, const std::map<key_t, value_t, predicate, allocator>& c) noexcept
 	{
 		// ...
@@ -266,12 +251,7 @@ namespace lua_api
 		}
 	}
 
-	template<
-		lua_t_acceptable key_t, lua_t_acceptable value_t,
-		typename hasher = std::hash<key_t>,
-		typename predicate = std::equal_to<key_t>,
-		typename allocator = std::allocator<std::pair<const key_t, value_t>>
-	>
+	template<lua_t_acceptable key_t, lua_t_acceptable value_t, typename hasher = std::hash<key_t>, typename predicate = std::equal_to<key_t>, typename allocator = std::allocator<std::pair<const key_t, value_t>>>
 	static void push(lua_State* l, const std::unordered_map<key_t, value_t, hasher, predicate, allocator>& c) noexcept
 	{
 		// ...
