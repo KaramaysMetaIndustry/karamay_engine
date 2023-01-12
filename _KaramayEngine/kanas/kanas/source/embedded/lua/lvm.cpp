@@ -147,6 +147,12 @@ void lua_vm::load_modules()
 		// universal methods
 		raw_method_regs.emplace_back("__index", index_event);
 		raw_method_regs.emplace_back("__newindex", new_index_event);
+		raw_method_regs.emplace_back("__call", nullptr);
+		raw_method_regs.emplace_back("__gc", nullptr);
+		raw_method_regs.emplace_back("__close", nullptr);
+		raw_method_regs.emplace_back("__name", nullptr);
+		raw_method_regs.emplace_back("__mode", nullptr);
+		raw_method_regs.emplace_back("__pairs", nullptr);
 		// note: from lua, reg end tag
 		raw_method_regs.emplace_back(nullptr, nullptr);
 		

@@ -10,7 +10,6 @@
 
 namespace lua_api
 {
-	
 	template<typename Ret, typename... Args, typename... TupleArgs, std::size_t... N>
 	static Ret call_cpp_func_impl(const std::function<Ret(Args...)>& func, std::tuple<TupleArgs...>& parameters, std::index_sequence<N...>)
 	{
@@ -113,16 +112,16 @@ namespace lua_api
 	//template<typename... ParamTypes, typename... RetTypes>
 	//static std::tuple<RetTypes...> call_lua_function(lua_State* l, const std::string& func_name, ParamTypes&& ...args)
 	//{
-	//	// luaåŠ è½½å­—ç¬¦ï¼Œç”Ÿæˆluaå…¨å±€å‡½æ•°LuaCode_MyAdd
+	//	// lua¼ÓÔØ×Ö·û£¬Éú³ÉluaÈ«¾Öº¯ÊıLuaCode_MyAdd
 	//	//luaL_dostring(l, "function LuaCode_MyAdd (x,y) return x+y end");
-	//	// luaæ ˆå’Œå‹å…¥æ•°æ®
+	//	// luaÕ»ºÍÑ¹ÈëÊı¾İ
 	//	lua_getglobal(l, func_name.c_str());
 
 	//	(push(l, args), ...);
 	//	//lua_pushinteger(l, 100);
 	//	//lua_pushinteger(l, 200);
 	//	
-	//	// Cè°ƒç”¨luaä¸­çš„å‡½æ•°ï¼Œ2ä¸ªä¼ å…¥å‚æ•°ï¼Œ1ä¸ªè¿”å›å‚æ•°
+	//	// Cµ÷ÓÃluaÖĞµÄº¯Êı£¬2¸ö´«Èë²ÎÊı£¬1¸ö·µ»Ø²ÎÊı
 	//	lua_call(l, sizeof...(ParamTypes), sizeof...(RetTypes));
 
 	//	auto results = to_tuple<RetTypes...>(l);

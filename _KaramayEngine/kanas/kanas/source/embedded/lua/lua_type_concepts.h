@@ -67,7 +67,7 @@ namespace lua_api
 	constexpr bool is_c_closure_v = false;
 
 	template<typename... Args>
-	constexpr bool is_c_closure_v<c_closure<Args...>> = true;
+	constexpr bool is_c_closure_v<lua_closure<Args...>> = true;
 	
 	template<typename T>
 	concept lua_closure_acceptable =
@@ -372,7 +372,9 @@ namespace lua_api
 		lua_table_acceptable_std_map<T> or
 		lua_table_acceptable_std_unordered_map<T> or
 		lua_table_acceptable_std_multimap<T> or
-		lua_table_acceptable_std_unordered_multimap<T>;
+		lua_table_acceptable_std_unordered_multimap<T> or
+		lua_closure_acceptable<T>;
+	
 }
 
 #endif

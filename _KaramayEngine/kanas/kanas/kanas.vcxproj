@@ -195,6 +195,7 @@
     <ClInclude Include="source\embedded\lua_example\widget.h" />
     <ClInclude Include="source\embedded\lua_example\widget_lib.h" />
     <ClInclude Include="source\embedded\python\pvm.h" />
+    <ClInclude Include="source\embedded\reflection\runtime_core.h" />
     <ClInclude Include="source\engine\karamay_engine.h" />
     <ClInclude Include="source\environment\platforms\windows\winsocket.h" />
     <ClInclude Include="source\kanas\core\command_buffer.h" />

@@ -1,7 +1,52 @@
 // kanas.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
+#include <nlohmann/json.hpp>
 #include "embedded/lua/lvm_helper.h"
+
+struct example
+{
+public:
+    void alloc(int a)
+    {}
+
+    void dealloc()
+    {
+    }
+
+    static void shader_mapping()
+    {
+        
+    }
+
+    bool satisfy()
+    {
+        return false;
+    }
+};
+
+template <>
+struct std::hash<example> {
+    _NODISCARD size_t operator()(const example& _Keyval) const noexcept {
+        return 0; // map -0 to 0
+    }
+};
+
+template<typename T>
+concept example_t = requires(T t, int a)
+{
+    T::shader_mapping();
+    t.alloc(a);
+    t.dealloc();
+
+    { std::hash<T>{}(t) } -> std::convertible_to<std::size_t>;
+};
+
+template<example_t T>
+void test(T t)
+{
+    std::vector<int> a;
+}
 
 int main()
 {
