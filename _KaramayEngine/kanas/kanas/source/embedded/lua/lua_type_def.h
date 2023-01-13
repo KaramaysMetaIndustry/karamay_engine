@@ -1,6 +1,9 @@
 ﻿#ifndef LUA_TYPE_DEF_H
 #define LUA_TYPE_DEF_H
 
+#include "public/lua.h"
+
+#include <iostream>
 #include <vector>
 
 /*

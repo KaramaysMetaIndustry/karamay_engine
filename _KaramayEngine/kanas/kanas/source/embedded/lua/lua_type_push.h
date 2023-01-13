@@ -1,57 +1,53 @@
 ﻿#ifndef LUA_TYPE_PUSH_H
 #define LUA_TYPE_PUSH_H
 
-#include "public/lua.h"
-
-#include "lua_type_def.h"
 #include "lua_type_concepts.h"
 
 namespace lua_api
 {
-
-	template<lua_boolean_acceptable T>
-	static void push_impl(lua_State* l, T&& v) noexcept
+	template<lua_boolean_acceptable _Ty>
+	static void push_impl(lua_State* l, _Ty&& v) noexcept
 	{
 		lua_pushboolean(l, v);
 	}
 
-	template<lua_integer_number_acceptable T>
-	static void push_impl(lua_State* l, T&& v) noexcept
+	template<lua_integer_number_acceptable _Ty>
+	static void push_impl(lua_State* l, _Ty&& v) noexcept
 	{
 		lua_pushinteger(l, v);
 	}
 
-	template<lua_real_number_acceptable T>
-	static void push_impl(lua_State* l, T&& v) noexcept
+	template<lua_real_number_acceptable _Ty>
+	static void push_impl(lua_State* l, _Ty&& v) noexcept
 	{
 		lua_pushnumber(l, v);
 	}
 
-	template<lua_string_acceptable_c_style T>
-	static void push_impl(lua_State* l, T&& v) noexcept
+	template<lua_string_acceptable_c_style _Ty>
+	static void push_impl(lua_State* l, _Ty&& v) noexcept
 	{
 		lua_pushstring(l, v);
 	}
 
-	template<lua_string_acceptable_std_str T>
-	static void push_impl(lua_State* l, T&& v) noexcept
+	template<lua_string_acceptable_std_str _Ty>
+	static void push_impl(lua_State* l, _Ty&& v) noexcept
 	{
 		lua_pushstring(l, v.c_str());
 	}
 
-	template<lua_string_acceptable_std_str_view T>
-	static void push_impl(lua_State* l, T&& v) noexcept
+	template<lua_string_acceptable_std_str_view _Ty>
+	static void push_impl(lua_State* l, _Ty&& v) noexcept
 	{
 		lua_pushstring(l, v.data());
 	}
 
-	template<lua_userdata_acceptable T>
-	static void push_impl(lua_State* l, T&& v) noexcept
+	template<lua_userdata_acceptable _Ty>
+	static void push_impl(lua_State* l, _Ty&& v) noexcept
 	{
-		using raw_t = std::remove_cvref_t<T>;
+		using raw_t = std::remove_cvref_t<_Ty>;
 		
 		void* userdata = lua_newuserdata(l, sizeof(raw_t));
-		new(userdata) std::remove_cvref_t<T>(v);
+		new(userdata) std::remove_cvref_t<_Ty>(v);
 		luaL_setmetatable(l, lua_userdata_meta_info<raw_t>::ref.get_type_name());
 	}
 
@@ -63,27 +59,27 @@ namespace lua_api
 		lua_pushcclosure(l, f, sizeof...(args));
 	}
 	
-	template<lua_closure_acceptable T>
-	static void push_impl(lua_State* l, T&& v) noexcept
+	template<lua_closure_acceptable _Ty>
+	static void push_impl(lua_State* l, _Ty&& v) noexcept
 	{
 		push_c_closure(l, v.f, v.args);
 	}
 	
 
-    template<lua_t_acceptable T>
-	static void push(lua_State* l, T&& v) noexcept
+    template<lua_t_acceptable _Ty>
+	static void push(lua_State* l, _Ty&& v) noexcept
 	{
 		push_impl(l, v);
 	}
 	
 	
-	template<lua_t_acceptable T, size_t Size>
-	static void push(lua_State* l, const std::array<T, Size>& c) noexcept
+	template<lua_t_acceptable _Ty, size_t _Size>
+	static void push(lua_State* l, const std::array<_Ty, _Size>& c) noexcept
 	{
 		// ...
-		lua_createtable(l, Size, 0);
+		lua_createtable(l, _Size, 0);
 		// table, ...
-		for (size_t idx = 0; idx < Size; ++idx)
+		for (size_t idx = 0; idx < _Size; ++idx)
 		{
 			push(l, idx + 1);
 			// key, table, ...
@@ -94,8 +90,8 @@ namespace lua_api
 		}
 	}
 
-	template <lua_t_acceptable T, typename AllocatorT>
-	static void push(lua_State* l, const std::vector<T, AllocatorT>& c) noexcept
+	template <lua_t_acceptable _Ty, typename _Alloc>
+	static void push(lua_State* l, const std::vector<_Ty, _Alloc>& c) noexcept
 	{
 		// ...
 		lua_createtable(l, static_cast<int>(c.size()), 0);
@@ -111,8 +107,8 @@ namespace lua_api
 		}
 	}
 
-	template<lua_t_acceptable T, typename AllocatorT>
-	static void push(lua_State* l, const std::deque<T, AllocatorT>& c) noexcept
+	template<lua_t_acceptable _Ty, typename _Alloc>
+	static void push(lua_State* l, const std::deque<_Ty, _Alloc>& c) noexcept
 	{
 		// ...
 		lua_createtable(l, c.size(), 0);
@@ -128,8 +124,8 @@ namespace lua_api
 		}
 	}
 
-	template<lua_t_acceptable T, typename AllocatorT>
-	static void push(lua_State* l, const std::list<T, AllocatorT>& c) noexcept
+	template<lua_t_acceptable _Ty, typename _Alloc>
+	static void push(lua_State* l, const std::list<_Ty, _Alloc>& c) noexcept
 	{
 		// ...
 		lua_createtable(l, c.size(), 0);
@@ -146,8 +142,8 @@ namespace lua_api
 		}
 	}
 
-	template<lua_t_acceptable T, typename AllocatorT>
-	static void push(lua_State* l, const std::forward_list<T, AllocatorT>& c) noexcept
+	template<lua_t_acceptable _Ty, typename _Alloc>
+	static void push(lua_State* l, const std::forward_list<_Ty, _Alloc>& c) noexcept
 	{
 		// ...
 		lua_createtable(l, 0, 0);
@@ -164,8 +160,8 @@ namespace lua_api
 		}
 	}
 
-	template<lua_t_acceptable T, typename PredicateT, typename AllocatorT>
-	static void push(lua_State* l, const std::set<T, PredicateT, AllocatorT>& c) noexcept
+	template<lua_t_acceptable _Ty, typename _Pr, typename _Alloc>
+	static void push(lua_State* l, const std::set<_Ty, _Pr, _Alloc>& c) noexcept
 	{
 		// ...
 		lua_createtable(l, c.size(), 0);
@@ -182,8 +178,8 @@ namespace lua_api
 		}
 	}
 
-	template<lua_t_acceptable T, typename PredicateT, typename AllocatorT>
-	static void push(lua_State* l, const std::multiset<T, PredicateT, AllocatorT>& c) noexcept
+	template<lua_t_acceptable _Ty, typename _Pr, typename _Alloc>
+	static void push(lua_State* l, const std::multiset<_Ty, _Pr, _Alloc>& c) noexcept
 	{
 		// ...
 		lua_createtable(l, c.size(), 0);
@@ -200,8 +196,8 @@ namespace lua_api
 		}
 	}
 
-	template<lua_t_acceptable T, typename HasherT, typename PredicateT, typename AllocatorT>
-	static void push(lua_State* l, const std::unordered_set<T, HasherT, PredicateT, AllocatorT>& c) noexcept
+	template<lua_t_acceptable _Ty, typename _Hasher, typename _Pr, typename _Alloc>
+	static void push(lua_State* l, const std::unordered_set<_Ty, _Hasher, _Pr, _Alloc>& c) noexcept
 	{
 		// ...
 		lua_createtable(l, c.size(), 0);
@@ -218,8 +214,8 @@ namespace lua_api
 		}
 	}
 
-	template<lua_t_acceptable T, typename HasherT, typename PredicateT, typename AllocatorT>
-	static void push(lua_State* l, const std::unordered_multiset<T, HasherT, PredicateT, AllocatorT>& c) noexcept
+	template<lua_t_acceptable _Ty, typename _Hasher, typename _Pr, typename _Alloc>
+	static void push(lua_State* l, const std::unordered_multiset<_Ty, _Hasher, _Pr, _Alloc>& c) noexcept
 	{
 		// ...
 		lua_createtable(l, c.size(), 0);
@@ -236,8 +232,8 @@ namespace lua_api
 		}
 	}
 
-	template<lua_t_acceptable KeyT, lua_t_acceptable ValueT, typename PredicateT, typename AllocatorT>
-	static void push(lua_State* l, const std::map<KeyT, ValueT, PredicateT, AllocatorT>& c) noexcept
+	template<lua_t_acceptable _Kty, lua_t_acceptable _Ty, typename _Pr, typename _Alloc>
+	static void push(lua_State* l, const std::map<_Kty, _Ty, _Pr, _Alloc>& c) noexcept
 	{
 		// ...
 		lua_createtable(l, 0, c.size());
@@ -253,8 +249,8 @@ namespace lua_api
 		}
 	}
 
-	template<lua_t_acceptable KeyT, lua_t_acceptable ValueT, typename HasherT, typename PredicateT, typename AllocatorT>
-	static void push(lua_State* l, const std::unordered_map<KeyT, ValueT, HasherT, PredicateT, AllocatorT>& c) noexcept
+	template<lua_t_acceptable _Kty, lua_t_acceptable _Ty, typename _Hasher, typename _Pr, typename _Alloc>
+	static void push(lua_State* l, const std::unordered_map<_Kty, _Ty, _Hasher, _Pr, _Alloc>& c) noexcept
 	{
 		// ...
 		lua_createtable(l, 0, c.size());

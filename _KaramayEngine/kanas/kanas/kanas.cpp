@@ -31,13 +31,17 @@ struct std::hash<example> {
     }
 };
 
+class example_non
+{
+
+};
+
 template<typename T>
 concept example_t = requires(T t, int a)
 {
     T::shader_mapping();
     t.alloc(a);
     t.dealloc();
-
     { std::hash<T>{}(t) } -> std::convertible_to<std::size_t>;
 };
 

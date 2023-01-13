@@ -1,6 +1,8 @@
 #ifndef LUA_TYPE_CONCEPTS_H
 #define LUA_TYPE_CONCEPTS_H
 
+#include "lua_type_def.h"
+
 #include <memory>
 #include <vector>
 #include <deque>
@@ -14,8 +16,6 @@
 #include <stack>
 #include <concepts>
 #include <xutility>
-
-#include "lua_type_def.h"
 
 namespace lua_api
 {
@@ -361,28 +361,34 @@ namespace lua_api
 		lua_t_acceptable_non_container<typename _Ty::key_type> and
 		lua_t_acceptable_non_container<typename _Ty::mapped_type>;
 
+	template<typename T>
+	concept lua_table_acceptable_std_container =
+		lua_table_acceptable_std_array<T> or
+		lua_table_acceptable_std_vector<T> or
+		lua_table_acceptable_std_stack<T> or
+		lua_table_acceptable_std_queue<T> or
+		lua_table_acceptable_std_priority_queue<T> or
+		lua_table_acceptable_std_deque<T> or
+		lua_table_acceptable_std_list<T> or
+		lua_table_acceptable_std_forward_list<T> or
+		lua_table_acceptable_std_set<T> or
+		lua_table_acceptable_std_unordered_set<T> or
+		lua_table_acceptable_std_multiset<T> or
+		lua_table_acceptable_std_unordered_multiset<T> or
+		lua_table_acceptable_std_map<T> or
+		lua_table_acceptable_std_unordered_map<T> or
+		lua_table_acceptable_std_multimap<T> or
+		lua_table_acceptable_std_unordered_multimap<T>;
 
-	template<typename _Ty>
-	concept lua_t_acceptable = 
-		lua_t_acceptable_non_container<_Ty> or
-		lua_closure_acceptable<_Ty> or
-		lua_table_acceptable_std_array<_Ty> or
-		lua_table_acceptable_std_vector<_Ty> or
-		lua_table_acceptable_std_stack<_Ty> or
-		lua_table_acceptable_std_queue<_Ty> or
-		lua_table_acceptable_std_priority_queue<_Ty> or
-		lua_table_acceptable_std_deque<_Ty> or
-		lua_table_acceptable_std_list<_Ty> or
-		lua_table_acceptable_std_forward_list<_Ty> or
-		lua_table_acceptable_std_set<_Ty> or
-		lua_table_acceptable_std_unordered_set<_Ty> or
-		lua_table_acceptable_std_multiset<_Ty> or
-		lua_table_acceptable_std_unordered_multiset<_Ty> or
-		lua_table_acceptable_std_map<_Ty> or
-		lua_table_acceptable_std_unordered_map<_Ty> or
-		lua_table_acceptable_std_multimap<_Ty> or
-		lua_table_acceptable_std_unordered_multimap<_Ty>;
-	
+	template<typename T>
+	concept lua_table_acceptable =
+		lua_table_acceptable_std_container<T>;
+
+	template<typename T>
+	concept lua_t_acceptable =
+		lua_t_acceptable_non_container<T> or
+		lua_closure_acceptable<T> or
+		lua_table_acceptable<T>;
 }
 
 #endif

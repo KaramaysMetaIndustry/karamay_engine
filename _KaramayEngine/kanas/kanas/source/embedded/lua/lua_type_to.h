@@ -1,8 +1,6 @@
 ﻿#ifndef LUA_TYPE_TO_H
 #define LUA_TYPE_TO_H
 
-#include "public/lua.h"
-
 #include "lua_type_is.h"
 
 #include <optional>
@@ -10,47 +8,47 @@
 
 namespace lua_api
 {
-    template<lua_boolean_acceptable T>
-	static T to_impl(lua_State* l, const std::int32_t idx)
+    template<lua_boolean_acceptable _Ty>
+	static _Ty to_impl(lua_State* l, const std::int32_t idx)
 	{
-		return static_cast<T>(lua_toboolean(l, idx));
+		return static_cast<_Ty>(lua_toboolean(l, idx));
 	}
 
-	template<lua_integer_number_acceptable T>
-	static T to_impl(lua_State* l, const std::int32_t idx)
+	template<lua_integer_number_acceptable _Ty>
+	static _Ty to_impl(lua_State* l, const std::int32_t idx)
 	{
-		return static_cast<T>(lua_tointeger(l, idx));
+		return static_cast<_Ty>(lua_tointeger(l, idx));
 	}
 
-	template<lua_real_number_acceptable T>
-	static T to_impl(lua_State* l, const std::int32_t idx)
+	template<lua_real_number_acceptable _Ty>
+	static _Ty to_impl(lua_State* l, const std::int32_t idx)
 	{
-		return static_cast<T>(lua_tonumber(l, idx));
+		return static_cast<_Ty>(lua_tonumber(l, idx));
 	}
 
-	template<lua_string_acceptable T>
-	static T to_impl(lua_State* l, const std::int32_t idx)
+	template<lua_string_acceptable _Ty>
+	static _Ty to_impl(lua_State* l, const std::int32_t idx)
 	{
 		return lua_tostring(l, idx);
 	}
 
-	template<lua_userdata_acceptable T>
-	static T to_impl(lua_State* l, const std::int32_t idx)
+	template<lua_userdata_acceptable _Ty>
+	static _Ty to_impl(lua_State* l, const std::int32_t idx)
 	{
-		T* userdata = static_cast<T*>(lua_touserdata(l, idx));
+		_Ty* userdata = static_cast<_Ty*>(lua_touserdata(l, idx));
 		return *userdata;
 	}
 
-	template<lua_t_acceptable T>
-	static std::optional<T> to(lua_State* l, const std::int32_t idx)
+	template<lua_t_acceptable _Ty>
+	static std::optional<_Ty> to(lua_State* l, const std::int32_t idx)
 	{
-		if(!is<T>(l, idx)) {
+		if(!is<_Ty>(l, idx)) {
 			return std::nullopt;
 		}
 
-		return to_impl<T>(l, idx);
+		return to_impl<_Ty>(l, idx);
 		
-		if constexpr (lua_table_acceptable_std_vector<T>) {
+		if constexpr (lua_table_acceptable_std_vector<_Ty>) {
 			const std::size_t len = lua_rawlen(l, idx);
 			if (len < 1)
 			{
@@ -61,13 +59,13 @@ namespace lua_api
 			lua_pushnil(l);
 			// key, table, ...
 		
-			T c;
+			_Ty c;
 			c.reserve(len);
 		
 			while (lua_next(l, idx))
 			{
 				// value, key, table, ...
-				auto v = to<typename T::value_type>(l, -1);
+				auto v = to<typename _Ty::value_type>(l, -1);
 				if (!v)
 				{
 					lua_pop(l, 2);
@@ -82,9 +80,9 @@ namespace lua_api
 			// table, ...
 			return c;
 		}
-		else if constexpr (lua_table_acceptable_std_unordered_map<T>)
+		else if constexpr (lua_table_acceptable_std_unordered_map<_Ty>)
 		{
-			T c;
+			_Ty c;
 		
 			// table, ...
 			lua_pushnil(l);
@@ -92,8 +90,8 @@ namespace lua_api
 			while (lua_next(l, idx))
 			{
 				// value, key, table, ...
-				auto _optional_k = to<typename T::key_type>(l, -2);
-				auto _optional_v = to<typename T::mapped_type>(l, -1);
+				auto _optional_k = to<typename _Ty::key_type>(l, -2);
+				auto _optional_v = to<typename _Ty::mapped_type>(l, -1);
 				if (!_optional_k || !_optional_v)
 				{
 					lua_pop(l, 2);
@@ -114,10 +112,10 @@ namespace lua_api
 		
 	}
 
-	template<lua_t_acceptable T, std::size_t idx>
-	static std::optional<T> static_to(lua_State* l)
+	template<lua_t_acceptable _Ty, std::size_t idx>
+	static std::optional<_Ty> static_to(lua_State* l)
 	{
-		return to<T>(l, idx);
+		return to<_Ty>(l, idx);
 	}
 	
 

@@ -1,12 +1,10 @@
 ﻿#ifndef LUA_TYPE_IS_H
 #define LUA_TYPE_IS_H
 
-#include "public/lua.h"
 #include "lua_type_concepts.h"
 
 namespace lua_api
 {
-    
     template<lua_boolean_acceptable T>
     static bool is_impl(lua_State* l, const std::int32_t idx)
     {
@@ -109,6 +107,7 @@ namespace lua_api
         return lua_istable(l, idx);
     }
     
+
     template<lua_t_acceptable T>
     static bool is(lua_State* l, const std::int32_t idx) noexcept
     {
