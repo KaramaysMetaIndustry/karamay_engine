@@ -12,6 +12,8 @@
 #include <unordered_map>
 #include <queue>
 #include <stack>
+#include <concepts>
+#include <xutility>
 
 #include "lua_type_def.h"
 
@@ -32,7 +34,8 @@ namespace lua_api
 	
 	template<typename T>
 	concept lua_number_acceptable =
-		lua_integer_number_acceptable<T> or lua_real_number_acceptable<T>;
+		lua_integer_number_acceptable<T> or
+		lua_real_number_acceptable<T>;
 
 	template<typename T>
 	concept lua_string_acceptable_c_style =
@@ -48,14 +51,16 @@ namespace lua_api
 	
 	template<typename T>
 	concept lua_string_acceptable =
-		lua_string_acceptable_c_style<T> or lua_string_acceptable_std_str<T> or lua_string_acceptable_std_str_view<T>;
+		lua_string_acceptable_c_style<T> or
+		lua_string_acceptable_std_str<T> or
+		lua_string_acceptable_std_str_view<T>;
 
 
 	template<typename T>
-	constexpr bool is_shared_ptr_v = false;
+	inline constexpr bool is_shared_ptr_v = false;
 
 	template<typename T>
-	constexpr bool is_shared_ptr_v<std::shared_ptr<T>> = true;
+	inline constexpr bool is_shared_ptr_v<std::shared_ptr<T>> = true;
 	
 	
 	template<typename T>
@@ -64,10 +69,10 @@ namespace lua_api
 
 	
 	template<typename T>
-	constexpr bool is_c_closure_v = false;
+	inline constexpr bool is_c_closure_v = false;
 
 	template<typename... Args>
-	constexpr bool is_c_closure_v<lua_closure<Args...>> = true;
+	inline constexpr bool is_c_closure_v<lua_closure<Args...>> = true;
 	
 	template<typename T>
 	concept lua_closure_acceptable =
@@ -76,304 +81,307 @@ namespace lua_api
 	
 	template<typename T>
 	concept lua_t_acceptable_non_container =
-		lua_boolean_acceptable<T> or lua_number_acceptable<T> or lua_string_acceptable<T> or lua_userdata_acceptable<T>;
+		lua_boolean_acceptable<T> or
+		lua_number_acceptable<T> or
+		lua_string_acceptable<T> or
+		lua_userdata_acceptable<T>;
 	
 
-	template<typename T>
-	constexpr bool is_array_v = false;
+	template<typename _Ty>
+	inline constexpr bool is_array_v = false;
 
-	template<typename T, std::size_t Size>
-	constexpr bool is_array_v<std::array<T, Size>> = true;
-
-
-	template<typename T>
-	constexpr bool is_vector_v = false;
-
-	template<typename T>
-	constexpr bool is_vector_v<std::vector<T>> = true;
-
-	template<typename T, typename U>
-	constexpr bool is_vector_v<std::vector<T, U>> = true;
+	template<typename _Ty, std::size_t _Size>
+	inline constexpr bool is_array_v<std::array<_Ty, _Size>> = true;
 
 
-	template<typename T>
-	constexpr bool is_deque_v = false;
+	template<typename _Ty>
+	inline constexpr bool is_vector_v = false;
 
-	template<typename T>
-	constexpr bool is_deque_v<std::deque<T>> = true;
+	template<typename _Ty>
+	inline constexpr bool is_vector_v<std::vector<_Ty>> = true;
 
-	template<typename T, typename U>
-	constexpr bool is_deque_v<std::deque<T, U>> = true;
-
-
-	template<typename T>
-	constexpr bool is_list_v = false;
-
-	template<typename T>
-	constexpr bool is_list_v<std::list<T>> = true;
-
-	template<typename T, typename U>
-	constexpr bool is_list_v<std::list<T, U>> = true;
+	template<typename _Ty, typename _Alloc>
+	inline  constexpr bool is_vector_v<std::vector<_Ty, _Alloc>> = true;
 
 
-	template<typename T>
-	constexpr bool is_forward_list_v = false;
+	template<typename _Ty>
+	inline constexpr bool is_deque_v = false;
 
-	template<typename T>
-	constexpr bool is_forward_list_v<std::forward_list<T>> = true;
+	template<typename _Ty>
+	inline constexpr bool is_deque_v<std::deque<_Ty>> = true;
 
-	template<typename T, typename U>
-	constexpr bool is_forward_list_v<std::forward_list<T, U>> = true;
-
-
-	template<typename T>
-	constexpr bool is_stack_v = false;
-
-	template<typename T>
-	constexpr bool is_stack_v<std::stack<T>> = true;
-
-	template<typename T, typename U>
-	constexpr bool is_stack_v<std::stack<T, U>> = true;
+	template<typename _Ty, typename _Alloc>
+	inline constexpr bool is_deque_v<std::deque<_Ty, _Alloc>> = true;
 
 
-	template<typename T>
-	constexpr bool is_queue_v = false;
+	template<typename _Ty>
+	inline constexpr bool is_list_v = false;
 
-	template<typename T>
-	constexpr bool is_queue_v<std::queue<T>> = true;
+	template<typename _Ty>
+	inline constexpr bool is_list_v<std::list<_Ty>> = true;
 
-	template<typename T, typename U>
-	constexpr bool is_queue_v<std::queue<T, U>> = true;
-
-
-	template<typename T>
-	constexpr bool is_priority_queue_v = false;
-
-	template<typename T>
-	constexpr bool is_priority_queue_v<std::priority_queue<T>> = true;
-
-	template<typename T, typename U>
-	constexpr bool is_priority_queue_v<std::priority_queue<T, U>> = true;
-
-	template<typename T, typename U, typename W>
-	constexpr bool is_priority_queue_v<std::priority_queue<T, U, W>> = true;
+	template<typename _Ty, typename _Alloc>
+	inline constexpr bool is_list_v<std::list<_Ty, _Alloc>> = true;
 
 
-	template<typename T>
-	constexpr bool is_set_v = false;
+	template<typename _Ty>
+	inline constexpr bool is_forward_list_v = false;
 
-	template<typename T>
-	constexpr bool is_set_v<std::set<T>> = true;
+	template<typename _Ty>
+	inline constexpr bool is_forward_list_v<std::forward_list<_Ty>> = true;
 
-	template<typename T, typename U>
-	constexpr bool is_set_v<std::set<T, U>> = true;
-
-	template<typename T, typename U, typename W>
-	constexpr bool is_set_v<std::set<T, U, W>> = true;
+	template<typename _Ty, typename _Alloc>
+	inline constexpr bool is_forward_list_v<std::forward_list<_Ty, _Alloc>> = true;
 
 
-	template<typename T>
-	constexpr bool is_unordered_set_v = false;
+	template<typename _Ty>
+	inline constexpr bool is_stack_v = false;
 
-	template<typename T>
-	constexpr bool is_unordered_set_v<std::unordered_set<T>> = true;
+	template<typename _Ty>
+	inline constexpr bool is_stack_v<std::stack<_Ty>> = true;
 
-	template<typename T, typename U>
-	constexpr bool is_unordered_set_v<std::unordered_set<T, U>> = true;
+	template<typename _Ty, typename _Alloc>
+	inline constexpr bool is_stack_v<std::stack<_Ty, _Alloc>> = true;
 
-	template<typename T, typename U, typename W>
-	constexpr bool is_unordered_set_v<std::unordered_set<T, U, W>> = true;
 
-	template<typename T, typename U, typename W, typename X>
-	constexpr bool is_unordered_set_v<std::unordered_set<T, U, W, X>> = true;
+	template<typename _Ty>
+	inline constexpr bool is_queue_v = false;
+
+	template<typename _Ty>
+	inline constexpr bool is_queue_v<std::queue<_Ty>> = true;
+
+	template<typename _Ty, typename _Container>
+	inline constexpr bool is_queue_v<std::queue<_Ty, _Container>> = true;
+
+
+	template<typename _Ty>
+	inline constexpr bool is_priority_queue_v = false;
+
+	template<typename _Ty>
+	inline constexpr bool is_priority_queue_v<std::priority_queue<_Ty>> = true;
+
+	template<typename _Ty, typename _Container>
+	inline constexpr bool is_priority_queue_v<std::priority_queue<_Ty, _Container>> = true;
+
+	template<typename _Ty, typename _Container, typename _Pr>
+	inline constexpr bool is_priority_queue_v<std::priority_queue<_Ty, _Container, _Pr>> = true;
+
+
+	template<typename _Ty>
+	inline constexpr bool is_set_v = false;
+
+	template<typename _Kty>
+	inline constexpr bool is_set_v<std::set<_Kty>> = true;
+
+	template<typename _Kty, typename _Pr>
+	inline constexpr bool is_set_v<std::set<_Kty, _Pr>> = true;
+
+	template<typename _Kty, typename _Pr, typename _Alloc>
+	inline constexpr bool is_set_v<std::set<_Kty, _Pr, _Alloc>> = true;
+
+
+	template<typename _Ty>
+	inline constexpr bool is_unordered_set_v = false;
+
+	template<typename _Kty>
+	inline constexpr bool is_unordered_set_v<std::unordered_set<_Kty>> = true;
+
+	template<typename _Kty, typename _Hasher>
+	inline constexpr bool is_unordered_set_v<std::unordered_set<_Kty, _Hasher>> = true;
+
+	template<typename _Kty, typename _Hasher, typename _Keyeq>
+	inline constexpr bool is_unordered_set_v<std::unordered_set<_Kty, _Hasher, _Keyeq>> = true;
+
+	template<typename _Kty, typename _Hasher, typename _Keyeq, typename _Alloc>
+	inline constexpr bool is_unordered_set_v<std::unordered_set<_Kty, _Hasher, _Keyeq, _Alloc>> = true;
 
 	
 	template<typename T>
-	constexpr bool is_multiset_v = false;
+	inline constexpr bool is_multiset_v = false;
 
 	template<typename T>
-	constexpr bool is_multiset_v<std::multiset<T>> = true;
+	inline constexpr bool is_multiset_v<std::multiset<T>> = true;
 
 	template<typename T, typename U>
-	constexpr bool is_multiset_v<std::multiset<T, U>> = true;
+	inline constexpr bool is_multiset_v<std::multiset<T, U>> = true;
 
 	template<typename T, typename U, typename W>
-	constexpr bool is_multiset_v<std::multiset<T, U, W>> = true;
+	inline constexpr bool is_multiset_v<std::multiset<T, U, W>> = true;
 
 
 	template<typename T>
-	constexpr bool is_unordered_multiset_v = false;
+	inline constexpr bool is_unordered_multiset_v = false;
 
 	template<typename T>
-	constexpr bool is_unordered_multiset_v<std::unordered_multiset<T>> = true;
+	inline constexpr bool is_unordered_multiset_v<std::unordered_multiset<T>> = true;
 
 	template<typename T, typename U>
-	constexpr bool is_unordered_multiset_v<std::unordered_multiset<T, U>> = true;
+	inline constexpr bool is_unordered_multiset_v<std::unordered_multiset<T, U>> = true;
 
 	template<typename T, typename U, typename W>
-	constexpr bool is_unordered_multiset_v<std::unordered_multiset<T, U, W>> = true;
+	inline constexpr bool is_unordered_multiset_v<std::unordered_multiset<T, U, W>> = true;
 
 	template<typename T, typename U, typename W, typename X>
-	constexpr bool is_unordered_multiset_v<std::unordered_multiset<T, U, W, X>> = true;
+	inline constexpr bool is_unordered_multiset_v<std::unordered_multiset<T, U, W, X>> = true;
 
 
 	template<typename T>
-	constexpr bool is_map_v = false;
+	inline constexpr bool is_map_v = false;
 
 	template<typename T, typename U>
-	constexpr bool is_map_v<std::map<T, U>> = true;
+	inline constexpr bool is_map_v<std::map<T, U>> = true;
 
 	template<typename T, typename U, typename W>
-	constexpr bool is_map_v<std::map<T, U, W>> = true;
+	inline constexpr bool is_map_v<std::map<T, U, W>> = true;
 
 	template<typename T, typename U, typename W, typename X>
-	constexpr bool is_map_v<std::map<T, U, W, X>> = true;
+	inline constexpr bool is_map_v<std::map<T, U, W, X>> = true;
 
 
 	template<typename T>
-	constexpr bool is_multimap_v = false;
+	inline constexpr bool is_multimap_v = false;
 
 	template<typename T, typename U>
-	constexpr bool is_multimap_v<std::multimap<T, U>> = true;
+	inline constexpr bool is_multimap_v<std::multimap<T, U>> = true;
 
 	template<typename T, typename U, typename W>
-	constexpr bool is_multimap_v<std::multimap<T, U, W>> = true;
+	inline constexpr bool is_multimap_v<std::multimap<T, U, W>> = true;
 
 	template<typename T, typename U, typename W, typename X>
-	constexpr bool is_multimap_v<std::multimap<T, U, W, X>> = true;
+	inline constexpr bool is_multimap_v<std::multimap<T, U, W, X>> = true;
 
 
 	template<typename T>
-	constexpr bool is_unordered_map_v = false;
+	inline constexpr bool is_unordered_map_v = false;
 
 	template<typename T, typename U>
-	constexpr bool is_unordered_map_v<std::unordered_map<T, U>> = true;
+	inline constexpr bool is_unordered_map_v<std::unordered_map<T, U>> = true;
 
 	template<typename T, typename U, typename W>
-	constexpr bool is_unordered_map_v<std::unordered_map<T, U, W>> = true;
+	inline constexpr bool is_unordered_map_v<std::unordered_map<T, U, W>> = true;
 
 	template<typename T, typename U, typename W, typename X>
-	constexpr bool is_unordered_map_v<std::unordered_map<T, U, W, X>> = true;
+	inline constexpr bool is_unordered_map_v<std::unordered_map<T, U, W, X>> = true;
 
 
 	template<typename T>
-	constexpr bool is_unordered_multimap_v = false;
+	inline constexpr bool is_unordered_multimap_v = false;
 
 	template<typename T, typename U>
-	constexpr bool is_unordered_multimap_v<std::unordered_multimap<T, U>> = true;
+	inline constexpr bool is_unordered_multimap_v<std::unordered_multimap<T, U>> = true;
 
 	template<typename T, typename U, typename W>
-	constexpr bool is_unordered_multimap_v<std::unordered_multimap<T, U, W>> = true;
+	inline constexpr bool is_unordered_multimap_v<std::unordered_multimap<T, U, W>> = true;
 
 	template<typename T, typename U, typename W, typename X>
-	constexpr bool is_unordered_multimap_v<std::unordered_multimap<T, U, W, X>> = true;
+	inline constexpr bool is_unordered_multimap_v<std::unordered_multimap<T, U, W, X>> = true;
 
 
-	template<typename T>
+	template<typename _Ty>
 	concept lua_table_acceptable_std_array =
-		is_array_v<T> && 
-		lua_t_acceptable_non_container<typename T::value_type>;
+		is_array_v<_Ty> and 
+		lua_t_acceptable_non_container<typename _Ty::value_type>;
 
-	template<typename T>
+	template<typename _Ty>
 	concept lua_table_acceptable_std_vector =
-		is_vector_v<T> &&
-		lua_t_acceptable_non_container<typename T::value_type>;
+		is_vector_v<_Ty> and
+		lua_t_acceptable_non_container<typename _Ty::value_type>;
 
-	template<typename T>
+	template<typename _Ty>
 	concept lua_table_acceptable_std_stack =
-		is_stack_v<T> &&
-		lua_t_acceptable_non_container<typename T::value_type>;
+		is_stack_v<_Ty> and
+		lua_t_acceptable_non_container<typename _Ty::value_type>;
 
-	template<typename T>
+	template<typename _Ty>
 	concept lua_table_acceptable_std_queue =
-		is_queue_v<T> &&
-		lua_t_acceptable_non_container<typename T::value_type>;
+		is_queue_v<_Ty> and
+		lua_t_acceptable_non_container<typename _Ty::value_type>;
 
-	template<typename T>
+	template<typename _Ty>
 	concept lua_table_acceptable_std_priority_queue =
-		is_priority_queue_v<T> &&
-		lua_t_acceptable_non_container<typename T::value_type>;
+		is_priority_queue_v<_Ty> and
+		lua_t_acceptable_non_container<typename _Ty::value_type>;
 
-	template<typename T>
+	template<typename _Ty>
 	concept lua_table_acceptable_std_deque =
-		is_deque_v<T> &&
-		lua_t_acceptable_non_container<typename T::value_type>;
+		is_deque_v<_Ty> and
+		lua_t_acceptable_non_container<typename _Ty::value_type>;
 
-	template<typename T>
+	template<typename _Ty>
 	concept lua_table_acceptable_std_list =
-		is_list_v<T> &&
-		lua_t_acceptable_non_container<typename T::value_type>;
+		is_list_v<_Ty> and
+		lua_t_acceptable_non_container<typename _Ty::value_type>;
 
-	template<typename T>
+	template<typename _Ty>
 	concept lua_table_acceptable_std_forward_list =
-		is_forward_list_v<T> &&
-		lua_t_acceptable_non_container<typename T::value_type>;
+		is_forward_list_v<_Ty> and
+		lua_t_acceptable_non_container<typename _Ty::value_type>;
 
-	template<typename T>
+	template<typename _Ty>
 	concept lua_table_acceptable_std_set =
-		is_set_v<T> && 
-		lua_t_acceptable_non_container<typename T::value_type>;
+		is_set_v<_Ty> and 
+		lua_t_acceptable_non_container<typename _Ty::value_type>;
 
-	template<typename T>
+	template<typename _Ty>
 	concept lua_table_acceptable_std_unordered_set =
-		is_unordered_set_v<T> &&
-		lua_t_acceptable_non_container<typename T::value_type>;
+		is_unordered_set_v<_Ty> and
+		lua_t_acceptable_non_container<typename _Ty::value_type>;
 
-	template<typename T>
+	template<typename _Ty>
 	concept lua_table_acceptable_std_multiset =
-		is_multiset_v<T> &&
-		lua_t_acceptable_non_container<typename T::value_type>;
+		is_multiset_v<_Ty> and
+		lua_t_acceptable_non_container<typename _Ty::value_type>;
 
-	template<typename T>
+	template<typename _Ty>
 	concept lua_table_acceptable_std_unordered_multiset =
-		is_unordered_multiset_v<T> &&
-		lua_t_acceptable_non_container<typename T::value_type>;
+		is_unordered_multiset_v<_Ty> and
+		lua_t_acceptable_non_container<typename _Ty::value_type>;
 
-	template<typename T>
+	template<typename _Ty>
 	concept lua_table_acceptable_std_map = 
-		is_map_v<T> &&
-		lua_t_acceptable_non_container<typename T::key_type> &&
-		lua_t_acceptable_non_container<typename T::mapped_type>;
+		is_map_v<_Ty> and
+		lua_t_acceptable_non_container<typename _Ty::key_type> and
+		lua_t_acceptable_non_container<typename _Ty::mapped_type>;
 
-	template<typename T>
+	template<typename _Ty>
 	concept lua_table_acceptable_std_unordered_map =
-		is_unordered_map_v<T> &&
-		lua_t_acceptable_non_container<typename T::key_type> &&
-		lua_t_acceptable_non_container<typename T::mapped_type>;
+		is_unordered_map_v<_Ty> and
+		lua_t_acceptable_non_container<typename _Ty::key_type> and
+		lua_t_acceptable_non_container<typename _Ty::mapped_type>;
 
-	template<typename T>
+	template<typename _Ty>
 	concept lua_table_acceptable_std_multimap = 
-		is_multimap_v<T> &&
-		lua_t_acceptable_non_container<typename T::key_type> &&
-		lua_t_acceptable_non_container<typename T::mapped_type>;
+		is_multimap_v<_Ty> and
+		lua_t_acceptable_non_container<typename _Ty::key_type> and
+		lua_t_acceptable_non_container<typename _Ty::mapped_type>;
 
-	template<typename T>
+	template<typename _Ty>
 	concept lua_table_acceptable_std_unordered_multimap =
-		is_unordered_multimap_v<T> &&
-		lua_t_acceptable_non_container<typename T::key_type> &&
-		lua_t_acceptable_non_container<typename T::mapped_type>;
+		is_unordered_multimap_v<_Ty> and
+		lua_t_acceptable_non_container<typename _Ty::key_type> and
+		lua_t_acceptable_non_container<typename _Ty::mapped_type>;
 
 
-	template<typename T>
+	template<typename _Ty>
 	concept lua_t_acceptable = 
-		lua_t_acceptable_non_container<T> or 
-		lua_table_acceptable_std_array<T> or
-		lua_table_acceptable_std_vector<T> or
-		lua_table_acceptable_std_stack<T> or
-		lua_table_acceptable_std_queue<T> or
-		lua_table_acceptable_std_priority_queue<T> or
-		lua_table_acceptable_std_deque<T> or
-		lua_table_acceptable_std_list<T> or
-		lua_table_acceptable_std_forward_list<T> or
-		lua_table_acceptable_std_set<T> or
-		lua_table_acceptable_std_unordered_set<T> or
-		lua_table_acceptable_std_multiset<T> or
-		lua_table_acceptable_std_unordered_multiset<T> or
-		lua_table_acceptable_std_map<T> or
-		lua_table_acceptable_std_unordered_map<T> or
-		lua_table_acceptable_std_multimap<T> or
-		lua_table_acceptable_std_unordered_multimap<T> or
-		lua_closure_acceptable<T>;
+		lua_t_acceptable_non_container<_Ty> or
+		lua_closure_acceptable<_Ty> or
+		lua_table_acceptable_std_array<_Ty> or
+		lua_table_acceptable_std_vector<_Ty> or
+		lua_table_acceptable_std_stack<_Ty> or
+		lua_table_acceptable_std_queue<_Ty> or
+		lua_table_acceptable_std_priority_queue<_Ty> or
+		lua_table_acceptable_std_deque<_Ty> or
+		lua_table_acceptable_std_list<_Ty> or
+		lua_table_acceptable_std_forward_list<_Ty> or
+		lua_table_acceptable_std_set<_Ty> or
+		lua_table_acceptable_std_unordered_set<_Ty> or
+		lua_table_acceptable_std_multiset<_Ty> or
+		lua_table_acceptable_std_unordered_multiset<_Ty> or
+		lua_table_acceptable_std_map<_Ty> or
+		lua_table_acceptable_std_unordered_map<_Ty> or
+		lua_table_acceptable_std_multimap<_Ty> or
+		lua_table_acceptable_std_unordered_multimap<_Ty>;
 	
 }
 

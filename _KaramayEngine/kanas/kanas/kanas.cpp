@@ -16,7 +16,6 @@ public:
 
     static void shader_mapping()
     {
-        
     }
 
     bool satisfy()
@@ -27,7 +26,7 @@ public:
 
 template <>
 struct std::hash<example> {
-    _NODISCARD size_t operator()(const example& _Keyval) const noexcept {
+    _NODISCARD size_t operator()(const example& v) const noexcept {
         return 0; // map -0 to 0
     }
 };
@@ -46,6 +45,9 @@ template<example_t T>
 void test(T t)
 {
     std::vector<int> a;
+    constexpr std::string_view sv("wait");
+    constexpr std::string_view ssv("wait");
+    
 }
 
 int main()

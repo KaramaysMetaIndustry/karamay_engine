@@ -1,7 +1,6 @@
 ﻿#ifndef LUA_TYPE_DEF_H
 #define LUA_TYPE_DEF_H
 
-#include <iostream>
 #include <vector>
 
 /*
@@ -36,9 +35,9 @@ namespace lua_api
 	enum class lua_status : int
 	{
 		ok = LUA_OK, // no errors.
-		err_run = LUA_ERRRUN, // a runtime error.
-		err_mem = LUA_ERRMEM, // memory allocation error.For such errors, Lua does not call the message handler.
-		err_err = LUA_ERRERR, // error while running the message handler.
+		err_runtime = LUA_ERRRUN, // a runtime error.
+		err_memory_alloc = LUA_ERRMEM, // memory allocation error.For such errors, Lua does not call the message handler.
+		err_message_handler = LUA_ERRERR, // error while running the message handler.
 		err_syntax = LUA_ERRSYNTAX, // syntax error during precompilation.
 		yield = LUA_YIELD, // the thread(coroutine) yields.
 		err_file = LUA_ERRFILE // a file - related error; e.g., it cannot open or read the file.
@@ -46,9 +45,9 @@ namespace lua_api
 
 	enum class lua_compare_op : int
 	{
-		eq = LUA_OPEQ, // ==
-		lt = LUA_OPLT, // <
-		le = LUA_OPLE // <=
+		equal = LUA_OPEQ, // ==
+		less = LUA_OPLT, // <
+		less_equal = LUA_OPLE // <=
 	};
 
 	enum class lua_gc_option : int
