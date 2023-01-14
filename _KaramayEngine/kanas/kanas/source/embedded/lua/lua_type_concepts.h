@@ -80,7 +80,7 @@ namespace lua_api
 
 	
 	template<typename T>
-	concept lua_t_acceptable_non_container =
+	concept lua_basic_t_acceptable =
 		lua_boolean_acceptable<T> or
 		lua_number_acceptable<T> or
 		lua_string_acceptable<T> or
@@ -280,86 +280,86 @@ namespace lua_api
 	template<typename _Ty>
 	concept lua_table_acceptable_std_array =
 		is_array_v<_Ty> and 
-		lua_t_acceptable_non_container<typename _Ty::value_type>;
+		lua_basic_t_acceptable<typename _Ty::value_type>;
 
 	template<typename _Ty>
 	concept lua_table_acceptable_std_vector =
 		is_vector_v<_Ty> and
-		lua_t_acceptable_non_container<typename _Ty::value_type>;
+		lua_basic_t_acceptable<typename _Ty::value_type>;
 
 	template<typename _Ty>
 	concept lua_table_acceptable_std_stack =
 		is_stack_v<_Ty> and
-		lua_t_acceptable_non_container<typename _Ty::value_type>;
+		lua_basic_t_acceptable<typename _Ty::value_type>;
 
 	template<typename _Ty>
 	concept lua_table_acceptable_std_queue =
 		is_queue_v<_Ty> and
-		lua_t_acceptable_non_container<typename _Ty::value_type>;
+		lua_basic_t_acceptable<typename _Ty::value_type>;
 
 	template<typename _Ty>
 	concept lua_table_acceptable_std_priority_queue =
 		is_priority_queue_v<_Ty> and
-		lua_t_acceptable_non_container<typename _Ty::value_type>;
+		lua_basic_t_acceptable<typename _Ty::value_type>;
 
 	template<typename _Ty>
 	concept lua_table_acceptable_std_deque =
 		is_deque_v<_Ty> and
-		lua_t_acceptable_non_container<typename _Ty::value_type>;
+		lua_basic_t_acceptable<typename _Ty::value_type>;
 
 	template<typename _Ty>
 	concept lua_table_acceptable_std_list =
 		is_list_v<_Ty> and
-		lua_t_acceptable_non_container<typename _Ty::value_type>;
+		lua_basic_t_acceptable<typename _Ty::value_type>;
 
 	template<typename _Ty>
 	concept lua_table_acceptable_std_forward_list =
 		is_forward_list_v<_Ty> and
-		lua_t_acceptable_non_container<typename _Ty::value_type>;
+		lua_basic_t_acceptable<typename _Ty::value_type>;
 
 	template<typename _Ty>
 	concept lua_table_acceptable_std_set =
 		is_set_v<_Ty> and 
-		lua_t_acceptable_non_container<typename _Ty::value_type>;
+		lua_basic_t_acceptable<typename _Ty::value_type>;
 
 	template<typename _Ty>
 	concept lua_table_acceptable_std_unordered_set =
 		is_unordered_set_v<_Ty> and
-		lua_t_acceptable_non_container<typename _Ty::value_type>;
+		lua_basic_t_acceptable<typename _Ty::value_type>;
 
 	template<typename _Ty>
 	concept lua_table_acceptable_std_multiset =
 		is_multiset_v<_Ty> and
-		lua_t_acceptable_non_container<typename _Ty::value_type>;
+		lua_basic_t_acceptable<typename _Ty::value_type>;
 
 	template<typename _Ty>
 	concept lua_table_acceptable_std_unordered_multiset =
 		is_unordered_multiset_v<_Ty> and
-		lua_t_acceptable_non_container<typename _Ty::value_type>;
+		lua_basic_t_acceptable<typename _Ty::value_type>;
 
 	template<typename _Ty>
 	concept lua_table_acceptable_std_map = 
 		is_map_v<_Ty> and
-		lua_t_acceptable_non_container<typename _Ty::key_type> and
-		lua_t_acceptable_non_container<typename _Ty::mapped_type>;
+		lua_basic_t_acceptable<typename _Ty::key_type> and
+		lua_basic_t_acceptable<typename _Ty::mapped_type>;
 
 	template<typename _Ty>
 	concept lua_table_acceptable_std_unordered_map =
 		is_unordered_map_v<_Ty> and
-		lua_t_acceptable_non_container<typename _Ty::key_type> and
-		lua_t_acceptable_non_container<typename _Ty::mapped_type>;
+		lua_basic_t_acceptable<typename _Ty::key_type> and
+		lua_basic_t_acceptable<typename _Ty::mapped_type>;
 
 	template<typename _Ty>
 	concept lua_table_acceptable_std_multimap = 
 		is_multimap_v<_Ty> and
-		lua_t_acceptable_non_container<typename _Ty::key_type> and
-		lua_t_acceptable_non_container<typename _Ty::mapped_type>;
+		lua_basic_t_acceptable<typename _Ty::key_type> and
+		lua_basic_t_acceptable<typename _Ty::mapped_type>;
 
 	template<typename _Ty>
 	concept lua_table_acceptable_std_unordered_multimap =
 		is_unordered_multimap_v<_Ty> and
-		lua_t_acceptable_non_container<typename _Ty::key_type> and
-		lua_t_acceptable_non_container<typename _Ty::mapped_type>;
+		lua_basic_t_acceptable<typename _Ty::key_type> and
+		lua_basic_t_acceptable<typename _Ty::mapped_type>;
 
 	template<typename T>
 	concept lua_table_acceptable_std_container =
@@ -386,9 +386,10 @@ namespace lua_api
 
 	template<typename T>
 	concept lua_t_acceptable =
-		lua_t_acceptable_non_container<T> or
-		lua_closure_acceptable<T> or
-		lua_table_acceptable<T>;
+		lua_basic_t_acceptable<T> or
+		lua_table_acceptable<T> or
+		lua_closure_acceptable<T>;
+	
 }
 
 #endif
