@@ -33,13 +33,17 @@ namespace lua_api
 	
 	
 	template<typename Ret, typename... Args, std::size_t... N>
-	static Ret call_cpp_func_impl(const std::function<Ret(Args...)>& func, std::tuple<std::optional<std::remove_cvref_t<Args>>...>& parameters, std::index_sequence<N...>)
+	static Ret call_cpp_func_impl(
+		const std::function<Ret(Args...)>& func,
+		std::tuple<std::remove_cvref_t<Args>...>& args,
+		std::index_sequence<N...>
+		)
 	{
 		if constexpr (std::is_void_v<Ret>)
 		{
-			func(std::get<N>(parameters)...);
+			func(std::get<N>(args)...);
 		} else {
-			return func(std::get<N>(parameters)...);
+			return func(std::get<N>(args)...);
 		}
 	}
 	
@@ -49,9 +53,10 @@ namespace lua_api
 #if _DEBUG
 		debug::trace(l);
 #endif
-		const auto vars = to_tuple<std::remove_cvref_t<Args>...>(l);
+		// std::optional<std::tuple<Args...>>
+		auto opt_vars = to_tuple<std::remove_cvref_t<Args>...>(l);
 
-		if(!vars)
+		if(!opt_vars)
 		{
 			std::clog << "[lua -> cpp] parameters are not valid." << std::endl;
 			lua_pushnil(l);
@@ -60,11 +65,12 @@ namespace lua_api
 		
 		if constexpr (std::is_void_v<Ret>)
 		{
-			call_cpp_func_impl(func, vars.value(), std::index_sequence_for<Args...>());
+			// std::tuple<Args...>
+			call_cpp_func_impl(func, opt_vars.value(), std::index_sequence_for<Args...>());
 			return 0;
 		} else {
 			// if the func has return result, push it into the stack
-			lua_api::push(l, call_cpp_func_impl(func, vars.value(), std::index_sequence_for<Args...>()));
+			lua_api::push(l, call_cpp_func_impl(func, opt_vars.value(), std::index_sequence_for<Args...>()));
 			return 1;
 		}
 	}
@@ -83,14 +89,18 @@ namespace lua_api
 	};
 
 
-	template<typename Ret, typename This, typename... Args, typename... OptArgs, std::size_t... N>
-	static Ret call_cpp_member_func_impl(const std::function<Ret(This*, Args...)>& func, std::tuple<std::shared_ptr<This>, OptArgs...>& parameters, std::index_sequence<N...>)
+	template<typename Ret, typename This, typename... Args, std::size_t... ArgsN>
+	static Ret call_cpp_member_func_impl(
+		const std::function<Ret(This*, Args...)>& func,
+		std::tuple<std::shared_ptr<This>, std::remove_cvref_t<Args>...>& vars,
+		std::index_sequence<ArgsN...>
+		)
 	{
 		if constexpr (std::is_void_v<Ret>)
 		{
-			func(std::get<0>(parameters).get(), std::get<N + 1>(parameters)...);
+			func(std::get<0>(vars).get(), std::get<ArgsN + 1>(vars)...);
 		} else {
-			return func(std::get<0>(parameters).get(), std::get<N + 1>(parameters)...);
+			return func(std::get<0>(vars).get(), std::get<ArgsN + 1>(vars)...);
 		}
 	}
 	
@@ -101,9 +111,9 @@ namespace lua_api
 		debug::trace(l);
 #endif
 		// get parameters from lua stack begin at bottom ( 1 ~ N )
-		const auto vars = to_tuple<std::shared_ptr<This>, std::remove_cvref_t<Args>...>(l);
+		auto opt_vars = to_tuple<std::shared_ptr<This>, std::remove_cvref_t<Args>...>(l);
 		
-		if(!vars)
+		if(!opt_vars)
 		{
 			std::clog << "[lua -> cpp] parameters are invalid." << std::endl;
 			lua_pushnil(l);
@@ -112,13 +122,11 @@ namespace lua_api
 		
 		if constexpr (std::is_void_v<Ret>)
 		{
-			call_cpp_member_func_impl(func, vars.value(), std::index_sequence_for<Args...>());
+			call_cpp_member_func_impl(func, opt_vars.value(), std::index_sequence_for<Args...>());
 			return 0;
 		} else {
 			// if the func has return result, push it into the stack
-			lua_api::push(l, std::forward<Ret>(
-				call_cpp_member_func_impl(func, vars.value(), std::index_sequence_for<Args...>())
-				));
+			lua_api::push(l, std::forward<Ret>(call_cpp_member_func_impl(func, opt_vars.value(), std::index_sequence_for<Args...>())));
 			return 1;
 		}
 	}
