@@ -100,8 +100,28 @@ struct lua_exporter
     std::unordered_map<std::string, lua_CFunction> funcs;
 
     std::string type_name;
-
 };
+
+
+namespace lua_api
+{
+    struct cpp_type_exporter
+    {
+        std::string_view type_name;
+
+        std::unordered_map<std::string_view, lua_CFunction> methods;
+    };
+
+    struct lib_exporter
+    {
+        
+    };
+    
+}
+
+
+
+
 
 struct lua_lib
 {

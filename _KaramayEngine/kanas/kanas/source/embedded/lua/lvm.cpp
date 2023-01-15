@@ -40,29 +40,47 @@ void lua_vm::tick() noexcept
 
 bool lua_vm::do_file(const std::string& path)
 {
-	const int result = luaL_dofile(state_, path.c_str());
-	switch (result)
+	const int ret = luaL_dofile(state_, path.c_str());
+	
+	switch (ret)
 	{
-	case LUA_OK: std::clog << "no errors." << std::endl; break;
-	case LUA_ERRRUN: std::cerr << "a runtime error." << std::endl; break;
-	case LUA_ERRMEM: std::cerr << "memory allocation error.For such errors, Lua does not call the message handler." << std::endl; break;
-	case LUA_ERRERR: std::cerr << "error while running the message handler." << std::endl; break;
+	case LUA_OK:
+		{
+			return true;
+		}
+	case LUA_ERRRUN:
+		{
+			std::cerr << "a runtime error." << std::endl;
+		}
+		break;
+	case LUA_ERRMEM:
+		{
+			std::cerr << "memory allocation error.For such errors, Lua does not call the message handler." << std::endl;
+		}
+		break;
+	case LUA_ERRERR:
+		{
+			std::cerr << "error while running the message handler." << std::endl;
+		}
+		break;
 	case LUA_ERRSYNTAX: std::cerr << "syntax error during precompilation." << std::endl; break;
 	case LUA_YIELD: std::cerr << "the thread(coroutine) yields." << std::endl; break;
 	case LUA_ERRFILE: std::cerr << "a file - related error; e.g., it cannot open or read the file." << std::endl; break;
-	default:
-		break;
+
+	default:break;
 	}
 
-	if (result != 0)
+	lua_Debug debug;
+	lua_getstack(state_, 1, &debug);
+	
+	if(const auto err_msg = lua_api::to<std::string_view>(state_, -1))
 	{
-		const char* error = lua_tostring(state_, -1);//´òÓ¡´íÎó½á¹û
-		printf("%s", error);
-		lua_pop(state_, 1); 
-		return false;
+		std::cerr << err_msg.value() <<std::endl;
 	}
 
-	return true;
+	lua_pop(state_, 1);
+	
+	return false;
 }
 
 void lua_vm::load_class(const std::string& class_name, const luaL_Reg* funcs)
@@ -124,11 +142,6 @@ void lua_vm::load_modules()
 	
 	for (const auto exporter : type_exporters_)
 	{
-		if(!exporter)
-		{
-			continue;
-		}
-		
 		const auto& name_to_raw_method = exporter->funcs;
 
 		// check required custom methods

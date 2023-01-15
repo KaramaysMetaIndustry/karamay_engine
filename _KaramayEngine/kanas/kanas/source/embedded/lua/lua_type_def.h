@@ -3,6 +3,8 @@
 
 #include "public/lua.h"
 
+#define LUA_USE_APICHECK 1
+
 #include <iostream>
 #include <vector>
 
