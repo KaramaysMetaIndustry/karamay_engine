@@ -134,6 +134,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="kanas.cpp" />
+    <ClCompile Include="source\ecs\de_other_object.cpp" />
+    <ClCompile Include="source\ecs\de_other_side.cpp" />
     <ClCompile Include="source\ecs\entity.cpp" />
     <ClCompile Include="source\embedded\lua\lvm.cpp" />
     <ClCompile Include="source\embedded\lua_example\widget.cpp" />
@@ -183,6 +185,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\core\core_lib.h" />
+    <ClInclude Include="source\ecs\de_other_object.h" />
+    <ClInclude Include="source\ecs\de_other_side.h" />
     <ClInclude Include="source\ecs\entity.h" />
     <ClInclude Include="source\embedded\lua\lua_type_concepts.h" />
     <ClInclude Include="source\embedded\lua\lua_type_def.h" />

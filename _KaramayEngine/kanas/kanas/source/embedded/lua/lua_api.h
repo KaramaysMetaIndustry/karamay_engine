@@ -12,6 +12,12 @@
 
 namespace lua_api
 {
+	// function template name lookup (which may involve argument-dependent lookup)
+	// template argument deduction
+	// template argument substitution (which may invole SFINAE)
+	// overload resolution
+
+	// DeOtherSide dos  
 
 	namespace debug
 	{
@@ -32,18 +38,18 @@ namespace lua_api
 	}
 	
 	
-	template<typename Ret, typename... Args, std::size_t... N>
+	template<typename Ret, typename... Args, std::size_t... ArgNs>
 	static Ret call_cpp_func_impl(
 		const std::function<Ret(Args...)>& func,
 		std::tuple<std::remove_cvref_t<Args>...>& args,
-		std::index_sequence<N...>
+		std::index_sequence<ArgNs...>
 		)
 	{
 		if constexpr (std::is_void_v<Ret>)
 		{
-			func(std::get<N>(args)...);
+			func(std::get<ArgNs>(args)...);
 		} else {
-			return func(std::get<N>(args)...);
+			return func(std::get<ArgNs>(args)...);
 		}
 	}
 	
@@ -88,19 +94,21 @@ namespace lua_api
 		std::function<Ret(Args...)> callable;
 	};
 
-
-	template<typename Ret, typename This, typename... Args, std::size_t... ArgsN>
+	template<typename Ret, typename This, typename... Args, std::size_t... ArgNs>
 	static Ret call_cpp_member_func_impl(
 		const std::function<Ret(This*, Args...)>& func,
-		std::tuple<std::shared_ptr<This>, std::remove_cvref_t<Args>...>& vars,
-		std::index_sequence<ArgsN...>
+		std::conditional_t<sizeof...(Args) == 0,
+			const std::tuple<std::shared_ptr<This>>,
+			const std::tuple<std::shared_ptr<This>, std::remove_cvref_t<Args>...>>& vars,
+		std::index_sequence<ArgNs...>
 		)
 	{
+
 		if constexpr (std::is_void_v<Ret>)
 		{
-			func(std::get<0>(vars).get(), std::get<ArgsN + 1>(vars)...);
+			func(std::get<0>(vars).get(), std::get<ArgNs + 1>(vars)...);
 		} else {
-			return func(std::get<0>(vars).get(), std::get<ArgsN + 1>(vars)...);
+			return func(std::get<0>(vars).get(), std::get<ArgNs + 1>(vars)...);
 		}
 	}
 	
@@ -119,14 +127,16 @@ namespace lua_api
 			lua_pushnil(l);
 			return 1;
 		}
-		
+
 		if constexpr (std::is_void_v<Ret>)
 		{
 			call_cpp_member_func_impl(func, opt_vars.value(), std::index_sequence_for<Args...>());
 			return 0;
 		} else {
 			// if the func has return result, push it into the stack
-			lua_api::push(l, std::forward<Ret>(call_cpp_member_func_impl(func, opt_vars.value(), std::index_sequence_for<Args...>())));
+			lua_api::push(l,
+				call_cpp_member_func_impl(func, opt_vars.value(), std::index_sequence_for<Args...>())
+				);
 			return 1;
 		}
 	}
@@ -144,21 +154,21 @@ namespace lua_api
 		std::function<Ret(This*, Args...)> callable;
 	};
 
+	static void api_test()
+	{
+		debug::trace(nullptr);
+
+		std::function<void(int, float)> f;
+		std::tuple<int, float> vars;
+		call_cpp_func_impl(f, vars, std::index_sequence_for<int, float>());
+
+		call_cpp_func(nullptr, f);
+		
+		std::function<int(int*, float, int)> m_f;
+		std::tuple<std::shared_ptr<int>, float, int> m_vars;
+		call_cpp_member_func_impl(m_f, m_vars, std::index_sequence_for<float, int>());
+	}
 	
-
-
-
-	
-	// template<typename... Args, typename... Rets>
-	// static std::tuple<Rets...> call_lua_method(lua_State* l, const std::string_view method_name, Args&& ...args)
-	// {
-	// 	lua_getglobal(l, method_name.data());
-	// 	(push(l, args), ...);
-	// 	lua_call(l, sizeof...(Args), sizeof...(Rets));
-	// 	const auto rets = to_tuple<Rets...>(l);
-	// 	lua_pop(l, sizeof...(Rets));
-	// 	return rets;
-	// }
 }
 
 #endif

@@ -85,7 +85,7 @@ static lua_cpp_function_exporter_##FUNCTION_NAME function_exporter_##FUNCTION_NA
 * You must specify an unique global lib name.
 */
 #define LUA_LIB_EXPORTER(LIB_NAME)\
-static std::vector<luaL_Reg> lib_funcs_##LIB_NAME;\
+static std::vector<luaL_Reg> lib_funcs_##LIB_NAME = {};\
 static int open_lib_##LIB_NAME(lua_State* l)\
 {\
     luaL_newlib(l, lib_funcs_##LIB_NAME.data());\

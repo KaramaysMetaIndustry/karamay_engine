@@ -51,7 +51,8 @@ void test(T t)
     std::vector<int> a;
     constexpr std::string_view sv("wait");
     constexpr std::string_view ssv("wait");
-    
+
+    std::tuple<> a;
 }
 
 int main()

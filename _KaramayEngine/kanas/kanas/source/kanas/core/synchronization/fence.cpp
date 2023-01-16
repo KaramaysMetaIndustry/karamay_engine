@@ -68,7 +68,7 @@ bool kanas::core::FTransientFenceGroup::Wait(bool InWaitAll, std::uint64_t InTim
 
 		std::vector<VkFence> FenceHandles;
 
-		const VkResult Result = vkWaitForFences(TheDevice.handle(), FenceHandles.size(), FenceHandles.data(), InWaitAll, InTimeoutInMs);
+		const VkResult Result = vkWaitForFences(TheDevice.handle(), static_cast<std::uint32_t>(FenceHandles.size()), FenceHandles.data(), InWaitAll, InTimeoutInMs);
 		return Result == VkResult::VK_SUCCESS;
 	}
 	return false;

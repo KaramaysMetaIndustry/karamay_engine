@@ -34,7 +34,7 @@ void kanas::core::pipeline::cmd_push_constants(kanas::core::command_buffer &cb)
 {
     if (_constants)
     {
-        vkCmdPushConstants(cb.handle(), _layout->handle(), 0, 0, _constants->GetSize(), _constants->GetData());
+        vkCmdPushConstants(cb.handle(), _layout->handle(), 0, 0, static_cast<std::uint32_t>(_constants->GetSize()), _constants->GetData());
     }
 }
 
@@ -44,7 +44,7 @@ void kanas::core::pipeline::cmd_bind_descriptor_sets(kanas::core::command_buffer
     //get_raw(_layout->GetDescriptorSetLayouts(), DescriptorSetHandles);
 
     vkCmdBindDescriptorSets(cb.handle(), _bind_point, _layout->handle(),
-        0, DescriptorSetHandles.size(), DescriptorSetHandles.data(), 
+        0, static_cast<std::uint32_t>(DescriptorSetHandles.size()), DescriptorSetHandles.data(), 
         0, nullptr
     );
 }
