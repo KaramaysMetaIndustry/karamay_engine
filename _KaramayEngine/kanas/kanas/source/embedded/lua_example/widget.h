@@ -34,11 +34,6 @@ public:
         w.reset();
     }
 
-    static void to_test()
-    {
-
-    }
-
     static std::string to_string(const std::shared_ptr<widget>& wid)
     {
         return std::to_string(wid->w);

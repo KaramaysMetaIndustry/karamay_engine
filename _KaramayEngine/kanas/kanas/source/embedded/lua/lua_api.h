@@ -97,13 +97,13 @@ namespace lua_api
 	template<typename Ret, typename This, typename... Args, std::size_t... ArgNs>
 	static Ret call_cpp_member_func_impl(
 		const std::function<Ret(This*, Args...)>& func,
-		std::conditional_t<sizeof...(Args) == 0,
+		/*std::conditional_t<sizeof...(Args) == 0,
 			const std::tuple<std::shared_ptr<This>>,
-			const std::tuple<std::shared_ptr<This>, std::remove_cvref_t<Args>...>>& vars,
+			const std::tuple<std::shared_ptr<This>, std::remove_cvref_t<Args>...>>& vars,*/
+		const std::tuple<std::shared_ptr<This>, std::remove_cvref_t<Args>... > &vars,
 		std::index_sequence<ArgNs...>
 		)
 	{
-
 		if constexpr (std::is_void_v<Ret>)
 		{
 			func(std::get<0>(vars).get(), std::get<ArgNs + 1>(vars)...);
@@ -130,6 +130,7 @@ namespace lua_api
 
 		if constexpr (std::is_void_v<Ret>)
 		{
+			// std::tuple<...>
 			call_cpp_member_func_impl(func, opt_vars.value(), std::index_sequence_for<Args...>());
 			return 0;
 		} else {
