@@ -66,7 +66,7 @@ namespace lua_api
 		{
 			std::clog << "[lua -> cpp] parameters are not valid." << std::endl;
 			lua_pushnil(l);
-			return 1;
+			return 1; 
 		}
 		
 		if constexpr (std::is_void_v<Ret>)
@@ -118,7 +118,6 @@ namespace lua_api
 #if _DEBUG
 		debug::trace(l);
 #endif
-		// get parameters from lua stack begin at bottom ( 1 ~ N )
 		auto opt_vars = to_tuple<std::shared_ptr<This>, std::remove_cvref_t<Args>...>(l);
 		
 		if(!opt_vars)
@@ -134,10 +133,7 @@ namespace lua_api
 			call_cpp_member_func_impl(func, opt_vars.value(), std::index_sequence_for<Args...>());
 			return 0;
 		} else {
-			// if the func has return result, push it into the stack
-			lua_api::push(l,
-				call_cpp_member_func_impl(func, opt_vars.value(), std::index_sequence_for<Args...>())
-				);
+			push(l, call_cpp_member_func_impl(func, opt_vars.value(), std::index_sequence_for<Args...>()));
 			return 1;
 		}
 	}
